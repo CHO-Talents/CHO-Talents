@@ -120,7 +120,7 @@
 
     function onRoleChange() {
       const role = document.getElementById('mRole').value;
-      document.getElementById('managedDeptWrap').style.display = role === 'dept_manager' ? '' : 'none';
+      document.getElementById('managedDeptWrap').style.display = (role === 'dept_manager' || role === 'admin') ? '' : 'none';
     }
 
     let allManagers = [];
