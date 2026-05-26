@@ -10,12 +10,33 @@ const ROLE_LABELS = {
   student: '학생'
 };
 
+const ROLE_EMOJI = {
+  admin: '👑',
+  dept_manager: '📋',
+  teacher: '👩‍🏫',
+  student: '🎒'
+};
+
 const ROLE_REDIRECT = {
   admin: 'admin/index.html',
   dept_manager: 'manager/index.html',
   teacher: 'teacher/my-talents.html',
   student: 'student/my-talents.html'
 };
+
+function renderRoleBadge(elementId, session, basePath) {
+  const el = document.getElementById(elementId);
+  if (!el || !session) return;
+  const emoji = ROLE_EMOJI[session.role] || '👤';
+  const label = ROLE_LABELS[session.role] || session.role;
+  const name = session.displayName || session.username;
+  const href = (basePath || '') + (ROLE_REDIRECT[session.role] || '#');
+  el.innerHTML = `<a href="${href}" style="text-decoration:none;color:inherit;display:inline-flex;align-items:center;gap:0.3rem;" title="${label} 페이지로 이동">
+    <span style="font-size:1.1rem;">${emoji}</span>
+    <span>${name}</span>
+    <span style="font-size:0.7rem;background:rgba(255,255,255,0.2);padding:0.1rem 0.4rem;border-radius:50px;">${label}</span>
+  </a>`;
+}
 
 async function hashPassword(password) {
   const encoder = new TextEncoder();

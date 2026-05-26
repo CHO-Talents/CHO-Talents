@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>사용자 관리 - 관리자</title>
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body class="admin-body">
+  <nav class="admin-nav">
+    <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
+    <ul class="admin-nav-links">
+      <li><a href="../index.html">🏠 메인</a></li>
+      <li><a href="index.html">대시보드</a></li>
+      <li><a href="users.html" class="active">사용자 관리</a></li>
+      <li><a href="departments.html">부서 관리</a></li>
+      <li><a href="managers.html">관리자 관리</a></li>
+      <li><a href="shop.html">상점 조회</a></li>
+      <li><a href="reports.html">보고서</a></li>
+      <li><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li><a href="versions.html">버전</a></li>
+      <li><span class="nav-user" id="navUser"></span></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+    </ul>
+  </nav>
+
+  <div class="admin-container">
+    <h2 style="margin-bottom:1rem;">👥 사용자 관리</h2>
+
+    <div class="cards-grid" style="margin-bottom:1.5rem;">
+      <div class="stat-card"><div class="stat-card-label">전체</div><div class="stat-card-value" id="cntAll">-</div></div>
+      <div class="stat-card" style="border-left-color:#e03131;"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
+      <div class="stat-card" style="border-left-color:#cc5de8;"><div class="stat-card-label">📋 부서관리자</div><div class="stat-card-value" id="cntMgr">-</div></div>
+      <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">👩‍🏫 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
+      <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">🎒 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
+    </div>
+
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <div class="admin-table-title" id="tableTitle">사용자 목록</div>
+        <div class="filters">
+          <button class="filter-btn active" onclick="setFilter('all',this)">전체</button>
+          <button class="filter-btn" onclick="setFilter('admin',this)">관리자</button>
+          <button class="filter-btn" onclick="setFilter('dept_manager',this)">부서관리자</button>
+          <button class="filter-btn" onclick="setFilter('teacher',this)">교사</button>
+          <button class="filter-btn" onclick="setFilter('student',this)">학생</button>
+          <span style="margin-left:0.5rem;"></span>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
+        </div>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>역할</th><th>아이디</th><th>이름</th><th>부서</th><th>달란트</th><th>등록일</th><th>관리</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 사용자 등록/수정 모달 -->
+  <div class="modal-overlay hidden" id="userModal">
+    <div class="modal-box" style="max-width:480px;">
+      <h3 class="modal-title" id="modalTitle">사용자 등록</h3>
+      <div class="form-error" id="modalError"></div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">아이디</label>
+        <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이름 (표시명)</label>
+        <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+      </div>
+      <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
+        <div style="flex:1;">
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">역할</label>
+          <select id="mRole" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onRoleChange()">
+            <option value="student">🎒 학생</option>
+            <option value="teacher">👩‍🏫 교사</option>
+            <option value="dept_manager">📋 부서 관리자</option>
+            <option value="admin">👑 관리자</option>
+          </select>
+        </div>
+        <div style="flex:1;">
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">소속 부서</label>
+          <select id="mDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
+            <option value="">없음</option>
+          </select>
+        </div>
+      </div>
+      <div id="managedDeptWrap" style="margin-bottom:0.8rem;display:none;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">담당 관리 부서</label>
+        <select id="mManagedDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
+          <option value="">없음</option>
+        </select>
+      </div>
+      <div id="passwordWrap" style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">초기 비밀번호</label>
+        <input type="text" id="mPassword" value="1234" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">첫 로그인 시 변경 필수</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">취소</button>
+        <button class="btn-confirm" onclick="saveUser()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/activity-log.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/user-mgmt.js"></script>
+  <script src="../js/version.js"></script>
+  <script>
+    initSupabase();
+    const session = requireRole(['admin'], '../login.html');
+    let allUsers = [];
+    let allDepts = [];
+    let editingId = null;
+    let currentFilter = 'all';
+
+    if (session) {
+      renderRoleBadge('navUser', session, '../');
+      autoLogPageView();
+      updateBadge();
+      loadData();
+    }
+
+    async function updateBadge() {
+      const cnt = await getUnacknowledgedCount();
+      if (cnt > 0) { const b = document.getElementById('navLogBadge'); b.textContent = cnt; b.classList.remove('hidden'); }
+    }
+
+    async function loadData() {
+      const [usersRes, deptsRes] = await Promise.all([fetchUsers(), fetchDepartments()]);
+      allUsers = usersRes.data || [];
+      allDepts = deptsRes.data || [];
+      updateStats();
+      renderUsers();
+      populateDeptSelects();
+    }
+
+    function updateStats() {
+      document.getElementById('cntAll').textContent = allUsers.length;
+      document.getElementById('cntAdmin').textContent = allUsers.filter(u => u.role === 'admin').length;
+      document.getElementById('cntMgr').textContent = allUsers.filter(u => u.role === 'dept_manager').length;
+      document.getElementById('cntTeacher').textContent = allUsers.filter(u => u.role === 'teacher').length;
+      document.getElementById('cntStudent').textContent = allUsers.filter(u => u.role === 'student').length;
+    }
+
+    function populateDeptSelects() {
+      const opts = '<option value="">없음</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      document.getElementById('mDept').innerHTML = opts;
+      document.getElementById('mManagedDept').innerHTML = opts;
+    }
+
+    function setFilter(role, btn) {
+      currentFilter = role;
+      document.querySelectorAll('.admin-table-header .filter-btn:not([style*="background:var(--admin-primary)"])').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderUsers();
+    }
+
+    function getDeptName(id) {
+      const d = allDepts.find(d => d.id === id);
+      return d ? d.name : '-';
+    }
+
+    const ROLE_BADGES = {
+      admin: { emoji: '👑', label: '관리자', cls: 'ERROR' },
+      dept_manager: { emoji: '📋', label: '부서관리자', cls: 'WARN' },
+      teacher: { emoji: '👩‍🏫', label: '교사', cls: 'INFO' },
+      student: { emoji: '🎒', label: '학생', cls: 'DEBUG' }
+    };
+
+    function renderUsers() {
+      const list = currentFilter === 'all' ? allUsers : allUsers.filter(u => u.role === currentFilter);
+      const tbody = document.getElementById('userList');
+      document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
+
+      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 사용자가 없습니다.</td></tr>'; return; }
+
+      tbody.innerHTML = list.map(u => {
+        const rb = ROLE_BADGES[u.role] || ROLE_BADGES.student;
+        return `<tr>
+          <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
+          <td><strong>${u.username}</strong></td>
+          <td>${u.display_name || '-'}</td>
+          <td>${getDeptName(u.department_id)}</td>
+          <td style="font-weight:700;">${u.talent_balance || 0}</td>
+          <td>${formatKSTShort(u.created_at)}</td>
+          <td>
+            <button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>수정</button>
+            <button class="filter-btn" onclick="resetPw('${u.id}','${u.username}')">비밀번호초기화</button>
+            ${u.id !== session.id ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${u.username}')">삭제</button>` : ''}
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function onRoleChange() {
+      const role = document.getElementById('mRole').value;
+      document.getElementById('managedDeptWrap').style.display = (role === 'dept_manager') ? 'block' : 'none';
+    }
+
+    function openAddModal() {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = '사용자 등록';
+      document.getElementById('mUsername').value = '';
+      document.getElementById('mUsername').disabled = false;
+      document.getElementById('mDisplayName').value = '';
+      document.getElementById('mRole').value = 'student';
+      document.getElementById('mDept').value = '';
+      document.getElementById('mManagedDept').value = '';
+      document.getElementById('managedDeptWrap').style.display = 'none';
+      document.getElementById('passwordWrap').style.display = 'block';
+      document.getElementById('mPassword').value = '1234';
+      document.getElementById('modalError').classList.remove('show');
+      document.getElementById('userModal').classList.remove('hidden');
+    }
+
+    function openEditModal(u) {
+      editingId = u.id;
+      document.getElementById('modalTitle').textContent = '사용자 수정';
+      document.getElementById('mUsername').value = u.username;
+      document.getElementById('mUsername').disabled = true;
+      document.getElementById('mDisplayName').value = u.display_name || '';
+      document.getElementById('mRole').value = u.role;
+      document.getElementById('mDept').value = u.department_id || '';
+      document.getElementById('mManagedDept').value = u.managed_dept_id || '';
+      document.getElementById('managedDeptWrap').style.display = (u.role === 'dept_manager') ? 'block' : 'none';
+      document.getElementById('passwordWrap').style.display = 'none';
+      document.getElementById('modalError').classList.remove('show');
+      document.getElementById('userModal').classList.remove('hidden');
+    }
+
+    function closeModal() { document.getElementById('userModal').classList.add('hidden'); }
+
+    async function saveUser() {
+      const errEl = document.getElementById('modalError');
+      const username = document.getElementById('mUsername').value.trim();
+      const displayName = document.getElementById('mDisplayName').value.trim();
+      const role = document.getElementById('mRole').value;
+      const deptId = document.getElementById('mDept').value || null;
+      const managedDeptId = document.getElementById('mManagedDept').value || null;
+
+      if (!username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
+
+      if (editingId) {
+        const { error } = await updateUser(editingId, { displayName, role, departmentId: deptId, managedDeptId: role === 'dept_manager' ? managedDeptId : null });
+        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+      } else {
+        const pw = document.getElementById('mPassword').value || '1234';
+        const { error } = await createUser({ username, password: pw, displayName, role, departmentId: deptId, managedDeptId: role === 'dept_manager' ? managedDeptId : null });
+        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+      }
+      closeModal();
+      await loadData();
+    }
+
+    async function resetPw(id, username) {
+      if (!confirm(`"${username}" 비밀번호를 초기화(1234)하시겠습니까?`)) return;
+      const { error } = await resetUserPassword(id, username);
+      if (error) alert('초기화 실패: ' + error);
+      else alert('비밀번호가 1234로 초기화되었습니다.');
+    }
+
+    async function confirmDelete(id, username) {
+      if (!confirm(`"${username}" 사용자를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+      const { error } = await deleteUser(id);
+      if (error) alert('삭제 실패: ' + error);
+      else await loadData();
+    }
+
+    document.getElementById('userModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
+  </script>
+</body>
+</html>

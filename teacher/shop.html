@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -46,7 +46,7 @@
     const session = requireRole(['teacher', 'dept_manager', 'admin'], '../login.html');
 
     if (session) {
-      document.getElementById('navUser').textContent = session.displayName || session.username;
+      renderRoleBadge('navUser', session, '../');
       autoLogPageView();
       loadProducts();
     }
