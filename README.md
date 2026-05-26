@@ -1,5 +1,5 @@
 ## Hi there 👋
-
+초등부 교사 / 아이들 달란트 및 상품 관리 프로젝트 입니다
 <!--
 **CHO-Talents/CHO-Talents** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
