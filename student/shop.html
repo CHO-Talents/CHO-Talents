@@ -44,13 +44,12 @@
     initSupabase();
 
     (async () => {
-      const session = await initPage(['student', 'admin', 'dept_manager'], '../login.html');
-      if (!session) return;
-
-      document.getElementById('navAuthArea').innerHTML =
-        `<span class="nav-user">${session.displayName || session.username}</span>` +
-        `</li><li><button class="btn-nav-logout" onclick="logout('../login.html')">로그아웃</button>`;
-
+      const session = await loadAuthSession();
+      if (session) {
+        document.getElementById('navAuthArea').innerHTML =
+          `<span class="nav-user">${session.displayName || session.username}</span>` +
+          `</li><li><button class="btn-nav-logout" onclick="logout('../login.html')">로그아웃</button>`;
+      }
       autoLogPageView();
       loadProducts();
     })();
