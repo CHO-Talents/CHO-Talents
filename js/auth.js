@@ -1,7 +1,21 @@
 /**
  * Authentication Module
- * SHA-256 해싱 + Supabase RPC 기반 커스텀 인증
+ * SHA-256 해싱 + Supabase RPC 기반 인증 (전 역할 지원)
  */
+
+const ROLE_LABELS = {
+  admin: '관리자',
+  dept_manager: '부서 관리자',
+  teacher: '교사',
+  student: '학생'
+};
+
+const ROLE_REDIRECT = {
+  admin: 'admin/index.html',
+  dept_manager: 'manager/index.html',
+  teacher: 'teacher/my-talents.html',
+  student: 'student/my-talents.html'
+};
 
 async function hashPassword(password) {
   const encoder = new TextEncoder();
@@ -17,7 +31,8 @@ async function login(username, password) {
 
   try {
     const passwordHash = await hashPassword(password);
-    const { data, error } = await _sb.rpc('verify_admin', {
+
+    const { data, error } = await _sb.rpc('verify_user', {
       p_username: username,
       p_password_hash: passwordHash
     });
@@ -37,10 +52,14 @@ async function login(username, password) {
       username: data.username,
       displayName: data.display_name,
       role: data.role,
-      isFirstLogin: data.is_first_login
+      isFirstLogin: data.is_first_login,
+      departmentId: data.department_id,
+      managedDeptId: data.managed_dept_id,
+      talentBalance: data.talent_balance || 0,
+      departmentName: data.department_name
     });
 
-    await logInfo('LOGIN_SUCCESS', { username });
+    await logInfo('LOGIN_SUCCESS', { username, role: data.role });
     return { success: true, data };
   } catch (err) {
     await logError('LOGIN_ERROR', { username, error: String(err) });
@@ -48,13 +67,32 @@ async function login(username, password) {
   }
 }
 
-async function logout() {
+function getRoleRedirectUrl(role, basePath) {
+  const base = basePath || '';
+  const path = ROLE_REDIRECT[role] || 'login.html';
+  return base + path;
+}
+
+function logout(loginPath) {
   const session = getSession();
   if (session) {
-    await logInfo('LOGOUT', { username: session.username });
+    logInfo('LOGOUT', { username: session.username });
   }
   clearSession();
-  window.location.href = 'login.html';
+  window.location.href = loginPath || '../login.html';
+}
+
+function requireRole(allowedRoles, loginPath) {
+  const session = getSession();
+  if (!session) {
+    window.location.href = loginPath || '../login.html';
+    return null;
+  }
+  if (!allowedRoles.includes(session.role)) {
+    window.location.href = loginPath || '../login.html';
+    return null;
+  }
+  return session;
 }
 
 async function changePassword(username, newPassword) {

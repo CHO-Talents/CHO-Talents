@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 달란트 - 부서 관리</title>
+  <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="../css/common.css" />
+</head>
+<body class="admin-body">
+  <nav class="admin-nav">
+    <a href="index.html" class="admin-nav-brand">CHO-Talents 부서관리</a>
+    <ul class="admin-nav-links">
+      <li><a href="index.html">대시보드</a></li>
+      <li><a href="students.html">학생 관리</a></li>
+      <li><a href="teachers.html">교사 관리</a></li>
+      <li><a href="products.html">물품 관리</a></li>
+      <li><a href="my-talents.html" class="active">내 달란트</a></li>
+      <li><span class="nav-user" id="navUser"></span></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+    </ul>
+  </nav>
+
+  <div class="admin-container" id="mainContent"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/activity-log.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/talent.js"></script>
+  <script>
+    initSupabase();
+    const session = requireRole(['dept_manager', 'admin'], '../login.html');
+
+    if (session) {
+      document.getElementById('navUser').textContent = session.displayName || session.username;
+      autoLogPageView();
+      loadMyTalents();
+    }
+
+    async function loadMyTalents() {
+      const main = document.getElementById('mainContent');
+      const summary = await fetchTalentSummary(session.id);
+      const { data: history } = await fetchTalentHistory(session.id, { limit: 50 });
+
+      main.innerHTML = `
+        <h2 style="margin-bottom:1rem;">내 달란트</h2>
+        <div class="cards-grid">
+          <div class="stat-card" style="border-left-color:#51cf66;">
+            <div class="stat-card-label">총 적립</div>
+            <div class="stat-card-value">${summary.earned}</div>
+          </div>
+          <div class="stat-card" style="border-left-color:#ff6b6b;">
+            <div class="stat-card-label">총 사용</div>
+            <div class="stat-card-value">${summary.used}</div>
+          </div>
+          <div class="stat-card" style="border-left-color:#fcc419;">
+            <div class="stat-card-label">잔여 달란트</div>
+            <div class="stat-card-value">${summary.balance}</div>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <div class="admin-table-header"><div class="admin-table-title">달란트 내역</div></div>
+          <table class="admin-table">
+            <thead><tr><th>날짜</th><th>유형</th><th>금액</th><th>설명</th><th>잔액</th></tr></thead>
+            <tbody>${(!history || history.length === 0)
+              ? '<tr><td colspan="5" class="empty-state">아직 달란트 내역이 없습니다.</td></tr>'
+              : history.map(t => `<tr>
+                  <td>${formatKSTShort(t.created_at)}</td>
+                  <td><span class="level-badge ${t.type === 'earn' ? 'INFO' : 'ERROR'}">${t.type === 'earn' ? '적립' : '사용'}</span></td>
+                  <td style="font-weight:700;color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'}">${t.type === 'earn' ? '+' : '-'}${t.amount}</td>
+                  <td>${t.description || '-'}</td>
+                  <td>${t.balance_after}</td>
+                </tr>`).join('')
+            }</tbody>
+          </table>
+        </div>`;
+    }
+  </script>
+</body>
+</html>

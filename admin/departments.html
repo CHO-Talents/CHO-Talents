@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>부서 관리 - CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body class="admin-body">
+  <nav class="admin-nav">
+    <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
+    <ul class="admin-nav-links">
+      <li><a href="index.html">대시보드</a></li>
+      <li><a href="departments.html" class="active">부서 관리</a></li>
+      <li><a href="managers.html">관리자 관리</a></li>
+      <li><a href="reports.html">보고서</a></li>
+      <li><a href="logs.html">로그</a></li>
+      <li><span class="nav-user" id="navUser"></span></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+    </ul>
+  </nav>
+
+  <div class="admin-container">
+    <h2 style="margin-bottom:1rem;">부서 관리</h2>
+
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <div class="admin-table-title" id="tableTitle">부서 목록</div>
+        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 부서 등록</button>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>부서명</th><th>설명</th><th>학생수</th><th>교사수</th><th>부서관리자</th><th>관리</th></tr></thead>
+        <tbody id="deptList"><tr><td colspan="6" class="empty-state">로딩 중...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="deptModal">
+    <div class="modal-box">
+      <h3 class="modal-title" id="modalTitle">부서 등록</h3>
+      <div class="form-error" id="modalError"></div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">부서명</label>
+        <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">설명</label>
+        <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">취소</button>
+        <button class="btn-confirm" onclick="saveDept()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/activity-log.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/user-mgmt.js"></script>
+  <script>
+    initSupabase();
+    const session = requireRole(['admin'], '../login.html');
+    let editingId = null;
+
+    if (session) {
+      document.getElementById('navUser').textContent = session.displayName || session.username;
+      autoLogPageView();
+      loadDepts();
+    }
+
+    async function loadDepts() {
+      const { data: depts } = await fetchDepartments();
+      const { data: users } = await _sb.from('admin_users')
+        .select('id, role, department_id, managed_dept_id, display_name');
+
+      const tbody = document.getElementById('deptList');
+      document.getElementById('tableTitle').textContent = `부서 목록 (${(depts||[]).length}개)`;
+
+      if (!depts || depts.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 부서가 없습니다.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = depts.map(d => {
+        const students = (users||[]).filter(u => u.department_id === d.id && u.role === 'student').length;
+        const teachers = (users||[]).filter(u => u.department_id === d.id && u.role === 'teacher').length;
+        const managers = (users||[]).filter(u => u.managed_dept_id === d.id && u.role === 'dept_manager');
+        const managerNames = managers.map(m => m.display_name || m.id).join(', ') || '-';
+        return `<tr>
+          <td><strong>${d.name}</strong></td>
+          <td>${d.description || '-'}</td>
+          <td>${students}명</td>
+          <td>${teachers}명</td>
+          <td>${managerNames}</td>
+          <td>
+            <button class="filter-btn" onclick="openEditModal('${d.id}','${d.name}','${(d.description||'').replace(/'/g,"\\'")}')">수정</button>
+            <button class="btn-ack" onclick="confirmDelete('${d.id}','${d.name}')">삭제</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function openAddModal() {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = '부서 등록';
+      document.getElementById('mName').value = '';
+      document.getElementById('mDesc').value = '';
+      document.getElementById('modalError').classList.remove('show');
+      document.getElementById('deptModal').classList.remove('hidden');
+    }
+
+    function openEditModal(id, name, desc) {
+      editingId = id;
+      document.getElementById('modalTitle').textContent = '부서 수정';
+      document.getElementById('mName').value = name;
+      document.getElementById('mDesc').value = desc;
+      document.getElementById('modalError').classList.remove('show');
+      document.getElementById('deptModal').classList.remove('hidden');
+    }
+
+    function closeModal() { document.getElementById('deptModal').classList.add('hidden'); }
+
+    async function saveDept() {
+      const errEl = document.getElementById('modalError');
+      const name = document.getElementById('mName').value.trim();
+      const desc = document.getElementById('mDesc').value.trim();
+      if (!name) { errEl.textContent = '부서명을 입력해주세요.'; errEl.classList.add('show'); return; }
+
+      if (editingId) {
+        const { error } = await updateDepartment(editingId, { name, description: desc || null });
+        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+      } else {
+        const { error } = await createDepartment(name, desc || null);
+        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+      }
+      closeModal();
+      await loadDepts();
+    }
+
+    async function confirmDelete(id, name) {
+      if (!confirm(`"${name}" 부서를 비활성화하시겠습니까?`)) return;
+      await deleteDepartment(id);
+      await loadDepts();
+    }
+
+    document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
+  </script>
+</body>
+</html>

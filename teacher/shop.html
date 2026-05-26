@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>교사 달란트 상점 - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
+  <link rel="stylesheet" href="../css/common.css" />
+</head>
+<body class="page-body">
+  <nav class="top-nav">
+    <a href="../index.html" class="top-nav-brand">
+      <span class="brand-icon">⭐</span> 달란트 마을
+    </a>
+    <ul class="top-nav-links">
+      <li><a href="shop.html" class="active">교사 상점</a></li>
+      <li><a href="my-talents.html">내 달란트</a></li>
+      <li><span class="nav-user" id="navUser"></span></li>
+      <li><button class="btn-nav-logout" onclick="logout('../login.html')">로그아웃</button></li>
+    </ul>
+  </nav>
+
+  <div class="page-container">
+    <h1 class="page-title">🛒 교사 달란트 상점</h1>
+    <p class="page-sub">교사 전용 달란트 교환 상품입니다</p>
+
+    <div id="productArea">
+      <div class="empty-state">
+        <div class="empty-state-icon">⏳</div>
+        <p>상품을 불러오는 중...</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/activity-log.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/product.js"></script>
+  <script>
+    initSupabase();
+    const session = requireRole(['teacher', 'dept_manager', 'admin'], '../login.html');
+
+    if (session) {
+      document.getElementById('navUser').textContent = session.displayName || session.username;
+      autoLogPageView();
+      loadProducts();
+    }
+
+    async function loadProducts() {
+      const { data, error } = await fetchProducts('teacher');
+      const area = document.getElementById('productArea');
+
+      if (error || !data || data.length === 0) {
+        area.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><p>등록된 상품이 없습니다.</p></div>';
+        return;
+      }
+
+      const categories = {};
+      data.forEach(p => {
+        const cat = p.category || '기타';
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(p);
+      });
+
+      let html = '';
+      for (const [cat, items] of Object.entries(categories)) {
+        html += `<h2 class="section-title">${cat === '20대 추천' ? '🌸 ' : '🌿 '}${cat}</h2>`;
+        html += '<div class="product-grid">';
+        html += items.map(p => `
+          <div class="product-card">
+            <span class="product-emoji">${p.image_emoji || '🎁'}</span>
+            <div class="product-name">${p.name}</div>
+            <div class="product-price">${p.price} <span class="unit">달란트</span></div>
+            <div class="product-desc">${p.description || ''}</div>
+            <div class="product-stock ${p.stock <= 5 ? 'low' : ''}">
+              재고: ${p.stock}개
+            </div>
+          </div>
+        `).join('');
+        html += '</div>';
+      }
+
+      area.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
