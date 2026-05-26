@@ -98,16 +98,19 @@
   <script src="../js/talent.js"></script>
   <script>
     initSupabase();
-    const session = requireRole(['dept_manager', 'admin'], '../login.html');
+    let session;
     let editingId = null;
     let talentUserId = null;
     let talentType = 'earn';
 
-    if (session) {
+    (async () => {
+      session = await initPage(['dept_manager', 'admin'], '../login.html');
+      if (!session) return;
+
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
       loadStudents();
-    }
+    })();
 
     async function loadStudents() {
       const opts = { role: 'student' };

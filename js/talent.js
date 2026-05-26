@@ -1,11 +1,12 @@
 /**
  * Talent Module - 달란트 조회/적립/사용 공통 모듈
+ * profiles 테이블 기반 (admin_users 사용 안 함)
  */
 
 async function fetchTalentBalance(userId) {
   if (!_sb) return 0;
   const { data, error } = await _sb
-    .from('admin_users')
+    .from('profiles')
     .select('talent_balance')
     .eq('id', userId)
     .single();

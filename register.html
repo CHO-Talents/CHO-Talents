@@ -102,15 +102,13 @@
 
       resultEl.innerHTML = '<span style="color:#636e72;">확인 중...</span>';
 
-      const { data: existing } = await _sb.from('admin_users').select('id').eq('username', username);
-      if (existing && existing.length > 0) {
-        resultEl.innerHTML = '<span style="color:#e03131;">❌ 이미 사용 중인 아이디입니다.</span>';
+      const { data: available, error: chkErr } = await _sb.rpc('check_username_available', { p_username: username });
+      if (chkErr) {
+        resultEl.innerHTML = '<span style="color:#e03131;">확인 중 오류가 발생했습니다.</span>';
         idChecked = false; return;
       }
-
-      const { data: pendingReq } = await _sb.from('registration_requests').select('id').eq('username', username).eq('status', 'pending');
-      if (pendingReq && pendingReq.length > 0) {
-        resultEl.innerHTML = '<span style="color:#e03131;">❌ 이미 신청 중인 아이디입니다.</span>';
+      if (!available) {
+        resultEl.innerHTML = '<span style="color:#e03131;">❌ 이미 사용 중이거나 신청 중인 아이디입니다.</span>';
         idChecked = false; return;
       }
 

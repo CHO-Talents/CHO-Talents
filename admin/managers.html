@@ -69,16 +69,19 @@
   <script src="../js/user-mgmt.js"></script>
   <script>
     initSupabase();
-    const session = requireRole(['admin'], '../login.html');
+    let session;
     let editingId = null;
     let deptList = [];
-
-    if (session) {
-      renderRoleBadge('navUser', session, '../');
-      autoLogPageView();
-      updateBadge();
-      loadData();
-    }
+    (async () => {
+      session = await initPage(['admin'], '../login.html');
+      if (!session) return;
+      if (session) {
+        renderRoleBadge('navUser', session, '../');
+        autoLogPageView();
+        updateBadge();
+        loadData();
+      }
+    })();
 
     async function updateBadge() {
       const count = await getUnacknowledgedCount();

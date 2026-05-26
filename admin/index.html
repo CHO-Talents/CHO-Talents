@@ -105,31 +105,35 @@
   <script src="../js/auth.js"></script>
   <script>
     initSupabase();
-    const session = requireRole(['admin'], '../login.html');
-    if (session && session.isFirstLogin) {
-      window.location.href = 'change-password.html';
-    }
+    let session;
+    (async () => {
+      session = await initPage(['admin'], '../login.html');
+      if (!session) return;
+      if (session && session.isFirstLogin) {
+        window.location.href = 'change-password.html';
+      }
 
-    if (session) {
-      renderRoleBadge('navUser', session, '../');
-      autoLogPageView();
-      loadDashboard();
-    }
+      if (session) {
+        renderRoleBadge('navUser', session, '../');
+        autoLogPageView();
+        loadDashboard();
+      }
 
-    function updateClock() { document.getElementById('kstClock').textContent = formatKST(); }
-    updateClock();
-    setInterval(updateClock, 1000);
+      function updateClock() { document.getElementById('kstClock').textContent = formatKST(); }
+      updateClock();
+      setInterval(updateClock, 1000);
+    })();
 
     async function loadDashboard() {
       const [usersRes, deptsRes, reportsRes, unack,
              studentsRes, teachersRes, managersRes] = await Promise.all([
-        _sb.from('admin_users').select('*', { count: 'exact', head: true }),
+        _sb.from('profiles').select('*', { count: 'exact', head: true }),
         _sb.from('departments').select('*', { count: 'exact', head: true }).eq('is_active', true),
         _sb.from('reports').select('*', { count: 'exact', head: true }),
         getUnacknowledgedCount(),
-        _sb.from('admin_users').select('*', { count: 'exact', head: true }).eq('role', 'student'),
-        _sb.from('admin_users').select('*', { count: 'exact', head: true }).eq('role', 'teacher'),
-        _sb.from('admin_users').select('*', { count: 'exact', head: true }).eq('role', 'dept_manager')
+        _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student'),
+        _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'teacher'),
+        _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'dept_manager')
       ]);
 
       document.getElementById('totalUsers').textContent = usersRes.count || 0;

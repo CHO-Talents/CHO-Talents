@@ -2,7 +2,7 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '1.6.0',
+  current: '2.0.0',
   date: '2026-05-26',
   history: [
     {
@@ -97,6 +97,25 @@ const APP_VERSION = {
         '900px 이하: 네비게이션 줄바꿈, 폰트 축소',
         '640px 이하: 카드 2열, 테이블 가로스크롤, 필터 축소',
         '로그 일괄 완료처리 기능 (사유 입력 + 전체 미확인 로그 일괄 처리)'
+      ]
+    },
+    {
+      version: '2.0.0',
+      date: '2026-05-26',
+      title: 'TASK-007: DB 보안 구조 전면 개선',
+      changes: [
+        'Supabase Auth 도입 - bcrypt 기반 안전한 비밀번호 관리',
+        'profiles 테이블 신설 - auth.users 연동',
+        'admin_users 직접 접근 완전 차단 (RLS USING false)',
+        '클라이언트 SHA-256 해시 제거 - 서버 측 bcrypt로 전환',
+        'SECURITY DEFINER RPC 함수 도입 (admin_create_user, admin_update_user, admin_delete_user, admin_reset_password, admin_list_users)',
+        'get_my_profile / change_my_password / check_username_available 보안 함수',
+        'give_talent / use_talent 함수 권한 검증 강화',
+        '전체 테이블 RLS 정책 재설계 (profiles, talent_transactions, products, departments, activity_logs, reports, registration_requests)',
+        '프론트엔드 전면 개편 - Supabase Auth signInWithPassword 기반 로그인',
+        '모든 페이지 async initPage() 패턴 적용',
+        'sessionStorage → Supabase Auth + profile cache 이중 구조',
+        'anon key로 password_hash 조회 불가 검증 완료'
       ]
     }
   ]

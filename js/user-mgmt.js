@@ -1,42 +1,42 @@
 /**
- * User Management Module - 사용자 계정 관리 모듈
+ * User Management Module - Supabase Auth + RPC 기반 보안 사용자 관리
  */
 
 async function fetchUsers(options = {}) {
   if (!_sb) return { data: [], error: 'Supabase not initialized' };
-
-  let query = _sb.from('admin_users')
-    .select('id, username, display_name, role, department_id, managed_dept_id, talent_balance, is_first_login, created_at');
-
-  if (options.role) query = query.eq('role', options.role);
-  if (options.departmentId) query = query.eq('department_id', options.departmentId);
-  if (options.managedDeptId) query = query.eq('managed_dept_id', options.managedDeptId);
-
-  query = query.order('created_at', { ascending: false });
-  return await query;
+  try {
+    const { data, error } = await _sb.rpc('admin_list_users', {
+      p_role: options.role || null,
+      p_department_id: options.departmentId || null
+    });
+    if (error) return { data: [], error: error.message };
+    if (!data || !data.success) return { data: [], error: data?.error || 'Unknown error' };
+    return { data: data.users || [], error: null };
+  } catch (err) {
+    return { data: [], error: String(err) };
+  }
 }
 
 async function createUser(userData) {
   if (!_sb) return { data: null, error: 'Supabase not initialized' };
   try {
-    const passwordHash = await hashPassword(userData.password || '1234');
-    const row = {
-      username: userData.username,
-      password_hash: passwordHash,
-      display_name: userData.displayName || userData.username,
-      role: userData.role,
-      department_id: userData.departmentId || null,
-      managed_dept_id: userData.managedDeptId || null,
-      talent_balance: 0,
-      is_first_login: true
-    };
-    const { data, error } = await _sb.from('admin_users').insert(row).select();
+    const { data, error } = await _sb.rpc('admin_create_user', {
+      p_username: userData.username,
+      p_password: userData.password || '1234',
+      p_display_name: userData.displayName || userData.username,
+      p_role: userData.role || 'student',
+      p_department_id: userData.departmentId || null,
+      p_managed_dept_id: userData.managedDeptId || null
+    });
     if (error) {
       await logError('USER_CREATE_FAIL', { username: userData.username, error: error.message });
       return { data: null, error: error.message };
     }
+    if (!data.success) {
+      return { data: null, error: data.error };
+    }
     await logInfo('USER_CREATE', { username: userData.username, role: userData.role });
-    return { data: data[0], error: null };
+    return { data, error: null };
   } catch (err) {
     await logError('USER_CREATE_ERROR', { error: String(err) });
     return { data: null, error: String(err) };
@@ -46,20 +46,22 @@ async function createUser(userData) {
 async function updateUser(id, updates) {
   if (!_sb) return { data: null, error: 'Supabase not initialized' };
   try {
-    const row = {};
-    if (updates.displayName !== undefined) row.display_name = updates.displayName;
-    if (updates.role !== undefined) row.role = updates.role;
-    if (updates.departmentId !== undefined) row.department_id = updates.departmentId;
-    if (updates.managedDeptId !== undefined) row.managed_dept_id = updates.managedDeptId;
-    row.updated_at = new Date().toISOString();
-
-    const { data, error } = await _sb.from('admin_users').update(row).eq('id', id).select();
+    const { data, error } = await _sb.rpc('admin_update_user', {
+      p_user_id: id,
+      p_display_name: updates.displayName || null,
+      p_role: updates.role || null,
+      p_department_id: updates.departmentId || null,
+      p_managed_dept_id: updates.managedDeptId !== undefined ? updates.managedDeptId : null
+    });
     if (error) {
       await logError('USER_UPDATE_FAIL', { id, error: error.message });
       return { data: null, error: error.message };
     }
+    if (!data.success) {
+      return { data: null, error: data.error };
+    }
     await logInfo('USER_UPDATE', { id });
-    return { data: data[0], error: null };
+    return { data, error: null };
   } catch (err) {
     await logError('USER_UPDATE_ERROR', { id, error: String(err) });
     return { data: null, error: String(err) };
@@ -69,10 +71,13 @@ async function updateUser(id, updates) {
 async function deleteUser(id) {
   if (!_sb) return { error: 'Supabase not initialized' };
   try {
-    const { error } = await _sb.from('admin_users').delete().eq('id', id);
+    const { data, error } = await _sb.rpc('admin_delete_user', { p_user_id: id });
     if (error) {
       await logError('USER_DELETE_FAIL', { id, error: error.message });
       return { error: error.message };
+    }
+    if (!data.success) {
+      return { error: data.error };
     }
     await logInfo('USER_DELETE', { id });
     return { error: null };
@@ -85,13 +90,16 @@ async function deleteUser(id) {
 async function resetUserPassword(id, username) {
   if (!_sb) return { error: 'Supabase not initialized' };
   try {
-    const defaultHash = await hashPassword('1234');
-    const { error } = await _sb.from('admin_users')
-      .update({ password_hash: defaultHash, is_first_login: true, updated_at: new Date().toISOString() })
-      .eq('id', id);
+    const { data, error } = await _sb.rpc('admin_reset_password', {
+      p_user_id: id,
+      p_new_password: '1234'
+    });
     if (error) {
       await logError('PASSWORD_RESET_FAIL', { id, error: error.message });
       return { error: error.message };
+    }
+    if (!data.success) {
+      return { error: data.error };
     }
     await logInfo('PASSWORD_RESET', { id, username });
     return { error: null };

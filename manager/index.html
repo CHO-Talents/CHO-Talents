@@ -80,21 +80,23 @@
   <script src="../js/user-mgmt.js"></script>
   <script>
     initSupabase();
-    const session = requireRole(['dept_manager', 'admin'], '../login.html');
+    let session;
+    (async () => {
+      session = await initPage(['dept_manager', 'admin'], '../login.html');
+      if (!session) return;
 
-    function doLogout() { logout('../login.html'); }
-
-    if (session) {
       renderRoleBadge('navUser', session, '../');
       document.getElementById('deptInfo').textContent =
         session.departmentName ? `담당 부서: ${session.departmentName}` : '담당 부서 미배정';
       autoLogPageView();
       loadDashboard();
-    }
 
-    function updateClock() { document.getElementById('kstClock').textContent = formatKST(); }
-    updateClock();
-    setInterval(updateClock, 1000);
+      function updateClock() { document.getElementById('kstClock').textContent = formatKST(); }
+      updateClock();
+      setInterval(updateClock, 1000);
+    })();
+
+    function doLogout() { logout('../login.html'); }
 
     async function loadDashboard() {
       const deptId = session.managedDeptId;
@@ -102,11 +104,11 @@
 
       const [studentsRes, teachersRes, productsRes] = await Promise.all([
         isAdmin
-          ? _sb.from('admin_users').select('*', { count: 'exact', head: true }).eq('role', 'student')
-          : _sb.from('admin_users').select('*', { count: 'exact', head: true }).eq('role', 'student').eq('department_id', deptId),
+          ? _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student')
+          : _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student').eq('department_id', deptId),
         isAdmin
-          ? _sb.from('admin_users').select('*', { count: 'exact', head: true }).eq('role', 'teacher')
-          : _sb.from('admin_users').select('*', { count: 'exact', head: true }).eq('role', 'teacher').eq('department_id', deptId),
+          ? _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'teacher')
+          : _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'teacher').eq('department_id', deptId),
         _sb.from('products').select('*', { count: 'exact', head: true }).eq('is_active', true)
       ]);
 
