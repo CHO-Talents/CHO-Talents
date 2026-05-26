@@ -73,7 +73,9 @@
         html += '<div class="product-grid">';
         html += items.map(p => `
           <div class="product-card">
-            <span class="product-emoji">${p.image_emoji || '🎁'}</span>
+            ${p.image_url
+              ? `<img src="${p.image_url}" alt="${p.name}" class="product-img" />`
+              : `<span class="product-emoji">${p.image_emoji || '🎁'}</span>`}
             <div class="product-name">${p.name}</div>
             <div class="product-price">${p.price} <span class="unit">달란트</span></div>
             <div class="product-desc">${p.description || ''}</div>
