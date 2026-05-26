@@ -47,6 +47,38 @@ async function updateProduct(id, updates) {
   }
 }
 
+async function uploadProductImage(file) {
+  if (!_sb) return { url: null, error: 'Supabase not initialized' };
+  try {
+    const ext = file.name.split('.').pop().toLowerCase();
+    const fileName = `product_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { data, error } = await _sb.storage.from('Talents_Items').upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+    if (error) {
+      await logError('IMAGE_UPLOAD_FAIL', { error: error.message });
+      return { url: null, error: error.message };
+    }
+    const { data: urlData } = _sb.storage.from('Talents_Items').getPublicUrl(data.path);
+    await logInfo('IMAGE_UPLOAD', { path: data.path });
+    return { url: urlData.publicUrl, error: null };
+  } catch (err) {
+    await logError('IMAGE_UPLOAD_ERROR', { error: String(err) });
+    return { url: null, error: String(err) };
+  }
+}
+
+async function deleteProductImage(imageUrl) {
+  if (!_sb || !imageUrl) return;
+  try {
+    const path = imageUrl.split('/Talents_Items/').pop();
+    if (path) await _sb.storage.from('Talents_Items').remove([path]);
+  } catch (err) {
+    console.warn('Image delete failed:', err);
+  }
+}
+
 async function deleteProduct(id) {
   if (!_sb) return { error: 'Supabase not initialized' };
   try {

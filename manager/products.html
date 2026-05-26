@@ -78,9 +78,24 @@
         <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="🎁" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이미지 URL</label>
-        <input type="text" id="mImageUrl" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="https://example.com/image.jpg" />
-        <div id="imgPreview" style="margin-top:0.5rem;text-align:center;"></div>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상품 이미지</label>
+        <div id="dropZone" style="border:2px dashed var(--admin-border);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;">
+          <div id="dropContent">
+            <div style="font-size:2rem;margin-bottom:0.3rem;">📷</div>
+            <div style="font-size:0.85rem;color:#636e72;">클릭하거나 이미지를 드래그해서 놓으세요</div>
+            <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">JPG, PNG, GIF, WebP (최대 5MB)</div>
+          </div>
+          <div id="imgPreview" style="display:none;"></div>
+        </div>
+        <input type="file" id="mImageFile" accept="image/*" style="display:none;" />
+        <input type="hidden" id="mImageUrl" />
+        <div style="margin-top:0.4rem;">
+          <button type="button" id="btnUrlToggle" onclick="toggleUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL 직접 입력</button>
+          <div id="urlInputWrap" style="display:none;margin-top:0.4rem;">
+            <input type="text" id="mImageUrlText" style="width:100%;padding:0.5rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;" placeholder="https://example.com/image.jpg" />
+          </div>
+        </div>
+        <div id="uploadStatus" style="margin-top:0.3rem;font-size:0.8rem;text-align:center;"></div>
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">설명</label>
@@ -157,7 +172,9 @@
       document.getElementById('mStock').value = '0';
       document.getElementById('mEmoji').value = '';
       document.getElementById('mImageUrl').value = '';
-      document.getElementById('imgPreview').innerHTML = '';
+      document.getElementById('mImageFile').value = '';
+      document.getElementById('mImageUrlText').value = '';
+      resetImgPreview();
       document.getElementById('mDesc').value = '';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('productModal').classList.remove('hidden');
@@ -173,9 +190,13 @@
       document.getElementById('mStock').value = p.stock;
       document.getElementById('mEmoji').value = p.image_emoji || '';
       document.getElementById('mImageUrl').value = p.image_url || '';
-      document.getElementById('imgPreview').innerHTML = p.image_url
-        ? `<img src="${p.image_url}" style="max-width:120px;max-height:120px;border-radius:8px;" />`
-        : '';
+      document.getElementById('mImageFile').value = '';
+      document.getElementById('mImageUrlText').value = p.image_url || '';
+      if (p.image_url) {
+        showImgPreview(p.image_url);
+      } else {
+        resetImgPreview();
+      }
       document.getElementById('mDesc').value = p.description || '';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('productModal').classList.remove('hidden');
@@ -191,6 +212,24 @@
       if (!name) { errEl.textContent = '상품명을 입력해주세요.'; errEl.classList.add('show'); return; }
       if (!price || price <= 0) { errEl.textContent = '유효한 가격을 입력해주세요.'; errEl.classList.add('show'); return; }
 
+      const fileInput = document.getElementById('mImageFile');
+      let imageUrl = document.getElementById('mImageUrl').value.trim() || null;
+
+      if (fileInput.files.length > 0) {
+        const statusEl = document.getElementById('uploadStatus');
+        statusEl.innerHTML = '<span style="color:var(--admin-primary);">⏳ 이미지 업로드 중...</span>';
+        const { url, error: uploadErr } = await uploadProductImage(fileInput.files[0]);
+        if (uploadErr) {
+          statusEl.innerHTML = `<span style="color:#ff6b6b;">업로드 실패: ${uploadErr}</span>`;
+          return;
+        }
+        imageUrl = url;
+        statusEl.innerHTML = '';
+      }
+
+      const urlText = document.getElementById('mImageUrlText').value.trim();
+      if (!imageUrl && urlText) imageUrl = urlText;
+
       const row = {
         name,
         target_role: document.getElementById('mTarget').value,
@@ -198,7 +237,7 @@
         price,
         stock: parseInt(document.getElementById('mStock').value) || 0,
         image_emoji: document.getElementById('mEmoji').value.trim() || '🎁',
-        image_url: document.getElementById('mImageUrl').value.trim() || null,
+        image_url: imageUrl,
         description: document.getElementById('mDesc').value.trim() || null
       };
 
@@ -220,13 +259,88 @@
       await loadProducts();
     }
 
-    document.getElementById('mImageUrl').addEventListener('input', function() {
-      const url = this.value.trim();
+    function showImgPreview(src) {
+      const dropContent = document.getElementById('dropContent');
       const preview = document.getElementById('imgPreview');
+      dropContent.style.display = 'none';
+      preview.style.display = 'block';
+      preview.innerHTML = `
+        <img src="${src}" style="max-width:160px;max-height:120px;border-radius:8px;" onerror="resetImgPreview()" />
+        <div style="margin-top:0.3rem;">
+          <button type="button" onclick="removeImage(event)" style="background:#ff6b6b;color:#fff;border:none;padding:0.2rem 0.8rem;border-radius:6px;cursor:pointer;font-size:0.8rem;">이미지 삭제</button>
+        </div>`;
+    }
+
+    function resetImgPreview() {
+      document.getElementById('dropContent').style.display = 'block';
+      document.getElementById('imgPreview').style.display = 'none';
+      document.getElementById('imgPreview').innerHTML = '';
+    }
+
+    function removeImage(e) {
+      e.stopPropagation();
+      document.getElementById('mImageUrl').value = '';
+      document.getElementById('mImageFile').value = '';
+      document.getElementById('mImageUrlText').value = '';
+      resetImgPreview();
+    }
+
+    function toggleUrlInput() {
+      const wrap = document.getElementById('urlInputWrap');
+      wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+    }
+
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('mImageFile');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', e => {
+      e.preventDefault();
+      dropZone.style.borderColor = 'var(--admin-primary)';
+      dropZone.style.background = 'rgba(108,92,231,0.05)';
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.style.borderColor = 'var(--admin-border)';
+      dropZone.style.background = '#fafafa';
+    });
+
+    dropZone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropZone.style.borderColor = 'var(--admin-border)';
+      dropZone.style.background = '#fafafa';
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        handleFileSelect(file);
+      }
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) handleFileSelect(fileInput.files[0]);
+    });
+
+    function handleFileSelect(file) {
+      if (file.size > 5 * 1024 * 1024) {
+        document.getElementById('uploadStatus').innerHTML = '<span style="color:#ff6b6b;">5MB 이하 파일만 업로드 가능합니다</span>';
+        return;
+      }
+      const dt = new DataTransfer();
+      dt.items.add(file);
+      fileInput.files = dt.files;
+      const reader = new FileReader();
+      reader.onload = e => showImgPreview(e.target.result);
+      reader.readAsDataURL(file);
+      document.getElementById('uploadStatus').innerHTML = `<span style="color:#636e72;">📎 ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;
+    }
+
+    document.getElementById('mImageUrlText').addEventListener('input', function() {
+      const url = this.value.trim();
       if (url) {
-        preview.innerHTML = `<img src="${url}" style="max-width:120px;max-height:120px;border-radius:8px;" onerror="this.parentElement.innerHTML='<span style=color:#ff6b6b;font-size:0.8rem;>이미지를 불러올 수 없습니다</span>'" />`;
+        document.getElementById('mImageFile').value = '';
+        showImgPreview(url);
       } else {
-        preview.innerHTML = '';
+        resetImgPreview();
       }
     });
 
