@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -17,7 +17,7 @@
       <li><a href="shop.html">상점 조회</a></li>
       <li><a href="reports.html">보고서</a></li>
       <li><a href="logs.html" class="active" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li><span class="nav-user" id="navUser"></span></li>
+      <li><a href="versions.html">버전</a></li><li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout()">로그아웃</button></li>
     </ul>
   </nav>
@@ -283,5 +283,6 @@
       if (e.target.classList.contains('modal-overlay')) closeAckModal();
     });
   </script>
+  <script src="../js/version.js"></script>
 </body>
 </html>
