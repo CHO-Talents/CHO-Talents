@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>내 달란트 (교사) - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
+  <link rel="stylesheet" href="../css/common.css" />
+</head>
+<body class="page-body">
+  <nav class="top-nav">
+    <a href="../index.html" class="top-nav-brand">
+      <span class="brand-icon">⭐</span> 달란트 마을
+    </a>
+    <ul class="top-nav-links">
+      <li><a href="shop.html">교사 상점</a></li>
+      <li><a href="my-talents.html" class="active">내 달란트</a></li>
+      <li><span class="nav-user" id="navUser"></span></li>
+      <li><button class="btn-nav-logout" onclick="logout('../login.html')">로그아웃</button></li>
+    </ul>
+  </nav>
+
+  <div class="page-container" id="mainContent"></div>
+
+  <footer class="page-footer">
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/activity-log.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/talent.js"></script>
+  <script>
+    initSupabase();
+    const session = requireRole(['teacher', 'dept_manager', 'admin'], '../login.html');
+
+    if (session) {
+      document.getElementById('navUser').textContent = session.displayName || session.username;
+      autoLogPageView();
+      loadMyTalents();
+    }
+
+    async function loadMyTalents() {
+      const main = document.getElementById('mainContent');
+      const summary = await fetchTalentSummary(session.id);
+      const { data: history } = await fetchTalentHistory(session.id, { limit: 50 });
+
+      let html = `
+        <h1 class="page-title">💰 내 달란트</h1>
+        <p class="page-sub">${session.displayName || session.username}님의 달란트 현황</p>
+        <div class="summary-cards">
+          <div class="summary-card earn">
+            <div class="summary-card-icon">📈</div>
+            <div class="summary-card-label">총 적립</div>
+            <div class="summary-card-value">${summary.earned}</div>
+          </div>
+          <div class="summary-card use">
+            <div class="summary-card-icon">📉</div>
+            <div class="summary-card-label">총 사용</div>
+            <div class="summary-card-value">${summary.used}</div>
+          </div>
+          <div class="summary-card balance">
+            <div class="summary-card-icon">⭐</div>
+            <div class="summary-card-label">잔여 달란트</div>
+            <div class="summary-card-value">${summary.balance}</div>
+          </div>
+        </div>
+        <div class="data-table-wrap">
+          <div class="data-table-header"><div class="data-table-title">달란트 내역</div></div>
+          <table class="data-table">
+            <thead><tr><th>날짜</th><th>유형</th><th>금액</th><th>설명</th><th>잔액</th></tr></thead>
+            <tbody>`;
+
+      if (!history || history.length === 0) {
+        html += '<tr><td colspan="5" class="empty-state">아직 달란트 내역이 없습니다.</td></tr>';
+      } else {
+        html += history.map(t => `
+          <tr>
+            <td>${formatKSTShort(t.created_at)}</td>
+            <td><span class="type-badge ${t.type}">${t.type === 'earn' ? '적립' : '사용'}</span></td>
+            <td style="font-weight:700;color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'}">${t.type === 'earn' ? '+' : '-'}${t.amount}</td>
+            <td>${t.description || '-'}</td>
+            <td>${t.balance_after}</td>
+          </tr>`).join('');
+      }
+
+      html += '</tbody></table></div>';
+      main.innerHTML = html;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>교사 관리 - 부서 관리</title>
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body class="admin-body">
+  <nav class="admin-nav">
+    <a href="index.html" class="admin-nav-brand">CHO-Talents 부서관리</a>
+    <ul class="admin-nav-links">
+      <li><a href="index.html">대시보드</a></li>
+      <li><a href="students.html">학생 관리</a></li>
+      <li><a href="teachers.html" class="active">교사 관리</a></li>
+      <li><a href="products.html">물품 관리</a></li>
+      <li><a href="my-talents.html">내 달란트</a></li>
+      <li><span class="nav-user" id="navUser"></span></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+    </ul>
+  </nav>
+
+  <div class="admin-container">
+    <h2 style="margin-bottom:1rem;">교사 관리</h2>
+
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <div class="admin-table-title" id="tableTitle">교사 목록</div>
+        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 교사 등록</button>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>아이디</th><th>이름</th><th>달란트</th><th>등록일</th><th>관리</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="userModal">
+    <div class="modal-box">
+      <h3 class="modal-title" id="modalTitle">교사 등록</h3>
+      <div class="form-error" id="modalError"></div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">아이디</label>
+        <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이름</label>
+        <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">취소</button>
+        <button class="btn-confirm" onclick="saveUser()">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="talentModal">
+    <div class="modal-box">
+      <h3 class="modal-title" id="talentTitle">달란트 관리</h3>
+      <div style="text-align:center;margin-bottom:1rem;">
+        <div style="font-size:0.85rem;color:var(--admin-text-muted);">현재 잔액</div>
+        <div style="font-size:2rem;font-weight:800;" id="talentBalance">0</div>
+      </div>
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;">
+        <button class="filter-btn" id="btnEarn" onclick="setTalentType('earn')" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">적립</button>
+        <button class="filter-btn" id="btnUse" onclick="setTalentType('use')" style="flex:1;padding:0.6rem;">사용</button>
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <input type="number" id="talentAmount" min="1" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="금액" />
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <input type="text" id="talentDesc" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="사유" />
+      </div>
+      <div class="form-error" id="talentError"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeTalentModal()">취소</button>
+        <button class="btn-confirm" onclick="submitTalent()">확인</button>
+      </div>
+      <div style="margin-top:1rem;border-top:1px solid var(--admin-border);padding-top:0.8rem;">
+        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">최근 내역</div>
+        <div id="talentHistory" style="max-height:200px;overflow-y:auto;font-size:0.82rem;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/activity-log.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/user-mgmt.js"></script>
+  <script src="../js/talent.js"></script>
+  <script>
+    initSupabase();
+    const session = requireRole(['dept_manager', 'admin'], '../login.html');
+    let editingId = null, talentUserId = null, talentType = 'earn';
+
+    if (session) {
+      document.getElementById('navUser').textContent = session.displayName || session.username;
+      autoLogPageView();
+      loadTeachers();
+    }
+
+    async function loadTeachers() {
+      const opts = { role: 'teacher' };
+      if (session.role === 'dept_manager' && session.managedDeptId) opts.departmentId = session.managedDeptId;
+      const { data } = await fetchUsers(opts);
+      const tbody = document.getElementById('userList');
+      document.getElementById('tableTitle').textContent = `교사 목록 (${(data||[]).length}명)`;
+      if (!data || data.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="empty-state">등록된 교사가 없습니다.</td></tr>'; return; }
+      tbody.innerHTML = data.map(u => `<tr>
+        <td><strong>${u.username}</strong></td>
+        <td>${u.display_name || '-'}</td>
+        <td style="font-weight:700;">${u.talent_balance || 0}</td>
+        <td>${formatKSTShort(u.created_at)}</td>
+        <td>
+          <button class="filter-btn" onclick="openTalentModal('${u.id}','${u.display_name||u.username}',${u.talent_balance||0})">달란트</button>
+          <button class="filter-btn" onclick="openEditModal('${u.id}','${u.username}','${u.display_name||''}')">수정</button>
+          <button class="btn-ack" onclick="confirmDelete('${u.id}','${u.username}')">삭제</button>
+        </td>
+      </tr>`).join('');
+    }
+
+    function openAddModal() {
+      editingId = null;
+      document.getElementById('modalTitle').textContent = '교사 등록';
+      document.getElementById('mUsername').value = ''; document.getElementById('mUsername').disabled = false;
+      document.getElementById('mDisplayName').value = '';
+      document.getElementById('modalError').classList.remove('show');
+      document.getElementById('userModal').classList.remove('hidden');
+    }
+
+    function openEditModal(id, username, displayName) {
+      editingId = id;
+      document.getElementById('modalTitle').textContent = '교사 수정';
+      document.getElementById('mUsername').value = username; document.getElementById('mUsername').disabled = true;
+      document.getElementById('mDisplayName').value = displayName;
+      document.getElementById('modalError').classList.remove('show');
+      document.getElementById('userModal').classList.remove('hidden');
+    }
+
+    function closeModal() { document.getElementById('userModal').classList.add('hidden'); }
+
+    async function saveUser() {
+      const errEl = document.getElementById('modalError');
+      const username = document.getElementById('mUsername').value.trim();
+      const displayName = document.getElementById('mDisplayName').value.trim();
+      if (!username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (editingId) {
+        const { error } = await updateUser(editingId, { displayName });
+        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+      } else {
+        const { error } = await createUser({ username, displayName: displayName||username, role: 'teacher', departmentId: session.managedDeptId || null });
+        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+      }
+      closeModal(); await loadTeachers();
+    }
+
+    async function confirmDelete(id, username) {
+      if (!confirm(`"${username}" 교사를 삭제하시겠습니까?`)) return;
+      await deleteUser(id); await loadTeachers();
+    }
+
+    function openTalentModal(userId, name, balance) {
+      talentUserId = userId; talentType = 'earn';
+      document.getElementById('talentTitle').textContent = `${name} - 달란트 관리`;
+      document.getElementById('talentBalance').textContent = balance;
+      document.getElementById('talentAmount').value = ''; document.getElementById('talentDesc').value = '';
+      document.getElementById('talentError').classList.remove('show');
+      setTalentType('earn');
+      document.getElementById('talentModal').classList.remove('hidden');
+      loadTalentHistory(userId);
+    }
+    function closeTalentModal() { document.getElementById('talentModal').classList.add('hidden'); }
+
+    function setTalentType(type) {
+      talentType = type;
+      const eb = document.getElementById('btnEarn'), ub = document.getElementById('btnUse');
+      if (type==='earn') { eb.style.cssText='flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;'; ub.style.cssText='flex:1;padding:0.6rem;'; }
+      else { ub.style.cssText='flex:1;padding:0.6rem;background:#ff6b6b;color:#fff;border-color:#ff6b6b;'; eb.style.cssText='flex:1;padding:0.6rem;'; }
+    }
+
+    async function submitTalent() {
+      const errEl = document.getElementById('talentError');
+      const amount = parseInt(document.getElementById('talentAmount').value);
+      const desc = document.getElementById('talentDesc').value.trim();
+      if (!amount||amount<=0) { errEl.textContent='유효한 금액을 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!desc) { errEl.textContent='사유를 입력해주세요.'; errEl.classList.add('show'); return; }
+      const result = talentType==='earn' ? await giveTalent(talentUserId,amount,desc,session.id) : await useTalent(talentUserId,amount,desc,session.id);
+      if (result.success===false) { errEl.textContent=result.error||'처리 실패'; errEl.classList.add('show'); return; }
+      document.getElementById('talentBalance').textContent = result.balance;
+      document.getElementById('talentAmount').value=''; document.getElementById('talentDesc').value='';
+      errEl.classList.remove('show');
+      await loadTalentHistory(talentUserId); await loadTeachers();
+    }
+
+    async function loadTalentHistory(userId) {
+      const { data } = await fetchTalentHistory(userId, { limit: 10 });
+      const el = document.getElementById('talentHistory');
+      if (!data||data.length===0) { el.innerHTML='<div style="color:var(--admin-text-muted);text-align:center;">내역 없음</div>'; return; }
+      el.innerHTML = data.map(t => `<div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f0f0f0;">
+        <span>${formatKSTShort(t.created_at)}</span>
+        <span style="color:${t.type==='earn'?'#2b8a3e':'#e03131'};font-weight:700;">${t.type==='earn'?'+':'-'}${t.amount}</span>
+        <span style="color:var(--admin-text-muted);">${t.description||'-'}</span>
+      </div>`).join('');
+    }
+
+    document.getElementById('userModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
+    document.getElementById('talentModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeTalentModal(); });
+  </script>
+</body>
+</html>
