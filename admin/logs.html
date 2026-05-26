@@ -52,8 +52,9 @@
 
       <!-- Unacknowledged Logs Fixed Section -->
       <div id="unackSection" class="hidden" style="border-bottom:2px solid #ffc9c9;background:#fff5f5;">
-        <div style="padding:0.6rem 1rem;font-weight:700;font-size:0.85rem;color:var(--level-error);">
-          &#128680; 미확인 ERROR+ 로그 (확인 필수)
+        <div style="padding:0.6rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+          <span style="font-weight:700;font-size:0.85rem;color:var(--level-error);">&#128680; 미확인 ERROR+ 로그 (확인 필수)</span>
+          <button class="btn-ack" style="background:#e67700;font-size:0.78rem;padding:0.3rem 0.8rem;" onclick="bulkAcknowledge()">📋 일괄 완료처리</button>
         </div>
         <table class="admin-table">
           <tbody id="unackLogs"></tbody>
@@ -276,6 +277,26 @@
       closeAckModal();
       btn.disabled = false;
       btn.textContent = '확인 완료';
+      await loadAll();
+    }
+
+    async function bulkAcknowledge() {
+      const note = prompt('일괄 완료 사유를 입력해주세요:', '일괄 확인 처리');
+      if (note === null) return;
+      if (!note.trim()) { alert('사유를 입력해주세요.'); return; }
+
+      const { data } = await fetchLogs({ unacknowledgedOnly: true, limit: 500 });
+      if (!data || data.length === 0) { alert('처리할 로그가 없습니다.'); return; }
+
+      if (!confirm(`미확인 로그 ${data.length}건을 일괄 완료 처리하시겠습니까?`)) return;
+
+      let done = 0;
+      for (const log of data) {
+        await acknowledgeLog(log.id, session.username, note.trim());
+        done++;
+      }
+      await logInfo('LOG_BULK_ACK', { count: done, note: note.trim() });
+      alert(`${done}건의 로그가 완료 처리되었습니다.`);
       await loadAll();
     }
 
