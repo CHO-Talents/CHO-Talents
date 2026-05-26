@@ -36,20 +36,16 @@ async function checkSupabaseConnection() {
   }
 
   try {
-    const { error } = await client.from('_health_check').select('*').limit(1);
+    const { data, error } = await client.from('departments').select('id', { count: 'exact', head: true });
 
-    if (error && error.code === '42P01') {
-      value.textContent = '연결 성공';
+    if (!error) {
+      value.textContent = '연결 성공 ✓';
       box.classList.remove('error');
       box.classList.add('connected');
-    } else if (error) {
+    } else {
       value.textContent = '연결 실패';
       box.classList.add('error');
       logFatal('CONNECTION_FAIL', { error: error.message });
-    } else {
-      value.textContent = '연결 성공';
-      box.classList.remove('error');
-      box.classList.add('connected');
     }
   } catch (err) {
     value.textContent = '연결 실패';
