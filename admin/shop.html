@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>달란트 상점 조회 - 관리자</title>
+  <title>달란트 상점 관리 - 관리자</title>
   <link rel="stylesheet" href="../css/admin.css" />
   <style>
     .shop-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
@@ -46,7 +46,7 @@
       <li><a href="index.html">대시보드</a></li>
       <li><a href="users.html">사용자 관리</a></li><li><a href="departments.html">부서 관리</a></li>
       <li><a href="managers.html">관리자 관리</a></li>
-      <li><a href="shop.html" class="active">상점 조회</a></li>
+      <li><a href="shop.html" class="active">상점 관리</a></li>
       <li><a href="reports.html">보고서</a></li>
       <li><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li><a href="versions.html">버전</a></li><li><span class="nav-user" id="navUser"></span></li>
@@ -55,12 +55,14 @@
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">🛒 달란트 상점 조회</h2>
-
-    <div class="shop-tabs">
-      <button class="shop-tab active" onclick="switchTab('student', this)">🎒 학생 상점</button>
-      <button class="shop-tab" onclick="switchTab('teacher', this)">👩‍🏫 교사 상점</button>
-      <button class="shop-tab" onclick="switchTab('all', this)">📦 전체 상품</button>
+    <h2 style="margin-bottom:1rem;">🛒 달란트 상점</h2>
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <div class="shop-tabs" style="margin-bottom:0;">
+        <button class="shop-tab active" onclick="switchTab('student', this)">🎒 학생 상점</button>
+        <button class="shop-tab" onclick="switchTab('teacher', this)">👩‍🏫 교사 상점</button>
+        <button class="shop-tab" onclick="switchTab('all', this)">📦 전체 상품</button>
+      </div>
+      <a href="../manager/products.html" class="filter-btn" style="background:var(--admin-primary);color:#fff;text-decoration:none;padding:0.6rem 1.2rem;border-radius:50px;font-weight:700;">⚙️ 상품 관리</a>
     </div>
 
     <div class="shop-summary" id="shopSummary"></div>
