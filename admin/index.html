@@ -86,8 +86,8 @@
 
     async function loadDashboard() {
       const [reportsRes, logsCountRes, unack] = await Promise.all([
-        supabase.from('reports').select('*', { count: 'exact', head: true }),
-        supabase.from('activity_logs').select('*', { count: 'exact', head: true }),
+        _sb.from('reports').select('*', { count: 'exact', head: true }),
+        _sb.from('activity_logs').select('*', { count: 'exact', head: true }),
         getUnacknowledgedCount()
       ]);
 

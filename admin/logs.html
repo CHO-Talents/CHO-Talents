@@ -240,7 +240,7 @@
       document.getElementById('ackNote').value = '';
       document.getElementById('ackModal').classList.remove('hidden');
 
-      supabase.from('activity_logs').select('*').eq('id', logId).single().then(({ data }) => {
+      _sb.from('activity_logs').select('*').eq('id', logId).single().then(({ data }) => {
         if (data) {
           document.getElementById('ackLogDetail').innerHTML = `
             <strong>${data.level}</strong> | ${data.action}<br/>

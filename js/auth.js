@@ -12,12 +12,12 @@ async function hashPassword(password) {
 }
 
 async function login(username, password) {
-  if (!supabase) return { success: false, error: 'Supabase 연결 실패' };
+  if (!_sb) return { success: false, error: 'Supabase 연결 실패' };
   if (!username || !password) return { success: false, error: '아이디와 비밀번호를 입력해주세요.' };
 
   try {
     const passwordHash = await hashPassword(password);
-    const { data, error } = await supabase.rpc('verify_admin', {
+    const { data, error } = await _sb.rpc('verify_admin', {
       p_username: username,
       p_password_hash: passwordHash
     });
@@ -58,14 +58,14 @@ async function logout() {
 }
 
 async function changePassword(username, newPassword) {
-  if (!supabase) return { success: false, error: 'Supabase 연결 실패' };
+  if (!_sb) return { success: false, error: 'Supabase 연결 실패' };
   if (!newPassword || newPassword.length < 4) {
     return { success: false, error: '비밀번호는 4자 이상이어야 합니다.' };
   }
 
   try {
     const newHash = await hashPassword(newPassword);
-    const { data, error } = await supabase.rpc('update_password', {
+    const { data, error } = await _sb.rpc('update_password', {
       p_username: username,
       p_new_password_hash: newHash
     });
