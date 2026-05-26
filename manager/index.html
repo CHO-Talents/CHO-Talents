@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -85,7 +85,7 @@
     function doLogout() { logout('../login.html'); }
 
     if (session) {
-      document.getElementById('navUser').textContent = session.displayName || session.username;
+      renderRoleBadge('navUser', session, '../');
       document.getElementById('deptInfo').textContent =
         session.departmentName ? `담당 부서: ${session.departmentName}` : '담당 부서 미배정';
       autoLogPageView();

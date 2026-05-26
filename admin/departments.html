@@ -12,7 +12,7 @@
     <ul class="admin-nav-links">
       <li><a href="../index.html">🏠 메인</a></li>
       <li><a href="index.html">대시보드</a></li>
-      <li><a href="departments.html" class="active">부서 관리</a></li>
+      <li><a href="users.html">사용자 관리</a></li><li><a href="departments.html" class="active">부서 관리</a></li>
       <li><a href="managers.html">관리자 관리</a></li>
       <li><a href="shop.html">상점 조회</a></li>
       <li><a href="reports.html">보고서</a></li>
@@ -67,7 +67,7 @@
     let editingId = null;
 
     if (session) {
-      document.getElementById('navUser').textContent = session.displayName || session.username;
+      renderRoleBadge('navUser', session, '../');
       autoLogPageView();
       updateBadge();
       loadDepts();
