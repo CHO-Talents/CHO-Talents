@@ -15,7 +15,7 @@
       <li><a href="departments.html">부서 관리</a></li>
       <li><a href="managers.html" class="active">관리자 관리</a></li>
       <li><a href="reports.html">보고서</a></li>
-      <li><a href="logs.html">로그</a></li>
+      <li><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
@@ -75,7 +75,14 @@
     if (session) {
       document.getElementById('navUser').textContent = session.displayName || session.username;
       autoLogPageView();
+      updateBadge();
       loadData();
+    }
+
+    async function updateBadge() {
+      const count = await getUnacknowledgedCount();
+      const badge = document.getElementById('navLogBadge');
+      if (count > 0) { badge.textContent = count; badge.classList.remove('hidden'); }
     }
 
     async function loadData() {
