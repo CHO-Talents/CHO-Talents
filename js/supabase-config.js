@@ -4,7 +4,7 @@
 const SUPABASE_URL = 'https://blitrrcdkkkszvgylnus.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6';
 
-let supabase = null;
+var _sb = null;
 
 function initSupabase() {
   if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
@@ -12,8 +12,8 @@ function initSupabase() {
     return null;
   }
   try {
-    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    return supabase;
+    _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    return _sb;
   } catch (err) {
     console.error('[Supabase] 초기화 실패:', err);
     return null;
@@ -46,9 +46,9 @@ function formatKSTShort(date) {
 /* ===== CRUD Helper Functions ===== */
 
 async function dbSelect(table, options = {}) {
-  if (!supabase) return { data: null, error: 'Supabase not initialized' };
+  if (!_sb) return { data: null, error: 'Supabase not initialized' };
 
-  let query = supabase.from(table).select(options.columns || '*');
+  let query = _sb.from(table).select(options.columns || '*');
 
   if (options.filter) {
     for (const [col, val] of Object.entries(options.filter)) {
@@ -66,14 +66,14 @@ async function dbSelect(table, options = {}) {
 }
 
 async function dbInsert(table, rows) {
-  if (!supabase) return { data: null, error: 'Supabase not initialized' };
-  return await supabase.from(table).insert(rows).select();
+  if (!_sb) return { data: null, error: 'Supabase not initialized' };
+  return await _sb.from(table).insert(rows).select();
 }
 
 async function dbUpdate(table, updates, filter) {
-  if (!supabase) return { data: null, error: 'Supabase not initialized' };
+  if (!_sb) return { data: null, error: 'Supabase not initialized' };
 
-  let query = supabase.from(table).update(updates);
+  let query = _sb.from(table).update(updates);
   for (const [col, val] of Object.entries(filter)) {
     query = query.eq(col, val);
   }
@@ -81,9 +81,9 @@ async function dbUpdate(table, updates, filter) {
 }
 
 async function dbDelete(table, filter) {
-  if (!supabase) return { data: null, error: 'Supabase not initialized' };
+  if (!_sb) return { data: null, error: 'Supabase not initialized' };
 
-  let query = supabase.from(table).delete();
+  let query = _sb.from(table).delete();
   for (const [col, val] of Object.entries(filter)) {
     query = query.eq(col, val);
   }

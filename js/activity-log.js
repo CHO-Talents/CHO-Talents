@@ -7,7 +7,7 @@ const LOG_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'CRITICA
 const ERROR_LEVELS = ['ERROR', 'FATAL', 'CRITICAL'];
 
 async function writeLog(level, action, page, details) {
-  if (!supabase) {
+  if (!_sb) {
     console.warn('[Log] Supabase not initialized, log skipped:', level, action);
     return;
   }
@@ -21,7 +21,7 @@ async function writeLog(level, action, page, details) {
     is_acknowledged: !ERROR_LEVELS.includes(level)
   };
   try {
-    await supabase.from('activity_logs').insert(row);
+    await _sb.from('activity_logs').insert(row);
   } catch (err) {
     console.error('[Log] Failed to write log:', err);
   }
@@ -36,9 +36,9 @@ function logFatal(action, details) { return writeLog('FATAL', action, null, deta
 function logCritical(action, details) { return writeLog('CRITICAL', action, null, details); }
 
 async function fetchLogs(options = {}) {
-  if (!supabase) return { data: [], error: 'Supabase not initialized' };
+  if (!_sb) return { data: [], error: 'Supabase not initialized' };
 
-  let query = supabase.from('activity_logs').select('*');
+  let query = _sb.from('activity_logs').select('*');
 
   if (options.levels && options.levels.length > 0) {
     query = query.in('level', options.levels);
@@ -65,8 +65,8 @@ async function fetchLogs(options = {}) {
 }
 
 async function getUnacknowledgedCount() {
-  if (!supabase) return 0;
-  const { count, error } = await supabase
+  if (!_sb) return 0;
+  const { count, error } = await _sb
     .from('activity_logs')
     .select('*', { count: 'exact', head: true })
     .eq('is_acknowledged', false)
@@ -75,8 +75,8 @@ async function getUnacknowledgedCount() {
 }
 
 async function acknowledgeLog(logId, username, note) {
-  if (!supabase) return { error: 'Supabase not initialized' };
-  return await supabase.from('activity_logs').update({
+  if (!_sb) return { error: 'Supabase not initialized' };
+  return await _sb.from('activity_logs').update({
     is_acknowledged: true,
     acknowledged_by: username,
     acknowledged_at: new Date().toISOString(),
@@ -130,7 +130,7 @@ window.addEventListener('unhandledrejection', (e) => {
 /* ===== Auto Page View Log ===== */
 
 function autoLogPageView() {
-  if (supabase) {
+  if (_sb) {
     logInfo('PAGE_VIEW', { url: window.location.href });
   }
 }
