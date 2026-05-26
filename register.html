@@ -12,15 +12,6 @@
     .login-title { font-size: 1.5rem; }
     .back-link { display: block; text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--admin-primary); text-decoration: none; }
     .back-link:hover { text-decoration: underline; }
-    .role-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.3rem; }
-    .role-card {
-      border: 2px solid var(--admin-border); border-radius: 12px; padding: 0.8rem 0.5rem;
-      text-align: center; cursor: pointer; transition: all 0.2s; background: #fff;
-    }
-    .role-card:hover { border-color: var(--admin-primary); }
-    .role-card.selected { border-color: var(--admin-primary); background: rgba(108,92,231,0.06); }
-    .role-card .rc-emoji { font-size: 1.5rem; display: block; margin-bottom: 0.2rem; }
-    .role-card .rc-label { font-size: 0.82rem; font-weight: 700; color: #2d3436; }
     .result-box { text-align: center; padding: 1.5rem; }
     .result-box .r-icon { font-size: 3rem; margin-bottom: 0.5rem; }
     .result-box h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
@@ -39,29 +30,15 @@
 
         <div class="form-group">
           <label>희망 아이디</label>
-          <input type="text" id="rUsername" placeholder="영문, 숫자 조합" />
+          <div style="display:flex;gap:0.5rem;">
+            <input type="text" id="rUsername" placeholder="사용할 아이디를 입력해주세요" style="flex:1;" />
+            <button type="button" id="btnCheckId" onclick="checkDuplicate()" style="padding:0.6rem 1rem;background:var(--admin-primary);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:0.85rem;cursor:pointer;white-space:nowrap;">중복확인</button>
+          </div>
+          <div id="idCheckResult" style="font-size:0.8rem;margin-top:0.3rem;"></div>
         </div>
         <div class="form-group">
           <label>이름</label>
           <input type="text" id="rDisplayName" placeholder="실명을 입력해주세요" />
-        </div>
-
-        <div class="form-group">
-          <label>역할 선택</label>
-          <div class="role-cards" id="roleCards">
-            <div class="role-card selected" data-role="student" onclick="selectRole(this)">
-              <span class="rc-emoji">🎒</span>
-              <span class="rc-label">학생</span>
-            </div>
-            <div class="role-card" data-role="teacher" onclick="selectRole(this)">
-              <span class="rc-emoji">👩‍🏫</span>
-              <span class="rc-label">교사</span>
-            </div>
-            <div class="role-card" data-role="dept_manager" onclick="selectRole(this)">
-              <span class="rc-emoji">📋</span>
-              <span class="rc-label">부서 관리자</span>
-            </div>
-          </div>
         </div>
 
         <div class="form-group">
@@ -98,9 +75,16 @@
   <script>
     initSupabase();
     autoLogPageView();
-    let selectedRole = 'student';
+    let idChecked = false;
+    let checkedUsername = '';
 
     loadDepts();
+
+    document.getElementById('rUsername').addEventListener('input', () => {
+      idChecked = false;
+      checkedUsername = '';
+      document.getElementById('idCheckResult').innerHTML = '';
+    });
 
     async function loadDepts() {
       const { data } = await _sb.from('departments').select('id, name').eq('is_active', true).order('name');
@@ -110,10 +94,29 @@
       });
     }
 
-    function selectRole(el) {
-      document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedRole = el.dataset.role;
+    async function checkDuplicate() {
+      const username = document.getElementById('rUsername').value.trim();
+      const resultEl = document.getElementById('idCheckResult');
+
+      if (!username) { resultEl.innerHTML = '<span style="color:#e03131;">아이디를 입력해주세요.</span>'; return; }
+
+      resultEl.innerHTML = '<span style="color:#636e72;">확인 중...</span>';
+
+      const { data: existing } = await _sb.from('admin_users').select('id').eq('username', username);
+      if (existing && existing.length > 0) {
+        resultEl.innerHTML = '<span style="color:#e03131;">❌ 이미 사용 중인 아이디입니다.</span>';
+        idChecked = false; return;
+      }
+
+      const { data: pendingReq } = await _sb.from('registration_requests').select('id').eq('username', username).eq('status', 'pending');
+      if (pendingReq && pendingReq.length > 0) {
+        resultEl.innerHTML = '<span style="color:#e03131;">❌ 이미 신청 중인 아이디입니다.</span>';
+        idChecked = false; return;
+      }
+
+      resultEl.innerHTML = '<span style="color:#2b8a3e;">✅ 사용 가능한 아이디입니다.</span>';
+      idChecked = true;
+      checkedUsername = username;
     }
 
     async function submitRequest() {
@@ -125,7 +128,7 @@
       const reason = document.getElementById('rReason').value.trim();
 
       if (!username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
-      if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) { errEl.textContent = '아이디는 3~20자 영문, 숫자, _만 가능합니다.'; errEl.classList.add('show'); return; }
+      if (!idChecked || checkedUsername !== username) { errEl.textContent = '아이디 중복확인을 해주세요.'; errEl.classList.add('show'); return; }
       if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
       if (!deptId) { errEl.textContent = '소속 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
 
@@ -133,20 +136,8 @@
       btn.disabled = true;
       btn.textContent = '신청 중...';
 
-      const { data: existing } = await _sb.from('admin_users').select('id').eq('username', username);
-      if (existing && existing.length > 0) {
-        errEl.textContent = '이미 사용 중인 아이디입니다.'; errEl.classList.add('show');
-        btn.disabled = false; btn.textContent = '신청하기'; return;
-      }
-
-      const { data: pendingReq } = await _sb.from('registration_requests').select('id').eq('username', username).eq('status', 'pending');
-      if (pendingReq && pendingReq.length > 0) {
-        errEl.textContent = '이미 신청 중인 아이디입니다. 승인을 기다려주세요.'; errEl.classList.add('show');
-        btn.disabled = false; btn.textContent = '신청하기'; return;
-      }
-
       const { error } = await _sb.from('registration_requests').insert({
-        username, display_name: displayName, role: selectedRole,
+        username, display_name: displayName, role: 'student',
         department_id: deptId, reason: reason || null
       });
 
@@ -155,7 +146,7 @@
         btn.disabled = false; btn.textContent = '신청하기'; return;
       }
 
-      await logInfo('REGISTER_REQUEST', { username, role: selectedRole });
+      await logInfo('REGISTER_REQUEST', { username });
       document.getElementById('formArea').style.display = 'none';
       document.getElementById('resultArea').style.display = 'block';
     }

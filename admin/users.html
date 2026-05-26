@@ -307,15 +307,23 @@
           <td style="font-size:0.8rem;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.reason || ''}">${r.reason || '-'}</td>
           <td>${formatKSTShort(r.created_at)}</td>
           <td>
-            <button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveReq('${r.id}','${r.username}','${r.display_name}','${r.role}','${r.department_id || ''}')">승인</button>
+            <select id="reqRole_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;">
+              <option value="student">🎒 학생</option>
+              <option value="teacher">👩‍🏫 교사</option>
+              <option value="dept_manager">📋 부서관리자</option>
+              <option value="admin">👑 관리자</option>
+            </select><br/>
+            <button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveReq('${r.id}','${r.username}','${r.display_name}','${r.department_id || ''}')">승인</button>
             <button class="btn-ack" onclick="rejectReq('${r.id}','${r.username}')">거부</button>
           </td>
         </tr>`;
       }).join('');
     }
 
-    async function approveReq(reqId, username, displayName, role, deptId) {
-      if (!confirm(`"${username}" (${displayName}) 가입을 승인하시겠습니까?`)) return;
+    async function approveReq(reqId, username, displayName, deptId) {
+      const role = document.getElementById('reqRole_' + reqId).value;
+      const roleLabel = ROLE_BADGES[role]?.label || role;
+      if (!confirm(`"${username}" (${displayName})을(를) [${roleLabel}] 역할로 승인하시겠습니까?`)) return;
       const { error } = await createUser({ username, password: '1234', displayName, role, departmentId: deptId || null });
       if (error) { alert('계정 생성 실패: ' + error); return; }
       await _sb.from('registration_requests').update({
