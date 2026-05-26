@@ -2,7 +2,7 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '2.1.0',
+  current: '2.2.0',
   date: '2026-05-26',
   history: [
     {
@@ -130,6 +130,19 @@ const APP_VERSION = {
         '관리자 관리 페이지에 admin + dept_manager 통합 표시 및 필터',
         'admin 전용 상품 관리 페이지 (admin/products.html) 신설',
         '권한별 중복 페이지 규칙 문서화 (.cursor/rules/page-role-mapping.mdc)'
+      ]
+    },
+    {
+      version: '2.2.0',
+      date: '2026-05-26',
+      title: 'TASK-009: 레거시 관리자 로그인 제거 + 통합 로그인 단일화',
+      changes: [
+        '메인 화면 톱니바퀴(관리자 진입점) 버튼 제거',
+        'admin/login.html 레거시 파일 삭제',
+        '전체 소스에서 admin/login.html 참조 제거',
+        '.admin-link 미사용 CSS 제거',
+        'README.md 프로젝트 구조 전면 갱신 (전 역할 페이지 반영)',
+        '로그인 진입점 login.html 단일화 완료'
       ]
     }
   ]
