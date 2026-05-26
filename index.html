@@ -45,21 +45,21 @@
       </div>
 
       <div class="feature-cards">
-        <div class="card card-talent">
+        <a href="earn-talents.html" class="card card-talent">
           <div class="card-icon">💰</div>
           <h3>달란트 적립</h3>
           <p>열심히 활동하고<br/>달란트를 모아요!</p>
-        </div>
-        <div class="card card-shop">
+        </a>
+        <a href="student/shop.html" class="card card-shop">
           <div class="card-icon">🛒</div>
           <h3>상품 구매</h3>
           <p>모은 달란트로<br/>원하는 상품을 골라요!</p>
-        </div>
-        <div class="card card-rank">
+        </a>
+        <a href="student/my-talents.html" class="card card-rank" id="cardMyTalent">
           <div class="card-icon">🏅</div>
-          <h3>랭킹 보기</h3>
-          <p>누가 달란트를<br/>제일 많이 모았을까?</p>
-        </div>
+          <h3>내 달란트</h3>
+          <p>내가 모은 달란트를<br/>확인해 봐요!</p>
+        </a>
       </div>
 
       <div class="status-box" id="statusBox">
@@ -84,10 +84,15 @@
   <script>
     const s = getSession();
     if (s) {
-      const nav = document.getElementById('mainNav');
       const loginBtn = document.getElementById('navLoginBtn');
       loginBtn.textContent = s.displayName || s.username;
       loginBtn.href = getRoleRedirectUrl(s.role, '');
+
+      const myTalentCard = document.getElementById('cardMyTalent');
+      if (myTalentCard) {
+        const talentPaths = { admin: 'admin/index.html', dept_manager: 'manager/my-talents.html', teacher: 'teacher/my-talents.html', student: 'student/my-talents.html' };
+        myTalentCard.href = talentPaths[s.role] || 'student/my-talents.html';
+      }
     }
   </script>
 </body>

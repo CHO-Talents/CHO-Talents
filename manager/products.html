@@ -74,8 +74,13 @@
         </div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이모지</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이모지 (이미지 없을 때 표시)</label>
         <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="🎁" />
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이미지 URL</label>
+        <input type="text" id="mImageUrl" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="https://example.com/image.jpg" />
+        <div id="imgPreview" style="margin-top:0.5rem;text-align:center;"></div>
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">설명</label>
@@ -127,7 +132,9 @@
       if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 상품이 없습니다.</td></tr>'; return; }
 
       tbody.innerHTML = list.map(p => `<tr${!p.is_active ? ' style="opacity:0.5;"' : ''}>
-        <td style="font-size:1.5rem;">${p.image_emoji || '🎁'}</td>
+        <td>${p.image_url
+          ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />`
+          : `<span style="font-size:1.5rem;">${p.image_emoji || '🎁'}</span>`}</td>
         <td><strong>${p.name}</strong><br><small style="color:var(--admin-text-muted);">${p.description || ''}</small></td>
         <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '학생' : '교사'}</span></td>
         <td>${p.category || '-'}</td>
@@ -149,6 +156,8 @@
       document.getElementById('mPrice').value = '';
       document.getElementById('mStock').value = '0';
       document.getElementById('mEmoji').value = '';
+      document.getElementById('mImageUrl').value = '';
+      document.getElementById('imgPreview').innerHTML = '';
       document.getElementById('mDesc').value = '';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('productModal').classList.remove('hidden');
@@ -163,6 +172,10 @@
       document.getElementById('mPrice').value = p.price;
       document.getElementById('mStock').value = p.stock;
       document.getElementById('mEmoji').value = p.image_emoji || '';
+      document.getElementById('mImageUrl').value = p.image_url || '';
+      document.getElementById('imgPreview').innerHTML = p.image_url
+        ? `<img src="${p.image_url}" style="max-width:120px;max-height:120px;border-radius:8px;" />`
+        : '';
       document.getElementById('mDesc').value = p.description || '';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('productModal').classList.remove('hidden');
@@ -185,6 +198,7 @@
         price,
         stock: parseInt(document.getElementById('mStock').value) || 0,
         image_emoji: document.getElementById('mEmoji').value.trim() || '🎁',
+        image_url: document.getElementById('mImageUrl').value.trim() || null,
         description: document.getElementById('mDesc').value.trim() || null
       };
 
@@ -205,6 +219,16 @@
       await deleteProduct(id);
       await loadProducts();
     }
+
+    document.getElementById('mImageUrl').addEventListener('input', function() {
+      const url = this.value.trim();
+      const preview = document.getElementById('imgPreview');
+      if (url) {
+        preview.innerHTML = `<img src="${url}" style="max-width:120px;max-height:120px;border-radius:8px;" onerror="this.parentElement.innerHTML='<span style=color:#ff6b6b;font-size:0.8rem;>이미지를 불러올 수 없습니다</span>'" />`;
+      } else {
+        preview.innerHTML = '';
+      }
+    });
 
     document.getElementById('productModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
