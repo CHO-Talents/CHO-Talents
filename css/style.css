@@ -109,6 +109,20 @@ body {
   background-clip: text;
 }
 
+.admin-link {
+  margin-left: auto;
+  text-decoration: none;
+  font-size: 1.3rem;
+  color: #b2bec3;
+  transition: color 0.2s;
+  opacity: 0.5;
+}
+
+.admin-link:hover {
+  color: var(--primary);
+  opacity: 1;
+}
+
 /* ===== Main ===== */
 .main {
   flex: 1;

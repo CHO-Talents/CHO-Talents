@@ -1,28 +1,46 @@
 /**
- * Supabase Configuration
- *
- * 아래 값을 본인의 Supabase 프로젝트 정보로 교체하세요.
- * Supabase 대시보드 > Settings > API 에서 확인할 수 있습니다.
+ * Supabase Configuration & Global Utilities
  */
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';       // 예: https://xxxx.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // 예: eyJhbGciOiJIUzI1NiIs...
+const SUPABASE_URL = 'https://blitrrcdkkkszvgylnus.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6';
 
 let supabase = null;
 
 function initSupabase() {
   if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
-    console.warn('[Supabase] API 키가 설정되지 않았습니다. supabase-config.js를 확인하세요.');
+    console.warn('[Supabase] API 키가 설정되지 않았습니다.');
     return null;
   }
-
   try {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('[Supabase] 클라이언트 초기화 완료');
     return supabase;
   } catch (err) {
     console.error('[Supabase] 초기화 실패:', err);
     return null;
   }
+}
+
+/* ===== KST Time Utilities ===== */
+
+function toKST(date) {
+  return new Date((date || new Date()).toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+}
+
+function formatKST(date, opts) {
+  const d = date ? new Date(date) : new Date();
+  const defaults = {
+    timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+  };
+  return d.toLocaleString('ko-KR', { ...defaults, ...opts });
+}
+
+function formatKSTShort(date) {
+  const d = date ? new Date(date) : new Date();
+  return d.toLocaleString('ko-KR', {
+    timeZone: 'Asia/Seoul', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  });
 }
 
 /* ===== CRUD Helper Functions ===== */

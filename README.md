@@ -8,13 +8,24 @@
 
 ```
 CHO-Talents/
-├── index.html              # 메인 페이지
+├── index.html                     # 메인 환영 페이지
+├── admin/
+│   ├── login.html                # 관리자 로그인
+│   ├── index.html                # 관리자 대시보드
+│   ├── reports.html              # 보고서 관리
+│   ├── logs.html                 # 활동 로그 관리
+│   └── change-password.html      # 비밀번호 변경
 ├── css/
-│   └── style.css           # 스타일시트
+│   ├── style.css                 # 메인 스타일
+│   └── admin.css                 # 관리자 스타일
 ├── js/
-│   ├── supabase-config.js  # Supabase 설정 및 CRUD 헬퍼
-│   └── app.js              # 앱 로직
-├── assets/                 # 이미지, 아이콘 등
+│   ├── supabase-config.js        # Supabase 설정 + KST 유틸리티 + CRUD 헬퍼
+│   ├── app.js                    # 메인 앱 로직
+│   ├── activity-log.js           # 로그 시스템 (7레벨, 확인 체계)
+│   └── auth.js                   # 인증 모듈
+├── docs/
+│   ├── supabase_setup.sql        # Supabase 초기 설정 SQL
+│   └── TASK-001_test_scenario.md # 검증 테스트 시나리오
 └── README.md
 ```
 
@@ -24,11 +35,7 @@ CHO-Talents/
 - **Backend:** Supabase (PostgreSQL + REST API)
 - **Hosting:** GitHub Pages
 
-## Supabase 설정
+## 초기 설정
 
-`js/supabase-config.js` 파일에서 아래 값을 본인의 Supabase 프로젝트 정보로 교체하세요:
-
-```js
-const SUPABASE_URL = 'https://your-project.supabase.co';
-const SUPABASE_ANON_KEY = 'your-anon-key';
-```
+1. `docs/supabase_setup.sql`을 Supabase SQL Editor에서 실행
+2. 관리자 로그인: `lsyby` / `1234` (첫 로그인 시 비밀번호 변경 필수)
