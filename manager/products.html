@@ -115,16 +115,19 @@
   <script src="../js/product.js"></script>
   <script>
     initSupabase();
-    const session = requireRole(['dept_manager', 'admin'], '../login.html');
+    let session;
     let allProducts = [];
     let editingId = null;
     let currentFilter = 'all';
 
-    if (session) {
+    (async () => {
+      session = await initPage(['dept_manager', 'admin'], '../login.html');
+      if (!session) return;
+
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
       loadProducts();
-    }
+    })();
 
     async function loadProducts() {
       const { data } = await fetchProducts(null, { activeOnly: false });

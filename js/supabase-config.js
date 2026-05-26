@@ -3,6 +3,7 @@
  */
 const SUPABASE_URL = 'https://blitrrcdkkkszvgylnus.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6';
+const AUTH_EMAIL_DOMAIN = '@cho-talents.app';
 
 var _sb = null;
 
@@ -12,7 +13,13 @@ function initSupabase() {
     return null;
   }
   try {
-    _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: false
+      }
+    });
     return _sb;
   } catch (err) {
     console.error('[Supabase] 초기화 실패:', err);

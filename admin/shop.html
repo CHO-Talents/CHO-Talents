@@ -77,16 +77,19 @@
   <script src="../js/product.js"></script>
   <script>
     initSupabase();
-    const session = requireRole(['admin'], '../login.html');
+    let session;
     let allProducts = [];
     let currentTab = 'student';
-
-    if (session) {
-      renderRoleBadge('navUser', session, '../');
-      autoLogPageView();
-      updateBadge();
-      loadAllProducts();
-    }
+    (async () => {
+      session = await initPage(['admin'], '../login.html');
+      if (!session) return;
+      if (session) {
+        renderRoleBadge('navUser', session, '../');
+        autoLogPageView();
+        updateBadge();
+        loadAllProducts();
+      }
+    })();
 
     async function updateBadge() {
       const cnt = await getUnacknowledgedCount();

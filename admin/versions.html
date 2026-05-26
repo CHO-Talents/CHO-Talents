@@ -89,14 +89,17 @@
   <script src="../js/version.js"></script>
   <script>
     initSupabase();
-    const session = requireRole(['admin'], '../login.html');
-
-    if (session) {
-      renderRoleBadge('navUser', session, '../');
-      autoLogPageView();
-      updateBadge();
-      renderPage();
-    }
+    let session;
+    (async () => {
+      session = await initPage(['admin'], '../login.html');
+      if (!session) return;
+      if (session) {
+        renderRoleBadge('navUser', session, '../');
+        autoLogPageView();
+        updateBadge();
+        renderPage();
+      }
+    })();
 
     async function updateBadge() {
       const cnt = await getUnacknowledgedCount();

@@ -33,13 +33,15 @@
   <script src="../js/talent.js"></script>
   <script>
     initSupabase();
-    const session = requireRole(['teacher', 'dept_manager', 'admin'], '../login.html');
+    let session;
+    (async () => {
+      session = await initPage(['teacher', 'dept_manager', 'admin'], '../login.html');
+      if (!session) return;
 
-    if (session) {
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
       loadMyTalents();
-    }
+    })();
 
     async function loadMyTalents() {
       const main = document.getElementById('mainContent');

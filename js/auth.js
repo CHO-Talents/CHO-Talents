@@ -1,6 +1,6 @@
 /**
  * Authentication Module
- * SHA-256 해싱 + Supabase RPC 기반 인증 (전 역할 지원)
+ * Supabase Auth 기반 인증 (전 역할 지원)
  */
 
 const ROLE_LABELS = {
@@ -38,50 +38,42 @@ function renderRoleBadge(elementId, session, basePath) {
   </a>`;
 }
 
-async function hashPassword(password) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 async function login(username, password) {
   if (!_sb) return { success: false, error: 'Supabase 연결 실패' };
   if (!username || !password) return { success: false, error: '아이디와 비밀번호를 입력해주세요.' };
 
   try {
-    const passwordHash = await hashPassword(password);
-
-    const { data, error } = await _sb.rpc('verify_user', {
-      p_username: username,
-      p_password_hash: passwordHash
+    const email = username + AUTH_EMAIL_DOMAIN;
+    const { data: authData, error: authError } = await _sb.auth.signInWithPassword({
+      email,
+      password
     });
 
-    if (error) {
-      await logWarn('LOGIN_FAIL', { username, reason: error.message });
-      return { success: false, error: '로그인 처리 중 오류가 발생했습니다.' };
-    }
-
-    if (!data) {
-      await logWarn('LOGIN_FAIL', { username, reason: 'Invalid credentials' });
+    if (authError) {
+      await logWarn('LOGIN_FAIL', { username, reason: authError.message });
       return { success: false, error: '아이디 또는 비밀번호가 일치하지 않습니다.' };
     }
 
+    const { data: profile } = await _sb.rpc('get_my_profile');
+    if (!profile) {
+      await _sb.auth.signOut();
+      return { success: false, error: '프로필 정보를 불러올 수 없습니다.' };
+    }
+
     setSession({
-      id: data.id,
-      username: data.username,
-      displayName: data.display_name,
-      role: data.role,
-      isFirstLogin: data.is_first_login,
-      departmentId: data.department_id,
-      managedDeptId: data.managed_dept_id,
-      talentBalance: data.talent_balance || 0,
-      departmentName: data.department_name
+      id: profile.id,
+      username: profile.username,
+      displayName: profile.display_name,
+      role: profile.role,
+      isFirstLogin: profile.is_first_login,
+      departmentId: profile.department_id,
+      managedDeptId: profile.managed_dept_id,
+      talentBalance: profile.talent_balance || 0,
+      departmentName: profile.department_name
     });
 
-    await logInfo('LOGIN_SUCCESS', { username, role: data.role });
-    return { success: true, data };
+    await logInfo('LOGIN_SUCCESS', { username, role: profile.role });
+    return { success: true, data: profile };
   } catch (err) {
     await logError('LOGIN_ERROR', { username, error: String(err) });
     return { success: false, error: '로그인 처리 중 오류가 발생했습니다.' };
@@ -94,10 +86,13 @@ function getRoleRedirectUrl(role, basePath) {
   return base + path;
 }
 
-function logout(loginPath) {
+async function logout(loginPath) {
   const session = getSession();
   if (session) {
-    logInfo('LOGOUT', { username: session.username });
+    await logInfo('LOGOUT', { username: session.username });
+  }
+  if (_sb) {
+    await _sb.auth.signOut();
   }
   clearSession();
   window.location.href = loginPath || '../login.html';
@@ -116,6 +111,30 @@ function requireRole(allowedRoles, loginPath) {
   return session;
 }
 
+async function validateAuthSession(loginPath) {
+  if (!_sb) return null;
+  const { data: { session: authSession } } = await _sb.auth.getSession();
+  if (!authSession) {
+    clearSession();
+    window.location.href = loginPath || '../login.html';
+    return null;
+  }
+  return getSession();
+}
+
+async function initPage(allowedRoles, loginPath) {
+  const session = await loadAuthSession();
+  if (!session) {
+    window.location.href = loginPath || '../login.html';
+    return null;
+  }
+  if (allowedRoles && allowedRoles.length && !allowedRoles.includes(session.role)) {
+    window.location.href = loginPath || '../login.html';
+    return null;
+  }
+  return session;
+}
+
 async function changePassword(username, newPassword) {
   if (!_sb) return { success: false, error: 'Supabase 연결 실패' };
   if (!newPassword || newPassword.length < 4) {
@@ -123,15 +142,17 @@ async function changePassword(username, newPassword) {
   }
 
   try {
-    const newHash = await hashPassword(newPassword);
-    const { data, error } = await _sb.rpc('update_password', {
-      p_username: username,
-      p_new_password_hash: newHash
+    const { data, error } = await _sb.rpc('change_my_password', {
+      p_new_password: newPassword
     });
 
     if (error) {
       await logError('PASSWORD_CHANGE_FAIL', { username, reason: error.message });
       return { success: false, error: '비밀번호 변경 중 오류가 발생했습니다.' };
+    }
+
+    if (data && !data.success) {
+      return { success: false, error: data.error || '비밀번호 변경 실패' };
     }
 
     const session = getSession();

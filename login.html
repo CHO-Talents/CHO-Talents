@@ -51,35 +51,38 @@
   <script>
     initSupabase();
 
-    const existing = getSession();
-    if (existing && !existing.isFirstLogin) {
-      window.location.href = getRoleRedirectUrl(existing.role, '');
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', async () => {
-      const btn = document.getElementById('btnLogin');
-      const errEl = document.getElementById('errorMsg');
-      errEl.classList.remove('show');
-      btn.disabled = true;
-      btn.textContent = '로그인 중...';
-
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      const result = await login(username, password);
-
-      if (result.success) {
-        if (result.data.is_first_login) {
-          window.location.href = 'admin/change-password.html';
-        } else {
-          window.location.href = getRoleRedirectUrl(result.data.role, '');
-        }
-      } else {
-        errEl.textContent = result.error;
-        errEl.classList.add('show');
-        btn.disabled = false;
-        btn.textContent = '로그인';
+    (async () => {
+      const session = await loadAuthSession();
+      if (session && !session.isFirstLogin) {
+        window.location.href = getRoleRedirectUrl(session.role, '');
+        return;
       }
-    });
+
+      document.getElementById('loginForm').addEventListener('submit', async () => {
+        const btn = document.getElementById('btnLogin');
+        const errEl = document.getElementById('errorMsg');
+        errEl.classList.remove('show');
+        btn.disabled = true;
+        btn.textContent = '로그인 중...';
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const result = await login(username, password);
+
+        if (result.success) {
+          if (result.data.is_first_login) {
+            window.location.href = 'admin/change-password.html';
+          } else {
+            window.location.href = getRoleRedirectUrl(result.data.role, '');
+          }
+        } else {
+          errEl.textContent = result.error;
+          errEl.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = '로그인';
+        }
+      });
+    })();
   </script>
   <script src="js/version.js"></script>
 </body>

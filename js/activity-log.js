@@ -84,21 +84,51 @@ async function acknowledgeLog(logId, username, note) {
   }).eq('id', logId).select();
 }
 
-/* ===== Session Helpers ===== */
+/* ===== Session Helpers (Supabase Auth 연동) ===== */
 
 function getSession() {
   try {
-    const raw = sessionStorage.getItem('cho_admin_session');
-    return raw ? JSON.parse(raw) : null;
+    const raw = sessionStorage.getItem('cho_session');
+    if (raw) return JSON.parse(raw);
+    const old = sessionStorage.getItem('cho_admin_session');
+    return old ? JSON.parse(old) : null;
   } catch { return null; }
 }
 
 function setSession(data) {
-  sessionStorage.setItem('cho_admin_session', JSON.stringify(data));
+  sessionStorage.setItem('cho_session', JSON.stringify(data));
+  sessionStorage.removeItem('cho_admin_session');
 }
 
 function clearSession() {
+  sessionStorage.removeItem('cho_session');
   sessionStorage.removeItem('cho_admin_session');
+}
+
+async function loadAuthSession() {
+  if (!_sb) return null;
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) return null;
+
+  const cached = getSession();
+  if (cached && cached.id === session.user.id) return cached;
+
+  const { data } = await _sb.rpc('get_my_profile');
+  if (!data) return null;
+
+  const profile = {
+    id: data.id,
+    username: data.username,
+    displayName: data.display_name,
+    role: data.role,
+    isFirstLogin: data.is_first_login,
+    departmentId: data.department_id,
+    managedDeptId: data.managed_dept_id,
+    talentBalance: data.talent_balance || 0,
+    departmentName: data.department_name
+  };
+  setSession(profile);
+  return profile;
 }
 
 function requireAuth(loginPath) {

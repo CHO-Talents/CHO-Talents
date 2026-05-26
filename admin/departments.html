@@ -63,16 +63,19 @@
   <script src="../js/user-mgmt.js"></script>
   <script>
     initSupabase();
-    const session = requireRole(['admin'], '../login.html');
+    let session;
     let editingId = null;
     let allUsers = [];
-
-    if (session) {
-      renderRoleBadge('navUser', session, '../');
-      autoLogPageView();
-      updateBadge();
-      loadDepts();
-    }
+    (async () => {
+      session = await initPage(['admin'], '../login.html');
+      if (!session) return;
+      if (session) {
+        renderRoleBadge('navUser', session, '../');
+        autoLogPageView();
+        updateBadge();
+        loadDepts();
+      }
+    })();
 
     async function updateBadge() {
       const count = await getUnacknowledgedCount();
@@ -82,7 +85,7 @@
 
     async function loadDepts() {
       const { data: depts } = await fetchDepartments();
-      const { data: users } = await _sb.from('admin_users')
+      const { data: users } = await _sb.from('profiles')
         .select('id, username, role, department_id, managed_dept_id, display_name');
       allUsers = users || [];
 
