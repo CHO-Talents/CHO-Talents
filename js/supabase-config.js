@@ -4,8 +4,8 @@
  * 아래 값을 본인의 Supabase 프로젝트 정보로 교체하세요.
  * Supabase 대시보드 > Settings > API 에서 확인할 수 있습니다.
  */
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';       // 예: https://xxxx.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // 예: eyJhbGciOiJIUzI1NiIs...
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';       // TODO: Supabase 프로젝트 URL 입력 필요
+const SUPABASE_ANON_KEY = 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6';
 
 let supabase = null;
 
