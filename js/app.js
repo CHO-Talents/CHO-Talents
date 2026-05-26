@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   createFallingStars();
   checkSupabaseConnection();
+  autoLogPageView();
 });
 
 /* ===== Falling Stars Effect ===== */
@@ -44,7 +45,7 @@ async function checkSupabaseConnection() {
     } else if (error) {
       value.textContent = '연결 실패';
       box.classList.add('error');
-      console.error('[Health Check]', error);
+      logFatal('CONNECTION_FAIL', { error: error.message });
     } else {
       value.textContent = '연결 성공';
       box.classList.remove('error');
@@ -53,6 +54,6 @@ async function checkSupabaseConnection() {
   } catch (err) {
     value.textContent = '연결 실패';
     box.classList.add('error');
-    console.error('[Health Check]', err);
+    logFatal('CONNECTION_FAIL', { error: String(err) });
   }
 }
