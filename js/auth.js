@@ -129,9 +129,16 @@ async function initPage(allowedRoles, loginPath) {
     return null;
   }
   if (allowedRoles && allowedRoles.length && !allowedRoles.includes(session.role)) {
-    window.location.href = loginPath || '../login.html';
+    const basePath = loginPath ? loginPath.replace(/[^/]*$/, '') : '../';
+    const rolePage = ROLE_REDIRECT[session.role];
+    if (rolePage) {
+      window.location.href = basePath + rolePage;
+    } else {
+      window.location.href = loginPath || '../login.html';
+    }
     return null;
   }
+  document.body.classList.add('auth-ready');
   return session;
 }
 

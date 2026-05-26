@@ -2,7 +2,7 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '2.0.0',
+  current: '2.1.0',
   date: '2026-05-26',
   history: [
     {
@@ -116,6 +116,20 @@ const APP_VERSION = {
         '모든 페이지 async initPage() 패턴 적용',
         'sessionStorage → Supabase Auth + profile cache 이중 구조',
         'anon key로 password_hash 조회 불가 검증 완료'
+      ]
+    },
+    {
+      version: '2.1.0',
+      date: '2026-05-26',
+      title: 'TASK-008: 관리자 페이지 접근 제어 보완 + UI 개선',
+      changes: [
+        'initPage() 역할 체크 실패 시 역할별 기본 페이지로 리디렉트 (로그인 페이지 대신)',
+        'CSS auth-ready 기반 콘텐츠 플래시 방지 (인증 전 페이지 내용 숨김)',
+        '미사용 requireAuth() 함수 완전 제거 (데드 코드 정리)',
+        '부서 관리 화면 역할별 인원 분리 표시 (관리자/부서관리자/교사/학생)',
+        '관리자 관리 페이지에 admin + dept_manager 통합 표시 및 필터',
+        'admin 전용 상품 관리 페이지 (admin/products.html) 신설',
+        '권한별 중복 페이지 규칙 문서화 (.cursor/rules/page-role-mapping.mdc)'
       ]
     }
   ]

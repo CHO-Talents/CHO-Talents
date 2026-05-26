@@ -1,3 +1,9 @@
+/* ===== Auth Guard: hide content until role verified ===== */
+.admin-body:not(.auth-ready) .admin-container,
+.admin-body:not(.auth-ready) .admin-nav { visibility: hidden; }
+.admin-body.auth-ready .admin-container,
+.admin-body.auth-ready .admin-nav { visibility: visible; }
+
 /* ===== Admin Base ===== */
 :root {
   --admin-primary: #6c5ce7;
