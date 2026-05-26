@@ -131,15 +131,6 @@ async function loadAuthSession() {
   return profile;
 }
 
-function requireAuth(loginPath) {
-  const session = getSession();
-  if (!session) {
-    window.location.href = loginPath || 'login.html';
-    return null;
-  }
-  return session;
-}
-
 /* ===== Global Error Handler ===== */
 
 window.addEventListener('error', (e) => {
