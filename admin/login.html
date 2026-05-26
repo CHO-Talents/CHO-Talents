@@ -33,7 +33,16 @@
   <script src="../js/activity-log.js"></script>
   <script src="../js/auth.js"></script>
   <script>
-    initSupabase();
+    const dbg = document.getElementById('errorMsg');
+    function showDbg(msg) { dbg.textContent = msg; dbg.classList.add('show'); }
+
+    let client;
+    try {
+      client = initSupabase();
+      if (!client) showDbg('Supabase 클라이언트 생성 실패 (_sb is null)');
+    } catch (e) {
+      showDbg('initSupabase 에러: ' + e.message);
+    }
 
     const existing = getSession();
     if (existing && !existing.isFirstLogin) {
@@ -47,18 +56,25 @@
       btn.disabled = true;
       btn.textContent = '로그인 중...';
 
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      const result = await login(username, password);
+      try {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const result = await login(username, password);
 
-      if (result.success) {
-        if (result.data.is_first_login) {
-          window.location.href = 'change-password.html';
+        if (result.success) {
+          if (result.data.is_first_login) {
+            window.location.href = 'change-password.html';
+          } else {
+            window.location.href = 'index.html';
+          }
         } else {
-          window.location.href = 'index.html';
+          errEl.textContent = result.error;
+          errEl.classList.add('show');
+          btn.disabled = false;
+          btn.textContent = '로그인';
         }
-      } else {
-        errEl.textContent = result.error;
+      } catch (e) {
+        errEl.textContent = '예외 발생: ' + e.message;
         errEl.classList.add('show');
         btn.disabled = false;
         btn.textContent = '로그인';
