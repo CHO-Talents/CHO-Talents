@@ -2,7 +2,7 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '2.2.0',
+  current: '2.3.0',
   date: '2026-05-26',
   history: [
     {
@@ -143,6 +143,18 @@ const APP_VERSION = {
         '.admin-link 미사용 CSS 제거',
         'README.md 프로젝트 구조 전면 갱신 (전 역할 페이지 반영)',
         '로그인 진입점 login.html 단일화 완료'
+      ]
+    },
+    {
+      version: '2.3.0',
+      date: '2026-05-26',
+      title: 'TASK-010: 초기 비밀번호 변경 강제 + 학생 상점 인증 보호',
+      changes: [
+        'initPage()에 isFirstLogin 강제 리디렉트 중앙화 (권한 체크보다 우선 실행)',
+        '초기 비밀번호 미변경 시 어떤 페이지든 change-password.html로 강제 이동',
+        'login.html에서 기존 세션의 isFirstLogin도 change-password로 리디렉트',
+        'student/shop.html을 보호 페이지로 전환 (initPage 적용)',
+        'student/shop.html autoLogPageView()를 인증 후로 이동 (익명 로그 방지)'
       ]
     }
   ]

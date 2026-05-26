@@ -128,6 +128,13 @@ async function initPage(allowedRoles, loginPath) {
     window.location.href = loginPath || '../login.html';
     return null;
   }
+
+  if (session.isFirstLogin && !window.location.pathname.includes('change-password')) {
+    const basePath = loginPath ? loginPath.replace(/[^/]*$/, '') : '../';
+    window.location.href = basePath + 'admin/change-password.html';
+    return null;
+  }
+
   if (allowedRoles && allowedRoles.length && !allowedRoles.includes(session.role)) {
     const basePath = loginPath ? loginPath.replace(/[^/]*$/, '') : '../';
     const rolePage = ROLE_REDIRECT[session.role];

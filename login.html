@@ -53,8 +53,12 @@
 
     (async () => {
       const session = await loadAuthSession();
-      if (session && !session.isFirstLogin) {
-        window.location.href = getRoleRedirectUrl(session.role, '');
+      if (session) {
+        if (session.isFirstLogin) {
+          window.location.href = 'admin/change-password.html';
+        } else {
+          window.location.href = getRoleRedirectUrl(session.role, '');
+        }
         return;
       }
 
