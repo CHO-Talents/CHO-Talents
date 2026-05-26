@@ -38,4 +38,3 @@ CHO-Talents/
 ## 초기 설정
 
 1. `docs/supabase_setup.sql`을 Supabase SQL Editor에서 실행
-2. 관리자 로그인: `lsyby` / `1234` (첫 로그인 시 비밀번호 변경 필수)
