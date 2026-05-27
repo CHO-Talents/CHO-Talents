@@ -6,17 +6,72 @@
 const LOG_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'CRITICAL'];
 const ERROR_LEVELS = ['ERROR', 'FATAL', 'CRITICAL'];
 
+let _clientInfo = null;
+let _clientIp = null;
+
+function _parseUA() {
+  const ua = navigator.userAgent || '';
+  let browser = 'Unknown', os = 'Unknown', deviceType = 'desktop';
+
+  if (/Edg\//i.test(ua)) browser = 'Edge ' + (ua.match(/Edg\/([\d.]+)/)||[])[1];
+  else if (/OPR\//i.test(ua)) browser = 'Opera ' + (ua.match(/OPR\/([\d.]+)/)||[])[1];
+  else if (/Chrome\//i.test(ua)) browser = 'Chrome ' + (ua.match(/Chrome\/([\d.]+)/)||[])[1];
+  else if (/Safari\//i.test(ua) && !/Chrome/i.test(ua)) browser = 'Safari ' + (ua.match(/Version\/([\d.]+)/)||[])[1];
+  else if (/Firefox\//i.test(ua)) browser = 'Firefox ' + (ua.match(/Firefox\/([\d.]+)/)||[])[1];
+
+  if (/Windows NT 10/i.test(ua)) os = 'Windows 10/11';
+  else if (/Windows NT/i.test(ua)) os = 'Windows';
+  else if (/Mac OS X/i.test(ua)) os = 'macOS ' + ((ua.match(/Mac OS X ([\d_]+)/)||[])[1]||'').replace(/_/g,'.');
+  else if (/Android/i.test(ua)) os = 'Android ' + (ua.match(/Android ([\d.]+)/)||[])[1];
+  else if (/iPhone|iPad/i.test(ua)) os = 'iOS ' + ((ua.match(/OS ([\d_]+)/)||[])[1]||'').replace(/_/g,'.');
+  else if (/Linux/i.test(ua)) os = 'Linux';
+  else if (/CrOS/i.test(ua)) os = 'Chrome OS';
+
+  if (/Mobi|Android.*Mobile|iPhone/i.test(ua)) deviceType = 'mobile';
+  else if (/iPad|Android(?!.*Mobile)|Tablet/i.test(ua)) deviceType = 'tablet';
+
+  return { browser, os, deviceType, userAgent: ua };
+}
+
+function getClientInfo() {
+  if (_clientInfo) return _clientInfo;
+  const { browser, os, deviceType, userAgent } = _parseUA();
+  _clientInfo = {
+    ip: _clientIp || null,
+    browser,
+    os,
+    screenRes: screen.width + 'x' + screen.height,
+    windowSize: window.innerWidth + 'x' + window.innerHeight,
+    deviceType,
+    language: navigator.language || navigator.userLanguage || 'unknown'
+  };
+  return _clientInfo;
+}
+
+function _fetchIp() {
+  fetch('https://api.ipify.org?format=json')
+    .then(r => r.json())
+    .then(d => {
+      _clientIp = d.ip;
+      if (_clientInfo) _clientInfo.ip = d.ip;
+    })
+    .catch(() => {});
+}
+_fetchIp();
+
 async function writeLog(level, action, page, details) {
   if (!_sb) {
     console.warn('[Log] Supabase not initialized, log skipped:', level, action);
     return;
   }
   const session = getSession();
+  const ci = getClientInfo();
+  const merged = details ? Object.assign({}, details, { _client: ci }) : { _client: ci };
   const row = {
     level,
     action,
     page: page || window.location.pathname,
-    details: details || null,
+    details: merged,
     username: session ? session.username : null,
     is_acknowledged: !ERROR_LEVELS.includes(level)
   };
