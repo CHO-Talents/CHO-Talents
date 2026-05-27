@@ -2,9 +2,22 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.7.1',
+  current: '3.7.2',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.7.2',
+      date: '2026-05-28',
+      title: '보고서 텍스트 수정 + 로그 선택 삭제 + 가입대기 배지',
+      changes: [
+        'reports.html: colspan 불일치 수정 (6→7), HTML Entity → 유니코드 이모지 교체',
+        'reports.html: session.display_name → session.displayName 프로퍼티명 수정',
+        'logs.html: 체크박스 + 선택 삭제 기능 추가 (기존 범위 삭제 유지)',
+        'activity-log.js: deleteLogsByIds() 함수 추가',
+        '전체 admin 페이지(11개): 사용자 관리 네비게이션에 가입대기 배지 추가',
+        'activity-log.js: getPendingRegistrationCount() + updatePendingBadge() 함수 추가'
+      ]
+    },
     {
       version: '3.7.1',
       date: '2026-05-28',

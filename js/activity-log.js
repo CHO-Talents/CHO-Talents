@@ -139,6 +139,32 @@ async function acknowledgeLog(logId, username, note) {
   }).eq('id', logId).select();
 }
 
+/* ===== Pending Registration Count ===== */
+
+async function getPendingRegistrationCount() {
+  if (!_sb) return 0;
+  try {
+    const { count, error } = await _sb
+      .from('registration_requests')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'pending');
+    if (error) return 0;
+    return count || 0;
+  } catch { return 0; }
+}
+
+async function updatePendingBadge() {
+  const badge = document.getElementById('navUserBadge');
+  if (!badge) return;
+  const count = await getPendingRegistrationCount();
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
 /* ===== Session Helpers (Supabase Auth 연동) ===== */
 
 function getSession() {
@@ -212,6 +238,22 @@ window.addEventListener('unhandledrejection', (e) => {
 function autoLogPageView() {
   if (_sb) {
     logInfo('PAGE_VIEW', { url: window.location.href });
+  }
+}
+
+async function deleteLogsByIds(ids) {
+  if (!_sb) return { error: 'Supabase not initialized', count: 0 };
+  if (!ids || ids.length === 0) return { error: null, count: 0 };
+  try {
+    const { data, error } = await _sb
+      .from('activity_logs')
+      .delete()
+      .in('id', ids)
+      .select('id');
+    if (error) return { error: error.message, count: 0 };
+    return { error: null, count: data ? data.length : 0 };
+  } catch (err) {
+    return { error: String(err), count: 0 };
   }
 }
 
