@@ -2,9 +2,22 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.1.0',
+  current: '3.2.0',
   date: '2026-05-27',
   history: [
+    {
+      version: '3.2.0',
+      date: '2026-05-27',
+      title: 'TASK-013C: 달란트 지급 방식 개편',
+      changes: [
+        'talent_items 테이블 신규 생성 (학생/교사별 지급 항목)',
+        'talent_transactions에 talent_item_id 컬럼 추가',
+        'give_talent RPC 업데이트: 항목 기반 지급 + 학생 주 1회 규칙',
+        'admin/talent-items.html 신규: 달란트 지급 항목 관리 (admin/evangelist)',
+        'admin/talents.html 개선: 항목 버튼 기반 지급 UI + 수동 입력 옵션',
+        '초기 데이터: 학생 8항목, 교사 5항목'
+      ]
+    },
     {
       version: '3.1.0',
       date: '2026-05-27',
