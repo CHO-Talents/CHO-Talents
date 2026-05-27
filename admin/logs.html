@@ -68,11 +68,11 @@
         <thead>
           <tr>
             <th>시간 (KST)</th><th>레벨</th><th>액션</th><th>페이지</th>
-            <th>사용자</th><th>상태</th><th></th>
+            <th>사용자</th><th>클라이언트</th><th>상태</th><th></th>
           </tr>
         </thead>
         <tbody id="logsList">
-          <tr><td colspan="7" class="empty-state">로딩 중...</td></tr>
+          <tr><td colspan="8" class="empty-state">로딩 중...</td></tr>
         </tbody>
       </table>
 
@@ -95,9 +95,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.3.2"></script>
-  <script src="../js/activity-log.js?v=3.3.2"></script>
-  <script src="../js/auth.js?v=3.3.2"></script>
+  <script src="../js/supabase-config.js?v=3.3.3"></script>
+  <script src="../js/activity-log.js?v=3.3.3"></script>
+  <script src="../js/auth.js?v=3.3.3"></script>
   <script>
     initSupabase();
     let session;
@@ -201,7 +201,7 @@
       title.textContent = `활동 로그 (${logs.length}건)`;
 
       if (logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
+        tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">
           <div class="empty-state-icon">&#128196;</div><p>해당 조건의 로그가 없습니다.</p></div></td></tr>`;
         renderPagination(0);
         return;
@@ -217,12 +217,17 @@
         const actionHtml = isError && !l.is_acknowledged
           ? `<button class="btn-ack" onclick="openAckModal('${l.id}')">확인</button>`
           : '';
+        const ci = l.details?._client;
+        const clientHtml = ci
+          ? `<span style="font-size:0.72rem;line-height:1.3;display:block;cursor:pointer;" title="IP: ${ci.ip||'-'}\n브라우저: ${ci.browser||'-'}\nOS: ${ci.os||'-'}\n해상도: ${ci.screenRes||'-'}\n창: ${ci.windowSize||'-'}\n기기: ${ci.deviceType||'-'}\n언어: ${ci.language||'-'}">${ci.ip||'-'}<br/>${ci.browser||'-'}<br/>${ci.deviceType||'-'}</span>`
+          : '<span style="font-size:0.72rem;color:#adb5bd;">-</span>';
         return `<tr>
           <td>${formatKST(l.created_at)}</td>
           <td><span class="level-badge ${l.level}">${l.level}</span></td>
           <td>${l.action}</td>
           <td>${l.page || '-'}</td>
           <td>${l.username || '-'}</td>
+          <td>${clientHtml}</td>
           <td>${ackHtml}</td>
           <td>${actionHtml}</td>
         </tr>`;
@@ -311,6 +316,6 @@
       if (e.target.classList.contains('modal-overlay')) closeAckModal();
     });
   </script>
-  <script src="../js/version.js?v=3.3.2"></script>
+  <script src="../js/version.js?v=3.3.3"></script>
 </body>
 </html>

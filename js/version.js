@@ -2,9 +2,20 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.3.2',
+  current: '3.3.3',
   date: '2026-05-27',
   history: [
+    {
+      version: '3.3.3',
+      date: '2026-05-27',
+      title: '로그 개선: 클라이언트 정보 수집 (IP, 브라우저, OS, 해상도, 기기유형, 언어)',
+      changes: [
+        'activity-log.js: getClientInfo() 함수 추가 - IP, 브라우저, OS, 화면 해상도, 창 크기, 디바이스 유형, 언어 수집',
+        'activity-log.js: writeLog()에 자동으로 _client 정보 병합',
+        'activity-log.js: IP 주소 비동기 조회 (ipify.org API) + 캐싱',
+        'admin/logs.html: 클라이언트 정보 컬럼 추가 (IP, 브라우저, 기기유형 표시 + 툴팁으로 전체 정보)'
+      ]
+    },
     {
       version: '3.3.2',
       date: '2026-05-27',
