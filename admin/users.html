@@ -168,11 +168,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.6"></script>
-  <script src="../js/activity-log.js?v=3.7.6"></script>
-  <script src="../js/auth.js?v=3.7.6"></script>
-  <script src="../js/user-mgmt.js?v=3.7.6"></script>
-  <script src="../js/version.js?v=3.7.6"></script>
+  <script src="../js/supabase-config.js?v=3.7.7"></script>
+  <script src="../js/activity-log.js?v=3.7.7"></script>
+  <script src="../js/auth.js?v=3.7.7"></script>
+  <script src="../js/user-mgmt.js?v=3.7.7"></script>
+  <script src="../js/version.js?v=3.7.7"></script>
   <script>
     initSupabase();
     let session;
@@ -420,7 +420,9 @@
       document.getElementById('mUserType').value = 'student';
       document.getElementById('permLevelWrap').style.display = 'none';
       document.getElementById('mDept').value = '';
+      document.getElementById('mDept').disabled = false;
       document.getElementById('mClassNumber').value = '';
+      document.getElementById('mClassNumber').disabled = false;
       document.getElementById('classWrap').style.display = 'none';
       document.getElementById('mManagedDept').value = '';
       document.getElementById('managedDeptWrap').style.display = 'none';
@@ -445,8 +447,10 @@
         document.getElementById('permLevelWrap').style.display = 'none';
       }
       document.getElementById('mDept').value = u.department_id || '';
+      document.getElementById('mDept').disabled = true;
       onDeptChange();
       document.getElementById('mClassNumber').value = u.class_number || '';
+      document.getElementById('mClassNumber').disabled = true;
       document.getElementById('mManagedDept').value = u.managed_dept_id || '';
       document.getElementById('managedDeptWrap').style.display = MGMT_LEVELS.includes(u.permission_level) ? 'block' : 'none';
       document.getElementById('passwordWrap').style.display = 'none';
