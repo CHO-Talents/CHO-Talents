@@ -36,7 +36,7 @@
     </div>
 
     <!-- 가입 신청 내역 -->
-    <div class="admin-table-wrap" id="reqSection" style="margin-bottom:1.5rem;display:none;">
+    <div class="admin-table-wrap" id="reqSection" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
         <div class="admin-table-title" id="reqTitle" style="color:#e67700;">📝 가입 신청 내역</div>
       </div>
@@ -297,10 +297,11 @@
     }
 
     function renderRequests() {
-      const section = document.getElementById('reqSection');
-      if (allRequests.length === 0) { section.style.display = 'none'; return; }
-      section.style.display = 'block';
       document.getElementById('reqTitle').textContent = `📝 가입 신청 내역 (${allRequests.length}건)`;
+      if (allRequests.length === 0) {
+        document.getElementById('reqList').innerHTML = '<tr><td colspan="7" class="empty-state">대기 중인 가입 신청이 없습니다.</td></tr>';
+        return;
+      }
       const tbody = document.getElementById('reqList');
       tbody.innerHTML = allRequests.map(r => {
         const rb = ROLE_BADGES[r.role] || ROLE_BADGES.student;
