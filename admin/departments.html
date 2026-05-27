@@ -12,7 +12,7 @@
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-      <li data-min-perm="80"><a href="departments.html" class="active">부서 관리</a></li>
+      <li data-min-perm="60"><a href="departments.html" class="active">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
@@ -64,10 +64,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.2"></script>
-  <script src="../js/activity-log.js?v=3.7.2"></script>
-  <script src="../js/auth.js?v=3.7.2"></script>
-  <script src="../js/user-mgmt.js?v=3.7.2"></script>
+  <script src="../js/supabase-config.js?v=3.7.3"></script>
+  <script src="../js/activity-log.js?v=3.7.3"></script>
+  <script src="../js/auth.js?v=3.7.3"></script>
+  <script src="../js/user-mgmt.js?v=3.7.3"></script>
   <script>
     initSupabase();
     let session;
@@ -75,7 +75,7 @@
     let allUsers = [];
     let allDeptData = [];
     (async () => {
-      session = await initPage(80, '../login.html');
+      session = await initPage(60, '../login.html');
       if (!session) return;
       applyPermNav(session.permissionRank || 0);
       if (session) {
@@ -83,6 +83,10 @@
         autoLogPageView();
         updatePendingBadge();
         updateBadge();
+        const myRank = session.permissionRank || 0;
+        if (myRank < 90) {
+          document.querySelector('.filter-btn[onclick="openAddModal()"]').style.display = 'none';
+        }
         loadDepts();
       }
     })();
@@ -99,20 +103,29 @@
         .select('id, username, user_type, permission_level, department_id, managed_dept_id, display_name');
       allUsers = users || [];
 
-      const tbody = document.getElementById('deptList');
-      document.getElementById('tableTitle').textContent = `부서 목록 (${(depts||[]).length}개)`;
+      const myRank = session.permissionRank || 0;
+      const myManagedDept = session.managedDeptId || session.departmentId;
 
-      if (!depts || depts.length === 0) {
+      let filteredDepts = depts || [];
+      if (myRank < 80) {
+        filteredDepts = myManagedDept ? filteredDepts.filter(d => d.id === myManagedDept) : [];
+      }
+
+      const tbody = document.getElementById('deptList');
+      document.getElementById('tableTitle').textContent = `부서 목록 (${filteredDepts.length}개)`;
+
+      if (filteredDepts.length === 0) {
         tbody.innerHTML = '<tr><td colspan="10" class="empty-state">등록된 부서가 없습니다.</td></tr>';
+        allDeptData = [];
         return;
       }
 
-      allDeptData = depts;
-      tbody.innerHTML = depts.map(d => {
+      allDeptData = filteredDepts;
+      tbody.innerHTML = filteredDepts.map(d => {
         const deptUsers = (users||[]).filter(u => u.department_id === d.id);
         const admins = deptUsers.filter(u => u.permission_level === 'admin');
         const deptMgrs = deptUsers.filter(u => ['evangelist', 'chief', 'dept_teacher'].includes(u.permission_level));
-        const teachers = deptUsers.filter(u => u.user_type === 'teacher' && !['admin', 'evangelist', 'chief', 'dept_teacher'].includes(u.permission_level));
+        const teachers = deptUsers.filter(u => u.user_type === 'teacher');
         const students = deptUsers.filter(u => u.user_type === 'student');
         const managers = (users||[]).filter(u => u.managed_dept_id === d.id && ['admin', 'evangelist', 'chief', 'dept_teacher'].includes(u.permission_level));
         const managerNames = managers.map(m => {
@@ -132,8 +145,8 @@
           <td>${students.length}명</td>
           <td style="font-size:0.8rem;">${managerNames}</td>
           <td>
-            <button class="filter-btn" onclick="openEditModal('${d.id}')">수정</button>
-            <button class="btn-ack" onclick="confirmDelete('${d.id}','${d.name}')">삭제</button>
+            ${(myRank >= 90 || d.id === myManagedDept) ? `<button class="filter-btn" onclick="openEditModal('${d.id}')">수정</button>` : ''}
+            ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${d.id}','${d.name}')">삭제</button>` : ''}
             <button class="filter-btn" onclick="showMembers('${d.name}', '${d.id}')">소속보기</button>
           </td>
         </tr>`;
@@ -237,6 +250,6 @@
 
     document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.7.2"></script>
+  <script src="../js/version.js?v=3.7.3"></script>
 </body>
 </html>

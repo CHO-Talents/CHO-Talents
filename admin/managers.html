@@ -12,7 +12,7 @@
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-      <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
+      <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html" class="active">관리자 관리</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
@@ -95,10 +95,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.2"></script>
-  <script src="../js/activity-log.js?v=3.7.2"></script>
-  <script src="../js/auth.js?v=3.7.2"></script>
-  <script src="../js/user-mgmt.js?v=3.7.2"></script>
+  <script src="../js/supabase-config.js?v=3.7.3"></script>
+  <script src="../js/activity-log.js?v=3.7.3"></script>
+  <script src="../js/auth.js?v=3.7.3"></script>
+  <script src="../js/user-mgmt.js?v=3.7.3"></script>
   <script>
     initSupabase();
     let session;
@@ -141,7 +141,7 @@
       { value: 'admin', label: '관리자', rank: 100 }
     ];
     function buildMgrPermOptions(maxRank, selectedValue) {
-      return PERM_LEVELS.filter(l => l.rank <= maxRank)
+      return PERM_LEVELS.filter(l => l.rank < maxRank)
         .map(l => `<option value="${l.value}" ${l.value === selectedValue ? 'selected' : ''}>${PERMISSION_EMOJI[l.value]||''} ${l.label}</option>`)
         .join('');
     }
@@ -164,9 +164,21 @@
 
     async function loadManagers() {
       const { data } = await fetchUsers();
-      allManagers = (data || []).filter(u =>
+      const myRank = session.permissionRank || 0;
+      let managers = (data || []).filter(u =>
         u.permission_level === 'admin' || DEPT_MGR_LEVELS.includes(u.permission_level)
       );
+
+      if (myRank < 90) {
+        const myManagedDept = session.managedDeptId || session.departmentId;
+        if (myManagedDept) {
+          managers = managers.filter(u => u.department_id === myManagedDept || u.managed_dept_id === myManagedDept);
+        } else {
+          managers = [];
+        }
+      }
+
+      allManagers = managers;
       renderManagers();
     }
 
@@ -207,7 +219,7 @@
         const isSelf = u.id === session.id;
         const targetRank = getPermRank(u.permission_level);
         const isSuperAdmin = u.is_super_admin || false;
-        const canManage = isSelf || (myRank >= targetRank && (!isSuperAdmin || session.isSuperAdmin));
+        const canManage = isSelf || (myRank > targetRank && (!isSuperAdmin || session.isSuperAdmin));
         return `<tr>
           <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
           <td>${dn}${showId ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
@@ -366,6 +378,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.7.2"></script>
+  <script src="../js/version.js?v=3.7.3"></script>
 </body>
 </html>

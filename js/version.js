@@ -2,9 +2,23 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.7.2',
+  current: '3.7.3',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.7.3',
+      date: '2026-05-28',
+      title: '권한 기반 부서/사용자 관리 스코핑 + 교사 카운트 수정',
+      changes: [
+        'departments.html: 교사 수 카운트에 user_type=teacher 전체 포함 (관리자~일반교사)',
+        'users.html/managers.html: 본인 권한보다 낮은 사용자만 관리 가능 (>= → >)',
+        'users.html/managers.html: 권한 부여 시 본인 권한 미만만 선택 가능',
+        'users.html/managers.html: 전도사님 미만(부장 이하) - 담당 부서 계정만 표시',
+        'departments.html: 부장 미만 - 담당 부서만 표시, 전도사님 미만 - 담당 부서만 관리',
+        'departments.html: 접근 권한 80→60 (부서 담당 교사도 접근 가능)',
+        'admin 전체(11개): 부서 관리 nav data-min-perm 80→60'
+      ]
+    },
     {
       version: '3.7.2',
       date: '2026-05-28',
