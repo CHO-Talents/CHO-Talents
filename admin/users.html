@@ -168,11 +168,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.5"></script>
-  <script src="../js/activity-log.js?v=3.7.5"></script>
-  <script src="../js/auth.js?v=3.7.5"></script>
-  <script src="../js/user-mgmt.js?v=3.7.5"></script>
-  <script src="../js/version.js?v=3.7.5"></script>
+  <script src="../js/supabase-config.js?v=3.7.6"></script>
+  <script src="../js/activity-log.js?v=3.7.6"></script>
+  <script src="../js/auth.js?v=3.7.6"></script>
+  <script src="../js/user-mgmt.js?v=3.7.6"></script>
+  <script src="../js/version.js?v=3.7.6"></script>
   <script>
     initSupabase();
     let session;
@@ -374,7 +374,7 @@
         return `<tr>
           <td><span class="level-badge ${u.user_type === 'student' ? 'DEBUG' : 'INFO'}">${typeEmoji} ${typeLabel}</span></td>
           <td><span class="level-badge ${rb.cls}">${permEmoji} ${permLabel}</span></td>
-          <td>${dn}${isSelf ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
+          <td>${dn}${(isSelf || _isAdmin()) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
           <td>${getDeptName(u.department_id)}</td>
           <td>${getClassLabel(u.class_number)}</td>
           <td style="font-weight:700;">${u.talent_balance || 0}</td>
