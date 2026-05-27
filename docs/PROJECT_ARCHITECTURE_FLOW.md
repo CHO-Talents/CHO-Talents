@@ -1,372 +1,316 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-05-26 KST 검증 결과  
+작성 기준: 2026-05-27 KST 현재 코드 기준
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
-문서 목적: 다음 검토자가 이 문서만 먼저 읽어도 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 시 주의할 지점을 빠르게 파악하도록 한다.
+문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
 ## 1. 프로젝트 목적
 
-CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시스템이다. 학생과 교사는 달란트 잔액과 상점 상품을 확인하고, 부서관리자와 관리자는 사용자, 부서, 상품, 달란트 지급/사용, 보고서, 로그를 관리한다.
-
-핵심 개발 목적은 다음과 같다.
+CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시스템이다. 학생과 교사는 본인의 달란트 잔액과 상점 물품을 확인하고, 부서 담당 교사 이상 운영자는 사용자, 부서, 물품, 달란트 지급/사용, 보고서, 로그를 관리한다.
 
 | 목적 | 설명 |
 |---|---|
-| 역할별 서비스 분리 | 관리자, 부서관리자, 교사, 학생이 각자 필요한 화면만 사용한다. |
-| 달란트 운영 관리 | 사용자의 달란트 적립/사용 내역과 잔액을 관리한다. |
-| 상품 교환 구조 | 학생용/교사용 상품을 구분해 조회하고 관리한다. |
-| 승인 기반 계정 운영 | 신규 계정 신청 후 관리자 승인 흐름으로 운영한다. |
-| 보안 강화 | Supabase Auth, JWT, RLS, SECURITY DEFINER RPC 기반으로 민감 데이터 직접 접근을 막는다. |
-| 운영 추적 | 활동 로그와 보고서 화면으로 운영 상태를 확인한다. |
+| 역할별 화면 분리 | 사용자 권한에 따라 필요한 메뉴와 화면만 표시한다. |
+| 달란트 운영 관리 | 적립/사용 내역과 잔액을 `profiles`, `talent_transactions` 중심으로 관리한다. |
+| 상품 교환 구조 | 학생용/교사용 상품을 구분해 조회하고 운영자가 교환 처리를 한다. |
+| 승인 기반 계정 운영 | 신규 사용자는 신청 후 관리자 승인으로 계정이 생성된다. |
+| 운영 추적 | 페이지 방문, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. |
+| 보안 강화 | Supabase Auth, RLS, SECURITY DEFINER RPC로 민감 데이터 접근을 제한한다. |
 
-## 2. 전체 시스템 구성도
+## 2. 전체 시스템 구성
 
 ```mermaid
 flowchart LR
   User["사용자 브라우저"] --> Pages["GitHub Pages 정적 화면<br/>HTML/CSS/Vanilla JS"]
 
   Pages --> AuthJS["js/auth.js<br/>로그인/세션/권한"]
+  Pages --> LogJS["js/activity-log.js<br/>로그/세션 캐시"]
   Pages --> UserMgmt["js/user-mgmt.js<br/>사용자/부서 관리"]
   Pages --> TalentJS["js/talent.js<br/>달란트 조회/처리"]
-  Pages --> ProductJS["js/product.js<br/>상품 조회/관리"]
-  Pages --> LogJS["js/activity-log.js<br/>활동 로그"]
+  Pages --> ProductJS["js/product.js<br/>물품 조회/관리"]
   Pages --> VersionJS["js/version.js<br/>버전 이력"]
 
-  AuthJS --> SupabaseAuth["Supabase Auth<br/>email/password JWT"]
-  UserMgmt --> RPC["Supabase RPC<br/>SECURITY DEFINER"]
+  AuthJS --> Auth["Supabase Auth"]
+  UserMgmt --> RPC["Supabase RPC"]
   TalentJS --> RPC
-  ProductJS --> Rest["Supabase REST<br/>RLS 적용"]
+  ProductJS --> Rest["Supabase REST / Storage"]
   LogJS --> Rest
 
-  SupabaseAuth --> DB["Supabase PostgreSQL"]
+  Auth --> DB["Supabase PostgreSQL"]
   RPC --> DB
   Rest --> DB
 
   DB --> Profiles["profiles"]
   DB --> Departments["departments"]
   DB --> Products["products"]
+  DB --> Items["talent_items"]
   DB --> Transactions["talent_transactions"]
+  DB --> Requests["registration_requests"]
   DB --> Reports["reports"]
   DB --> Logs["activity_logs"]
-  DB --> Requests["registration_requests"]
+  DB --> PagePerms["page_permissions"]
 ```
 
 ## 3. 폴더 및 파일 구성
 
 | 경로 | 역할 |
 |---|---|
-| `index.html` | 메인 진입 화면. 상점/로그인 등 공개 진입점 제공 |
-| `login.html` | 통합 로그인 화면. 모든 역할이 이 화면으로 로그인 |
-| `register.html` | 계정 등록 신청 화면. 부서 선택 및 아이디 중복확인 |
-| `earn-talents.html` | 달란트 적립 안내 공개 화면 |
-| `admin/` | 관리자 전용 화면 묶음 |
-| `manager/` | 부서관리자 중심 화면 묶음 |
-| `teacher/` | 교사 전용 상점/내 달란트 화면 |
-| `student/` | 학생 상점/내 달란트 화면 |
-| `css/common.css` | 전체 공통 스타일 |
-| `css/admin.css` | 관리자/부서관리자 계열 화면 스타일 |
-| `js/supabase-config.js` | Supabase URL, anon key, Auth 도메인, 공통 유틸 |
-| `js/auth.js` | 로그인, 로그아웃, 세션 로드, 권한 체크, 비밀번호 변경 |
-| `js/activity-log.js` | 로그 기록/조회, 세션 캐시, 페이지뷰 기록 |
-| `js/user-mgmt.js` | 사용자/부서 관리. 사용자 CRUD는 RPC 기반 |
-| `js/talent.js` | 달란트 잔액/거래 내역/지급/사용 처리 |
-| `js/product.js` | 상품 조회/등록/수정/삭제 |
-| `js/version.js` | 화면에 표시되는 버전 이력 데이터 |
-| `docs/` | 작업 계획, 변경 보고서, 테스트 결과, 본 구성 문서 |
+| `index.html` | 메인 진입 화면. 상점, 로그인, 적립 안내, 내 달란트로 이동 |
+| `login.html` | 통합 로그인. 모든 사용자가 같은 화면에서 로그인 |
+| `register.html` | 계정 등록 신청. 아이디 중복확인 후 승인 대기 등록 |
+| `earn-talents.html` | 달란트 적립 방법 안내 |
+| `shop.html` | 상점 조회. 비로그인은 학생용, 교사/운영자는 추가 탭 표시 |
+| `my-talents.html` | 로그인 사용자 본인의 달란트 요약/내역 |
+| `admin/index.html` | 80등급 이상 대시보드 |
+| `admin/users.html` | 60등급 이상 사용자 관리. 가입 신청 처리는 80등급 이상 |
+| `admin/departments.html` | 80등급 이상 부서 관리 |
+| `admin/managers.html` | 80등급 이상 관리자 계열 권한 관리 |
+| `admin/talents.html` | 60등급 이상 학생/교사 달란트 처리 |
+| `admin/talent-items.html` | 90등급 이상 달란트 지급 항목 관리 |
+| `admin/shop.html` | 60등급 이상 물품 관리 |
+| `admin/reports.html` | 80등급 이상 보고서 조회 |
+| `admin/logs.html` | 80등급 이상 로그 조회 및 확인 처리 |
+| `admin/versions.html` | 80등급 이상 버전 이력 확인 |
+| `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리. 상단 메뉴에는 노출되지 않으며 직접 주소로 접근 |
+| `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
+| `css/` | 메인, 공통, 관리자 스타일 |
+| `js/` | Supabase 설정, 인증, 로그, 사용자/달란트/물품/버전 모듈 |
+| `docs/` | 작업 기록, SQL, 구성 문서, 사용자 안내서 |
 
-## 4. 권한 및 기본 이동 경로
+## 4. 권한 구조
 
-통합 로그인 후 `js/auth.js`의 `ROLE_REDIRECT` 기준으로 역할별 기본 페이지가 결정된다.
+현재 권한은 `permission_level`을 숫자 등급으로 환산해 비교한다. `user_type`은 학생/교사 구분이고, 실제 화면 접근은 `permission_level`이 결정한다.
 
-| 권한 | 역할 코드 | 기본 이동 | 주요 기능 |
-|---|---|---|---|
-| 관리자 | `admin` | `admin/index.html` | 전체 사용자/부서/관리자/상품/보고서/로그/버전 관리 |
-| 부서관리자 | `dept_manager` | `manager/index.html` | 담당 부서 학생/교사/상품/달란트 관리 |
-| 교사 | `teacher` | `teacher/my-talents.html` | 교사 상점, 내 달란트 확인 |
-| 학생 | `student` | `student/my-talents.html` | 학생 상점, 내 달란트 확인 |
-| 비로그인 | 없음 | `login.html` 또는 공개 페이지 | 메인, 등록 신청, 적립 안내, 일부 공개 조회 |
+| 권한 | 코드 | 등급 | 기본 이동 | 설명 |
+|---|---|---:|---|---|
+| 관리자 | `admin` | 100 | `admin/index.html` | 전체 운영 관리, 페이지 권한 관리 |
+| 전도사님 | `evangelist` | 90 | `admin/index.html` | 관리자 계열 운영, 달란트 항목/물품 삭제 가능 |
+| 부장 | `chief` | 80 | `admin/index.html` | 대시보드, 부서, 관리자, 보고서, 로그, 버전 관리 |
+| 부서 담당 교사 | `dept_teacher` | 60 | `admin/talents.html` | 사용자/달란트/물품 관리 |
+| 일반 교사 | `teacher` | 40 | `my-talents.html` | 내 달란트, 교사용/학생용 상점 조회 |
+| 학생 | `student` | 20 | `my-talents.html` | 내 달란트, 학생용 상점 조회 |
+| 비로그인 | 없음 | 0 | 공개 페이지 | 메인, 적립 안내, 학생용 상점, 계정 신청 |
 
-권한 체크는 보호 페이지의 `initPage(allowedRoles, loginPath)` 호출로 수행한다. 접근 권한이 없으면 로그인 페이지가 아니라 해당 사용자의 역할 기본 페이지로 돌려보내는 구조다.
+권한 제어 기준:
 
-## 5. 화면 구성도
+| 기준 | 구현 위치 | 내용 |
+|---|---|---|
+| 페이지 진입 | `initPage(minRank, loginPath)` | 로그인, 최초 비밀번호 변경, 최소 등급을 확인 |
+| 메뉴 노출 | `data-min-perm`, `applyPermNav()` | 현재 등급보다 높은 메뉴는 숨김 |
+| 권한 비교 | `PERMISSION_RANK` | `admin:100`부터 `student:20`까지 숫자 비교 |
+| 사용자 관리 | `admin_update_user`, `admin_delete_user` 등 RPC | 상위 권한자/최고관리자 보호 |
+| 데이터 접근 | Supabase RLS | 익명/저권한 직접 조회 제한 |
+
+## 5. 화면 연결 구조
 
 ```mermaid
 flowchart TD
-  Public["공개 영역"] --> Index["index.html"]
+  Public["공개 영역"] --> Home["index.html"]
+  Public --> Earn["earn-talents.html"]
+  Public --> Shop["shop.html"]
   Public --> Login["login.html"]
   Public --> Register["register.html"]
-  Public --> Earn["earn-talents.html"]
-  Public --> StudentShop["student/shop.html<br/>현재 공개 조회 가능 또는 보호 전환 후보"]
 
-  Login --> AdminArea["admin 영역"]
-  Login --> ManagerArea["manager 영역"]
-  Login --> TeacherArea["teacher 영역"]
-  Login --> StudentArea["student 영역"]
+  Home --> Earn
+  Home --> Shop
+  Home --> MyTalents["my-talents.html"]
+  Login --> Password{"최초 로그인?"}
+  Password -->|예| ChangePassword["admin/change-password.html"]
+  Password -->|아니오| RoleRedirect["권한별 기본 페이지"]
 
-  AdminArea --> AdminDash["admin/index.html"]
-  AdminArea --> AdminUsers["admin/users.html"]
-  AdminArea --> AdminDepartments["admin/departments.html"]
-  AdminArea --> AdminManagers["admin/managers.html"]
-  AdminArea --> AdminProducts["admin/products.html"]
-  AdminArea --> AdminReports["admin/reports.html"]
-  AdminArea --> AdminLogs["admin/logs.html"]
-  AdminArea --> AdminVersions["admin/versions.html"]
-  AdminArea --> ChangePassword["admin/change-password.html"]
+  RoleRedirect --> AdminDash["admin/index.html<br/>admin/evangelist/chief"]
+  RoleRedirect --> DeptTeacher["admin/talents.html<br/>dept_teacher"]
+  RoleRedirect --> MyTalents
 
-  ManagerArea --> ManagerDash["manager/index.html"]
-  ManagerArea --> ManagerStudents["manager/students.html"]
-  ManagerArea --> ManagerTeachers["manager/teachers.html"]
-  ManagerArea --> ManagerProducts["manager/products.html"]
-  ManagerArea --> ManagerTalents["manager/my-talents.html"]
-
-  TeacherArea --> TeacherShop["teacher/shop.html"]
-  TeacherArea --> TeacherTalents["teacher/my-talents.html"]
-
-  StudentArea --> StudentTalents["student/my-talents.html"]
+  AdminDash --> Users["admin/users.html"]
+  AdminDash --> Departments["admin/departments.html"]
+  AdminDash --> Managers["admin/managers.html"]
+  AdminDash --> Talents["admin/talents.html"]
+  AdminDash --> TalentItems["admin/talent-items.html"]
+  AdminDash --> AdminShop["admin/shop.html"]
+  AdminDash --> Reports["admin/reports.html"]
+  AdminDash --> Logs["admin/logs.html"]
+  AdminDash --> Versions["admin/versions.html"]
+  AdminDash -.-> PagePerms["admin/page-permissions.html<br/>직접 주소 접근"]
 ```
 
-## 6. 로그인 및 세션 흐름도
+## 6. 로그인 및 세션 흐름
 
 ```mermaid
 flowchart TD
   Start["login.html 접속"] --> Input["아이디/비밀번호 입력"]
-  Input --> Email["아이디 + AUTH_EMAIL_DOMAIN<br/>예: test01@cho-talents.app"]
-  Email --> SignIn["Supabase Auth<br/>signInWithPassword"]
-  SignIn -->|실패| LoginError["오류 메시지 표시"]
-  SignIn -->|성공| Profile["RPC get_my_profile 호출"]
-  Profile --> Session["sessionStorage cho_session 저장"]
-  Session --> FirstLogin{"is_first_login?"}
-  FirstLogin -->|true| ChangePassword["admin/change-password.html 이동"]
-  FirstLogin -->|false| RoleRedirect["ROLE_REDIRECT 기준 역할별 페이지 이동"]
+  Input --> Email["아이디 + @cho-talents.app"]
+  Email --> SignIn["Supabase Auth signInWithPassword"]
+  SignIn -->|실패| LoginFail["LOGIN_FAIL 로그 / 오류 메시지"]
+  SignIn -->|성공| Profile["RPC get_my_profile"]
+  Profile --> Cache["sessionStorage cho_session 저장"]
+  Cache --> FirstLogin{"is_first_login?"}
+  FirstLogin -->|true| Change["admin/change-password.html"]
+  FirstLogin -->|false| Redirect["PERMISSION_REDIRECT 기준 이동"]
 ```
 
-현재 검증에서 모든 테스트 계정은 최초 로그인 상태로 확인되었다.
+보호 페이지는 `initPage()`에서 다음 순서로 처리한다.
 
-| 테스트 계정 | 권한 | 로그인 직후 확인된 이동 |
-|---|---|---|
-| `test01 / 1234` | 관리자 | `admin/change-password.html` |
-| `test02 / 1234` | 부서관리자 | `admin/change-password.html` |
-| `test03 / 1234` | 교사 | `admin/change-password.html` |
-| `test04 / 1234` | 학생 | `admin/change-password.html` |
+1. Supabase Auth 세션 확인
+2. 프로필/권한 로드
+3. 최초 로그인 상태면 비밀번호 변경 화면으로 이동
+4. 최소 권한 미달이면 본인 권한 기본 화면으로 이동
+5. 통과 시 `auth-ready` 적용, 역할 배지/메뉴/페이지 데이터 로드
 
-## 7. 보호 페이지 초기화 흐름도
-
-대부분의 보호 페이지는 아래 패턴을 따른다.
+## 7. 신규 계정 신청 흐름
 
 ```mermaid
 flowchart TD
-  PageOpen["보호 페이지 직접 접근"] --> InitSupabase["initSupabase"]
-  InitSupabase --> InitPage["initPage(allowedRoles, loginPath)"]
-  InitPage --> LoadSession["loadAuthSession<br/>Supabase Auth 세션 확인"]
-  LoadSession --> HasSession{"세션 있음?"}
-  HasSession -->|없음| ToLogin["login.html 이동"]
-  HasSession -->|있음| RoleCheck{"allowedRoles 포함?"}
-  RoleCheck -->|아니오| ToRolePage["역할 기본 페이지 이동"]
-  RoleCheck -->|예| Ready["auth-ready 적용"]
-  Ready --> Badge["역할 배지 표시"]
-  Badge --> PageLog["PAGE_VIEW 로그 기록"]
-  PageLog --> LoadData["화면 데이터 조회/렌더링"]
+  Guest["비로그인 사용자"] --> Register["register.html"]
+  Register --> Check["check_username_available RPC"]
+  Check -->|중복| Duplicate["중복 안내"]
+  Check -->|사용 가능| Submit["registration_requests INSERT"]
+  Submit --> AdminReview["admin/users.html 가입 신청 목록"]
+  AdminReview --> Decision{"승인 또는 거부"}
+  Decision -->|승인| Create["admin_create_user RPC"]
+  Decision -->|거부| Reject["거부 상태/사유 저장"]
+  Create --> Login["초기 비밀번호 1234로 로그인"]
+  Login --> Change["최초 비밀번호 변경"]
 ```
 
-검증상 주의사항:
+## 8. 사용자/부서/관리자 관리 흐름
 
-| 항목 | 내용 |
+```mermaid
+flowchart TD
+  Operator["60등급 이상 운영자"] --> Users["admin/users.html"]
+  Users --> List["admin_list_users RPC"]
+  Users --> Create["admin_create_user RPC"]
+  Users --> Update["admin_update_user RPC"]
+  Users --> Reset["admin_reset_password RPC"]
+  Users --> Delete["admin_delete_user RPC"]
+
+  Chief["80등급 이상"] --> Departments["admin/departments.html"]
+  Departments --> DeptCRUD["departments 등록/수정/비활성화"]
+
+  Chief --> Managers["admin/managers.html"]
+  Managers --> Promote["기존 사용자를 관리자 계열 권한으로 승격/수정"]
+```
+
+운영 제약:
+
+| 항목 | 기준 |
 |---|---|
-| 최초 비밀번호 변경 강제 | 로그인 직후 변경 페이지 이동은 동작하나, `initPage()` 중앙에서 `isFirstLogin`을 강제하지 않으면 직접 URL 우회가 가능하다. |
-| 관리자 페이지 권한 | `admin/reports.html`, `admin/logs.html`은 `initPage(['admin'], '../login.html')` 기반으로 관리자만 접근 가능하도록 수정 확인했다. |
-| 학생 상점 정책 | `student/shop.html`은 현재 `initPage()`가 아니라 `loadAuthSession()`만 사용한다. 공개 조회 의도라면 정상, 보호 페이지 의도라면 수정 대상이다. |
+| 사용자 등록/수정 | 본인 이하 등급 중심으로 가능. 실제 검증은 RPC에서 수행 |
+| 아이디 표시 | 관리자에게만 아이디 노출. 그 외에는 이름 중심 표시 |
+| 동명이인 | 같은 이름/유형/부서면 `①`, `②` 번호를 붙여 표시 |
+| 최고관리자 | `is_super_admin` 사용자는 삭제/수정 보호 |
+| 담당 부서 | 관리 권한 계열은 담당 관리 부서를 지정할 수 있음 |
 
-## 8. 신규 계정 신청 흐름도
-
-```mermaid
-flowchart TD
-  User["비로그인 사용자"] --> Register["register.html"]
-  Register --> Input["희망 아이디, 이름, 부서, 신청 사유 입력"]
-  Input --> CheckId["RPC check_username_available"]
-  CheckId -->|중복| Duplicate["중복 메시지 표시"]
-  CheckId -->|사용 가능| Submit["신청하기"]
-  Submit --> InsertRequest["registration_requests INSERT"]
-  InsertRequest --> AdminReview["관리자 users.html 신청 내역 확인"]
-  AdminReview --> Approve{"승인?"}
-  Approve -->|승인| CreateUser["admin_create_user RPC<br/>auth.users + profiles 생성"]
-  Approve -->|거절| Reject["신청 상태 거절 처리"]
-  CreateUser --> FirstPassword["초기 비밀번호로 로그인<br/>최초 변경 필요"]
-```
-
-운영 관점에서 신규 계정은 `profiles` 생성 후 `is_first_login = true`로 두고, 최초 로그인 시 비밀번호 변경을 요구하는 흐름이 적합하다.
-
-## 9. 사용자 및 부서 관리 흐름도
+## 9. 달란트 처리 흐름
 
 ```mermaid
 flowchart TD
-  Admin["관리자 또는 부서관리자"] --> UserPage["admin/users.html 또는 manager/students.html/teachers.html"]
-  UserPage --> ListUsers["admin_list_users RPC"]
-  ListUsers --> Render["역할/부서/달란트/등록일 표시"]
-  Render --> Action{"관리 작업"}
-  Action --> Create["admin_create_user RPC"]
-  Action --> Update["admin_update_user RPC"]
-  Action --> Reset["admin_reset_password RPC"]
-  Action --> Delete["admin_delete_user RPC"]
-  Create --> Log["USER_CREATE 로그"]
-  Update --> Log
-  Reset --> Log
-  Delete --> Log
+  Manager["60등급 이상"] --> TalentPage["admin/talents.html"]
+  TalentPage --> Target["학생/교사 탭에서 대상 선택"]
+  Target --> Earn["지급 항목 선택 또는 수동 적립"]
+  Target --> Use["사용 금액/사유 입력"]
+  Earn --> GiveRPC["give_talent RPC"]
+  Use --> UseRPC["use_talent RPC"]
+  GiveRPC --> Tx["talent_transactions 기록"]
+  UseRPC --> Tx
+  Tx --> Balance["profiles.talent_balance 갱신"]
+  Balance --> UserView["my-talents.html에서 조회"]
 ```
 
-권한 기준:
+`admin/talent-items.html`에서는 90등급 이상이 학생용/교사용 달란트 지급 항목을 관리한다.
 
-| 기능 | 관리자 | 부서관리자 | 교사 | 학생 |
-|---|---:|---:|---:|---:|
-| 전체 사용자 조회 | 가능 | 제한 가능 | 불가 | 불가 |
-| 사용자 생성/수정 | 가능 | 담당 범위 중심 | 불가 | 불가 |
-| 사용자 삭제 | 가능 | 제한 또는 불가 정책 권장 | 불가 | 불가 |
-| 비밀번호 초기화 | 가능 | 담당 범위 중심 | 불가 | 불가 |
-| 부서 생성/수정/삭제 | 가능 | 불가 | 불가 | 불가 |
-
-## 10. 달란트 처리 흐름도
+## 10. 물품 및 상점 흐름
 
 ```mermaid
 flowchart TD
-  Manager["관리자/부서관리자"] --> SelectUser["학생 또는 교사 선택"]
-  SelectUser --> TalentAction{"달란트 처리"}
-  TalentAction -->|적립| Give["give_talent RPC"]
-  TalentAction -->|사용| Use["use_talent RPC"]
-  Give --> Transaction["talent_transactions 기록"]
-  Use --> Transaction
-  Transaction --> Balance["profiles.talent_balance 갱신"]
-  Balance --> MyTalents["사용자 내 달란트 화면에서 조회"]
+  Manager["60등급 이상"] --> ManageShop["admin/shop.html"]
+  ManageShop --> ProductCRUD["products 등록/수정/조회"]
+  ManageShop --> Upload["Storage Talents_Items 이미지 업로드"]
+  ProductCRUD --> PublicShop["shop.html"]
+  PublicShop --> Student["학생용 물품"]
+  PublicShop --> Teacher["교사용 물품<br/>교사/60등급 이상"]
+  PublicShop --> Exchange["교환 시 운영자가 달란트 사용 처리"]
 ```
 
-조회 화면:
+정책:
 
-| 사용자 | 조회 화면 |
+| 항목 | 기준 |
 |---|---|
-| 부서관리자 | `manager/my-talents.html` |
-| 교사 | `teacher/my-talents.html` |
-| 학생 | `student/my-talents.html` |
+| 학생용 물품 | 비로그인도 조회 가능 |
+| 교사용 물품 | 로그인한 교사 또는 60등급 이상만 조회 |
+| 물품 등록/수정 | 60등급 이상 |
+| 물품 삭제 | 90등급 이상 |
+| 실제 구매 처리 | 상점에는 구매 버튼이 없고, 운영자가 달란트 사용으로 처리 |
 
-## 11. 상품 및 상점 흐름도
+## 11. 보고서 및 로그 흐름
 
 ```mermaid
 flowchart TD
-  AdminMgr["관리자/부서관리자"] --> ProductManage["admin/products.html 또는 manager/products.html"]
-  ProductManage --> ProductCRUD["products SELECT/INSERT/UPDATE/DELETE<br/>RLS로 권한 제한"]
-  ProductCRUD --> ProductList["학생용/교사용 상품 목록"]
+  Event["페이지 방문/로그인/오류/관리 작업"] --> WriteLog["activity_logs INSERT"]
+  WriteLog --> Logs["admin/logs.html"]
+  Logs --> Filter["레벨/기간 필터"]
+  Logs --> Ack["ERROR 이상 로그 확인 처리"]
 
-  ProductList --> StudentShop["student/shop.html<br/>학생용 상품 조회"]
-  ProductList --> TeacherShop["teacher/shop.html<br/>교사용 상품 조회"]
-  ProductList --> AdminShop["admin/shop.html<br/>전체 상품 조회"]
+  Docs["작업 문서/검증 결과"] --> ReportsTable["reports 테이블"]
+  ReportsTable --> Reports["admin/reports.html"]
+  Reports --> ReportView["유형별 필터/상세 보기"]
 ```
 
-검증 결과:
+로그 레벨은 `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`, `CRITICAL`을 사용한다. `ERROR`, `FATAL`, `CRITICAL`은 기본적으로 미확인 상태로 저장되고 운영자가 확인 내용을 남긴다.
 
-| 화면 | 확인 내용 |
+## 12. 주요 Supabase 리소스
+
+| 리소스 | 용도 |
 |---|---|
-| `admin/products.html` | 학생용/교사용 필터와 상품 목록 표시 확인 |
-| `manager/products.html` | 학생용/교사용 필터와 상품 목록 표시 확인 |
-| `teacher/shop.html` | 교사용 상품 카드 표시 확인 |
-| `student/shop.html` | 학생용 상품 카드 표시 확인 |
+| `profiles` | 사용자 유형, 권한, 부서, 달란트 잔액 |
+| `departments` | 부서명, 설명, 반 개수, 활성 상태 |
+| `registration_requests` | 가입 신청/승인/거부 |
+| `talent_items` | 달란트 지급 항목 |
+| `talent_transactions` | 달란트 적립/사용 내역 |
+| `products` | 상점 물품 |
+| `reports` | 작업 보고서 |
+| `activity_logs` | 활동/오류 로그 |
+| `page_permissions` | 페이지 권한 설정 |
+| `Talents_Items` | 물품 이미지 Storage 버킷 |
 
-## 12. 보고서 및 로그 흐름도
+## 13. 주요 RPC
 
-```mermaid
-flowchart TD
-  PageEvent["페이지 방문/로그인/오류/관리 작업"] --> LogWrite["activity_logs INSERT"]
-  LogWrite --> LogsPage["admin/logs.html"]
-  LogsPage --> Filter["레벨 필터<br/>TRACE/DEBUG/INFO/WARN/ERROR/FATAL/CRITICAL"]
-  Filter --> Ack["오류 로그 확인 처리<br/>개별 또는 일괄"]
+| RPC | 목적 |
+|---|---|
+| `get_my_profile` | 로그인 사용자 프로필/권한 조회 |
+| `check_username_available` | 가입 신청 아이디 중복확인 |
+| `admin_list_users` | 사용자 목록 조회 |
+| `admin_create_user` | Auth 사용자와 profile 생성 |
+| `admin_update_user` | 사용자 정보/권한 수정 |
+| `admin_delete_user` | 사용자 삭제 |
+| `admin_reset_password` | 비밀번호 `1234` 초기화 |
+| `change_my_password` | 본인 비밀번호 변경 및 최초 로그인 해제 |
+| `give_talent` | 달란트 적립 |
+| `use_talent` | 달란트 사용 |
 
-  Docs["docs 작업 문서"] --> ReportsTable["reports 테이블"]
-  ReportsTable --> ReportsPage["admin/reports.html"]
-  ReportsPage --> ReportFilter["유형 필터<br/>계획서/검증 시나리오/테스트 결과/수정 보고서"]
-```
+## 14. 빠른 검증 체크리스트
 
-권한 기준:
+1. `login.html`에서 로그인 성공/실패 메시지가 정상인지 확인한다.
+2. 최초 로그인 사용자가 `admin/change-password.html`로 강제 이동하는지 확인한다.
+3. 권한이 부족한 페이지 직접 접근 시 본인 기본 화면으로 이동하는지 확인한다.
+4. 비로그인 상태에서 `my-talents.html`이 로그인으로 이동하는지 확인한다.
+5. 비로그인 `shop.html`에서 학생용 물품만 조회되는지 확인한다.
+6. 교사 로그인 후 `shop.html`에서 교사용 탭이 보이는지 확인한다.
+7. 60등급 이상이 `admin/users.html`, `admin/talents.html`, `admin/shop.html`을 사용할 수 있는지 확인한다.
+8. 80등급 이상이 대시보드, 부서, 관리자, 보고서, 로그, 버전 화면을 사용할 수 있는지 확인한다.
+9. 90등급 이상만 `admin/talent-items.html`과 물품 삭제 버튼을 사용할 수 있는지 확인한다.
+10. 100등급만 `admin/page-permissions.html`에 접근 가능한지 확인한다.
+11. 오류 로그가 `admin/logs.html`에서 확인 처리되는지 확인한다.
 
-| 화면 | 접근 가능 권한 | 검증 결과 |
-|---|---|---|
-| `admin/reports.html` | 관리자 | 부서관리자/교사/학생 직접 접근 시 역할 페이지로 이동 확인 |
-| `admin/logs.html` | 관리자 | 부서관리자/교사/학생 직접 접근 시 역할 페이지로 이동 확인 |
-
-## 13. 데이터 접근 및 보안 구조
-
-```mermaid
-flowchart TD
-  Client["브라우저 JS"] --> AnonKey["Supabase publishable/anon key"]
-  AnonKey --> RLS["RLS 정책"]
-  RLS --> PublicRead{"공개 조회 테이블?"}
-  PublicRead -->|예| PublicTables["products, departments 등 공개 조회"]
-  PublicRead -->|아니오| EmptyOrDenied["빈 결과 또는 차단"]
-
-  Client --> AuthLogin["Supabase Auth 로그인"]
-  AuthLogin --> JWT["JWT 세션"]
-  JWT --> RPC["SECURITY DEFINER RPC"]
-  RPC --> RoleCheck["서버 측 역할 검증"]
-  RoleCheck --> Sensitive["profiles, users, talent, logs 등 민감 처리"]
-```
-
-검증된 익명 접근 상태:
-
-| 테이블/리소스 | 익명 조회 결과 | 판단 |
-|---|---|---|
-| `admin_users` | `[]` | 민감 데이터 차단 확인 |
-| `profiles` | `[]` | 사용자 정보 차단 확인 |
-| `reports` | `[]` | 보고서 데이터 차단 확인 |
-| `activity_logs` | `[]` | 로그 데이터 차단 확인 |
-| `products` | 데이터 반환 | 공개 상품 조회 의도 |
-| `departments` | 데이터 반환 | 등록/표시용 공개 부서 조회 의도 |
-
-## 14. 주요 Supabase RPC
-
-| RPC | 목적 | 주요 호출 파일 |
-|---|---|---|
-| `get_my_profile` | 로그인 사용자 프로필/권한 조회 | `js/auth.js`, `js/activity-log.js` |
-| `check_username_available` | 계정 신청 아이디 중복 확인 | `register.html` |
-| `admin_list_users` | 사용자 목록 조회 | `js/user-mgmt.js` |
-| `admin_create_user` | Auth 사용자와 profile 생성 | `js/user-mgmt.js` |
-| `admin_update_user` | 사용자 정보 수정 | `js/user-mgmt.js` |
-| `admin_delete_user` | 사용자 삭제 | `js/user-mgmt.js` |
-| `admin_reset_password` | 초기 비밀번호 재설정 | `js/user-mgmt.js` |
-| `change_my_password` | 본인 비밀번호 변경 및 최초 로그인 해제 | `js/auth.js` |
-| `give_talent` | 달란트 적립 | `js/talent.js` |
-| `use_talent` | 달란트 사용 | `js/talent.js` |
-
-## 15. 빠른 검증 체크리스트
-
-다음에 기능 검증을 다시 할 때는 아래 순서로 보면 된다.
-
-1. `login.html`에서 테스트 계정 4개가 로그인되는지 확인한다.
-2. 최초 로그인 계정은 `admin/change-password.html`로 이동하는지 확인한다.
-3. 최초 비밀번호 미변경 상태에서 직접 URL 우회가 막히는지 확인한다.
-4. 비로그인 상태에서 보호 페이지가 `login.html`로 이동하는지 확인한다.
-5. 부서관리자/교사/학생이 `admin/reports.html`, `admin/logs.html`에 직접 접근할 수 없는지 확인한다.
-6. 관리자 계정으로 보고서/로그/사용자/상품 목록이 표시되는지 확인한다.
-7. 부서관리자 계정으로 담당 학생/교사/상품/내 달란트 화면이 표시되는지 확인한다.
-8. 교사 계정으로 교사 상점과 내 달란트 화면이 표시되는지 확인한다.
-9. 학생 계정으로 학생 상점과 내 달란트 화면이 표시되는지 확인한다.
-10. 익명 REST 조회에서 `admin_users`, `profiles`, `reports`, `activity_logs`가 노출되지 않는지 확인한다.
-
-## 16. 현재 검증 기준 주의사항
-
-아래 항목은 다음 개발/검증 때 우선 확인해야 한다.
-
-| 항목 | 상태 | 권장 방향 |
-|---|---|---|
-| 최초 비밀번호 변경 강제 | 로그인 직후 이동은 확인. 단, 공통 `initPage()`에서 중앙 강제하지 않으면 직접 URL 우회 가능 | `initPage()`에 `session.isFirstLogin` 차단 로직 추가 |
-| `student/shop.html` 보호 정책 | 현재는 비로그인도 상품 조회 가능 | 공개 조회가 의도면 문서화, 보호가 의도면 `initPage()` 적용 |
-| `version.js`와 실제 코드 일치 | `version.js`에 TASK-010 항목이 있으나 실제 흐름과 일치 여부 재확인 필요 | 릴리즈 문구와 실제 구현을 함께 검증 |
-| 과거 SQL 문서 | `docs/TASK-002_schema.sql` 등은 현재 보안 구조와 다를 수 있음 | 과거 기록으로 표시하고 재실행 금지 안내 권장 |
-
-## 17. 다음 작업자가 먼저 볼 파일
+## 15. 다음 작업자가 먼저 볼 파일
 
 | 우선순위 | 파일 | 이유 |
 |---:|---|---|
-| 1 | `docs/PROJECT_ARCHITECTURE_FLOW.md` | 전체 목적, 구성, 흐름, 검증 기준 |
-| 2 | `js/auth.js` | 로그인, 세션, 권한, 최초 비밀번호 변경 정책 |
-| 3 | `js/supabase-config.js` | Supabase 연결과 Auth 도메인 |
-| 4 | `js/user-mgmt.js` | 사용자 관리 RPC 흐름 |
-| 5 | `js/talent.js` | 달란트 처리 흐름 |
-| 6 | `js/product.js` | 상품 조회/관리 흐름 |
-| 7 | `js/activity-log.js` | 로그 기록/조회 흐름 |
-| 8 | `admin/reports.html`, `admin/logs.html` | 관리자 전용 데이터 화면 접근 제어 |
-
+| 1 | `README.md` | 현재 구조, 페이지 연결, 권한, 운영 흐름 요약 |
+| 2 | `docs/PROJECT_ARCHITECTURE_FLOW.md` | 상세 구성도와 프로세스 흐름 |
+| 3 | `js/auth.js` | 권한 등급, 리디렉트, 세션, 비밀번호 정책 |
+| 4 | `js/activity-log.js` | 로그 기록, 세션 캐시, 페이지뷰 |
+| 5 | `js/user-mgmt.js` | 사용자/부서 관리 RPC |
+| 6 | `js/talent.js` | 달란트 조회/처리 |
+| 7 | `js/product.js` | 물품 조회/관리 |
+| 8 | `admin/*.html` | 각 관리 화면의 실제 접근 권한과 UI 동작 |
