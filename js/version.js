@@ -2,9 +2,22 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.7.4',
+  current: '3.7.5',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.7.5',
+      date: '2026-05-28',
+      title: '타인 아이디 숨김 + 부서 이동 관리 시스템',
+      changes: [
+        'users/managers/departments/talents: 타인 아이디 숨김 (자기 아이디만 표시)',
+        'users.html: 부서 이동 버튼 추가 (하위 권한자만 이동 가능)',
+        'users.html: 관리자/전도사님 - 즉시 부서 이동 처리',
+        'users.html: 부장/부서담당교사 - 부서 이동 요청 생성 (승인 필요)',
+        'users.html: 부서 이동 신청 내역 섹션 + 승인/거부 기능',
+        'department_transfer_requests 테이블 SQL 파일 생성 (docs/)'
+      ]
+    },
     {
       version: '3.7.4',
       date: '2026-05-28',
