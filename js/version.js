@@ -2,7 +2,7 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '2.3.0',
+  current: '2.4.0',
   date: '2026-05-26',
   history: [
     {
@@ -155,6 +155,17 @@ const APP_VERSION = {
         'login.html에서 기존 세션의 isFirstLogin도 change-password로 리디렉트',
         'student/shop.html을 보호 페이지로 전환 (initPage 적용)',
         'student/shop.html autoLogPageView()를 인증 후로 이동 (익명 로그 방지)'
+      ]
+    },
+    {
+      version: '2.4.0',
+      date: '2026-05-27',
+      title: 'TASK-011: 관리자 대시보드 개선',
+      changes: [
+        '현재 시간 카드를 가입 대기자 수 카드로 변경 (클릭 시 사용자 관리 이동)',
+        '바로가기 영역 5개로 재구성: 사용자/부서/관리자/상점/달란트 관리',
+        '각 바로가기 항목에 이모지 추가',
+        '시계 관련 JS 코드 제거'
       ]
     }
   ]
