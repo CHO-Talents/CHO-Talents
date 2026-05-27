@@ -2,9 +2,41 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.5.0',
+  current: '3.6.0',
   date: '2026-05-27',
   history: [
+    {
+      version: '3.6.0',
+      date: '2026-05-27',
+      title: '권한 체계 개선 + 반 시스템 추가',
+      changes: [
+        'DB: departments.class_count, profiles.class_number 컬럼 추가',
+        'RPC: admin_create_user/admin_update_user에 p_class_number 파라미터 추가',
+        'RPC: give_talent rank >= 40 허용 + 반/부서 스코핑 (교사는 자기 반만)',
+        'RPC: admin_list_users rank >= 40 허용 (교사 접근)',
+        'RPC: get_my_profile에 class_number 반환 추가',
+        'RLS: activity_logs SELECT/UPDATE rank >= 100 (관리자 전용)',
+        'users.html: 역할/권한 분리 UI (학생/교사 + 권한 드롭다운), 반 드롭다운 추가',
+        'users.html: 권한 부여 제한 (로그인 사용자 rank 이하만 선택 가능)',
+        'users.html: 테이블에 역할/권한/반 컬럼 분리 표시',
+        'managers.html: 권한 드롭다운 동적 생성 (호출자 rank 이하만)',
+        'managers.html: canManage 로직 추가 (자신보다 높은 권한 수정/삭제 차단)',
+        'managers.html: 수정 시 권한 변경 가능 (이전: disabled)',
+        'departments.html: 부서 생성/수정 시 반 개수 설정 (숫자 입력)',
+        'departments.html: 부서 목록에 반 개수 표시, 소속보기에 역할/권한/반 분리',
+        'talents.html: initPage(40) - 일반 교사도 접근 가능',
+        'talents.html: 반 스코핑 (교사는 자기 부서+반 학생만 표시)',
+        'logs.html: initPage(100) - 관리자만 접근 가능',
+        'logs.html: 일괄 완료처리 관리자 전용 체크 추가',
+        '전체 admin 페이지(11개): 달란트 관리 data-min-perm 60→40',
+        '전체 admin 페이지(11개): 로그 data-min-perm 80→100',
+        '루트 페이지(3개): 달란트 관리 data-min-perm 60→40',
+        'auth.js: teacher PERMISSION_REDIRECT를 admin/talents.html로 변경',
+        'auth.js: session에 classNumber 저장',
+        'user-mgmt.js: createUser/updateUser에 classNumber 파라미터 추가',
+        'user-mgmt.js: createDepartment에 classCount 파라미터 추가'
+      ]
+    },
     {
       version: '3.5.0',
       date: '2026-05-27',

@@ -14,10 +14,10 @@
       <li data-min-perm="60"><a href="users.html" class="active">사용자 관리</a></li>
       <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
-      <li data-min-perm="60"><a href="talents.html">달란트 관리</a></li>
+      <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
-      <li data-min-perm="80"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
@@ -60,15 +60,15 @@
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>역할</th><th>이름</th><th>부서</th><th>달란트</th><th>등록일</th><th>마지막 로그인</th><th>관리</th></tr></thead>
-        <tbody id="userList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>역할</th><th>권한</th><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th>등록일</th><th>마지막 로그인</th><th>관리</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="9" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <!-- 사용자 등록/수정 모달 -->
   <div class="modal-overlay hidden" id="userModal">
-    <div class="modal-box" style="max-width:480px;">
+    <div class="modal-box" style="max-width:500px;">
       <h3 class="modal-title" id="modalTitle">사용자 등록</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
@@ -82,18 +82,27 @@
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">역할</label>
-          <select id="mRole" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onRoleChange()">
+          <select id="mUserType" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onUserTypeChange()">
             <option value="student">🎒 학생</option>
-            <option value="teacher">👨‍🏫 일반 교사</option>
-            <option value="dept_teacher">👩‍🏫 부서 담당 교사</option>
-            <option value="chief">📋 부장</option>
-            <option value="evangelist">✝️ 전도사님</option>
-            <option value="admin">👑 관리자</option>
+            <option value="teacher">👩‍🏫 교사</option>
           </select>
         </div>
+        <div style="flex:1;" id="permLevelWrap">
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">권한</label>
+          <select id="mPermLevel" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onPermLevelChange()">
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">소속 부서 <span style="color:#e03131;">*</span></label>
-          <select id="mDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
+          <select id="mDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onDeptChange()">
+            <option value="">없음</option>
+          </select>
+        </div>
+        <div style="flex:1;" id="classWrap">
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">반</label>
+          <select id="mClassNumber" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
             <option value="">없음</option>
           </select>
         </div>
@@ -117,11 +126,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.5.0"></script>
-  <script src="../js/activity-log.js?v=3.5.0"></script>
-  <script src="../js/auth.js?v=3.5.0"></script>
-  <script src="../js/user-mgmt.js?v=3.5.0"></script>
-  <script src="../js/version.js?v=3.5.0"></script>
+  <script src="../js/supabase-config.js?v=3.6.0"></script>
+  <script src="../js/activity-log.js?v=3.6.0"></script>
+  <script src="../js/auth.js?v=3.6.0"></script>
+  <script src="../js/user-mgmt.js?v=3.6.0"></script>
+  <script src="../js/version.js?v=3.6.0"></script>
   <script>
     initSupabase();
     let session;
@@ -167,6 +176,20 @@
 
     const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
 
+    const PERM_LEVELS = [
+      { value: 'teacher', label: '일반 교사', rank: 40 },
+      { value: 'dept_teacher', label: '부서 담당 교사', rank: 60 },
+      { value: 'chief', label: '부장', rank: 80 },
+      { value: 'evangelist', label: '전도사님', rank: 90 },
+      { value: 'admin', label: '관리자', rank: 100 }
+    ];
+
+    function buildPermOptions(maxRank, selectedValue) {
+      return PERM_LEVELS.filter(l => l.rank <= maxRank)
+        .map(l => `<option value="${l.value}" ${l.value === selectedValue ? 'selected' : ''}>${PERMISSION_EMOJI[l.value]||''} ${l.label}</option>`)
+        .join('');
+    }
+
     function updateStats() {
       document.getElementById('cntAll').textContent = allUsers.length;
       document.getElementById('cntAdmin').textContent = allUsers.filter(u => u.permission_level === 'admin').length;
@@ -190,14 +213,25 @@
       return 'student';
     }
 
-    function modalRoleFromUser(u) {
-      return u.permission_level || 'student';
-    }
-
     function populateDeptSelects() {
       const opts = '<option value="">없음</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
       document.getElementById('mDept').innerHTML = opts;
       document.getElementById('mManagedDept').innerHTML = opts;
+    }
+
+    function getClassLabel(classNum) {
+      return classNum ? classNum + '반' : '-';
+    }
+
+    function onDeptChange() {
+      const deptId = document.getElementById('mDept').value;
+      const classSelect = document.getElementById('mClassNumber');
+      const dept = allDepts.find(d => d.id === deptId);
+      const count = (dept && dept.class_count) ? dept.class_count : 0;
+      let html = '<option value="">없음</option>';
+      for (let i = 1; i <= count; i++) html += `<option value="${i}">${i}반</option>`;
+      classSelect.innerHTML = html;
+      document.getElementById('classWrap').style.display = count > 0 ? 'block' : 'none';
     }
 
     function setFilter(role, btn) {
@@ -227,25 +261,29 @@
       const tbody = document.getElementById('userList');
       document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
 
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 사용자가 없습니다.</td></tr>'; return; }
+      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="empty-state">등록된 사용자가 없습니다.</td></tr>'; return; }
 
       _nameMap = resolveDisplayNames(allUsers);
       const myRank = session.permissionRank || 0;
       const showId = _isAdmin();
       tbody.innerHTML = list.map(u => {
         const perm = u.permission_level;
-        const rb = ROLE_BADGES[badgeKeyForUser(u)] || ROLE_BADGES.student;
-        const permLabel = PERMISSION_LABELS[perm] || rb.label;
-        const permEmoji = PERMISSION_EMOJI[perm] || rb.emoji;
+        const typeLabel = TYPE_LABELS[u.user_type] || u.user_type;
+        const typeEmoji = u.user_type === 'student' ? '🎒' : '👩‍🏫';
+        const permLabel = PERMISSION_LABELS[perm] || perm;
+        const permEmoji = PERMISSION_EMOJI[perm] || '';
         const dn = _nameMap[u.id] || u.display_name || '-';
         const lastLogin = u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '<span style="color:#adb5bd;font-size:0.8rem;">없음</span>';
         const targetRank = getPermRank(perm);
         const isSuperAdmin = u.is_super_admin || false;
         const canManage = u.id === session.id || (myRank >= targetRank && (!isSuperAdmin || session.isSuperAdmin));
+        const rb = ROLE_BADGES[badgeKeyForUser(u)] || ROLE_BADGES.student;
         return `<tr>
+          <td><span class="level-badge ${u.user_type === 'student' ? 'DEBUG' : 'INFO'}">${typeEmoji} ${typeLabel}</span></td>
           <td><span class="level-badge ${rb.cls}">${permEmoji} ${permLabel}</span></td>
           <td>${dn}${showId ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
           <td>${getDeptName(u.department_id)}</td>
+          <td>${getClassLabel(u.class_number)}</td>
           <td style="font-weight:700;">${u.talent_balance || 0}</td>
           <td>${formatKSTShort(u.created_at)}</td>
           <td>${lastLogin}</td>
@@ -259,9 +297,22 @@
     }
 
     const MGMT_LEVELS = ['dept_teacher','chief','evangelist','admin'];
-    function permToType(perm) { return perm === 'student' ? 'student' : 'teacher'; }
-    function onRoleChange() {
-      const perm = document.getElementById('mRole').value;
+
+    function onUserTypeChange() {
+      const ut = document.getElementById('mUserType').value;
+      const permWrap = document.getElementById('permLevelWrap');
+      if (ut === 'student') {
+        permWrap.style.display = 'none';
+      } else {
+        permWrap.style.display = 'block';
+        document.getElementById('mPermLevel').innerHTML = buildPermOptions(session.permissionRank || 0, 'teacher');
+      }
+      onPermLevelChange();
+    }
+
+    function onPermLevelChange() {
+      const ut = document.getElementById('mUserType').value;
+      const perm = ut === 'student' ? 'student' : (document.getElementById('mPermLevel').value || 'teacher');
       document.getElementById('managedDeptWrap').style.display = MGMT_LEVELS.includes(perm) ? 'block' : 'none';
     }
 
@@ -272,8 +323,11 @@
       document.getElementById('mUsername').value = '';
       document.getElementById('mUsername').disabled = false;
       document.getElementById('mDisplayName').value = '';
-      document.getElementById('mRole').value = 'student';
+      document.getElementById('mUserType').value = 'student';
+      document.getElementById('permLevelWrap').style.display = 'none';
       document.getElementById('mDept').value = '';
+      document.getElementById('mClassNumber').value = '';
+      document.getElementById('classWrap').style.display = 'none';
       document.getElementById('mManagedDept').value = '';
       document.getElementById('managedDeptWrap').style.display = 'none';
       document.getElementById('passwordWrap').style.display = 'block';
@@ -289,8 +343,16 @@
       document.getElementById('mUsername').value = u.username;
       document.getElementById('mUsername').disabled = true;
       document.getElementById('mDisplayName').value = u.display_name || '';
-      document.getElementById('mRole').value = modalRoleFromUser(u);
+      document.getElementById('mUserType').value = u.user_type || 'student';
+      if (u.user_type === 'teacher') {
+        document.getElementById('permLevelWrap').style.display = 'block';
+        document.getElementById('mPermLevel').innerHTML = buildPermOptions(session.permissionRank || 0, u.permission_level || 'teacher');
+      } else {
+        document.getElementById('permLevelWrap').style.display = 'none';
+      }
       document.getElementById('mDept').value = u.department_id || '';
+      onDeptChange();
+      document.getElementById('mClassNumber').value = u.class_number || '';
       document.getElementById('mManagedDept').value = u.managed_dept_id || '';
       document.getElementById('managedDeptWrap').style.display = MGMT_LEVELS.includes(u.permission_level) ? 'block' : 'none';
       document.getElementById('passwordWrap').style.display = 'none';
@@ -304,9 +366,10 @@
       const errEl = document.getElementById('modalError');
       let username = document.getElementById('mUsername').value.trim();
       const displayName = document.getElementById('mDisplayName').value.trim();
-      const permLevel = document.getElementById('mRole').value;
-      const userType = permToType(permLevel);
+      const userType = document.getElementById('mUserType').value;
+      const permLevel = userType === 'student' ? 'student' : (document.getElementById('mPermLevel').value || 'teacher');
       const deptId = document.getElementById('mDept').value || null;
+      const classNumber = document.getElementById('mClassNumber').value ? parseInt(document.getElementById('mClassNumber').value) : null;
       const managedDeptId = document.getElementById('mManagedDept').value || null;
       const needsManagedDept = MGMT_LEVELS.includes(permLevel);
 
@@ -317,11 +380,11 @@
       if (needsManagedDept && !managedDeptId) { errEl.textContent = '담당 관리 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
-        const { error } = await updateUser(editingId, { displayName, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null });
+        const { error } = await updateUser(editingId, { displayName, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null, classNumber });
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       } else {
         const pw = document.getElementById('mPassword').value || '1234';
-        const { error } = await createUser({ username, password: pw, displayName: displayName || username, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null });
+        const { error } = await createUser({ username, password: pw, displayName: displayName || username, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null, classNumber });
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       }
       closeModal();
@@ -358,13 +421,12 @@
           <td style="font-size:0.8rem;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.reason || ''}">${r.reason || '-'}</td>
           <td>${formatKSTShort(r.created_at)}</td>
           <td>
-            <select id="reqRole_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;" onchange="onReqRoleChange('${r.id}')">
+            <select id="reqType_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;" onchange="onReqTypeChange('${r.id}')">
               <option value="student">🎒 학생</option>
-              <option value="teacher">👨‍🏫 일반 교사</option>
-              <option value="dept_teacher">👩‍🏫 부서 담당</option>
-              <option value="chief">📋 부장</option>
-              <option value="evangelist">✝️ 전도사님</option>
-              <option value="admin">👑 관리자</option>
+              <option value="teacher">👩‍🏫 교사</option>
+            </select>
+            <select id="reqPerm_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;display:none;">
+              ${buildPermOptions(session.permissionRank || 0, 'teacher')}
             </select>
             <div id="reqManagedWrap_${r.id}" style="display:none;margin:0.3rem 0;">
               <select id="reqManaged_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;width:100%;">
@@ -379,15 +441,18 @@
       }).join('');
     }
 
-    function onReqRoleChange(reqId) {
-      const perm = document.getElementById('reqRole_' + reqId).value;
+    function onReqTypeChange(reqId) {
+      const ut = document.getElementById('reqType_' + reqId).value;
+      const permEl = document.getElementById('reqPerm_' + reqId);
+      permEl.style.display = ut === 'teacher' ? 'inline-block' : 'none';
+      const perm = ut === 'student' ? 'student' : permEl.value;
       const wrap = document.getElementById('reqManagedWrap_' + reqId);
       wrap.style.display = MGMT_LEVELS.includes(perm) ? 'block' : 'none';
     }
 
     async function approveReq(reqId, username, displayName, deptId) {
-      const permLevel = document.getElementById('reqRole_' + reqId).value;
-      const userType = permToType(permLevel);
+      const userType = document.getElementById('reqType_' + reqId).value;
+      const permLevel = userType === 'student' ? 'student' : (document.getElementById('reqPerm_' + reqId).value || 'teacher');
       const managedEl = document.getElementById('reqManaged_' + reqId);
       const needsManagedDept = MGMT_LEVELS.includes(permLevel);
       const managedDeptId = (needsManagedDept && managedEl) ? managedEl.value || null : null;

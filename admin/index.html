@@ -14,10 +14,10 @@
       <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
       <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
-      <li data-min-perm="60"><a href="talents.html">달란트 관리</a></li>
+      <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
-      <li data-min-perm="80"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
@@ -25,7 +25,7 @@
   </nav>
 
   <div class="admin-container">
-    <div class="alert-banner hidden" id="alertBanner" data-min-perm="80">
+    <div class="alert-banner hidden" id="alertBanner" data-min-perm="100">
       <span>&#9888;</span>
       <span id="alertText">미확인 ERROR 로그가 있습니다.</span>
       <a href="logs.html" style="margin-left:auto;color:inherit;font-weight:700;">확인하기</a>
@@ -73,7 +73,7 @@
 
     <div id="quickLinks" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;"></div>
 
-    <div class="admin-table-wrap" data-min-perm="80">
+    <div class="admin-table-wrap" data-min-perm="100">
       <div class="admin-table-header">
         <div class="admin-table-title">최근 활동 로그</div>
       </div>
@@ -85,9 +85,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.5.0"></script>
-  <script src="../js/activity-log.js?v=3.5.0"></script>
-  <script src="../js/auth.js?v=3.5.0"></script>
+  <script src="../js/supabase-config.js?v=3.6.0"></script>
+  <script src="../js/activity-log.js?v=3.6.0"></script>
+  <script src="../js/auth.js?v=3.6.0"></script>
   <script>
     initSupabase();
     let session;
@@ -106,7 +106,7 @@
         { href: 'users.html', emoji: '👥', label: '사용자 관리', bg: '#e8e0ff', color: 'var(--admin-primary)', minRank: 60 },
         { href: 'departments.html', emoji: '🏢', label: '부서 관리', bg: '#f3f0ff', color: '#7048c6', minRank: 80 },
         { href: 'managers.html', emoji: '👑', label: '관리자 관리', bg: '#fff9db', color: '#e67700', minRank: 80 },
-        { href: 'talents.html', emoji: '💰', label: '달란트 관리', bg: '#fff5f5', color: '#e03131', minRank: 60 },
+        { href: 'talents.html', emoji: '💰', label: '달란트 관리', bg: '#fff5f5', color: '#e03131', minRank: 40 },
         { href: 'talent-items.html', emoji: '🎯', label: '달란트 항목', bg: '#f0fff4', color: '#2b8a3e', minRank: 90 },
         { href: 'shop.html', emoji: '📦', label: '물품 관리', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
       ];
@@ -184,6 +184,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.5.0"></script>
+  <script src="../js/version.js?v=3.6.0"></script>
 </body>
 </html>

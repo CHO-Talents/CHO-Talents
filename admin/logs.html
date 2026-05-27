@@ -14,10 +14,10 @@
       <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
       <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
-      <li data-min-perm="60"><a href="talents.html">달란트 관리</a></li>
+      <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
-      <li data-min-perm="80"><a href="logs.html" class="active" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="100"><a href="logs.html" class="active" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
@@ -94,9 +94,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.5.0"></script>
-  <script src="../js/activity-log.js?v=3.5.0"></script>
-  <script src="../js/auth.js?v=3.5.0"></script>
+  <script src="../js/supabase-config.js?v=3.6.0"></script>
+  <script src="../js/activity-log.js?v=3.6.0"></script>
+  <script src="../js/auth.js?v=3.6.0"></script>
   <script>
     initSupabase();
     let session;
@@ -105,7 +105,7 @@
     let selectedLevels = [];
     let currentAckId = null;
     (async () => {
-      session = await initPage(80, '../login.html');
+      session = await initPage(100, '../login.html');
       if (!session) return;
       applyPermNav(session.permissionRank || 0);
       if (session) {
@@ -292,6 +292,7 @@
     }
 
     async function bulkAcknowledge() {
+      if ((session.permissionRank || 0) < 100) { alert('관리자만 일괄 완료 처리할 수 있습니다.'); return; }
       const note = prompt('일괄 완료 사유를 입력해주세요:', '일괄 확인 처리');
       if (note === null) return;
       if (!note.trim()) { alert('사유를 입력해주세요.'); return; }
@@ -315,6 +316,6 @@
       if (e.target.classList.contains('modal-overlay')) closeAckModal();
     });
   </script>
-  <script src="../js/version.js?v=3.5.0"></script>
+  <script src="../js/version.js?v=3.6.0"></script>
 </body>
 </html>

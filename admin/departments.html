@@ -14,10 +14,10 @@
       <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
       <li data-min-perm="80"><a href="departments.html" class="active">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
-      <li data-min-perm="60"><a href="talents.html">달란트 관리</a></li>
+      <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
-      <li data-min-perm="80"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
@@ -33,7 +33,7 @@
         <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 부서 등록</button>
       </div>
       <table class="admin-table">
-        <thead><tr><th>부서명</th><th>설명</th><th>전체</th><th>👑 관리자</th><th>📋 부서관리자</th><th>👩‍🏫 교사</th><th>🎒 학생</th><th>담당 관리자</th><th>관리</th></tr></thead>
+        <thead><tr><th>부서명</th><th>설명</th><th>반</th><th>전체</th><th>👑 관리자</th><th>📋 부서관리자</th><th>👩‍🏫 교사</th><th>🎒 학생</th><th>담당 관리자</th><th>관리</th></tr></thead>
         <tbody id="deptList"><tr><td colspan="9" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
@@ -51,6 +51,11 @@
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">설명</label>
         <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
       </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">반 개수</label>
+        <input type="number" id="mClassCount" min="0" max="20" value="0" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">0 = 반 구분 없음</div>
+      </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">취소</button>
         <button class="btn-confirm" onclick="saveDept()">저장</button>
@@ -59,15 +64,16 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.5.0"></script>
-  <script src="../js/activity-log.js?v=3.5.0"></script>
-  <script src="../js/auth.js?v=3.5.0"></script>
-  <script src="../js/user-mgmt.js?v=3.5.0"></script>
+  <script src="../js/supabase-config.js?v=3.6.0"></script>
+  <script src="../js/activity-log.js?v=3.6.0"></script>
+  <script src="../js/auth.js?v=3.6.0"></script>
+  <script src="../js/user-mgmt.js?v=3.6.0"></script>
   <script>
     initSupabase();
     let session;
     let editingId = null;
     let allUsers = [];
+    let allDeptData = [];
     (async () => {
       session = await initPage(80, '../login.html');
       if (!session) return;
@@ -96,10 +102,11 @@
       document.getElementById('tableTitle').textContent = `부서 목록 (${(depts||[]).length}개)`;
 
       if (!depts || depts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">등록된 부서가 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="empty-state">등록된 부서가 없습니다.</td></tr>';
         return;
       }
 
+      allDeptData = depts;
       tbody.innerHTML = depts.map(d => {
         const deptUsers = (users||[]).filter(u => u.department_id === d.id);
         const admins = deptUsers.filter(u => u.permission_level === 'admin');
@@ -111,10 +118,12 @@
           const e = m.permission_level === 'admin' ? '👑' : '📋';
           return `${e}${m.display_name || '-'}`;
         }).join(', ') || '-';
+        const classLabel = d.class_count > 0 ? d.class_count + '개' : '없음';
 
         return `<tr>
           <td><strong>${d.name}</strong></td>
           <td>${d.description || '-'}</td>
+          <td>${classLabel}</td>
           <td style="font-weight:700;">${deptUsers.length}명</td>
           <td>${admins.length}명</td>
           <td>${deptMgrs.length}명</td>
@@ -122,7 +131,7 @@
           <td>${students.length}명</td>
           <td style="font-size:0.8rem;">${managerNames}</td>
           <td>
-            <button class="filter-btn" onclick="openEditModal('${d.id}','${d.name}','${(d.description||'').replace(/'/g,"\\'")}')">수정</button>
+            <button class="filter-btn" onclick="openEditModal('${d.id}')">수정</button>
             <button class="btn-ack" onclick="confirmDelete('${d.id}','${d.name}')">삭제</button>
             <button class="filter-btn" onclick="showMembers('${d.name}', '${d.id}')">소속보기</button>
           </td>
@@ -135,15 +144,18 @@
       document.getElementById('modalTitle').textContent = '부서 등록';
       document.getElementById('mName').value = '';
       document.getElementById('mDesc').value = '';
+      document.getElementById('mClassCount').value = '0';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('deptModal').classList.remove('hidden');
     }
 
-    function openEditModal(id, name, desc) {
+    function openEditModal(id) {
       editingId = id;
+      const dept = allDeptData.find(d => d.id === id);
       document.getElementById('modalTitle').textContent = '부서 수정';
-      document.getElementById('mName').value = name;
-      document.getElementById('mDesc').value = desc;
+      document.getElementById('mName').value = dept ? dept.name : '';
+      document.getElementById('mDesc').value = dept ? (dept.description || '') : '';
+      document.getElementById('mClassCount').value = dept ? (dept.class_count || 0) : 0;
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('deptModal').classList.remove('hidden');
     }
@@ -154,13 +166,14 @@
       const errEl = document.getElementById('modalError');
       const name = document.getElementById('mName').value.trim();
       const desc = document.getElementById('mDesc').value.trim();
+      const classCount = parseInt(document.getElementById('mClassCount').value) || 0;
       if (!name) { errEl.textContent = '부서명을 입력해주세요.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
-        const { error } = await updateDepartment(editingId, { name, description: desc || null });
+        const { error } = await updateDepartment(editingId, { name, description: desc || null, class_count: classCount });
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       } else {
-        const { error } = await createDepartment(name, desc || null);
+        const { error } = await createDepartment(name, desc || null, classCount);
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       }
       closeModal();
@@ -175,15 +188,8 @@
 
     function showMembers(deptName, deptId) {
       const members = allUsers.filter(u => u.department_id === deptId);
-      const ROLE_INFO = { admin: {e:'👑',l:'관리자'}, dept_manager: {e:'📋',l:'부서관리자'}, teacher: {e:'👩‍🏫',l:'교사'}, student: {e:'🎒',l:'학생'} };
-
-      function roleInfoForUser(u) {
-        if (u.permission_level === 'admin') return ROLE_INFO.admin;
-        if (['evangelist', 'chief', 'dept_teacher'].includes(u.permission_level)) return ROLE_INFO.dept_manager;
-        if (u.user_type === 'teacher') return ROLE_INFO.teacher;
-        if (u.user_type === 'student') return ROLE_INFO.student;
-        return { e: '👤', l: u.permission_level || u.user_type || '-' };
-      }
+      const dept = allDeptData.find(d => d.id === deptId);
+      const hasClasses = dept && dept.class_count > 0;
 
       const nameMap = resolveDisplayNames(members);
       const showId = isAdminLevel(session);
@@ -191,11 +197,13 @@
       if (members.length === 0) {
         html += '<div style="color:#636e72;">소속 인원이 없습니다.</div>';
       } else {
-        html += `<table class="admin-table" style="font-size:0.85rem;"><thead><tr><th>역할</th><th>이름</th>${showId ? '<th>아이디</th>' : ''}</tr></thead><tbody>`;
+        html += `<table class="admin-table" style="font-size:0.85rem;"><thead><tr><th>역할</th><th>권한</th><th>이름</th>${hasClasses ? '<th>반</th>' : ''}${showId ? '<th>아이디</th>' : ''}</tr></thead><tbody>`;
         html += members.map(u => {
-          const ri = roleInfoForUser(u);
+          const typeLabel = u.user_type === 'student' ? '🎒 학생' : '👩‍🏫 교사';
+          const permLabel = (PERMISSION_EMOJI[u.permission_level]||'') + ' ' + (PERMISSION_LABELS[u.permission_level]||u.permission_level);
           const dn = nameMap[u.id] || u.display_name || '-';
-          return `<tr><td>${ri.e} ${ri.l}</td><td>${dn}</td>${showId ? '<td style="font-size:0.78rem;color:#868e96;">' + u.username + '</td>' : ''}</tr>`;
+          const classNum = u.class_number ? u.class_number + '반' : '-';
+          return `<tr><td>${typeLabel}</td><td>${permLabel}</td><td>${dn}</td>${hasClasses ? '<td>' + classNum + '</td>' : ''}${showId ? '<td style="font-size:0.78rem;color:#868e96;">' + u.username + '</td>' : ''}</tr>`;
         }).join('');
         html += '</tbody></table>';
       }
@@ -203,6 +211,7 @@
       document.getElementById('modalTitle').textContent = '부서 소속 인원';
       document.getElementById('mName').parentElement.style.display = 'none';
       document.getElementById('mDesc').parentElement.style.display = 'none';
+      document.getElementById('mClassCount').parentElement.style.display = 'none';
       document.querySelector('#deptModal .modal-actions .btn-confirm').style.display = 'none';
       document.getElementById('modalError').innerHTML = html;
       document.getElementById('modalError').style.display = 'block';
@@ -215,6 +224,7 @@
     closeModal = function() {
       document.getElementById('mName').parentElement.style.display = '';
       document.getElementById('mDesc').parentElement.style.display = '';
+      document.getElementById('mClassCount').parentElement.style.display = '';
       document.querySelector('#deptModal .modal-actions .btn-confirm').style.display = '';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('modalError').style.display = '';
@@ -226,6 +236,6 @@
 
     document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.5.0"></script>
+  <script src="../js/version.js?v=3.6.0"></script>
 </body>
 </html>

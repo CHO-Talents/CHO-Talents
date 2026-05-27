@@ -25,7 +25,7 @@ const PERMISSION_REDIRECT = {
   evangelist: 'admin/index.html',
   chief: 'admin/index.html',
   dept_teacher: 'admin/talents.html',
-  teacher: 'my-talents.html',
+  teacher: 'admin/talents.html',
   student: 'my-talents.html'
 };
 
@@ -96,7 +96,8 @@ async function login(username, password) {
       departmentId: profile.department_id,
       managedDeptId: profile.managed_dept_id,
       talentBalance: profile.talent_balance || 0,
-      departmentName: profile.department_name
+      departmentName: profile.department_name,
+      classNumber: profile.class_number
     });
 
     await logInfo('LOGIN_SUCCESS', { username, permissionLevel: perm });
