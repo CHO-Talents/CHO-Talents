@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
+    <a href="../index.html" class="admin-nav-brand">CHO-Talents</a>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
@@ -69,9 +69,7 @@
     let session;
     (async () => {
       try {
-        console.log('[REPORTS_DEBUG] initPage start');
         session = await initPage(80, '../login.html');
-        console.log('[REPORTS_DEBUG] initPage result:', session ? 'OK' : 'null');
         if (!session) return;
         applyPermNav(session.permissionRank || 0);
         renderRoleBadge('navUser', session, '../');
@@ -79,7 +77,7 @@
         await loadReports();
         updateBadge();
       } catch (err) {
-        console.error('[REPORTS_DEBUG] init error:', err);
+        console.error('[REPORTS] init error:', err);
         document.body.classList.add('auth-ready');
         document.getElementById('reportsList').innerHTML =
           `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">페이지 로드 오류: ${err.message}</p></td></tr>`;
@@ -100,21 +98,19 @@
 
     async function loadReports() {
       try {
-        console.log('[REPORTS_DEBUG] loadReports start, _sb:', !!_sb);
         const { data, error } = await _sb
           .from('reports').select('*').order('created_at', { ascending: false });
 
-        console.log('[REPORTS_DEBUG] loadReports result:', { count: data?.length, error });
         if (error) {
-          console.error('[REPORTS_DEBUG] RLS/query error:', error);
+          console.error('[REPORTS] query error:', error);
           document.getElementById('reportsList').innerHTML =
-            `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">데이터 로드 오류: ${error.message || JSON.stringify(error)}</p></td></tr>`;
+            `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">보고서 조회 오류: ${error.message || JSON.stringify(error)}</p><p style="font-size:0.8rem;color:#868e96;margin-top:0.5rem;">reports 테이블 RLS 정책 또는 접근 권한을 확인해주세요.</p></td></tr>`;
           return;
         }
         allReports = data || [];
         renderReports(allReports);
       } catch (err) {
-        console.error('[REPORTS_DEBUG] loadReports exception:', err);
+        console.error('[REPORTS] exception:', err);
         document.getElementById('reportsList').innerHTML =
           `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">예외 발생: ${err.message}</p></td></tr>`;
       }

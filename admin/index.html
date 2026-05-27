@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
+    <a href="../index.html" class="admin-nav-brand">CHO-Talents</a>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html" class="active">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
@@ -75,7 +75,7 @@
 
     <div class="admin-table-wrap" data-min-perm="100">
       <div class="admin-table-header">
-        <div class="admin-table-title">최근 활동 로그</div>
+        <div class="admin-table-title">최근 이슈 로그</div>
       </div>
       <table class="admin-table">
         <thead><tr><th>시간</th><th>레벨</th><th>액션</th><th>페이지</th><th>사용자</th></tr></thead>
@@ -168,7 +168,7 @@
           document.getElementById('alertText').textContent = `미확인 ERROR 이상 로그가 ${unack}건 있습니다.`;
         }
 
-        const { data: logs } = await fetchLogs({ limit: 10 });
+        const { data: logs } = await fetchLogs({ limit: 10, levels: ['WARN','ERROR','FATAL','CRITICAL'] });
         const tbody = document.getElementById('recentLogs');
         if (!logs || logs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="5" class="empty-state">로그가 없습니다.</td></tr>';

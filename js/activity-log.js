@@ -214,3 +214,19 @@ function autoLogPageView() {
     logInfo('PAGE_VIEW', { url: window.location.href });
   }
 }
+
+async function deleteLogsByDateRange(dateFrom, dateTo) {
+  if (!_sb) return { error: 'Supabase not initialized', count: 0 };
+  try {
+    const { data, error } = await _sb
+      .from('activity_logs')
+      .delete()
+      .gte('created_at', dateFrom)
+      .lte('created_at', dateTo)
+      .select('id');
+    if (error) return { error: error.message, count: 0 };
+    return { error: null, count: data ? data.length : 0 };
+  } catch (err) {
+    return { error: String(err), count: 0 };
+  }
+}

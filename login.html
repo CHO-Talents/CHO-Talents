@@ -80,7 +80,18 @@
             window.location.href = getRoleRedirectUrl(result.data.permission_level, '');
           }
         } else {
-          errEl.textContent = result.error;
+          const { data: reqData } = await _sb.from('registration_requests')
+            .select('status')
+            .eq('username', username)
+            .maybeSingle();
+
+          if (reqData && reqData.status === 'pending') {
+            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#9203;</span><div><strong>승인 대기 중이에요</strong><br><span style="font-size:0.8rem;color:#636e72;">관리자가 승인하면 로그인할 수 있어요</span></div></div>';
+          } else if (reqData && reqData.status === 'rejected') {
+            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#10060;</span><div><strong>가입 신청이 거부되었어요</strong><br><span style="font-size:0.8rem;color:#636e72;">자세한 내용은 관리자에게 문의해주세요</span></div></div>';
+          } else {
+            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> ' + result.error;
+          }
           errEl.classList.add('show');
           btn.disabled = false;
           btn.textContent = '로그인';

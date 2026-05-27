@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
+    <a href="../index.html" class="admin-nav-brand">CHO-Talents</a>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
@@ -104,6 +104,19 @@
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">설명</label>
         <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
       </div>
+      <div style="margin-bottom:0.8rem;" id="activeWrap">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상품 상태</label>
+        <div style="display:flex;align-items:center;gap:1rem;">
+          <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+            <input type="radio" name="mIsActive" value="true" checked />
+            <span class="level-badge INFO">활성</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+            <input type="radio" name="mIsActive" value="false" />
+            <span class="level-badge FATAL">비활성</span>
+          </label>
+        </div>
+      </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">취소</button>
         <button class="btn-confirm" onclick="saveProduct()">저장</button>
@@ -184,6 +197,8 @@
       document.getElementById('mImageUrl').value = '';
       document.getElementById('mImageFile').value = '';
       resetImgPreview();
+      document.querySelector('input[name="mIsActive"][value="true"]').checked = true;
+      document.getElementById('activeWrap').style.display = 'none';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('productModal').classList.remove('hidden');
     }
@@ -202,6 +217,8 @@
       document.getElementById('mImageUrlText').value = p.image_url || '';
       if (p.image_url) showImgPreview(p.image_url); else resetImgPreview();
       document.getElementById('mDesc').value = p.description || '';
+      document.querySelector('input[name="mIsActive"][value="' + String(p.is_active !== false) + '"]').checked = true;
+      document.getElementById('activeWrap').style.display = 'block';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('productModal').classList.remove('hidden');
     }
@@ -234,6 +251,8 @@
         image_emoji: document.getElementById('mEmoji').value.trim() || '🎁',
         image_url: imageUrl, description: document.getElementById('mDesc').value.trim() || null
       };
+
+      if (editingId) row.is_active = document.querySelector('input[name="mIsActive"]:checked').value === 'true';
 
       if (editingId) {
         const { error } = await updateProduct(editingId, row);
