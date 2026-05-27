@@ -12,39 +12,43 @@
     <ul class="admin-nav-links">
       <li><a href="../index.html">🏠 메인</a></li>
       <li><a href="index.html" class="active">대시보드</a></li>
-      <li><a href="users.html">사용자 관리</a></li><li><a href="departments.html">부서 관리</a></li>
-      <li><a href="managers.html">관리자 관리</a></li>
-      <li><a href="shop.html">상점 관리</a></li>
-      <li><a href="reports.html">보고서</a></li>
-      <li><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li><a href="versions.html">버전</a></li><li><span class="nav-user" id="navUser"></span></li>
+      <li><a href="users.html">사용자 관리</a></li>
+      <li data-role="admin"><a href="departments.html">부서 관리</a></li>
+      <li data-role="admin"><a href="managers.html">관리자 관리</a></li>
+      <li><a href="talents.html">달란트 관리</a></li>
+      <li><a href="products.html">물품 관리</a></li>
+      <li data-role="admin"><a href="shop.html">상점 관리</a></li>
+      <li data-role="admin"><a href="reports.html">보고서</a></li>
+      <li data-role="admin"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-role="admin"><a href="versions.html">버전</a></li>
+      <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
   </nav>
 
   <div class="admin-container">
-    <div class="alert-banner hidden" id="alertBanner">
+    <div class="alert-banner hidden" id="alertBanner" data-role="admin">
       <span>&#9888;</span>
       <span id="alertText">미확인 ERROR 로그가 있습니다.</span>
       <a href="logs.html" style="margin-left:auto;color:inherit;font-weight:700;">확인하기</a>
     </div>
 
-    <h2 style="margin-bottom:1rem;">관리자 대시보드</h2>
+    <h2 style="margin-bottom:1rem;" id="dashTitle">대시보드</h2>
 
     <div class="cards-grid">
       <div class="stat-card">
-        <div class="stat-card-label">전체 사용자</div>
+        <div class="stat-card-label" id="totalUsersLabel">전체 사용자</div>
         <div class="stat-card-value" id="totalUsers">-</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" data-role="admin">
         <div class="stat-card-label">부서</div>
         <div class="stat-card-value" id="totalDepts">-</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card" data-role="admin">
         <div class="stat-card-label">보고서</div>
         <div class="stat-card-value" id="totalReports">-</div>
       </div>
-      <div class="stat-card error-card">
+      <div class="stat-card error-card" data-role="admin">
         <div class="stat-card-label">미확인 ERROR+</div>
         <div class="stat-card-value" id="unackCount">-</div>
       </div>
@@ -59,40 +63,19 @@
         <div class="stat-card-label">교사</div>
         <div class="stat-card-value" id="teacherCount">-</div>
       </div>
-      <div class="stat-card" style="border-left-color:#cc5de8;">
+      <div class="stat-card" style="border-left-color:#cc5de8;" data-role="admin">
         <div class="stat-card-label">부서 관리자</div>
         <div class="stat-card-value" id="managerCount">-</div>
       </div>
-      <a href="users.html" class="stat-card" style="border-left-color:#e67700;text-decoration:none;color:inherit;">
+      <a href="users.html" class="stat-card" style="border-left-color:#e67700;text-decoration:none;color:inherit;" data-role="admin">
         <div class="stat-card-label">📝 가입 대기자</div>
         <div class="stat-card-value" id="pendingCount">-</div>
       </a>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;">
-      <a href="users.html" style="display:block;padding:1rem;background:#e8e0ff;border-radius:12px;text-decoration:none;text-align:center;">
-        <div style="font-size:1.8rem;">👥</div>
-        <div style="font-weight:700;color:var(--admin-primary);">사용자 관리</div>
-      </a>
-      <a href="departments.html" style="display:block;padding:1rem;background:#f3f0ff;border-radius:12px;text-decoration:none;text-align:center;">
-        <div style="font-size:1.8rem;">🏢</div>
-        <div style="font-weight:700;color:#7048c6;">부서 관리</div>
-      </a>
-      <a href="managers.html" style="display:block;padding:1rem;background:#fff9db;border-radius:12px;text-decoration:none;text-align:center;">
-        <div style="font-size:1.8rem;">👑</div>
-        <div style="font-weight:700;color:#e67700;">관리자 관리</div>
-      </a>
-      <a href="shop.html" style="display:block;padding:1rem;background:#f0fff4;border-radius:12px;text-decoration:none;text-align:center;">
-        <div style="font-size:1.8rem;">🛒</div>
-        <div style="font-weight:700;color:#2b8a3e;">상점 관리</div>
-      </a>
-      <a href="../manager/students.html" style="display:block;padding:1rem;background:#fff5f5;border-radius:12px;text-decoration:none;text-align:center;">
-        <div style="font-size:1.8rem;">💰</div>
-        <div style="font-weight:700;color:#e03131;">달란트 관리</div>
-      </a>
-    </div>
+    <div id="quickLinks" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;"></div>
 
-    <div class="admin-table-wrap">
+    <div class="admin-table-wrap" data-role="admin">
       <div class="admin-table-header">
         <div class="admin-table-title">최근 활동 로그</div>
       </div>
@@ -111,63 +94,94 @@
     initSupabase();
     let session;
     (async () => {
-      session = await initPage(['admin'], '../login.html');
+      session = await initPage(['admin', 'dept_manager'], '../login.html');
       if (!session) return;
-      if (session && session.isFirstLogin) {
-        window.location.href = 'change-password.html';
-      }
-
-      if (session) {
-        renderRoleBadge('navUser', session, '../');
-        autoLogPageView();
-        loadDashboard();
-      }
+      applyRoleNav(session.role);
+      renderRoleBadge('navUser', session, '../');
+      autoLogPageView();
+      loadDashboard();
 
     })();
 
+    function buildQuickLinks() {
+      const links = [
+        { href: 'users.html', emoji: '👥', label: '사용자 관리', bg: '#e8e0ff', color: 'var(--admin-primary)', roles: ['admin', 'dept_manager'] },
+        { href: 'departments.html', emoji: '🏢', label: '부서 관리', bg: '#f3f0ff', color: '#7048c6', roles: ['admin'] },
+        { href: 'managers.html', emoji: '👑', label: '관리자 관리', bg: '#fff9db', color: '#e67700', roles: ['admin'] },
+        { href: 'talents.html', emoji: '💰', label: '달란트 관리', bg: '#fff5f5', color: '#e03131', roles: ['admin', 'dept_manager'] },
+        { href: 'products.html', emoji: '📦', label: '물품 관리', bg: '#f0f9ff', color: '#1971c2', roles: ['admin', 'dept_manager'] },
+        { href: 'shop.html', emoji: '🛒', label: '상점 관리', bg: '#f0fff4', color: '#2b8a3e', roles: ['admin'] },
+      ];
+      document.getElementById('quickLinks').innerHTML = links
+        .filter(l => l.roles.includes(session.role))
+        .map(l => `<a href="${l.href}" style="display:block;padding:1rem;background:${l.bg};border-radius:12px;text-decoration:none;text-align:center;">
+          <div style="font-size:1.8rem;">${l.emoji}</div>
+          <div style="font-weight:700;color:${l.color};">${l.label}</div>
+        </a>`).join('');
+    }
+
     async function loadDashboard() {
-      const [usersRes, deptsRes, reportsRes, unack,
-             studentsRes, teachersRes, managersRes, pendingRes] = await Promise.all([
-        _sb.from('profiles').select('*', { count: 'exact', head: true }),
-        _sb.from('departments').select('*', { count: 'exact', head: true }).eq('is_active', true),
-        _sb.from('reports').select('*', { count: 'exact', head: true }),
-        getUnacknowledgedCount(),
-        _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student'),
-        _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'teacher'),
-        _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'dept_manager'),
-        _sb.from('registration_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending')
-      ]);
+      buildQuickLinks();
+      const isDeptMgr = session.role === 'dept_manager';
+      const deptId = session.managedDeptId;
 
-      document.getElementById('totalUsers').textContent = usersRes.count || 0;
-      document.getElementById('totalDepts').textContent = deptsRes.count || 0;
-      document.getElementById('totalReports').textContent = reportsRes.count || 0;
-      document.getElementById('unackCount').textContent = unack;
-      document.getElementById('studentCount').textContent = studentsRes.count || 0;
-      document.getElementById('teacherCount').textContent = teachersRes.count || 0;
-      document.getElementById('managerCount').textContent = managersRes.count || 0;
-      document.getElementById('pendingCount').textContent = pendingRes.count || 0;
+      let studentsQ = _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student');
+      let teachersQ = _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'teacher');
+      let totalQ = _sb.from('profiles').select('*', { count: 'exact', head: true });
 
-      const badge = document.getElementById('navLogBadge');
-      const banner = document.getElementById('alertBanner');
-      if (unack > 0) {
-        badge.textContent = unack; badge.classList.remove('hidden');
-        banner.classList.remove('hidden');
-        document.getElementById('alertText').textContent = `미확인 ERROR 이상 로그가 ${unack}건 있습니다.`;
+      if (isDeptMgr && deptId) {
+        studentsQ = studentsQ.eq('department_id', deptId);
+        teachersQ = teachersQ.eq('department_id', deptId);
+        totalQ = totalQ.eq('department_id', deptId);
+        document.getElementById('dashTitle').textContent = '부서관리자 대시보드';
+        document.getElementById('totalUsersLabel').textContent = '부서 사용자';
       }
 
-      const { data: logs } = await fetchLogs({ limit: 10 });
-      const tbody = document.getElementById('recentLogs');
-      if (!logs || logs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">로그가 없습니다.</td></tr>';
-        return;
+      const promises = [totalQ, studentsQ, teachersQ];
+      if (!isDeptMgr) {
+        promises.push(
+          _sb.from('departments').select('*', { count: 'exact', head: true }).eq('is_active', true),
+          _sb.from('reports').select('*', { count: 'exact', head: true }),
+          getUnacknowledgedCount(),
+          _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'dept_manager'),
+          _sb.from('registration_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending')
+        );
       }
-      tbody.innerHTML = logs.map(l => `<tr>
-        <td>${formatKSTShort(l.created_at)}</td>
-        <td><span class="level-badge ${l.level}">${l.level}</span></td>
-        <td>${l.action}</td>
-        <td>${l.page || '-'}</td>
-        <td>${l.username || '-'}</td>
-      </tr>`).join('');
+
+      const results = await Promise.all(promises);
+      document.getElementById('totalUsers').textContent = results[0].count || 0;
+      document.getElementById('studentCount').textContent = results[1].count || 0;
+      document.getElementById('teacherCount').textContent = results[2].count || 0;
+
+      if (!isDeptMgr) {
+        document.getElementById('totalDepts').textContent = results[3].count || 0;
+        document.getElementById('totalReports').textContent = results[4].count || 0;
+        const unack = results[5];
+        document.getElementById('unackCount').textContent = unack;
+        document.getElementById('managerCount').textContent = results[6].count || 0;
+        document.getElementById('pendingCount').textContent = results[7].count || 0;
+
+        if (unack > 0) {
+          const badge = document.getElementById('navLogBadge');
+          badge.textContent = unack; badge.classList.remove('hidden');
+          document.getElementById('alertBanner').classList.remove('hidden');
+          document.getElementById('alertText').textContent = `미확인 ERROR 이상 로그가 ${unack}건 있습니다.`;
+        }
+
+        const { data: logs } = await fetchLogs({ limit: 10 });
+        const tbody = document.getElementById('recentLogs');
+        if (!logs || logs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="empty-state">로그가 없습니다.</td></tr>';
+        } else {
+          tbody.innerHTML = logs.map(l => `<tr>
+            <td>${formatKSTShort(l.created_at)}</td>
+            <td><span class="level-badge ${l.level}">${l.level}</span></td>
+            <td>${l.action}</td>
+            <td>${l.page || '-'}</td>
+            <td>${l.username || '-'}</td>
+          </tr>`).join('');
+        }
+      }
     }
   </script>
   <script src="../js/version.js"></script>

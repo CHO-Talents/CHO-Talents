@@ -2,8 +2,8 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '2.4.0',
-  date: '2026-05-26',
+  current: '2.5.0',
+  date: '2026-05-27',
   history: [
     {
       version: '1.0.0',
@@ -166,6 +166,23 @@ const APP_VERSION = {
         '바로가기 영역 5개로 재구성: 사용자/부서/관리자/상점/달란트 관리',
         '각 바로가기 항목에 이모지 추가',
         '시계 관련 JS 코드 제거'
+      ]
+    },
+    {
+      version: '2.5.0',
+      date: '2026-05-27',
+      title: 'TASK-012: 관리자/부서관리자 메뉴 통합',
+      changes: [
+        'manager/ 디렉토리 5개 페이지 삭제 (admin/으로 통합)',
+        'admin/talents.html 신규 생성 (학생+교사 달란트 통합 관리, 탭 전환)',
+        'admin/ 전체 페이지 통합 네비게이션 적용 (data-role 기반 역할 분기)',
+        'dept_manager 로그인 시 admin/index.html로 리디렉트',
+        'admin/index.html 역할별 대시보드 분기 (통계/바로가기/로그)',
+        'admin/users.html dept_manager 접근 허용 (부서 스코프, 읽기 전용)',
+        'admin/products.html dept_manager 접근 허용 (물품 관리)',
+        'applyRoleNav() 함수 도입 (역할별 네비게이션 표시/숨김)',
+        'index.html dept_manager 달란트 경로를 admin/talents.html로 변경',
+        '페이지 역할 맵핑 규칙 갱신 (.cursor/rules/page-role-mapping.mdc)'
       ]
     }
   ]

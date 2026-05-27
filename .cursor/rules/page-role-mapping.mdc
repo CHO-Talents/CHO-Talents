@@ -7,31 +7,40 @@ alwaysApply: false
 # 권한별 페이지 구조 맵핑
 
 ## 원칙
-- 각 역할(admin, dept_manager, teacher, student)은 **자체 폴더의 페이지**에서 네비게이션이 완결되어야 한다
-- admin이 manager 기능을 사용할 때 `/manager/` 페이지로 이동하지 않고, `/admin/` 내에 동일 기능 페이지를 별도로 둔다
-- 기능이 동일하더라도 **네비게이션(nav)은 해당 역할 폴더의 것**을 사용한다
+- admin과 dept_manager는 `/admin/` 폴더를 공유하며, `data-role` 속성과 `applyRoleNav()` 함수로 역할별 메뉴를 분기한다
+- teacher, student는 각 역할 전용 폴더를 사용한다
+- `/manager/` 폴더는 TASK-012에서 삭제되어 더 이상 존재하지 않는다
 
 ## 폴더별 역할 및 네비게이션
 
 | 폴더 | 역할 | 네비게이션 항목 |
 |------|------|----------------|
-| `/admin/` | admin | 메인, 대시보드, 사용자관리, 부서관리, 관리자관리, 상점관리, 상품관리, 보고서, 로그, 버전 |
-| `/manager/` | dept_manager (+admin) | 메인, 대시보드, 학생관리, 교사관리, 물품관리, 내 달란트 |
-| `/teacher/` | teacher (+상위) | 메인, 내 달란트, 교사상점 |
-| `/student/` | student (+상위) | 메인, 내 달란트, 학생상점 |
+| `/admin/` | admin | 메인, 대시보드, 사용자관리, 부서관리, 관리자관리, 달란트관리, 물품관리, 상점관리, 보고서, 로그, 버전 |
+| `/admin/` | dept_manager | 메인, 대시보드, 사용자관리, 달란트관리, 물품관리 |
+| `/teacher/` | teacher | 메인, 내 달란트, 교사상점 |
+| `/student/` | student | 메인, 내 달란트, 학생상점 |
 
-## 기능별 중복 페이지 맵
+## admin/ 페이지별 역할 접근
 
-| 기능 | admin 페이지 | manager 페이지 | 비고 |
-|------|-------------|---------------|------|
-| 상품 관리 (CRUD) | `admin/products.html` | `manager/products.html` | 동일 기능, 다른 nav |
-| 상점 조회 (읽기) | `admin/shop.html` | - | admin 전용 카드뷰 |
-| 학생 관리 | `admin/users.html` (통합) | `manager/students.html` | admin은 전체 사용자 관리에서 처리 |
-| 교사 관리 | `admin/users.html` (통합) | `manager/teachers.html` | admin은 전체 사용자 관리에서 처리 |
-| 내 달란트 | - | `manager/my-talents.html` | admin은 대시보드에서 확인 |
-| 대시보드 | `admin/index.html` | `manager/index.html` | 각자 역할에 맞는 대시보드 |
+| 페이지 | admin | dept_manager | 비고 |
+|--------|-------|-------------|------|
+| `admin/index.html` | ✅ 전체 대시보드 | ✅ 부서 스코프 대시보드 | 역할별 통계/바로가기 분기 |
+| `admin/users.html` | ✅ 전체 사용자 CRUD | ✅ 부서 사용자 조회 전용 | 가입승인/등록/삭제 admin only |
+| `admin/talents.html` | ✅ 전체 학생+교사 달란트 | ✅ 부서 학생+교사 달란트 | 탭으로 학생/교사 전환 |
+| `admin/products.html` | ✅ 전체 상품 CRUD | ✅ 전체 상품 CRUD | 동일 기능 |
+| `admin/departments.html` | ✅ | ❌ | admin 전용 |
+| `admin/managers.html` | ✅ | ❌ | admin 전용 |
+| `admin/shop.html` | ✅ | ❌ | admin 전용 |
+| `admin/reports.html` | ✅ | ❌ | admin 전용 |
+| `admin/logs.html` | ✅ | ❌ | admin 전용 |
+| `admin/versions.html` | ✅ | ❌ | admin 전용 |
+
+## 역할 분기 구현 방식
+- HTML: `<li data-role="admin">` 속성으로 admin 전용 네비게이션 항목 표시
+- JS: `applyRoleNav(session.role)` 호출로 현재 역할에 맞지 않는 `data-role` 요소 숨김
+- `initPage(['admin', 'dept_manager'])`: 공유 페이지에서 두 역할 모두 허용
 
 ## 작업 시 체크리스트
-1. 새 기능 페이지 추가 시: 접근 가능한 역할 확인 후, 해당 역할의 폴더에 각각 페이지 생성
-2. 기존 기능 수정 시: 위 맵 참고하여 중복 페이지가 있으면 양쪽 모두 수정
-3. nav 링크는 반드시 같은 폴더 내 페이지를 가리키도록 유지 (cross-folder 링크 금지)
+1. 새 admin 페이지 추가 시: `initPage` 역할 목록 확인, 네비게이션에 `data-role` 속성 적용
+2. 공유 페이지 수정 시: admin/dept_manager 양쪽 동작 확인
+3. dept_manager 접근 불가 페이지: `initPage(['admin'])` 유지

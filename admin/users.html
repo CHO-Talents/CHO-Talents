@@ -13,12 +13,14 @@
       <li><a href="../index.html">🏠 메인</a></li>
       <li><a href="index.html">대시보드</a></li>
       <li><a href="users.html" class="active">사용자 관리</a></li>
-      <li><a href="departments.html">부서 관리</a></li>
-      <li><a href="managers.html">관리자 관리</a></li>
-      <li><a href="shop.html">상점 관리</a></li>
-      <li><a href="reports.html">보고서</a></li>
-      <li><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li><a href="versions.html">버전</a></li>
+      <li data-role="admin"><a href="departments.html">부서 관리</a></li>
+      <li data-role="admin"><a href="managers.html">관리자 관리</a></li>
+      <li><a href="talents.html">달란트 관리</a></li>
+      <li><a href="products.html">물품 관리</a></li>
+      <li data-role="admin"><a href="shop.html">상점 관리</a></li>
+      <li data-role="admin"><a href="reports.html">보고서</a></li>
+      <li data-role="admin"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-role="admin"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
@@ -29,8 +31,8 @@
 
     <div class="cards-grid" style="margin-bottom:1.5rem;">
       <div class="stat-card"><div class="stat-card-label">전체</div><div class="stat-card-value" id="cntAll">-</div></div>
-      <div class="stat-card" style="border-left-color:#e03131;"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
-      <div class="stat-card" style="border-left-color:#cc5de8;"><div class="stat-card-label">📋 부서관리자</div><div class="stat-card-value" id="cntMgr">-</div></div>
+      <div class="stat-card" style="border-left-color:#e03131;" data-role="admin"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
+      <div class="stat-card" style="border-left-color:#cc5de8;" data-role="admin"><div class="stat-card-label">📋 부서관리자</div><div class="stat-card-value" id="cntMgr">-</div></div>
       <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">👩‍🏫 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
       <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">🎒 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
     </div>
@@ -51,8 +53,8 @@
         <div class="admin-table-title" id="tableTitle">사용자 목록</div>
         <div class="filters">
           <button class="filter-btn active" onclick="setFilter('all',this)">전체</button>
-          <button class="filter-btn" onclick="setFilter('admin',this)">관리자</button>
-          <button class="filter-btn" onclick="setFilter('dept_manager',this)">부서관리자</button>
+          <button class="filter-btn" data-role="admin" onclick="setFilter('admin',this)">관리자</button>
+          <button class="filter-btn" data-role="admin" onclick="setFilter('dept_manager',this)">부서관리자</button>
           <button class="filter-btn" onclick="setFilter('teacher',this)">교사</button>
           <button class="filter-btn" onclick="setFilter('student',this)">학생</button>
           <span style="margin-left:0.5rem;"></span>
@@ -128,14 +130,17 @@
     let editingId = null;
     let currentFilter = 'all';
     (async () => {
-      session = await initPage(['admin'], '../login.html');
+      session = await initPage(['admin', 'dept_manager'], '../login.html');
       if (!session) return;
-      if (session) {
-        renderRoleBadge('navUser', session, '../');
-        autoLogPageView();
-        updateBadge();
-        loadData();
+      applyRoleNav(session.role);
+      renderRoleBadge('navUser', session, '../');
+      autoLogPageView();
+      if (session.role === 'admin') updateBadge();
+      if (session.role === 'dept_manager') {
+        document.getElementById('reqSection').style.display = 'none';
+        document.querySelectorAll('.admin-table-header .filter-btn[style*="background:var(--admin-primary)"]').forEach(b => b.style.display = 'none');
       }
+      loadData();
     })();
 
     async function updateBadge() {
@@ -211,9 +216,9 @@
           <td>${formatKSTShort(u.created_at)}</td>
           <td>${lastLogin}</td>
           <td>
-            <button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>수정</button>
-            <button class="filter-btn" onclick="resetPw('${u.id}','${u.username}')">비밀번호초기화</button>
-            ${u.id !== session.id ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${u.username}')">삭제</button>` : ''}
+            ${session.role === 'admin' ? `<button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>수정</button>` : ''}
+            ${session.role === 'admin' ? `<button class="filter-btn" onclick="resetPw('${u.id}','${u.username}')">비밀번호초기화</button>` : ''}
+            ${session.role === 'admin' && u.id !== session.id ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${u.username}')">삭제</button>` : ''}
           </td>
         </tr>`;
       }).join('');

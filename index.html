@@ -90,7 +90,7 @@
 
         const myTalentCard = document.getElementById('cardMyTalent');
         if (myTalentCard) {
-          const talentPaths = { admin: 'admin/index.html', dept_manager: 'manager/my-talents.html', teacher: 'teacher/my-talents.html', student: 'student/my-talents.html' };
+          const talentPaths = { admin: 'admin/index.html', dept_manager: 'admin/talents.html', teacher: 'teacher/my-talents.html', student: 'student/my-talents.html' };
           myTalentCard.href = talentPaths[s.role] || 'student/my-talents.html';
         }
       }
