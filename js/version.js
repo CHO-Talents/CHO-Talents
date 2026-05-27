@@ -2,9 +2,20 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.7.3',
+  current: '3.7.4',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.7.4',
+      date: '2026-05-28',
+      title: '가입 신청 권한별 조회/처리 조건 + 네비게이션 아이디 표시',
+      changes: [
+        'users.html: 관리자/전도사님 - 모든 부서 신청자 보임 + 전체 처리 가능',
+        'users.html: 부장 - 모든 부서 신청자 보이나 담당 부서만 처리 가능',
+        'users.html: 부서 담당 교사 - 담당 부서 신청자만 보임 + 처리 가능',
+        'auth.js: renderRoleBadge에 아이디 표시 추가 (이름 (아이디) 형식)'
+      ]
+    },
     {
       version: '3.7.3',
       date: '2026-05-28',

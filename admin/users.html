@@ -126,11 +126,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.3"></script>
-  <script src="../js/activity-log.js?v=3.7.3"></script>
-  <script src="../js/auth.js?v=3.7.3"></script>
-  <script src="../js/user-mgmt.js?v=3.7.3"></script>
-  <script src="../js/version.js?v=3.7.3"></script>
+  <script src="../js/supabase-config.js?v=3.7.4"></script>
+  <script src="../js/activity-log.js?v=3.7.4"></script>
+  <script src="../js/auth.js?v=3.7.4"></script>
+  <script src="../js/user-mgmt.js?v=3.7.4"></script>
+  <script src="../js/version.js?v=3.7.4"></script>
   <script>
     initSupabase();
     let session;
@@ -147,7 +147,7 @@
       updatePendingBadge();
       const myRank = session.permissionRank || 0;
       if (myRank >= 80) updateBadge();
-      if (myRank < 80) {
+      if (myRank < 60) {
         document.getElementById('reqSection').style.display = 'none';
         document.querySelectorAll('.admin-table-header .filter-btn[style*="background:var(--admin-primary)"]').forEach(b => b.style.display = 'none');
       }
@@ -185,16 +185,23 @@
       ]);
       let users = usersRes.data || [];
       allDepts = deptsRes.data || [];
-      allRequests = reqRes.data || [];
+      let reqs = reqRes.data || [];
+
+      const myManagedDept = session.managedDeptId || session.departmentId;
 
       if (myRank < 90) {
-        const myManagedDept = session.managedDeptId || session.departmentId;
         if (myManagedDept) {
           users = users.filter(u => u.department_id === myManagedDept);
         } else {
           users = [];
         }
       }
+
+      if (myRank < 80) {
+        reqs = myManagedDept ? reqs.filter(r => r.department_id === myManagedDept) : [];
+      }
+
+      allRequests = reqs;
 
       allUsers = users;
       await loadLastLogins();
@@ -442,9 +449,12 @@
         document.getElementById('reqList').innerHTML = '<tr><td colspan="7" class="empty-state">대기 중인 가입 신청이 없습니다.</td></tr>';
         return;
       }
+      const myRank = session.permissionRank || 0;
+      const myManagedDept = session.managedDeptId || session.departmentId;
       const tbody = document.getElementById('reqList');
       tbody.innerHTML = allRequests.map(r => {
         const rb = ROLE_BADGES[badgeKeyForUser({ permission_level: r.permission_level || 'student', user_type: r.user_type })] || ROLE_BADGES.student;
+        const canProcess = myRank >= 90 || (r.department_id === myManagedDept);
         return `<tr>
           <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
           <td>${r.display_name}</td>
@@ -452,7 +462,7 @@
           <td style="font-size:0.8rem;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.reason || ''}">${r.reason || '-'}</td>
           <td>${formatKSTShort(r.created_at)}</td>
           <td>
-            <select id="reqType_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;" onchange="onReqTypeChange('${r.id}')">
+            ${canProcess ? `<select id="reqType_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;" onchange="onReqTypeChange('${r.id}')">
               <option value="student">🎒 학생</option>
               <option value="teacher">👩‍🏫 교사</option>
             </select>
@@ -466,7 +476,7 @@
               </select>
             </div>
             <button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveReq('${r.id}','${r.username}','${r.display_name}','${r.department_id || ''}')">승인</button>
-            <button class="btn-ack" onclick="rejectReq('${r.id}','${r.username}')">거부</button>
+            <button class="btn-ack" onclick="rejectReq('${r.id}','${r.username}')">거부</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">처리 권한 없음</span>'}
           </td>
         </tr>`;
       }).join('');
