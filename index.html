@@ -15,7 +15,7 @@
       <span class="logo-icon">⭐</span>
       <span class="logo-text">달란트 마을</span>
       <nav class="main-nav" id="mainNav">
-        <a href="student/shop.html" class="nav-btn">🛒 달란트 상점</a>
+        <a href="shop.html" class="nav-btn">🛒 달란트 상점</a>
         <a href="login.html" class="nav-btn" id="navLoginBtn">🔑 로그인</a>
       </nav>
     </div>
@@ -49,12 +49,12 @@
           <h3>달란트 적립</h3>
           <p>열심히 활동하고<br/>달란트를 모아요!</p>
         </a>
-        <a href="student/shop.html" class="card card-shop">
+        <a href="shop.html" class="card card-shop">
           <div class="card-icon">🛒</div>
           <h3>상품 구매</h3>
           <p>모은 달란트로<br/>원하는 상품을 골라요!</p>
         </a>
-        <a href="student/my-talents.html" class="card card-rank" id="cardMyTalent">
+        <a href="my-talents.html" class="card card-rank" id="cardMyTalent">
           <div class="card-icon">🏅</div>
           <h3>내 달란트</h3>
           <p>내가 모은 달란트를<br/>확인해 봐요!</p>
@@ -86,12 +86,15 @@
       if (s) {
         const loginBtn = document.getElementById('navLoginBtn');
         loginBtn.textContent = s.displayName || s.username;
-        loginBtn.href = getRoleRedirectUrl(s.role, '');
+        loginBtn.href = getRoleRedirectUrl(s.permissionLevel, '');
 
         const myTalentCard = document.getElementById('cardMyTalent');
         if (myTalentCard) {
-          const talentPaths = { admin: 'admin/index.html', dept_manager: 'admin/talents.html', teacher: 'teacher/my-talents.html', student: 'student/my-talents.html' };
-          myTalentCard.href = talentPaths[s.role] || 'student/my-talents.html';
+          const perm = s.permissionLevel;
+          const rank = s.permissionRank || 0;
+          myTalentCard.href = rank >= 80 ? 'admin/index.html'
+            : rank >= 60 ? 'admin/talents.html'
+            : 'my-talents.html';
         }
       }
     })();

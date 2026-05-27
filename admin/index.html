@@ -11,23 +11,22 @@
     <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
     <ul class="admin-nav-links">
       <li><a href="../index.html">🏠 메인</a></li>
-      <li><a href="index.html" class="active">대시보드</a></li>
-      <li><a href="users.html">사용자 관리</a></li>
-      <li data-role="admin"><a href="departments.html">부서 관리</a></li>
-      <li data-role="admin"><a href="managers.html">관리자 관리</a></li>
-      <li><a href="talents.html">달란트 관리</a></li>
-      <li><a href="products.html">물품 관리</a></li>
-      <li data-role="admin"><a href="shop.html">상점 관리</a></li>
-      <li data-role="admin"><a href="reports.html">보고서</a></li>
-      <li data-role="admin"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li data-role="admin"><a href="versions.html">버전</a></li>
+      <li data-min-perm="80"><a href="index.html" class="active">대시보드</a></li>
+      <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
+      <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
+      <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+      <li data-min-perm="60"><a href="talents.html">달란트 관리</a></li>
+      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="80"><a href="reports.html">보고서</a></li>
+      <li data-min-perm="80"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
   </nav>
 
   <div class="admin-container">
-    <div class="alert-banner hidden" id="alertBanner" data-role="admin">
+    <div class="alert-banner hidden" id="alertBanner" data-min-perm="80">
       <span>&#9888;</span>
       <span id="alertText">미확인 ERROR 로그가 있습니다.</span>
       <a href="logs.html" style="margin-left:auto;color:inherit;font-weight:700;">확인하기</a>
@@ -40,15 +39,15 @@
         <div class="stat-card-label" id="totalUsersLabel">전체 사용자</div>
         <div class="stat-card-value" id="totalUsers">-</div>
       </div>
-      <div class="stat-card" data-role="admin">
+      <div class="stat-card" data-min-perm="80">
         <div class="stat-card-label">부서</div>
         <div class="stat-card-value" id="totalDepts">-</div>
       </div>
-      <div class="stat-card" data-role="admin">
+      <div class="stat-card" data-min-perm="80">
         <div class="stat-card-label">보고서</div>
         <div class="stat-card-value" id="totalReports">-</div>
       </div>
-      <div class="stat-card error-card" data-role="admin">
+      <div class="stat-card error-card" data-min-perm="80">
         <div class="stat-card-label">미확인 ERROR+</div>
         <div class="stat-card-value" id="unackCount">-</div>
       </div>
@@ -63,11 +62,11 @@
         <div class="stat-card-label">교사</div>
         <div class="stat-card-value" id="teacherCount">-</div>
       </div>
-      <div class="stat-card" style="border-left-color:#cc5de8;" data-role="admin">
+      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80">
         <div class="stat-card-label">부서 관리자</div>
         <div class="stat-card-value" id="managerCount">-</div>
       </div>
-      <a href="users.html" class="stat-card" style="border-left-color:#e67700;text-decoration:none;color:inherit;" data-role="admin">
+      <a href="users.html" class="stat-card" style="border-left-color:#e67700;text-decoration:none;color:inherit;" data-min-perm="80">
         <div class="stat-card-label">📝 가입 대기자</div>
         <div class="stat-card-value" id="pendingCount">-</div>
       </a>
@@ -75,7 +74,7 @@
 
     <div id="quickLinks" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.5rem;"></div>
 
-    <div class="admin-table-wrap" data-role="admin">
+    <div class="admin-table-wrap" data-min-perm="80">
       <div class="admin-table-header">
         <div class="admin-table-title">최근 활동 로그</div>
       </div>
@@ -94,9 +93,9 @@
     initSupabase();
     let session;
     (async () => {
-      session = await initPage(['admin', 'dept_manager'], '../login.html');
+      session = await initPage(80, '../login.html');
       if (!session) return;
-      applyRoleNav(session.role);
+      applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
       loadDashboard();
@@ -105,15 +104,16 @@
 
     function buildQuickLinks() {
       const links = [
-        { href: 'users.html', emoji: '👥', label: '사용자 관리', bg: '#e8e0ff', color: 'var(--admin-primary)', roles: ['admin', 'dept_manager'] },
-        { href: 'departments.html', emoji: '🏢', label: '부서 관리', bg: '#f3f0ff', color: '#7048c6', roles: ['admin'] },
-        { href: 'managers.html', emoji: '👑', label: '관리자 관리', bg: '#fff9db', color: '#e67700', roles: ['admin'] },
-        { href: 'talents.html', emoji: '💰', label: '달란트 관리', bg: '#fff5f5', color: '#e03131', roles: ['admin', 'dept_manager'] },
-        { href: 'products.html', emoji: '📦', label: '물품 관리', bg: '#f0f9ff', color: '#1971c2', roles: ['admin', 'dept_manager'] },
-        { href: 'shop.html', emoji: '🛒', label: '상점 관리', bg: '#f0fff4', color: '#2b8a3e', roles: ['admin'] },
+        { href: 'users.html', emoji: '👥', label: '사용자 관리', bg: '#e8e0ff', color: 'var(--admin-primary)', minRank: 60 },
+        { href: 'departments.html', emoji: '🏢', label: '부서 관리', bg: '#f3f0ff', color: '#7048c6', minRank: 80 },
+        { href: 'managers.html', emoji: '👑', label: '관리자 관리', bg: '#fff9db', color: '#e67700', minRank: 80 },
+        { href: 'talents.html', emoji: '💰', label: '달란트 관리', bg: '#fff5f5', color: '#e03131', minRank: 60 },
+        { href: 'talent-items.html', emoji: '🎯', label: '달란트 항목', bg: '#f0fff4', color: '#2b8a3e', minRank: 90 },
+        { href: 'shop.html', emoji: '📦', label: '물품 관리', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
       ];
+      const rank = session.permissionRank || 0;
       document.getElementById('quickLinks').innerHTML = links
-        .filter(l => l.roles.includes(session.role))
+        .filter(l => rank >= l.minRank)
         .map(l => `<a href="${l.href}" style="display:block;padding:1rem;background:${l.bg};border-radius:12px;text-decoration:none;text-align:center;">
           <div style="font-size:1.8rem;">${l.emoji}</div>
           <div style="font-weight:700;color:${l.color};">${l.label}</div>
@@ -122,28 +122,29 @@
 
     async function loadDashboard() {
       buildQuickLinks();
-      const isDeptMgr = session.role === 'dept_manager';
+      const myRank = session.permissionRank || 0;
       const deptId = session.managedDeptId;
+      const isScoped = myRank < 80 && deptId;
 
-      let studentsQ = _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'student');
-      let teachersQ = _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'teacher');
+      let studentsQ = _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('user_type', 'student');
+      let teachersQ = _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('user_type', 'teacher');
       let totalQ = _sb.from('profiles').select('*', { count: 'exact', head: true });
 
-      if (isDeptMgr && deptId) {
+      if (isScoped) {
         studentsQ = studentsQ.eq('department_id', deptId);
         teachersQ = teachersQ.eq('department_id', deptId);
         totalQ = totalQ.eq('department_id', deptId);
-        document.getElementById('dashTitle').textContent = '부서관리자 대시보드';
+        document.getElementById('dashTitle').textContent = '부서 대시보드';
         document.getElementById('totalUsersLabel').textContent = '부서 사용자';
       }
 
       const promises = [totalQ, studentsQ, teachersQ];
-      if (!isDeptMgr) {
+      if (myRank >= 80) {
         promises.push(
           _sb.from('departments').select('*', { count: 'exact', head: true }).eq('is_active', true),
           _sb.from('reports').select('*', { count: 'exact', head: true }),
           getUnacknowledgedCount(),
-          _sb.from('profiles').select('*', { count: 'exact', head: true }).eq('role', 'dept_manager'),
+          _sb.from('profiles').select('*', { count: 'exact', head: true }).in('permission_level', ['dept_teacher','chief','evangelist']),
           _sb.from('registration_requests').select('*', { count: 'exact', head: true }).eq('status', 'pending')
         );
       }
@@ -153,7 +154,7 @@
       document.getElementById('studentCount').textContent = results[1].count || 0;
       document.getElementById('teacherCount').textContent = results[2].count || 0;
 
-      if (!isDeptMgr) {
+      if (myRank >= 80) {
         document.getElementById('totalDepts').textContent = results[3].count || 0;
         document.getElementById('totalReports').textContent = results[4].count || 0;
         const unack = results[5];

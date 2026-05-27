@@ -6,12 +6,11 @@ async function fetchUsers(options = {}) {
   if (!_sb) return { data: [], error: 'Supabase not initialized' };
   try {
     const { data, error } = await _sb.rpc('admin_list_users', {
-      p_role: options.role || null,
+      p_user_type: options.userType || null,
       p_department_id: options.departmentId || null
     });
     if (error) return { data: [], error: error.message };
-    if (!data || !data.success) return { data: [], error: data?.error || 'Unknown error' };
-    return { data: data.users || [], error: null };
+    return { data: data || [], error: null };
   } catch (err) {
     return { data: [], error: String(err) };
   }
@@ -24,9 +23,10 @@ async function createUser(userData) {
       p_username: userData.username,
       p_password: userData.password || '1234',
       p_display_name: userData.displayName || userData.username,
-      p_role: userData.role || 'student',
       p_department_id: userData.departmentId || null,
-      p_managed_dept_id: userData.managedDeptId || null
+      p_managed_dept_id: userData.managedDeptId || null,
+      p_user_type: userData.userType || 'student',
+      p_permission_level: userData.permissionLevel || 'student'
     });
     if (error) {
       await logError('USER_CREATE_FAIL', { username: userData.username, error: error.message });
@@ -35,7 +35,7 @@ async function createUser(userData) {
     if (!data.success) {
       return { data: null, error: data.error };
     }
-    await logInfo('USER_CREATE', { username: userData.username, role: userData.role });
+    await logInfo('USER_CREATE', { username: userData.username, userType: userData.userType });
     return { data, error: null };
   } catch (err) {
     await logError('USER_CREATE_ERROR', { error: String(err) });
@@ -49,9 +49,10 @@ async function updateUser(id, updates) {
     const { data, error } = await _sb.rpc('admin_update_user', {
       p_user_id: id,
       p_display_name: updates.displayName || null,
-      p_role: updates.role || null,
       p_department_id: updates.departmentId || null,
-      p_managed_dept_id: updates.managedDeptId !== undefined ? updates.managedDeptId : null
+      p_managed_dept_id: updates.managedDeptId !== undefined ? updates.managedDeptId : null,
+      p_user_type: updates.userType || null,
+      p_permission_level: updates.permissionLevel || null
     });
     if (error) {
       await logError('USER_UPDATE_FAIL', { id, error: error.message });

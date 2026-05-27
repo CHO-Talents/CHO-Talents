@@ -2,9 +2,68 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '2.5.0',
+  current: '3.3.1',
   date: '2026-05-27',
   history: [
+    {
+      version: '3.3.1',
+      date: '2026-05-27',
+      title: 'TASK-013 검증 핫픽스: role→permission_level 전환 누락 수정',
+      changes: [
+        'admin/users.html: 사용자 생성/수정 모달 6단계 권한 드롭다운 적용',
+        'admin/users.html: saveUser()→userType/permissionLevel 파라미터 전달 수정',
+        'admin/users.html: approveReq()→userType/permissionLevel 파라미터 전달 수정',
+        'admin/users.html: 가입 승인 드롭다운 6단계 권한 옵션 적용',
+        'admin/managers.html: 관리자 등록/수정 모달 4단계 권한 드롭다운 적용',
+        'admin/managers.html: saveManager()→userType/permissionLevel 전달 수정',
+        'admin/managers.html: ROLE_BADGE 4단계 권한별 배지 확장',
+        'register.html: registration_requests INSERT에서 삭제된 role 컬럼 참조 제거',
+        'shop.html, index.html, login.html: session.role 폴백 참조 제거',
+        'js/auth.js: 미사용 ROLE_LABELS, ROLE_EMOJI, applyRoleNav() 레거시 코드 제거',
+        'js/user-mgmt.js: options.role 폴백 제거'
+      ]
+    },
+    {
+      version: '3.3.0',
+      date: '2026-05-27',
+      title: 'TASK-013D: 페이지 권한 관리 + 세부 권한 적용',
+      changes: [
+        'page_permissions 테이블 생성 + 초기 데이터 시드',
+        'admin/page-permissions.html 신규: 페이지 권한 매트릭스 관리 UI',
+        '프론트엔드 전체: role 참조 → user_type + permission_level 완전 전환',
+        'admin_list_users RPC: p_role → p_user_type 파라미터 전환',
+        'admin_create_user, admin_update_user RPC: role 파라미터/컬럼 참조 제거',
+        'get_my_profile RPC: role 필드 제거',
+        'profiles, registration_requests 테이블: role 컬럼 드롭',
+        'admin/users.html, managers.html, departments.html: permission_level 기반 필터링/렌더링'
+      ]
+    },
+    {
+      version: '3.2.0',
+      date: '2026-05-27',
+      title: 'TASK-013C: 달란트 지급 방식 개편',
+      changes: [
+        'talent_items 테이블 신규 생성 (학생/교사별 지급 항목)',
+        'talent_transactions에 talent_item_id 컬럼 추가',
+        'give_talent RPC 업데이트: 항목 기반 지급 + 학생 주 1회 규칙',
+        'admin/talent-items.html 신규: 달란트 지급 항목 관리 (admin/evangelist)',
+        'admin/talents.html 개선: 항목 버튼 기반 지급 UI + 수동 입력 옵션',
+        '초기 데이터: 학생 8항목, 교사 5항목'
+      ]
+    },
+    {
+      version: '3.1.0',
+      date: '2026-05-27',
+      title: 'TASK-013B: 페이지 구조 통합 + 네비게이션 개선',
+      changes: [
+        'student/teacher 폴더 페이지 통합 → 루트 레벨 my-talents.html, shop.html',
+        'admin/products.html 삭제 → admin/shop.html로 물품 관리 CRUD 통합',
+        '전체 admin 페이지 네비게이션 data-min-perm 기반 통합',
+        '루트 레벨 페이지(earn-talents.html, shop.html, my-talents.html) 네비게이션 통합',
+        'applyRoleNav → applyPermNav 전환 완료',
+        '대시보드 퀵 링크에서 products.html/상점 관리 제거, shop.html/물품 관리로 통합'
+      ]
+    },
     {
       version: '1.0.0',
       date: '2026-05-25',
@@ -183,6 +242,43 @@ const APP_VERSION = {
         'applyRoleNav() 함수 도입 (역할별 네비게이션 표시/숨김)',
         'index.html dept_manager 달란트 경로를 admin/talents.html로 변경',
         '페이지 역할 맵핑 규칙 갱신 (.cursor/rules/page-role-mapping.mdc)'
+      ]
+    },
+    {
+      version: '3.0.0',
+      date: '2026-05-27',
+      title: 'TASK-013A: 유형/권한 6단계 체계 전면 개편 (DB+인증 코어)',
+      changes: [
+        'profiles 테이블 확장: user_type(교사/학생) + permission_level(6단계) + is_super_admin',
+        'registration_requests 테이블 확장: user_type + permission_level 컬럼 추가',
+        'get_permission_rank() 헬퍼 함수 생성 (admin:100 ~ student:20 수치 비교)',
+        '기존 데이터 자동 마이그레이션 (role -> user_type + permission_level)',
+        '최고관리자 is_super_admin 플래그 설정 (본인 외 수정/삭제 불가)',
+        '최고관리자 display_name을 "관리자(admin)"으로 변경',
+        'RPC 함수 12개 전면 업데이트 (permission_level 기반 권한 체크)',
+        'admin_create_user: 상위 권한자 생성 불가 체크 추가',
+        'admin_update_user: 계층적 권한 검증 + 최고관리자 보호',
+        'admin_delete_user: 계층적 삭제 제한 + 최고관리자 삭제 불가',
+        'admin_reset_password: 상위 권한자 비밀번호 초기화 불가',
+        'give_talent/use_talent: dept_teacher(60) 이상만 실행 가능',
+        'admin_list_users: permission_level/user_type 기반 조회 + is_super_admin 반환',
+        'get_my_profile: user_type, permission_level, is_super_admin 반환',
+        'get_my_role: permission_level 반환으로 변경',
+        'RLS 정책 전면 업데이트: get_permission_rank() 기반 (7개 테이블)',
+        'auth.js 코어 전면 개편: PERMISSION_RANK/LABELS/EMOJI/REDIRECT 체계',
+        'initPage() 숫자 기반 최소 권한 체크 지원 (배열 호환 유지)',
+        'applyPermNav() 함수 추가 (data-min-perm 속성 기반)',
+        'getPermRank()/requirePermission() 클라이언트 권한 비교 유틸',
+        '세션 캐시 확장: userType, permissionLevel, permissionRank, isSuperAdmin',
+        'activity-log.js loadAuthSession() 확장 세션 반환',
+        'user-mgmt.js: user_type/permission_level 파라미터 지원',
+        '전체 admin/ 페이지 initPage() 호출을 숫자 기반으로 전환',
+        'student/teacher 페이지 initPage() 숫자 기반 전환',
+        '사용자 관리: 계층적 관리 버튼 표시 (상위 권한자 관리 버튼 숨김)',
+        '사용자 관리: 아이디(username) 컬럼 숨김 (보안 강화)',
+        '대시보드: user_type 기반 통계, permission_rank 기반 퀵링크/분기',
+        'register.html: user_type/permission_level 컬럼 자동 설정',
+        'login.html/index.html/change-password.html: permissionLevel 기반 리디렉트'
       ]
     }
   ]

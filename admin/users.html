@@ -11,16 +11,15 @@
     <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
     <ul class="admin-nav-links">
       <li><a href="../index.html">🏠 메인</a></li>
-      <li><a href="index.html">대시보드</a></li>
-      <li><a href="users.html" class="active">사용자 관리</a></li>
-      <li data-role="admin"><a href="departments.html">부서 관리</a></li>
-      <li data-role="admin"><a href="managers.html">관리자 관리</a></li>
-      <li><a href="talents.html">달란트 관리</a></li>
-      <li><a href="products.html">물품 관리</a></li>
-      <li data-role="admin"><a href="shop.html">상점 관리</a></li>
-      <li data-role="admin"><a href="reports.html">보고서</a></li>
-      <li data-role="admin"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li data-role="admin"><a href="versions.html">버전</a></li>
+      <li data-min-perm="80"><a href="index.html">대시보드</a></li>
+      <li data-min-perm="60"><a href="users.html" class="active">사용자 관리</a></li>
+      <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
+      <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+      <li data-min-perm="60"><a href="talents.html">달란트 관리</a></li>
+      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="80"><a href="reports.html">보고서</a></li>
+      <li data-min-perm="80"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
@@ -31,8 +30,8 @@
 
     <div class="cards-grid" style="margin-bottom:1.5rem;">
       <div class="stat-card"><div class="stat-card-label">전체</div><div class="stat-card-value" id="cntAll">-</div></div>
-      <div class="stat-card" style="border-left-color:#e03131;" data-role="admin"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
-      <div class="stat-card" style="border-left-color:#cc5de8;" data-role="admin"><div class="stat-card-label">📋 부서관리자</div><div class="stat-card-value" id="cntMgr">-</div></div>
+      <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
+      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">📋 부서관리자</div><div class="stat-card-value" id="cntMgr">-</div></div>
       <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">👩‍🏫 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
       <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">🎒 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
     </div>
@@ -43,7 +42,7 @@
         <div class="admin-table-title" id="reqTitle" style="color:#e67700;">📝 가입 신청 내역</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>역할</th><th>아이디</th><th>이름</th><th>부서</th><th>사유</th><th>신청일</th><th>처리</th></tr></thead>
+        <thead><tr><th>역할</th><th>이름</th><th>부서</th><th>사유</th><th>신청일</th><th>처리</th></tr></thead>
         <tbody id="reqList"></tbody>
       </table>
     </div>
@@ -53,8 +52,8 @@
         <div class="admin-table-title" id="tableTitle">사용자 목록</div>
         <div class="filters">
           <button class="filter-btn active" onclick="setFilter('all',this)">전체</button>
-          <button class="filter-btn" data-role="admin" onclick="setFilter('admin',this)">관리자</button>
-          <button class="filter-btn" data-role="admin" onclick="setFilter('dept_manager',this)">부서관리자</button>
+          <button class="filter-btn" data-min-perm="80" onclick="setFilter('admin',this)">관리자</button>
+          <button class="filter-btn" data-min-perm="80" onclick="setFilter('dept_manager',this)">부서관리자</button>
           <button class="filter-btn" onclick="setFilter('teacher',this)">교사</button>
           <button class="filter-btn" onclick="setFilter('student',this)">학생</button>
           <span style="margin-left:0.5rem;"></span>
@@ -62,8 +61,8 @@
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>역할</th><th>아이디</th><th>이름</th><th>부서</th><th>달란트</th><th>등록일</th><th>마지막 로그인</th><th>관리</th></tr></thead>
-        <tbody id="userList"><tr><td colspan="8" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>역할</th><th>이름</th><th>부서</th><th>달란트</th><th>등록일</th><th>마지막 로그인</th><th>관리</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -86,8 +85,10 @@
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">역할</label>
           <select id="mRole" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onRoleChange()">
             <option value="student">🎒 학생</option>
-            <option value="teacher">👩‍🏫 교사</option>
-            <option value="dept_manager">📋 부서 관리자</option>
+            <option value="teacher">👨‍🏫 일반 교사</option>
+            <option value="dept_teacher">👩‍🏫 부서 담당 교사</option>
+            <option value="chief">📋 부장</option>
+            <option value="evangelist">✝️ 전도사님</option>
             <option value="admin">👑 관리자</option>
           </select>
         </div>
@@ -130,13 +131,14 @@
     let editingId = null;
     let currentFilter = 'all';
     (async () => {
-      session = await initPage(['admin', 'dept_manager'], '../login.html');
+      session = await initPage(60, '../login.html');
       if (!session) return;
-      applyRoleNav(session.role);
+      applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
-      if (session.role === 'admin') updateBadge();
-      if (session.role === 'dept_manager') {
+      const myRank = session.permissionRank || 0;
+      if (myRank >= 80) updateBadge();
+      if (myRank < 80) {
         document.getElementById('reqSection').style.display = 'none';
         document.querySelectorAll('.admin-table-header .filter-btn[style*="background:var(--admin-primary)"]').forEach(b => b.style.display = 'none');
       }
@@ -164,12 +166,33 @@
       renderRequests();
     }
 
+    const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
+
     function updateStats() {
       document.getElementById('cntAll').textContent = allUsers.length;
-      document.getElementById('cntAdmin').textContent = allUsers.filter(u => u.role === 'admin').length;
-      document.getElementById('cntMgr').textContent = allUsers.filter(u => u.role === 'dept_manager').length;
-      document.getElementById('cntTeacher').textContent = allUsers.filter(u => u.role === 'teacher').length;
-      document.getElementById('cntStudent').textContent = allUsers.filter(u => u.role === 'student').length;
+      document.getElementById('cntAdmin').textContent = allUsers.filter(u => u.permission_level === 'admin').length;
+      document.getElementById('cntMgr').textContent = allUsers.filter(u => DEPT_MGR_LEVELS.includes(u.permission_level)).length;
+      document.getElementById('cntTeacher').textContent = allUsers.filter(u => u.user_type === 'teacher').length;
+      document.getElementById('cntStudent').textContent = allUsers.filter(u => u.user_type === 'student').length;
+    }
+
+    function userMatchesFilter(u, filter) {
+      if (filter === 'admin') return u.permission_level === 'admin';
+      if (filter === 'dept_manager') return DEPT_MGR_LEVELS.includes(u.permission_level);
+      if (filter === 'teacher') return u.user_type === 'teacher';
+      if (filter === 'student') return u.user_type === 'student';
+      return u.user_type === filter || u.permission_level === filter;
+    }
+
+    function badgeKeyForUser(u) {
+      if (u.permission_level === 'admin') return 'admin';
+      if (DEPT_MGR_LEVELS.includes(u.permission_level)) return 'dept_manager';
+      if (u.user_type === 'teacher') return 'teacher';
+      return 'student';
+    }
+
+    function modalRoleFromUser(u) {
+      return u.permission_level || 'student';
     }
 
     function populateDeptSelects() {
@@ -198,35 +221,43 @@
     };
 
     function renderUsers() {
-      const list = currentFilter === 'all' ? allUsers : allUsers.filter(u => u.role === currentFilter);
+      const list = currentFilter === 'all' ? allUsers : allUsers.filter(u => userMatchesFilter(u, currentFilter));
       const tbody = document.getElementById('userList');
       document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
 
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">등록된 사용자가 없습니다.</td></tr>'; return; }
+      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 사용자가 없습니다.</td></tr>'; return; }
 
+      const myRank = session.permissionRank || 0;
       tbody.innerHTML = list.map(u => {
-        const rb = ROLE_BADGES[u.role] || ROLE_BADGES.student;
+        const perm = u.permission_level;
+        const rb = ROLE_BADGES[badgeKeyForUser(u)] || ROLE_BADGES.student;
+        const permLabel = PERMISSION_LABELS[perm] || rb.label;
+        const permEmoji = PERMISSION_EMOJI[perm] || rb.emoji;
         const lastLogin = u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '<span style="color:#adb5bd;font-size:0.8rem;">없음</span>';
+        const targetRank = getPermRank(perm);
+        const isSuperAdmin = u.is_super_admin || false;
+        const canManage = myRank > targetRank && !isSuperAdmin || u.id === session.id;
         return `<tr>
-          <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
-          <td><strong>${u.username}</strong></td>
+          <td><span class="level-badge ${rb.cls}">${permEmoji} ${permLabel}</span></td>
           <td>${u.display_name || '-'}</td>
           <td>${getDeptName(u.department_id)}</td>
           <td style="font-weight:700;">${u.talent_balance || 0}</td>
           <td>${formatKSTShort(u.created_at)}</td>
           <td>${lastLogin}</td>
           <td>
-            ${session.role === 'admin' ? `<button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>수정</button>` : ''}
-            ${session.role === 'admin' ? `<button class="filter-btn" onclick="resetPw('${u.id}','${u.username}')">비밀번호초기화</button>` : ''}
-            ${session.role === 'admin' && u.id !== session.id ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${u.username}')">삭제</button>` : ''}
+            ${canManage ? `<button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>수정</button>` : ''}
+            ${canManage && u.id !== session.id ? `<button class="filter-btn" onclick="resetPw('${u.id}','${u.display_name}')">비밀번호초기화</button>` : ''}
+            ${canManage && u.id !== session.id && !isSuperAdmin ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${u.display_name}')">삭제</button>` : ''}
           </td>
         </tr>`;
       }).join('');
     }
 
+    const MGMT_LEVELS = ['dept_teacher','chief','evangelist','admin'];
+    function permToType(perm) { return perm === 'student' ? 'student' : 'teacher'; }
     function onRoleChange() {
-      const role = document.getElementById('mRole').value;
-      document.getElementById('managedDeptWrap').style.display = (role === 'dept_manager') ? 'block' : 'none';
+      const perm = document.getElementById('mRole').value;
+      document.getElementById('managedDeptWrap').style.display = MGMT_LEVELS.includes(perm) ? 'block' : 'none';
     }
 
     function openAddModal() {
@@ -251,10 +282,10 @@
       document.getElementById('mUsername').value = u.username;
       document.getElementById('mUsername').disabled = true;
       document.getElementById('mDisplayName').value = u.display_name || '';
-      document.getElementById('mRole').value = u.role;
+      document.getElementById('mRole').value = modalRoleFromUser(u);
       document.getElementById('mDept').value = u.department_id || '';
       document.getElementById('mManagedDept').value = u.managed_dept_id || '';
-      document.getElementById('managedDeptWrap').style.display = (u.role === 'dept_manager') ? 'block' : 'none';
+      document.getElementById('managedDeptWrap').style.display = MGMT_LEVELS.includes(u.permission_level) ? 'block' : 'none';
       document.getElementById('passwordWrap').style.display = 'none';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('userModal').classList.remove('hidden');
@@ -266,21 +297,23 @@
       const errEl = document.getElementById('modalError');
       const username = document.getElementById('mUsername').value.trim();
       const displayName = document.getElementById('mDisplayName').value.trim();
-      const role = document.getElementById('mRole').value;
+      const permLevel = document.getElementById('mRole').value;
+      const userType = permToType(permLevel);
       const deptId = document.getElementById('mDept').value || null;
       const managedDeptId = document.getElementById('mManagedDept').value || null;
+      const needsManagedDept = MGMT_LEVELS.includes(permLevel);
 
       if (!username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
       if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
       if (!deptId) { errEl.textContent = '소속 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
-      if (role === 'dept_manager' && !managedDeptId) { errEl.textContent = '담당 관리 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
+      if (needsManagedDept && !managedDeptId) { errEl.textContent = '담당 관리 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
-        const { error } = await updateUser(editingId, { displayName, role, departmentId: deptId, managedDeptId: role === 'dept_manager' ? managedDeptId : null });
+        const { error } = await updateUser(editingId, { displayName, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null });
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       } else {
         const pw = document.getElementById('mPassword').value || '1234';
-        const { error } = await createUser({ username, password: pw, displayName, role, departmentId: deptId, managedDeptId: role === 'dept_manager' ? managedDeptId : null });
+        const { error } = await createUser({ username, password: pw, displayName: displayName || username, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null });
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       }
       closeModal();
@@ -309,10 +342,9 @@
       }
       const tbody = document.getElementById('reqList');
       tbody.innerHTML = allRequests.map(r => {
-        const rb = ROLE_BADGES[r.role] || ROLE_BADGES.student;
+        const rb = ROLE_BADGES[badgeKeyForUser({ permission_level: r.permission_level || 'student', user_type: r.user_type })] || ROLE_BADGES.student;
         return `<tr>
           <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
-          <td><strong>${r.username}</strong></td>
           <td>${r.display_name}</td>
           <td>${getDeptName(r.department_id)}</td>
           <td style="font-size:0.8rem;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.reason || ''}">${r.reason || '-'}</td>
@@ -320,8 +352,10 @@
           <td>
             <select id="reqRole_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;" onchange="onReqRoleChange('${r.id}')">
               <option value="student">🎒 학생</option>
-              <option value="teacher">👩‍🏫 교사</option>
-              <option value="dept_manager">📋 부서관리자</option>
+              <option value="teacher">👨‍🏫 일반 교사</option>
+              <option value="dept_teacher">👩‍🏫 부서 담당</option>
+              <option value="chief">📋 부장</option>
+              <option value="evangelist">✝️ 전도사님</option>
               <option value="admin">👑 관리자</option>
             </select>
             <div id="reqManagedWrap_${r.id}" style="display:none;margin:0.3rem 0;">
@@ -338,23 +372,25 @@
     }
 
     function onReqRoleChange(reqId) {
-      const role = document.getElementById('reqRole_' + reqId).value;
+      const perm = document.getElementById('reqRole_' + reqId).value;
       const wrap = document.getElementById('reqManagedWrap_' + reqId);
-      wrap.style.display = (role === 'admin' || role === 'dept_manager') ? 'block' : 'none';
+      wrap.style.display = MGMT_LEVELS.includes(perm) ? 'block' : 'none';
     }
 
     async function approveReq(reqId, username, displayName, deptId) {
-      const role = document.getElementById('reqRole_' + reqId).value;
+      const permLevel = document.getElementById('reqRole_' + reqId).value;
+      const userType = permToType(permLevel);
       const managedEl = document.getElementById('reqManaged_' + reqId);
-      const managedDeptId = managedEl ? managedEl.value || null : null;
-      const roleLabel = ROLE_BADGES[role]?.label || role;
-      if (!confirm(`"${username}" (${displayName})을(를) [${roleLabel}] 역할로 승인하시겠습니까?`)) return;
-      const { error } = await createUser({ username, password: '1234', displayName, role, departmentId: deptId || null, managedDeptId });
+      const needsManagedDept = MGMT_LEVELS.includes(permLevel);
+      const managedDeptId = (needsManagedDept && managedEl) ? managedEl.value || null : null;
+      const permLabel = PERMISSION_LABELS[permLevel] || permLevel;
+      if (!confirm(`"${username}" (${displayName})을(를) [${permLabel}] 역할로 승인하시겠습니까?`)) return;
+      const { error } = await createUser({ username, password: '1234', displayName, userType, permissionLevel: permLevel, departmentId: deptId || null, managedDeptId });
       if (error) { alert('계정 생성 실패: ' + error); return; }
       await _sb.from('registration_requests').update({
         status: 'approved', reviewed_by: session.username, review_note: '승인됨', reviewed_at: new Date().toISOString()
       }).eq('id', reqId);
-      await logInfo('REGISTER_APPROVE', { username, role });
+      await logInfo('REGISTER_APPROVE', { username, permissionLevel: permLevel });
       await loadData();
     }
 

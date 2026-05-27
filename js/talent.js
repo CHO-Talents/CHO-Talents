@@ -67,6 +67,38 @@ async function giveTalent(userId, amount, description, createdBy) {
   }
 }
 
+async function giveTalentByItem(userId, talentItemId, createdBy) {
+  if (!_sb) return { success: false, error: 'Supabase not initialized' };
+  try {
+    const { data, error } = await _sb.rpc('give_talent', {
+      p_user_id: userId,
+      p_talent_item_id: talentItemId,
+      p_created_by: createdBy
+    });
+    if (error) {
+      await logError('TALENT_GIVE_ITEM_FAIL', { userId, talentItemId, error: error.message });
+      return { success: false, error: error.message };
+    }
+    await logInfo('TALENT_GIVE_ITEM', { userId, talentItemId, amount: data.amount });
+    return data;
+  } catch (err) {
+    await logError('TALENT_GIVE_ITEM_ERROR', { userId, error: String(err) });
+    return { success: false, error: String(err) };
+  }
+}
+
+async function fetchTalentItems(targetType) {
+  if (!_sb) return { data: [], error: 'Supabase not initialized' };
+  let query = _sb.from('talent_items').select('*').eq('is_active', true).order('sort_order');
+  if (targetType) query = query.eq('target_type', targetType);
+  return await query;
+}
+
+async function fetchAllTalentItems() {
+  if (!_sb) return { data: [], error: 'Supabase not initialized' };
+  return await _sb.from('talent_items').select('*').order('target_type').order('sort_order');
+}
+
 async function useTalent(userId, amount, description, createdBy) {
   if (!_sb) return { success: false, error: 'Supabase not initialized' };
   try {

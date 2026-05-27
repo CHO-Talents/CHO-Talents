@@ -11,16 +11,15 @@
     <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
     <ul class="admin-nav-links">
       <li><a href="../index.html">🏠 메인</a></li>
-      <li><a href="index.html">대시보드</a></li>
-      <li><a href="users.html">사용자 관리</a></li>
-      <li data-role="admin"><a href="departments.html" class="active">부서 관리</a></li>
-      <li data-role="admin"><a href="managers.html">관리자 관리</a></li>
-      <li><a href="talents.html">달란트 관리</a></li>
-      <li><a href="products.html">물품 관리</a></li>
-      <li data-role="admin"><a href="shop.html">상점 관리</a></li>
-      <li data-role="admin"><a href="reports.html">보고서</a></li>
-      <li data-role="admin"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li data-role="admin"><a href="versions.html">버전</a></li>
+      <li data-min-perm="80"><a href="index.html">대시보드</a></li>
+      <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
+      <li data-min-perm="80"><a href="departments.html" class="active">부서 관리</a></li>
+      <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+      <li data-min-perm="60"><a href="talents.html">달란트 관리</a></li>
+      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="80"><a href="reports.html">보고서</a></li>
+      <li data-min-perm="80"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
@@ -71,8 +70,9 @@
     let editingId = null;
     let allUsers = [];
     (async () => {
-      session = await initPage(['admin'], '../login.html');
+      session = await initPage(80, '../login.html');
       if (!session) return;
+      applyPermNav(session.permissionRank || 0);
       if (session) {
         renderRoleBadge('navUser', session, '../');
         autoLogPageView();
@@ -90,7 +90,7 @@
     async function loadDepts() {
       const { data: depts } = await fetchDepartments();
       const { data: users } = await _sb.from('profiles')
-        .select('id, username, role, department_id, managed_dept_id, display_name');
+        .select('id, username, user_type, permission_level, department_id, managed_dept_id, display_name');
       allUsers = users || [];
 
       const tbody = document.getElementById('deptList');
@@ -103,13 +103,13 @@
 
       tbody.innerHTML = depts.map(d => {
         const deptUsers = (users||[]).filter(u => u.department_id === d.id);
-        const admins = deptUsers.filter(u => u.role === 'admin');
-        const deptMgrs = deptUsers.filter(u => u.role === 'dept_manager');
-        const teachers = deptUsers.filter(u => u.role === 'teacher');
-        const students = deptUsers.filter(u => u.role === 'student');
-        const managers = (users||[]).filter(u => u.managed_dept_id === d.id && (u.role === 'dept_manager' || u.role === 'admin'));
+        const admins = deptUsers.filter(u => u.permission_level === 'admin');
+        const deptMgrs = deptUsers.filter(u => ['evangelist', 'chief', 'dept_teacher'].includes(u.permission_level));
+        const teachers = deptUsers.filter(u => u.user_type === 'teacher' && !['admin', 'evangelist', 'chief', 'dept_teacher'].includes(u.permission_level));
+        const students = deptUsers.filter(u => u.user_type === 'student');
+        const managers = (users||[]).filter(u => u.managed_dept_id === d.id && ['admin', 'evangelist', 'chief', 'dept_teacher'].includes(u.permission_level));
         const managerNames = managers.map(m => {
-          const e = m.role === 'admin' ? '👑' : '📋';
+          const e = m.permission_level === 'admin' ? '👑' : '📋';
           return `${e}${m.display_name || m.username}`;
         }).join(', ') || '-';
 
@@ -178,13 +178,21 @@
       const members = allUsers.filter(u => u.department_id === deptId);
       const ROLE_INFO = { admin: {e:'👑',l:'관리자'}, dept_manager: {e:'📋',l:'부서관리자'}, teacher: {e:'👩‍🏫',l:'교사'}, student: {e:'🎒',l:'학생'} };
 
+      function roleInfoForUser(u) {
+        if (u.permission_level === 'admin') return ROLE_INFO.admin;
+        if (['evangelist', 'chief', 'dept_teacher'].includes(u.permission_level)) return ROLE_INFO.dept_manager;
+        if (u.user_type === 'teacher') return ROLE_INFO.teacher;
+        if (u.user_type === 'student') return ROLE_INFO.student;
+        return { e: '👤', l: u.permission_level || u.user_type || '-' };
+      }
+
       let html = `<strong>${deptName}</strong> 소속 인원 (${members.length}명)<br/><br/>`;
       if (members.length === 0) {
         html += '<div style="color:#636e72;">소속 인원이 없습니다.</div>';
       } else {
         html += '<table class="admin-table" style="font-size:0.85rem;"><thead><tr><th>역할</th><th>아이디</th><th>이름</th></tr></thead><tbody>';
         html += members.map(u => {
-          const ri = ROLE_INFO[u.role] || {e:'👤',l:u.role};
+          const ri = roleInfoForUser(u);
           return `<tr><td>${ri.e} ${ri.l}</td><td>${u.username}</td><td>${u.display_name || '-'}</td></tr>`;
         }).join('');
         html += '</tbody></table>';
