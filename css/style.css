@@ -133,6 +133,35 @@ body {
   color: #fff;
 }
 
+.nav-user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-user-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.btn-nav-logout {
+  background: none;
+  border: 1px solid #dfe6e9;
+  border-radius: 50px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #636e72;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-nav-logout:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
 /* ===== Main ===== */
 .main {
   flex: 1;

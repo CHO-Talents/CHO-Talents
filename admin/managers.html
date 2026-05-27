@@ -10,7 +10,6 @@
   <nav class="admin-nav">
     <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
     <ul class="admin-nav-links">
-      <li><a href="../index.html">🏠 메인</a></li>
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
       <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
@@ -50,13 +49,26 @@
     <div class="modal-box">
       <h3 class="modal-title" id="modalTitle">관리자 등록</h3>
       <div class="form-error" id="modalError"></div>
+      <div style="margin-bottom:0.8rem;" id="userSearchWrap">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">사용자 검색</label>
+        <div style="position:relative;">
+          <input type="text" id="mSearchInput" placeholder="이름 또는 아이디로 검색..."
+            style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;"
+            autocomplete="off" oninput="onSearchInput()" />
+          <div id="searchResults" style="display:none;position:absolute;top:100%;left:0;right:0;max-height:200px;overflow-y:auto;background:#fff;border:1px solid var(--admin-border);border-top:none;border-radius:0 0 8px 8px;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
+        </div>
+        <div id="selectedUser" style="display:none;margin-top:0.5rem;padding:0.6rem;background:#f3f0ff;border-radius:8px;font-size:0.88rem;">
+          <span id="selectedUserInfo"></span>
+          <button onclick="clearSelectedUser()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">✕</button>
+        </div>
+      </div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">아이디</label>
-        <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" disabled />
       </div>
-      <div style="margin-bottom:0.8rem;">
+      <div style="margin-bottom:0.8rem;" id="displayNameWrap">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이름</label>
-        <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" disabled />
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">역할</label>
@@ -87,10 +99,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.4.0"></script>
-  <script src="../js/activity-log.js?v=3.4.0"></script>
-  <script src="../js/auth.js?v=3.4.0"></script>
-  <script src="../js/user-mgmt.js?v=3.4.0"></script>
+  <script src="../js/supabase-config.js?v=3.5.0"></script>
+  <script src="../js/activity-log.js?v=3.5.0"></script>
+  <script src="../js/auth.js?v=3.5.0"></script>
+  <script src="../js/user-mgmt.js?v=3.5.0"></script>
   <script>
     initSupabase();
     let session;
@@ -121,7 +133,7 @@
         deptList.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
       document.getElementById('mDeptId').innerHTML = opts;
       document.getElementById('mOwnDeptId').innerHTML = opts;
-      await loadManagers();
+      await Promise.all([loadManagers(), loadAllUsersForSearch()]);
     }
 
     const MGMT_LEVELS = ['dept_teacher','chief','evangelist','admin'];
@@ -207,11 +219,80 @@
       }).join('');
     }
 
+    let _allUsers = [];
+    let _selectedUserId = null;
+    let _searchTimer = null;
+
+    async function loadAllUsersForSearch() {
+      const { data } = await fetchUsers();
+      _allUsers = data || [];
+    }
+
+    function onSearchInput() {
+      clearTimeout(_searchTimer);
+      _searchTimer = setTimeout(() => {
+        const q = document.getElementById('mSearchInput').value.trim().toLowerCase();
+        const box = document.getElementById('searchResults');
+        if (q.length < 1) { box.style.display = 'none'; return; }
+        const mgrIds = new Set(allManagers.map(m => m.id));
+        const matches = _allUsers.filter(u => !mgrIds.has(u.id) &&
+          ((u.display_name || '').toLowerCase().includes(q) || (u.username || '').toLowerCase().includes(q))
+        ).slice(0, 10);
+        if (matches.length === 0) {
+          box.innerHTML = '<div style="padding:0.6rem;color:var(--admin-text-muted);font-size:0.85rem;">검색 결과가 없습니다.</div>';
+        } else {
+          const showId = _isAdmin();
+          box.innerHTML = matches.map(u => {
+            const dept = deptList.find(d => d.id === u.department_id);
+            const deptName = dept ? dept.name : '';
+            const idPart = showId ? ` <span style="color:#868e96;">(${u.username})</span>` : '';
+            return `<div style="padding:0.6rem 0.8rem;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:0.88rem;" onmousedown="selectUser('${u.id}')" onmouseover="this.style.background='#f3f0ff'" onmouseout="this.style.background='#fff'">
+              <strong>${u.display_name || u.username}</strong>${idPart}
+              <span style="margin-left:0.5rem;color:var(--admin-text-muted);font-size:0.78rem;">${u.user_type === 'student' ? '학생' : '교사'}${deptName ? ' / ' + deptName : ''}</span>
+            </div>`;
+          }).join('');
+        }
+        box.style.display = 'block';
+      }, 200);
+    }
+
+    function selectUser(userId) {
+      const u = _allUsers.find(x => x.id === userId);
+      if (!u) return;
+      _selectedUserId = u.id;
+      document.getElementById('searchResults').style.display = 'none';
+      document.getElementById('mSearchInput').style.display = 'none';
+      const dept = deptList.find(d => d.id === u.department_id);
+      const showId = _isAdmin();
+      document.getElementById('selectedUserInfo').innerHTML =
+        `<strong>${u.display_name || u.username}</strong>${showId ? ' (' + u.username + ')' : ''} - ${u.user_type === 'student' ? '학생' : '교사'}${dept ? ' / ' + dept.name : ''}`;
+      document.getElementById('selectedUser').style.display = 'block';
+      document.getElementById('mUsername').value = u.username;
+      document.getElementById('mDisplayName').value = u.display_name || u.username;
+      document.getElementById('mOwnDeptId').value = u.department_id || '';
+    }
+
+    function clearSelectedUser() {
+      _selectedUserId = null;
+      document.getElementById('selectedUser').style.display = 'none';
+      document.getElementById('mSearchInput').style.display = '';
+      document.getElementById('mSearchInput').value = '';
+      document.getElementById('mUsername').value = '';
+      document.getElementById('mDisplayName').value = '';
+    }
+
     function openAddModal() {
       editingId = null;
+      _selectedUserId = null;
       document.getElementById('modalTitle').textContent = '관리자 등록';
-      document.getElementById('usernameWrap').style.display = _isAdmin() ? 'block' : 'none';
-      document.getElementById('mUsername').value = ''; document.getElementById('mUsername').disabled = false;
+      document.getElementById('userSearchWrap').style.display = 'block';
+      document.getElementById('usernameWrap').style.display = 'none';
+      document.getElementById('displayNameWrap').style.display = 'none';
+      document.getElementById('mSearchInput').style.display = '';
+      document.getElementById('mSearchInput').value = '';
+      document.getElementById('searchResults').style.display = 'none';
+      document.getElementById('selectedUser').style.display = 'none';
+      document.getElementById('mUsername').value = '';
       document.getElementById('mDisplayName').value = '';
       document.getElementById('mRole').value = 'dept_teacher'; document.getElementById('mRole').disabled = false;
       document.getElementById('mOwnDeptId').value = '';
@@ -223,11 +304,14 @@
 
     function openEditModal(id, username, displayName, managedDeptId) {
       editingId = id;
+      _selectedUserId = null;
       const user = allManagers.find(u => u.id === id);
       document.getElementById('modalTitle').textContent = '관리자 수정';
+      document.getElementById('userSearchWrap').style.display = 'none';
       document.getElementById('usernameWrap').style.display = _isAdmin() ? 'block' : 'none';
+      document.getElementById('displayNameWrap').style.display = 'block';
       document.getElementById('mUsername').value = username; document.getElementById('mUsername').disabled = true;
-      document.getElementById('mDisplayName').value = displayName;
+      document.getElementById('mDisplayName').value = displayName; document.getElementById('mDisplayName').disabled = false;
       document.getElementById('mRole').value = user ? modalRoleFromManager(user) : 'dept_teacher'; document.getElementById('mRole').disabled = true;
       document.getElementById('mOwnDeptId').value = user ? (user.department_id || '') : '';
       document.getElementById('mDeptId').value = managedDeptId || '';
@@ -240,24 +324,20 @@
 
     async function saveManager() {
       const errEl = document.getElementById('modalError');
-      let username = document.getElementById('mUsername').value.trim();
       const displayName = document.getElementById('mDisplayName').value.trim();
       const permLevel = document.getElementById('mRole').value;
       const ownDeptId = document.getElementById('mOwnDeptId').value || null;
       const managedDeptId = document.getElementById('mDeptId').value || null;
 
-      if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
-      if (!editingId && !username) username = 'mgr_' + Date.now().toString(36);
-
       if (editingId) {
+        if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
         const updates = { displayName, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(editingId, updates);
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       } else {
-        const { error } = await createUser({
-          username, displayName: displayName || username,
-          userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId
-        });
+        if (!_selectedUserId) { errEl.textContent = '사용자를 검색하여 선택해주세요.'; errEl.classList.add('show'); return; }
+        const updates = { displayName: displayName || undefined, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
+        const { error } = await updateUser(_selectedUserId, updates);
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       }
       closeModal();
@@ -278,6 +358,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.4.0"></script>
+  <script src="../js/version.js?v=3.5.0"></script>
 </body>
 </html>

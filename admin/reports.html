@@ -10,7 +10,6 @@
   <nav class="admin-nav">
     <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
     <ul class="admin-nav-links">
-      <li><a href="../index.html">🏠 메인</a></li>
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
       <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
@@ -62,21 +61,28 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.4.0"></script>
-  <script src="../js/activity-log.js?v=3.4.0"></script>
-  <script src="../js/auth.js?v=3.4.0"></script>
+  <script src="../js/supabase-config.js?v=3.5.0"></script>
+  <script src="../js/activity-log.js?v=3.5.0"></script>
+  <script src="../js/auth.js?v=3.5.0"></script>
   <script>
     initSupabase();
     let session;
     (async () => {
-      session = await initPage(80, '../login.html');
-      if (!session) return;
-      applyPermNav(session.permissionRank || 0);
-      if (session) {
+      try {
+        console.log('[REPORTS_DEBUG] initPage start');
+        session = await initPage(80, '../login.html');
+        console.log('[REPORTS_DEBUG] initPage result:', session ? 'OK' : 'null');
+        if (!session) return;
+        applyPermNav(session.permissionRank || 0);
         renderRoleBadge('navUser', session, '../');
         autoLogPageView();
-        loadReports();
+        await loadReports();
         updateBadge();
+      } catch (err) {
+        console.error('[REPORTS_DEBUG] init error:', err);
+        document.body.classList.add('auth-ready');
+        document.getElementById('reportsList').innerHTML =
+          `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">페이지 로드 오류: ${err.message}</p></td></tr>`;
       }
     })();
 
@@ -93,11 +99,25 @@
     }
 
     async function loadReports() {
-      const { data, error } = await _sb
-        .from('reports').select('*').order('created_at', { ascending: false });
+      try {
+        console.log('[REPORTS_DEBUG] loadReports start, _sb:', !!_sb);
+        const { data, error } = await _sb
+          .from('reports').select('*').order('created_at', { ascending: false });
 
-      allReports = data || [];
-      renderReports(allReports);
+        console.log('[REPORTS_DEBUG] loadReports result:', { count: data?.length, error });
+        if (error) {
+          console.error('[REPORTS_DEBUG] RLS/query error:', error);
+          document.getElementById('reportsList').innerHTML =
+            `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">데이터 로드 오류: ${error.message || JSON.stringify(error)}</p></td></tr>`;
+          return;
+        }
+        allReports = data || [];
+        renderReports(allReports);
+      } catch (err) {
+        console.error('[REPORTS_DEBUG] loadReports exception:', err);
+        document.getElementById('reportsList').innerHTML =
+          `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">예외 발생: ${err.message}</p></td></tr>`;
+      }
     }
 
     function renderReports(list) {
@@ -147,6 +167,6 @@
       if (e.target.classList.contains('modal-overlay')) closeReportModal();
     });
   </script>
-  <script src="../js/version.js?v=3.4.0"></script>
+  <script src="../js/version.js?v=3.5.0"></script>
 </body>
 </html>
