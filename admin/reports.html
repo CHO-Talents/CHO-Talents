@@ -30,20 +30,22 @@
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title">작업 보고서 목록</div>
-        <div class="filters">
+        <div class="filters" style="display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
           <button class="filter-btn active" data-type="all" onclick="filterReports('all', this)">전체</button>
           <button class="filter-btn" data-type="plan" onclick="filterReports('plan', this)">계획서</button>
           <button class="filter-btn" data-type="test_scenario" onclick="filterReports('test_scenario', this)">검증 시나리오</button>
           <button class="filter-btn" data-type="test_result" onclick="filterReports('test_result', this)">테스트 결과</button>
           <button class="filter-btn" data-type="change_report" onclick="filterReports('change_report', this)">수정 보고서</button>
+          <button class="btn-ack" style="margin-left:auto;" onclick="openAddReportModal()">&#10133; 보고서 등록</button>
+          <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedReports()" id="btnDeleteReports" disabled>&#128465;&#65039; 선택 삭제</button>
         </div>
       </div>
       <table class="admin-table">
         <thead>
-          <tr><th>작업ID</th><th>제목</th><th>유형</th><th>작성자</th><th>작성일</th><th></th></tr>
+          <tr><th style="width:30px;"><input type="checkbox" id="chkAll" onchange="toggleAllReports(this)"></th><th>작업ID</th><th>제목</th><th>유형</th><th>작성자</th><th>작성일</th><th></th></tr>
         </thead>
         <tbody id="reportsList">
-          <tr><td colspan="6" class="empty-state">로딩 중...</td></tr>
+          <tr><td colspan="6" class="empty-state">로딩 중... <span id="loadStatus" style="font-size:0.75rem;color:#868e96;display:block;margin-top:0.3rem;"></span></td></tr>
         </tbody>
       </table>
     </div>
@@ -60,25 +62,88 @@
     </div>
   </div>
 
+  <!-- Report Add/Edit Modal -->
+  <div class="modal-overlay hidden" id="addReportModal">
+    <div class="modal-box" style="max-width:700px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 class="modal-title" id="addModalTitle">보고서 등록</h3>
+        <button class="btn-cancel" onclick="closeAddReportModal()">닫기</button>
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">작업 ID</label>
+        <input type="text" id="rTaskId" placeholder="예: TASK-014" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">제목</label>
+        <input type="text" id="rTaskTitle" placeholder="보고서 제목" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">유형</label>
+        <select id="rReportType" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;">
+          <option value="plan">계획서</option>
+          <option value="test_scenario">검증 시나리오</option>
+          <option value="test_result">테스트 결과</option>
+          <option value="change_report">수정 보고서</option>
+        </select>
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">내용 (HTML 지원)</label>
+        <textarea id="rContent" rows="12" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;font-family:monospace;font-size:0.85rem;" placeholder="<h2>보고서 제목</h2>&#10;<p>내용을 작성하세요...</p>"></textarea>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:0.5rem;">
+        <button class="btn-cancel" onclick="closeAddReportModal()">취소</button>
+        <button class="btn-ack" onclick="saveReport()" id="btnSaveReport">등록</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.6.0"></script>
-  <script src="../js/activity-log.js?v=3.6.0"></script>
-  <script src="../js/auth.js?v=3.6.0"></script>
+  <script src="../js/supabase-config.js?v=3.7.0"></script>
+  <script src="../js/activity-log.js?v=3.7.0"></script>
+  <script src="../js/auth.js?v=3.7.0"></script>
   <script>
+    const _stepLog = (step, msg) => {
+      console.log('[REPORTS][' + step + '] ' + msg);
+      const el = document.getElementById('loadStatus');
+      if (el) el.textContent = step + ': ' + msg;
+    };
+
+    let _initDone = false;
+    setTimeout(() => {
+      if (!_initDone) {
+        _stepLog('TIMEOUT', '3초 타임아웃 - 강제 표시');
+        document.body.classList.add('auth-ready');
+      }
+    }, 3000);
+
     initSupabase();
+    _stepLog('1', 'Supabase 초기화 완료 (_sb=' + (!!_sb) + ')');
+
     let session;
     (async () => {
       try {
+        _stepLog('2', 'initPage 호출 중...');
         session = await initPage(80, '../login.html');
+        _stepLog('3', 'initPage 결과: ' + (session ? 'OK (rank=' + session.permissionRank + ')' : 'null'));
         if (!session) return;
+
+        document.body.classList.add('auth-ready');
         applyPermNav(session.permissionRank || 0);
         renderRoleBadge('navUser', session, '../');
         autoLogPageView();
+
+        _stepLog('4', 'loadReports 호출 중...');
         await loadReports();
+        _stepLog('6', 'loadReports 완료');
+
         updateBadge();
+        _initDone = true;
+        _stepLog('7', '페이지 초기화 완료');
       } catch (err) {
+        _stepLog('ERR', '초기화 오류: ' + err.message);
         console.error('[REPORTS] init error:', err);
         document.body.classList.add('auth-ready');
+        _initDone = true;
         document.getElementById('reportsList').innerHTML =
           `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">페이지 로드 오류: ${err.message}</p></td></tr>`;
       }
@@ -98,8 +163,11 @@
 
     async function loadReports() {
       try {
+        _stepLog('5a', 'reports 테이블 쿼리 중...');
         const { data, error } = await _sb
           .from('reports').select('*').order('created_at', { ascending: false });
+
+        _stepLog('5b', '쿼리 결과: data=' + (data ? data.length + '건' : 'null') + ', error=' + (error ? error.message : 'none'));
 
         if (error) {
           console.error('[REPORTS] query error:', error);
@@ -110,6 +178,7 @@
         allReports = data || [];
         renderReports(allReports);
       } catch (err) {
+        _stepLog('5-ERR', '쿼리 예외: ' + err.message);
         console.error('[REPORTS] exception:', err);
         document.getElementById('reportsList').innerHTML =
           `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">예외 발생: ${err.message}</p></td></tr>`;
@@ -119,12 +188,13 @@
     function renderReports(list) {
       const tbody = document.getElementById('reportsList');
       if (!list || list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
+        tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
           <div class="empty-state-icon">&#128196;</div><p>보고서가 없습니다.</p></div></td></tr>`;
         return;
       }
       tbody.innerHTML = list.map(r => `
         <tr>
+          <td><input type="checkbox" class="rpt-chk" value="${r.id}" onchange="updateDeleteBtn()"></td>
           <td><strong>${r.task_id}</strong></td>
           <td>${r.task_title}</td>
           <td><span class="report-type-tag ${r.report_type}">${TYPE_LABELS[r.report_type] || r.report_type}</span></td>
@@ -162,7 +232,104 @@
     document.getElementById('reportModal').addEventListener('click', (e) => {
       if (e.target.classList.contains('modal-overlay')) closeReportModal();
     });
+    document.getElementById('addReportModal').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) closeAddReportModal();
+    });
+
+    let editingReportId = null;
+
+    function openAddReportModal() {
+      editingReportId = null;
+      document.getElementById('addModalTitle').textContent = '보고서 등록';
+      document.getElementById('rTaskId').value = '';
+      document.getElementById('rTaskTitle').value = '';
+      document.getElementById('rReportType').value = 'plan';
+      document.getElementById('rContent').value = '';
+      document.getElementById('btnSaveReport').textContent = '등록';
+      document.getElementById('addReportModal').classList.remove('hidden');
+    }
+
+    function closeAddReportModal() {
+      document.getElementById('addReportModal').classList.add('hidden');
+    }
+
+    async function saveReport() {
+      const taskId = document.getElementById('rTaskId').value.trim();
+      const taskTitle = document.getElementById('rTaskTitle').value.trim();
+      const reportType = document.getElementById('rReportType').value;
+      const content = document.getElementById('rContent').value.trim();
+
+      if (!taskId || !taskTitle || !content) {
+        alert('작업 ID, 제목, 내용을 모두 입력해주세요.');
+        return;
+      }
+
+      const btn = document.getElementById('btnSaveReport');
+      btn.disabled = true;
+      btn.textContent = '저장 중...';
+
+      try {
+        const row = {
+          task_id: taskId,
+          task_title: taskTitle,
+          report_type: reportType,
+          content: content,
+          created_by: session ? session.display_name || session.username : 'unknown'
+        };
+
+        let result;
+        if (editingReportId) {
+          result = await _sb.from('reports').update(row).eq('id', editingReportId);
+        } else {
+          result = await _sb.from('reports').insert([row]);
+        }
+
+        if (result.error) {
+          alert('저장 실패: ' + result.error.message);
+          console.error('[REPORTS] save error:', result.error);
+        } else {
+          closeAddReportModal();
+          await loadReports();
+          logInfo('REPORT_SAVE', { taskId, reportType, action: editingReportId ? 'update' : 'insert' });
+        }
+      } catch (err) {
+        alert('오류: ' + err.message);
+        console.error('[REPORTS] save exception:', err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = editingReportId ? '수정' : '등록';
+      }
+    }
+
+    function toggleAllReports(chkAll) {
+      document.querySelectorAll('.rpt-chk').forEach(c => { c.checked = chkAll.checked; });
+      updateDeleteBtn();
+    }
+
+    function updateDeleteBtn() {
+      const checked = document.querySelectorAll('.rpt-chk:checked').length;
+      document.getElementById('btnDeleteReports').disabled = checked === 0;
+    }
+
+    async function deleteSelectedReports() {
+      const ids = Array.from(document.querySelectorAll('.rpt-chk:checked')).map(c => c.value);
+      if (ids.length === 0) return;
+      if (!confirm(ids.length + '개의 보고서를 삭제하시겠습니까?')) return;
+
+      try {
+        const { error } = await _sb.from('reports').delete().in('id', ids);
+        if (error) {
+          alert('삭제 실패: ' + error.message);
+        } else {
+          document.getElementById('chkAll').checked = false;
+          await loadReports();
+          logInfo('REPORT_DELETE', { count: ids.length, ids });
+        }
+      } catch (err) {
+        alert('오류: ' + err.message);
+      }
+    }
   </script>
-  <script src="../js/version.js?v=3.6.0"></script>
+  <script src="../js/version.js?v=3.7.0"></script>
 </body>
 </html>
