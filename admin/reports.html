@@ -98,9 +98,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.0"></script>
-  <script src="../js/activity-log.js?v=3.7.0"></script>
-  <script src="../js/auth.js?v=3.7.0"></script>
+  <script src="../js/supabase-config.js?v=3.7.1"></script>
+  <script src="../js/activity-log.js?v=3.7.1"></script>
+  <script src="../js/auth.js?v=3.7.1"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -150,7 +150,7 @@
     })();
 
     let allReports = [];
-    const TYPE_LABELS = {
+    const REPORT_TYPE_LABELS = {
       plan: '계획서', test_scenario: '검증 시나리오',
       test_result: '테스트 결과', change_report: '수정 보고서'
     };
@@ -197,7 +197,7 @@
           <td><input type="checkbox" class="rpt-chk" value="${r.id}" onchange="updateDeleteBtn()"></td>
           <td><strong>${r.task_id}</strong></td>
           <td>${r.task_title}</td>
-          <td><span class="report-type-tag ${r.report_type}">${TYPE_LABELS[r.report_type] || r.report_type}</span></td>
+          <td><span class="report-type-tag ${r.report_type}">${REPORT_TYPE_LABELS[r.report_type] || r.report_type}</span></td>
           <td>${r.created_by || '-'}</td>
           <td>${formatKSTShort(r.created_at)}</td>
           <td><button class="filter-btn" onclick="viewReport('${r.id}')">보기</button></td>
@@ -219,7 +219,7 @@
       const report = allReports.find(r => r.id === id);
       if (!report) return;
       document.getElementById('modalTitle').textContent =
-        `[${report.task_id}] ${report.task_title} - ${TYPE_LABELS[report.report_type]}`;
+        `[${report.task_id}] ${report.task_title} - ${REPORT_TYPE_LABELS[report.report_type]}`;
       document.getElementById('modalContent').innerHTML = report.content;
       document.getElementById('reportModal').classList.remove('hidden');
       logInfo('REPORT_VIEW', { reportId: id, taskId: report.task_id });
@@ -330,6 +330,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.7.0"></script>
+  <script src="../js/version.js?v=3.7.1"></script>
 </body>
 </html>
