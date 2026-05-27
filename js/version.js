@@ -2,9 +2,21 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.3.1',
+  current: '3.3.2',
   date: '2026-05-27',
   history: [
+    {
+      version: '3.3.2',
+      date: '2026-05-27',
+      title: '핫픽스: admin 권한 관리 + 캐시 버스팅 + 호환성 수정',
+      changes: [
+        'admin 계정이 동급 권한자(다른 admin)도 수정/삭제 가능하도록 프론트엔드 canManage 로직 수정',
+        'admin_update_user, admin_delete_user, admin_create_user RPC: 동급 권한 차단(>=) → 상위만 차단(>) 변경',
+        'applyRoleNav → applyPermNav 호환성 alias 추가 (브라우저 캐시 에러 방지)',
+        'lsyby 계정 display_name DB 수정: ???(admin) → 관리자(admin)',
+        '전체 HTML 18개 파일 JS 캐시 버스팅 쿼리스트링 추가 (?v=3.3.2)'
+      ]
+    },
     {
       version: '3.3.1',
       date: '2026-05-27',
