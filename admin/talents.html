@@ -157,7 +157,7 @@
 
     async function loadUsers() {
       const roleLabel = currentTab === 'student' ? '학생' : '교사';
-      const opts = { role: currentTab };
+      const opts = { userType: currentTab };
       if ((session.permissionRank || 0) < 80 && session.managedDeptId) {
         opts.departmentId = session.managedDeptId;
       }
@@ -220,7 +220,7 @@
       } else {
         const { error } = await createUser({
           username, displayName: displayName || username,
-          role: currentTab,
+          userType: currentTab,
           departmentId: session.managedDeptId || null
         });
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }

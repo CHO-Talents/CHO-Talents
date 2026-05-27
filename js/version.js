@@ -2,9 +2,24 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.2.0',
+  current: '3.3.0',
   date: '2026-05-27',
   history: [
+    {
+      version: '3.3.0',
+      date: '2026-05-27',
+      title: 'TASK-013D: 페이지 권한 관리 + 세부 권한 적용',
+      changes: [
+        'page_permissions 테이블 생성 + 초기 데이터 시드',
+        'admin/page-permissions.html 신규: 페이지 권한 매트릭스 관리 UI',
+        '프론트엔드 전체: role 참조 → user_type + permission_level 완전 전환',
+        'admin_list_users RPC: p_role → p_user_type 파라미터 전환',
+        'admin_create_user, admin_update_user RPC: role 파라미터/컬럼 참조 제거',
+        'get_my_profile RPC: role 필드 제거',
+        'profiles, registration_requests 테이블: role 컬럼 드롭',
+        'admin/users.html, managers.html, departments.html: permission_level 기반 필터링/렌더링'
+      ]
+    },
     {
       version: '3.2.0',
       date: '2026-05-27',

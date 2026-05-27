@@ -137,17 +137,32 @@
       renderManagers();
     }
 
+    const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
+
     async function loadManagers() {
-      const [adminsRes, mgrsRes] = await Promise.all([
-        fetchUsers({ role: 'admin' }),
-        fetchUsers({ role: 'dept_manager' })
-      ]);
-      allManagers = [...(adminsRes.data || []), ...(mgrsRes.data || [])];
+      const { data } = await fetchUsers();
+      allManagers = (data || []).filter(u =>
+        u.permission_level === 'admin' || DEPT_MGR_LEVELS.includes(u.permission_level)
+      );
       renderManagers();
     }
 
+    function managerMatchesFilter(u, filter) {
+      if (filter === 'admin') return u.permission_level === 'admin';
+      if (filter === 'dept_manager') return DEPT_MGR_LEVELS.includes(u.permission_level);
+      return u.permission_level === filter;
+    }
+
+    function badgeKeyForManager(u) {
+      return u.permission_level === 'admin' ? 'admin' : 'dept_manager';
+    }
+
+    function modalRoleFromManager(u) {
+      return u.permission_level === 'admin' ? 'admin' : 'dept_manager';
+    }
+
     function renderManagers() {
-      const list = currentFilter === 'all' ? allManagers : allManagers.filter(u => u.role === currentFilter);
+      const list = currentFilter === 'all' ? allManagers : allManagers.filter(u => managerMatchesFilter(u, currentFilter));
       const tbody = document.getElementById('mgrList');
       document.getElementById('tableTitle').textContent = `관리자 목록 (${list.length}명)`;
 
@@ -159,7 +174,7 @@
       const ROLE_BADGE = { admin: { emoji: '👑', label: '관리자', cls: 'ERROR' }, dept_manager: { emoji: '📋', label: '부서관리자', cls: 'WARN' } };
 
       tbody.innerHTML = list.map(u => {
-        const rb = ROLE_BADGE[u.role] || ROLE_BADGE.admin;
+        const rb = ROLE_BADGE[badgeKeyForManager(u)] || ROLE_BADGE.admin;
         const ownDept = deptList.find(d => d.id === u.department_id);
         const mgrDept = deptList.find(d => d.id === u.managed_dept_id);
         const isSelf = u.id === session.id;
@@ -199,7 +214,7 @@
       document.getElementById('modalTitle').textContent = '관리자 수정';
       document.getElementById('mUsername').value = username; document.getElementById('mUsername').disabled = true;
       document.getElementById('mDisplayName').value = displayName;
-      document.getElementById('mRole').value = user ? user.role : 'dept_manager'; document.getElementById('mRole').disabled = true;
+      document.getElementById('mRole').value = user ? modalRoleFromManager(user) : 'dept_manager'; document.getElementById('mRole').disabled = true;
       document.getElementById('mOwnDeptId').value = user ? (user.department_id || '') : '';
       document.getElementById('mDeptId').value = managedDeptId || '';
       onRoleChange();

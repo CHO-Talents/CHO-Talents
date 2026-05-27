@@ -164,12 +164,36 @@
       renderRequests();
     }
 
+    const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
+
     function updateStats() {
       document.getElementById('cntAll').textContent = allUsers.length;
-      document.getElementById('cntAdmin').textContent = allUsers.filter(u => u.role === 'admin').length;
-      document.getElementById('cntMgr').textContent = allUsers.filter(u => u.role === 'dept_manager').length;
-      document.getElementById('cntTeacher').textContent = allUsers.filter(u => u.role === 'teacher').length;
-      document.getElementById('cntStudent').textContent = allUsers.filter(u => u.role === 'student').length;
+      document.getElementById('cntAdmin').textContent = allUsers.filter(u => u.permission_level === 'admin').length;
+      document.getElementById('cntMgr').textContent = allUsers.filter(u => DEPT_MGR_LEVELS.includes(u.permission_level)).length;
+      document.getElementById('cntTeacher').textContent = allUsers.filter(u => u.user_type === 'teacher').length;
+      document.getElementById('cntStudent').textContent = allUsers.filter(u => u.user_type === 'student').length;
+    }
+
+    function userMatchesFilter(u, filter) {
+      if (filter === 'admin') return u.permission_level === 'admin';
+      if (filter === 'dept_manager') return DEPT_MGR_LEVELS.includes(u.permission_level);
+      if (filter === 'teacher') return u.user_type === 'teacher';
+      if (filter === 'student') return u.user_type === 'student';
+      return u.user_type === filter || u.permission_level === filter;
+    }
+
+    function badgeKeyForUser(u) {
+      if (u.permission_level === 'admin') return 'admin';
+      if (DEPT_MGR_LEVELS.includes(u.permission_level)) return 'dept_manager';
+      if (u.user_type === 'teacher') return 'teacher';
+      return 'student';
+    }
+
+    function modalRoleFromUser(u) {
+      if (u.permission_level === 'admin') return 'admin';
+      if (DEPT_MGR_LEVELS.includes(u.permission_level)) return 'dept_manager';
+      if (u.user_type === 'teacher') return 'teacher';
+      return 'student';
     }
 
     function populateDeptSelects() {
@@ -198,7 +222,7 @@
     };
 
     function renderUsers() {
-      const list = currentFilter === 'all' ? allUsers : allUsers.filter(u => u.role === currentFilter || u.permission_level === currentFilter || u.user_type === currentFilter);
+      const list = currentFilter === 'all' ? allUsers : allUsers.filter(u => userMatchesFilter(u, currentFilter));
       const tbody = document.getElementById('userList');
       document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
 
@@ -206,8 +230,8 @@
 
       const myRank = session.permissionRank || 0;
       tbody.innerHTML = list.map(u => {
-        const perm = u.permission_level || u.role;
-        const rb = ROLE_BADGES[u.role] || ROLE_BADGES.student;
+        const perm = u.permission_level;
+        const rb = ROLE_BADGES[badgeKeyForUser(u)] || ROLE_BADGES.student;
         const permLabel = PERMISSION_LABELS[perm] || rb.label;
         const permEmoji = PERMISSION_EMOJI[perm] || rb.emoji;
         const lastLogin = u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '<span style="color:#adb5bd;font-size:0.8rem;">없음</span>';
@@ -257,10 +281,10 @@
       document.getElementById('mUsername').value = u.username;
       document.getElementById('mUsername').disabled = true;
       document.getElementById('mDisplayName').value = u.display_name || '';
-      document.getElementById('mRole').value = u.role;
+      document.getElementById('mRole').value = modalRoleFromUser(u);
       document.getElementById('mDept').value = u.department_id || '';
       document.getElementById('mManagedDept').value = u.managed_dept_id || '';
-      document.getElementById('managedDeptWrap').style.display = (u.role === 'dept_manager') ? 'block' : 'none';
+      document.getElementById('managedDeptWrap').style.display = DEPT_MGR_LEVELS.includes(u.permission_level) ? 'block' : 'none';
       document.getElementById('passwordWrap').style.display = 'none';
       document.getElementById('modalError').classList.remove('show');
       document.getElementById('userModal').classList.remove('hidden');
@@ -315,7 +339,7 @@
       }
       const tbody = document.getElementById('reqList');
       tbody.innerHTML = allRequests.map(r => {
-        const rb = ROLE_BADGES[r.role] || ROLE_BADGES.student;
+        const rb = ROLE_BADGES[badgeKeyForUser({ permission_level: r.permission_level || 'student', user_type: r.user_type })] || ROLE_BADGES.student;
         return `<tr>
           <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
           <td>${r.display_name}</td>

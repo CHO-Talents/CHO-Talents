@@ -65,11 +65,11 @@ function applyRoleNav(role) {
 function renderRoleBadge(elementId, session, basePath) {
   const el = document.getElementById(elementId);
   if (!el || !session) return;
-  const perm = session.permissionLevel || session.role;
-  const emoji = PERMISSION_EMOJI[perm] || ROLE_EMOJI[session.role] || '👤';
-  const label = PERMISSION_LABELS[perm] || ROLE_LABELS[session.role] || perm;
+  const perm = session.permissionLevel;
+  const emoji = PERMISSION_EMOJI[perm] || '👤';
+  const label = PERMISSION_LABELS[perm] || perm;
   const name = session.displayName || session.username;
-  const redirect = PERMISSION_REDIRECT[perm] || ROLE_REDIRECT[session.role] || '#';
+  const redirect = PERMISSION_REDIRECT[perm] || '#';
   const href = (basePath || '') + redirect;
   el.innerHTML = `<a href="${href}" style="text-decoration:none;color:inherit;display:inline-flex;align-items:center;gap:0.3rem;" title="${label} 페이지로 이동">
     <span style="font-size:1.1rem;">${emoji}</span>
@@ -97,13 +97,12 @@ async function login(username, password) {
       return { success: false, error: '프로필 정보를 불러올 수 없습니다.' };
     }
 
-    const perm = profile.permission_level || profile.role;
+    const perm = profile.permission_level;
     setSession({
       id: profile.id,
       username: profile.username,
       displayName: profile.display_name,
-      role: profile.role,
-      userType: profile.user_type || (profile.role === 'student' ? 'student' : 'teacher'),
+      userType: profile.user_type || 'teacher',
       permissionLevel: perm,
       permissionRank: getPermRank(perm),
       isSuperAdmin: profile.is_super_admin || false,
@@ -124,8 +123,8 @@ async function login(username, password) {
 
 function getRedirectUrl(session, basePath) {
   const base = basePath || '';
-  const perm = session.permissionLevel || session.role;
-  const path = PERMISSION_REDIRECT[perm] || ROLE_REDIRECT[session.role] || 'login.html';
+  const perm = session.permissionLevel;
+  const path = PERMISSION_REDIRECT[perm] || 'login.html';
   return base + path;
 }
 
@@ -153,7 +152,7 @@ function requirePermission(minRank, loginPath) {
     window.location.href = loginPath || '../login.html';
     return null;
   }
-  const rank = session.permissionRank || getPermRank(session.permissionLevel || session.role);
+  const rank = session.permissionRank || getPermRank(session.permissionLevel);
   if (rank < minRank) {
     window.location.href = loginPath || '../login.html';
     return null;
@@ -167,8 +166,8 @@ function requireRole(allowedRoles, loginPath) {
     window.location.href = loginPath || '../login.html';
     return null;
   }
-  const perm = session.permissionLevel || session.role;
-  if (!allowedRoles.includes(perm) && !allowedRoles.includes(session.role)) {
+  const perm = session.permissionLevel;
+  if (!allowedRoles.includes(perm)) {
     window.location.href = loginPath || '../login.html';
     return null;
   }
@@ -199,7 +198,7 @@ async function initPage(allowedRolesOrMinRank, loginPath) {
     return null;
   }
 
-  const rank = session.permissionRank || getPermRank(session.permissionLevel || session.role);
+  const rank = session.permissionRank || getPermRank(session.permissionLevel);
 
   if (typeof allowedRolesOrMinRank === 'number') {
     if (rank < allowedRolesOrMinRank) {
@@ -208,8 +207,8 @@ async function initPage(allowedRolesOrMinRank, loginPath) {
       return null;
     }
   } else if (Array.isArray(allowedRolesOrMinRank) && allowedRolesOrMinRank.length) {
-    const perm = session.permissionLevel || session.role;
-    if (!allowedRolesOrMinRank.includes(perm) && !allowedRolesOrMinRank.includes(session.role)) {
+    const perm = session.permissionLevel;
+    if (!allowedRolesOrMinRank.includes(perm)) {
       const basePath = loginPath ? loginPath.replace(/[^/]*$/, '') : '../';
       window.location.href = getRedirectUrl(session, basePath);
       return null;
