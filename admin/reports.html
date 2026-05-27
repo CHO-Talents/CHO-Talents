@@ -43,7 +43,7 @@
           <tr><th>작업ID</th><th>제목</th><th>유형</th><th>작성자</th><th>작성일</th><th></th></tr>
         </thead>
         <tbody id="reportsList">
-          <tr><td colspan="6" class="empty-state">로딩 중...</td></tr>
+          <tr><td colspan="6" class="empty-state">로딩 중... <span id="loadStatus" style="font-size:0.75rem;color:#868e96;display:block;margin-top:0.3rem;"></span></td></tr>
         </tbody>
       </table>
     </div>
@@ -61,24 +61,52 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.6.0"></script>
-  <script src="../js/activity-log.js?v=3.6.0"></script>
-  <script src="../js/auth.js?v=3.6.0"></script>
+  <script src="../js/supabase-config.js?v=3.7.0"></script>
+  <script src="../js/activity-log.js?v=3.7.0"></script>
+  <script src="../js/auth.js?v=3.7.0"></script>
   <script>
+    const _stepLog = (step, msg) => {
+      console.log('[REPORTS][' + step + '] ' + msg);
+      const el = document.getElementById('loadStatus');
+      if (el) el.textContent = step + ': ' + msg;
+    };
+
+    let _initDone = false;
+    setTimeout(() => {
+      if (!_initDone) {
+        _stepLog('TIMEOUT', '3초 타임아웃 - 강제 표시');
+        document.body.classList.add('auth-ready');
+      }
+    }, 3000);
+
     initSupabase();
+    _stepLog('1', 'Supabase 초기화 완료 (_sb=' + (!!_sb) + ')');
+
     let session;
     (async () => {
       try {
+        _stepLog('2', 'initPage 호출 중...');
         session = await initPage(80, '../login.html');
+        _stepLog('3', 'initPage 결과: ' + (session ? 'OK (rank=' + session.permissionRank + ')' : 'null'));
         if (!session) return;
+
+        document.body.classList.add('auth-ready');
         applyPermNav(session.permissionRank || 0);
         renderRoleBadge('navUser', session, '../');
         autoLogPageView();
+
+        _stepLog('4', 'loadReports 호출 중...');
         await loadReports();
+        _stepLog('6', 'loadReports 완료');
+
         updateBadge();
+        _initDone = true;
+        _stepLog('7', '페이지 초기화 완료');
       } catch (err) {
+        _stepLog('ERR', '초기화 오류: ' + err.message);
         console.error('[REPORTS] init error:', err);
         document.body.classList.add('auth-ready');
+        _initDone = true;
         document.getElementById('reportsList').innerHTML =
           `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">페이지 로드 오류: ${err.message}</p></td></tr>`;
       }
@@ -98,8 +126,11 @@
 
     async function loadReports() {
       try {
+        _stepLog('5a', 'reports 테이블 쿼리 중...');
         const { data, error } = await _sb
           .from('reports').select('*').order('created_at', { ascending: false });
+
+        _stepLog('5b', '쿼리 결과: data=' + (data ? data.length + '건' : 'null') + ', error=' + (error ? error.message : 'none'));
 
         if (error) {
           console.error('[REPORTS] query error:', error);
@@ -110,6 +141,7 @@
         allReports = data || [];
         renderReports(allReports);
       } catch (err) {
+        _stepLog('5-ERR', '쿼리 예외: ' + err.message);
         console.error('[REPORTS] exception:', err);
         document.getElementById('reportsList').innerHTML =
           `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">예외 발생: ${err.message}</p></td></tr>`;
@@ -163,6 +195,6 @@
       if (e.target.classList.contains('modal-overlay')) closeReportModal();
     });
   </script>
-  <script src="../js/version.js?v=3.6.0"></script>
+  <script src="../js/version.js?v=3.7.0"></script>
 </body>
 </html>
