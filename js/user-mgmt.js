@@ -2,6 +2,30 @@
  * User Management Module - Supabase Auth + RPC 기반 보안 사용자 관리
  */
 
+const _CIRCLE = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫','⑬','⑭','⑮'];
+
+function resolveDisplayNames(users) {
+  const groups = {};
+  users.forEach(u => {
+    const key = (u.display_name||'') + '|' + (u.user_type||'') + '|' + (u.department_id||'');
+    if (!groups[key]) groups[key] = [];
+    groups[key].push(u);
+  });
+  const map = {};
+  Object.values(groups).forEach(g => {
+    if (g.length > 1) {
+      g.sort((a, b) => (a.created_at||'').localeCompare(b.created_at||''));
+      g.forEach((u, i) => { map[u.id] = (u.display_name||u.username) + (_CIRCLE[i]||('('+String(i+1)+')')); });
+    }
+  });
+  users.forEach(u => { if (!map[u.id]) map[u.id] = u.display_name || u.username; });
+  return map;
+}
+
+function isAdminLevel(session) {
+  return session && session.permissionLevel === 'admin';
+}
+
 async function fetchUsers(options = {}) {
   if (!_sb) return { data: [], error: 'Supabase not initialized' };
   try {

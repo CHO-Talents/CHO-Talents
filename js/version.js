@@ -2,9 +2,23 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.3.3',
+  current: '3.4.0',
   date: '2026-05-27',
   history: [
+    {
+      version: '3.4.0',
+      date: '2026-05-27',
+      title: '사용자 ID 보안 강화 + 동명이인 넘버링',
+      changes: [
+        'user-mgmt.js: resolveDisplayNames() 동명이인 넘버링 유틸 함수 추가 (이름+유형+부서 동일 시 ①②③...)',
+        'user-mgmt.js: isAdminLevel() 유틸 함수 추가',
+        'admin/users.html: username 컬럼 admin만 표시, 동명이인 넘버링 적용',
+        'admin/managers.html: username 컬럼 admin만 표시, 동명이인 넘버링 적용',
+        'admin/talents.html: username 컬럼 제거(admin만 괄호 표시), 동명이인 넘버링 적용',
+        'admin/departments.html: 소속보기에서 username admin만 표시, 동명이인 넘버링 적용',
+        '모달 아이디 필드: admin만 표시, 비admin 등록 시 자동 생성'
+      ]
+    },
     {
       version: '3.3.3',
       date: '2026-05-27',

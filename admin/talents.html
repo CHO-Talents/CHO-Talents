@@ -39,8 +39,8 @@
         <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
       </div>
       <table class="admin-table">
-        <thead><tr><th>아이디</th><th>이름</th><th>부서</th><th>달란트</th><th>등록일</th><th>관리</th></tr></thead>
-        <tbody id="userList"><tr><td colspan="6" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>이름</th><th>부서</th><th>달란트</th><th>등록일</th><th>관리</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -49,7 +49,7 @@
     <div class="modal-box">
       <h3 class="modal-title" id="modalTitle">사용자 등록</h3>
       <div class="form-error" id="modalError"></div>
-      <div style="margin-bottom:0.8rem;">
+      <div style="margin-bottom:0.8rem;" id="usernameWrap">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">아이디</label>
         <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="영문/숫자" />
       </div>
@@ -113,11 +113,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.3.3"></script>
-  <script src="../js/activity-log.js?v=3.3.3"></script>
-  <script src="../js/auth.js?v=3.3.3"></script>
-  <script src="../js/user-mgmt.js?v=3.3.3"></script>
-  <script src="../js/talent.js?v=3.3.3"></script>
+  <script src="../js/supabase-config.js?v=3.4.0"></script>
+  <script src="../js/activity-log.js?v=3.4.0"></script>
+  <script src="../js/auth.js?v=3.4.0"></script>
+  <script src="../js/user-mgmt.js?v=3.4.0"></script>
+  <script src="../js/talent.js?v=3.4.0"></script>
   <script>
     initSupabase();
     let session;
@@ -166,28 +166,33 @@
       document.getElementById('tableTitle').textContent = `${roleLabel} 목록 (${(data || []).length}명)`;
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="empty-state">등록된 ${roleLabel}이(가) 없습니다.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">등록된 ${roleLabel}이(가) 없습니다.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = data.map(u => `<tr>
-        <td><strong>${u.username}</strong></td>
-        <td>${u.display_name || '-'}</td>
+      const nameMap = resolveDisplayNames(data);
+      const showId = isAdminLevel(session);
+      tbody.innerHTML = data.map(u => {
+        const dn = nameMap[u.id] || u.display_name || '-';
+        return `<tr>
+        <td>${dn}${showId ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
         <td>${getDeptName(u.department_id)}</td>
         <td style="font-weight:700;">${u.talent_balance || 0}</td>
         <td>${formatKSTShort(u.created_at)}</td>
         <td>
-          <button class="filter-btn" onclick="openTalentModal('${u.id}','${u.display_name || u.username}',${u.talent_balance || 0})">달란트</button>
-          <button class="filter-btn" onclick="openEditModal('${u.id}','${u.username}','${u.display_name || ''}')">수정</button>
-          <button class="btn-ack" onclick="confirmDelete('${u.id}','${u.username}')">삭제</button>
+          <button class="filter-btn" onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">달란트</button>
+          <button class="filter-btn" onclick="openEditModal('${u.id}','${u.username}','${(u.display_name || '').replace(/'/g,"\\'")}')">수정</button>
+          <button class="btn-ack" onclick="confirmDelete('${u.id}','${dn.replace(/'/g,"\\'")}')">삭제</button>
         </td>
-      </tr>`).join('');
+      </tr>`;
+      }).join('');
     }
 
     function openAddModal() {
       editingId = null;
       const label = currentTab === 'student' ? '학생' : '교사';
       document.getElementById('modalTitle').textContent = `${label} 등록`;
+      document.getElementById('usernameWrap').style.display = isAdminLevel(session) ? 'block' : 'none';
       document.getElementById('mUsername').value = '';
       document.getElementById('mUsername').disabled = false;
       document.getElementById('mDisplayName').value = '';
@@ -199,6 +204,7 @@
       editingId = id;
       const label = currentTab === 'student' ? '학생' : '교사';
       document.getElementById('modalTitle').textContent = `${label} 수정`;
+      document.getElementById('usernameWrap').style.display = isAdminLevel(session) ? 'block' : 'none';
       document.getElementById('mUsername').value = username;
       document.getElementById('mUsername').disabled = true;
       document.getElementById('mDisplayName').value = displayName;
@@ -210,9 +216,10 @@
 
     async function saveUser() {
       const errEl = document.getElementById('modalError');
-      const username = document.getElementById('mUsername').value.trim();
+      let username = document.getElementById('mUsername').value.trim();
       const displayName = document.getElementById('mDisplayName').value.trim();
-      if (!username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!editingId && !username) username = 'u_' + Date.now().toString(36);
 
       if (editingId) {
         const { error } = await updateUser(editingId, { displayName });
@@ -338,6 +345,6 @@
     document.getElementById('userModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
     document.getElementById('talentModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeTalentModal(); });
   </script>
-  <script src="../js/version.js?v=3.3.3"></script>
+  <script src="../js/version.js?v=3.4.0"></script>
 </body>
 </html>
