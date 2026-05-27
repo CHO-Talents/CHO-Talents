@@ -50,7 +50,8 @@ async function createUser(userData) {
       p_department_id: userData.departmentId || null,
       p_managed_dept_id: userData.managedDeptId || null,
       p_user_type: userData.userType || 'student',
-      p_permission_level: userData.permissionLevel || 'student'
+      p_permission_level: userData.permissionLevel || 'student',
+      p_class_number: userData.classNumber != null ? userData.classNumber : null
     });
     if (error) {
       await logError('USER_CREATE_FAIL', { username: userData.username, error: error.message });
@@ -76,7 +77,8 @@ async function updateUser(id, updates) {
       p_department_id: updates.departmentId || null,
       p_managed_dept_id: updates.managedDeptId !== undefined ? updates.managedDeptId : null,
       p_user_type: updates.userType || null,
-      p_permission_level: updates.permissionLevel || null
+      p_permission_level: updates.permissionLevel || null,
+      p_class_number: updates.classNumber != null ? updates.classNumber : null
     });
     if (error) {
       await logError('USER_UPDATE_FAIL', { id, error: error.message });
@@ -139,10 +141,12 @@ async function fetchDepartments() {
   return await _sb.from('departments').select('*').eq('is_active', true).order('name');
 }
 
-async function createDepartment(name, description) {
+async function createDepartment(name, description, classCount) {
   if (!_sb) return { data: null, error: 'Supabase not initialized' };
   try {
-    const { data, error } = await _sb.from('departments').insert({ name, description }).select();
+    const row = { name, description };
+    if (classCount != null) row.class_count = classCount;
+    const { data, error } = await _sb.from('departments').insert(row).select();
     if (error) {
       await logError('DEPT_CREATE_FAIL', { name, error: error.message });
       return { data: null, error: error.message };
