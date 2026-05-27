@@ -1,49 +1,54 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>학생 관리 - 부서 관리</title>
+  <title>달란트 관리 - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/admin.css" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="index.html" class="admin-nav-brand">CHO-Talents 부서관리</a>
+    <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
     <ul class="admin-nav-links">
       <li><a href="../index.html">🏠 메인</a></li>
       <li><a href="index.html">대시보드</a></li>
-      <li><a href="students.html" class="active">학생 관리</a></li>
-      <li><a href="teachers.html">교사 관리</a></li>
+      <li><a href="users.html">사용자 관리</a></li>
+      <li data-role="admin"><a href="departments.html">부서 관리</a></li>
+      <li data-role="admin"><a href="managers.html">관리자 관리</a></li>
+      <li><a href="talents.html" class="active">달란트 관리</a></li>
       <li><a href="products.html">물품 관리</a></li>
-      <li><a href="my-talents.html">내 달란트</a></li>
+      <li data-role="admin"><a href="shop.html">상점 관리</a></li>
+      <li data-role="admin"><a href="reports.html">보고서</a></li>
+      <li data-role="admin"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-role="admin"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">학생 관리</h2>
+    <h2 style="margin-bottom:1rem;">💰 달란트 관리</h2>
+
+    <div class="filters" style="margin-bottom:1rem;">
+      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">🎒 학생</button>
+      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">👩‍🏫 교사</button>
+    </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">학생 목록</div>
-        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 학생 등록</button>
+        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
       </div>
       <table class="admin-table">
-        <thead>
-          <tr><th>아이디</th><th>이름</th><th>달란트</th><th>등록일</th><th>관리</th></tr>
-        </thead>
-        <tbody id="userList">
-          <tr><td colspan="5" class="empty-state">로딩 중...</td></tr>
-        </tbody>
+        <thead><tr><th>아이디</th><th>이름</th><th>부서</th><th>달란트</th><th>등록일</th><th>관리</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="6" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
   </div>
 
-  <!-- Add/Edit Modal -->
   <div class="modal-overlay hidden" id="userModal">
     <div class="modal-box">
-      <h3 class="modal-title" id="modalTitle">학생 등록</h3>
+      <h3 class="modal-title" id="modalTitle">사용자 등록</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">아이디</label>
@@ -55,12 +60,11 @@
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">취소</button>
-        <button class="btn-confirm" id="btnSave" onclick="saveUser()">저장</button>
+        <button class="btn-confirm" onclick="saveUser()">저장</button>
       </div>
     </div>
   </div>
 
-  <!-- Talent Modal -->
   <div class="modal-overlay hidden" id="talentModal">
     <div class="modal-box">
       <h3 class="modal-title" id="talentTitle">달란트 관리</h3>
@@ -102,33 +106,51 @@
     let editingId = null;
     let talentUserId = null;
     let talentType = 'earn';
+    let currentTab = 'student';
+    let allDepts = [];
 
     (async () => {
-      session = await initPage(['dept_manager', 'admin'], '../login.html');
+      session = await initPage(['admin', 'dept_manager'], '../login.html');
       if (!session) return;
-
+      applyRoleNav(session.role);
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
-      loadStudents();
+      const { data: depts } = await fetchDepartments();
+      allDepts = depts || [];
+      loadUsers();
     })();
 
-    async function loadStudents() {
-      const opts = { role: 'student' };
+    function getDeptName(id) {
+      const d = allDepts.find(d => d.id === id);
+      return d ? d.name : '-';
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tabStudent').classList.toggle('active', tab === 'student');
+      document.getElementById('tabTeacher').classList.toggle('active', tab === 'teacher');
+      loadUsers();
+    }
+
+    async function loadUsers() {
+      const roleLabel = currentTab === 'student' ? '학생' : '교사';
+      const opts = { role: currentTab };
       if (session.role === 'dept_manager' && session.managedDeptId) {
         opts.departmentId = session.managedDeptId;
       }
       const { data } = await fetchUsers(opts);
       const tbody = document.getElementById('userList');
-      document.getElementById('tableTitle').textContent = `학생 목록 (${(data || []).length}명)`;
+      document.getElementById('tableTitle').textContent = `${roleLabel} 목록 (${(data || []).length}명)`;
 
       if (!data || data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">등록된 학생이 없습니다.</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-state">등록된 ${roleLabel}이(가) 없습니다.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = data.map(u => `<tr>
         <td><strong>${u.username}</strong></td>
         <td>${u.display_name || '-'}</td>
+        <td>${getDeptName(u.department_id)}</td>
         <td style="font-weight:700;">${u.talent_balance || 0}</td>
         <td>${formatKSTShort(u.created_at)}</td>
         <td>
@@ -141,7 +163,8 @@
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = '학생 등록';
+      const label = currentTab === 'student' ? '학생' : '교사';
+      document.getElementById('modalTitle').textContent = `${label} 등록`;
       document.getElementById('mUsername').value = '';
       document.getElementById('mUsername').disabled = false;
       document.getElementById('mDisplayName').value = '';
@@ -151,7 +174,8 @@
 
     function openEditModal(id, username, displayName) {
       editingId = id;
-      document.getElementById('modalTitle').textContent = '학생 수정';
+      const label = currentTab === 'student' ? '학생' : '교사';
+      document.getElementById('modalTitle').textContent = `${label} 수정`;
       document.getElementById('mUsername').value = username;
       document.getElementById('mUsername').disabled = true;
       document.getElementById('mDisplayName').value = displayName;
@@ -165,7 +189,6 @@
       const errEl = document.getElementById('modalError');
       const username = document.getElementById('mUsername').value.trim();
       const displayName = document.getElementById('mDisplayName').value.trim();
-
       if (!username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
@@ -173,19 +196,21 @@
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       } else {
         const { error } = await createUser({
-          username, displayName: displayName || username, role: 'student',
+          username, displayName: displayName || username,
+          role: currentTab,
           departmentId: session.managedDeptId || null
         });
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       }
       closeModal();
-      await loadStudents();
+      await loadUsers();
     }
 
     async function confirmDelete(id, username) {
-      if (!confirm(`"${username}" 학생을 삭제하시겠습니까?`)) return;
+      const label = currentTab === 'student' ? '학생' : '교사';
+      if (!confirm(`"${username}" ${label}을(를) 삭제하시겠습니까?`)) return;
       await deleteUser(id);
-      await loadStudents();
+      await loadUsers();
     }
 
     function openTalentModal(userId, name, balance) {
@@ -205,14 +230,13 @@
 
     function setTalentType(type) {
       talentType = type;
-      const earnBtn = document.getElementById('btnEarn');
-      const useBtn = document.getElementById('btnUse');
+      const eb = document.getElementById('btnEarn'), ub = document.getElementById('btnUse');
       if (type === 'earn') {
-        earnBtn.style.background = '#51cf66'; earnBtn.style.color = '#fff'; earnBtn.style.borderColor = '#51cf66';
-        useBtn.style.background = '#fff'; useBtn.style.color = 'var(--admin-text)'; useBtn.style.borderColor = 'var(--admin-border)';
+        eb.style.cssText = 'flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;';
+        ub.style.cssText = 'flex:1;padding:0.6rem;';
       } else {
-        useBtn.style.background = '#ff6b6b'; useBtn.style.color = '#fff'; useBtn.style.borderColor = '#ff6b6b';
-        earnBtn.style.background = '#fff'; earnBtn.style.color = 'var(--admin-text)'; earnBtn.style.borderColor = 'var(--admin-border)';
+        ub.style.cssText = 'flex:1;padding:0.6rem;background:#ff6b6b;color:#fff;border-color:#ff6b6b;';
+        eb.style.cssText = 'flex:1;padding:0.6rem;';
       }
     }
 
@@ -220,7 +244,6 @@
       const errEl = document.getElementById('talentError');
       const amount = parseInt(document.getElementById('talentAmount').value);
       const desc = document.getElementById('talentDesc').value.trim();
-
       if (!amount || amount <= 0) { errEl.textContent = '유효한 금액을 입력해주세요.'; errEl.classList.add('show'); return; }
       if (!desc) { errEl.textContent = '사유를 입력해주세요.'; errEl.classList.add('show'); return; }
 
@@ -228,18 +251,13 @@
         ? await giveTalent(talentUserId, amount, desc, session.id)
         : await useTalent(talentUserId, amount, desc, session.id);
 
-      if (result.success === false) {
-        errEl.textContent = result.error || '처리 실패';
-        errEl.classList.add('show');
-        return;
-      }
-
+      if (result.success === false) { errEl.textContent = result.error || '처리 실패'; errEl.classList.add('show'); return; }
       document.getElementById('talentBalance').textContent = result.balance;
       document.getElementById('talentAmount').value = '';
       document.getElementById('talentDesc').value = '';
       errEl.classList.remove('show');
       await loadTalentHistory(talentUserId);
-      await loadStudents();
+      await loadUsers();
     }
 
     async function loadTalentHistory(userId) {
@@ -251,8 +269,7 @@
           <span>${formatKSTShort(t.created_at)}</span>
           <span style="color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'};font-weight:700;">${t.type === 'earn' ? '+' : '-'}${t.amount}</span>
           <span style="color:var(--admin-text-muted);">${t.description || '-'}</span>
-        </div>
-      `).join('');
+        </div>`).join('');
     }
 
     document.getElementById('userModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });

@@ -22,13 +22,8 @@ CHO-Talents/
 │   ├── reports.html              # 보고서 관리
 │   ├── logs.html                 # 활동 로그 관리
 │   ├── versions.html             # 버전 이력
+│   ├── talents.html              # 달란트 관리 (학생+교사 통합)
 │   └── change-password.html      # 비밀번호 변경
-├── manager/                       # 부서 관리자 전용
-│   ├── index.html                # 부서 관리자 대시보드
-│   ├── students.html             # 학생 관리
-│   ├── teachers.html             # 교사 관리
-│   ├── products.html             # 물품 관리
-│   └── my-talents.html           # 내 달란트
 ├── teacher/                       # 교사 전용
 │   ├── shop.html                 # 교사 상점
 │   └── my-talents.html           # 내 달란트

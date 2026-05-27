@@ -19,10 +19,16 @@ const ROLE_EMOJI = {
 
 const ROLE_REDIRECT = {
   admin: 'admin/index.html',
-  dept_manager: 'manager/index.html',
+  dept_manager: 'admin/index.html',
   teacher: 'teacher/my-talents.html',
   student: 'student/my-talents.html'
 };
+
+function applyRoleNav(role) {
+  document.querySelectorAll('[data-role]').forEach(el => {
+    if (el.dataset.role !== role) el.style.display = 'none';
+  });
+}
 
 function renderRoleBadge(elementId, session, basePath) {
   const el = document.getElementById(elementId);

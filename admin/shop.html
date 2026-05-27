@@ -44,12 +44,16 @@
     <ul class="admin-nav-links">
       <li><a href="../index.html">🏠 메인</a></li>
       <li><a href="index.html">대시보드</a></li>
-      <li><a href="users.html">사용자 관리</a></li><li><a href="departments.html">부서 관리</a></li>
-      <li><a href="managers.html">관리자 관리</a></li>
-      <li><a href="shop.html" class="active">상점 관리</a></li>
-      <li><a href="reports.html">보고서</a></li>
-      <li><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li><a href="versions.html">버전</a></li><li><span class="nav-user" id="navUser"></span></li>
+      <li><a href="users.html">사용자 관리</a></li>
+      <li data-role="admin"><a href="departments.html">부서 관리</a></li>
+      <li data-role="admin"><a href="managers.html">관리자 관리</a></li>
+      <li><a href="talents.html">달란트 관리</a></li>
+      <li><a href="products.html">물품 관리</a></li>
+      <li data-role="admin"><a href="shop.html" class="active">상점 관리</a></li>
+      <li data-role="admin"><a href="reports.html">보고서</a></li>
+      <li data-role="admin"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-role="admin"><a href="versions.html">버전</a></li>
+      <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
   </nav>
