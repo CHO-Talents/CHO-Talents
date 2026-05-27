@@ -2,9 +2,21 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.7.0',
+  current: '3.7.1',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.7.1',
+      date: '2026-05-28',
+      title: '보고서 페이지 치명적 버그 수정 + 보고서 관리 기능',
+      changes: [
+        'reports.html: TYPE_LABELS 변수명 충돌 해결 (auth.js와 동일 const 재선언 → 전체 인라인 스크립트 미실행)',
+        'reports.html: REPORT_TYPE_LABELS로 리네이밍하여 전역 스코프 충돌 제거',
+        'reports.html: 보고서 등록 모달 + 선택 삭제 기능 추가',
+        'TASK-014 보고서 4종 SQL INSERT 파일 생성 (docs/)',
+        'reports 테이블 RLS INSERT/UPDATE/DELETE 정책 수정 SQL 포함'
+      ]
+    },
     {
       version: '3.7.0',
       date: '2026-05-28',
