@@ -46,6 +46,17 @@
       </table>
     </div>
 
+    <!-- 부서 이동 신청 내역 -->
+    <div class="admin-table-wrap" id="transferSection" style="margin-bottom:1.5rem;">
+      <div class="admin-table-header">
+        <div class="admin-table-title" id="transferTitle" style="color:#1971c2;">🔄 부서 이동 신청 내역</div>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>이름</th><th>현재 부서</th><th>이동 요청 부서</th><th>요청자</th><th>요청일</th><th>처리</th></tr></thead>
+        <tbody id="transferList"></tbody>
+      </table>
+    </div>
+
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">사용자 목록</div>
@@ -125,12 +136,43 @@
     </div>
   </div>
 
+  <!-- 부서 이동 모달 -->
+  <div class="modal-overlay hidden" id="transferModal">
+    <div class="modal-box" style="max-width:420px;">
+      <h3 class="modal-title">🔄 부서 이동</h3>
+      <div class="form-error" id="transferError"></div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">대상 사용자</label>
+        <div id="transferUserInfo" style="padding:0.6rem;background:#f8f9fa;border-radius:8px;font-size:0.9rem;"></div>
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">현재 부서</label>
+        <div id="transferFromDept" style="padding:0.6rem;background:#f8f9fa;border-radius:8px;font-size:0.9rem;color:#868e96;"></div>
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이동할 부서 <span style="color:#e03131;">*</span></label>
+        <select id="transferToDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
+          <option value="">-- 부서 선택 --</option>
+        </select>
+      </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">사유</label>
+        <input type="text" id="transferReason" placeholder="이동 사유 입력" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+      </div>
+      <div id="transferNote" style="font-size:0.78rem;color:#868e96;margin-bottom:0.8rem;"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeTransferModal()">취소</button>
+        <button class="btn-confirm" onclick="submitTransfer()">확인</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.4"></script>
-  <script src="../js/activity-log.js?v=3.7.4"></script>
-  <script src="../js/auth.js?v=3.7.4"></script>
-  <script src="../js/user-mgmt.js?v=3.7.4"></script>
-  <script src="../js/version.js?v=3.7.4"></script>
+  <script src="../js/supabase-config.js?v=3.7.5"></script>
+  <script src="../js/activity-log.js?v=3.7.5"></script>
+  <script src="../js/auth.js?v=3.7.5"></script>
+  <script src="../js/user-mgmt.js?v=3.7.5"></script>
+  <script src="../js/version.js?v=3.7.5"></script>
   <script>
     initSupabase();
     let session;
@@ -177,15 +219,19 @@
       });
     }
 
+    let allTransfers = [];
+
     async function loadData() {
       const myRank = session.permissionRank || 0;
-      const [usersRes, deptsRes, reqRes] = await Promise.all([
+      const [usersRes, deptsRes, reqRes, trfRes] = await Promise.all([
         fetchUsers(), fetchDepartments(),
-        _sb.from('registration_requests').select('*').eq('status', 'pending').order('created_at', { ascending: false })
+        _sb.from('registration_requests').select('*').eq('status', 'pending').order('created_at', { ascending: false }),
+        _sb.from('department_transfer_requests').select('*').eq('status', 'pending').order('created_at', { ascending: false })
       ]);
       let users = usersRes.data || [];
       allDepts = deptsRes.data || [];
       let reqs = reqRes.data || [];
+      let transfers = trfRes.data || [];
 
       const myManagedDept = session.managedDeptId || session.departmentId;
 
@@ -201,7 +247,16 @@
         reqs = myManagedDept ? reqs.filter(r => r.department_id === myManagedDept) : [];
       }
 
+      if (myRank >= 90) {
+        // 관리자/전도사님: 모든 이동 요청 표시
+      } else if (myRank >= 80) {
+        transfers = myManagedDept ? transfers.filter(t => t.to_department_id === myManagedDept) : [];
+      } else {
+        transfers = [];
+      }
+
       allRequests = reqs;
+      allTransfers = transfers;
 
       allUsers = users;
       await loadLastLogins();
@@ -209,6 +264,7 @@
       renderUsers();
       populateDeptSelects();
       renderRequests();
+      renderTransfers();
     }
 
     const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
@@ -302,7 +358,6 @@
 
       _nameMap = resolveDisplayNames(allUsers);
       const myRank = session.permissionRank || 0;
-      const showId = _isAdmin();
       tbody.innerHTML = list.map(u => {
         const perm = u.permission_level;
         const typeLabel = TYPE_LABELS[u.user_type] || u.user_type;
@@ -315,10 +370,11 @@
         const isSuperAdmin = u.is_super_admin || false;
         const canManage = u.id === session.id || (myRank > targetRank && (!isSuperAdmin || session.isSuperAdmin));
         const rb = ROLE_BADGES[badgeKeyForUser(u)] || ROLE_BADGES.student;
+        const isSelf = u.id === session.id;
         return `<tr>
           <td><span class="level-badge ${u.user_type === 'student' ? 'DEBUG' : 'INFO'}">${typeEmoji} ${typeLabel}</span></td>
           <td><span class="level-badge ${rb.cls}">${permEmoji} ${permLabel}</span></td>
-          <td>${dn}${showId ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
+          <td>${dn}${isSelf ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
           <td>${getDeptName(u.department_id)}</td>
           <td>${getClassLabel(u.class_number)}</td>
           <td style="font-weight:700;">${u.talent_balance || 0}</td>
@@ -326,6 +382,7 @@
           <td>${lastLogin}</td>
           <td>
             ${canManage ? `<button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>수정</button>` : ''}
+            ${(myRank > targetRank && !isSelf && !isSuperAdmin) ? `<button class="filter-btn" style="background:#1971c2;color:#fff;" onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">부서이동</button>` : ''}
             ${canManage && u.id !== session.id ? `<button class="filter-btn" onclick="resetPw('${u.id}','${_nameMap[u.id]||u.display_name}')">비밀번호초기화</button>` : ''}
             ${canManage && u.id !== session.id && !isSuperAdmin ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${_nameMap[u.id]||u.display_name}')">삭제</button>` : ''}
           </td>
@@ -523,6 +580,138 @@
     });
 
     document.getElementById('userModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
+    document.getElementById('transferModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeTransferModal(); });
+
+    // ── 부서 이동 관리 ──
+    let _transferUserId = null;
+    let _transferFromDeptId = null;
+
+    function openTransferModal(userId, displayName, deptId) {
+      _transferUserId = userId;
+      _transferFromDeptId = deptId;
+      document.getElementById('transferUserInfo').textContent = displayName;
+      document.getElementById('transferFromDept').textContent = getDeptName(deptId) || '없음';
+      const opts = '<option value="">-- 부서 선택 --</option>' +
+        allDepts.filter(d => d.id !== deptId).map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      document.getElementById('transferToDept').innerHTML = opts;
+      document.getElementById('transferReason').value = '';
+      document.getElementById('transferError').classList.remove('show');
+      const myRank = session.permissionRank || 0;
+      if (myRank >= 90) {
+        document.getElementById('transferNote').textContent = '즉시 부서 이동이 처리됩니다.';
+      } else {
+        document.getElementById('transferNote').textContent = '이동 요청이 생성되며, 해당 부서 부장 또는 관리자의 승인이 필요합니다.';
+      }
+      document.getElementById('transferModal').classList.remove('hidden');
+    }
+
+    function closeTransferModal() { document.getElementById('transferModal').classList.add('hidden'); }
+
+    async function submitTransfer() {
+      const errEl = document.getElementById('transferError');
+      const toDeptId = document.getElementById('transferToDept').value;
+      const reason = document.getElementById('transferReason').value.trim();
+      if (!toDeptId) { errEl.textContent = '이동할 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
+      const myRank = session.permissionRank || 0;
+      const user = allUsers.find(u => u.id === _transferUserId);
+      const toDeptName = getDeptName(toDeptId);
+      const userName = user ? (user.display_name || user.username) : '';
+
+      if (myRank >= 90) {
+        if (!confirm(`"${userName}"을(를) "${toDeptName}" 부서로 즉시 이동하시겠습니까?`)) return;
+        const { error } = await updateUser(_transferUserId, {
+          displayName: user.display_name,
+          userType: user.user_type,
+          permissionLevel: user.permission_level,
+          departmentId: toDeptId,
+          managedDeptId: user.managed_dept_id,
+          classNumber: null
+        });
+        if (error) { errEl.textContent = '이동 실패: ' + error; errEl.classList.add('show'); return; }
+        await logInfo('DEPT_TRANSFER_IMMEDIATE', { userId: _transferUserId, username: user.username, from: getDeptName(_transferFromDeptId), to: toDeptName, reason });
+        alert(`"${userName}"이(가) "${toDeptName}" 부서로 이동되었습니다.`);
+      } else {
+        if (!confirm(`"${userName}"의 "${toDeptName}" 부서 이동 요청을 생성하시겠습니까?\n해당 부서 부장 또는 관리자 승인이 필요합니다.`)) return;
+        const { error } = await _sb.from('department_transfer_requests').insert({
+          user_id: _transferUserId,
+          username: user.username,
+          display_name: user.display_name,
+          from_department_id: _transferFromDeptId || null,
+          to_department_id: toDeptId,
+          requested_by: session.username,
+          request_reason: reason || null
+        });
+        if (error) { errEl.textContent = '요청 실패: ' + error.message; errEl.classList.add('show'); return; }
+        await logInfo('DEPT_TRANSFER_REQUEST', { userId: _transferUserId, username: user.username, from: getDeptName(_transferFromDeptId), to: toDeptName, reason });
+        alert(`부서 이동 요청이 생성되었습니다.\n"${toDeptName}" 부서 관리자의 승인을 기다립니다.`);
+      }
+      closeTransferModal();
+      await loadData();
+    }
+
+    function renderTransfers() {
+      const section = document.getElementById('transferSection');
+      const myRank = session.permissionRank || 0;
+      if (myRank < 80) { section.style.display = 'none'; return; }
+      section.style.display = '';
+      document.getElementById('transferTitle').textContent = `🔄 부서 이동 신청 내역 (${allTransfers.length}건)`;
+      const tbody = document.getElementById('transferList');
+      if (allTransfers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">대기 중인 부서 이동 요청이 없습니다.</td></tr>';
+        return;
+      }
+      const myManagedDept = session.managedDeptId || session.departmentId;
+      tbody.innerHTML = allTransfers.map(t => {
+        const canApprove = myRank >= 90 || (t.to_department_id === myManagedDept);
+        return `<tr>
+          <td><strong>${t.display_name || t.username}</strong></td>
+          <td>${getDeptName(t.from_department_id)}</td>
+          <td style="color:#1971c2;font-weight:600;">${getDeptName(t.to_department_id)}</td>
+          <td style="font-size:0.82rem;">${t.requested_by}${t.request_reason ? '<br><span style="color:#868e96;font-size:0.75rem;">' + t.request_reason + '</span>' : ''}</td>
+          <td>${formatKSTShort(t.created_at)}</td>
+          <td>
+            ${canApprove ? `<button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveTransfer('${t.id}','${t.user_id}','${(t.display_name||t.username).replace(/'/g,"\\'")}','${t.to_department_id}')">승인</button>
+            <button class="btn-ack" onclick="rejectTransfer('${t.id}','${(t.display_name||t.username).replace(/'/g,"\\'")}')">거부</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">처리 권한 없음</span>'}
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    async function approveTransfer(trfId, userId, displayName, toDeptId) {
+      const toDeptName = getDeptName(toDeptId);
+      if (!confirm(`"${displayName}"의 "${toDeptName}" 부서 이동을 승인하시겠습니까?`)) return;
+      const user = allUsers.find(u => u.id === userId);
+      if (user) {
+        const { error } = await updateUser(userId, {
+          displayName: user.display_name,
+          userType: user.user_type,
+          permissionLevel: user.permission_level,
+          departmentId: toDeptId,
+          managedDeptId: user.managed_dept_id,
+          classNumber: null
+        });
+        if (error) { alert('부서 이동 실패: ' + error); return; }
+      } else {
+        const { error } = await _sb.from('profiles').update({ department_id: toDeptId, class_number: null }).eq('id', userId);
+        if (error) { alert('부서 이동 실패: ' + error.message); return; }
+      }
+      await _sb.from('department_transfer_requests').update({
+        status: 'approved', reviewed_by: session.username, review_note: '승인됨', reviewed_at: new Date().toISOString()
+      }).eq('id', trfId);
+      await logInfo('DEPT_TRANSFER_APPROVE', { userId, displayName, toDept: toDeptName });
+      alert(`"${displayName}"이(가) "${toDeptName}" 부서로 이동되었습니다.`);
+      await loadData();
+    }
+
+    async function rejectTransfer(trfId, displayName) {
+      const note = prompt(`"${displayName}" 부서 이동 거부 사유를 입력해주세요:`, '');
+      if (note === null) return;
+      await _sb.from('department_transfer_requests').update({
+        status: 'rejected', reviewed_by: session.username, review_note: note || '거부됨', reviewed_at: new Date().toISOString()
+      }).eq('id', trfId);
+      await logInfo('DEPT_TRANSFER_REJECT', { displayName, reason: note });
+      await loadData();
+    }
   </script>
 </body>
 </html>

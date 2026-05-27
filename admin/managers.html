@@ -95,10 +95,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.4"></script>
-  <script src="../js/activity-log.js?v=3.7.4"></script>
-  <script src="../js/auth.js?v=3.7.4"></script>
-  <script src="../js/user-mgmt.js?v=3.7.4"></script>
+  <script src="../js/supabase-config.js?v=3.7.5"></script>
+  <script src="../js/activity-log.js?v=3.7.5"></script>
+  <script src="../js/auth.js?v=3.7.5"></script>
+  <script src="../js/user-mgmt.js?v=3.7.5"></script>
   <script>
     initSupabase();
     let session;
@@ -208,7 +208,6 @@
       };
 
       const nameMap = resolveDisplayNames(allManagers);
-      const showId = _isAdmin();
       const myRank = session.permissionRank || 0;
 
       tbody.innerHTML = list.map(u => {
@@ -222,7 +221,7 @@
         const canManage = isSelf || (myRank > targetRank && (!isSuperAdmin || session.isSuperAdmin));
         return `<tr>
           <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
-          <td>${dn}${showId ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
+          <td>${dn}${isSelf ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
           <td>${ownDept ? ownDept.name : '-'}</td>
           <td>${mgrDept ? mgrDept.name : '<span style="color:var(--admin-text-muted);">-</span>'}</td>
           <td style="font-weight:700;">${u.talent_balance || 0}</td>
@@ -258,13 +257,11 @@
         if (matches.length === 0) {
           box.innerHTML = '<div style="padding:0.6rem;color:var(--admin-text-muted);font-size:0.85rem;">검색 결과가 없습니다.</div>';
         } else {
-          const showId = _isAdmin();
           box.innerHTML = matches.map(u => {
             const dept = deptList.find(d => d.id === u.department_id);
             const deptName = dept ? dept.name : '';
-            const idPart = showId ? ` <span style="color:#868e96;">(${u.username})</span>` : '';
             return `<div style="padding:0.6rem 0.8rem;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:0.88rem;" onmousedown="selectUser('${u.id}')" onmouseover="this.style.background='#f3f0ff'" onmouseout="this.style.background='#fff'">
-              <strong>${u.display_name || u.username}</strong>${idPart}
+              <strong>${u.display_name || u.username}</strong>
               <span style="margin-left:0.5rem;color:var(--admin-text-muted);font-size:0.78rem;">${u.user_type === 'student' ? '학생' : '교사'}${deptName ? ' / ' + deptName : ''}</span>
             </div>`;
           }).join('');
@@ -280,9 +277,8 @@
       document.getElementById('searchResults').style.display = 'none';
       document.getElementById('mSearchInput').style.display = 'none';
       const dept = deptList.find(d => d.id === u.department_id);
-      const showId = _isAdmin();
       document.getElementById('selectedUserInfo').innerHTML =
-        `<strong>${u.display_name || u.username}</strong>${showId ? ' (' + u.username + ')' : ''} - ${u.user_type === 'student' ? '학생' : '교사'}${dept ? ' / ' + dept.name : ''}`;
+        `<strong>${u.display_name || u.username}</strong> - ${u.user_type === 'student' ? '학생' : '교사'}${dept ? ' / ' + dept.name : ''}`;
       document.getElementById('selectedUser').style.display = 'block';
       document.getElementById('mUsername').value = u.username;
       document.getElementById('mDisplayName').value = u.display_name || u.username;
@@ -378,6 +374,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.7.4"></script>
+  <script src="../js/version.js?v=3.7.5"></script>
 </body>
 </html>

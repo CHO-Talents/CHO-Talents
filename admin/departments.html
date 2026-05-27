@@ -64,10 +64,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.4"></script>
-  <script src="../js/activity-log.js?v=3.7.4"></script>
-  <script src="../js/auth.js?v=3.7.4"></script>
-  <script src="../js/user-mgmt.js?v=3.7.4"></script>
+  <script src="../js/supabase-config.js?v=3.7.5"></script>
+  <script src="../js/activity-log.js?v=3.7.5"></script>
+  <script src="../js/auth.js?v=3.7.5"></script>
+  <script src="../js/user-mgmt.js?v=3.7.5"></script>
   <script>
     initSupabase();
     let session;
@@ -206,18 +206,18 @@
       const hasClasses = dept && dept.class_count > 0;
 
       const nameMap = resolveDisplayNames(members);
-      const showId = isAdminLevel(session);
       let html = `<strong>${deptName}</strong> 소속 인원 (${members.length}명)<br/><br/>`;
       if (members.length === 0) {
         html += '<div style="color:#636e72;">소속 인원이 없습니다.</div>';
       } else {
-        html += `<table class="admin-table" style="font-size:0.85rem;"><thead><tr><th>역할</th><th>권한</th><th>이름</th>${hasClasses ? '<th>반</th>' : ''}${showId ? '<th>아이디</th>' : ''}</tr></thead><tbody>`;
+        html += `<table class="admin-table" style="font-size:0.85rem;"><thead><tr><th>역할</th><th>권한</th><th>이름</th>${hasClasses ? '<th>반</th>' : ''}</tr></thead><tbody>`;
         html += members.map(u => {
           const typeLabel = u.user_type === 'student' ? '🎒 학생' : '👩‍🏫 교사';
           const permLabel = (PERMISSION_EMOJI[u.permission_level]||'') + ' ' + (PERMISSION_LABELS[u.permission_level]||u.permission_level);
           const dn = nameMap[u.id] || u.display_name || '-';
+          const isSelf = u.id === session.id;
           const classNum = u.class_number ? u.class_number + '반' : '-';
-          return `<tr><td>${typeLabel}</td><td>${permLabel}</td><td>${dn}</td>${hasClasses ? '<td>' + classNum + '</td>' : ''}${showId ? '<td style="font-size:0.78rem;color:#868e96;">' + u.username + '</td>' : ''}</tr>`;
+          return `<tr><td>${typeLabel}</td><td>${permLabel}</td><td>${dn}${isSelf ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>${hasClasses ? '<td>' + classNum + '</td>' : ''}</tr>`;
         }).join('');
         html += '</tbody></table>';
       }
@@ -250,6 +250,6 @@
 
     document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.7.4"></script>
+  <script src="../js/version.js?v=3.7.5"></script>
 </body>
 </html>
