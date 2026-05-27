@@ -95,10 +95,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.6"></script>
-  <script src="../js/activity-log.js?v=3.7.6"></script>
-  <script src="../js/auth.js?v=3.7.6"></script>
-  <script src="../js/user-mgmt.js?v=3.7.6"></script>
+  <script src="../js/supabase-config.js?v=3.7.7"></script>
+  <script src="../js/activity-log.js?v=3.7.7"></script>
+  <script src="../js/auth.js?v=3.7.7"></script>
+  <script src="../js/user-mgmt.js?v=3.7.7"></script>
   <script>
     initSupabase();
     let session;
@@ -310,6 +310,7 @@
       document.getElementById('mRole').innerHTML = buildMgrPermOptions(session.permissionRank || 0, 'dept_teacher');
       document.getElementById('mRole').disabled = false;
       document.getElementById('mOwnDeptId').value = '';
+      document.getElementById('mOwnDeptId').disabled = false;
       document.getElementById('mDeptId').value = '';
       onRoleChange();
       document.getElementById('modalError').classList.remove('show');
@@ -330,6 +331,7 @@
       document.getElementById('mRole').innerHTML = buildMgrPermOptions(session.permissionRank || 0, user.permission_level || 'dept_teacher');
       document.getElementById('mRole').disabled = false;
       document.getElementById('mOwnDeptId').value = user.department_id || '';
+      document.getElementById('mOwnDeptId').disabled = true;
       document.getElementById('mDeptId').value = user.managed_dept_id || '';
       onRoleChange();
       document.getElementById('modalError').classList.remove('show');
@@ -374,6 +376,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.7.6"></script>
+  <script src="../js/version.js?v=3.7.7"></script>
 </body>
 </html>

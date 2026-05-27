@@ -2,9 +2,20 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.7.6',
+  current: '3.7.7',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.7.7',
+      date: '2026-05-28',
+      title: '수정 모달 부서 변경 제거 + 보고서 전체 등록',
+      changes: [
+        'users.html: 수정 모달에서 소속 부서/반 변경 비활성화 (부서이동 기능으로 대체)',
+        'managers.html: 수정 모달에서 소속 부서 변경 비활성화',
+        '보고서 DB 한글 깨짐 데이터 전면 교체 SQL 생성 (TASK-008~011 포함)',
+        '전체 작업 보고서 20건 일괄 등록 SQL (TASK-001 ~ TASK-020)'
+      ]
+    },
     {
       version: '3.7.6',
       date: '2026-05-28',
