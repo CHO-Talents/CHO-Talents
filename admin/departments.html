@@ -64,10 +64,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.5"></script>
-  <script src="../js/activity-log.js?v=3.7.5"></script>
-  <script src="../js/auth.js?v=3.7.5"></script>
-  <script src="../js/user-mgmt.js?v=3.7.5"></script>
+  <script src="../js/supabase-config.js?v=3.7.6"></script>
+  <script src="../js/activity-log.js?v=3.7.6"></script>
+  <script src="../js/auth.js?v=3.7.6"></script>
+  <script src="../js/user-mgmt.js?v=3.7.6"></script>
   <script>
     initSupabase();
     let session;
@@ -217,7 +217,7 @@
           const dn = nameMap[u.id] || u.display_name || '-';
           const isSelf = u.id === session.id;
           const classNum = u.class_number ? u.class_number + '반' : '-';
-          return `<tr><td>${typeLabel}</td><td>${permLabel}</td><td>${dn}${isSelf ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>${hasClasses ? '<td>' + classNum + '</td>' : ''}</tr>`;
+          return `<tr><td>${typeLabel}</td><td>${permLabel}</td><td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>${hasClasses ? '<td>' + classNum + '</td>' : ''}</tr>`;
         }).join('');
         html += '</tbody></table>';
       }
@@ -250,6 +250,6 @@
 
     document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.7.5"></script>
+  <script src="../js/version.js?v=3.7.6"></script>
 </body>
 </html>

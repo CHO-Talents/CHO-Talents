@@ -2,9 +2,19 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.7.5',
+  current: '3.7.6',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.7.6',
+      date: '2026-05-28',
+      title: '보고서 한글 인코딩 수정 + 관리자 아이디 표시 예외',
+      changes: [
+        '전체 HTML/JS 파일 UTF-8 BOM 제거 (18개 파일)',
+        '관리자(admin) 권한: 모든 페이지에서 타인 아이디 표시 가능',
+        '비관리자: 자기 아이디만 표시 (기존 유지)'
+      ]
+    },
     {
       version: '3.7.5',
       date: '2026-05-28',
