@@ -11,7 +11,7 @@
     <a href="../index.html" class="admin-nav-brand">CHO-Talents</a>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
-      <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
+      <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
       <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
@@ -36,8 +36,8 @@
           <button class="filter-btn" data-type="test_scenario" onclick="filterReports('test_scenario', this)">검증 시나리오</button>
           <button class="filter-btn" data-type="test_result" onclick="filterReports('test_result', this)">테스트 결과</button>
           <button class="filter-btn" data-type="change_report" onclick="filterReports('change_report', this)">수정 보고서</button>
-          <button class="btn-ack" style="margin-left:auto;" onclick="openAddReportModal()">&#10133; 보고서 등록</button>
-          <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedReports()" id="btnDeleteReports" disabled>&#128465;&#65039; 선택 삭제</button>
+          <button class="btn-ack" style="margin-left:auto;" onclick="openAddReportModal()">+ 보고서 등록</button>
+          <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedReports()" id="btnDeleteReports" disabled>선택 삭제</button>
         </div>
       </div>
       <table class="admin-table">
@@ -45,7 +45,7 @@
           <tr><th style="width:30px;"><input type="checkbox" id="chkAll" onchange="toggleAllReports(this)"></th><th>작업ID</th><th>제목</th><th>유형</th><th>작성자</th><th>작성일</th><th></th></tr>
         </thead>
         <tbody id="reportsList">
-          <tr><td colspan="6" class="empty-state">로딩 중... <span id="loadStatus" style="font-size:0.75rem;color:#868e96;display:block;margin-top:0.3rem;"></span></td></tr>
+          <tr><td colspan="7" class="empty-state">로딩 중... <span id="loadStatus" style="font-size:0.75rem;color:#868e96;display:block;margin-top:0.3rem;"></span></td></tr>
         </tbody>
       </table>
     </div>
@@ -88,7 +88,7 @@
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">내용 (HTML 지원)</label>
-        <textarea id="rContent" rows="12" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;font-family:monospace;font-size:0.85rem;" placeholder="<h2>보고서 제목</h2>&#10;<p>내용을 작성하세요...</p>"></textarea>
+        <textarea id="rContent" rows="12" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;font-family:monospace;font-size:0.85rem;" placeholder="HTML 형식으로 작성하세요"></textarea>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:0.5rem;">
         <button class="btn-cancel" onclick="closeAddReportModal()">취소</button>
@@ -98,9 +98,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.1"></script>
-  <script src="../js/activity-log.js?v=3.7.1"></script>
-  <script src="../js/auth.js?v=3.7.1"></script>
+  <script src="../js/supabase-config.js?v=3.7.2"></script>
+  <script src="../js/activity-log.js?v=3.7.2"></script>
+  <script src="../js/auth.js?v=3.7.2"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -131,6 +131,7 @@
         applyPermNav(session.permissionRank || 0);
         renderRoleBadge('navUser', session, '../');
         autoLogPageView();
+        updatePendingBadge();
 
         _stepLog('4', 'loadReports 호출 중...');
         await loadReports();
@@ -145,7 +146,7 @@
         document.body.classList.add('auth-ready');
         _initDone = true;
         document.getElementById('reportsList').innerHTML =
-          `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">페이지 로드 오류: ${err.message}</p></td></tr>`;
+          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">페이지 로드 오류: ${err.message}</p></td></tr>`;
       }
     })();
 
@@ -172,7 +173,7 @@
         if (error) {
           console.error('[REPORTS] query error:', error);
           document.getElementById('reportsList').innerHTML =
-            `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">보고서 조회 오류: ${error.message || JSON.stringify(error)}</p><p style="font-size:0.8rem;color:#868e96;margin-top:0.5rem;">reports 테이블 RLS 정책 또는 접근 권한을 확인해주세요.</p></td></tr>`;
+            `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">보고서 조회 오류: ${error.message || JSON.stringify(error)}</p><p style="font-size:0.8rem;color:#868e96;margin-top:0.5rem;">reports 테이블 RLS 정책 또는 접근 권한을 확인해주세요.</p></td></tr>`;
           return;
         }
         allReports = data || [];
@@ -181,7 +182,7 @@
         _stepLog('5-ERR', '쿼리 예외: ' + err.message);
         console.error('[REPORTS] exception:', err);
         document.getElementById('reportsList').innerHTML =
-          `<tr><td colspan="6" class="empty-state"><p style="color:#d63031;">예외 발생: ${err.message}</p></td></tr>`;
+          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">예외 발생: ${err.message}</p></td></tr>`;
       }
     }
 
@@ -189,7 +190,7 @@
       const tbody = document.getElementById('reportsList');
       if (!list || list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
-          <div class="empty-state-icon">&#128196;</div><p>보고서가 없습니다.</p></div></td></tr>`;
+          <div class="empty-state-icon">📄</div><p>보고서가 없습니다.</p></div></td></tr>`;
         return;
       }
       tbody.innerHTML = list.map(r => `
@@ -274,7 +275,7 @@
           task_title: taskTitle,
           report_type: reportType,
           content: content,
-          created_by: session ? session.display_name || session.username : 'unknown'
+          created_by: session ? session.displayName || session.username : 'unknown'
         };
 
         let result;
@@ -330,6 +331,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.7.1"></script>
+  <script src="../js/version.js?v=3.7.2"></script>
 </body>
 </html>

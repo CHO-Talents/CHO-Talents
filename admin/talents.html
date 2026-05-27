@@ -11,7 +11,7 @@
     <a href="../index.html" class="admin-nav-brand">CHO-Talents</a>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
-      <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
+      <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
       <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
       <li data-min-perm="40"><a href="talents.html" class="active">달란트 관리</a></li>
@@ -112,11 +112,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.1"></script>
-  <script src="../js/activity-log.js?v=3.7.1"></script>
-  <script src="../js/auth.js?v=3.7.1"></script>
-  <script src="../js/user-mgmt.js?v=3.7.1"></script>
-  <script src="../js/talent.js?v=3.7.1"></script>
+  <script src="../js/supabase-config.js?v=3.7.2"></script>
+  <script src="../js/activity-log.js?v=3.7.2"></script>
+  <script src="../js/auth.js?v=3.7.2"></script>
+  <script src="../js/user-mgmt.js?v=3.7.2"></script>
+  <script src="../js/talent.js?v=3.7.2"></script>
   <script>
     initSupabase();
     let session;
@@ -133,6 +133,7 @@
       applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
+      updatePendingBadge();
       const [deptRes, itemRes] = await Promise.all([
         fetchDepartments(),
         fetchAllTalentItems()
@@ -360,6 +361,6 @@
     document.getElementById('userModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
     document.getElementById('talentModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeTalentModal(); });
   </script>
-  <script src="../js/version.js?v=3.7.1"></script>
+  <script src="../js/version.js?v=3.7.2"></script>
 </body>
 </html>
