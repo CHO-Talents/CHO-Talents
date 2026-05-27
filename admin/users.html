@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
+    <a href="../index.html" class="admin-nav-brand">CHO-Talents</a>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html" class="active">사용자 관리</a></li>
@@ -160,6 +160,22 @@
 
     let allRequests = [];
 
+    async function loadLastLogins() {
+      const { data: loginLogs } = await _sb
+        .from('activity_logs')
+        .select('username, created_at')
+        .eq('action', 'LOGIN_SUCCESS')
+        .order('created_at', { ascending: false });
+      if (!loginLogs) return;
+      const lastLoginMap = {};
+      loginLogs.forEach(log => {
+        if (!lastLoginMap[log.username]) lastLoginMap[log.username] = log.created_at;
+      });
+      allUsers.forEach(u => {
+        if (!u.last_sign_in_at && lastLoginMap[u.username]) u.last_sign_in_at = lastLoginMap[u.username];
+      });
+    }
+
     async function loadData() {
       const [usersRes, deptsRes, reqRes] = await Promise.all([
         fetchUsers(), fetchDepartments(),
@@ -168,6 +184,7 @@
       allUsers = usersRes.data || [];
       allDepts = deptsRes.data || [];
       allRequests = reqRes.data || [];
+      await loadLastLogins();
       updateStats();
       renderUsers();
       populateDeptSelects();
@@ -374,6 +391,7 @@
       const needsManagedDept = MGMT_LEVELS.includes(permLevel);
 
       if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!editingId && username && !/^[a-zA-Z0-9_-]+$/.test(username)) { errEl.textContent = '아이디는 영문, 숫자, _, - 만 사용 가능합니다.'; errEl.classList.add('show'); return; }
       if (!editingId && !username) username = 'user_' + Date.now().toString(36);
       if (_isAdmin() && !editingId && !username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
       if (!deptId) { errEl.textContent = '소속 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
@@ -476,6 +494,10 @@
       await logInfo('REGISTER_REJECT', { username, reason: note });
       await loadData();
     }
+
+    document.getElementById('mUsername').addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Z0-9_\-]/g, '');
+    });
 
     document.getElementById('userModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>

@@ -31,7 +31,7 @@
         <div class="form-group">
           <label>희망 아이디</label>
           <div style="display:flex;gap:0.5rem;">
-            <input type="text" id="rUsername" placeholder="사용할 아이디를 입력해주세요" style="flex:1;" />
+            <input type="text" id="rUsername" placeholder="영문, 숫자, _, - (한글 불가)" style="flex:1;" autocomplete="off" />
             <button type="button" id="btnCheckId" onclick="checkDuplicate()" style="padding:0.6rem 1rem;background:var(--admin-primary);color:#fff;border:none;border-radius:8px;font-weight:700;font-size:0.85rem;cursor:pointer;white-space:nowrap;">중복확인</button>
           </div>
           <div id="idCheckResult" style="font-size:0.8rem;margin-top:0.3rem;"></div>
@@ -80,10 +80,16 @@
 
     loadDepts();
 
-    document.getElementById('rUsername').addEventListener('input', () => {
+    document.getElementById('rUsername').addEventListener('input', function() {
+      const cleaned = this.value.replace(/[^a-zA-Z0-9_\-]/g, '');
+      if (cleaned !== this.value) {
+        this.value = cleaned;
+        document.getElementById('idCheckResult').innerHTML = '<span style="color:#e67700;">&#9888;&#65039; 영문, 숫자, _, - 만 사용 가능합니다.</span>';
+      } else {
+        document.getElementById('idCheckResult').innerHTML = '';
+      }
       idChecked = false;
       checkedUsername = '';
-      document.getElementById('idCheckResult').innerHTML = '';
     });
 
     async function loadDepts() {
@@ -99,6 +105,7 @@
       const resultEl = document.getElementById('idCheckResult');
 
       if (!username) { resultEl.innerHTML = '<span style="color:#e03131;">아이디를 입력해주세요.</span>'; return; }
+      if (!/^[a-zA-Z0-9_-]+$/.test(username)) { resultEl.innerHTML = '<span style="color:#e03131;">아이디는 영문, 숫자, _, - 만 사용 가능합니다.</span>'; return; }
 
       resultEl.innerHTML = '<span style="color:#636e72;">확인 중...</span>';
 
@@ -126,6 +133,7 @@
       const reason = document.getElementById('rReason').value.trim();
 
       if (!username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!/^[a-zA-Z0-9_-]+$/.test(username)) { errEl.textContent = '아이디는 영문, 숫자, _, - 만 사용 가능합니다.'; errEl.classList.add('show'); return; }
       if (!idChecked || checkedUsername !== username) { errEl.textContent = '아이디 중복확인을 해주세요.'; errEl.classList.add('show'); return; }
       if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
       if (!deptId) { errEl.textContent = '소속 부서를 선택해주세요.'; errEl.classList.add('show'); return; }

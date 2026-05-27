@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
+    <a href="../index.html" class="admin-nav-brand">CHO-Talents</a>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html">사용자 관리</a></li>
@@ -49,6 +49,7 @@
           <input type="date" class="filter-input" id="dateFrom" onchange="applyFilters()" />
           <span style="font-size:0.8rem;color:#adb5bd;">~</span>
           <input type="date" class="filter-input" id="dateTo" onchange="applyFilters()" />
+          <button class="btn-ack" style="margin-left:0.5rem;" onclick="deleteByRange()">&#128465;&#65039; 범위 삭제</button>
         </div>
       </div>
 
@@ -93,6 +94,17 @@
     </div>
   </div>
 
+  <!-- Log Detail Modal -->
+  <div class="modal-overlay hidden" id="logDetailModal">
+    <div class="modal-box" style="max-width:600px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 class="modal-title">로그 상세 정보</h3>
+        <button class="btn-cancel" onclick="closeLogDetailModal()">닫기</button>
+      </div>
+      <div id="logDetailContent"></div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../js/supabase-config.js?v=3.6.0"></script>
   <script src="../js/activity-log.js?v=3.6.0"></script>
@@ -104,6 +116,18 @@
     const PAGE_SIZE = 50;
     let selectedLevels = [];
     let currentAckId = null;
+    let userProfileMap = {};
+
+    async function loadUserProfiles() {
+      const { data } = await _sb.from('profiles').select('username, display_name');
+      if (data) data.forEach(p => { userProfileMap[p.username] = p.display_name || p.username; });
+    }
+
+    function getUserDisplay(username) {
+      if (!username) return '-';
+      return userProfileMap[username] ? userProfileMap[username] + ' (' + username + ')' : username;
+    }
+
     (async () => {
       session = await initPage(100, '../login.html');
       if (!session) return;
@@ -116,6 +140,7 @@
     })();
 
     async function loadAll() {
+      await loadUserProfiles();
       await Promise.all([loadUnacknowledged(), applyFilters()]);
       await updateBadge();
     }
@@ -150,9 +175,9 @@
           <td><span class="level-badge ${l.level}">${l.level}</span></td>
           <td>${l.action}</td>
           <td>${l.page || '-'}</td>
-          <td>${l.username || '-'}</td>
+          <td>${getUserDisplay(l.username)}</td>
           <td><span class="ack-badge pending">미확인</span></td>
-          <td><button class="btn-ack" onclick="openAckModal('${l.id}')">확인하기</button></td>
+          <td><button class="filter-btn" onclick="showLogDetail('${l.id}')" style="margin-right:0.3rem;">상세</button><button class="btn-ack" onclick="openAckModal('${l.id}')">확인하기</button></td>
         </tr>
       `).join('');
     }
@@ -225,10 +250,10 @@
           <td><span class="level-badge ${l.level}">${l.level}</span></td>
           <td>${l.action}</td>
           <td>${l.page || '-'}</td>
-          <td>${l.username || '-'}</td>
+          <td>${getUserDisplay(l.username)}</td>
           <td>${clientHtml}</td>
           <td>${ackHtml}</td>
-          <td>${actionHtml}</td>
+          <td><button class="filter-btn" onclick="showLogDetail('${l.id}')" style="margin-right:0.3rem;">상세</button>${actionHtml}</td>
         </tr>`;
       }).join('');
 
@@ -312,8 +337,65 @@
       await loadAll();
     }
 
+    async function deleteByRange() {
+      const dateFrom = document.getElementById('dateFrom').value;
+      const dateTo = document.getElementById('dateTo').value;
+      if (!dateFrom || !dateTo) { alert('삭제할 날짜 범위(시작~끝)를 모두 선택해주세요.'); return; }
+      const fromStr = dateFrom + 'T00:00:00+09:00';
+      const toStr = dateTo + 'T23:59:59+09:00';
+      const { count } = await _sb.from('activity_logs')
+        .select('*', { count: 'exact', head: true })
+        .gte('created_at', fromStr).lte('created_at', toStr);
+      if (!count || count === 0) { alert('해당 범위에 삭제할 로그가 없습니다.'); return; }
+      if (!confirm(dateFrom + ' ~ ' + dateTo + ' 기간의 로그 ' + count + '건을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
+      const { error } = await deleteLogsByDateRange(fromStr, toStr);
+      if (error) { alert('삭제 실패: ' + error); return; }
+      await logInfo('LOG_RANGE_DELETE', { dateFrom, dateTo, count });
+      alert(count + '건의 로그가 삭제되었습니다.');
+      await loadAll();
+    }
+
+    function showLogDetail(logId) {
+      _sb.from('activity_logs').select('*').eq('id', logId).single().then(({ data: l }) => {
+        if (!l) return;
+        const ci = l.details?._client;
+        const detailsClean = l.details ? Object.assign({}, l.details) : {};
+        delete detailsClean._client;
+        const hasDetails = Object.keys(detailsClean).length > 0;
+        let html = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem;">';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;width:100px;background:#fafbfc;border:1px solid #eee;">시간</td><td style="padding:0.5rem;border:1px solid #eee;">' + formatKST(l.created_at) + '</td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">레벨</td><td style="padding:0.5rem;border:1px solid #eee;"><span class="level-badge ' + l.level + '">' + l.level + '</span></td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">액션</td><td style="padding:0.5rem;border:1px solid #eee;">' + l.action + '</td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">페이지</td><td style="padding:0.5rem;border:1px solid #eee;">' + (l.page || '-') + '</td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">사용자</td><td style="padding:0.5rem;border:1px solid #eee;">' + getUserDisplay(l.username) + '</td></tr>';
+        if (ci) {
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">IP</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.ip||'-') + '</td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">브라우저</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.browser||'-') + '</td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">OS</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.os||'-') + '</td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">기기</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.deviceType||'-') + '</td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">해상도</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.screenRes||'-') + ' (창: ' + (ci.windowSize||'-') + ')</td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">언어</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.language||'-') + '</td></tr>';
+        }
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">확인</td><td style="padding:0.5rem;border:1px solid #eee;">' + (l.is_acknowledged ? '<span class="ack-badge done">확인됨</span> ' + (l.acknowledged_by||'') + (l.resolution_note ? ' - ' + l.resolution_note : '') : '<span class="ack-badge pending">미확인</span>') + '</td></tr>';
+        if (hasDetails) {
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;vertical-align:top;">데이터</td><td style="padding:0.5rem;border:1px solid #eee;"><pre style="font-size:0.75rem;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto;margin:0;background:#f8f9fa;padding:0.5rem;border-radius:6px;">' + JSON.stringify(detailsClean, null, 2) + '</pre></td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('logDetailContent').innerHTML = html;
+        document.getElementById('logDetailModal').classList.remove('hidden');
+      });
+    }
+
+    function closeLogDetailModal() {
+      document.getElementById('logDetailModal').classList.add('hidden');
+    }
+
     document.getElementById('ackModal').addEventListener('click', (e) => {
       if (e.target.classList.contains('modal-overlay')) closeAckModal();
+    });
+
+    document.getElementById('logDetailModal').addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-overlay')) closeLogDetailModal();
     });
   </script>
   <script src="../js/version.js?v=3.6.0"></script>
