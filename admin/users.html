@@ -43,7 +43,7 @@
         <div class="admin-table-title" id="reqTitle" style="color:#e67700;">📝 가입 신청 내역</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>역할</th><th>아이디</th><th>이름</th><th>부서</th><th>사유</th><th>신청일</th><th>처리</th></tr></thead>
+        <thead><tr><th>역할</th><th>이름</th><th>부서</th><th>사유</th><th>신청일</th><th>처리</th></tr></thead>
         <tbody id="reqList"></tbody>
       </table>
     </div>
@@ -62,8 +62,8 @@
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>역할</th><th>아이디</th><th>이름</th><th>부서</th><th>달란트</th><th>등록일</th><th>마지막 로그인</th><th>관리</th></tr></thead>
-        <tbody id="userList"><tr><td colspan="8" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>역할</th><th>이름</th><th>부서</th><th>달란트</th><th>등록일</th><th>마지막 로그인</th><th>관리</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -130,13 +130,15 @@
     let editingId = null;
     let currentFilter = 'all';
     (async () => {
-      session = await initPage(['admin', 'dept_manager'], '../login.html');
+      session = await initPage(60, '../login.html');
       if (!session) return;
       applyRoleNav(session.role);
+      applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
-      if (session.role === 'admin') updateBadge();
-      if (session.role === 'dept_manager') {
+      const myRank = session.permissionRank || 0;
+      if (myRank >= 80) updateBadge();
+      if (myRank < 80) {
         document.getElementById('reqSection').style.display = 'none';
         document.querySelectorAll('.admin-table-header .filter-btn[style*="background:var(--admin-primary)"]').forEach(b => b.style.display = 'none');
       }
@@ -198,27 +200,33 @@
     };
 
     function renderUsers() {
-      const list = currentFilter === 'all' ? allUsers : allUsers.filter(u => u.role === currentFilter);
+      const list = currentFilter === 'all' ? allUsers : allUsers.filter(u => u.role === currentFilter || u.permission_level === currentFilter || u.user_type === currentFilter);
       const tbody = document.getElementById('userList');
       document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
 
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">등록된 사용자가 없습니다.</td></tr>'; return; }
+      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 사용자가 없습니다.</td></tr>'; return; }
 
+      const myRank = session.permissionRank || 0;
       tbody.innerHTML = list.map(u => {
+        const perm = u.permission_level || u.role;
         const rb = ROLE_BADGES[u.role] || ROLE_BADGES.student;
+        const permLabel = PERMISSION_LABELS[perm] || rb.label;
+        const permEmoji = PERMISSION_EMOJI[perm] || rb.emoji;
         const lastLogin = u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '<span style="color:#adb5bd;font-size:0.8rem;">없음</span>';
+        const targetRank = getPermRank(perm);
+        const isSuperAdmin = u.is_super_admin || false;
+        const canManage = myRank > targetRank && !isSuperAdmin || u.id === session.id;
         return `<tr>
-          <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
-          <td><strong>${u.username}</strong></td>
+          <td><span class="level-badge ${rb.cls}">${permEmoji} ${permLabel}</span></td>
           <td>${u.display_name || '-'}</td>
           <td>${getDeptName(u.department_id)}</td>
           <td style="font-weight:700;">${u.talent_balance || 0}</td>
           <td>${formatKSTShort(u.created_at)}</td>
           <td>${lastLogin}</td>
           <td>
-            ${session.role === 'admin' ? `<button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>수정</button>` : ''}
-            ${session.role === 'admin' ? `<button class="filter-btn" onclick="resetPw('${u.id}','${u.username}')">비밀번호초기화</button>` : ''}
-            ${session.role === 'admin' && u.id !== session.id ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${u.username}')">삭제</button>` : ''}
+            ${canManage ? `<button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>수정</button>` : ''}
+            ${canManage && u.id !== session.id ? `<button class="filter-btn" onclick="resetPw('${u.id}','${u.display_name}')">비밀번호초기화</button>` : ''}
+            ${canManage && u.id !== session.id && !isSuperAdmin ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${u.display_name}')">삭제</button>` : ''}
           </td>
         </tr>`;
       }).join('');
@@ -312,7 +320,6 @@
         const rb = ROLE_BADGES[r.role] || ROLE_BADGES.student;
         return `<tr>
           <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
-          <td><strong>${r.username}</strong></td>
           <td>${r.display_name}</td>
           <td>${getDeptName(r.department_id)}</td>
           <td style="font-size:0.8rem;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.reason || ''}">${r.reason || '-'}</td>

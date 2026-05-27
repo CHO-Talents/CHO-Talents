@@ -2,7 +2,7 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '2.5.0',
+  current: '3.0.0',
   date: '2026-05-27',
   history: [
     {
@@ -183,6 +183,43 @@ const APP_VERSION = {
         'applyRoleNav() 함수 도입 (역할별 네비게이션 표시/숨김)',
         'index.html dept_manager 달란트 경로를 admin/talents.html로 변경',
         '페이지 역할 맵핑 규칙 갱신 (.cursor/rules/page-role-mapping.mdc)'
+      ]
+    },
+    {
+      version: '3.0.0',
+      date: '2026-05-27',
+      title: 'TASK-013A: 유형/권한 6단계 체계 전면 개편 (DB+인증 코어)',
+      changes: [
+        'profiles 테이블 확장: user_type(교사/학생) + permission_level(6단계) + is_super_admin',
+        'registration_requests 테이블 확장: user_type + permission_level 컬럼 추가',
+        'get_permission_rank() 헬퍼 함수 생성 (admin:100 ~ student:20 수치 비교)',
+        '기존 데이터 자동 마이그레이션 (role -> user_type + permission_level)',
+        '최고관리자 is_super_admin 플래그 설정 (본인 외 수정/삭제 불가)',
+        '최고관리자 display_name을 "관리자(admin)"으로 변경',
+        'RPC 함수 12개 전면 업데이트 (permission_level 기반 권한 체크)',
+        'admin_create_user: 상위 권한자 생성 불가 체크 추가',
+        'admin_update_user: 계층적 권한 검증 + 최고관리자 보호',
+        'admin_delete_user: 계층적 삭제 제한 + 최고관리자 삭제 불가',
+        'admin_reset_password: 상위 권한자 비밀번호 초기화 불가',
+        'give_talent/use_talent: dept_teacher(60) 이상만 실행 가능',
+        'admin_list_users: permission_level/user_type 기반 조회 + is_super_admin 반환',
+        'get_my_profile: user_type, permission_level, is_super_admin 반환',
+        'get_my_role: permission_level 반환으로 변경',
+        'RLS 정책 전면 업데이트: get_permission_rank() 기반 (7개 테이블)',
+        'auth.js 코어 전면 개편: PERMISSION_RANK/LABELS/EMOJI/REDIRECT 체계',
+        'initPage() 숫자 기반 최소 권한 체크 지원 (배열 호환 유지)',
+        'applyPermNav() 함수 추가 (data-min-perm 속성 기반)',
+        'getPermRank()/requirePermission() 클라이언트 권한 비교 유틸',
+        '세션 캐시 확장: userType, permissionLevel, permissionRank, isSuperAdmin',
+        'activity-log.js loadAuthSession() 확장 세션 반환',
+        'user-mgmt.js: user_type/permission_level 파라미터 지원',
+        '전체 admin/ 페이지 initPage() 호출을 숫자 기반으로 전환',
+        'student/teacher 페이지 initPage() 숫자 기반 전환',
+        '사용자 관리: 계층적 관리 버튼 표시 (상위 권한자 관리 버튼 숨김)',
+        '사용자 관리: 아이디(username) 컬럼 숨김 (보안 강화)',
+        '대시보드: user_type 기반 통계, permission_rank 기반 퀵링크/분기',
+        'register.html: user_type/permission_level 컬럼 자동 설정',
+        'login.html/index.html/change-password.html: permissionLevel 기반 리디렉트'
       ]
     }
   ]

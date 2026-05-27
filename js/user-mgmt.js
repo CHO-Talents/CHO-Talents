@@ -26,7 +26,9 @@ async function createUser(userData) {
       p_display_name: userData.displayName || userData.username,
       p_role: userData.role || 'student',
       p_department_id: userData.departmentId || null,
-      p_managed_dept_id: userData.managedDeptId || null
+      p_managed_dept_id: userData.managedDeptId || null,
+      p_user_type: userData.userType || null,
+      p_permission_level: userData.permissionLevel || null
     });
     if (error) {
       await logError('USER_CREATE_FAIL', { username: userData.username, error: error.message });
@@ -51,7 +53,9 @@ async function updateUser(id, updates) {
       p_display_name: updates.displayName || null,
       p_role: updates.role || null,
       p_department_id: updates.departmentId || null,
-      p_managed_dept_id: updates.managedDeptId !== undefined ? updates.managedDeptId : null
+      p_managed_dept_id: updates.managedDeptId !== undefined ? updates.managedDeptId : null,
+      p_user_type: updates.userType || null,
+      p_permission_level: updates.permissionLevel || null
     });
     if (error) {
       await logError('USER_UPDATE_FAIL', { id, error: error.message });

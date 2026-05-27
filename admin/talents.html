@@ -110,9 +110,10 @@
     let allDepts = [];
 
     (async () => {
-      session = await initPage(['admin', 'dept_manager'], '../login.html');
+      session = await initPage(60, '../login.html');
       if (!session) return;
       applyRoleNav(session.role);
+      applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
       const { data: depts } = await fetchDepartments();
@@ -135,7 +136,7 @@
     async function loadUsers() {
       const roleLabel = currentTab === 'student' ? '학생' : '교사';
       const opts = { role: currentTab };
-      if (session.role === 'dept_manager' && session.managedDeptId) {
+      if ((session.permissionRank || 0) < 80 && session.managedDeptId) {
         opts.departmentId = session.managedDeptId;
       }
       const { data } = await fetchUsers(opts);

@@ -86,12 +86,16 @@
       if (s) {
         const loginBtn = document.getElementById('navLoginBtn');
         loginBtn.textContent = s.displayName || s.username;
-        loginBtn.href = getRoleRedirectUrl(s.role, '');
+        loginBtn.href = getRoleRedirectUrl(s.permissionLevel || s.role, '');
 
         const myTalentCard = document.getElementById('cardMyTalent');
         if (myTalentCard) {
-          const talentPaths = { admin: 'admin/index.html', dept_manager: 'admin/talents.html', teacher: 'teacher/my-talents.html', student: 'student/my-talents.html' };
-          myTalentCard.href = talentPaths[s.role] || 'student/my-talents.html';
+          const perm = s.permissionLevel || s.role;
+          const rank = s.permissionRank || 0;
+          myTalentCard.href = rank >= 80 ? 'admin/index.html'
+            : rank >= 60 ? 'admin/talents.html'
+            : s.userType === 'teacher' ? 'teacher/my-talents.html'
+            : 'student/my-talents.html';
         }
       }
     })();

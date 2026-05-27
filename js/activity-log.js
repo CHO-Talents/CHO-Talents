@@ -116,11 +116,16 @@ async function loadAuthSession() {
   const { data } = await _sb.rpc('get_my_profile');
   if (!data) return null;
 
+  const perm = data.permission_level || data.role;
   const profile = {
     id: data.id,
     username: data.username,
     displayName: data.display_name,
     role: data.role,
+    userType: data.user_type || (data.role === 'student' ? 'student' : 'teacher'),
+    permissionLevel: perm,
+    permissionRank: (typeof getPermRank === 'function') ? getPermRank(perm) : ({ admin: 100, evangelist: 90, chief: 80, dept_teacher: 60, teacher: 40, student: 20 }[perm] || 0),
+    isSuperAdmin: data.is_super_admin || false,
     isFirstLogin: data.is_first_login,
     departmentId: data.department_id,
     managedDeptId: data.managed_dept_id,

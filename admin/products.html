@@ -127,12 +127,13 @@
     let currentFilter = 'all';
 
     (async () => {
-      session = await initPage(['admin', 'dept_manager'], '../login.html');
+      session = await initPage(60, '../login.html');
       if (!session) return;
       applyRoleNav(session.role);
+      applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
-      if (session.role === 'admin') updateBadge();
+      if ((session.permissionRank || 0) >= 80) updateBadge();
       loadProducts();
     })();
 

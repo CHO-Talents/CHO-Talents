@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -37,7 +37,7 @@
     initSupabase();
     let session;
     (async () => {
-      session = await initPage(['student', 'admin', 'dept_manager'], '../login.html');
+      session = await initPage(20, '../login.html');
       if (!session) return;
 
       renderRoleBadge('navUser', session, '../');

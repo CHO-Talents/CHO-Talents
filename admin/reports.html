@@ -70,7 +70,7 @@
     initSupabase();
     let session;
     (async () => {
-      session = await initPage(['admin'], '../login.html');
+      session = await initPage(80, '../login.html');
       if (!session) return;
       if (session) {
         renderRoleBadge('navUser', session, '../');
