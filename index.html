@@ -86,11 +86,11 @@
       if (s) {
         const loginBtn = document.getElementById('navLoginBtn');
         loginBtn.textContent = s.displayName || s.username;
-        loginBtn.href = getRoleRedirectUrl(s.permissionLevel || s.role, '');
+        loginBtn.href = getRoleRedirectUrl(s.permissionLevel, '');
 
         const myTalentCard = document.getElementById('cardMyTalent');
         if (myTalentCard) {
-          const perm = s.permissionLevel || s.role;
+          const perm = s.permissionLevel;
           const rank = s.permissionRank || 0;
           myTalentCard.href = rank >= 80 ? 'admin/index.html'
             : rank >= 60 ? 'admin/talents.html'

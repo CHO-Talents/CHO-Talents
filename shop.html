@@ -69,7 +69,7 @@
           if ((session.permissionRank || 0) >= minP) el.style.display = '';
         });
 
-        currentShopTab = session.userType || (session.role === 'student' ? 'student' : 'teacher');
+        currentShopTab = session.userType || 'student';
         if (session.userType === 'teacher' || (session.permissionRank || 0) >= 60) {
           document.getElementById('tabArea').style.display = 'flex';
         }

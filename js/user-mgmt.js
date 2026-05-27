@@ -6,7 +6,7 @@ async function fetchUsers(options = {}) {
   if (!_sb) return { data: [], error: 'Supabase not initialized' };
   try {
     const { data, error } = await _sb.rpc('admin_list_users', {
-      p_user_type: options.userType || options.role || null,
+      p_user_type: options.userType || null,
       p_department_id: options.departmentId || null
     });
     if (error) return { data: [], error: error.message };

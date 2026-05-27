@@ -135,7 +135,7 @@
       btn.textContent = '신청 중...';
 
       const { error } = await _sb.from('registration_requests').insert({
-        username, display_name: displayName, role: 'student',
+        username, display_name: displayName,
         user_type: 'student', permission_level: 'student',
         department_id: deptId, reason: reason || null
       });

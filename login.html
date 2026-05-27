@@ -57,7 +57,7 @@
         if (session.isFirstLogin) {
           window.location.href = 'admin/change-password.html';
         } else {
-          window.location.href = getRoleRedirectUrl(session.permissionLevel || session.role, '');
+          window.location.href = getRoleRedirectUrl(session.permissionLevel, '');
         }
         return;
       }
@@ -77,7 +77,7 @@
           if (result.data.is_first_login) {
             window.location.href = 'admin/change-password.html';
           } else {
-            window.location.href = getRoleRedirectUrl(result.data.permission_level || result.data.role, '');
+            window.location.href = getRoleRedirectUrl(result.data.permission_level, '');
           }
         } else {
           errEl.textContent = result.error;

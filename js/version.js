@@ -2,9 +2,27 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.3.0',
+  current: '3.3.1',
   date: '2026-05-27',
   history: [
+    {
+      version: '3.3.1',
+      date: '2026-05-27',
+      title: 'TASK-013 검증 핫픽스: role→permission_level 전환 누락 수정',
+      changes: [
+        'admin/users.html: 사용자 생성/수정 모달 6단계 권한 드롭다운 적용',
+        'admin/users.html: saveUser()→userType/permissionLevel 파라미터 전달 수정',
+        'admin/users.html: approveReq()→userType/permissionLevel 파라미터 전달 수정',
+        'admin/users.html: 가입 승인 드롭다운 6단계 권한 옵션 적용',
+        'admin/managers.html: 관리자 등록/수정 모달 4단계 권한 드롭다운 적용',
+        'admin/managers.html: saveManager()→userType/permissionLevel 전달 수정',
+        'admin/managers.html: ROLE_BADGE 4단계 권한별 배지 확장',
+        'register.html: registration_requests INSERT에서 삭제된 role 컬럼 참조 제거',
+        'shop.html, index.html, login.html: session.role 폴백 참조 제거',
+        'js/auth.js: 미사용 ROLE_LABELS, ROLE_EMOJI, applyRoleNav() 레거시 코드 제거',
+        'js/user-mgmt.js: options.role 폴백 제거'
+      ]
+    },
     {
       version: '3.3.0',
       date: '2026-05-27',

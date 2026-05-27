@@ -29,14 +29,6 @@ const PERMISSION_REDIRECT = {
   student: 'my-talents.html'
 };
 
-const ROLE_LABELS = {
-  admin: '관리자', dept_manager: '부서 관리자', teacher: '교사', student: '학생'
-};
-
-const ROLE_EMOJI = {
-  admin: '👑', dept_manager: '📋', teacher: '👩‍🏫', student: '🎒'
-};
-
 const ROLE_REDIRECT = {
   admin: 'admin/index.html',
   dept_manager: 'admin/talents.html',
@@ -52,13 +44,6 @@ function applyPermNav(rank) {
   document.querySelectorAll('[data-min-perm]').forEach(el => {
     const minPerm = parseInt(el.dataset.minPerm, 10);
     if (rank < minPerm) el.style.display = 'none';
-  });
-}
-
-function applyRoleNav(role) {
-  document.querySelectorAll('[data-role]').forEach(el => {
-    const allowed = el.dataset.role.split(',').map(r => r.trim());
-    if (!allowed.includes(role)) el.style.display = 'none';
   });
 }
 

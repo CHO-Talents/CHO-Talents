@@ -61,7 +61,9 @@
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">역할</label>
         <select id="mRole" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onRoleChange()">
-          <option value="dept_manager">📋 부서 관리자</option>
+          <option value="dept_teacher">👩‍🏫 부서 담당 교사</option>
+          <option value="chief">📋 부장</option>
+          <option value="evangelist">✝️ 전도사님</option>
           <option value="admin">👑 관리자</option>
         </select>
       </div>
@@ -122,9 +124,10 @@
       await loadManagers();
     }
 
+    const MGMT_LEVELS = ['dept_teacher','chief','evangelist','admin'];
     function onRoleChange() {
-      const role = document.getElementById('mRole').value;
-      document.getElementById('managedDeptWrap').style.display = (role === 'dept_manager' || role === 'admin') ? '' : 'none';
+      const perm = document.getElementById('mRole').value;
+      document.getElementById('managedDeptWrap').style.display = MGMT_LEVELS.includes(perm) ? '' : 'none';
     }
 
     let allManagers = [];
@@ -158,7 +161,7 @@
     }
 
     function modalRoleFromManager(u) {
-      return u.permission_level === 'admin' ? 'admin' : 'dept_manager';
+      return u.permission_level || 'dept_teacher';
     }
 
     function renderManagers() {
@@ -171,10 +174,15 @@
         return;
       }
 
-      const ROLE_BADGE = { admin: { emoji: '👑', label: '관리자', cls: 'ERROR' }, dept_manager: { emoji: '📋', label: '부서관리자', cls: 'WARN' } };
+      const ROLE_BADGE = {
+        admin: { emoji: '👑', label: '관리자', cls: 'ERROR' },
+        evangelist: { emoji: '✝️', label: '전도사님', cls: 'WARN' },
+        chief: { emoji: '📋', label: '부장', cls: 'WARN' },
+        dept_teacher: { emoji: '👩‍🏫', label: '부서 담당', cls: 'INFO' }
+      };
 
       tbody.innerHTML = list.map(u => {
-        const rb = ROLE_BADGE[badgeKeyForManager(u)] || ROLE_BADGE.admin;
+        const rb = ROLE_BADGE[u.permission_level] || ROLE_BADGE.admin;
         const ownDept = deptList.find(d => d.id === u.department_id);
         const mgrDept = deptList.find(d => d.id === u.managed_dept_id);
         const isSelf = u.id === session.id;
@@ -200,7 +208,7 @@
       document.getElementById('modalTitle').textContent = '관리자 등록';
       document.getElementById('mUsername').value = ''; document.getElementById('mUsername').disabled = false;
       document.getElementById('mDisplayName').value = '';
-      document.getElementById('mRole').value = 'dept_manager'; document.getElementById('mRole').disabled = false;
+      document.getElementById('mRole').value = 'dept_teacher'; document.getElementById('mRole').disabled = false;
       document.getElementById('mOwnDeptId').value = '';
       document.getElementById('mDeptId').value = '';
       onRoleChange();
@@ -214,7 +222,7 @@
       document.getElementById('modalTitle').textContent = '관리자 수정';
       document.getElementById('mUsername').value = username; document.getElementById('mUsername').disabled = true;
       document.getElementById('mDisplayName').value = displayName;
-      document.getElementById('mRole').value = user ? modalRoleFromManager(user) : 'dept_manager'; document.getElementById('mRole').disabled = true;
+      document.getElementById('mRole').value = user ? modalRoleFromManager(user) : 'dept_teacher'; document.getElementById('mRole').disabled = true;
       document.getElementById('mOwnDeptId').value = user ? (user.department_id || '') : '';
       document.getElementById('mDeptId').value = managedDeptId || '';
       onRoleChange();
@@ -228,20 +236,20 @@
       const errEl = document.getElementById('modalError');
       const username = document.getElementById('mUsername').value.trim();
       const displayName = document.getElementById('mDisplayName').value.trim();
-      const role = document.getElementById('mRole').value;
+      const permLevel = document.getElementById('mRole').value;
       const ownDeptId = document.getElementById('mOwnDeptId').value || null;
       const managedDeptId = document.getElementById('mDeptId').value || null;
 
       if (!username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
-        const updates = { displayName, departmentId: ownDeptId, managedDeptId };
+        const updates = { displayName, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(editingId, updates);
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       } else {
         const { error } = await createUser({
           username, displayName: displayName || username,
-          role, departmentId: ownDeptId, managedDeptId
+          userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId
         });
         if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
       }
