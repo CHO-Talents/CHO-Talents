@@ -46,6 +46,7 @@ function applyPermNav(rank) {
     if (rank < minPerm) el.style.display = 'none';
   });
 }
+const applyRoleNav = applyPermNav;
 
 function renderRoleBadge(elementId, session, basePath) {
   const el = document.getElementById(elementId);
