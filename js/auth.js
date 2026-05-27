@@ -24,7 +24,7 @@ const PERMISSION_REDIRECT = {
   admin: 'admin/index.html',
   evangelist: 'admin/index.html',
   chief: 'admin/index.html',
-  dept_teacher: 'admin/users.html',
+  dept_teacher: 'admin/talents.html',
   teacher: 'my-talents.html',
   student: 'my-talents.html'
 };
@@ -39,7 +39,7 @@ const ROLE_EMOJI = {
 
 const ROLE_REDIRECT = {
   admin: 'admin/index.html',
-  dept_manager: 'admin/index.html',
+  dept_manager: 'admin/talents.html',
   teacher: 'my-talents.html',
   student: 'my-talents.html'
 };

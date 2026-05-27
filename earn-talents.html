@@ -71,9 +71,13 @@
       <span class="brand-icon">⭐</span> 달란트 마을
     </a>
     <ul class="top-nav-links" id="navLinks">
-      <li><a href="student/shop.html">달란트 상점</a></li>
-      <li><a href="earn-talents.html" class="active">적립 방법</a></li>
-      <li><a href="student/my-talents.html">내 달란트</a></li>
+      <li><a href="earn-talents.html" class="active">달란트 적립</a></li>
+      <li><a href="shop.html">상품 구매</a></li>
+      <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
+      <li data-min-perm="60" style="display:none;"><a href="admin/users.html">사용자 관리</a></li>
+      <li data-min-perm="60" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
+      <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">물품 관리</a></li>
+      <li data-min-perm="80" style="display:none;"><a href="admin/index.html">대시보드</a></li>
       <li id="navAuthArea"><a href="login.html">로그인</a></li>
     </ul>
   </nav>
@@ -154,9 +158,16 @@
     (async () => {
       const session = await loadAuthSession();
       if (session) {
+        document.getElementById('navMyTalent').style.display = '';
         document.getElementById('navAuthArea').innerHTML =
-          `<span class="nav-user">${session.displayName || session.username}</span>` +
-          `</li><li><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button>`;
+          `<span class="nav-user" id="navUser"></span></li>` +
+          `<li><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button>`;
+        renderRoleBadge('navUser', session, '');
+        applyPermNav(session.permissionRank || 0);
+        document.querySelectorAll('[data-min-perm]').forEach(el => {
+          const minP = parseInt(el.dataset.minPerm, 10);
+          if ((session.permissionRank || 0) >= minP) el.style.display = '';
+        });
       }
     })();
   </script>

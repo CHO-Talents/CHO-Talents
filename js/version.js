@@ -2,9 +2,22 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.0.0',
+  current: '3.1.0',
   date: '2026-05-27',
   history: [
+    {
+      version: '3.1.0',
+      date: '2026-05-27',
+      title: 'TASK-013B: 페이지 구조 통합 + 네비게이션 개선',
+      changes: [
+        'student/teacher 폴더 페이지 통합 → 루트 레벨 my-talents.html, shop.html',
+        'admin/products.html 삭제 → admin/shop.html로 물품 관리 CRUD 통합',
+        '전체 admin 페이지 네비게이션 data-min-perm 기반 통합',
+        '루트 레벨 페이지(earn-talents.html, shop.html, my-talents.html) 네비게이션 통합',
+        'applyRoleNav → applyPermNav 전환 완료',
+        '대시보드 퀵 링크에서 products.html/상점 관리 제거, shop.html/물품 관리로 통합'
+      ]
+    },
     {
       version: '1.0.0',
       date: '2026-05-25',

@@ -11,16 +11,15 @@
     <a href="index.html" class="admin-nav-brand">CHO-Talents Admin</a>
     <ul class="admin-nav-links">
       <li><a href="../index.html">🏠 메인</a></li>
-      <li><a href="index.html">대시보드</a></li>
-      <li><a href="users.html" class="active">사용자 관리</a></li>
-      <li data-role="admin"><a href="departments.html">부서 관리</a></li>
-      <li data-role="admin"><a href="managers.html">관리자 관리</a></li>
-      <li><a href="talents.html">달란트 관리</a></li>
-      <li><a href="products.html">물품 관리</a></li>
-      <li data-role="admin"><a href="shop.html">상점 관리</a></li>
-      <li data-role="admin"><a href="reports.html">보고서</a></li>
-      <li data-role="admin"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li data-role="admin"><a href="versions.html">버전</a></li>
+      <li data-min-perm="80"><a href="index.html">대시보드</a></li>
+      <li data-min-perm="60"><a href="users.html" class="active">사용자 관리</a></li>
+      <li data-min-perm="80"><a href="departments.html">부서 관리</a></li>
+      <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+      <li data-min-perm="60"><a href="talents.html">달란트 관리</a></li>
+      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="80"><a href="reports.html">보고서</a></li>
+      <li data-min-perm="80"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
@@ -31,8 +30,8 @@
 
     <div class="cards-grid" style="margin-bottom:1.5rem;">
       <div class="stat-card"><div class="stat-card-label">전체</div><div class="stat-card-value" id="cntAll">-</div></div>
-      <div class="stat-card" style="border-left-color:#e03131;" data-role="admin"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
-      <div class="stat-card" style="border-left-color:#cc5de8;" data-role="admin"><div class="stat-card-label">📋 부서관리자</div><div class="stat-card-value" id="cntMgr">-</div></div>
+      <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
+      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">📋 부서관리자</div><div class="stat-card-value" id="cntMgr">-</div></div>
       <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">👩‍🏫 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
       <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">🎒 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
     </div>
@@ -53,8 +52,8 @@
         <div class="admin-table-title" id="tableTitle">사용자 목록</div>
         <div class="filters">
           <button class="filter-btn active" onclick="setFilter('all',this)">전체</button>
-          <button class="filter-btn" data-role="admin" onclick="setFilter('admin',this)">관리자</button>
-          <button class="filter-btn" data-role="admin" onclick="setFilter('dept_manager',this)">부서관리자</button>
+          <button class="filter-btn" data-min-perm="80" onclick="setFilter('admin',this)">관리자</button>
+          <button class="filter-btn" data-min-perm="80" onclick="setFilter('dept_manager',this)">부서관리자</button>
           <button class="filter-btn" onclick="setFilter('teacher',this)">교사</button>
           <button class="filter-btn" onclick="setFilter('student',this)">학생</button>
           <span style="margin-left:0.5rem;"></span>
@@ -132,7 +131,6 @@
     (async () => {
       session = await initPage(60, '../login.html');
       if (!session) return;
-      applyRoleNav(session.role);
       applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
