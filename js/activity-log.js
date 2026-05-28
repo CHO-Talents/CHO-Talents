@@ -102,6 +102,10 @@ async function fetchLogs(options = {}) {
 
   let query = _sb.from('activity_logs').select('*');
 
+  if (!options.includeDeleted) {
+    query = query.or('is_deleted.is.null,is_deleted.eq.false');
+  }
+
   if (options.levels && options.levels.length > 0) {
     query = query.in('level', options.levels);
   }
@@ -252,98 +256,32 @@ function autoLogPageView() {
 async function deleteLogsByIds(ids) {
   if (!_sb) return { error: 'Supabase not initialized', count: 0 };
   if (!ids || ids.length === 0) return { error: null, count: 0 };
-  console.log('[DELETE] deleteLogsByIds called, count:', ids.length);
-
-  // 1차: RPC 함수로 시도 (SECURITY DEFINER, RLS 우회)
   try {
-    const { data: rpcResult, error: rpcError } = await _sb.rpc('delete_logs_by_ids', { p_ids: ids });
-    console.log('[DELETE] RPC result:', rpcResult, 'error:', rpcError);
-    if (!rpcError && rpcResult !== null && rpcResult !== undefined) {
-      return { error: null, count: typeof rpcResult === 'number' ? rpcResult : ids.length };
-    }
-    if (rpcError) console.warn('[DELETE] RPC not available:', rpcError.message, '- falling back to direct delete');
-  } catch (e) { console.warn('[DELETE] RPC exception:', e.message); }
-
-  // 2차: 직접 DELETE (RLS 정책 필요)
-  try {
-    const { data, error } = await _sb.from('activity_logs').delete().in('id', ids).select('id');
-    console.log('[DELETE] direct result - data:', data, 'error:', error);
-    if (error) return { error: error.message + ' (code: ' + (error.code || '') + ')', count: 0 };
-    if (!data || data.length === 0) {
-      return { error: 'DELETE 권한 없음.\n\nSupabase SQL Editor에서 아래 SQL을 실행해주세요:\n\n' + _getDeleteRpcSql(), count: 0 };
-    }
-    return { error: null, count: data.length };
+    const { data, error } = await _sb
+      .from('activity_logs')
+      .update({ is_deleted: true, deleted_at: new Date().toISOString() })
+      .in('id', ids)
+      .select('id');
+    if (error) return { error: error.message, count: 0 };
+    return { error: null, count: data ? data.length : 0 };
   } catch (err) {
-    console.error('[DELETE] exception:', err);
     return { error: String(err), count: 0 };
   }
 }
 
 async function deleteLogsByDateRange(dateFrom, dateTo) {
   if (!_sb) return { error: 'Supabase not initialized', count: 0 };
-  console.log('[DELETE] deleteLogsByDateRange called, from:', dateFrom, 'to:', dateTo);
-
-  // 1차: RPC 함수로 시도
   try {
-    const { data: rpcResult, error: rpcError } = await _sb.rpc('delete_logs_by_range', { p_from: dateFrom, p_to: dateTo });
-    console.log('[DELETE] range RPC result:', rpcResult, 'error:', rpcError);
-    if (!rpcError && rpcResult !== null && rpcResult !== undefined) {
-      return { error: null, count: typeof rpcResult === 'number' ? rpcResult : 0 };
-    }
-    if (rpcError) console.warn('[DELETE] range RPC not available:', rpcError.message);
-  } catch (e) { console.warn('[DELETE] range RPC exception:', e.message); }
-
-  // 2차: 직접 DELETE
-  try {
-    const { data, error } = await _sb.from('activity_logs').delete().gte('created_at', dateFrom).lte('created_at', dateTo).select('id');
-    console.log('[DELETE] range direct result - data:', data, 'error:', error);
+    const { data, error } = await _sb
+      .from('activity_logs')
+      .update({ is_deleted: true, deleted_at: new Date().toISOString() })
+      .gte('created_at', dateFrom)
+      .lte('created_at', dateTo)
+      .eq('is_deleted', false)
+      .select('id');
     if (error) return { error: error.message, count: 0 };
-    if (!data || data.length === 0) {
-      return { error: 'DELETE 권한 없음.\n\nSupabase SQL Editor에서 아래 SQL을 실행해주세요:\n\n' + _getDeleteRpcSql(), count: 0 };
-    }
-    return { error: null, count: data.length };
+    return { error: null, count: data ? data.length : 0 };
   } catch (err) {
-    console.error('[DELETE] range exception:', err);
     return { error: String(err), count: 0 };
   }
-}
-
-function _getDeleteRpcSql() {
-  return `-- 로그 삭제 RPC 함수 (Supabase SQL Editor에서 실행)
-
-CREATE OR REPLACE FUNCTION delete_logs_by_ids(p_ids UUID[])
-RETURNS INTEGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
-DECLARE
-  v_rank INTEGER;
-  v_count INTEGER;
-BEGIN
-  SELECT get_permission_rank(permission_level) INTO v_rank
-  FROM profiles WHERE id = auth.uid();
-  IF v_rank < 100 THEN RAISE EXCEPTION 'Permission denied'; END IF;
-  DELETE FROM activity_logs WHERE id = ANY(p_ids);
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  RETURN v_count;
-END;
-$$;
-
-CREATE OR REPLACE FUNCTION delete_logs_by_range(p_from TIMESTAMPTZ, p_to TIMESTAMPTZ)
-RETURNS INTEGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-AS $$
-DECLARE
-  v_rank INTEGER;
-  v_count INTEGER;
-BEGIN
-  SELECT get_permission_rank(permission_level) INTO v_rank
-  FROM profiles WHERE id = auth.uid();
-  IF v_rank < 100 THEN RAISE EXCEPTION 'Permission denied'; END IF;
-  DELETE FROM activity_logs WHERE created_at >= p_from AND created_at <= p_to;
-  GET DIAGNOSTICS v_count = ROW_COUNT;
-  RETURN v_count;
-END;
-$$;`;
 }

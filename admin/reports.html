@@ -106,9 +106,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.3"></script>
-  <script src="../js/activity-log.js?v=3.8.3"></script>
-  <script src="../js/auth.js?v=3.8.3"></script>
+  <script src="../js/supabase-config.js?v=3.8.4"></script>
+  <script src="../js/activity-log.js?v=3.8.4"></script>
+  <script src="../js/auth.js?v=3.8.4"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -286,7 +286,8 @@
       'TASK-021': { task_title:'v3.8.0 슈퍼관리자 + 네비게이션 + 페이지 권한', content:'<h2>TASK-021: v3.8.0 전면 개선</h2><p><b>버전:</b> v3.8.0</p><ul><li>슈퍼관리자 rank 110</li><li>네비게이션 달란트 마을 통일</li><li>페이지 접근/기능 관리 신규</li><li>부서 그리드 간소화</li><li>부장 교사 명칭</li><li>관리자 관리 정리</li><li>달란트 관리 잔여/사용/누적 상세</li></ul>' },
       'TASK-022': { task_title:'v3.8.1 슈퍼관리자 관리 수정 + UI/UX 개선', content:'<h2>TASK-022: v3.8.1 개선</h2><p><b>버전:</b> v3.8.1</p><ul><li>슈퍼관리자 관리자 관리 가능</li><li>네비게이션 한 줄 스크롤</li><li>모바일 그리드 여백 축소</li><li>페이지 기능 권한별 개편</li><li>보고서 JS 시더</li><li>로그 삭제 RLS 정책</li></ul>' },
       'TASK-023': { task_title:'v3.8.2 페이지 접근 권한별 + 작업 이력 + DB 연동', content:'<h2>TASK-023: v3.8.2 개선</h2><p><b>버전:</b> v3.8.2</p><ul><li>페이지 접근 권한별 개편</li><li>작업 이력 관리 신규</li><li>initPage() DB 연동 적용</li><li>로그 삭제 디버그 강화</li><li>보고서 수정 버튼</li><li>별 이모지 회전 애니메이션</li></ul>' },
-      'TASK-024': { task_title:'v3.8.3 작업자 실명 + 보고서 자동복구 + 로그 삭제 RPC', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장</li><li>audit.html 작업자 실명 + 관리자 아이디</li><li>보고서 자동복구</li><li>로그 삭제 RPC 전환</li></ul>' }
+      'TASK-024': { task_title:'v3.8.3 작업자 실명 + 보고서 자동복구', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장</li><li>audit.html 작업자 실명 + 관리자 아이디</li><li>보고서 자동복구</li></ul>' },
+      'TASK-025': { task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>is_deleted 소프트 삭제</li><li>삭제 대기 목록 + 복원</li><li>실제 삭제는 SQL로 직접</li></ul>' }
     };
 
     async function autoFixReports() {
@@ -340,7 +341,8 @@
         { task_id:'TASK-021', task_title:'v3.8.0 슈퍼관리자 + 네비게이션 + 페이지 권한', report_type:'change_report', content:'<h2>TASK-021: v3.8.0 전면 개선</h2><p><b>버전:</b> v3.8.0</p><ul><li>슈퍼관리자 rank 110 체계</li><li>네비게이션: 달란트 마을 통일 + 내달란트/상품구매 추가</li><li>페이지 접근 관리 + 페이지 기능 관리 신규</li><li>부서 관리 그리드 간소화</li><li>부장 교사 명칭 변경</li><li>관리자 관리 열/버튼 정리</li><li>달란트 관리 잔여/사용/누적 + 상세 통계</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-022', task_title:'v3.8.1 슈퍼관리자 관리 수정 + UI/UX 개선', report_type:'change_report', content:'<h2>TASK-022: v3.8.1 개선</h2><p><b>버전:</b> v3.8.1</p><ul><li>슈퍼관리자 관리자 관리 가능 수정</li><li>네비게이션 한 줄 스크롤 + 컴팩트</li><li>모바일 그리드 여백 축소</li><li>페이지 기능 관리 권한별 개편</li><li>보고서 JS 시더로 인코딩 문제 해결</li><li>로그 삭제 RLS 정책 추가</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-023', task_title:'v3.8.2 페이지 접근 권한별 + 작업 이력 + DB 연동', report_type:'change_report', content:'<h2>TASK-023: v3.8.2 개선</h2><p><b>버전:</b> v3.8.2</p><ul><li>페이지 접근 관리: 사용자별 → 유형/권한별 개편 (role_page_access)</li><li>작업 이력 관리 페이지 신규 (admin/audit.html)</li><li>initPage()에서 role_page_access DB 연동 → 페이지 차단/요소 숨김 적용</li><li>로그 삭제: 상세 디버그 로그 + RLS 미적용 시 안내 메시지</li><li>보고서: 수정 버튼 추가 (editReport)</li><li>네비게이션: 별 이모지 회전 애니메이션 전체 적용</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-024', task_title:'v3.8.3 작업자 실명 + 보고서 자동복구 + 로그 삭제 RPC', report_type:'change_report', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장으로 작업자 실명 기록</li><li>audit.html 작업자 실명 표시 + 관리자 아이디 표시</li><li>보고서 깨짐(???) 자동 감지 + REPORT_SEED_MAP 자동 복구</li><li>로그 삭제: RPC(SECURITY DEFINER) 우선 시도 방식 전환</li><li>docs/TASK-023_fixes.sql: user_name 컬럼 + 삭제 RPC 함수</li></ul>', created_by:'AI_Cursor' }
+        { task_id:'TASK-024', task_title:'v3.8.3 작업자 실명 + 보고서 자동복구', report_type:'change_report', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장으로 작업자 실명 기록</li><li>audit.html 작업자 실명 표시 + 관리자 아이디 표시</li><li>보고서 깨짐(???) 자동 감지 + REPORT_SEED_MAP 자동 복구</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-025', task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', report_type:'change_report', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>로그 삭제: 실제 DELETE 대신 is_deleted=true 소프트 삭제</li><li>삭제 대기 목록 보기 + 복원 기능</li><li>실제 삭제는 관리자가 SQL로 직접 수행</li><li>fetchLogs: 삭제 대기 항목 자동 제외</li></ul>', created_by:'AI_Cursor' }
       ];
       try {
         await _sb.from('reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -458,6 +460,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.8.3"></script>
+  <script src="../js/version.js?v=3.8.4"></script>
 </body>
 </html>

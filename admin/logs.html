@@ -54,8 +54,9 @@
           <input type="date" class="filter-input" id="dateFrom" onchange="applyFilters()" />
           <span style="font-size:0.8rem;color:#adb5bd;">~</span>
           <input type="date" class="filter-input" id="dateTo" onchange="applyFilters()" />
-          <button class="btn-ack" style="margin-left:0.5rem;" onclick="deleteByRange()">범위 삭제</button>
-          <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedLogs()" id="btnDeleteLogs" disabled>선택 삭제</button>
+          <button class="btn-ack" style="margin-left:0.5rem;" onclick="deleteByRange()">범위 삭제 대기</button>
+          <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedLogs()" id="btnDeleteLogs" disabled>선택 삭제 대기</button>
+          <button class="filter-btn" onclick="toggleDeletedView()" id="btnToggleDeleted" style="margin-left:0.3rem;">🗑️ 삭제 대기 목록</button>
         </div>
       </div>
 
@@ -113,9 +114,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.3"></script>
-  <script src="../js/activity-log.js?v=3.8.3"></script>
-  <script src="../js/auth.js?v=3.8.3"></script>
+  <script src="../js/supabase-config.js?v=3.8.4"></script>
+  <script src="../js/activity-log.js?v=3.8.4"></script>
+  <script src="../js/auth.js?v=3.8.4"></script>
   <script>
     initSupabase();
     let session;
@@ -356,22 +357,21 @@
       try {
         const { count } = await _sb.from('activity_logs')
           .select('*', { count: 'exact', head: true })
-          .gte('created_at', fromStr).lte('created_at', toStr);
+          .gte('created_at', fromStr).lte('created_at', toStr)
+          .or('is_deleted.is.null,is_deleted.eq.false');
         if (!count || count === 0) { alert('해당 범위에 삭제할 로그가 없습니다.'); return; }
-        if (!confirm(dateFrom + ' ~ ' + dateTo + ' 기간의 로그 ' + count + '건을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
+        if (!confirm(dateFrom + ' ~ ' + dateTo + ' 기간의 로그 ' + count + '건을 삭제 대기 상태로 변경하시겠습니까?')) return;
         const result = await deleteLogsByDateRange(fromStr, toStr);
         if (result.error) {
-          alert('삭제 실패:\n\n' + result.error);
-          console.error('[LOGS] range delete error:', result.error);
+          alert('실패:\n\n' + result.error);
           return;
         }
         const deleted = result.count || count;
         await logInfo('LOG_RANGE_DELETE', { dateFrom, dateTo, count: deleted });
-        alert(deleted + '건의 로그가 삭제되었습니다.');
+        alert(deleted + '건의 로그가 삭제 대기 상태로 변경되었습니다.\n\n실제 삭제는 관리자가 SQL로 직접 수행합니다.');
         await loadAll();
       } catch (err) {
-        alert('삭제 오류: ' + err.message);
-        console.error('[LOGS] range delete exception:', err);
+        alert('오류: ' + err.message);
       }
     }
 
@@ -426,31 +426,90 @@
     function updateLogDeleteBtn() {
       const checked = document.querySelectorAll('.log-chk:checked').length;
       document.getElementById('btnDeleteLogs').disabled = checked === 0;
-      document.getElementById('btnDeleteLogs').textContent = checked > 0 ? '선택 삭제 (' + checked + ')' : '선택 삭제';
+      document.getElementById('btnDeleteLogs').textContent = checked > 0 ? '선택 삭제 대기 (' + checked + ')' : '선택 삭제 대기';
     }
 
     async function deleteSelectedLogs() {
       const ids = Array.from(document.querySelectorAll('.log-chk:checked')).map(c => c.value);
       if (ids.length === 0) return;
-      if (!confirm(ids.length + '건의 로그를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
+      if (!confirm(ids.length + '건의 로그를 삭제 대기 상태로 변경하시겠습니까?')) return;
 
       try {
         const { error, count } = await deleteLogsByIds(ids);
         if (error) {
-          alert('삭제 실패:\n\n' + error);
-          console.error('[LOGS] delete error:', error);
+          alert('실패:\n\n' + error);
           return;
         }
         await logInfo('LOG_SELECT_DELETE', { count: count || ids.length });
         document.getElementById('logChkAll').checked = false;
-        alert((count || ids.length) + '건의 로그가 삭제되었습니다.');
+        alert((count || ids.length) + '건의 로그가 삭제 대기 상태로 변경되었습니다.\n\n실제 삭제는 관리자가 SQL로 직접 수행합니다.');
         await loadAll();
       } catch (err) {
-        alert('삭제 오류: ' + err.message);
-        console.error('[LOGS] delete exception:', err);
+        alert('오류: ' + err.message);
       }
     }
+
+    let showingDeleted = false;
+    async function toggleDeletedView() {
+      showingDeleted = !showingDeleted;
+      const btn = document.getElementById('btnToggleDeleted');
+      if (showingDeleted) {
+        btn.textContent = '📋 일반 목록';
+        btn.style.background = '#ffe3e3';
+        const { data } = await _sb.from('activity_logs').select('*')
+          .eq('is_deleted', true)
+          .order('deleted_at', { ascending: false })
+          .limit(200);
+        renderDeletedLogs(data || []);
+      } else {
+        btn.textContent = '🗑️ 삭제 대기 목록';
+        btn.style.background = '';
+        await loadAll();
+      }
+    }
+
+    function renderDeletedLogs(logs) {
+      const tbody = document.getElementById('logsList');
+      const title = document.getElementById('tableTitle');
+      title.textContent = `🗑️ 삭제 대기 로그 (${logs.length}건)`;
+      document.getElementById('pagination').innerHTML = '';
+
+      if (logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-state-icon">✅</div><p>삭제 대기 중인 로그가 없습니다.</p></div></td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = logs.map(l => {
+        const deletedAt = l.deleted_at ? formatKSTShort(l.deleted_at) : '-';
+        return `<tr style="background:#fff5f5;opacity:0.8;">
+          <td><input type="checkbox" class="log-chk" value="${l.id}" onchange="updateRestoreBtn()"></td>
+          <td>${formatKST(l.created_at)}</td>
+          <td><span class="level-badge ${l.level}">${l.level}</span></td>
+          <td>${l.action}</td>
+          <td>${l.page || '-'}</td>
+          <td>${getUserDisplay(l.username)}</td>
+          <td><span style="font-size:0.72rem;color:#d63031;">삭제 대기<br/>${deletedAt}</span></td>
+          <td><span class="ack-badge pending" style="background:#ffe3e3;color:#d63031;">삭제 대기</span></td>
+          <td><button class="filter-btn" onclick="restoreLog('${l.id}')">복원</button></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function updateRestoreBtn() {}
+
+    async function restoreLog(id) {
+      if (!confirm('이 로그를 삭제 대기에서 복원하시겠습니까?')) return;
+      const { error } = await _sb.from('activity_logs')
+        .update({ is_deleted: false, deleted_at: null })
+        .eq('id', id);
+      if (error) { alert('복원 실패: ' + error.message); return; }
+      await logInfo('LOG_RESTORE', { logId: id });
+      alert('복원되었습니다.');
+      toggleDeletedView();
+      showingDeleted = false;
+      toggleDeletedView();
+    }
   </script>
-  <script src="../js/version.js?v=3.8.3"></script>
+  <script src="../js/version.js?v=3.8.4"></script>
 </body>
 </html>

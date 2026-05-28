@@ -2,21 +2,31 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.8.3',
+  current: '3.8.4',
   date: '2026-05-28',
   history: [
     {
+      version: '3.8.4',
+      date: '2026-05-28',
+      title: '로그 삭제 → 소프트 삭제(삭제 대기) 방식 전환',
+      changes: [
+        '로그 삭제: 실제 DELETE 대신 is_deleted=true 상태 변경 (소프트 삭제)',
+        'fetchLogs: is_deleted=false 또는 null인 로그만 조회 (삭제 대기 항목 제외)',
+        '삭제 대기 목록: 별도 뷰로 삭제 대기 로그 조회 + 복원 기능',
+        '실제 데이터 삭제는 관리자가 SQL Editor에서 직접 수행',
+        'activity_logs: is_deleted, deleted_at 컬럼 추가',
+        'RPC 삭제 함수 제거 (더 이상 불필요)'
+      ]
+    },
+    {
       version: '3.8.3',
       date: '2026-05-28',
-      title: '작업 이력 실명 표시 + 보고서 자동 복구 + 로그 삭제 RPC',
+      title: '작업 이력 실명 표시 + 보고서 자동 복구',
       changes: [
         'writeLog(): user_name(표시이름) + details._userName 저장으로 작업자 실명 기록',
         'audit.html: user_name/details._userName/username 폴백 체인으로 작업자 실명 표시',
         'audit.html: 관리자(100+)인 경우 작업자 이름 옆에 아이디 표시',
-        'reports.html: 깨진 보고서(???) 자동 감지 + REPORT_SEED_MAP으로 자동 복구',
-        'activity-log.js: 로그 삭제를 RPC(delete_logs_by_ids/delete_logs_by_range) 우선 시도',
-        'activity-log.js: RPC 실패 시 직접 DELETE 폴백 + SQL 안내 메시지',
-        'docs/TASK-023_fixes.sql: user_name 컬럼 추가 + RPC 삭제 함수 2개 정의'
+        'reports.html: 깨진 보고서(???) 자동 감지 + REPORT_SEED_MAP으로 자동 복구'
       ]
     },
     {
