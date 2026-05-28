@@ -1,4 +1,7 @@
--- TASK-023: 권한별 페이지 접근 테이블 + 로그 DELETE 정책 재확인
+-- TASK-023/024: 권한별 페이지 접근 + 로그 삭제 RPC + user_name 컬럼
+
+-- 0. activity_logs에 user_name 컬럼 추가 (이미 있으면 무시)
+ALTER TABLE activity_logs ADD COLUMN IF NOT EXISTS user_name TEXT;
 
 -- 1. 권한별 페이지 접근 관리 테이블
 CREATE TABLE IF NOT EXISTS role_page_access (
@@ -69,3 +72,40 @@ CREATE POLICY "reports_delete" ON reports
   FOR DELETE USING (
     EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND get_permission_rank(permission_level) >= 80)
   );
+
+-- 4. 로그 삭제 RPC 함수 (SECURITY DEFINER - RLS 우회)
+CREATE OR REPLACE FUNCTION delete_logs_by_ids(p_ids UUID[])
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_rank INTEGER;
+  v_count INTEGER;
+BEGIN
+  SELECT get_permission_rank(permission_level) INTO v_rank
+  FROM profiles WHERE id = auth.uid();
+  IF v_rank < 100 THEN RAISE EXCEPTION 'Permission denied: rank % < 100', v_rank; END IF;
+  DELETE FROM activity_logs WHERE id = ANY(p_ids);
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  RETURN v_count;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION delete_logs_by_range(p_from TIMESTAMPTZ, p_to TIMESTAMPTZ)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_rank INTEGER;
+  v_count INTEGER;
+BEGIN
+  SELECT get_permission_rank(permission_level) INTO v_rank
+  FROM profiles WHERE id = auth.uid();
+  IF v_rank < 100 THEN RAISE EXCEPTION 'Permission denied: rank % < 100', v_rank; END IF;
+  DELETE FROM activity_logs WHERE created_at >= p_from AND created_at <= p_to;
+  GET DIAGNOSTICS v_count = ROW_COUNT;
+  RETURN v_count;
+END;
+$$;
