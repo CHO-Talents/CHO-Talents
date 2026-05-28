@@ -2,9 +2,23 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.8.2',
+  current: '3.8.3',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.8.3',
+      date: '2026-05-28',
+      title: '작업 이력 실명 표시 + 보고서 자동 복구 + 로그 삭제 RPC',
+      changes: [
+        'writeLog(): user_name(표시이름) + details._userName 저장으로 작업자 실명 기록',
+        'audit.html: user_name/details._userName/username 폴백 체인으로 작업자 실명 표시',
+        'audit.html: 관리자(100+)인 경우 작업자 이름 옆에 아이디 표시',
+        'reports.html: 깨진 보고서(???) 자동 감지 + REPORT_SEED_MAP으로 자동 복구',
+        'activity-log.js: 로그 삭제를 RPC(delete_logs_by_ids/delete_logs_by_range) 우선 시도',
+        'activity-log.js: RPC 실패 시 직접 DELETE 폴백 + SQL 안내 메시지',
+        'docs/TASK-023_fixes.sql: user_name 컬럼 추가 + RPC 삭제 함수 2개 정의'
+      ]
+    },
     {
       version: '3.8.2',
       date: '2026-05-28',
@@ -17,7 +31,7 @@ const APP_VERSION = {
         'activity-log.js: deleteLogsByIds/deleteLogsByDateRange 상세 디버그 로그 + RLS 미적용 안내',
         'reports.html: 보고서 수정 버튼 추가 (editReport 함수)',
         'admin.css: @keyframes spin-slow + .brand-icon 회전 애니메이션 추가',
-        '전체 admin 페이지: nav brand 별 이모지 회전 적용 (<span class=brand-icon>)',
+        '전체 admin 페이지: nav brand 별 이모지 회전 적용',
         '전체 admin 페이지: 네비게이션에 작업 이력 메뉴 추가',
         'docs/TASK-023_fixes.sql: role_page_access 테이블 + activity_logs/reports RLS 정책'
       ]

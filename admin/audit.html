@@ -70,10 +70,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.2"></script>
-  <script src="../js/activity-log.js?v=3.8.2"></script>
-  <script src="../js/auth.js?v=3.8.2"></script>
-  <script src="../js/user-mgmt.js?v=3.8.2"></script>
+  <script src="../js/supabase-config.js?v=3.8.3"></script>
+  <script src="../js/activity-log.js?v=3.8.3"></script>
+  <script src="../js/auth.js?v=3.8.3"></script>
+  <script src="../js/user-mgmt.js?v=3.8.3"></script>
   <script>
     initSupabase();
     let session, allAuditLogs = [], currentFilter = 'all';
@@ -162,7 +162,7 @@
       }
       if (search) {
         list = list.filter(l => {
-          const userName = l.user_name || l.details?.userName || '';
+          const userName = l.user_name || (l.details && l.details._userName) || l.username || '';
           const target = l.details?.targetName || l.details?.displayName || l.details?.name || '';
           return userName.toLowerCase().includes(search) || target.toLowerCase().includes(search) || (l.action || '').toLowerCase().includes(search);
         });
@@ -176,10 +176,20 @@
         return;
       }
 
+      const isAdmin = session.permissionRank >= 100;
       tbody.innerHTML = list.map(l => {
         const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '📋', category: '' };
         const dt = l.created_at ? formatKSTShort(l.created_at) : '-';
-        const actor = l.user_name || '시스템';
+        const actorName = l.user_name || (l.details && l.details._userName) || null;
+        const actorId = l.username || null;
+        let actor;
+        if (actorName) {
+          actor = isAdmin && actorId ? `${actorName} <span style="font-size:0.72rem;color:#888;">(${actorId})</span>` : actorName;
+        } else if (actorId) {
+          actor = actorId;
+        } else {
+          actor = '시스템';
+        }
         const target = extractTarget(l);
         return `<tr>
           <td style="white-space:nowrap;font-size:0.78rem;">${dt}</td>
@@ -230,6 +240,6 @@
       if (e.target.classList.contains('modal-overlay')) closeDetailModal();
     });
   </script>
-  <script src="../js/version.js?v=3.8.2"></script>
+  <script src="../js/version.js?v=3.8.3"></script>
 </body>
 </html>

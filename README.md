@@ -12,20 +12,21 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 물품 교환, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.8.2` (`js/version.js` 기준, 2026-05-28) |
+| 현재 버전 | `v3.8.3` (`js/version.js` 기준, 2026-05-28) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.8.2`로 맞춰져 있습니다.
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.8.3`로 맞춰져 있습니다.
 - 권한 모델은 `user_type`(학생/교사)과 `permission_level`(6단계 등급 + 슈퍼관리자 110)을 분리해서 사용합니다.
 - 슈퍼관리자(`is_super_admin`, rank 110)는 일반 관리자(rank 100)도 관리할 수 있으며, 화면에서는 동일하게 "관리자"로 표시됩니다.
 - 네비게이션 브랜드는 "⭐ 달란트 마을"로 통일되어 있고, 한 줄 가로 스크롤로 표시됩니다.
 - 페이지 접근 관리(`page-access.html`)와 기능 관리(`page-features.html`)는 모두 **유형/권한별** 관리 방식입니다.
 - `initPage()`에서 `role_page_access` DB 설정을 자동 적용하여 페이지 접근 차단 및 요소 숨김이 실제로 동작합니다.
 - 작업 이력(`audit.html`)에서 관리 작업(사용자 수정, 달란트 지급 등)의 이력을 카테고리별로 조회할 수 있습니다.
-- 보고서 화면에는 JS 기반 시더 + 개별 수정 기능이 포함되어 있습니다.
-- 로그 삭제(선택/범위)는 activity_logs DELETE RLS 정책이 필요합니다 (`docs/TASK-022_fixes.sql` 또는 `docs/TASK-023_fixes.sql` 참조).
+- 활동 로그에는 `user_name`(표시이름)이 함께 저장되어 작업 이력에서 실명으로 조회됩니다.
+- 보고서 화면에는 JS 기반 시더 + 개별 수정 + 깨진 데이터(???) 자동 복구 기능이 포함되어 있습니다.
+- 로그 삭제는 RPC 함수(`delete_logs_by_ids`, `delete_logs_by_range`)를 우선 사용하며, RPC 미설치 시 직접 DELETE + SQL 안내를 제공합니다.
 
 ## 프로젝트 구조
 
