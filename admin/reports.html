@@ -39,9 +39,11 @@
           <button class="filter-btn" data-type="plan" onclick="filterReports('plan', this)">계획서</button>
           <button class="filter-btn" data-type="test_scenario" onclick="filterReports('test_scenario', this)">검증 시나리오</button>
           <button class="filter-btn" data-type="test_result" onclick="filterReports('test_result', this)">테스트 결과</button>
+          <button class="filter-btn" data-type="security_report" onclick="filterReports('security_report', this)">보안 보고서</button>
           <button class="filter-btn" data-type="change_report" onclick="filterReports('change_report', this)">수정 보고서</button>
           <button class="btn-ack" style="margin-left:auto;" onclick="openAddReportModal()">+ 보고서 등록</button>
           <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedReports()" id="btnDeleteReports" disabled>선택 삭제</button>
+          <button class="btn-ack" style="background:#6c5ce7;display:none;" id="btnSeedReports" onclick="seedAllReports()">전체 보고서 초기화</button>
         </div>
       </div>
       <table class="admin-table">
@@ -87,6 +89,7 @@
           <option value="plan">계획서</option>
           <option value="test_scenario">검증 시나리오</option>
           <option value="test_result">테스트 결과</option>
+          <option value="security_report">보안 보고서</option>
           <option value="change_report">수정 보고서</option>
         </select>
       </div>
@@ -102,9 +105,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.0"></script>
-  <script src="../js/activity-log.js?v=3.8.0"></script>
-  <script src="../js/auth.js?v=3.8.0"></script>
+  <script src="../js/supabase-config.js?v=3.8.1"></script>
+  <script src="../js/activity-log.js?v=3.8.1"></script>
+  <script src="../js/auth.js?v=3.8.1"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -137,6 +140,10 @@
         autoLogPageView();
         updatePendingBadge();
 
+        if (session.isSuperAdmin) {
+          const seedBtn = document.getElementById('btnSeedReports');
+          if (seedBtn) seedBtn.style.display = '';
+        }
         _stepLog('4', 'loadReports 호출 중...');
         await loadReports();
         _stepLog('6', 'loadReports 완료');
@@ -157,7 +164,8 @@
     let allReports = [];
     const REPORT_TYPE_LABELS = {
       plan: '계획서', test_scenario: '검증 시나리오',
-      test_result: '테스트 결과', change_report: '수정 보고서'
+      test_result: '테스트 결과', security_report: '보안 보고서',
+      change_report: '수정 보고서'
     };
 
     async function updateBadge() {
@@ -240,6 +248,41 @@
     document.getElementById('addReportModal').addEventListener('click', (e) => {
       if (e.target.classList.contains('modal-overlay')) closeAddReportModal();
     });
+
+    async function seedAllReports() {
+      if (!confirm('기존 보고서를 모두 삭제하고 전체 작업 보고서를 새로 등록합니다.\n계속하시겠습니까?')) return;
+      const SEED = [
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'change_report', content:'<h2>TASK-001: 초기 구축</h2><p><b>버전:</b> v1.0.0</p><ul><li>환영 메인 페이지 구현</li><li>관리자 로그인/패스워드 변경</li><li>관리자 대시보드 (보고서, 로그)</li><li>Supabase 연동 및 CRUD</li><li>활동 로그 시스템</li><li>GitHub Pages 배포</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 역할별 계정 시스템', report_type:'change_report', content:'<h2>TASK-002: 역할별 계정 시스템</h2><p><b>버전:</b> v1.1.0</p><ul><li>4단계 역할 구분</li><li>역할별 전용 페이지 구현</li><li>달란트 상점 (학생/교사 분리)</li><li>부서 관리자 기능</li><li>RPC 함수 (verify_user, give_talent, use_talent)</li><li>통합 로그인 페이지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-003', task_title:'v1.2.0 상품 이미지 및 메인 화면 개선', report_type:'change_report', content:'<h2>TASK-003: 상품 이미지 및 메인 화면</h2><p><b>버전:</b> v1.2.0</p><ul><li>상품 이미지 URL 지원</li><li>Supabase Storage 파일 업로드</li><li>메인 화면 카드 링크 연결</li><li>달란트 적립 방법 안내 페이지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-004', task_title:'v1.3.0 버전 관리 시스템', report_type:'change_report', content:'<h2>TASK-004: 버전 관리 시스템</h2><p><b>버전:</b> v1.3.0</p><ul><li>버전 관리 모듈 (version.js) 도입</li><li>모든 페이지 하단 버전 표시</li><li>관리자 버전 이력 조회</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-005', task_title:'v1.4.0 사용자 관리 및 역할 배지', report_type:'change_report', content:'<h2>TASK-005: 사용자 관리 및 역할 배지</h2><p><b>버전:</b> v1.4.0</p><ul><li>관리자 사용자 관리 페이지</li><li>역할별 통계 대시보드</li><li>모든 페이지 역할 배지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-006', task_title:'v1.5.0 계정 등록 신청', report_type:'change_report', content:'<h2>TASK-006: 계정 등록 신청</h2><p><b>버전:</b> v1.5.0</p><ul><li>계정 등록 신청 페이지</li><li>아이디 중복/신청 중복 검증</li><li>관리자 승인/거부 기능</li><li>registration_requests 테이블</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 전면 개선', report_type:'change_report', content:'<h2>TASK-007: DB 보안 구조 전면 개선</h2><p><b>버전:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth 도입 (bcrypt)</li><li>profiles 테이블 신설</li><li>SECURITY DEFINER RPC 함수</li><li>전체 테이블 RLS 정책 재설계</li><li>모바일 반응형 대폭 개선</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-008', task_title:'v2.1.0 관리자 페이지 접근 제어', report_type:'change_report', content:'<h2>TASK-008: 관리자 페이지 접근 제어</h2><p><b>버전:</b> v2.1.0</p><ul><li>initPage() 역할 체크 리디렉트</li><li>CSS auth-ready 기반 콘텐츠 플래시 방지</li><li>부서 관리 역할별 인원 분리 표시</li><li>admin 전용 상품 관리 페이지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-009', task_title:'v2.2.0 레거시 관리자 로그인 제거', report_type:'change_report', content:'<h2>TASK-009: 레거시 관리자 로그인 제거</h2><p><b>버전:</b> v2.2.0</p><ul><li>관리자 진입점 버튼 제거</li><li>admin/login.html 레거시 파일 삭제</li><li>로그인 진입점 login.html 단일화</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-010', task_title:'v2.3.0 초기 비밀번호 변경 강제', report_type:'change_report', content:'<h2>TASK-010: 초기 비밀번호 변경 강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()에 isFirstLogin 강제 리디렉트</li><li>student/shop.html 보호 페이지 전환</li><li>autoLogPageView() 인증 후 이동</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 관리자 대시보드 개선', report_type:'change_report', content:'<h2>TASK-011: 관리자 대시보드 개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가입 대기자 수 카드 추가</li><li>바로가기 영역 5개로 재구성</li><li>각 바로가기에 이모지 추가</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-012', task_title:'v2.5.0 관리자/부서관리자 메뉴 통합', report_type:'change_report', content:'<h2>TASK-012: 관리자/부서관리자 메뉴 통합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ 디렉토리 삭제 (admin/ 통합)</li><li>admin/talents.html 신규 생성</li><li>applyRoleNav() 함수 도입</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 유형/권한 6단계 체계', report_type:'change_report', content:'<h2>TASK-013: 유형/권한 6단계 체계 전면 개편</h2><p><b>버전:</b> v3.0.0 ~ v3.6.0</p><ul><li>profiles user_type + permission_level 확장</li><li>get_permission_rank() 헬퍼 함수</li><li>RPC 함수 12개 전면 업데이트</li><li>달란트 지급 방식 개편 (talent_items)</li><li>반 시스템 추가</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-014', task_title:'v3.7.0 다중 기능 개선 및 UX 향상', report_type:'change_report', content:'<h2>TASK-014: 다중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>아이디 한글 입력 제한</li><li>로그 범위 삭제, 사용자 이름(아이디) 표시, 상세 팝업</li><li>대시보드 이슈 로그 필터링</li><li>네비게이션 타이틀/링크 변경</li><li>물품 활성화/비활성화 토글</li><li>승인 대기 로그인 메시지 분기</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 보고서 버그 수정 + 로그 삭제 + 배지', report_type:'change_report', content:'<h2>TASK-015: 보고서 버그 수정</h2><p><b>버전:</b> v3.7.1 ~ v3.7.2</p><ul><li>reports.html TYPE_LABELS 충돌 해결</li><li>로그 체크박스 + 선택 삭제</li><li>사용자 관리 가입대기 배지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-016', task_title:'v3.7.3 권한 기반 부서/사용자 관리 스코핑', report_type:'change_report', content:'<h2>TASK-016: 권한 기반 스코핑</h2><p><b>버전:</b> v3.7.3</p><ul><li>교사 수 카운트 전체 포함</li><li>본인 권한보다 낮은 사용자만 관리 가능</li><li>부장 이하 담당 부서만 표시</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-017', task_title:'v3.7.4 가입 신청 권한별 조회/처리', report_type:'change_report', content:'<h2>TASK-017: 가입 신청 권한별 조회/처리</h2><p><b>버전:</b> v3.7.4</p><ul><li>관리자/전도사님: 모든 부서 신청자 조회+처리</li><li>부장: 모든 부서 조회, 담당 부서만 처리</li><li>부서 담당 교사: 담당 부서만 조회+처리</li><li>네비게이션 아이디 표시 추가</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-018', task_title:'v3.7.5 타인 아이디 숨김 + 부서 이동 관리', report_type:'change_report', content:'<h2>TASK-018: 아이디 숨김 + 부서 이동</h2><p><b>버전:</b> v3.7.5</p><ul><li>타인 아이디 숨김 (자기만 표시)</li><li>부서 이동 버튼 + 즉시/요청 분기</li><li>부서 이동 신청 내역 + 승인/거부</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-019', task_title:'v3.7.6 보고서 인코딩 수정 + 관리자 아이디 예외', report_type:'change_report', content:'<h2>TASK-019: 보고서 인코딩 + 관리자 아이디</h2><p><b>버전:</b> v3.7.6</p><ul><li>전체 HTML BOM 제거</li><li>관리자 권한: 타인 아이디 표시 가능</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-020', task_title:'v3.7.7 수정 모달 부서 변경 제거', report_type:'change_report', content:'<h2>TASK-020: 수정 모달 부서 변경 제거</h2><p><b>버전:</b> v3.7.7</p><ul><li>사용자/관리자 수정 모달 부서 비활성화</li><li>부서 변경은 부서이동으로만</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-021', task_title:'v3.8.0 슈퍼관리자 + 네비게이션 + 페이지 권한', report_type:'change_report', content:'<h2>TASK-021: v3.8.0 전면 개선</h2><p><b>버전:</b> v3.8.0</p><ul><li>슈퍼관리자 rank 110 체계</li><li>네비게이션: 달란트 마을 통일 + 내달란트/상품구매 추가</li><li>페이지 접근 관리 + 페이지 기능 관리 신규</li><li>부서 관리 그리드 간소화</li><li>부장 교사 명칭 변경</li><li>관리자 관리 열/버튼 정리</li><li>달란트 관리 잔여/사용/누적 + 상세 통계</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-022', task_title:'v3.8.1 슈퍼관리자 관리 수정 + UI/UX 개선', report_type:'change_report', content:'<h2>TASK-022: v3.8.1 개선</h2><p><b>버전:</b> v3.8.1</p><ul><li>슈퍼관리자 관리자 관리 가능 수정</li><li>네비게이션 한 줄 스크롤 + 컴팩트</li><li>모바일 그리드 여백 축소</li><li>페이지 기능 관리 권한별 개편</li><li>보고서 JS 시더로 인코딩 문제 해결</li><li>로그 삭제 RLS 정책 추가</li></ul>', created_by:'AI_Cursor' }
+      ];
+      try {
+        await _sb.from('reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        const { error } = await _sb.from('reports').insert(SEED);
+        if (error) { alert('등록 실패: ' + error.message); return; }
+        alert(SEED.length + '건의 보고서가 등록되었습니다.');
+        await loadReports();
+      } catch (err) { alert('오류: ' + err.message); }
+    }
 
     let editingReportId = null;
 
@@ -335,6 +378,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.8.0"></script>
+  <script src="../js/version.js?v=3.8.1"></script>
 </body>
 </html>

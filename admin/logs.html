@@ -112,9 +112,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.0"></script>
-  <script src="../js/activity-log.js?v=3.8.0"></script>
-  <script src="../js/auth.js?v=3.8.0"></script>
+  <script src="../js/supabase-config.js?v=3.8.1"></script>
+  <script src="../js/activity-log.js?v=3.8.1"></script>
+  <script src="../js/auth.js?v=3.8.1"></script>
   <script>
     initSupabase();
     let session;
@@ -349,18 +349,28 @@
       const dateFrom = document.getElementById('dateFrom').value;
       const dateTo = document.getElementById('dateTo').value;
       if (!dateFrom || !dateTo) { alert('삭제할 날짜 범위(시작~끝)를 모두 선택해주세요.'); return; }
+      if (dateFrom > dateTo) { alert('시작 날짜가 끝 날짜보다 클 수 없습니다.'); return; }
       const fromStr = dateFrom + 'T00:00:00+09:00';
       const toStr = dateTo + 'T23:59:59+09:00';
-      const { count } = await _sb.from('activity_logs')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', fromStr).lte('created_at', toStr);
-      if (!count || count === 0) { alert('해당 범위에 삭제할 로그가 없습니다.'); return; }
-      if (!confirm(dateFrom + ' ~ ' + dateTo + ' 기간의 로그 ' + count + '건을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
-      const { error } = await deleteLogsByDateRange(fromStr, toStr);
-      if (error) { alert('삭제 실패: ' + error); return; }
-      await logInfo('LOG_RANGE_DELETE', { dateFrom, dateTo, count });
-      alert(count + '건의 로그가 삭제되었습니다.');
-      await loadAll();
+      try {
+        const { count } = await _sb.from('activity_logs')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', fromStr).lte('created_at', toStr);
+        if (!count || count === 0) { alert('해당 범위에 삭제할 로그가 없습니다.'); return; }
+        if (!confirm(dateFrom + ' ~ ' + dateTo + ' 기간의 로그 ' + count + '건을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
+        const { error } = await deleteLogsByDateRange(fromStr, toStr);
+        if (error) {
+          alert('삭제 실패: ' + error + '\n\nactivity_logs 테이블의 DELETE RLS 정책을 확인해주세요.\n(docs/TASK-022_fixes.sql 참조)');
+          console.error('[LOGS] range delete error:', error);
+          return;
+        }
+        await logInfo('LOG_RANGE_DELETE', { dateFrom, dateTo, count });
+        alert(count + '건의 로그가 삭제되었습니다.');
+        await loadAll();
+      } catch (err) {
+        alert('삭제 오류: ' + err.message);
+        console.error('[LOGS] range delete exception:', err);
+      }
     }
 
     function showLogDetail(logId) {
@@ -422,15 +432,23 @@
       if (ids.length === 0) return;
       if (!confirm(ids.length + '건의 로그를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
 
-      const { error, count } = await deleteLogsByIds(ids);
-      if (error) { alert('삭제 실패: ' + error); return; }
-
-      await logInfo('LOG_SELECT_DELETE', { count: ids.length });
-      document.getElementById('logChkAll').checked = false;
-      alert(ids.length + '건의 로그가 삭제되었습니다.');
-      await loadAll();
+      try {
+        const { error, count } = await deleteLogsByIds(ids);
+        if (error) {
+          alert('삭제 실패: ' + error + '\n\nactivity_logs 테이블의 DELETE RLS 정책을 확인해주세요.\n(docs/TASK-022_fixes.sql 참조)');
+          console.error('[LOGS] delete error:', error);
+          return;
+        }
+        await logInfo('LOG_SELECT_DELETE', { count: ids.length });
+        document.getElementById('logChkAll').checked = false;
+        alert(ids.length + '건의 로그가 삭제되었습니다.');
+        await loadAll();
+      } catch (err) {
+        alert('삭제 오류: ' + err.message);
+        console.error('[LOGS] delete exception:', err);
+      }
     }
   </script>
-  <script src="../js/version.js?v=3.8.0"></script>
+  <script src="../js/version.js?v=3.8.1"></script>
 </body>
 </html>

@@ -192,7 +192,7 @@ async function loadAuthSession() {
   if (!session) return null;
 
   const cached = getSession();
-  if (cached && cached.id === session.user.id) return cached;
+  if (cached && cached.id === session.user.id && cached.isSuperAdmin !== undefined) return cached;
 
   const { data } = await _sb.rpc('get_my_profile');
   if (!data) return null;
