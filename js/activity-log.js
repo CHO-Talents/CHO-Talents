@@ -259,6 +259,12 @@ function autoLogPageView() {
   }
 }
 
+const _SOFT_DEL_COL_ERR = 'DB에 삭제 관리 컬럼이 없습니다.\nSupabase SQL Editor에서 아래 SQL을 실행해주세요:\n\nALTER TABLE activity_logs ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT false;\nALTER TABLE activity_logs ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;';
+
+function _isMissingColErr(msg) {
+  return /could not find.*column|column.*does not exist|schema cache/i.test(msg || '');
+}
+
 async function deleteLogsByIds(ids) {
   if (!_sb) return { error: 'Supabase not initialized', count: 0 };
   if (!ids || ids.length === 0) return { error: null, count: 0 };
@@ -268,7 +274,10 @@ async function deleteLogsByIds(ids) {
       .update({ is_deleted: true, deleted_at: new Date().toISOString() })
       .in('id', ids)
       .select('id');
-    if (error) return { error: error.message, count: 0 };
+    if (error) {
+      if (_isMissingColErr(error.message)) return { error: _SOFT_DEL_COL_ERR, count: 0 };
+      return { error: error.message, count: 0 };
+    }
     return { error: null, count: data ? data.length : 0 };
   } catch (err) {
     return { error: String(err), count: 0 };
@@ -285,7 +294,10 @@ async function deleteLogsByDateRange(dateFrom, dateTo) {
       .lte('created_at', dateTo)
       .eq('is_deleted', false)
       .select('id');
-    if (error) return { error: error.message, count: 0 };
+    if (error) {
+      if (_isMissingColErr(error.message)) return { error: _SOFT_DEL_COL_ERR, count: 0 };
+      return { error: error.message, count: 0 };
+    }
     return { error: null, count: data ? data.length : 0 };
   } catch (err) {
     return { error: String(err), count: 0 };

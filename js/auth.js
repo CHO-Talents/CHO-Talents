@@ -303,6 +303,7 @@ const _ERR_MAP = [
   [/new row violates/i, '데이터 저장 권한이 없습니다'],
   [/permission denied/i, '권한이 없습니다'],
   [/column .* does not exist/i, 'DB 스키마 업데이트가 필요합니다. 관리자에게 문의하세요'],
+  [/Could not find.*column.*schema cache/i, 'DB 스키마 업데이트가 필요합니다. 관리자에게 문의하세요'],
   [/relation .* does not exist/i, 'DB 테이블이 존재하지 않습니다. 관리자에게 문의하세요'],
   [/function .* does not exist/i, 'DB 함수가 존재하지 않습니다. 관리자에게 문의하세요'],
   [/Could not find the function/i, 'DB 함수를 찾을 수 없습니다. 관리자에게 문의하세요'],
