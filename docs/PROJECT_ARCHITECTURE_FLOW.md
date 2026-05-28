@@ -1,20 +1,22 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-05-27 KST 현재 코드 기준
+작성 기준: 2026-05-29 KST 현재 코드 기준 (v3.9.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
 ## 1. 프로젝트 목적
 
-CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시스템이다. 학생과 교사는 본인의 달란트 잔액과 상점 물품을 확인하고, 부서 담당 교사 이상 운영자는 사용자, 부서, 물품, 달란트 지급/사용, 보고서, 로그를 관리한다.
+CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시스템이다. 학생과 교사는 본인의 달란트 잔액과 상점 상품을 확인하고 구매 신청을 하며, 부서 담당 교사 이상 운영자는 사용자, 부서, 상품, 구매, 달란트 지급/사용/반환, 보고서, 로그를 관리한다.
 
 | 목적 | 설명 |
 |---|---|
 | 역할별 화면 분리 | 사용자 권한에 따라 필요한 메뉴와 화면만 표시한다. |
-| 달란트 운영 관리 | 적립/사용 내역과 잔액을 `profiles`, `talent_transactions` 중심으로 관리한다. |
-| 상품 교환 구조 | 학생용/교사용 상품을 구분해 조회하고 운영자가 교환 처리를 한다. |
+| 달란트 운영 관리 | 적립/사용/반환 내역과 잔액을 `profiles`, `talent_transactions` 중심으로 관리한다. |
+| 상품 구매 시스템 | 4단계 구매 흐름(신청→준비→구매→지급)으로 상품 교환을 관리한다. |
 | 승인 기반 계정 운영 | 신규 사용자는 신청 후 관리자 승인으로 계정이 생성된다. |
+| 부서 이동 관리 | 부서 변경은 요청→승인 흐름으로 처리한다 (90등급 이상은 즉시 이동). |
 | 운영 추적 | 페이지 방문, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. |
+| 에러 한글화 | 영문 DB/RPC 에러를 `tErr()` 함수로 한글 변환하여 사용자에게 표시한다. |
 | 보안 강화 | Supabase Auth, RLS, SECURITY DEFINER RPC로 민감 데이터 접근을 제한한다. |
 
 ## 2. 전체 시스템 구성
@@ -23,11 +25,11 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 flowchart LR
   User["사용자 브라우저"] --> Pages["GitHub Pages 정적 화면<br/>HTML/CSS/Vanilla JS"]
 
-  Pages --> AuthJS["js/auth.js<br/>로그인/세션/권한"]
-  Pages --> LogJS["js/activity-log.js<br/>로그/세션 캐시"]
+  Pages --> AuthJS["js/auth.js<br/>로그인/세션/권한/tErr()"]
+  Pages --> LogJS["js/activity-log.js<br/>로그/세션 캐시/소프트 삭제"]
   Pages --> UserMgmt["js/user-mgmt.js<br/>사용자/부서 관리"]
-  Pages --> TalentJS["js/talent.js<br/>달란트 조회/처리"]
-  Pages --> ProductJS["js/product.js<br/>물품 조회/관리"]
+  Pages --> TalentJS["js/talent.js<br/>달란트 조회/지급/사용/반환"]
+  Pages --> ProductJS["js/product.js<br/>상품 조회/관리"]
   Pages --> VersionJS["js/version.js<br/>버전 이력"]
 
   AuthJS --> Auth["Supabase Auth"]
@@ -43,11 +45,15 @@ flowchart LR
   DB --> Profiles["profiles"]
   DB --> Departments["departments"]
   DB --> Products["products"]
+  DB --> Orders["product_orders"]
   DB --> Items["talent_items"]
   DB --> Transactions["talent_transactions"]
   DB --> Requests["registration_requests"]
+  DB --> Transfers["department_transfer_requests"]
   DB --> Reports["reports"]
   DB --> Logs["activity_logs"]
+  DB --> RoleAccess["role_page_access"]
+  DB --> RoleFeatures["role_page_features"]
   DB --> PagePerms["page_permissions"]
 ```
 
@@ -55,27 +61,31 @@ flowchart LR
 
 | 경로 | 역할 |
 |---|---|
-| `index.html` | 메인 진입 화면. 상점, 로그인, 적립 안내, 내 달란트로 이동 |
-| `login.html` | 통합 로그인. 모든 사용자가 같은 화면에서 로그인 |
-| `register.html` | 계정 등록 신청. 아이디 중복확인 후 승인 대기 등록 |
+| `index.html` | 메인 진입 화면. 상점, 로그인, 적립 안내, 내 달란트로 이동. 동적 로그인/로그아웃 버튼 |
+| `login.html` | 통합 로그인. 성공/실패 로그 기록. 승인 대기/거부 계정 구분 안내 |
+| `register.html` | 계정 등록 신청. 영문/숫자/`_`/`-` 아이디 중복확인 후 승인 대기 등록 |
 | `earn-talents.html` | 달란트 적립 방법 안내 |
-| `shop.html` | 상점 조회. 비로그인은 학생용, 교사/운영자는 추가 탭 표시 |
-| `my-talents.html` | 로그인 사용자 본인의 달란트 요약/내역 |
-| `admin/index.html` | 80등급 이상 대시보드 |
-| `admin/users.html` | 60등급 이상 사용자 관리. 가입 신청 처리는 80등급 이상 |
-| `admin/departments.html` | 80등급 이상 부서 관리 |
-| `admin/managers.html` | 80등급 이상 관리자 계열 권한 관리 |
-| `admin/talents.html` | 60등급 이상 학생/교사 달란트 처리 |
+| `shop.html` | 상점 조회 + 구매 신청. 비로그인은 학생용, 교사는 교사용 기본 필터 |
+| `my-talents.html` | 로그인 사용자 본인의 누적/사용 완료/사용 대기/가용 잔액, 달란트 내역, 구매 내역 |
+| `admin/index.html` | 80등급 이상 대시보드. 사용자/부서/로그/가입대기 요약 |
+| `admin/users.html` | 60등급 이상 사용자 관리. 가입 신청/부서 이동 요청/승인 처리 |
+| `admin/departments.html` | 60등급 이상 부서 관리. 부서별 인원(교사 전체 포함)/담당자 확인 |
+| `admin/managers.html` | 80등급 이상 관리자 계열 권한 관리. 수정만 가능 |
+| `admin/talents.html` | 40등급 이상 달란트 처리. 체크박스 일괄 지급, 수동 적립/사용, 반환(80+) |
 | `admin/talent-items.html` | 90등급 이상 달란트 지급 항목 관리 |
-| `admin/shop.html` | 60등급 이상 물품 관리 |
-| `admin/reports.html` | 80등급 이상 보고서 조회 |
-| `admin/logs.html` | 80등급 이상 로그 조회 및 확인 처리 |
+| `admin/shop.html` | 60등급 이상 상품 관리 |
+| `admin/purchases.html` | 60등급 이상 구매 관리. 4단계 구매 흐름 처리. 권한별 조회/처리 범위 제한 |
+| `admin/reports.html` | 80등급 이상 보고서 조회/등록/수정/삭제 |
+| `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리 |
 | `admin/versions.html` | 80등급 이상 버전 이력 확인 |
-| `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리. 상단 메뉴에는 노출되지 않으며 직접 주소로 접근 |
+| `admin/page-access.html` | 80등급 이상 유형/권한별 페이지 접근/요소 가시성 설정 (수정은 90+) |
+| `admin/page-features.html` | 80등급 이상 권한별 페이지 기능 설정 (수정은 90+) |
+| `admin/audit.html` | 80등급 이상 관리 작업 이력 조회 (카테고리별 필터) |
+| `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
-| `css/` | 메인, 공통, 관리자 스타일 |
-| `js/` | Supabase 설정, 인증, 로그, 사용자/달란트/물품/버전 모듈 |
-| `docs/` | 작업 기록, SQL, 구성 문서, 사용자 안내서 |
+| `css/` | 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
+| `js/` | Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
+| `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서 |
 
 ## 4. 권한 구조
 
@@ -83,12 +93,13 @@ flowchart LR
 
 | 권한 | 코드 | 등급 | 기본 이동 | 설명 |
 |---|---|---:|---|---|
-| 관리자 | `admin` | 100 | `admin/index.html` | 전체 운영 관리, 페이지 권한 관리 |
-| 전도사님 | `evangelist` | 90 | `admin/index.html` | 관리자 계열 운영, 달란트 항목/물품 삭제 가능 |
-| 부장 | `chief` | 80 | `admin/index.html` | 대시보드, 부서, 관리자, 보고서, 로그, 버전 관리 |
-| 부서 담당 교사 | `dept_teacher` | 60 | `admin/talents.html` | 사용자/달란트/물품 관리 |
-| 일반 교사 | `teacher` | 40 | `my-talents.html` | 내 달란트, 교사용/학생용 상점 조회 |
-| 학생 | `student` | 20 | `my-talents.html` | 내 달란트, 학생용 상점 조회 |
+| 최고 관리자 | `admin` + `is_super_admin` | 110 | `admin/index.html` | 관리자 포함 전체 사용자 관리, 시스템 설정 |
+| 관리자 | `admin` | 100 | `admin/index.html` | 전체 운영 관리, 페이지 권한 관리, 로그 삭제 대기 처리 |
+| 전도사님 | `evangelist` | 90 | `admin/index.html` | 관리자 계열 운영, 달란트 항목/상품 삭제, 부서 즉시 이동 |
+| 부장 교사 | `chief` | 80 | `admin/index.html` | 대시보드, 부서, 관리자, 보고서, 이력, 달란트 반환 |
+| 부서 담당 교사 | `dept_teacher` | 60 | `admin/talents.html` | 담당 부서 사용자/달란트/상품/구매 관리 |
+| 일반 교사 | `teacher` | 40 | `admin/talents.html` | 담당 부서/반 학생 달란트 처리, 교사용/학생용 상점 |
+| 학생 | `student` | 20 | `my-talents.html` | 내 달란트, 학생용 상점, 구매 신청 |
 | 비로그인 | 없음 | 0 | 공개 페이지 | 메인, 적립 안내, 학생용 상점, 계정 신청 |
 
 권한 제어 기준:
@@ -97,8 +108,10 @@ flowchart LR
 |---|---|---|
 | 페이지 진입 | `initPage(minRank, loginPath)` | 로그인, 최초 비밀번호 변경, 최소 등급을 확인 |
 | 메뉴 노출 | `data-min-perm`, `applyPermNav()` | 현재 등급보다 높은 메뉴는 숨김 |
-| 권한 비교 | `PERMISSION_RANK` | `admin:100`부터 `student:20`까지 숫자 비교 |
+| 권한 비교 | `PERMISSION_RANK` | `super_admin:110`부터 `student:20`까지 숫자 비교 |
 | 사용자 관리 | `admin_update_user`, `admin_delete_user` 등 RPC | 상위 권한자/최고관리자 보호 |
+| 페이지 접근 | `role_page_access` | DB 기반 권한별 페이지/요소 접근 제어 |
+| 페이지 기능 | `role_page_features` | DB 기반 권한별 기능(수정/삭제/승인) 제어 |
 | 데이터 접근 | Supabase RLS | 익명/저권한 직접 조회 제한 |
 
 ## 5. 화면 연결 구조
@@ -119,7 +132,7 @@ flowchart TD
   Password -->|아니오| RoleRedirect["권한별 기본 페이지"]
 
   RoleRedirect --> AdminDash["admin/index.html<br/>admin/evangelist/chief"]
-  RoleRedirect --> DeptTeacher["admin/talents.html<br/>dept_teacher"]
+  RoleRedirect --> DeptTeacher["admin/talents.html<br/>dept_teacher/teacher"]
   RoleRedirect --> MyTalents
 
   AdminDash --> Users["admin/users.html"]
@@ -128,9 +141,13 @@ flowchart TD
   AdminDash --> Talents["admin/talents.html"]
   AdminDash --> TalentItems["admin/talent-items.html"]
   AdminDash --> AdminShop["admin/shop.html"]
+  AdminDash --> Purchases["admin/purchases.html"]
   AdminDash --> Reports["admin/reports.html"]
   AdminDash --> Logs["admin/logs.html"]
   AdminDash --> Versions["admin/versions.html"]
+  AdminDash --> PageAccess["admin/page-access.html"]
+  AdminDash --> PageFeatures["admin/page-features.html"]
+  AdminDash --> Audit["admin/audit.html"]
   AdminDash -.-> PagePerms["admin/page-permissions.html<br/>직접 주소 접근"]
 ```
 
@@ -141,10 +158,13 @@ flowchart TD
   Start["login.html 접속"] --> Input["아이디/비밀번호 입력"]
   Input --> Email["아이디 + @cho-talents.app"]
   Email --> SignIn["Supabase Auth signInWithPassword"]
-  SignIn -->|실패| LoginFail["LOGIN_FAIL 로그 / 오류 메시지"]
+  SignIn -->|실패| LoginFail["LOGIN_FAIL 로그 + tErr() 한글 메시지"]
   SignIn -->|성공| Profile["RPC get_my_profile"]
-  Profile --> Cache["sessionStorage cho_session 저장"]
-  Cache --> FirstLogin{"is_first_login?"}
+  Profile --> Pending{"승인 대기?"}
+  Pending -->|예| PendingMsg["🕐 승인 대기 안내 메시지"]
+  Pending -->|아니오| Cache["sessionStorage cho_session 저장"]
+  Cache --> LoginLog["LOGIN_SUCCESS 로그 기록"]
+  LoginLog --> FirstLogin{"is_first_login?"}
   FirstLogin -->|true| Change["admin/change-password.html"]
   FirstLogin -->|false| Redirect["PERMISSION_REDIRECT 기준 이동"]
 ```
@@ -152,10 +172,12 @@ flowchart TD
 보호 페이지는 `initPage()`에서 다음 순서로 처리한다.
 
 1. Supabase Auth 세션 확인
-2. 프로필/권한 로드
+2. 프로필/권한 로드 (세션 캐시 활용)
 3. 최초 로그인 상태면 비밀번호 변경 화면으로 이동
 4. 최소 권한 미달이면 본인 권한 기본 화면으로 이동
-5. 통과 시 `auth-ready` 적용, 역할 배지/메뉴/페이지 데이터 로드
+5. `role_page_access` 확인: DB 기반 페이지/요소 접근 권한 적용
+6. `role_page_features` 확인: DB 기반 기능 권한 적용
+7. 통과 시 `auth-ready` 적용, 역할 배지/메뉴/페이지 데이터 로드
 
 ## 7. 신규 계정 신청 흐름
 
@@ -166,12 +188,21 @@ flowchart TD
   Check -->|중복| Duplicate["중복 안내"]
   Check -->|사용 가능| Submit["registration_requests INSERT"]
   Submit --> AdminReview["admin/users.html 가입 신청 목록"]
-  AdminReview --> Decision{"승인 또는 거부"}
+  AdminReview --> Scope["권한/담당 부서 기준 처리 범위 확인"]
+  Scope --> Decision{"승인 또는 거부"}
   Decision -->|승인| Create["admin_create_user RPC"]
   Decision -->|거부| Reject["거부 상태/사유 저장"]
   Create --> Login["초기 비밀번호 1234로 로그인"]
   Login --> Change["최초 비밀번호 변경"]
 ```
+
+가입 신청 처리 권한:
+
+| 권한 | 조회 | 처리 |
+|---|---|---|
+| 관리자/전도사님 | 전체 신청 | 전체 처리 |
+| 부장 교사 | 전체 신청 | 담당 부서만 처리 |
+| 부서 담당 교사 | 담당 부서만 | 담당 부서만 처리 |
 
 ## 8. 사용자/부서/관리자 관리 흐름
 
@@ -180,46 +211,80 @@ flowchart TD
   Operator["60등급 이상 운영자"] --> Users["admin/users.html"]
   Users --> List["admin_list_users RPC"]
   Users --> Create["admin_create_user RPC"]
-  Users --> Update["admin_update_user RPC"]
+  Users --> Update["admin_update_user RPC<br/>(부서 변경은 수정 모달에서 불가)"]
   Users --> Reset["admin_reset_password RPC"]
   Users --> Delete["admin_delete_user RPC"]
+  Users --> Transfer["부서 이동 요청/승인"]
 
   Chief["80등급 이상"] --> Departments["admin/departments.html"]
   Departments --> DeptCRUD["departments 등록/수정/비활성화"]
 
   Chief --> Managers["admin/managers.html"]
-  Managers --> Promote["기존 사용자를 관리자 계열 권한으로 승격/수정"]
+  Managers --> Promote["기존 사용자를 관리자 계열로 승격/수정"]
+```
+
+### 부서 이동 흐름
+
+```mermaid
+flowchart TD
+  UserAdmin["admin/users.html"] --> Transfer["부서 이동 버튼"]
+  Transfer --> TargetCheck{"대상 권한 < 내 권한?"}
+  TargetCheck -->|아니오| Denied["이동 불가"]
+  TargetCheck -->|예| Rank{"90등급 이상?"}
+  Rank -->|예| Immediate["즉시 부서 이동<br/>class_number 초기화"]
+  Rank -->|아니오| Request["department_transfer_requests 생성<br/>(담당 부서 사용자만)"]
+  Request --> Approval["부서 이동 신청 내역 → 승인/거부"]
+  Approval --> Apply["승인 시 profiles.department_id 변경"]
 ```
 
 운영 제약:
 
 | 항목 | 기준 |
 |---|---|
-| 사용자 등록/수정 | 본인 이하 등급 중심으로 가능. 실제 검증은 RPC에서 수행 |
-| 아이디 표시 | 관리자에게만 아이디 노출. 그 외에는 이름 중심 표시 |
-| 동명이인 | 같은 이름/유형/부서면 `①`, `②` 번호를 붙여 표시 |
+| 사용자 등록/수정/삭제 | 본인보다 낮은 등급만 가능. 실제 검증은 RPC에서 수행 |
+| 아이디 표시 | 관리자에게만 전체 노출. 그 외에는 본인 아이디만 표시 |
+| 동명이인 | 같은 이름/유형/부서면 `①`, `②` 번호를 붙여 구분 표시 |
 | 최고관리자 | `is_super_admin` 사용자는 삭제/수정 보호 |
 | 담당 부서 | 관리 권한 계열은 담당 관리 부서를 지정할 수 있음 |
+| 부서 스코핑 | 90등급 미만은 담당 부서 사용자만 조회. 담당 부서 없으면 빈 목록 |
 
 ## 9. 달란트 처리 흐름
 
 ```mermaid
 flowchart TD
-  Manager["60등급 이상"] --> TalentPage["admin/talents.html"]
-  TalentPage --> Target["학생/교사 탭에서 대상 선택"]
-  Target --> Earn["지급 항목 선택 또는 수동 적립"]
-  Target --> Use["사용 금액/사유 입력"]
-  Earn --> GiveRPC["give_talent RPC"]
-  Use --> UseRPC["use_talent RPC"]
+  Manager["40등급 이상"] --> TalentPage["admin/talents.html"]
+  TalentPage --> Scope["권한별 부서/반 스코핑"]
+  Scope --> Target["학생/교사 탭에서 대상 선택"]
+  Target --> ItemCheck["달란트 항목 체크박스 선택"]
+  Target --> ManualGive["수동 적립 (금액/사유 입력)"]
+  Target --> ManualUse["수동 사용 (금액/사유 입력)"]
+  ItemCheck --> Confirm["✅ 지급 확정 버튼 → 일괄 처리"]
+  Confirm --> GiveRPC["give_talent_by_item RPC"]
+  ManualGive --> GiveTalent["give_talent RPC"]
+  ManualUse --> UseTalent["use_talent RPC"]
   GiveRPC --> Tx["talent_transactions 기록"]
-  UseRPC --> Tx
+  GiveTalent --> Tx
+  UseTalent --> Tx
   Tx --> Balance["profiles.talent_balance 갱신"]
   Balance --> UserView["my-talents.html에서 조회"]
+
+  Target --> Detail["상세 모달 → 지급자/내역 확인"]
+  Detail --> Return["반환 (80등급+, 사유 입력, 잔액 확인)"]
+  Return --> ReturnRPC["return_talent / use_talent RPC"]
+  ReturnRPC --> Tx
 ```
 
-`admin/talent-items.html`에서는 90등급 이상이 학생용/교사용 달란트 지급 항목을 관리한다.
+달란트 지급 규칙:
 
-## 10. 물품 및 상점 흐름
+| 항목 | 내용 |
+|---|---|
+| 지급 방식 | 체크박스 선택 + 일괄 확정 |
+| 이미 지급된 항목 | 오늘/이번 주 지급 여부 자동 표시 |
+| 반환 | 80등급(부장 교사) 이상, 사유 필수, 잔여 > 0일 때만 |
+| 지급자 기록 | `created_by` 필드에 지급자 ID 저장, 상세 모달에서 확인 |
+| 에러 처리 | RPC 성공/실패/거부 모두 activity_logs에 기록 |
+
+## 10. 상품 및 구매 흐름
 
 ```mermaid
 flowchart TD
@@ -227,53 +292,109 @@ flowchart TD
   ManageShop --> ProductCRUD["products 등록/수정/조회"]
   ManageShop --> Upload["Storage Talents_Items 이미지 업로드"]
   ProductCRUD --> PublicShop["shop.html"]
-  PublicShop --> Student["학생용 물품"]
-  PublicShop --> Teacher["교사용 물품<br/>교사/60등급 이상"]
-  PublicShop --> Exchange["교환 시 운영자가 달란트 사용 처리"]
+  PublicShop --> Student["학생용 상품 (공개)"]
+  PublicShop --> Teacher["교사용 상품<br/>교사/60등급 이상"]
+
+  PublicShop --> OrderBtn["🛒 구매 신청 버튼"]
+  OrderBtn --> OrderRPC["request_product_order RPC"]
+  OrderRPC --> PendingTalent["profiles.pending_talent 증가"]
+  OrderRPC --> OrderRecord["product_orders 생성 (status: requested)"]
+
+  OrderRecord --> PurchasePage["admin/purchases.html"]
+  PurchasePage --> Preparing["📦 상품 준비 (status: preparing)"]
+  Preparing --> Purchased["💳 상품 구매 (status: purchased)"]
+  Purchased --> ConfirmRPC["confirm_product_purchase RPC"]
+  ConfirmRPC --> Deduct["실제 달란트 차감<br/>pending_talent 감소"]
+  ConfirmRPC --> Delivered["✅ 상품 지급 (status: delivered)<br/>일괄 처리 가능"]
 ```
 
-정책:
+구매 관리 권한:
+
+| 권한 | 조회 범위 | 처리 범위 |
+|---|---|---|
+| 부서 담당 교사 | 자기 부서 신청 | 상품 준비 처리 |
+| 부장 교사 | 전체 신청 | 담당 부서만 상품 준비 처리 |
+| 전도사님 이상 | 전체 신청 | 전체 처리 가능 |
+
+상품 정책:
 
 | 항목 | 기준 |
 |---|---|
-| 학생용 물품 | 비로그인도 조회 가능 |
-| 교사용 물품 | 로그인한 교사 또는 60등급 이상만 조회 |
-| 물품 등록/수정 | 60등급 이상 |
-| 물품 삭제 | 90등급 이상 |
-| 실제 구매 처리 | 상점에는 구매 버튼이 없고, 운영자가 달란트 사용으로 처리 |
+| 학생용 상품 | 비로그인도 조회 가능 |
+| 교사용 상품 | 로그인한 교사 또는 60등급 이상만 조회 |
+| 교사 기본 필터 | 교사 접속 시 교사용 탭 자동 선택 |
+| 상품 등록/수정 | 60등급 이상 |
+| 상품 삭제 | 90등급 이상 |
+| 구매 신청 | 로그인 사용자 (잔여 달란트 확인) |
 
 ## 11. 보고서 및 로그 흐름
 
 ```mermaid
 flowchart TD
-  Event["페이지 방문/로그인/오류/관리 작업"] --> WriteLog["activity_logs INSERT"]
-  WriteLog --> Logs["admin/logs.html"]
+  Event["페이지 방문/로그인/오류/관리 작업"] --> WriteLog["activity_logs INSERT<br/>logInfo/logWarn/logError"]
+  WriteLog --> Logs["admin/logs.html (100등급+)"]
   Logs --> Filter["레벨/기간 필터"]
   Logs --> Ack["ERROR 이상 로그 확인 처리"]
+  Logs --> SoftDel["소프트 삭제 (is_deleted = true)<br/>관리자(100+)만"]
+  SoftDel --> DelView["삭제 대기 목록 보기 / 복원"]
 
   Docs["작업 문서/검증 결과"] --> ReportsTable["reports 테이블"]
-  ReportsTable --> Reports["admin/reports.html"]
-  Reports --> ReportView["유형별 필터/상세 보기"]
+  ReportsTable --> Reports["admin/reports.html (80등급+)"]
+  Reports --> ReportView["유형별 필터/상세 보기/등록/수정"]
 ```
 
-로그 레벨은 `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`, `CRITICAL`을 사용한다. `ERROR`, `FATAL`, `CRITICAL`은 기본적으로 미확인 상태로 저장되고 운영자가 확인 내용을 남긴다.
+로그 레벨: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`, `CRITICAL`
 
-## 12. 주요 Supabase 리소스
+- `ERROR`, `FATAL`, `CRITICAL`은 기본적으로 미확인 상태로 저장
+- 운영자가 확인 내용을 남기면 확인 처리
+- 로그 삭제는 소프트 삭제(`is_deleted=true`) 방식
+- 실제 삭제는 관리자가 SQL Editor에서 직접 실행: `DELETE FROM activity_logs WHERE is_deleted = true;`
+- 전체 기능의 성공/실패/거부가 `logInfo`/`logWarn`/`logError`로 기록됨
+
+## 12. 작업 이력(감사) 흐름
+
+```mermaid
+flowchart TD
+  AdminAction["관리 작업 수행"] --> AuditLog["activity_logs에 작업 유형별 기록"]
+  AuditLog --> AuditPage["admin/audit.html (80등급+)"]
+  AuditPage --> CategoryFilter["카테고리 필터<br/>사용자/부서/달란트/상품/권한"]
+  AuditPage --> ActorInfo["작업자 이름(ID) 표시<br/>관리자는 ID도 표시"]
+```
+
+## 13. 에러 처리 흐름
+
+```mermaid
+flowchart TD
+  Action["사용자 기능 실행"] --> Try["try/catch"]
+  Try -->|에러| ErrLog["logError/logWarn → activity_logs"]
+  Try -->|RPC 거부| DenyLog["logWarn(DENIED) → activity_logs"]
+  ErrLog --> Translate["tErr(msg) → 한글 변환"]
+  DenyLog --> Translate
+  Translate --> Display["사용자에게 한글 에러 메시지 표시"]
+```
+
+`tErr()` 함수는 25개 이상의 정규식 패턴으로 영문 DB/RPC 에러를 한글로 변환한다. 이미 한글인 메시지는 그대로 반환한다.
+
+## 14. 주요 Supabase 리소스
 
 | 리소스 | 용도 |
 |---|---|
-| `profiles` | 사용자 유형, 권한, 부서, 달란트 잔액 |
+| `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`) |
 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | `registration_requests` | 가입 신청/승인/거부 |
-| `talent_items` | 달란트 지급 항목 |
-| `talent_transactions` | 달란트 적립/사용 내역 |
-| `products` | 상점 물품 |
+| `department_transfer_requests` | 부서 이동 요청/승인/거부 |
+| `talent_items` | 달란트 지급 항목 (학생용/교사용 구분) |
+| `talent_transactions` | 달란트 적립/사용/반환 내역. `created_by`로 지급자 추적 |
+| `products` | 상점 상품 (학생용/교사용 구분) |
+| `product_orders` | 구매 신청/4단계 상태 관리/담당자 기록 |
 | `reports` | 작업 보고서 |
-| `activity_logs` | 활동/오류 로그 |
-| `page_permissions` | 페이지 권한 설정 |
-| `Talents_Items` | 물품 이미지 Storage 버킷 |
+| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록 |
+| `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
+| `role_page_features` | 권한 등급별 페이지 기능 설정 |
+| `page_permissions` | 페이지 권한 설정 (레거시) |
+| `Talents_Items` | 상품 이미지 Storage 버킷 |
 
-## 13. 주요 RPC
+## 15. 주요 RPC
 
 | RPC | 목적 |
 |---|---|
@@ -285,32 +406,44 @@ flowchart TD
 | `admin_delete_user` | 사용자 삭제 |
 | `admin_reset_password` | 비밀번호 `1234` 초기화 |
 | `change_my_password` | 본인 비밀번호 변경 및 최초 로그인 해제 |
-| `give_talent` | 달란트 적립 |
+| `give_talent` | 달란트 적립 (수동) |
+| `give_talent_by_item` | 달란트 항목별 지급 (중복 지급 방지 포함) |
 | `use_talent` | 달란트 사용 |
+| `return_talent` | 달란트 반환 (80등급+ 전용) |
+| `request_product_order` | 상품 구매 신청 (사용 대기 달란트 관리) |
+| `confirm_product_purchase` | 상품 구매 확정 (실제 달란트 차감) |
 
-## 14. 빠른 검증 체크리스트
+## 16. 빠른 검증 체크리스트
 
-1. `login.html`에서 로그인 성공/실패 메시지가 정상인지 확인한다.
-2. 최초 로그인 사용자가 `admin/change-password.html`로 강제 이동하는지 확인한다.
-3. 권한이 부족한 페이지 직접 접근 시 본인 기본 화면으로 이동하는지 확인한다.
-4. 비로그인 상태에서 `my-talents.html`이 로그인으로 이동하는지 확인한다.
-5. 비로그인 `shop.html`에서 학생용 물품만 조회되는지 확인한다.
-6. 교사 로그인 후 `shop.html`에서 교사용 탭이 보이는지 확인한다.
-7. 60등급 이상이 `admin/users.html`, `admin/talents.html`, `admin/shop.html`을 사용할 수 있는지 확인한다.
-8. 80등급 이상이 대시보드, 부서, 관리자, 보고서, 로그, 버전 화면을 사용할 수 있는지 확인한다.
-9. 90등급 이상만 `admin/talent-items.html`과 물품 삭제 버튼을 사용할 수 있는지 확인한다.
-10. 100등급만 `admin/page-permissions.html`에 접근 가능한지 확인한다.
-11. 오류 로그가 `admin/logs.html`에서 확인 처리되는지 확인한다.
+1. `login.html`에서 로그인 성공/실패 메시지가 한글로 표시되는지 확인한다.
+2. 승인 대기 계정 로그인 시 "승인 대기 중" 안내가 구분 표시되는지 확인한다.
+3. 최초 로그인 사용자가 `admin/change-password.html`로 강제 이동하는지 확인한다.
+4. 권한이 부족한 페이지 직접 접근 시 본인 기본 화면으로 이동하는지 확인한다.
+5. 비로그인 상태에서 `my-talents.html`이 로그인으로 이동하는지 확인한다.
+6. 비로그인 `shop.html`에서 학생용 상품만 조회되는지 확인한다.
+7. 교사 로그인 후 `shop.html`에서 교사용 탭이 기본 선택되는지 확인한다.
+8. 상품 구매 신청 시 `pending_talent`이 증가하고 달란트가 즉시 차감되지 않는지 확인한다.
+9. `admin/purchases.html`에서 4단계 구매 흐름이 정상 작동하는지 확인한다.
+10. 40등급 이상이 `admin/talents.html`에서 체크박스 일괄 지급이 되는지 확인한다.
+11. 80등급 이상만 달란트 반환이 가능한지 확인한다.
+12. 부서 이동이 수정 모달이 아닌 부서 이동 버튼으로만 되는지 확인한다.
+13. 60등급 이상이 `admin/users.html`, `admin/talents.html`, `admin/shop.html`, `admin/purchases.html`을 사용할 수 있는지 확인한다.
+14. 80등급 이상이 대시보드, 부서, 관리자, 보고서, 페이지 접근/기능, 작업 이력, 버전 화면을 사용할 수 있는지 확인한다.
+15. 100등급 이상만 `admin/logs.html`에 접근 가능한지 확인한다.
+16. 아이디가 관리자에게만 표시되고 일반 사용자는 본인 것만 보이는지 확인한다.
+17. 에러 메시지가 한글로 변환되어 표시되는지 확인한다.
+18. 주요 기능의 성공/실패/거부가 활동 로그에 기록되는지 확인한다.
 
-## 15. 다음 작업자가 먼저 볼 파일
+## 17. 다음 작업자가 먼저 볼 파일
 
 | 우선순위 | 파일 | 이유 |
 |---:|---|---|
 | 1 | `README.md` | 현재 구조, 페이지 연결, 권한, 운영 흐름 요약 |
 | 2 | `docs/PROJECT_ARCHITECTURE_FLOW.md` | 상세 구성도와 프로세스 흐름 |
-| 3 | `js/auth.js` | 권한 등급, 리디렉트, 세션, 비밀번호 정책 |
-| 4 | `js/activity-log.js` | 로그 기록, 세션 캐시, 페이지뷰 |
+| 3 | `js/auth.js` | 권한 등급, 리디렉트, 세션, tErr() 에러 번역 |
+| 4 | `js/activity-log.js` | 로그 기록, 세션 캐시, 소프트 삭제 |
 | 5 | `js/user-mgmt.js` | 사용자/부서 관리 RPC |
-| 6 | `js/talent.js` | 달란트 조회/처리 |
-| 7 | `js/product.js` | 물품 조회/관리 |
+| 6 | `js/talent.js` | 달란트 지급/사용/반환 |
+| 7 | `js/product.js` | 상품 조회/관리 |
 | 8 | `admin/*.html` | 각 관리 화면의 실제 접근 권한과 UI 동작 |
+| 9 | `docs/TASK-026_schema.sql` | 구매 시스템 DB 스키마 및 RPC |
