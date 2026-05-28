@@ -17,7 +17,8 @@
       <li><a href="../my-talents.html">내 달란트</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
-      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
+      <li data-min-perm="60"><a href="purchases.html">구매 관리</a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
       <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="page-access.html">페이지 접근</a></li>
@@ -38,7 +39,7 @@
       <button class="filter-btn" onclick="setFilter('USER',this)">사용자</button>
       <button class="filter-btn" onclick="setFilter('DEPT',this)">부서</button>
       <button class="filter-btn" onclick="setFilter('TALENT',this)">달란트</button>
-      <button class="filter-btn" onclick="setFilter('PRODUCT',this)">물품</button>
+      <button class="filter-btn" onclick="setFilter('PRODUCT',this)">상품</button>
       <button class="filter-btn" onclick="setFilter('PERM',this)">권한/설정</button>
       <span style="margin-left:0.5rem;color:#adb5bd;">|</span>
       <input type="date" class="filter-input" id="auditDateFrom" />
@@ -70,10 +71,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.4"></script>
-  <script src="../js/activity-log.js?v=3.8.4"></script>
-  <script src="../js/auth.js?v=3.8.4"></script>
-  <script src="../js/user-mgmt.js?v=3.8.4"></script>
+  <script src="../js/supabase-config.js?v=3.9.0"></script>
+  <script src="../js/activity-log.js?v=3.9.0"></script>
+  <script src="../js/auth.js?v=3.9.0"></script>
+  <script src="../js/user-mgmt.js?v=3.9.0"></script>
   <script>
     initSupabase();
     let session, allAuditLogs = [], currentFilter = 'all';
@@ -240,6 +241,6 @@
       if (e.target.classList.contains('modal-overlay')) closeDetailModal();
     });
   </script>
-  <script src="../js/version.js?v=3.8.4"></script>
+  <script src="../js/version.js?v=3.9.0"></script>
 </body>
 </html>

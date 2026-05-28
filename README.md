@@ -1,6 +1,6 @@
 # CHO-Talents
 
-초등부 달란트 운영을 위한 정적 웹 기반 관리 사이트입니다. 학생과 교사는 달란트 잔액과 상점 물품을 확인하고, 일반 교사 이상 권한자는 권한 범위 안에서 달란트, 사용자, 물품, 부서, 로그, 보고서를 관리합니다.
+초등부 달란트 운영을 위한 정적 웹 기반 관리 사이트입니다. 학생과 교사는 달란트 잔액과 상점 상품을 확인하고, 일반 교사 이상 권한자는 권한 범위 안에서 달란트, 사용자, 상품, 부서, 로그, 보고서를 관리합니다.
 
 **Live:** https://cho-talents.github.io/CHO-Talents/
 
@@ -9,23 +9,26 @@
 | 항목 | 내용 |
 |---|---|
 | 서비스명 | 달란트 마을 / CHO-Talents |
-| 목적 | 초등부 학생/교사 달란트 적립, 사용, 물품 교환, 운영 관리를 한 곳에서 처리 |
+| 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.8.4` (`js/version.js` 기준, 2026-05-28) |
+| 현재 버전 | `v3.9.0` (`js/version.js` 기준, 2026-05-29) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.8.4`로 맞춰져 있습니다.
-- 권한 모델은 `user_type`(학생/교사)과 `permission_level`(6단계 등급 + 슈퍼관리자 110)을 분리해서 사용합니다.
-- 슈퍼관리자(`is_super_admin`, rank 110)는 일반 관리자(rank 100)도 관리할 수 있으며, 화면에서는 동일하게 "관리자"로 표시됩니다.
-- 네비게이션 브랜드는 "⭐ 달란트 마을"로 통일되어 있고, 한 줄 가로 스크롤로 표시됩니다.
-- 페이지 접근 관리(`page-access.html`)와 기능 관리(`page-features.html`)는 모두 **유형/권한별** 관리 방식입니다.
-- `initPage()`에서 `role_page_access` DB 설정을 자동 적용하여 페이지 접근 차단 및 요소 숨김이 실제로 동작합니다.
-- 작업 이력(`audit.html`)에서 관리 작업(사용자 수정, 달란트 지급 등)의 이력을 카테고리별로 조회할 수 있습니다.
-- 활동 로그에는 `user_name`(표시이름)이 함께 저장되어 작업 이력에서 실명으로 조회됩니다.
-- 보고서 화면에는 JS 기반 시더 + 개별 수정 + 깨진 데이터(???) 자동 복구 기능이 포함되어 있습니다.
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.9.0`으로 맞춰져 있습니다.
+- **상품 구매 시스템**이 새로 추가되었습니다: 구매 신청 → 상품 준비 → 상품 구매 → 상품 지급 4단계 흐름
+  - `shop.html`에서 구매 신청, `my-talents.html`에서 사용 대기 확인, `admin/purchases.html`에서 관리
+  - 구매 신청 시 달란트는 즉시 차감되지 않고 `pending_talent`(사용 대기)로 관리됩니다.
+  - "상품 구매" 상태 변경 시 실제 달란트가 차감됩니다.
+- **달란트 관리**가 개편되었습니다: 항목 즉시 지급 → 체크박스 선택 + 일괄 지급 확정 방식
+  - 이미 오늘 지급된 항목은 자동으로 표시됩니다.
+  - 부장 교사(80+) 이상은 지급된 달란트를 사유 입력 후 반환 처리할 수 있습니다.
+  - 상세 모달에 지급자 정보가 표시됩니다.
+- **명칭 통일**: "물품"→"상품", "부장"→"부장 교사", "부서관리자"/"부서 관리자"→"부서 담당 교사"
+- 교사가 `shop.html`에 접근하면 기본 필터가 교사용으로 설정됩니다.
+- 로그 삭제 관련 버튼(범위 삭제 대기, 선택 삭제 대기, 삭제 대기 목록, 일괄 완료처리)은 관리자(100+)만 표시됩니다.
 - 로그 삭제는 **소프트 삭제**(is_deleted=true) 방식입니다. 사이트에서는 삭제 대기 상태로만 변경하고, 실제 DELETE는 관리자가 SQL Editor에서 직접 수행합니다.
   - 삭제 대기 로그 영구 삭제: `DELETE FROM activity_logs WHERE is_deleted = true;`
 
@@ -46,7 +49,8 @@ CHO-Talents/
 │   ├── managers.html              # 관리자/부서관리자 권한 관리
 │   ├── talents.html               # 학생/교사 달란트 지급 및 사용 처리
 │   ├── talent-items.html          # 달란트 지급 항목 관리
-│   ├── shop.html                  # 물품 등록/수정/삭제
+│   ├── shop.html                  # 상품 등록/수정/삭제
+│   ├── purchases.html             # 구매 관리 (4단계 구매 흐름)
 │   ├── reports.html               # 작업 보고서 조회 + JS 시더
 │   ├── logs.html                  # 활동 로그 조회/확인/삭제
 │   ├── versions.html              # 버전 이력
@@ -126,6 +130,7 @@ flowchart TD
   AdminDash --> Talents["admin/talents.html"]
   AdminDash --> TalentItems["admin/talent-items.html"]
   AdminDash --> AdminShop["admin/shop.html"]
+  AdminDash --> Purchases["admin/purchases.html"]
   AdminDash --> Reports["admin/reports.html"]
   AdminDash --> Logs["admin/logs.html"]
   AdminDash --> Versions["admin/versions.html"]
@@ -156,7 +161,8 @@ flowchart TD
 | `admin/managers.html` | 80 | 기존 사용자를 관리자 계열 권한으로 승격/수정, 담당 부서 지정 |
 | `admin/talents.html` | 40 | 학생/교사 탭별 달란트 적립, 사용 처리, 최근 내역 확인. 일반 교사는 담당 부서/반으로 제한 |
 | `admin/talent-items.html` | 90 | 달란트 지급 항목 등록/수정/활성화. 학생 항목은 주 1회 지급 규칙과 연동 |
-| `admin/shop.html` | 60 | 학생용/교사용 물품 등록, 수정, 이미지 업로드, 재고 관리. 삭제 버튼은 90등급 이상 |
+| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드, 재고 관리. 삭제 버튼은 90등급 이상 |
+| `admin/purchases.html` | 60 | 구매 관리: 4단계 구매 흐름 처리. 권한별 조회/처리 범위 제한, 관리자 일괄 지급 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록, 선택 삭제 |
 | `admin/logs.html` | 100 | 활동 로그 필터링, 상세 보기, 오류 로그 확인 처리, 범위/선택 삭제 |
 | `admin/versions.html` | 80 | 배포 버전과 변경 이력 확인 |
@@ -238,16 +244,20 @@ flowchart TD
   Approval --> Apply["승인 시 profiles.department_id 변경"]
 ```
 
-### 물품/상점
+### 상품/구매
 
 ```mermaid
 flowchart TD
   AdminShop["admin/shop.html"] --> ProductCRUD["products 등록/수정/삭제"]
   ProductCRUD --> Storage["이미지 업로드: Talents_Items Storage"]
   ProductCRUD --> PublicShop["shop.html"]
-  PublicShop --> StudentGoods["학생용 물품"]
-  PublicShop --> TeacherGoods["교사용 물품<br/>교사/60등급 이상 조회"]
-  PublicShop --> Exchange["실제 교환은 운영자가 달란트 사용 처리"]
+  PublicShop --> StudentGoods["학생용 상품"]
+  PublicShop --> TeacherGoods["교사용 상품<br/>교사/60등급 이상 조회"]
+  PublicShop --> OrderRequest["구매 신청 → product_orders 생성<br/>pending_talent 증가"]
+  OrderRequest --> PurchaseMgmt["admin/purchases.html"]
+  PurchaseMgmt --> Preparing["상품 준비<br/>부서교사+"]
+  Preparing --> Purchased["상품 구매<br/>관리자 확정 → 달란트 차감"]
+  Purchased --> Delivered["상품 지급<br/>관리자 일괄 처리"]
 ```
 
 ### 로그/보고서
@@ -267,7 +277,8 @@ flowchart TD
 | 부서 이동 | `department_transfer_requests` | 부서 이동 요청, 승인/거부, 처리 기록 |
 | 달란트 | `talent_transactions` | 적립/사용 거래 내역 |
 | 달란트 항목 | `talent_items` | 지급 항목과 지급 달란트 |
-| 물품 | `products` | 상점 물품, 가격, 재고, 대상, 이미지 |
+| 상품 | `products` | 상점 상품, 가격, 재고, 대상, 이미지 |
+| 상품 주문 | `product_orders` | 구매 신청, 4단계 상태 관리, 담당자 기록 |
 | 로그 | `activity_logs` | 페이지/오류/운영 활동 기록 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
 | 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |
@@ -287,6 +298,8 @@ flowchart TD
 | `change_my_password` | 본인 비밀번호 변경, 최초 로그인 해제 | `auth.js` |
 | `give_talent` | 달란트 적립 | `talent.js` |
 | `use_talent` | 달란트 사용 | `talent.js` |
+| `request_product_order` | 상품 구매 신청 (사용 대기 달란트 관리) | `shop.html` |
+| `confirm_product_purchase` | 상품 구매 확정 (실제 달란트 차감) | `admin/purchases.html` |
 
 ## 운영/보안 메모
 

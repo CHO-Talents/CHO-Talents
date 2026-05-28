@@ -103,7 +103,13 @@ async function fetchLogs(options = {}) {
   let query = _sb.from('activity_logs').select('*');
 
   if (!options.includeDeleted) {
-    query = query.or('is_deleted.is.null,is_deleted.eq.false');
+    try {
+      const testQ = _sb.from('activity_logs').select('id', { count: 'exact', head: true }).eq('is_deleted', false).limit(1);
+      const { error: colErr } = await testQ;
+      if (!colErr) {
+        query = query.or('is_deleted.is.null,is_deleted.eq.false');
+      }
+    } catch (e) { /* is_deleted column may not exist yet */ }
   }
 
   if (options.levels && options.levels.length > 0) {

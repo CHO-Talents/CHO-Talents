@@ -99,6 +99,29 @@ async function fetchAllTalentItems() {
   return await _sb.from('talent_items').select('*').order('target_type').order('sort_order');
 }
 
+async function returnTalent(userId, amount, description, createdBy) {
+  if (!_sb) return { success: false, error: 'Supabase not initialized' };
+  try {
+    const bal = await fetchTalentBalance(userId);
+    if (bal < amount) return { success: false, error: `잔여 달란트(${bal})가 부족합니다. 반환 불가` };
+    const { data, error } = await _sb.rpc('use_talent', {
+      p_user_id: userId,
+      p_amount: amount,
+      p_description: '반환: ' + description,
+      p_created_by: createdBy
+    });
+    if (error) {
+      await logError('TALENT_RETURN_FAIL', { userId, amount, error: error.message });
+      return { success: false, error: error.message };
+    }
+    await logInfo('TALENT_RETURN', { userId, amount, description });
+    return data;
+  } catch (err) {
+    await logError('TALENT_RETURN_ERROR', { userId, error: String(err) });
+    return { success: false, error: String(err) };
+  }
+}
+
 async function useTalent(userId, amount, description, createdBy) {
   if (!_sb) return { success: false, error: 'Supabase not initialized' };
   try {

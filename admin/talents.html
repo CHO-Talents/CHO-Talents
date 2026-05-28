@@ -17,7 +17,8 @@
       <li><a href="../my-talents.html">내 달란트</a></li>
       <li data-min-perm="40"><a href="talents.html" class="active">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
-      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
+      <li data-min-perm="60"><a href="purchases.html">구매 관리</a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
       <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="page-access.html">페이지 접근</a></li>
@@ -81,8 +82,9 @@
       </div>
 
       <div id="earnSection">
-        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">항목 선택</div>
+        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">항목 선택 (체크 후 지급 확정)</div>
         <div id="talentItemBtns" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;"></div>
+        <button class="btn-confirm" id="btnConfirmGive" onclick="confirmGiveItems()" style="width:100%;padding:0.6rem;margin-bottom:0.8rem;display:none;">✅ 지급 확정</button>
         <details style="margin-bottom:0.8rem;">
           <summary style="cursor:pointer;font-size:0.85rem;color:var(--admin-primary);">수동 입력 (항목에 없는 경우)</summary>
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
@@ -122,7 +124,7 @@
       <div id="detailSummary" style="display:flex;gap:0.8rem;margin-bottom:1rem;"></div>
       <div class="admin-table-wrap" style="max-height:400px;overflow-y:auto;">
         <table class="admin-table" style="font-size:0.85rem;">
-          <thead><tr><th>날짜</th><th>유형</th><th>금액</th><th>설명</th><th>잔액</th></tr></thead>
+          <thead><tr><th>날짜</th><th>유형</th><th>금액</th><th>설명</th><th>지급자</th><th>잔액</th><th></th></tr></thead>
           <tbody id="detailHistory"></tbody>
         </table>
       </div>
@@ -132,12 +134,28 @@
     </div>
   </div>
 
+  <div class="modal-overlay hidden" id="returnModal">
+    <div class="modal-box" style="max-width:400px;">
+      <h3 class="modal-title">달란트 반환</h3>
+      <div style="margin-bottom:0.8rem;">
+        <div style="font-size:0.85rem;color:#868e96;margin-bottom:0.3rem;" id="returnInfo"></div>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">반환 사유 (필수)</label>
+        <input type="text" id="returnReason" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="반환 사유를 입력하세요" />
+      </div>
+      <div class="form-error" id="returnError"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeReturnModal()">취소</button>
+        <button class="btn-confirm" style="background:#e03131;border-color:#e03131;" onclick="submitReturn()">반환 처리</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.4"></script>
-  <script src="../js/activity-log.js?v=3.8.4"></script>
-  <script src="../js/auth.js?v=3.8.4"></script>
-  <script src="../js/user-mgmt.js?v=3.8.4"></script>
-  <script src="../js/talent.js?v=3.8.4"></script>
+  <script src="../js/supabase-config.js?v=3.9.0"></script>
+  <script src="../js/activity-log.js?v=3.9.0"></script>
+  <script src="../js/auth.js?v=3.9.0"></script>
+  <script src="../js/user-mgmt.js?v=3.9.0"></script>
+  <script src="../js/talent.js?v=3.9.0"></script>
   <script>
     initSupabase();
     let session;
@@ -260,15 +278,31 @@
       const { data: history } = await fetchTalentHistory(userId, { limit: 100 });
       const tbody = document.getElementById('detailHistory');
       if (!history || history.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">내역이 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">내역이 없습니다.</td></tr>';
       } else {
-        tbody.innerHTML = history.map(t => `<tr>
+        const creatorIds = [...new Set(history.map(t => t.created_by).filter(Boolean))];
+        let creatorMap = {};
+        if (creatorIds.length > 0) {
+          const { data: creators } = await _sb.from('profiles').select('id,display_name,username').in('id', creatorIds);
+          (creators || []).forEach(c => { creatorMap[c.id] = c.display_name || c.username || '-'; });
+        }
+        const canReturn = (session.permissionRank || 0) >= 80;
+        tbody.innerHTML = history.map(t => {
+          const creatorName = t.created_by ? (creatorMap[t.created_by] || '-') : '-';
+          const isReturn = t.description && t.description.startsWith('반환:');
+          const returnBtn = (canReturn && t.type === 'earn' && !isReturn)
+            ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="openReturnModal('${userId}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">반환</button>`
+            : '';
+          return `<tr>
           <td>${formatKSTShort(t.created_at)}</td>
-          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?'적립':'사용'}</span></td>
+          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?(isReturn?'반환':'적립'):'사용'}</span></td>
           <td style="font-weight:700;color:${t.type==='earn'?'#2b8a3e':'#e03131'}">${t.type==='earn'?'+':'-'}${t.amount}</td>
           <td>${t.description || '-'}</td>
+          <td style="font-size:0.78rem;">${creatorName}</td>
           <td>${t.balance_after != null ? t.balance_after : '-'}</td>
-        </tr>`).join('');
+          <td>${returnBtn}</td>
+        </tr>`;
+        }).join('');
       }
     }
 
@@ -329,15 +363,15 @@
       await loadUsers();
     }
 
-    function openTalentModal(userId, name, balance) {
+    async function openTalentModal(userId, name, balance) {
       talentUserId = userId;
       talentType = 'earn';
       document.getElementById('talentTitle').textContent = `${name} - 달란트 관리`;
       document.getElementById('talentBalance').textContent = balance;
       document.getElementById('talentError').classList.remove('show');
       setTalentType('earn');
-      renderTalentItemButtons();
       document.getElementById('talentModal').classList.remove('hidden');
+      await renderTalentItemButtons();
       loadTalentHistory(userId);
     }
 
@@ -357,29 +391,62 @@
       }
     }
 
-    function renderTalentItemButtons() {
+    async function renderTalentItemButtons() {
       const items = talentItems.filter(i => i.target_type === currentTab && i.is_active);
       const container = document.getElementById('talentItemBtns');
+      const confirmBtn = document.getElementById('btnConfirmGive');
       if (items.length === 0) {
         container.innerHTML = '<div style="color:var(--admin-text-muted);font-size:0.85rem;">등록된 항목이 없습니다.</div>';
+        confirmBtn.style.display = 'none';
         return;
       }
-      container.innerHTML = items.map(i =>
-        `<button class="filter-btn" onclick="giveByItem('${i.id}','${i.name}',${i.talent_amount})" style="padding:0.5rem 1rem;font-size:0.9rem;" title="${i.name}: +${i.talent_amount} 달란트">${i.name} <strong style="color:#2b8a3e;">+${i.talent_amount}</strong></button>`
-      ).join('');
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const { data: todayTxns } = await _sb.from('talent_transactions')
+        .select('talent_item_id')
+        .eq('user_id', talentUserId)
+        .eq('type', 'earn')
+        .gte('created_at', todayStart.toISOString())
+        .not('talent_item_id', 'is', null);
+      const givenIds = new Set((todayTxns || []).map(t => t.talent_item_id));
+
+      container.innerHTML = items.map(i => {
+        const done = givenIds.has(i.id);
+        return `<label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1px solid ${done?'#51cf66':'#dee2e6'};border-radius:8px;cursor:${done?'default':'pointer'};background:${done?'#e6fcf5':'#fff'};opacity:${done?'0.7':'1'};font-size:0.88rem;">
+          <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${i.talent_amount}" ${done?'checked disabled':''} onchange="updateConfirmBtn()" />
+          ${i.name} <strong style="color:${done?'#868e96':'#2b8a3e'};">+${i.talent_amount}</strong>
+          ${done?'<span style="font-size:0.7rem;color:#51cf66;">✓완료</span>':''}
+        </label>`;
+      }).join('');
+      updateConfirmBtn();
     }
 
-    async function giveByItem(itemId, itemName, amount) {
+    function updateConfirmBtn() {
+      const chks = document.querySelectorAll('.talent-item-chk:not(:disabled):checked');
+      const btn = document.getElementById('btnConfirmGive');
+      btn.style.display = chks.length > 0 ? 'block' : 'none';
+      btn.textContent = `✅ 지급 확정 (${chks.length}건)`;
+    }
+
+    async function confirmGiveItems() {
+      const chks = [...document.querySelectorAll('.talent-item-chk:not(:disabled):checked')];
+      if (chks.length === 0) return;
+      const names = chks.map(c => c.dataset.name).join(', ');
+      if (!confirm(`${chks.length}건의 달란트를 지급하시겠습니까?\n항목: ${names}`)) return;
       const errEl = document.getElementById('talentError');
       errEl.classList.remove('show');
-      const result = await giveTalentByItem(talentUserId, itemId, session.id);
-      if (result.success === false) {
-        errEl.textContent = result.error || '지급 실패';
-        errEl.classList.add('show');
-        return;
+      let lastBalance = 0;
+      for (const chk of chks) {
+        const result = await giveTalentByItem(talentUserId, chk.value, session.id);
+        if (result.success === false) {
+          errEl.textContent = `"${chk.dataset.name}" 지급 실패: ${result.error}`;
+          errEl.classList.add('show');
+          break;
+        }
+        lastBalance = result.balance;
       }
-      document.getElementById('talentBalance').textContent = result.balance;
-      errEl.classList.remove('show');
+      document.getElementById('talentBalance').textContent = lastBalance;
+      await renderTalentItemButtons();
       await loadTalentHistory(talentUserId);
       await loadUsers();
     }
@@ -428,10 +495,31 @@
         </div>`).join('');
     }
 
+    let returnCtx = {};
+    function openReturnModal(userId, amount, desc) {
+      returnCtx = { userId, amount: parseInt(amount) };
+      document.getElementById('returnInfo').textContent = `항목: ${desc} / 금액: ${amount} 달란트`;
+      document.getElementById('returnReason').value = '';
+      document.getElementById('returnError').classList.remove('show');
+      document.getElementById('returnModal').classList.remove('hidden');
+    }
+    function closeReturnModal() { document.getElementById('returnModal').classList.add('hidden'); }
+    async function submitReturn() {
+      const reason = document.getElementById('returnReason').value.trim();
+      const errEl = document.getElementById('returnError');
+      if (!reason) { errEl.textContent = '반환 사유를 입력해주세요.'; errEl.classList.add('show'); return; }
+      const result = await returnTalent(returnCtx.userId, returnCtx.amount, reason, session.id);
+      if (result.success === false) { errEl.textContent = result.error; errEl.classList.add('show'); return; }
+      closeReturnModal();
+      await openDetailModal(returnCtx.userId, document.getElementById('detailTitle').textContent.replace(' - 달란트 상세',''));
+      await loadUsers();
+    }
+
     document.getElementById('userModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
     document.getElementById('talentModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeTalentModal(); });
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
+    document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.8.4"></script>
+  <script src="../js/version.js?v=3.9.0"></script>
 </body>
 </html>
