@@ -172,12 +172,12 @@
         });
         if (error) {
           await logError('ORDER_REQUEST_FAIL', { productId, productName, price, error: error.message });
-          alert('구매 신청 실패: ' + error.message);
+          alert('구매 신청 실패: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
           await logWarn('ORDER_REQUEST_DENIED', { productName, price, reason: data.error });
-          alert(data.error);
+          alert(tErr(data.error));
           return;
         }
         _userPending += price;
@@ -186,7 +186,7 @@
         renderShopProducts();
       } catch (err) {
         await logError('ORDER_REQUEST_ERROR', { productName, price, error: String(err) });
-        alert('구매 신청 중 오류가 발생했습니다: ' + err.message);
+        alert('구매 신청 중 오류가 발생했습니다: ' + tErr(err.message));
       }
     }
   </script>

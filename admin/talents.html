@@ -343,14 +343,14 @@
 
       if (editingId) {
         const { error } = await updateUser(editingId, { displayName });
-        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+        if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
       } else {
         const { error } = await createUser({
           username, displayName: displayName || username,
           userType: currentTab,
           departmentId: session.managedDeptId || null
         });
-        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+        if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
       }
       closeModal();
       await loadUsers();
@@ -441,14 +441,14 @@
           const result = await giveTalentByItem(talentUserId, chk.value, session.id);
           if (result.success === false) {
             await logError('TALENT_GIVE_ITEM_FAIL', { userId: talentUserId, itemId: chk.value, itemName: chk.dataset.name, error: result.error });
-            errEl.textContent = `"${chk.dataset.name}" 지급 실패: ${result.error}`;
+            errEl.textContent = `"${chk.dataset.name}" 지급 실패: ${tErr(result.error)}`;
             errEl.classList.add('show');
             break;
           }
           lastBalance = result.balance;
         } catch (err) {
           await logError('TALENT_GIVE_ITEM_ERROR', { userId: talentUserId, itemId: chk.value, error: String(err) });
-          errEl.textContent = `오류 발생: ${err.message}`; errEl.classList.add('show'); break;
+          errEl.textContent = `오류 발생: ${tErr(err.message)}`; errEl.classList.add('show'); break;
         }
       }
       await logInfo('TALENT_GIVE_ITEMS', { userId: talentUserId, items: names, count: chks.length });
@@ -468,7 +468,7 @@
         const result = await giveTalent(talentUserId, amount, desc, session.id);
         if (result.success === false) {
           await logError('TALENT_MANUAL_GIVE_FAIL', { userId: talentUserId, amount, desc, error: result.error });
-          errEl.textContent = result.error || '처리 실패'; errEl.classList.add('show'); return;
+          errEl.textContent = tErr(result.error) || '처리 실패'; errEl.classList.add('show'); return;
         }
         await logInfo('TALENT_MANUAL_GIVE', { userId: talentUserId, amount, desc });
         document.getElementById('talentBalance').textContent = result.balance;
@@ -479,7 +479,7 @@
         await loadUsers();
       } catch (err) {
         await logError('TALENT_MANUAL_GIVE_ERROR', { userId: talentUserId, amount, error: String(err) });
-        errEl.textContent = '오류: ' + err.message; errEl.classList.add('show');
+        errEl.textContent = '오류: ' + tErr(err.message); errEl.classList.add('show');
       }
     }
 
@@ -493,7 +493,7 @@
         const result = await useTalent(talentUserId, amount, desc, session.id);
         if (result.success === false) {
           await logError('TALENT_USE_FAIL', { userId: talentUserId, amount, desc, error: result.error });
-          errEl.textContent = result.error || '처리 실패'; errEl.classList.add('show'); return;
+          errEl.textContent = tErr(result.error) || '처리 실패'; errEl.classList.add('show'); return;
         }
         await logInfo('TALENT_USE', { userId: talentUserId, amount, desc });
         document.getElementById('talentBalance').textContent = result.balance;
@@ -504,7 +504,7 @@
         await loadUsers();
       } catch (err) {
         await logError('TALENT_USE_ERROR', { userId: talentUserId, amount, error: String(err) });
-        errEl.textContent = '오류: ' + err.message; errEl.classList.add('show');
+        errEl.textContent = '오류: ' + tErr(err.message); errEl.classList.add('show');
       }
     }
 
@@ -537,7 +537,7 @@
         const result = await returnTalent(returnCtx.userId, returnCtx.amount, reason, session.id);
         if (result.success === false) {
           await logError('TALENT_RETURN_FAIL', { userId: returnCtx.userId, amount: returnCtx.amount, reason, error: result.error });
-          errEl.textContent = result.error; errEl.classList.add('show'); return;
+          errEl.textContent = tErr(result.error); errEl.classList.add('show'); return;
         }
         await logInfo('TALENT_RETURN', { userId: returnCtx.userId, amount: returnCtx.amount, reason });
         closeReturnModal();
@@ -545,7 +545,7 @@
         await loadUsers();
       } catch (err) {
         await logError('TALENT_RETURN_ERROR', { userId: returnCtx.userId, amount: returnCtx.amount, error: String(err) });
-        errEl.textContent = '오류: ' + err.message; errEl.classList.add('show');
+        errEl.textContent = '오류: ' + tErr(err.message); errEl.classList.add('show');
       }
     }
 

@@ -187,11 +187,11 @@
 
       if (editingId) {
         const { error } = await updateDepartment(editingId, { name, description: desc || null, class_count: classCount });
-        if (error) { await logError('DEPT_UPDATE_FAIL', { id: editingId, name, error }); errEl.textContent = error; errEl.classList.add('show'); return; }
+        if (error) { await logError('DEPT_UPDATE_FAIL', { id: editingId, name, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
         await logInfo('DEPT_UPDATE', { id: editingId, name });
       } else {
         const { error } = await createDepartment(name, desc || null, classCount);
-        if (error) { await logError('DEPT_CREATE_FAIL', { name, error }); errEl.textContent = error; errEl.classList.add('show'); return; }
+        if (error) { await logError('DEPT_CREATE_FAIL', { name, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
         await logInfo('DEPT_CREATE', { name });
       }
       closeModal();

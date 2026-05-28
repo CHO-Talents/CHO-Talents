@@ -350,11 +350,11 @@
       try {
         await _sb.from('reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
         const { error } = await _sb.from('reports').insert(SEED);
-        if (error) { await logError('REPORT_SEED_FAIL', { error: error.message }); alert('등록 실패: ' + error.message); return; }
+        if (error) { await logError('REPORT_SEED_FAIL', { error: error.message }); alert('등록 실패: ' + tErr(error.message)); return; }
         await logInfo('REPORT_SEED', { count: SEED.length });
         alert(SEED.length + '건의 보고서가 등록되었습니다.');
         await loadReports();
-      } catch (err) { await logError('REPORT_SEED_ERROR', { error: String(err) }); alert('오류: ' + err.message); }
+      } catch (err) { await logError('REPORT_SEED_ERROR', { error: String(err) }); alert('오류: ' + tErr(err.message)); }
     }
 
     let editingReportId = null;
@@ -420,7 +420,7 @@
 
         if (result.error) {
           await logError('REPORT_SAVE_FAIL', { taskId, reportType, error: result.error.message });
-          alert('저장 실패: ' + result.error.message);
+          alert('저장 실패: ' + tErr(result.error.message));
         } else {
           closeAddReportModal();
           await loadReports();
@@ -428,7 +428,7 @@
         }
       } catch (err) {
         await logError('REPORT_SAVE_ERROR', { taskId, error: String(err) });
-        alert('오류: ' + err.message);
+        alert('오류: ' + tErr(err.message));
       } finally {
         btn.disabled = false;
         btn.textContent = editingReportId ? '수정' : '등록';
@@ -454,7 +454,7 @@
         const { error } = await _sb.from('reports').delete().in('id', ids);
         if (error) {
           await logError('REPORT_DELETE_FAIL', { count: ids.length, error: error.message });
-          alert('삭제 실패: ' + error.message);
+          alert('삭제 실패: ' + tErr(error.message));
         } else {
           document.getElementById('chkAll').checked = false;
           await loadReports();
@@ -462,7 +462,7 @@
         }
       } catch (err) {
         await logError('REPORT_DELETE_ERROR', { error: String(err) });
-        alert('오류: ' + err.message);
+        alert('오류: ' + tErr(err.message));
       }
     }
   </script>

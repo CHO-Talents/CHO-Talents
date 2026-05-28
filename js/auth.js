@@ -285,3 +285,42 @@ async function changePassword(username, newPassword) {
     return { success: false, error: '비밀번호 변경 중 오류가 발생했습니다.' };
   }
 }
+
+const _ERR_MAP = [
+  [/Already given this item this week/i, '이번 주에 이미 지급된 항목입니다'],
+  [/Already given this item today/i, '오늘 이미 지급된 항목입니다'],
+  [/Already given/i, '이미 지급된 항목입니다'],
+  [/Invalid login credentials/i, '아이디 또는 비밀번호가 올바르지 않습니다'],
+  [/User not found/i, '사용자를 찾을 수 없습니다'],
+  [/User already registered/i, '이미 등록된 사용자입니다'],
+  [/Email not confirmed/i, '이메일 인증이 완료되지 않았습니다'],
+  [/Password should be at least/i, '비밀번호는 최소 6자 이상이어야 합니다'],
+  [/duplicate key.*username/i, '이미 사용 중인 아이디입니다'],
+  [/duplicate key/i, '이미 존재하는 데이터입니다'],
+  [/violates check constraint/i, '입력값이 허용 범위를 벗어났습니다'],
+  [/violates foreign key/i, '참조하는 데이터가 존재하지 않습니다'],
+  [/violates row-level security/i, '해당 작업에 대한 권한이 없습니다'],
+  [/new row violates/i, '데이터 저장 권한이 없습니다'],
+  [/permission denied/i, '권한이 없습니다'],
+  [/column .* does not exist/i, 'DB 스키마 업데이트가 필요합니다. 관리자에게 문의하세요'],
+  [/relation .* does not exist/i, 'DB 테이블이 존재하지 않습니다. 관리자에게 문의하세요'],
+  [/function .* does not exist/i, 'DB 함수가 존재하지 않습니다. 관리자에게 문의하세요'],
+  [/Could not find the function/i, 'DB 함수를 찾을 수 없습니다. 관리자에게 문의하세요'],
+  [/JWT expired/i, '인증이 만료되었습니다. 다시 로그인해주세요'],
+  [/JWT/i, '인증 오류가 발생했습니다. 다시 로그인해주세요'],
+  [/network/i, '네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요'],
+  [/timeout/i, '요청 시간이 초과되었습니다. 다시 시도해주세요'],
+  [/fetch failed/i, '서버 연결에 실패했습니다. 잠시 후 다시 시도해주세요'],
+  [/Insufficient talent/i, '달란트가 부족합니다'],
+  [/not enough/i, '잔액이 부족합니다'],
+];
+
+function tErr(msg) {
+  if (!msg) return '알 수 없는 오류가 발생했습니다';
+  const s = typeof msg === 'object' ? (msg.message || JSON.stringify(msg)) : String(msg);
+  if (/^[가-힣\s.,!?:;()\d\-_/]+$/.test(s)) return s;
+  for (const [re, ko] of _ERR_MAP) {
+    if (re.test(s)) return ko;
+  }
+  return '오류가 발생했습니다 (' + s.substring(0, 80) + ')';
+}

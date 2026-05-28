@@ -369,7 +369,7 @@
         const result = await deleteLogsByDateRange(fromStr, toStr);
         if (result.error) {
           await logError('LOG_RANGE_DELETE_FAIL', { dateFrom, dateTo, error: result.error });
-          alert('실패:\n\n' + result.error);
+          alert('실패:\n\n' + tErr(result.error));
           return;
         }
         const deleted = result.count || count;
@@ -378,7 +378,7 @@
         await loadAll();
       } catch (err) {
         await logError('LOG_RANGE_DELETE_ERROR', { dateFrom, dateTo, error: String(err) });
-        alert('오류: ' + err.message);
+        alert('오류: ' + tErr(err.message));
       }
     }
 
@@ -445,7 +445,7 @@
         const { error, count } = await deleteLogsByIds(ids);
         if (error) {
           await logError('LOG_SELECT_DELETE_FAIL', { count: ids.length, error });
-          alert('실패:\n\n' + error);
+          alert('실패:\n\n' + tErr(error));
           return;
         }
         await logInfo('LOG_SELECT_DELETE', { count: count || ids.length });
@@ -454,7 +454,7 @@
         await loadAll();
       } catch (err) {
         await logError('LOG_SELECT_DELETE_ERROR', { error: String(err) });
-        alert('오류: ' + err.message);
+        alert('오류: ' + tErr(err.message));
       }
     }
 
@@ -511,7 +511,7 @@
       const { error } = await _sb.from('activity_logs')
         .update({ is_deleted: false, deleted_at: null })
         .eq('id', id);
-      if (error) { await logError('LOG_RESTORE_FAIL', { logId: id, error: error.message }); alert('복원 실패: ' + error.message); return; }
+      if (error) { await logError('LOG_RESTORE_FAIL', { logId: id, error: error.message }); alert('복원 실패: ' + tErr(error.message)); return; }
       await logInfo('LOG_RESTORE', { logId: id });
       alert('복원되었습니다.');
       toggleDeletedView();
