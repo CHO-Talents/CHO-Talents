@@ -8,16 +8,20 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand">CHO-Talents</a>
+    <a href="../index.html" class="admin-nav-brand">⭐ 달란트 마을</a>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
       <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+      <li><a href="../my-talents.html">내 달란트</a></li>
       <li data-min-perm="40"><a href="talents.html" class="active">달란트 관리</a></li>
+      <li><a href="../shop.html">상품 구매</a></li>
       <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
       <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="80"><a href="page-access.html">페이지 접근</a></li>
+      <li data-min-perm="80"><a href="page-features.html">페이지 기능</a></li>
       <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
@@ -38,8 +42,8 @@
         <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
       </div>
       <table class="admin-table">
-        <thead><tr><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th>등록일</th><th>관리</th></tr></thead>
-        <tbody id="userList"><tr><td colspan="6" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>이름</th><th>부서</th><th>반</th><th>잔여 달란트</th><th>사용 달란트</th><th>누적 달란트</th><th>관리</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -111,12 +115,28 @@
     </div>
   </div>
 
+  <div class="modal-overlay hidden" id="detailModal">
+    <div class="modal-box" style="max-width:600px;">
+      <h3 class="modal-title" id="detailTitle">달란트 상세</h3>
+      <div id="detailSummary" style="display:flex;gap:0.8rem;margin-bottom:1rem;"></div>
+      <div class="admin-table-wrap" style="max-height:400px;overflow-y:auto;">
+        <table class="admin-table" style="font-size:0.85rem;">
+          <thead><tr><th>날짜</th><th>유형</th><th>금액</th><th>설명</th><th>잔액</th></tr></thead>
+          <tbody id="detailHistory"></tbody>
+        </table>
+      </div>
+      <div class="modal-actions" style="margin-top:1rem;">
+        <button class="btn-cancel" onclick="closeDetailModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.7.7"></script>
-  <script src="../js/activity-log.js?v=3.7.7"></script>
-  <script src="../js/auth.js?v=3.7.7"></script>
-  <script src="../js/user-mgmt.js?v=3.7.7"></script>
-  <script src="../js/talent.js?v=3.7.7"></script>
+  <script src="../js/supabase-config.js?v=3.8.0"></script>
+  <script src="../js/activity-log.js?v=3.8.0"></script>
+  <script src="../js/auth.js?v=3.8.0"></script>
+  <script src="../js/user-mgmt.js?v=3.8.0"></script>
+  <script src="../js/talent.js?v=3.8.0"></script>
   <script>
     initSupabase();
     let session;
@@ -126,6 +146,7 @@
     let currentTab = 'student';
     let allDepts = [];
     let talentItems = [];
+    let talentSummaryMap = {};
 
     (async () => {
       session = await initPage(40, '../login.html');
@@ -179,30 +200,78 @@
       document.getElementById('tableTitle').textContent = `${roleLabel} 목록 (${data.length}명)`;
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="empty-state">등록된 ${roleLabel}이(가) 없습니다.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">등록된 ${roleLabel}이(가) 없습니다.</td></tr>`;
         return;
       }
 
+      const userIds = data.map(u => u.id);
+      await loadBatchSummary(userIds);
+
       const nameMap = resolveDisplayNames(data);
-      const showManage = myRank >= 60;
       tbody.innerHTML = data.map(u => {
         const dn = nameMap[u.id] || u.display_name || '-';
         const isSelf = u.id === session.id;
         const classLabel = u.class_number ? u.class_number + '반' : '-';
+        const sm = talentSummaryMap[u.id] || { earned: 0, used: 0 };
         return `<tr>
         <td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
         <td>${getDeptName(u.department_id)}</td>
         <td>${classLabel}</td>
-        <td style="font-weight:700;">${u.talent_balance || 0}</td>
-        <td>${formatKSTShort(u.created_at)}</td>
+        <td style="font-weight:700;color:#2b8a3e;">${u.talent_balance || 0}</td>
+        <td style="color:#e03131;">${sm.used}</td>
+        <td style="color:#1971c2;">${sm.earned}</td>
         <td>
-          <button class="filter-btn" onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">달란트</button>
-          ${showManage ? `<button class="filter-btn" onclick="openEditModal('${u.id}','${u.username}','${(u.display_name || '').replace(/'/g,"\\'")}')">수정</button>` : ''}
-          ${showManage ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${dn.replace(/'/g,"\\'")}')">삭제</button>` : ''}
+          <button class="filter-btn" onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">달란트 지급</button>
+          <button class="filter-btn" onclick="openDetailModal('${u.id}','${dn.replace(/'/g,"\\'")}')">상세</button>
         </td>
       </tr>`;
       }).join('');
     }
+
+    async function loadBatchSummary(userIds) {
+      if (!_sb || userIds.length === 0) return;
+      const { data: txns } = await _sb.from('talent_transactions').select('user_id,type,amount').in('user_id', userIds);
+      talentSummaryMap = {};
+      (txns || []).forEach(t => {
+        if (!talentSummaryMap[t.user_id]) talentSummaryMap[t.user_id] = { earned: 0, used: 0 };
+        if (t.type === 'earn') talentSummaryMap[t.user_id].earned += t.amount;
+        else talentSummaryMap[t.user_id].used += t.amount;
+      });
+    }
+
+    async function openDetailModal(userId, name) {
+      document.getElementById('detailTitle').textContent = `${name} - 달란트 상세`;
+      document.getElementById('detailModal').classList.remove('hidden');
+      const summary = await fetchTalentSummary(userId);
+      document.getElementById('detailSummary').innerHTML = `
+        <div style="flex:1;text-align:center;padding:0.8rem;background:#e6fcf5;border-radius:8px;">
+          <div style="font-size:0.8rem;color:#868e96;">누적 적립</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#2b8a3e;">+${summary.earned}</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:0.8rem;background:#fff5f5;border-radius:8px;">
+          <div style="font-size:0.8rem;color:#868e96;">총 사용</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#e03131;">-${summary.used}</div>
+        </div>
+        <div style="flex:1;text-align:center;padding:0.8rem;background:#e7f5ff;border-radius:8px;">
+          <div style="font-size:0.8rem;color:#868e96;">잔여</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#1971c2;">${summary.balance}</div>
+        </div>`;
+      const { data: history } = await fetchTalentHistory(userId, { limit: 100 });
+      const tbody = document.getElementById('detailHistory');
+      if (!history || history.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">내역이 없습니다.</td></tr>';
+      } else {
+        tbody.innerHTML = history.map(t => `<tr>
+          <td>${formatKSTShort(t.created_at)}</td>
+          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?'적립':'사용'}</span></td>
+          <td style="font-weight:700;color:${t.type==='earn'?'#2b8a3e':'#e03131'}">${t.type==='earn'?'+':'-'}${t.amount}</td>
+          <td>${t.description || '-'}</td>
+          <td>${t.balance_after != null ? t.balance_after : '-'}</td>
+        </tr>`).join('');
+      }
+    }
+
+    function closeDetailModal() { document.getElementById('detailModal').classList.add('hidden'); }
 
     function openAddModal() {
       editingId = null;
@@ -360,7 +429,8 @@
 
     document.getElementById('userModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
     document.getElementById('talentModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeTalentModal(); });
+    document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
   </script>
-  <script src="../js/version.js?v=3.7.7"></script>
+  <script src="../js/version.js?v=3.8.0"></script>
 </body>
 </html>

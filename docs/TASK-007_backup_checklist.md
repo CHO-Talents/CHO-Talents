@@ -8,7 +8,7 @@
 ### admin_users (6건)
 | username | role | department_id | managed_dept_id | talent_balance | is_first_login |
 |----------|------|---------------|-----------------|----------------|----------------|
-| lsyby | admin | 3부 (996b3f2f) | - | 0 | false |
+| admin_user | admin | 3부 (996b3f2f) | - | 0 | false |
 | duswnd2 | admin | 3부 (996b3f2f) | - | 0 | false |
 | test01 | admin | 예배부 (f45a977a) | - | 0 | false |
 | test02 | dept_manager | 3부 (996b3f2f) | 예배부 (f45a977a) | 0 | false |

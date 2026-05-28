@@ -9,7 +9,7 @@ const PERMISSION_RANK = {
 };
 
 const PERMISSION_LABELS = {
-  admin: '관리자', evangelist: '전도사님', chief: '부장',
+  admin: '관리자', evangelist: '전도사님', chief: '부장 교사',
   dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
 };
 
@@ -36,7 +36,8 @@ const ROLE_REDIRECT = {
   student: 'my-talents.html'
 };
 
-function getPermRank(level) {
+function getPermRank(level, isSuperAdmin) {
+  if (isSuperAdmin && level === 'admin') return 110;
   return PERMISSION_RANK[level] || 0;
 }
 
@@ -60,7 +61,7 @@ function renderRoleBadge(elementId, session, basePath) {
   const href = (basePath || '') + redirect;
   el.innerHTML = `<a href="${href}" style="text-decoration:none;color:inherit;display:inline-flex;align-items:center;gap:0.3rem;" title="${label} 페이지로 이동">
     <span style="font-size:1.1rem;">${emoji}</span>
-    <span>${name} <span style="font-size:0.75rem;color:rgba(255,255,255,0.65);">(${uid})</span></span>
+    <span>${name} <span style="font-size:0.75rem;color:#222;">(${uid})</span></span>
     <span style="font-size:0.7rem;background:rgba(255,255,255,0.2);padding:0.1rem 0.4rem;border-radius:50px;">${label}</span>
   </a>`;
 }
@@ -85,14 +86,15 @@ async function login(username, password) {
     }
 
     const perm = profile.permission_level;
+    const _isSA = profile.is_super_admin || false;
     setSession({
       id: profile.id,
       username: profile.username,
       displayName: profile.display_name,
       userType: profile.user_type || 'teacher',
       permissionLevel: perm,
-      permissionRank: getPermRank(perm),
-      isSuperAdmin: profile.is_super_admin || false,
+      permissionRank: getPermRank(perm, _isSA),
+      isSuperAdmin: _isSA,
       isFirstLogin: profile.is_first_login,
       departmentId: profile.department_id,
       managedDeptId: profile.managed_dept_id,

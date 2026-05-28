@@ -16,7 +16,7 @@
       <span class="logo-text">달란트 마을</span>
       <nav class="main-nav" id="mainNav">
         <a href="shop.html" class="nav-btn">🛒 달란트 상점</a>
-        <a href="login.html" class="nav-btn" id="navLoginBtn">🔑 로그인</a>
+        <a href="login.html" class="nav-btn" id="navLoginBtn" style="display:none;">🔑 로그인</a>
       </nav>
     </div>
   </header>
@@ -76,13 +76,14 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.7.7"></script>
-  <script src="js/activity-log.js?v=3.7.7"></script>
-  <script src="js/auth.js?v=3.7.7"></script>
+  <script src="js/supabase-config.js?v=3.8.0"></script>
+  <script src="js/activity-log.js?v=3.8.0"></script>
+  <script src="js/auth.js?v=3.8.0"></script>
   <script src="js/app.js"></script>
   <script>
     (async () => {
       const s = await loadAuthSession();
+      const loginBtn = document.getElementById('navLoginBtn');
       if (s) {
         const nav = document.getElementById('mainNav');
         const dashHref = getRoleRedirectUrl(s.permissionLevel, '');
@@ -90,9 +91,8 @@
           `<a href="shop.html" class="nav-btn">\u{1F6D2} 달란트 상점</a>` +
           `<div class="nav-user-info">` +
             `<a href="${dashHref}" class="nav-user-name">\u{1F464} ${s.displayName || s.username}</a>` +
-            `<button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button>` +
+            `<button class="btn-nav-logout" onclick="logout('login.html')">\u{1F6AA} 로그아웃</button>` +
           `</div>`;
-
         const myTalentCard = document.getElementById('cardMyTalent');
         if (myTalentCard) {
           const rank = s.permissionRank || 0;
@@ -100,9 +100,11 @@
             : rank >= 60 ? 'admin/talents.html'
             : 'my-talents.html';
         }
+      } else {
+        if (loginBtn) loginBtn.style.display = '';
       }
     })();
   </script>
-  <script src="js/version.js?v=3.7.7"></script>
+  <script src="js/version.js?v=3.8.0"></script>
 </body>
 </html>
