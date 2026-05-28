@@ -2,9 +2,26 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.8.1',
+  current: '3.8.2',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.8.2',
+      date: '2026-05-28',
+      title: '페이지 접근 권한별 개편 + 작업 이력 관리 + DB 연동 적용',
+      changes: [
+        'page-access.html: 사용자별 → 유형/권한별 관리로 전면 개편 (role_page_access 테이블)',
+        '신규 페이지: admin/audit.html - 작업 이력 조회 (부장 교사 80+ 접근)',
+        'auth.js initPage(): role_page_access DB 조회 → 페이지 접근 차단 + 요소 숨김 실제 적용',
+        'auth.js detectCurrentPageId(): 현재 페이지 ID 자동 감지 함수 추가',
+        'activity-log.js: deleteLogsByIds/deleteLogsByDateRange 상세 디버그 로그 + RLS 미적용 안내',
+        'reports.html: 보고서 수정 버튼 추가 (editReport 함수)',
+        'admin.css: @keyframes spin-slow + .brand-icon 회전 애니메이션 추가',
+        '전체 admin 페이지: nav brand 별 이모지 회전 적용 (<span class=brand-icon>)',
+        '전체 admin 페이지: 네비게이션에 작업 이력 메뉴 추가',
+        'docs/TASK-023_fixes.sql: role_page_access 테이블 + activity_logs/reports RLS 정책'
+      ]
+    },
     {
       version: '3.8.1',
       date: '2026-05-28',

@@ -604,3 +604,13 @@ table.admin-table tr:hover { background: #fafbfc; }
 
   h2 { font-size: 1.1rem; }
 }
+
+/* Spinning star animation for nav brand */
+.admin-nav-brand .brand-icon {
+  display: inline-block;
+  animation: spin-slow 6s linear infinite;
+}
+@keyframes spin-slow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

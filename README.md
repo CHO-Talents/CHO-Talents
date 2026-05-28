@@ -12,18 +12,20 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 물품 교환, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.8.1` (`js/version.js` 기준, 2026-05-28) |
+| 현재 버전 | `v3.8.2` (`js/version.js` 기준, 2026-05-28) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.8.1`로 맞춰져 있습니다.
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.8.2`로 맞춰져 있습니다.
 - 권한 모델은 `user_type`(학생/교사)과 `permission_level`(6단계 등급 + 슈퍼관리자 110)을 분리해서 사용합니다.
 - 슈퍼관리자(`is_super_admin`, rank 110)는 일반 관리자(rank 100)도 관리할 수 있으며, 화면에서는 동일하게 "관리자"로 표시됩니다.
 - 네비게이션 브랜드는 "⭐ 달란트 마을"로 통일되어 있고, 한 줄 가로 스크롤로 표시됩니다.
-- 페이지 기능 관리(`page-features.html`)는 사용자별이 아닌 **권한별** 관리 방식으로 운영됩니다.
-- 보고서 화면에는 JS 기반 시더(전체 보고서 초기화)가 포함되어 SQL 인코딩 문제 없이 데이터를 삽입할 수 있습니다.
-- 로그 삭제(선택/범위)는 activity_logs DELETE RLS 정책이 필요합니다 (`docs/TASK-022_fixes.sql` 참조).
+- 페이지 접근 관리(`page-access.html`)와 기능 관리(`page-features.html`)는 모두 **유형/권한별** 관리 방식입니다.
+- `initPage()`에서 `role_page_access` DB 설정을 자동 적용하여 페이지 접근 차단 및 요소 숨김이 실제로 동작합니다.
+- 작업 이력(`audit.html`)에서 관리 작업(사용자 수정, 달란트 지급 등)의 이력을 카테고리별로 조회할 수 있습니다.
+- 보고서 화면에는 JS 기반 시더 + 개별 수정 기능이 포함되어 있습니다.
+- 로그 삭제(선택/범위)는 activity_logs DELETE RLS 정책이 필요합니다 (`docs/TASK-022_fixes.sql` 또는 `docs/TASK-023_fixes.sql` 참조).
 
 ## 프로젝트 구조
 
@@ -46,8 +48,9 @@ CHO-Talents/
 │   ├── reports.html               # 작업 보고서 조회 + JS 시더
 │   ├── logs.html                  # 활동 로그 조회/확인/삭제
 │   ├── versions.html              # 버전 이력
-│   ├── page-access.html           # 사용자별 페이지 접근/요소 가시성 관리
+│   ├── page-access.html           # 권한별 페이지 접근/요소 가시성 관리
 │   ├── page-features.html         # 권한별 페이지 기능 관리
+│   ├── audit.html                 # 작업 이력 조회 (관리 작업 이력)
 │   ├── page-permissions.html      # 페이지 권한 매트릭스 (레거시)
 │   └── change-password.html       # 최초 로그인/비밀번호 변경
 ├── css/
@@ -126,6 +129,7 @@ flowchart TD
   AdminDash --> Versions["admin/versions.html"]
   AdminDash --> PageAccess["admin/page-access.html"]
   AdminDash --> PageFeatures["admin/page-features.html"]
+  AdminDash --> Audit["admin/audit.html"]
   AdminDash -.-> PagePerms["admin/page-permissions.html<br/>직접 주소 접근"]
 ```
 
@@ -154,8 +158,9 @@ flowchart TD
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록, 선택 삭제 |
 | `admin/logs.html` | 100 | 활동 로그 필터링, 상세 보기, 오류 로그 확인 처리, 범위/선택 삭제 |
 | `admin/versions.html` | 80 | 배포 버전과 변경 이력 확인 |
-| `admin/page-access.html` | 80 | 사용자별 페이지 접근/요소 가시성 설정. 수정은 90등급 이상 |
+| `admin/page-access.html` | 80 | 유형/권한별 페이지 접근/요소 가시성 설정. 수정은 90등급 이상 |
 | `admin/page-features.html` | 80 | 권한별 페이지 기능(수정/삭제/승인 등) 설정. 수정은 90등급 이상. 슈퍼관리자 항목은 해당 계정만 표시 |
+| `admin/audit.html` | 80 | 관리 작업 이력 조회 (사용자/부서/달란트/물품/권한 카테고리별 필터) |
 | `admin/page-permissions.html` | 100 | 페이지별 조회/관리 권한 매트릭스 설정 (레거시) |
 | `admin/change-password.html` | 로그인 | 최초 로그인 또는 비밀번호 변경 처리 |
 
@@ -264,7 +269,7 @@ flowchart TD
 | 로그 | `activity_logs` | 페이지/오류/운영 활동 기록 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
 | 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |
-| 페이지 접근 | `user_page_access` | 사용자별 페이지 접근/요소 가시성 설정 |
+| 권한별 접근 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
 | 권한별 기능 | `role_page_features` | 권한 등급별 페이지 기능 설정 |
 | 이미지 | `Talents_Items` Storage | 물품 이미지 업로드/공개 URL |
 

@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand">⭐ 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html" class="active" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
@@ -22,6 +22,7 @@
       <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="page-access.html">페이지 접근</a></li>
       <li data-min-perm="80"><a href="page-features.html">페이지 기능</a></li>
+      <li data-min-perm="80"><a href="audit.html">작업 이력</a></li>
       <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
@@ -172,11 +173,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.1"></script>
-  <script src="../js/activity-log.js?v=3.8.1"></script>
-  <script src="../js/auth.js?v=3.8.1"></script>
-  <script src="../js/user-mgmt.js?v=3.8.1"></script>
-  <script src="../js/version.js?v=3.8.1"></script>
+  <script src="../js/supabase-config.js?v=3.8.2"></script>
+  <script src="../js/activity-log.js?v=3.8.2"></script>
+  <script src="../js/auth.js?v=3.8.2"></script>
+  <script src="../js/user-mgmt.js?v=3.8.2"></script>
+  <script src="../js/version.js?v=3.8.2"></script>
   <script>
     initSupabase();
     let session;
