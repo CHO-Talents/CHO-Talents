@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>작업 이력 - 달란트 마을</title>
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body class="admin-body">
+  <nav class="admin-nav">
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <ul class="admin-nav-links">
+      <li data-min-perm="80"><a href="index.html">대시보드</a></li>
+      <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
+      <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
+      <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+      <li><a href="../my-talents.html">내 달란트</a></li>
+      <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
+      <li><a href="../shop.html">상품 구매</a></li>
+      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="80"><a href="reports.html">보고서</a></li>
+      <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+      <li data-min-perm="80"><a href="page-access.html">페이지 접근</a></li>
+      <li data-min-perm="80"><a href="page-features.html">페이지 기능</a></li>
+      <li data-min-perm="80"><a href="audit.html" class="active">작업 이력</a></li>
+      <li data-min-perm="80"><a href="versions.html">버전</a></li>
+      <li><span class="nav-user" id="navUser"></span></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+    </ul>
+  </nav>
+
+  <div class="admin-container">
+    <h2 style="margin-bottom:1rem;">📝 작업 이력 관리</h2>
+    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">관리자 작업(사용자 수정, 권한 변경, 부서 이동, 비밀번호 초기화 등)의 이력을 조회합니다.</p>
+
+    <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
+      <button class="filter-btn active" onclick="setFilter('all',this)">전체</button>
+      <button class="filter-btn" onclick="setFilter('USER',this)">사용자</button>
+      <button class="filter-btn" onclick="setFilter('DEPT',this)">부서</button>
+      <button class="filter-btn" onclick="setFilter('TALENT',this)">달란트</button>
+      <button class="filter-btn" onclick="setFilter('PRODUCT',this)">물품</button>
+      <button class="filter-btn" onclick="setFilter('PERM',this)">권한/설정</button>
+      <span style="margin-left:0.5rem;color:#adb5bd;">|</span>
+      <input type="date" class="filter-input" id="auditDateFrom" />
+      <span style="font-size:0.8rem;color:#adb5bd;">~</span>
+      <input type="date" class="filter-input" id="auditDateTo" />
+      <button class="filter-btn" onclick="loadAuditLogs()">조회</button>
+      <input type="text" id="auditSearch" placeholder="작업자/대상 검색..." class="filter-input" style="flex:1;min-width:120px;" oninput="renderAudit()" />
+    </div>
+
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <div class="admin-table-title" id="auditTitle">작업 이력 (0건)</div>
+      </div>
+      <table class="admin-table">
+        <thead><tr><th>시간</th><th>작업자</th><th>작업 유형</th><th>대상</th><th>상세</th></tr></thead>
+        <tbody id="auditList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="auditDetailModal">
+    <div class="modal-box" style="max-width:650px;max-height:80vh;overflow-y:auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 class="modal-title">작업 상세 정보</h3>
+        <button class="btn-cancel" onclick="closeDetailModal()">닫기</button>
+      </div>
+      <div id="auditDetailBody" style="font-size:0.85rem;"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js?v=3.8.2"></script>
+  <script src="../js/activity-log.js?v=3.8.2"></script>
+  <script src="../js/auth.js?v=3.8.2"></script>
+  <script src="../js/user-mgmt.js?v=3.8.2"></script>
+  <script>
+    initSupabase();
+    let session, allAuditLogs = [], currentFilter = 'all';
+
+    const AUDIT_ACTIONS = {
+      USER_CREATE: { label: '사용자 등록', category: 'USER', emoji: '➕' },
+      USER_UPDATE: { label: '사용자 수정', category: 'USER', emoji: '✏️' },
+      USER_DELETE: { label: '사용자 삭제', category: 'USER', emoji: '🗑️' },
+      USER_PW_RESET: { label: '비밀번호 초기화', category: 'USER', emoji: '🔑' },
+      REQUEST_APPROVE: { label: '가입 승인', category: 'USER', emoji: '✅' },
+      REQUEST_REJECT: { label: '가입 거부', category: 'USER', emoji: '❌' },
+      DEPT_CREATE: { label: '부서 등록', category: 'DEPT', emoji: '🏢' },
+      DEPT_UPDATE: { label: '부서 수정', category: 'DEPT', emoji: '✏️' },
+      DEPT_DELETE: { label: '부서 삭제', category: 'DEPT', emoji: '🗑️' },
+      DEPT_TRANSFER: { label: '부서 이동', category: 'DEPT', emoji: '🔄' },
+      DEPT_TRANSFER_APPROVE: { label: '부서 이동 승인', category: 'DEPT', emoji: '✅' },
+      DEPT_TRANSFER_REJECT: { label: '부서 이동 거부', category: 'DEPT', emoji: '❌' },
+      TALENT_GIVE: { label: '달란트 지급', category: 'TALENT', emoji: '💰' },
+      TALENT_USE: { label: '달란트 사용', category: 'TALENT', emoji: '🛒' },
+      PRODUCT_CREATE: { label: '상품 등록', category: 'PRODUCT', emoji: '📦' },
+      PRODUCT_UPDATE: { label: '상품 수정', category: 'PRODUCT', emoji: '✏️' },
+      PRODUCT_DELETE: { label: '상품 삭제', category: 'PRODUCT', emoji: '🗑️' },
+      MGR_REGISTER: { label: '관리자 등록', category: 'PERM', emoji: '👑' },
+      MGR_UPDATE: { label: '관리자 수정', category: 'PERM', emoji: '✏️' },
+      PAGE_ACCESS_UPDATE: { label: '페이지 접근 설정', category: 'PERM', emoji: '🔐' },
+      ROLE_ACCESS_UPDATE: { label: '권한별 접근 설정', category: 'PERM', emoji: '🔐' },
+      PAGE_FEATURE_UPDATE: { label: '페이지 기능 설정', category: 'PERM', emoji: '⚙️' },
+      ROLE_FEATURE_UPDATE: { label: '권한별 기능 설정', category: 'PERM', emoji: '⚙️' },
+      REPORT_SAVE: { label: '보고서 저장', category: 'PERM', emoji: '📄' },
+      REPORT_DELETE: { label: '보고서 삭제', category: 'PERM', emoji: '🗑️' },
+      LOG_SELECT_DELETE: { label: '로그 선택 삭제', category: 'PERM', emoji: '🗑️' },
+      LOG_RANGE_DELETE: { label: '로그 범위 삭제', category: 'PERM', emoji: '🗑️' }
+    };
+
+    const AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
+
+    (async () => {
+      session = await initPage(80, '../login.html');
+      if (!session) return;
+      applyPermNav(session.permissionRank || 0);
+      renderRoleBadge('navUser', session, '../');
+      autoLogPageView();
+      updatePendingBadge();
+      await loadAuditLogs();
+    })();
+
+    function setFilter(f, btn) {
+      currentFilter = f;
+      document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderAudit();
+    }
+
+    async function loadAuditLogs() {
+      const fromDate = document.getElementById('auditDateFrom').value;
+      const toDate = document.getElementById('auditDateTo').value;
+
+      let query = _sb.from('activity_logs')
+        .select('*')
+        .in('action', AUDIT_ACTION_KEYS)
+        .order('created_at', { ascending: false })
+        .limit(500);
+
+      if (fromDate) query = query.gte('created_at', fromDate + 'T00:00:00+09:00');
+      if (toDate) query = query.lte('created_at', toDate + 'T23:59:59+09:00');
+
+      const { data, error } = await query;
+      if (error) {
+        console.error('[AUDIT] load error:', error);
+        document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 오류: ${error.message}</td></tr>`;
+        return;
+      }
+      allAuditLogs = data || [];
+      renderAudit();
+    }
+
+    function renderAudit() {
+      const search = (document.getElementById('auditSearch').value || '').toLowerCase();
+      let list = allAuditLogs;
+
+      if (currentFilter !== 'all') {
+        list = list.filter(l => {
+          const info = AUDIT_ACTIONS[l.action];
+          return info && info.category === currentFilter;
+        });
+      }
+      if (search) {
+        list = list.filter(l => {
+          const userName = l.user_name || l.details?.userName || '';
+          const target = l.details?.targetName || l.details?.displayName || l.details?.name || '';
+          return userName.toLowerCase().includes(search) || target.toLowerCase().includes(search) || (l.action || '').toLowerCase().includes(search);
+        });
+      }
+
+      document.getElementById('auditTitle').textContent = `작업 이력 (${list.length}건)`;
+      const tbody = document.getElementById('auditList');
+
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">조회된 작업 이력이 없습니다.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(l => {
+        const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '📋', category: '' };
+        const dt = l.created_at ? formatKSTShort(l.created_at) : '-';
+        const actor = l.user_name || '시스템';
+        const target = extractTarget(l);
+        return `<tr>
+          <td style="white-space:nowrap;font-size:0.78rem;">${dt}</td>
+          <td>${actor}</td>
+          <td><span class="level-badge INFO">${info.emoji} ${info.label}</span></td>
+          <td>${target}</td>
+          <td><button class="filter-btn" onclick='showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>상세</button></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function extractTarget(log) {
+      const d = log.details || {};
+      if (d.targetName) return d.targetName;
+      if (d.displayName) return d.displayName;
+      if (d.name) return d.name;
+      if (d.username) return d.username;
+      if (d.taskId) return d.taskId;
+      if (d.roleKey || d.permissionKey) return d.roleKey || d.permissionKey;
+      if (d.userId) return d.userId.substring(0, 8) + '...';
+      return '-';
+    }
+
+    function showDetail(log) {
+      const info = AUDIT_ACTIONS[log.action] || { label: log.action, emoji: '📋' };
+      const dt = log.created_at ? new Date(log.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }) : '-';
+      const details = log.details || {};
+
+      let html = `
+        <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
+          <tr><td style="padding:0.4rem;font-weight:700;width:100px;">시간</td><td style="padding:0.4rem;">${dt}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">작업자</td><td style="padding:0.4rem;">${log.user_name || '-'}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">작업</td><td style="padding:0.4rem;">${info.emoji} ${info.label}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">페이지</td><td style="padding:0.4rem;">${log.page || '-'}</td></tr>
+        </table>
+        <div style="margin-top:0.8rem;border-top:1px solid var(--admin-border);padding-top:0.6rem;">
+          <div style="font-weight:700;margin-bottom:0.4rem;">상세 데이터</div>
+          <pre style="background:#f8f9fa;padding:0.6rem;border-radius:6px;font-size:0.78rem;overflow-x:auto;max-height:300px;">${JSON.stringify(details, null, 2)}</pre>
+        </div>`;
+
+      document.getElementById('auditDetailBody').innerHTML = html;
+      document.getElementById('auditDetailModal').classList.remove('hidden');
+    }
+
+    function closeDetailModal() { document.getElementById('auditDetailModal').classList.add('hidden'); }
+
+    document.getElementById('auditDetailModal').addEventListener('click', e => {
+      if (e.target.classList.contains('modal-overlay')) closeDetailModal();
+    });
+  </script>
+  <script src="../js/version.js?v=3.8.2"></script>
+</body>
+</html>

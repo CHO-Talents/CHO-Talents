@@ -245,31 +245,51 @@ function autoLogPageView() {
 async function deleteLogsByIds(ids) {
   if (!_sb) return { error: 'Supabase not initialized', count: 0 };
   if (!ids || ids.length === 0) return { error: null, count: 0 };
+  console.log('[DELETE] deleteLogsByIds called, ids:', ids);
   try {
-    const { data, error } = await _sb
+    const { data, error, status, statusText } = await _sb
       .from('activity_logs')
       .delete()
       .in('id', ids)
       .select('id');
-    if (error) return { error: error.message, count: 0 };
-    return { error: null, count: data ? data.length : 0 };
+    console.log('[DELETE] response - status:', status, statusText, 'data:', data, 'error:', error);
+    if (error) {
+      console.error('[DELETE] RLS/DB error:', JSON.stringify(error));
+      return { error: error.message + ' (code: ' + (error.code || 'N/A') + ', hint: ' + (error.hint || 'N/A') + ')', count: 0 };
+    }
+    if (!data || data.length === 0) {
+      console.warn('[DELETE] No rows returned - RLS DELETE policy may be missing. Check: docs/TASK-022_fixes.sql');
+      return { error: 'DELETE 정책 없음: activity_logs 테이블에 DELETE RLS 정책을 추가해주세요.\n\nSupabase SQL Editor에서 docs/TASK-022_fixes.sql 실행 필요', count: 0 };
+    }
+    return { error: null, count: data.length };
   } catch (err) {
+    console.error('[DELETE] exception:', err);
     return { error: String(err), count: 0 };
   }
 }
 
 async function deleteLogsByDateRange(dateFrom, dateTo) {
   if (!_sb) return { error: 'Supabase not initialized', count: 0 };
+  console.log('[DELETE] deleteLogsByDateRange called, from:', dateFrom, 'to:', dateTo);
   try {
-    const { data, error } = await _sb
+    const { data, error, status, statusText } = await _sb
       .from('activity_logs')
       .delete()
       .gte('created_at', dateFrom)
       .lte('created_at', dateTo)
       .select('id');
-    if (error) return { error: error.message, count: 0 };
-    return { error: null, count: data ? data.length : 0 };
+    console.log('[DELETE] range response - status:', status, statusText, 'data:', data, 'error:', error);
+    if (error) {
+      console.error('[DELETE] range RLS/DB error:', JSON.stringify(error));
+      return { error: error.message + ' (code: ' + (error.code || 'N/A') + ')', count: 0 };
+    }
+    if (!data || data.length === 0) {
+      console.warn('[DELETE] No rows returned from range delete - RLS DELETE policy may be missing');
+      return { error: 'DELETE 정책 없음: activity_logs 테이블에 DELETE RLS 정책을 추가해주세요.\n\nSupabase SQL Editor에서 docs/TASK-022_fixes.sql 실행 필요', count: 0 };
+    }
+    return { error: null, count: data.length };
   } catch (err) {
+    console.error('[DELETE] range exception:', err);
     return { error: String(err), count: 0 };
   }
 }

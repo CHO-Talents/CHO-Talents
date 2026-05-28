@@ -206,7 +206,53 @@ async function initPage(allowedRolesOrMinRank, loginPath) {
   }
 
   document.body.classList.add('auth-ready');
+
+  if (typeof _sb !== 'undefined' && _sb) {
+    try {
+      const roleKey = session.isSuperAdmin ? 'super_admin' : session.permissionLevel;
+      const { data: accessData } = await _sb.from('role_page_access').select('*').eq('role_key', roleKey);
+      if (accessData && accessData.length > 0) {
+        const pageId = detectCurrentPageId();
+        const pageAccess = accessData.find(a => a.page_id === pageId);
+        if (pageAccess && pageAccess.can_access === false) {
+          const basePath = loginPath ? loginPath.replace(/[^/]*$/, '') : '../';
+          window.location.href = getRedirectUrl(session, basePath);
+          return null;
+        }
+        if (pageAccess && pageAccess.hidden_elements && pageAccess.hidden_elements.length > 0) {
+          pageAccess.hidden_elements.forEach(elId => {
+            const el = document.getElementById(elId);
+            if (el) el.style.display = 'none';
+          });
+        }
+      }
+    } catch (e) { console.warn('[AUTH] role_page_access check skipped:', e.message); }
+  }
+
   return session;
+}
+
+function detectCurrentPageId() {
+  const path = window.location.pathname;
+  if (path.includes('admin/index.html') || path.endsWith('admin/')) return 'admin-dashboard';
+  if (path.includes('admin/users.html')) return 'admin-users';
+  if (path.includes('admin/departments.html')) return 'admin-departments';
+  if (path.includes('admin/managers.html')) return 'admin-managers';
+  if (path.includes('admin/talents.html')) return 'admin-talents';
+  if (path.includes('admin/shop.html')) return 'admin-shop';
+  if (path.includes('admin/reports.html')) return 'admin-reports';
+  if (path.includes('admin/logs.html')) return 'admin-logs';
+  if (path.includes('admin/versions.html')) return 'admin-versions';
+  if (path.includes('admin/talent-items.html')) return 'admin-talent-items';
+  if (path.includes('admin/page-access.html')) return 'admin-page-access';
+  if (path.includes('admin/page-features.html')) return 'admin-page-features';
+  if (path.includes('admin/audit.html')) return 'admin-audit';
+  if (path.includes('my-talents.html')) return 'my-talents';
+  if (path.includes('earn-talents.html')) return 'earn-talents';
+  if (path.includes('shop.html')) return 'shop';
+  if (path.includes('login.html')) return 'login';
+  if (path.includes('register.html')) return 'register';
+  return 'index';
 }
 
 async function changePassword(username, newPassword) {
