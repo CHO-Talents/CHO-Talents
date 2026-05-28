@@ -219,6 +219,7 @@
       await _sb.from('role_page_features').delete().eq('permission_key', editingPerm);
       const { error } = await _sb.from('role_page_features').insert(rows);
       if (error) {
+        await logError('ROLE_FEATURE_UPDATE_FAIL', { permissionKey: editingPerm, error: error.message });
         errEl.textContent = '저장 실패: ' + error.message;
         errEl.classList.add('show');
         return;

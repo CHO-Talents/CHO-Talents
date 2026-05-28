@@ -368,6 +368,7 @@
         if (!confirm(dateFrom + ' ~ ' + dateTo + ' 기간의 로그 ' + count + '건을 삭제 대기 상태로 변경하시겠습니까?')) return;
         const result = await deleteLogsByDateRange(fromStr, toStr);
         if (result.error) {
+          await logError('LOG_RANGE_DELETE_FAIL', { dateFrom, dateTo, error: result.error });
           alert('실패:\n\n' + result.error);
           return;
         }
@@ -376,6 +377,7 @@
         alert(deleted + '건의 로그가 삭제 대기 상태로 변경되었습니다.\n\n실제 삭제는 관리자가 SQL로 직접 수행합니다.');
         await loadAll();
       } catch (err) {
+        await logError('LOG_RANGE_DELETE_ERROR', { dateFrom, dateTo, error: String(err) });
         alert('오류: ' + err.message);
       }
     }
@@ -442,6 +444,7 @@
       try {
         const { error, count } = await deleteLogsByIds(ids);
         if (error) {
+          await logError('LOG_SELECT_DELETE_FAIL', { count: ids.length, error });
           alert('실패:\n\n' + error);
           return;
         }
@@ -450,6 +453,7 @@
         alert((count || ids.length) + '건의 로그가 삭제 대기 상태로 변경되었습니다.\n\n실제 삭제는 관리자가 SQL로 직접 수행합니다.');
         await loadAll();
       } catch (err) {
+        await logError('LOG_SELECT_DELETE_ERROR', { error: String(err) });
         alert('오류: ' + err.message);
       }
     }
@@ -507,7 +511,7 @@
       const { error } = await _sb.from('activity_logs')
         .update({ is_deleted: false, deleted_at: null })
         .eq('id', id);
-      if (error) { alert('복원 실패: ' + error.message); return; }
+      if (error) { await logError('LOG_RESTORE_FAIL', { logId: id, error: error.message }); alert('복원 실패: ' + error.message); return; }
       await logInfo('LOG_RESTORE', { logId: id });
       alert('복원되었습니다.');
       toggleDeletedView();

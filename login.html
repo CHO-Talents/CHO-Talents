@@ -74,12 +74,14 @@
         const result = await login(username, password);
 
         if (result.success) {
+          logInfo('LOGIN_SUCCESS', { username });
           if (result.data.is_first_login) {
             window.location.href = 'admin/change-password.html';
           } else {
             window.location.href = getRoleRedirectUrl(result.data.permission_level, '');
           }
         } else {
+          logWarn('LOGIN_FAIL', { username, error: result.error });
           const { data: reqData } = await _sb.from('registration_requests')
             .select('status')
             .eq('username', username)

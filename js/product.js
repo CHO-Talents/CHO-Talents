@@ -75,7 +75,7 @@ async function deleteProductImage(imageUrl) {
     const path = imageUrl.split('/Talents_Items/').pop();
     if (path) await _sb.storage.from('Talents_Items').remove([path]);
   } catch (err) {
-    console.warn('Image delete failed:', err);
+    logWarn('IMAGE_DELETE_FAIL', { imageUrl, error: String(err) });
   }
 }
 
