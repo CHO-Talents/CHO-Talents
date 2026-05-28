@@ -263,11 +263,13 @@
 
       if (editingId) {
         const { error } = await updateProduct(editingId, row);
-        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+        if (error) { await logError('PRODUCT_UPDATE_FAIL', { id: editingId, name, error }); errEl.textContent = error; errEl.classList.add('show'); return; }
+        await logInfo('PRODUCT_UPDATE', { id: editingId, name });
       } else {
         row.created_by = session.id;
         const { error } = await createProduct(row);
-        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+        if (error) { await logError('PRODUCT_CREATE_FAIL', { name, error }); errEl.textContent = error; errEl.classList.add('show'); return; }
+        await logInfo('PRODUCT_CREATE', { name, price });
       }
       closeModal();
       await loadProducts();
@@ -276,6 +278,7 @@
     async function confirmDelete(id, name) {
       if (!confirm(`"${name}" 상품을 삭제하시겠습니까?`)) return;
       await deleteProduct(id);
+      await logInfo('PRODUCT_DELETE', { id, name });
       await loadProducts();
     }
 

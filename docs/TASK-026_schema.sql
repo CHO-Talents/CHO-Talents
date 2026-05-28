@@ -100,7 +100,7 @@ BEGIN
   RETURN json_build_object(
     'success', true,
     'order_id', v_order_id,
-    'pending_talent', COALESCE(pending_talent, 0) + p_price
+    'pending_talent', v_pending + p_price
   );
 END;
 $$;

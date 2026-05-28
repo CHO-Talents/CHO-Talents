@@ -77,8 +77,17 @@
         currentShopTab = _canViewTeacher ? (session.userType || 'student') : 'student';
         if (_canViewTeacher) document.getElementById('tabArea').style.display = 'flex';
 
-        const { data: prof } = await _sb.from('profiles').select('talent_balance,pending_talent').eq('id', session.id).single();
-        if (prof) { _userBalance = prof.talent_balance || 0; _userPending = prof.pending_talent || 0; }
+        let prof = null;
+        const { data: p1, error: e1 } = await _sb.from('profiles').select('talent_balance,pending_talent').eq('id', session.id).single();
+        if (e1) {
+          const { data: p2 } = await _sb.from('profiles').select('talent_balance').eq('id', session.id).single();
+          prof = p2;
+          if (prof) { _userBalance = prof.talent_balance || 0; _userPending = 0; }
+          logWarn('SHOP_PROFILE_FALLBACK', { error: e1.message });
+        } else {
+          prof = p1;
+          if (prof) { _userBalance = prof.talent_balance || 0; _userPending = prof.pending_talent || 0; }
+        }
       }
       autoLogPageView();
       await loadAllProducts();
@@ -147,20 +156,38 @@
     async function requestOrder(productId, productName, price) {
       if (!_shopSession) { alert('로그인이 필요합니다.'); return; }
       const available = _userBalance - _userPending;
-      if (available < price) { alert(`사용 가능한 달란트가 부족합니다.\n잔여: ${_userBalance} / 사용 대기: ${_userPending} / 사용 가능: ${available}`); return; }
+      if (available < price) {
+        logWarn('ORDER_INSUFFICIENT_BALANCE', { productName, price, balance: _userBalance, pending: _userPending, available });
+        alert(`사용 가능한 달란트가 부족합니다.\n잔여: ${_userBalance} / 사용 대기: ${_userPending} / 사용 가능: ${available}`);
+        return;
+      }
       if (!confirm(`"${productName}"을(를) 구매 신청하시겠습니까?\n가격: ${price} 달란트\n\n사용 가능 달란트: ${available}`)) return;
 
-      const { data, error } = await _sb.rpc('request_product_order', {
-        p_user_id: _shopSession.id,
-        p_product_id: productId,
-        p_product_name: productName,
-        p_price: price
-      });
-      if (error) { alert('구매 신청 실패: ' + error.message); return; }
-      if (data && data.success === false) { alert(data.error); return; }
-      _userPending += price;
-      alert('✅ 구매 신청이 완료되었습니다!');
-      renderShopProducts();
+      try {
+        const { data, error } = await _sb.rpc('request_product_order', {
+          p_user_id: _shopSession.id,
+          p_product_id: productId,
+          p_product_name: productName,
+          p_price: price
+        });
+        if (error) {
+          await logError('ORDER_REQUEST_FAIL', { productId, productName, price, error: error.message });
+          alert('구매 신청 실패: ' + error.message);
+          return;
+        }
+        if (data && data.success === false) {
+          await logWarn('ORDER_REQUEST_DENIED', { productName, price, reason: data.error });
+          alert(data.error);
+          return;
+        }
+        _userPending += price;
+        await logInfo('ORDER_REQUEST_SUCCESS', { productName, price, orderId: data?.order_id });
+        alert('✅ 구매 신청이 완료되었습니다!');
+        renderShopProducts();
+      } catch (err) {
+        await logError('ORDER_REQUEST_ERROR', { productName, price, error: String(err) });
+        alert('구매 신청 중 오류가 발생했습니다: ' + err.message);
+      }
     }
   </script>
   <script src="js/version.js?v=3.9.0"></script>
