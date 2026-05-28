@@ -85,7 +85,7 @@
 | anon key로 profiles 직접 조회 (인증 없이) | **PASS** | 빈 결과 반환 (RLS 차단) |
 | anon key로 departments 공개 조회 | **PASS** | 정상 접근 가능 (의도적 공개) |
 | anon key로 products 공개 조회 | **PASS** | 정상 접근 가능 (의도적 공개) |
-| Supabase Auth 로그인 (lsyby/1234) | **PASS** | JWT 토큰 정상 발급 |
+| Supabase Auth 로그인 (admin_user/1234) | **PASS** | JWT 토큰 정상 발급 |
 | 인증 토큰으로 profiles 조회 | **PASS** | 권한에 따른 데이터 반환 |
 | get_my_profile RPC 호출 | **PASS** | 본인 프로필 + 부서명 반환 |
 
@@ -93,7 +93,7 @@
 
 | username | role | department | 비밀번호 |
 |----------|------|------------|----------|
-| lsyby | admin | 3부 | 1234 (변경 필요) |
+| admin_user | admin | 3부 | 1234 (변경 필요) |
 | duswnd2 | admin | 3부 | 1234 (변경 필요) |
 | test01 | admin | 예배부 | 1234 (변경 필요) |
 | test02 | dept_manager | 3부 (담당: 예배부) | 1234 (변경 필요) |

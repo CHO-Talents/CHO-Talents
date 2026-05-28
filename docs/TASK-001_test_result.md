@@ -33,7 +33,7 @@
 - TC-01-5: verify_admin 실패 시 null 반환 로직 확인 -> PASS
 - TC-01-6: update_password RPC 함수 정의 확인 -> PASS
 - TC-01-7: RLS 정책 (admin_users SELECT 차단) 확인 -> PASS
-- TC-01-8: 초기 계정 lsyby INSERT 확인 -> PASS
+- TC-01-8: 초기 계정 admin_user INSERT 확인 -> PASS
 
 ### TC-02. 로그인 기능 (6/6 PASS)
 

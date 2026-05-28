@@ -302,3 +302,24 @@ INSERT INTO reports (task_id, task_title, report_type, content, created_by) VALU
 <li>보고서 DB 한글 깨짐 데이터 전면 교체 (TASK-008~011 포함)</li>
 <li>전체 작업 보고서 20건 일괄 등록 (TASK-001 ~ TASK-020)</li>
 </ul>', 'AI_Cursor');
+
+-- TASK-021: v3.8.0 슈퍼관리자 체계 + 네비게이션 개편 + 페이지 권한 관리
+INSERT INTO reports (task_id, task_title, report_type, content, created_by) VALUES (
+  'TASK-021', 'v3.8.0 슈퍼관리자 체계 + 네비게이션 개편 + 페이지 권한 관리 + UI 전면 개선', 'change_report',
+  '<h2>수정 보고서: TASK-021</h2>
+<p><strong>버전:</strong> v3.8.0 | <strong>작업일:</strong> 2026-05-28</p>
+<h3>주요 변경 사항</h3>
+<ul>
+<li>슈퍼관리자(is_super_admin) 권한 체계 구현 - rank 110으로 관리자 상위 관리 가능</li>
+<li>네비게이션 브랜드: CHO-Talents를 ⭐ 달란트 마을로 전체 통일</li>
+<li>네비게이션: 내 달란트, 상품 구매, 페이지 접근, 페이지 기능 항목 추가</li>
+<li>네비게이션 아이디 색상 가시성 개선 (흰색 → 검정색)</li>
+<li>메인 페이지: 로그인/로그아웃 버튼 동적 전환</li>
+<li>신규 페이지: 페이지 접근 관리 (page-access.html)</li>
+<li>신규 페이지: 페이지 기능 관리 (page-features.html)</li>
+<li>부서 관리: 관리자/부서관리자 열 제거, 헤더 간소화</li>
+<li>권한 명칭: 부장 → 부장 교사 (전체 일괄 변경)</li>
+<li>관리자 관리: 달란트/등록일 열, 비밀번호 초기화/삭제 버튼 제거</li>
+<li>달란트 관리: 잔여/사용/누적 달란트 3열 + 상세 통계 모달 추가</li>
+<li>달란트 관리: 수정/삭제 버튼 제거, 달란트 → 달란트 지급 명칭 변경</li>
+</ul>', 'AI_Cursor');

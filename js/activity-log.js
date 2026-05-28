@@ -198,14 +198,15 @@ async function loadAuthSession() {
   if (!data) return null;
 
   const perm = data.permission_level;
+  const _isSA = data.is_super_admin || false;
   const profile = {
     id: data.id,
     username: data.username,
     displayName: data.display_name,
     userType: data.user_type || 'teacher',
     permissionLevel: perm,
-    permissionRank: (typeof getPermRank === 'function') ? getPermRank(perm) : ({ admin: 100, evangelist: 90, chief: 80, dept_teacher: 60, teacher: 40, student: 20 }[perm] || 0),
-    isSuperAdmin: data.is_super_admin || false,
+    permissionRank: (typeof getPermRank === 'function') ? getPermRank(perm, _isSA) : ((_isSA && perm === 'admin') ? 110 : ({ admin: 100, evangelist: 90, chief: 80, dept_teacher: 60, teacher: 40, student: 20 }[perm] || 0)),
+    isSuperAdmin: _isSA,
     isFirstLogin: data.is_first_login,
     departmentId: data.department_id,
     managedDeptId: data.managed_dept_id,

@@ -23,7 +23,7 @@ function resolveDisplayNames(users) {
 }
 
 function isAdminLevel(session) {
-  return session && session.permissionLevel === 'admin';
+  return session && (session.permissionLevel === 'admin' || session.isSuperAdmin);
 }
 
 async function fetchUsers(options = {}) {

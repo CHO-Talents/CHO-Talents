@@ -2,9 +2,28 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.7.7',
+  current: '3.8.0',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.8.0',
+      date: '2026-05-28',
+      title: '슈퍼관리자 체계 + 네비게이션 개편 + 페이지 권한 관리 + UI 전면 개선',
+      changes: [
+        'auth.js: 슈퍼관리자(is_super_admin) 권한 체계 구현 - rank 110으로 admin 상위 관리 가능',
+        '네비게이션 브랜드: CHO-Talents → ⭐ 달란트 마을 (전체 admin 페이지 통일)',
+        '네비게이션: 내 달란트, 상품 구매, 페이지 접근, 페이지 기능 항목 추가',
+        '네비게이션 아이디 색상: 흰색 → 검정색으로 가시성 개선',
+        '메인 페이지: 로그인 버튼 ↔ 로그아웃 버튼 동적 전환',
+        '신규 페이지: 페이지 접근 관리 (page-access.html) - 사용자별 페이지 접근/요소 가시성 관리',
+        '신규 페이지: 페이지 기능 관리 (page-features.html) - 사용자별 기능 권한 관리',
+        '부서 관리: 그리드 헤더 간소화 (관리자/부서관리자 열 제거)',
+        '권한 명칭: 부장 → 부장 교사 (전체 페이지 일괄 변경)',
+        '관리자 관리: 달란트/등록일 열 + 비밀번호 초기화/삭제 버튼 제거',
+        '달란트 관리: 잔여/사용/누적 달란트 표시 + 상세 통계 모달 추가',
+        '달란트 관리: 수정/삭제 버튼 제거, 달란트 → 달란트 지급 명칭 변경'
+      ]
+    },
     {
       version: '3.7.7',
       date: '2026-05-28',
@@ -185,7 +204,7 @@ const APP_VERSION = {
         'admin 계정이 동급 권한자(다른 admin)도 수정/삭제 가능하도록 프론트엔드 canManage 로직 수정',
         'admin_update_user, admin_delete_user, admin_create_user RPC: 동급 권한 차단(>=) → 상위만 차단(>) 변경',
         'applyRoleNav → applyPermNav 호환성 alias 추가 (브라우저 캐시 에러 방지)',
-        'lsyby 계정 display_name DB 수정: ???(admin) → 관리자(admin)',
+        'admin_user 계정 display_name DB 수정: ???(admin) → 관리자(admin)',
         '전체 HTML 18개 파일 JS 캐시 버스팅 쿼리스트링 추가 (?v=3.3.2)'
       ]
     },
