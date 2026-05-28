@@ -12,17 +12,18 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 물품 교환, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.7.7` (`js/version.js` 기준, 2026-05-28) |
+| 현재 버전 | `v3.8.1` (`js/version.js` 기준, 2026-05-28) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.7.7`로 맞춰져 있습니다.
-- 권한 모델은 `user_type`(학생/교사)과 `permission_level`(6단계 등급)을 분리해서 사용합니다.
-- 일반 교사(`teacher`, 40등급)도 `admin/talents.html`에서 담당 부서/반 범위의 달란트 처리를 할 수 있습니다.
-- 사용자 관리에는 반(`class_number`), 마지막 로그인, 가입대기 배지, 아이디 노출 제한, 동명이인 번호 표시, 부서 이동 요청/승인 흐름이 포함됩니다.
-- 보고서 화면은 등록 모달과 선택 삭제를 제공하고, 로그 화면은 관리자 전용으로 범위 삭제와 선택 삭제를 지원합니다.
-- 최신 `v3.7.7` 변경으로 사용자/관리자 수정 모달의 소속 부서 변경은 부서 이동 기능으로 대체되었습니다.
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.8.1`로 맞춰져 있습니다.
+- 권한 모델은 `user_type`(학생/교사)과 `permission_level`(6단계 등급 + 슈퍼관리자 110)을 분리해서 사용합니다.
+- 슈퍼관리자(`is_super_admin`, rank 110)는 일반 관리자(rank 100)도 관리할 수 있으며, 화면에서는 동일하게 "관리자"로 표시됩니다.
+- 네비게이션 브랜드는 "⭐ 달란트 마을"로 통일되어 있고, 한 줄 가로 스크롤로 표시됩니다.
+- 페이지 기능 관리(`page-features.html`)는 사용자별이 아닌 **권한별** 관리 방식으로 운영됩니다.
+- 보고서 화면에는 JS 기반 시더(전체 보고서 초기화)가 포함되어 SQL 인코딩 문제 없이 데이터를 삽입할 수 있습니다.
+- 로그 삭제(선택/범위)는 activity_logs DELETE RLS 정책이 필요합니다 (`docs/TASK-022_fixes.sql` 참조).
 
 ## 프로젝트 구조
 
@@ -42,10 +43,12 @@ CHO-Talents/
 │   ├── talents.html               # 학생/교사 달란트 지급 및 사용 처리
 │   ├── talent-items.html          # 달란트 지급 항목 관리
 │   ├── shop.html                  # 물품 등록/수정/삭제
-│   ├── reports.html               # 작업 보고서 조회
-│   ├── logs.html                  # 활동 로그 조회/확인 처리
+│   ├── reports.html               # 작업 보고서 조회 + JS 시더
+│   ├── logs.html                  # 활동 로그 조회/확인/삭제
 │   ├── versions.html              # 버전 이력
-│   ├── page-permissions.html      # 페이지 권한 매트릭스 관리
+│   ├── page-access.html           # 사용자별 페이지 접근/요소 가시성 관리
+│   ├── page-features.html         # 권한별 페이지 기능 관리
+│   ├── page-permissions.html      # 페이지 권한 매트릭스 (레거시)
 │   └── change-password.html       # 최초 로그인/비밀번호 변경
 ├── css/
 │   ├── style.css                  # 메인 화면 스타일
@@ -80,9 +83,10 @@ CHO-Talents/
 
 | 권한 | 코드 | 등급 | 기본 이동 | 주요 권한 |
 |---|---|---:|---|---|
+| 최고 관리자 | `admin` + `is_super_admin` | 110 | `admin/index.html` | 관리자 포함 전체 사용자 관리, 보고서 초기화, 시스템 설정 |
 | 관리자 | `admin` | 100 | `admin/index.html` | 전체 관리, 페이지 권한 관리, 상위 운영 기능 |
 | 전도사님 | `evangelist` | 90 | `admin/index.html` | 관리자 계열 화면, 달란트 항목 관리, 물품 삭제 등 |
-| 부장 | `chief` | 80 | `admin/index.html` | 대시보드, 관리자/보고서/버전, 담당 부서 중심 사용자/부서/달란트/물품 관리 |
+| 부장 교사 | `chief` | 80 | `admin/index.html` | 대시보드, 관리자/보고서/버전, 담당 부서 중심 사용자/부서/달란트/물품 관리 |
 | 부서 담당 교사 | `dept_teacher` | 60 | `admin/talents.html` | 담당 부서 중심 사용자/부서/달란트/물품 관리 |
 | 일반 교사 | `teacher` | 40 | `admin/talents.html` | 담당 부서/반 학생 달란트 처리, 내 달란트 확인, 교사용/학생용 상점 조회 |
 | 학생 | `student` | 20 | `my-talents.html` | 내 달란트 확인, 학생용 상점 조회 |
@@ -120,6 +124,8 @@ flowchart TD
   AdminDash --> Reports["admin/reports.html"]
   AdminDash --> Logs["admin/logs.html"]
   AdminDash --> Versions["admin/versions.html"]
+  AdminDash --> PageAccess["admin/page-access.html"]
+  AdminDash --> PageFeatures["admin/page-features.html"]
   AdminDash -.-> PagePerms["admin/page-permissions.html<br/>직접 주소 접근"]
 ```
 
@@ -148,7 +154,9 @@ flowchart TD
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록, 선택 삭제 |
 | `admin/logs.html` | 100 | 활동 로그 필터링, 상세 보기, 오류 로그 확인 처리, 범위/선택 삭제 |
 | `admin/versions.html` | 80 | 배포 버전과 변경 이력 확인 |
-| `admin/page-permissions.html` | 100 | 페이지별 조회/관리 권한 매트릭스 설정. 상단 메뉴에는 노출되지 않으며 직접 주소로 접근 |
+| `admin/page-access.html` | 80 | 사용자별 페이지 접근/요소 가시성 설정. 수정은 90등급 이상 |
+| `admin/page-features.html` | 80 | 권한별 페이지 기능(수정/삭제/승인 등) 설정. 수정은 90등급 이상. 슈퍼관리자 항목은 해당 계정만 표시 |
+| `admin/page-permissions.html` | 100 | 페이지별 조회/관리 권한 매트릭스 설정 (레거시) |
 | `admin/change-password.html` | 로그인 | 최초 로그인 또는 비밀번호 변경 처리 |
 
 ## 주요 동작 프로세스
@@ -255,7 +263,9 @@ flowchart TD
 | 물품 | `products` | 상점 물품, 가격, 재고, 대상, 이미지 |
 | 로그 | `activity_logs` | 페이지/오류/운영 활동 기록 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
-| 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 |
+| 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |
+| 페이지 접근 | `user_page_access` | 사용자별 페이지 접근/요소 가시성 설정 |
+| 권한별 기능 | `role_page_features` | 권한 등급별 페이지 기능 설정 |
 | 이미지 | `Talents_Items` Storage | 물품 이미지 업로드/공개 URL |
 
 | RPC | 목적 | 주요 호출 |
@@ -273,8 +283,9 @@ flowchart TD
 
 ## 운영/보안 메모
 
-- 최고관리자(`is_super_admin`)는 일반 관리자도 삭제할 수 없도록 보호합니다.
-- 사용자 관리 버튼은 본인 또는 본인보다 낮은 권한 대상에게만 표시됩니다. 최고관리자 보호는 별도 적용됩니다.
+- 최고관리자(`is_super_admin`, rank 110)는 일반 관리자(rank 100)를 포함한 모든 사용자를 관리할 수 있습니다.
+- 사용자 관리 버튼은 본인 또는 본인보다 낮은 권한 대상에게만 표시됩니다.
+- 로그 삭제(선택/범위)가 작동하려면 `docs/TASK-022_fixes.sql`의 DELETE RLS 정책을 Supabase에서 실행해야 합니다.
 - 아이디(`username`)는 관리자에게 전체 표시되고, 비관리자는 본인 아이디만 볼 수 있습니다. 동명이인은 표시명에 번호를 붙여 구분합니다.
 - 소속 부서/반 변경은 일반 수정 모달이 아니라 부서 이동 요청/승인 흐름으로 처리합니다.
 - 물품 삭제와 달란트 항목 관리는 더 높은 운영 권한(`90+`)에 제한됩니다.

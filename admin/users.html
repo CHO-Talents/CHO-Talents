@@ -172,11 +172,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.0"></script>
-  <script src="../js/activity-log.js?v=3.8.0"></script>
-  <script src="../js/auth.js?v=3.8.0"></script>
-  <script src="../js/user-mgmt.js?v=3.8.0"></script>
-  <script src="../js/version.js?v=3.8.0"></script>
+  <script src="../js/supabase-config.js?v=3.8.1"></script>
+  <script src="../js/activity-log.js?v=3.8.1"></script>
+  <script src="../js/auth.js?v=3.8.1"></script>
+  <script src="../js/user-mgmt.js?v=3.8.1"></script>
+  <script src="../js/version.js?v=3.8.1"></script>
   <script>
     initSupabase();
     let session;
@@ -370,9 +370,9 @@
         const permEmoji = PERMISSION_EMOJI[perm] || '';
         const dn = _nameMap[u.id] || u.display_name || '-';
         const lastLogin = u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '<span style="color:#adb5bd;font-size:0.8rem;">없음</span>';
-        const targetRank = getPermRank(perm);
         const isSuperAdmin = u.is_super_admin || false;
-        const canManage = u.id === session.id || (myRank > targetRank && (!isSuperAdmin || session.isSuperAdmin));
+        const targetRank = getPermRank(perm, isSuperAdmin);
+        const canManage = u.id === session.id || (myRank > targetRank);
         const rb = ROLE_BADGES[badgeKeyForUser(u)] || ROLE_BADGES.student;
         const isSelf = u.id === session.id;
         return `<tr>
@@ -386,9 +386,9 @@
           <td>${lastLogin}</td>
           <td>
             ${canManage ? `<button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>수정</button>` : ''}
-            ${(myRank > targetRank && !isSelf && !isSuperAdmin) ? `<button class="filter-btn" style="background:#1971c2;color:#fff;" onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">부서이동</button>` : ''}
-            ${canManage && u.id !== session.id ? `<button class="filter-btn" onclick="resetPw('${u.id}','${_nameMap[u.id]||u.display_name}')">비밀번호초기화</button>` : ''}
-            ${canManage && u.id !== session.id && !isSuperAdmin ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${_nameMap[u.id]||u.display_name}')">삭제</button>` : ''}
+            ${(canManage && !isSelf) ? `<button class="filter-btn" style="background:#1971c2;color:#fff;" onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">부서이동</button>` : ''}
+            ${canManage && !isSelf ? `<button class="filter-btn" onclick="resetPw('${u.id}','${_nameMap[u.id]||u.display_name}')">비밀번호초기화</button>` : ''}
+            ${canManage && !isSelf ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${_nameMap[u.id]||u.display_name}')">삭제</button>` : ''}
           </td>
         </tr>`;
       }).join('');

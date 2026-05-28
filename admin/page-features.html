@@ -30,22 +30,15 @@
 
   <div class="admin-container">
     <h2 style="margin-bottom:1rem;">⚙️ 페이지 기능 관리</h2>
-    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">사용자별로 각 페이지에서 사용 가능한 기능(수정, 삭제, 승인 등)을 관리합니다.</p>
-
-    <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" onclick="filterUsers('all',this)">전체</button>
-      <button class="filter-btn" onclick="filterUsers('teacher',this)">교사</button>
-      <button class="filter-btn" onclick="filterUsers('student',this)">학생</button>
-      <input type="text" id="searchInput" placeholder="이름 검색..." style="padding:0.5rem;border:1px solid var(--admin-border);border-radius:8px;flex:1;min-width:150px;" oninput="renderTable()" />
-    </div>
+    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">권한 등급별로 각 페이지에서 사용 가능한 기능을 관리합니다.</p>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">사용자 목록</div>
+        <div class="admin-table-title">권한별 기능 설정</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>유형</th><th>권한</th><th>이름</th><th>부서</th><th>관리</th></tr></thead>
-        <tbody id="userList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>권한</th><th>등급</th><th>설명</th><th>관리</th></tr></thead>
+        <tbody id="permList"></tbody>
       </table>
     </div>
   </div>
@@ -63,14 +56,24 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.0"></script>
-  <script src="../js/activity-log.js?v=3.8.0"></script>
-  <script src="../js/auth.js?v=3.8.0"></script>
-  <script src="../js/user-mgmt.js?v=3.8.0"></script>
+  <script src="../js/supabase-config.js?v=3.8.1"></script>
+  <script src="../js/activity-log.js?v=3.8.1"></script>
+  <script src="../js/auth.js?v=3.8.1"></script>
+  <script src="../js/user-mgmt.js?v=3.8.1"></script>
   <script>
     initSupabase();
-    let session, allUsers = [], allDepts = [], currentFilter = 'all';
-    let editingUserId = null;
+    let session;
+    let editingPerm = null;
+
+    const PERM_LIST = [
+      { key: 'super_admin', label: '최고 관리자', emoji: '🔒', rank: 110, desc: '모든 기능 접근 가능 (시스템 관리자)', superOnly: true },
+      { key: 'admin', label: '관리자', emoji: '👑', rank: 100, desc: '전체 시스템 관리' },
+      { key: 'evangelist', label: '전도사님', emoji: '✝️', rank: 90, desc: '사용자/부서/관리자 관리' },
+      { key: 'chief', label: '부장 교사', emoji: '📋', rank: 80, desc: '담당 부서 관리 + 조회' },
+      { key: 'dept_teacher', label: '부서 담당 교사', emoji: '👩‍🏫', rank: 60, desc: '담당 부서 사용자 관리' },
+      { key: 'teacher', label: '일반 교사', emoji: '👨‍🏫', rank: 40, desc: '달란트 지급' },
+      { key: 'student', label: '학생', emoji: '🎒', rank: 20, desc: '내 달란트 조회 / 상점 이용' }
+    ];
 
     const PAGE_FEATURES = [
       { id: 'admin-users', name: '사용자 관리', features: [
@@ -136,79 +139,57 @@
       const canEdit = session.permissionRank >= 90;
       if (!canEdit) document.getElementById('btnSaveFeature').style.display = 'none';
 
-      const [usersRes, deptRes] = await Promise.all([fetchUsers(), fetchDepartments()]);
-      allUsers = usersRes.data || [];
-      allDepts = deptRes.data || [];
-      renderTable();
+      renderPermTable();
     })();
 
-    function getDeptName(id) {
-      const d = allDepts.find(d => d.id === id);
-      return d ? d.name : '-';
+    function renderPermTable() {
+      const isSA = session.isSuperAdmin;
+      const tbody = document.getElementById('permList');
+      tbody.innerHTML = PERM_LIST
+        .filter(p => !p.superOnly || isSA)
+        .map(p => `<tr>
+          <td><span class="level-badge">${p.emoji} ${p.label}</span></td>
+          <td style="font-weight:700;">${p.rank}</td>
+          <td style="font-size:0.82rem;color:var(--admin-text-muted);">${p.desc}</td>
+          <td><button class="filter-btn" onclick="openFeatureModal('${p.key}')">설정</button></td>
+        </tr>`).join('');
     }
 
-    function filterUsers(type, btn) {
-      currentFilter = type;
-      document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-      renderTable();
-    }
-
-    function renderTable() {
-      const search = (document.getElementById('searchInput').value || '').toLowerCase();
-      let list = allUsers;
-      if (currentFilter !== 'all') list = list.filter(u => u.user_type === currentFilter);
-      if (search) list = list.filter(u => (u.display_name || '').toLowerCase().includes(search) || (u.username || '').toLowerCase().includes(search));
-
-      const tbody = document.getElementById('userList');
-      document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
-
-      if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">사용자가 없습니다.</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = list.map(u => {
-        const typeLabel = TYPE_LABELS[u.user_type] || u.user_type;
-        const permLabel = PERMISSION_LABELS[u.permission_level] || u.permission_level;
-        const emoji = PERMISSION_EMOJI[u.permission_level] || '👤';
-        return `<tr>
-          <td>${typeLabel}</td>
-          <td><span class="level-badge">${emoji} ${permLabel}</span></td>
-          <td>${u.display_name || '-'}</td>
-          <td>${getDeptName(u.department_id)}</td>
-          <td><button class="filter-btn" onclick="openFeatureModal('${u.id}')">설정</button></td>
-        </tr>`;
-      }).join('');
-    }
-
-    async function openFeatureModal(userId) {
-      editingUserId = userId;
-      const user = allUsers.find(u => u.id === userId);
-      if (!user) return;
-      document.getElementById('featureTitle').textContent = `${user.display_name || user.username} - 페이지 기능 설정`;
+    async function openFeatureModal(permKey) {
+      editingPerm = permKey;
+      const perm = PERM_LIST.find(p => p.key === permKey);
+      if (!perm) return;
+      document.getElementById('featureTitle').textContent = `${perm.emoji} ${perm.label} - 페이지 기능 설정`;
 
       let saved = {};
-      const { data } = await _sb.from('user_page_features').select('*').eq('user_id', userId);
+      const { data } = await _sb.from('role_page_features').select('*').eq('permission_key', permKey);
       if (data) data.forEach(r => { saved[r.page_id] = r.features || {}; });
 
       const canEdit = session.permissionRank >= 90;
+      const allEnabled = permKey === 'super_admin';
+
       const body = document.getElementById('featureBody');
       body.innerHTML = PAGE_FEATURES.map(p => {
-        const userFeats = saved[p.id] || {};
-        return `<div style="border:1px solid var(--admin-border);border-radius:8px;padding:0.8rem;margin-bottom:0.5rem;">
-          <div style="font-weight:700;margin-bottom:0.5rem;">${p.name}</div>
-          <div style="display:flex;flex-wrap:wrap;gap:0.6rem;">
+        const roleFeats = saved[p.id] || {};
+        return `<div style="border:1px solid var(--admin-border);border-radius:8px;padding:0.7rem;margin-bottom:0.4rem;">
+          <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.4rem;">${p.name}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
             ${p.features.map(f => {
-              const checked = userFeats[f.key] !== false;
-              return `<label style="font-size:0.85rem;display:flex;align-items:center;gap:0.3rem;min-width:140px;">
-                <input type="checkbox" data-page="${p.id}" data-feature="${f.key}" class="feat-check" ${checked ? 'checked' : ''} ${canEdit ? '' : 'disabled'} />
+              const checked = allEnabled ? true : (roleFeats[f.key] !== false);
+              return `<label style="font-size:0.82rem;display:flex;align-items:center;gap:0.3rem;min-width:130px;">
+                <input type="checkbox" data-page="${p.id}" data-feature="${f.key}" class="feat-check" ${checked ? 'checked' : ''} ${(canEdit && !allEnabled) ? '' : 'disabled'} />
                 ${f.label}
               </label>`;
             }).join('')}
           </div>
         </div>`;
       }).join('');
+
+      if (allEnabled) {
+        document.getElementById('btnSaveFeature').style.display = 'none';
+      } else {
+        document.getElementById('btnSaveFeature').style.display = canEdit ? '' : 'none';
+      }
 
       document.getElementById('featureError').classList.remove('show');
       document.getElementById('featureModal').classList.remove('hidden');
@@ -217,7 +198,7 @@
     function closeFeatureModal() { document.getElementById('featureModal').classList.add('hidden'); }
 
     async function saveFeatures() {
-      if (!editingUserId) return;
+      if (!editingPerm) return;
       const errEl = document.getElementById('featureError');
 
       const rows = PAGE_FEATURES.map(p => {
@@ -225,23 +206,23 @@
         document.querySelectorAll(`.feat-check[data-page="${p.id}"]`).forEach(cb => {
           features[cb.dataset.feature] = cb.checked;
         });
-        return { user_id: editingUserId, page_id: p.id, features };
+        return { permission_key: editingPerm, page_id: p.id, features };
       });
 
-      await _sb.from('user_page_features').delete().eq('user_id', editingUserId);
-      const { error } = await _sb.from('user_page_features').insert(rows);
+      await _sb.from('role_page_features').delete().eq('permission_key', editingPerm);
+      const { error } = await _sb.from('role_page_features').insert(rows);
       if (error) {
         errEl.textContent = '저장 실패: ' + error.message;
         errEl.classList.add('show');
         return;
       }
-      await logInfo('PAGE_FEATURE_UPDATE', { userId: editingUserId });
+      await logInfo('ROLE_FEATURE_UPDATE', { permissionKey: editingPerm });
       closeFeatureModal();
       alert('저장되었습니다.');
     }
 
     document.getElementById('featureModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeFeatureModal(); });
   </script>
-  <script src="../js/version.js?v=3.8.0"></script>
+  <script src="../js/version.js?v=3.8.1"></script>
 </body>
 </html>

@@ -99,10 +99,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.0"></script>
-  <script src="../js/activity-log.js?v=3.8.0"></script>
-  <script src="../js/auth.js?v=3.8.0"></script>
-  <script src="../js/user-mgmt.js?v=3.8.0"></script>
+  <script src="../js/supabase-config.js?v=3.8.1"></script>
+  <script src="../js/activity-log.js?v=3.8.1"></script>
+  <script src="../js/auth.js?v=3.8.1"></script>
+  <script src="../js/user-mgmt.js?v=3.8.1"></script>
   <script>
     initSupabase();
     let session;
@@ -220,9 +220,9 @@
         const ownDept = deptList.find(d => d.id === u.department_id);
         const mgrDept = deptList.find(d => d.id === u.managed_dept_id);
         const isSelf = u.id === session.id;
-        const targetRank = getPermRank(u.permission_level);
         const isSuperAdmin = u.is_super_admin || false;
-        const canManage = isSelf || (myRank > targetRank && (!isSuperAdmin || session.isSuperAdmin));
+        const targetRank = getPermRank(u.permission_level, isSuperAdmin);
+        const canManage = isSelf || (myRank > targetRank);
         return `<tr>
           <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
           <td>${dn}${(isSelf || _isAdmin()) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
@@ -376,6 +376,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.8.0"></script>
+  <script src="../js/version.js?v=3.8.1"></script>
 </body>
 </html>

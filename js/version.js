@@ -2,9 +2,27 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.8.0',
+  current: '3.8.1',
   date: '2026-05-28',
   history: [
+    {
+      version: '3.8.1',
+      date: '2026-05-28',
+      title: '슈퍼관리자 관리 수정 + UI/UX 개선 + 페이지 기능 권한별 개편',
+      changes: [
+        'users.html/managers.html: 슈퍼관리자(rank 110)가 일반 관리자(rank 100) 관리 가능하도록 targetRank 계산 수정',
+        'activity-log.js: 세션 캐시에 isSuperAdmin 필드 갱신 로직 추가',
+        'admin.css: 네비게이션 한 줄 가로 스크롤 (flex-wrap 제거, overflow-x: auto)',
+        'admin.css: 테이블 셀 패딩 축소 (th: 0.5rem 0.6rem, td: 0.45rem 0.6rem)',
+        'admin.css: 모바일 640px 이하 테이블 더 컴팩트하게 (padding 0.35rem, min-width 500px)',
+        'page-features.html: 사용자별 → 권한별 관리로 전면 개편 (role_page_features 테이블)',
+        'page-features.html: 슈퍼관리자 행은 is_super_admin 계정만 표시, 모든 기능 기본 활성화',
+        'reports.html: JS 기반 보고서 시더 기능 추가 (SQL 인코딩 문제 해결)',
+        'reports.html: 슈퍼관리자만 보이는 "전체 보고서 초기화" 버튼',
+        'logs.html: 선택 삭제/범위 삭제 에러 핸들링 강화 + RLS 정책 안내',
+        'docs/TASK-022_fixes.sql: activity_logs DELETE RLS 정책 + role_page_features 테이블 생성'
+      ]
+    },
     {
       version: '3.8.0',
       date: '2026-05-28',
