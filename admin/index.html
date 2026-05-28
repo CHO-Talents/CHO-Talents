@@ -17,7 +17,8 @@
       <li><a href="../my-talents.html">내 달란트</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
-      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
+      <li data-min-perm="60"><a href="purchases.html">구매 관리</a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
       <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="page-access.html">페이지 접근</a></li>
@@ -67,7 +68,7 @@
         <div class="stat-card-value" id="teacherCount">-</div>
       </div>
       <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80">
-        <div class="stat-card-label">부서 관리자</div>
+        <div class="stat-card-label">부서 담당 교사</div>
         <div class="stat-card-value" id="managerCount">-</div>
       </div>
       <a href="users.html" class="stat-card" style="border-left-color:#e67700;text-decoration:none;color:inherit;" data-min-perm="80">
@@ -90,9 +91,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.4"></script>
-  <script src="../js/activity-log.js?v=3.8.4"></script>
-  <script src="../js/auth.js?v=3.8.4"></script>
+  <script src="../js/supabase-config.js?v=3.9.0"></script>
+  <script src="../js/activity-log.js?v=3.9.0"></script>
+  <script src="../js/auth.js?v=3.9.0"></script>
   <script>
     initSupabase();
     let session;
@@ -114,7 +115,8 @@
         { href: 'managers.html', emoji: '👑', label: '관리자 관리', bg: '#fff9db', color: '#e67700', minRank: 80 },
         { href: 'talents.html', emoji: '💰', label: '달란트 관리', bg: '#fff5f5', color: '#e03131', minRank: 40 },
         { href: 'talent-items.html', emoji: '🎯', label: '달란트 항목', bg: '#f0fff4', color: '#2b8a3e', minRank: 90 },
-        { href: 'shop.html', emoji: '📦', label: '물품 관리', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
+        { href: 'shop.html', emoji: '📦', label: '상품 관리', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
+        { href: 'purchases.html', emoji: '🛒', label: '구매 관리', bg: '#e7f5ff', color: '#1864ab', minRank: 60 },
       ];
       const rank = session.permissionRank || 0;
       document.getElementById('quickLinks').innerHTML = links
@@ -190,6 +192,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.8.4"></script>
+  <script src="../js/version.js?v=3.9.0"></script>
 </body>
 </html>

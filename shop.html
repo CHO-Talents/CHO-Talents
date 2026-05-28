@@ -18,7 +18,7 @@
       <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
       <li data-min-perm="60" style="display:none;"><a href="admin/users.html">사용자 관리</a></li>
       <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
-      <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">물품 관리</a></li>
+      <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
       <li data-min-perm="80" style="display:none;"><a href="admin/index.html">대시보드</a></li>
       <li id="navAuthArea"><a href="login.html">로그인</a></li>
     </ul>
@@ -29,7 +29,7 @@
     <p class="page-sub" id="shopSub">달란트로 교환할 수 있는 상품들이에요!</p>
 
     <div id="tabArea" style="display:none;margin-bottom:1.5rem;gap:0.5rem;">
-      <button class="filter-btn active" id="tabStudent" onclick="switchShopTab('student')">🎒 학생용</button>
+      <button class="filter-btn" id="tabStudent" onclick="switchShopTab('student')">🎒 학생용</button>
       <button class="filter-btn" id="tabTeacher" onclick="switchShopTab('teacher')">👩‍🏫 교사용</button>
     </div>
 
@@ -46,19 +46,22 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.8.4"></script>
-  <script src="js/activity-log.js?v=3.8.4"></script>
-  <script src="js/auth.js?v=3.8.4"></script>
+  <script src="js/supabase-config.js?v=3.9.0"></script>
+  <script src="js/activity-log.js?v=3.9.0"></script>
+  <script src="js/auth.js?v=3.9.0"></script>
   <script src="js/product.js"></script>
   <script>
     initSupabase();
     let currentShopTab = 'student';
     let allShopProducts = [];
-
     let _canViewTeacher = false;
+    let _shopSession = null;
+    let _userBalance = 0;
+    let _userPending = 0;
 
     (async () => {
       const session = await loadAuthSession();
+      _shopSession = session;
       if (session) {
         document.getElementById('navMyTalent').style.display = '';
         document.getElementById('navAuthArea').innerHTML =
@@ -70,15 +73,16 @@
           const minP = parseInt(el.dataset.minPerm, 10);
           if ((session.permissionRank || 0) >= minP) el.style.display = '';
         });
-
         _canViewTeacher = session.userType === 'teacher' || (session.permissionRank || 0) >= 60;
         currentShopTab = _canViewTeacher ? (session.userType || 'student') : 'student';
-        if (_canViewTeacher) {
-          document.getElementById('tabArea').style.display = 'flex';
-        }
+        if (_canViewTeacher) document.getElementById('tabArea').style.display = 'flex';
+
+        const { data: prof } = await _sb.from('profiles').select('talent_balance,pending_talent').eq('id', session.id).single();
+        if (prof) { _userBalance = prof.talent_balance || 0; _userPending = prof.pending_talent || 0; }
       }
       autoLogPageView();
-      loadAllProducts();
+      await loadAllProducts();
+      switchShopTab(currentShopTab);
     })();
 
     async function loadAllProducts() {
@@ -125,15 +129,40 @@
     }
 
     function renderProductCard(p) {
+      const available = _userBalance - _userPending;
+      const canBuy = _shopSession && p.stock > 0 && available >= p.price;
+      const buyBtnHtml = _shopSession
+        ? `<button class="product-buy-btn" onclick="requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'#dee2e6'};color:${canBuy?'#fff':'#868e96'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`
+        : '';
       return `<div class="product-card">
         ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" class="product-img" />` : `<span class="product-emoji">${p.image_emoji || '🎁'}</span>`}
         <div class="product-name">${p.name}</div>
         <div class="product-price">${p.price} <span class="unit">달란트</span></div>
         <div class="product-desc">${p.description || ''}</div>
         <div class="product-stock ${p.stock <= 5 ? 'low' : ''}">재고: ${p.stock}개 ${p.stock <= 5 ? '(품절 임박!)' : ''}</div>
+        ${buyBtnHtml}
       </div>`;
     }
+
+    async function requestOrder(productId, productName, price) {
+      if (!_shopSession) { alert('로그인이 필요합니다.'); return; }
+      const available = _userBalance - _userPending;
+      if (available < price) { alert(`사용 가능한 달란트가 부족합니다.\n잔여: ${_userBalance} / 사용 대기: ${_userPending} / 사용 가능: ${available}`); return; }
+      if (!confirm(`"${productName}"을(를) 구매 신청하시겠습니까?\n가격: ${price} 달란트\n\n사용 가능 달란트: ${available}`)) return;
+
+      const { data, error } = await _sb.rpc('request_product_order', {
+        p_user_id: _shopSession.id,
+        p_product_id: productId,
+        p_product_name: productName,
+        p_price: price
+      });
+      if (error) { alert('구매 신청 실패: ' + error.message); return; }
+      if (data && data.success === false) { alert(data.error); return; }
+      _userPending += price;
+      alert('✅ 구매 신청이 완료되었습니다!');
+      renderShopProducts();
+    }
   </script>
-  <script src="js/version.js?v=3.8.4"></script>
+  <script src="js/version.js?v=3.9.0"></script>
 </body>
 </html>

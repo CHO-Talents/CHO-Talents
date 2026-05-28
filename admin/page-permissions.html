@@ -26,7 +26,8 @@
       <li><a href="../my-talents.html">내 달란트</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
-      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
+      <li data-min-perm="60"><a href="purchases.html">구매 관리</a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
       <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="page-access.html">페이지 접근</a></li>
@@ -61,15 +62,15 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.4"></script>
-  <script src="../js/activity-log.js?v=3.8.4"></script>
-  <script src="../js/auth.js?v=3.8.4"></script>
+  <script src="../js/supabase-config.js?v=3.9.0"></script>
+  <script src="../js/activity-log.js?v=3.9.0"></script>
+  <script src="../js/auth.js?v=3.9.0"></script>
   <script>
     initSupabase();
     let session;
     let permData = [];
     const LEVELS = ['admin','evangelist','chief','dept_teacher','teacher','student'];
-    const LEVEL_LABELS = { admin:'관리자', evangelist:'전도사님', chief:'부장', dept_teacher:'부서담당', teacher:'일반교사', student:'학생' };
+    const LEVEL_LABELS = { admin:'관리자', evangelist:'전도사님', chief:'부장 교사', dept_teacher:'부서 담당 교사', teacher:'일반교사', student:'학생' };
     const PAGES = [
       { key:'dashboard', label:'대시보드' },
       { key:'users', label:'사용자 관리' },
@@ -77,7 +78,8 @@
       { key:'managers', label:'관리자 관리' },
       { key:'talents', label:'달란트 관리' },
       { key:'talent_items', label:'달란트 항목' },
-      { key:'shop', label:'물품 관리' },
+      { key:'shop', label:'상품 관리' },
+      { key:'purchases', label:'구매 관리' },
       { key:'reports', label:'보고서' },
       { key:'logs', label:'로그' },
       { key:'versions', label:'버전' },
@@ -169,6 +171,6 @@
       await loadPermissions();
     }
   </script>
-  <script src="../js/version.js?v=3.8.4"></script>
+  <script src="../js/version.js?v=3.9.0"></script>
 </body>
 </html>

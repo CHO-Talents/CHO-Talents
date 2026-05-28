@@ -17,7 +17,8 @@
       <li><a href="../my-talents.html">내 달란트</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
-      <li data-min-perm="60"><a href="shop.html">물품 관리</a></li>
+      <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
+      <li data-min-perm="60"><a href="purchases.html">구매 관리</a></li>
       <li data-min-perm="80"><a href="reports.html" class="active">보고서</a></li>
       <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
       <li data-min-perm="80"><a href="page-access.html">페이지 접근</a></li>
@@ -106,9 +107,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.8.4"></script>
-  <script src="../js/activity-log.js?v=3.8.4"></script>
-  <script src="../js/auth.js?v=3.8.4"></script>
+  <script src="../js/supabase-config.js?v=3.9.0"></script>
+  <script src="../js/activity-log.js?v=3.9.0"></script>
+  <script src="../js/auth.js?v=3.9.0"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -287,7 +288,8 @@
       'TASK-022': { task_title:'v3.8.1 슈퍼관리자 관리 수정 + UI/UX 개선', content:'<h2>TASK-022: v3.8.1 개선</h2><p><b>버전:</b> v3.8.1</p><ul><li>슈퍼관리자 관리자 관리 가능</li><li>네비게이션 한 줄 스크롤</li><li>모바일 그리드 여백 축소</li><li>페이지 기능 권한별 개편</li><li>보고서 JS 시더</li><li>로그 삭제 RLS 정책</li></ul>' },
       'TASK-023': { task_title:'v3.8.2 페이지 접근 권한별 + 작업 이력 + DB 연동', content:'<h2>TASK-023: v3.8.2 개선</h2><p><b>버전:</b> v3.8.2</p><ul><li>페이지 접근 권한별 개편</li><li>작업 이력 관리 신규</li><li>initPage() DB 연동 적용</li><li>로그 삭제 디버그 강화</li><li>보고서 수정 버튼</li><li>별 이모지 회전 애니메이션</li></ul>' },
       'TASK-024': { task_title:'v3.8.3 작업자 실명 + 보고서 자동복구', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장</li><li>audit.html 작업자 실명 + 관리자 아이디</li><li>보고서 자동복구</li></ul>' },
-      'TASK-025': { task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>is_deleted 소프트 삭제</li><li>삭제 대기 목록 + 복원</li><li>실제 삭제는 SQL로 직접</li></ul>' }
+      'TASK-025': { task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>is_deleted 소프트 삭제</li><li>삭제 대기 목록 + 복원</li><li>실제 삭제는 SQL로 직접</li></ul>' },
+      'TASK-026': { task_title:'v3.9.0 상품 구매 시스템 + 달란트 개편 + 명칭 통일', content:'<h2>TASK-026: v3.9.0 대규모 업데이트</h2><p><b>버전:</b> v3.9.0</p><ul><li>상품 구매 시스템 4단계 흐름 신규</li><li>admin/purchases.html 구매 관리 신규</li><li>shop.html 구매 신청 + 잔액 검증</li><li>my-talents.html 사용 대기/구매 내역</li><li>달란트: 체크박스 일괄 지급 + 반환 + 지급자 표시</li><li>명칭 통일: 물품→상품, 부장→부장 교사, 부서관리자→부서 담당 교사</li></ul>' }
     };
 
     async function autoFixReports() {
@@ -342,7 +344,8 @@
         { task_id:'TASK-022', task_title:'v3.8.1 슈퍼관리자 관리 수정 + UI/UX 개선', report_type:'change_report', content:'<h2>TASK-022: v3.8.1 개선</h2><p><b>버전:</b> v3.8.1</p><ul><li>슈퍼관리자 관리자 관리 가능 수정</li><li>네비게이션 한 줄 스크롤 + 컴팩트</li><li>모바일 그리드 여백 축소</li><li>페이지 기능 관리 권한별 개편</li><li>보고서 JS 시더로 인코딩 문제 해결</li><li>로그 삭제 RLS 정책 추가</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-023', task_title:'v3.8.2 페이지 접근 권한별 + 작업 이력 + DB 연동', report_type:'change_report', content:'<h2>TASK-023: v3.8.2 개선</h2><p><b>버전:</b> v3.8.2</p><ul><li>페이지 접근 관리: 사용자별 → 유형/권한별 개편 (role_page_access)</li><li>작업 이력 관리 페이지 신규 (admin/audit.html)</li><li>initPage()에서 role_page_access DB 연동 → 페이지 차단/요소 숨김 적용</li><li>로그 삭제: 상세 디버그 로그 + RLS 미적용 시 안내 메시지</li><li>보고서: 수정 버튼 추가 (editReport)</li><li>네비게이션: 별 이모지 회전 애니메이션 전체 적용</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-024', task_title:'v3.8.3 작업자 실명 + 보고서 자동복구', report_type:'change_report', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장으로 작업자 실명 기록</li><li>audit.html 작업자 실명 표시 + 관리자 아이디 표시</li><li>보고서 깨짐(???) 자동 감지 + REPORT_SEED_MAP 자동 복구</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-025', task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', report_type:'change_report', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>로그 삭제: 실제 DELETE 대신 is_deleted=true 소프트 삭제</li><li>삭제 대기 목록 보기 + 복원 기능</li><li>실제 삭제는 관리자가 SQL로 직접 수행</li><li>fetchLogs: 삭제 대기 항목 자동 제외</li></ul>', created_by:'AI_Cursor' }
+        { task_id:'TASK-025', task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', report_type:'change_report', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>로그 삭제: 실제 DELETE 대신 is_deleted=true 소프트 삭제</li><li>삭제 대기 목록 보기 + 복원 기능</li><li>실제 삭제는 관리자가 SQL로 직접 수행</li><li>fetchLogs: 삭제 대기 항목 자동 제외</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-026', task_title:'v3.9.0 상품 구매 시스템 + 달란트 개편 + 명칭 통일', report_type:'change_report', content:'<h2>TASK-026: v3.9.0 대규모 업데이트</h2><p><b>버전:</b> v3.9.0</p><ul><li>상품 구매 시스템 신규 구축: 4단계 구매 흐름</li><li>admin/purchases.html 구매 관리 페이지 신규</li><li>shop.html 구매 신청 버튼 + 잔액 검증</li><li>my-talents.html 사용 대기 달란트 표시 + 구매 내역</li><li>product_orders 테이블 + RPC (request_product_order, confirm_product_purchase)</li><li>달란트 관리: 체크박스 선택 + 일괄 지급 확정 방식</li><li>달란트 반환 기능 (부장 교사 80+ 사유 입력)</li><li>상세 모달 지급자 컬럼 추가</li><li>로그 페이지: 관리자 전용 버튼 + is_deleted 폴백</li><li>명칭 통일: 물품→상품, 부장→부장 교사, 부서관리자→부서 담당 교사</li><li>shop.html 교사 기본 필터 수정</li></ul>', created_by:'AI_Cursor' }
       ];
       try {
         await _sb.from('reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -460,6 +463,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.8.4"></script>
+  <script src="../js/version.js?v=3.9.0"></script>
 </body>
 </html>
