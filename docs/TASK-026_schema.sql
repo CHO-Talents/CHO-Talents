@@ -32,6 +32,12 @@ ALTER TABLE profiles ADD COLUMN IF NOT EXISTS pending_talent INTEGER DEFAULT 0;
 -- ============================================
 ALTER TABLE product_orders ENABLE ROW LEVEL SECURITY;
 
+-- 기존 정책 제거 후 재생성
+DROP POLICY IF EXISTS "Users can view own orders" ON product_orders;
+DROP POLICY IF EXISTS "Staff can view all orders" ON product_orders;
+DROP POLICY IF EXISTS "Users can create orders" ON product_orders;
+DROP POLICY IF EXISTS "Staff can update orders" ON product_orders;
+
 -- 인증 사용자: 자기 주문 조회
 CREATE POLICY "Users can view own orders"
   ON product_orders FOR SELECT
@@ -100,7 +106,7 @@ BEGIN
   RETURN json_build_object(
     'success', true,
     'order_id', v_order_id,
-    'pending_talent', COALESCE(pending_talent, 0) + p_price
+    'pending_talent', v_pending + p_price
   );
 END;
 $$;

@@ -184,7 +184,8 @@
       await _sb.from('role_page_access').delete().eq('role_key', editingKey);
       const { error } = await _sb.from('role_page_access').insert(rows);
       if (error) {
-        errEl.textContent = '저장 실패: ' + error.message;
+        await logError('ROLE_ACCESS_UPDATE_FAIL', { roleKey: editingKey, error: error.message });
+        errEl.textContent = '저장 실패: ' + tErr(error.message);
         errEl.classList.add('show');
         return;
       }

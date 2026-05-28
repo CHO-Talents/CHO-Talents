@@ -149,7 +149,8 @@
       });
 
       if (error) {
-        errEl.textContent = '신청 중 오류가 발생했습니다: ' + error.message; errEl.classList.add('show');
+        logError('REGISTER_REQUEST_FAIL', { username, error: error.message });
+        errEl.textContent = '신청 중 오류가 발생했습니다: ' + tErr(error.message); errEl.classList.add('show');
         btn.disabled = false; btn.textContent = '신청하기'; return;
       }
 

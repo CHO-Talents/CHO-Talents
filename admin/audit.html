@@ -144,7 +144,7 @@
       const { data, error } = await query;
       if (error) {
         console.error('[AUDIT] load error:', error);
-        document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 오류: ${error.message}</td></tr>`;
+        document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 오류: ${tErr(error.message)}</td></tr>`;
         return;
       }
       allAuditLogs = data || [];

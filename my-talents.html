@@ -52,8 +52,16 @@
     async function loadMyTalents() {
       const main = document.getElementById('mainContent');
       const summary = await fetchTalentSummary(session.id);
-      const { data: prof } = await _sb.from('profiles').select('pending_talent').eq('id', session.id).single();
-      const pendingTalent = (prof && prof.pending_talent) || 0;
+      let pendingTalent = 0;
+      try {
+        const { data: prof, error: profErr } = await _sb.from('profiles').select('pending_talent').eq('id', session.id).single();
+        if (profErr) {
+          const msg = profErr.message || '';
+          if (!msg.includes('does not exist')) logWarn('MY_TALENT_PENDING_QUERY', { error: msg });
+        } else {
+          pendingTalent = (prof && prof.pending_talent) || 0;
+        }
+      } catch (e) { /* pending_talent column may not exist */ }
       const available = summary.balance - pendingTalent;
       const { data: history } = await fetchTalentHistory(session.id, { limit: 50 });
 
@@ -103,7 +111,12 @@
 
       html += '</tbody></table></div>';
 
-      const { data: orders } = await _sb.from('product_orders').select('*').eq('user_id', session.id).order('created_at', { ascending: false }).limit(20);
+      let orders = null;
+      try {
+        const { data: od, error: odErr } = await _sb.from('product_orders').select('*').eq('user_id', session.id).order('created_at', { ascending: false }).limit(20);
+        if (odErr) { logWarn('MY_TALENT_ORDERS_QUERY', { error: odErr.message }); }
+        else { orders = od; }
+      } catch (e) { /* product_orders table may not exist */ }
       if (orders && orders.length > 0) {
         const statusMap = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
         const statusColor = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };

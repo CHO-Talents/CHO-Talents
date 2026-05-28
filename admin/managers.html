@@ -353,12 +353,14 @@
         if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
         const updates = { displayName, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(editingId, updates);
-        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+        if (error) { await logError('MANAGER_UPDATE_FAIL', { id: editingId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('MANAGER_UPDATE', { id: editingId, displayName, permLevel });
       } else {
         if (!_selectedUserId) { errEl.textContent = '사용자를 검색하여 선택해주세요.'; errEl.classList.add('show'); return; }
         const updates = { displayName: displayName || undefined, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(_selectedUserId, updates);
-        if (error) { errEl.textContent = error; errEl.classList.add('show'); return; }
+        if (error) { await logError('MANAGER_PROMOTE_FAIL', { id: _selectedUserId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('MANAGER_PROMOTE', { id: _selectedUserId, permLevel });
       }
       closeModal();
       await loadManagers();

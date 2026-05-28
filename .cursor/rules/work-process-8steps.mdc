@@ -37,7 +37,12 @@ alwaysApply: true
 - 수정 내역 요약 (어떤 기능을 어떻게 수정/개선했는지)
 - 수정된 파일 목록
 
-### 8단계: GitHub 반영
+### 8단계: 문서 업데이트 + GitHub 반영
+- 아래 문서들을 수정 내용에 맞게 업데이트:
+  - `README.md`
+  - `docs/SITE_USER_GUIDE.md`
+  - `docs/PROJECT_ARCHITECTURE_FLOW.md`
+- 버전 업데이트 + 캐시 버스팅 적용
 - **develop 브랜치에만** 커밋 및 push (main 브랜치 금지)
 - 사용자가 명시적으로 main 브랜치를 요청한 경우에만 main에 반영
 - 커밋 author: `AI_Cursor <ai@cursor>`

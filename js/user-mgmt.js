@@ -58,6 +58,7 @@ async function createUser(userData) {
       return { data: null, error: error.message };
     }
     if (!data.success) {
+      await logWarn('USER_CREATE_DENIED', { username: userData.username, reason: data.error });
       return { data: null, error: data.error };
     }
     await logInfo('USER_CREATE', { username: userData.username, userType: userData.userType });
@@ -85,6 +86,7 @@ async function updateUser(id, updates) {
       return { data: null, error: error.message };
     }
     if (!data.success) {
+      await logWarn('USER_UPDATE_DENIED', { id, reason: data.error });
       return { data: null, error: data.error };
     }
     await logInfo('USER_UPDATE', { id });
@@ -104,6 +106,7 @@ async function deleteUser(id) {
       return { error: error.message };
     }
     if (!data.success) {
+      await logWarn('USER_DELETE_DENIED', { id, reason: data.error });
       return { error: data.error };
     }
     await logInfo('USER_DELETE', { id });
@@ -126,6 +129,7 @@ async function resetUserPassword(id, username) {
       return { error: error.message };
     }
     if (!data.success) {
+      await logWarn('PASSWORD_RESET_DENIED', { id, username, reason: data.error });
       return { error: data.error };
     }
     await logInfo('PASSWORD_RESET', { id, username });

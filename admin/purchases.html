@@ -93,7 +93,11 @@
 
     async function loadOrders() {
       const { data, error } = await _sb.from('product_orders').select('*').order('created_at', { ascending: false });
-      if (error) { console.error(error); return; }
+      if (error) {
+        logError('PURCHASE_LOAD_FAIL', { error: error.message });
+        document.getElementById('orderBody').innerHTML = '<tr><td colspan="7" class="empty-state">데이터 조회 실패: ' + tErr(error.message) + '</td></tr>';
+        return;
+      }
       allOrders = data || [];
 
       const userIds = [...new Set(allOrders.map(o => o.user_id))];
@@ -190,26 +194,48 @@
     }
 
     async function updateStatus(orderId, newStatus) {
-      const updateFields = { status: newStatus };
-      if (newStatus === 'preparing') { updateFields.prepared_at = new Date().toISOString(); updateFields.prepared_by = session.id; }
-      if (newStatus === 'delivered') { updateFields.delivered_at = new Date().toISOString(); updateFields.delivered_by = session.id; }
+      try {
+        const updateFields = { status: newStatus };
+        if (newStatus === 'preparing') { updateFields.prepared_at = new Date().toISOString(); updateFields.prepared_by = session.id; }
+        if (newStatus === 'delivered') { updateFields.delivered_at = new Date().toISOString(); updateFields.delivered_by = session.id; }
 
-      const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
-      if (error) { alert('상태 변경 실패: ' + error.message); return; }
-      await logInfo('ORDER_STATUS_CHANGE', { orderId, newStatus });
-      await loadOrders();
+        const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
+        if (error) {
+          await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, newStatus, error: error.message });
+          alert('상태 변경 실패: ' + tErr(error.message));
+          return;
+        }
+        await logInfo('ORDER_STATUS_CHANGE', { orderId, newStatus });
+        await loadOrders();
+      } catch (err) {
+        await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, newStatus, error: String(err) });
+        alert('상태 변경 중 오류: ' + tErr(err.message));
+      }
     }
 
     async function confirmPurchase(orderId) {
       if (!confirm('상품 구매를 확정하시겠습니까?\n달란트가 실제 차감됩니다.')) return;
-      const { data, error } = await _sb.rpc('confirm_product_purchase', {
-        p_order_id: orderId,
-        p_admin_id: session.id
-      });
-      if (error) { alert('구매 확정 실패: ' + error.message); return; }
-      if (data && data.success === false) { alert(data.error); return; }
-      await logInfo('ORDER_PURCHASE_CONFIRM', { orderId });
-      await loadOrders();
+      try {
+        const { data, error } = await _sb.rpc('confirm_product_purchase', {
+          p_order_id: orderId,
+          p_admin_id: session.id
+        });
+        if (error) {
+          await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, error: error.message });
+          alert('구매 확정 실패: ' + tErr(error.message));
+          return;
+        }
+        if (data && data.success === false) {
+          await logWarn('ORDER_PURCHASE_CONFIRM_DENIED', { orderId, reason: data.error });
+          alert(tErr(data.error));
+          return;
+        }
+        await logInfo('ORDER_PURCHASE_CONFIRM', { orderId });
+        await loadOrders();
+      } catch (err) {
+        await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, error: String(err) });
+        alert('구매 확정 중 오류: ' + tErr(err.message));
+      }
     }
 
     function toggleAllOrders(chk) {
@@ -221,14 +247,17 @@
       if (ids.length === 0) { alert('지급 완료 처리할 항목을 선택해주세요.'); return; }
       if (!confirm(`${ids.length}건을 지급 완료 처리하시겠습니까?`)) return;
 
+      let failCount = 0;
       for (const id of ids) {
-        await _sb.from('product_orders').update({
+        const { error } = await _sb.from('product_orders').update({
           status: 'delivered',
           delivered_at: new Date().toISOString(),
           delivered_by: session.id
         }).eq('id', id);
+        if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, error: error.message }); }
       }
-      await logInfo('ORDER_BULK_DELIVER', { count: ids.length });
+      if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
+      await logInfo('ORDER_BULK_DELIVER', { count: ids.length, failCount });
       await loadOrders();
     }
 

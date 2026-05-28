@@ -74,12 +74,14 @@
         const result = await login(username, password);
 
         if (result.success) {
+          logInfo('LOGIN_SUCCESS', { username });
           if (result.data.is_first_login) {
             window.location.href = 'admin/change-password.html';
           } else {
             window.location.href = getRoleRedirectUrl(result.data.permission_level, '');
           }
         } else {
+          logWarn('LOGIN_FAIL', { username, error: result.error });
           const { data: reqData } = await _sb.from('registration_requests')
             .select('status')
             .eq('username', username)
@@ -90,7 +92,7 @@
           } else if (reqData && reqData.status === 'rejected') {
             errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#10060;</span><div><strong>가입 신청이 거부되었어요</strong><br><span style="font-size:0.8rem;color:#636e72;">자세한 내용은 관리자에게 문의해주세요</span></div></div>';
           } else {
-            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> ' + result.error;
+            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> ' + tErr(result.error);
           }
           errEl.classList.add('show');
           btn.disabled = false;

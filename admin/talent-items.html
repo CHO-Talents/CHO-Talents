@@ -180,11 +180,13 @@
 
       if (editingId) {
         const { error } = await _sb.from('talent_items').update(row).eq('id', editingId);
-        if (error) { errEl.textContent = error.message; errEl.classList.add('show'); return; }
+        if (error) { await logError('TALENT_ITEM_UPDATE_FAIL', { id: editingId, error: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
+        await logInfo('TALENT_ITEM_UPDATE', { id: editingId, name: row.name });
       } else {
         row.created_by = session.id;
         const { error } = await _sb.from('talent_items').insert(row);
-        if (error) { errEl.textContent = error.message; errEl.classList.add('show'); return; }
+        if (error) { await logError('TALENT_ITEM_CREATE_FAIL', { name: row.name, error: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
+        await logInfo('TALENT_ITEM_CREATE', { name: row.name });
       }
       closeModal();
       await loadItems();
