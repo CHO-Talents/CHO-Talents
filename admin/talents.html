@@ -39,9 +39,12 @@
       <a href="talent-items.html" class="filter-btn" data-min-perm="60" style="text-decoration:none;">📋 달란트 항목 관리</a>
     </div>
 
-    <div class="filters" style="margin-bottom:1rem;">
+    <div class="filters" style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
       <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">🎒 학생</button>
       <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">👩‍🏫 교사</button>
+      <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
+        <option value="">전체 부서</option>
+      </select>
     </div>
 
     <div class="admin-table-wrap">
@@ -157,11 +160,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.12.3"></script>
-  <script src="../js/activity-log.js?v=3.12.3"></script>
-  <script src="../js/auth.js?v=3.12.3"></script>
-  <script src="../js/user-mgmt.js?v=3.12.3"></script>
-  <script src="../js/talent.js?v=3.12.3"></script>
+  <script src="../js/supabase-config.js?v=3.12.4"></script>
+  <script src="../js/activity-log.js?v=3.12.4"></script>
+  <script src="../js/auth.js?v=3.12.4"></script>
+  <script src="../js/user-mgmt.js?v=3.12.4"></script>
+  <script src="../js/talent.js?v=3.12.4"></script>
   <script>
     initSupabase();
     let session;
@@ -172,6 +175,7 @@
     let allDepts = [];
     let talentItems = [];
     let talentSummaryMap = {};
+    let currentDeptFilter = '';
 
     (async () => {
       session = await initPage(40, '../login.html');
@@ -187,12 +191,24 @@
       ]);
       allDepts = deptRes.data || [];
       talentItems = itemRes.data || [];
+      populateDeptFilter();
       loadUsers();
     })();
 
     function getDeptName(id) {
       const d = allDepts.find(d => d.id === id);
       return d ? d.name : '-';
+    }
+
+    function populateDeptFilter() {
+      const sel = document.getElementById('deptFilter');
+      if (!sel) return;
+      sel.innerHTML = '<option value="">전체 부서</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+    }
+
+    function onDeptFilterChange() {
+      currentDeptFilter = document.getElementById('deptFilter').value;
+      loadUsers();
     }
 
     function switchTab(tab) {
@@ -237,6 +253,10 @@
         } else {
           data = data.filter(u => u.class_number === session.classNumber);
         }
+      }
+
+      if (currentDeptFilter) {
+        data = data.filter(u => u.department_id === currentDeptFilter);
       }
 
       const tbody = document.getElementById('userList');
@@ -578,6 +598,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.12.3"></script>
+  <script src="../js/version.js?v=3.12.4"></script>
 </body>
 </html>
