@@ -46,9 +46,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.9.0"></script>
-  <script src="js/activity-log.js?v=3.9.0"></script>
-  <script src="js/auth.js?v=3.9.0"></script>
+  <script src="js/supabase-config.js?v=3.10.0"></script>
+  <script src="js/activity-log.js?v=3.10.0"></script>
+  <script src="js/auth.js?v=3.10.0"></script>
   <script src="js/product.js"></script>
   <script>
     initSupabase();
@@ -139,7 +139,7 @@
 
     function renderProductCard(p) {
       const available = _userBalance - _userPending;
-      const canBuy = _shopSession && p.stock > 0 && available >= p.price;
+      const canBuy = _shopSession && p.is_active && available >= p.price;
       const buyBtnHtml = _shopSession
         ? `<button class="product-buy-btn" onclick="requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'#dee2e6'};color:${canBuy?'#fff':'#868e96'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`
         : '';
@@ -148,7 +148,7 @@
         <div class="product-name">${p.name}</div>
         <div class="product-price">${p.price} <span class="unit">달란트</span></div>
         <div class="product-desc">${p.description || ''}</div>
-        <div class="product-stock ${p.stock <= 5 ? 'low' : ''}">재고: ${p.stock}개 ${p.stock <= 5 ? '(품절 임박!)' : ''}</div>
+        
         ${buyBtnHtml}
       </div>`;
     }
@@ -190,6 +190,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.9.0"></script>
+  <script src="js/version.js?v=3.10.0"></script>
 </body>
 </html>

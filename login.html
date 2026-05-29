@@ -45,9 +45,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.9.0"></script>
-  <script src="js/activity-log.js?v=3.9.0"></script>
-  <script src="js/auth.js?v=3.9.0"></script>
+  <script src="js/supabase-config.js?v=3.10.0"></script>
+  <script src="js/activity-log.js?v=3.10.0"></script>
+  <script src="js/auth.js?v=3.10.0"></script>
   <script>
     initSupabase();
 
@@ -91,8 +91,10 @@
             errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#9203;</span><div><strong>승인 대기 중이에요</strong><br><span style="font-size:0.8rem;color:#636e72;">관리자가 승인하면 로그인할 수 있어요</span></div></div>';
           } else if (reqData && reqData.status === 'rejected') {
             errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#10060;</span><div><strong>가입 신청이 거부되었어요</strong><br><span style="font-size:0.8rem;color:#636e72;">자세한 내용은 관리자에게 문의해주세요</span></div></div>';
+          } else if (reqData && reqData.status === 'approved') {
+            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> 비밀번호가 일치하지 않습니다.';
           } else {
-            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> ' + tErr(result.error);
+            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> 아이디 또는 비밀번호가 일치하지 않습니다.';
           }
           errEl.classList.add('show');
           btn.disabled = false;
@@ -101,6 +103,6 @@
       });
     })();
   </script>
-  <script src="js/version.js?v=3.9.0"></script>
+  <script src="js/version.js?v=3.10.0"></script>
 </body>
 </html>
