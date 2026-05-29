@@ -2,9 +2,36 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.9.0',
+  current: '3.10.0',
   date: '2026-05-29',
   history: [
+    {
+      version: '3.10.0',
+      date: '2026-05-29',
+      title: '권한 세분화 + 구매 관리 개편 + 재고 제거',
+      changes: [
+        '달란트 관리 권한 세분화: rank 80 전체 조회 + 담당 부서만 지급',
+        'give_talent RPC: managed_dept_id 기반 rank 60-89 스코핑 추가',
+        '가입 승인 권한: 기존 부장/부서담당 스코핑 검증 완료',
+        '부서 이동: rank 60 섹션 표시, rank 80 전체조회/담당부서 처리',
+        '부서 이동 버튼: rank < 90 "부서 이동 신청"으로 명칭 변경',
+        '로그인: 승인 대기/거부/비밀번호 오류 메시지 세분화',
+        '재고 시스템 제거: shop.html 재고 표시/체크 제거',
+        '재고 시스템 제거: admin/shop.html 재고 입력/컬럼 제거',
+        '구매 관리 전면 개편: 처리자명 + 처리일시 컬럼 추가',
+        '구매 관리: 상태 컬럼 제거 (탭 필터로 대체)',
+        '구매 관리: "전체" 탭 + 상태 필터 드롭다운 추가',
+        '구매 관리 권한: preparing/purchased 처리 admin전용 → rank 60+/담당부서로 확대',
+        '구매 관리 네비게이션 배지: 처리 대기 건수 표시 (getPendingOrderCount)',
+        'activity-log.js: getPendingOrderCount() + updateNavOrderBadge() 추가',
+        '페이지 접근/기능: initPage(100) 관리자 전용화',
+        '작업 이력: initPage(100) 관리자 전용화',
+        '전체 admin 네비게이션: page-access/features/audit data-min-perm 80→100',
+        '전체 admin 네비게이션: 구매 관리 배지(navOrderBadge) 추가 (15개 파일)',
+        '전체 admin 페이지: updateNavOrderBadge() 호출 추가',
+        '보고서: TASK-027 v3.10.0 보고서 시드 추가'
+      ]
+    },
     {
       version: '3.9.0',
       date: '2026-05-29',

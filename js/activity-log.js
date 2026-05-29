@@ -284,6 +284,35 @@ async function deleteLogsByIds(ids) {
   }
 }
 
+async function getPendingOrderCount() {
+  if (!_sb) return 0;
+  try {
+    const session = getSession();
+    if (!session || (session.permissionRank || 0) < 60) return 0;
+    const myRank = session.permissionRank || 0;
+    const { data, error } = await _sb.from('product_orders').select('user_id').neq('status', 'delivered');
+    if (error || !data) return 0;
+    if (myRank >= 90) return data.length;
+    if (!session.managedDeptId) return 0;
+    const userIds = [...new Set(data.map(o => o.user_id))];
+    if (userIds.length === 0) return 0;
+    const { data: profiles } = await _sb.from('profiles').select('id,department_id').in('id', userIds);
+    if (!profiles) return 0;
+    const deptUsers = new Set(profiles.filter(p => p.department_id === session.managedDeptId).map(p => p.id));
+    return data.filter(o => deptUsers.has(o.user_id)).length;
+  } catch (e) { return 0; }
+}
+
+async function updateNavOrderBadge() {
+  const badge = document.getElementById('navOrderBadge');
+  if (!badge) return;
+  try {
+    const cnt = await getPendingOrderCount();
+    if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+  } catch (e) {}
+}
+
 async function deleteLogsByDateRange(dateFrom, dateTo) {
   if (!_sb) return { error: 'Supabase not initialized', count: 0 };
   try {

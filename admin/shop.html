@@ -18,12 +18,12 @@
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
       <li data-min-perm="60"><a href="shop.html" class="active">상품 관리</a></li>
-      <li data-min-perm="60"><a href="purchases.html">구매 관리</a></li>
+      <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
       <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li data-min-perm="80"><a href="page-access.html">페이지 접근</a></li>
-      <li data-min-perm="80"><a href="page-features.html">페이지 기능</a></li>
-      <li data-min-perm="80"><a href="audit.html">작업 이력</a></li>
+      <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
+      <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
+      <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
       <li data-min-perm="80"><a href="versions.html">버전</a></li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
@@ -45,8 +45,8 @@
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th></th><th>상품명</th><th>대상</th><th>카테고리</th><th>가격</th><th>재고</th><th>상태</th><th>관리</th></tr></thead>
-        <tbody id="productList"><tr><td colspan="8" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th></th><th>상품명</th><th>대상</th><th>카테고리</th><th>가격</th><th>상태</th><th>관리</th></tr></thead>
+        <tbody id="productList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -72,15 +72,9 @@
           <input type="text" id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="예: 학용품" />
         </div>
       </div>
-      <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
-        <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">가격 (달란트)</label>
-          <input type="number" id="mPrice" min="1" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
-        </div>
-        <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">재고</label>
-          <input type="number" id="mStock" min="0" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
-        </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">가격 (달란트)</label>
+        <input type="number" id="mPrice" min="1" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이모지</label>
@@ -131,9 +125,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.9.0"></script>
-  <script src="../js/activity-log.js?v=3.9.0"></script>
-  <script src="../js/auth.js?v=3.9.0"></script>
+  <script src="../js/supabase-config.js?v=3.10.0"></script>
+  <script src="../js/activity-log.js?v=3.10.0"></script>
+  <script src="../js/auth.js?v=3.10.0"></script>
   <script src="../js/product.js"></script>
   <script>
     initSupabase();
@@ -149,6 +143,7 @@
       renderRoleBadge('navUser', session, '../');
       autoLogPageView();
       updatePendingBadge();
+      updateNavOrderBadge();
       if ((session.permissionRank || 0) >= 80) updateBadge();
       loadProducts();
     })();
@@ -176,7 +171,7 @@
       const tbody = document.getElementById('productList');
       document.getElementById('tableTitle').textContent = `상품 목록 (${list.length}건)`;
 
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">등록된 상품이 없습니다.</td></tr>'; return; }
+      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 상품이 없습니다.</td></tr>'; return; }
 
       const myRank = session.permissionRank || 0;
       tbody.innerHTML = list.map(p => `<tr${!p.is_active ? ' style="opacity:0.5;"' : ''}>
@@ -185,7 +180,6 @@
         <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '🎒 학생' : '👩‍🏫 교사'}</span></td>
         <td>${p.category || '-'}</td>
         <td style="font-weight:700;">${p.price}</td>
-        <td class="${p.stock <= 5 ? 'level-badge ERROR' : ''}">${p.stock}개</td>
         <td>${p.is_active ? '<span class="level-badge INFO">활성</span>' : '<span class="level-badge FATAL">비활성</span>'}</td>
         <td>
           <button class="filter-btn" onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>수정</button>
@@ -200,7 +194,6 @@
       ['mName','mCategory','mEmoji','mImageUrlText','mDesc'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('mTarget').value = 'student';
       document.getElementById('mPrice').value = '';
-      document.getElementById('mStock').value = '0';
       document.getElementById('mImageUrl').value = '';
       document.getElementById('mImageFile').value = '';
       resetImgPreview();
@@ -217,7 +210,6 @@
       document.getElementById('mTarget').value = p.target_role;
       document.getElementById('mCategory').value = p.category || '';
       document.getElementById('mPrice').value = p.price;
-      document.getElementById('mStock').value = p.stock;
       document.getElementById('mEmoji').value = p.image_emoji || '';
       document.getElementById('mImageUrl').value = p.image_url || '';
       document.getElementById('mImageFile').value = '';
@@ -254,7 +246,7 @@
       const row = {
         name, target_role: document.getElementById('mTarget').value,
         category: document.getElementById('mCategory').value.trim() || null,
-        price, stock: parseInt(document.getElementById('mStock').value) || 0,
+        price,
         image_emoji: document.getElementById('mEmoji').value.trim() || '🎁',
         image_url: imageUrl, description: document.getElementById('mDesc').value.trim() || null
       };
@@ -309,6 +301,6 @@
     document.getElementById('mImageUrlText').addEventListener('input', function() { const u = this.value.trim(); if (u) { document.getElementById('mImageFile').value = ''; showImgPreview(u); } else resetImgPreview(); });
     document.getElementById('productModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.9.0"></script>
+  <script src="../js/version.js?v=3.10.0"></script>
 </body>
 </html>
