@@ -45,9 +45,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.12.1"></script>
-  <script src="js/activity-log.js?v=3.12.1"></script>
-  <script src="js/auth.js?v=3.12.1"></script>
+  <script src="js/supabase-config.js?v=3.12.2"></script>
+  <script src="js/activity-log.js?v=3.12.2"></script>
+  <script src="js/auth.js?v=3.12.2"></script>
   <script>
     initSupabase();
 
@@ -57,7 +57,7 @@
         if (session.isFirstLogin) {
           window.location.href = 'admin/change-password.html';
         } else {
-          window.location.href = getRoleRedirectUrl(session.permissionLevel, '');
+          window.location.href = 'index.html';
         }
         return;
       }
@@ -78,7 +78,7 @@
           if (result.data.is_first_login) {
             window.location.href = 'admin/change-password.html';
           } else {
-            window.location.href = getRoleRedirectUrl(result.data.permission_level, '');
+            window.location.href = 'index.html';
           }
         } else {
           logWarn('LOGIN_FAIL', { username, error: result.error });
@@ -103,6 +103,6 @@
       });
     })();
   </script>
-  <script src="js/version.js?v=3.12.1"></script>
+  <script src="js/version.js?v=3.12.2"></script>
 </body>
 </html>

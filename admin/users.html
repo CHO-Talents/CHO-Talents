@@ -19,6 +19,7 @@
       <li><a href="../earn-talents.html">달란트 적립</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
+      <li><a href="../my-orders.html">내 구매 상품</a></li>
       <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
       <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
@@ -68,12 +69,15 @@
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">사용자 목록</div>
-        <div class="filters">
+        <div class="filters" style="flex-wrap:wrap;gap:0.4rem;">
           <button class="filter-btn active" onclick="setFilter('all',this)">전체</button>
           <button class="filter-btn" data-min-perm="80" onclick="setFilter('admin',this)">관리자</button>
           <button class="filter-btn" data-min-perm="80" onclick="setFilter('dept_manager',this)">부서 담당 교사</button>
           <button class="filter-btn" onclick="setFilter('teacher',this)">교사</button>
           <button class="filter-btn" onclick="setFilter('student',this)">학생</button>
+          <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
+            <option value="">전체 부서</option>
+          </select>
           <span style="margin-left:0.5rem;"></span>
           <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
         </div>
@@ -176,11 +180,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.12.1"></script>
-  <script src="../js/activity-log.js?v=3.12.1"></script>
-  <script src="../js/auth.js?v=3.12.1"></script>
-  <script src="../js/user-mgmt.js?v=3.12.1"></script>
-  <script src="../js/version.js?v=3.12.1"></script>
+  <script src="../js/supabase-config.js?v=3.12.2"></script>
+  <script src="../js/activity-log.js?v=3.12.2"></script>
+  <script src="../js/auth.js?v=3.12.2"></script>
+  <script src="../js/user-mgmt.js?v=3.12.2"></script>
+  <script src="../js/version.js?v=3.12.2"></script>
   <script>
     initSupabase();
     let session;
@@ -272,8 +276,9 @@
       allUsers = users;
       await loadLastLogins();
       updateStats();
-      renderUsers();
       populateDeptSelects();
+      populateDeptFilter();
+      renderUsers();
       renderRequests();
       renderTransfers();
     }
@@ -338,11 +343,24 @@
       document.getElementById('classWrap').style.display = count > 0 ? 'block' : 'none';
     }
 
+    let currentDeptFilter = '';
+
     function setFilter(role, btn) {
       currentFilter = role;
       document.querySelectorAll('.admin-table-header .filter-btn:not([style*="background:var(--admin-primary)"])').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderUsers();
+    }
+
+    function onDeptFilterChange() {
+      currentDeptFilter = document.getElementById('deptFilter').value;
+      renderUsers();
+    }
+
+    function populateDeptFilter() {
+      const sel = document.getElementById('deptFilter');
+      if (!sel) return;
+      sel.innerHTML = '<option value="">전체 부서</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
     function getDeptName(id) {
@@ -361,7 +379,8 @@
     const _isAdmin = () => isAdminLevel(session);
 
     function renderUsers() {
-      const list = currentFilter === 'all' ? allUsers : allUsers.filter(u => userMatchesFilter(u, currentFilter));
+      let list = currentFilter === 'all' ? allUsers : allUsers.filter(u => userMatchesFilter(u, currentFilter));
+      if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter);
       const tbody = document.getElementById('userList');
       document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
 
@@ -461,7 +480,8 @@
       document.getElementById('mDept').disabled = true;
       onDeptChange();
       document.getElementById('mClassNumber').value = u.class_number || '';
-      document.getElementById('mClassNumber').disabled = true;
+      const canEditClass = (session.permissionRank || 0) >= 60;
+      document.getElementById('mClassNumber').disabled = !canEditClass;
       document.getElementById('mManagedDept').value = u.managed_dept_id || '';
       document.getElementById('managedDeptWrap').style.display = MGMT_LEVELS.includes(u.permission_level) ? 'block' : 'none';
       document.getElementById('passwordWrap').style.display = 'none';

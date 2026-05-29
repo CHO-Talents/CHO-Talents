@@ -19,6 +19,7 @@
       <li><a href="../earn-talents.html">달란트 적립</a></li>
       <li data-min-perm="40"><a href="talents.html" class="active">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
+      <li><a href="../my-orders.html">내 구매 상품</a></li>
       <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
       <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
       <li data-min-perm="80"><a href="reports.html">보고서</a></li>
@@ -35,7 +36,7 @@
   <div class="admin-container">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
       <h2>💰 달란트 관리</h2>
-      <a href="talent-items.html" class="filter-btn" style="text-decoration:none;">📋 달란트 항목 관리</a>
+      <a href="talent-items.html" class="filter-btn" data-min-perm="60" style="text-decoration:none;">📋 달란트 항목 관리</a>
     </div>
 
     <div class="filters" style="margin-bottom:1rem;">
@@ -156,11 +157,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.12.1"></script>
-  <script src="../js/activity-log.js?v=3.12.1"></script>
-  <script src="../js/auth.js?v=3.12.1"></script>
-  <script src="../js/user-mgmt.js?v=3.12.1"></script>
-  <script src="../js/talent.js?v=3.12.1"></script>
+  <script src="../js/supabase-config.js?v=3.12.2"></script>
+  <script src="../js/activity-log.js?v=3.12.2"></script>
+  <script src="../js/auth.js?v=3.12.2"></script>
+  <script src="../js/user-mgmt.js?v=3.12.2"></script>
+  <script src="../js/talent.js?v=3.12.2"></script>
   <script>
     initSupabase();
     let session;
@@ -206,8 +207,9 @@
       if (myRank >= 90) return true;
       if (myRank >= 60 && session.managedDeptId) return user.department_id === session.managedDeptId;
       if (myRank === 40) {
-        if (!session.departmentId || user.department_id !== session.departmentId) return false;
-        if (session.classNumber != null && user.class_number !== session.classNumber) return false;
+        if (!session.departmentId || !session.classNumber) return false;
+        if (user.department_id !== session.departmentId) return false;
+        if (user.class_number !== session.classNumber) return false;
         return true;
       }
       return false;
@@ -229,8 +231,12 @@
       let { data } = await fetchUsers(opts);
       data = data || [];
 
-      if (myRank === 40 && session.classNumber != null) {
-        data = data.filter(u => u.class_number === session.classNumber);
+      if (myRank === 40) {
+        if (!session.classNumber) {
+          data = [];
+        } else {
+          data = data.filter(u => u.class_number === session.classNumber);
+        }
       }
 
       const tbody = document.getElementById('userList');
@@ -572,6 +578,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.12.1"></script>
+  <script src="../js/version.js?v=3.12.2"></script>
 </body>
 </html>
