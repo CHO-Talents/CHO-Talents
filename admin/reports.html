@@ -9,6 +9,7 @@
 <body class="admin-body">
   <nav class="admin-nav">
     <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li data-min-perm="80"><a href="index.html">대시보드</a></li>
       <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
@@ -107,9 +108,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.10.0"></script>
-  <script src="../js/activity-log.js?v=3.10.0"></script>
-  <script src="../js/auth.js?v=3.10.0"></script>
+  <script src="../js/supabase-config.js?v=3.11.0"></script>
+  <script src="../js/activity-log.js?v=3.11.0"></script>
+  <script src="../js/auth.js?v=3.11.0"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -265,6 +266,7 @@
     });
 
     const REPORT_SEED_MAP = {
+      'TASK-028': { task_title:'v3.11.0 반응형 페이지 + 네비게이션 통합', content:'<h2>TASK-028: v3.11.0 반응형/네비게이션 개편</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응형 브레이크포인트 통합: 480/640/768/1024px 4단계</li><li>모바일 햄버거 네비게이션: admin-nav 15개 파일 + top-nav 3개 파일</li><li>테이블 반응형: 1024px 스크롤 시작, min-width 단계별 축소</li><li>모달/폼: 모바일 flex-wrap + 전폭 확대</li><li>대시보드 quickLinks/detailSummary 모바일 그리드 전환</li><li>my-talents.html Template A 네비게이션 통합</li><li>index.html 로그인 후 내비게이션 링크 보강</li><li>applyPermNav() 양방향 show/hide 처리</li><li>admin nav: page-access/audit data-min-perm 80→100, page-features active 추가</li></ul>' },
       'TASK-027': { task_title:'v3.10.0 권한 세분화 + 구매 관리 개편 + 재고 제거', content:'<h2>TASK-027: v3.10.0 대규모 권한/구매 개편</h2><p><b>버전:</b> v3.10.0</p><ul><li>달란트 관리 권한 세분화: rank 80 전체 조회/담당 부서 지급</li><li>give_talent RPC: managed_dept_id 스코핑 추가</li><li>가입 승인/부서 이동 권한 개편: rank 60 부서 이동 섹션 표시</li><li>부서 이동 버튼 명칭: rank &lt; 90 "부서 이동 신청"</li><li>로그인: 승인 대기/거부/비밀번호 오류 메시지 세분화</li><li>재고 시스템 제거: shop.html + admin/shop.html</li><li>구매 관리 개편: 처리자/일시 표시, 상태 컬럼 제거, 전체 탭 추가</li><li>구매 관리 권한: rank 60+ 담당 부서, rank 90+ 전체</li><li>구매 관리 네비게이션 배지: 처리 대기 건수 표시</li><li>페이지 접근/기능/작업 이력: initPage(100) 관리자 전용</li><li>전체 admin 네비게이션 data-min-perm 업데이트</li></ul>' },
       'TASK-001': { task_title:'v1.0.0 초기 구축', content:'<h2>TASK-001: 초기 구축</h2><p><b>버전:</b> v1.0.0</p><ul><li>환영 메인 페이지 구현</li><li>관리자 로그인/패스워드 변경</li><li>관리자 대시보드 (보고서, 로그)</li><li>Supabase 연동 및 CRUD</li><li>활동 로그 시스템</li><li>GitHub Pages 배포</li></ul>' },
       'TASK-002': { task_title:'v1.1.0 역할별 계정 시스템', content:'<h2>TASK-002: 역할별 계정 시스템</h2><p><b>버전:</b> v1.1.0</p><ul><li>4단계 역할 구분</li><li>역할별 전용 페이지 구현</li><li>달란트 상점 (학생/교사 분리)</li><li>부서 관리자 기능</li><li>RPC 함수</li><li>통합 로그인 페이지</li></ul>' },
@@ -348,7 +350,8 @@
         { task_id:'TASK-024', task_title:'v3.8.3 작업자 실명 + 보고서 자동복구', report_type:'change_report', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장으로 작업자 실명 기록</li><li>audit.html 작업자 실명 표시 + 관리자 아이디 표시</li><li>보고서 깨짐(???) 자동 감지 + REPORT_SEED_MAP 자동 복구</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-025', task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', report_type:'change_report', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>로그 삭제: 실제 DELETE 대신 is_deleted=true 소프트 삭제</li><li>삭제 대기 목록 보기 + 복원 기능</li><li>실제 삭제는 관리자가 SQL로 직접 수행</li><li>fetchLogs: 삭제 대기 항목 자동 제외</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-026', task_title:'v3.9.0 상품 구매 시스템 + 달란트 개편 + 명칭 통일', report_type:'change_report', content:'<h2>TASK-026: v3.9.0 대규모 업데이트</h2><p><b>버전:</b> v3.9.0</p><ul><li>상품 구매 시스템 신규 구축: 4단계 구매 흐름</li><li>admin/purchases.html 구매 관리 페이지 신규</li><li>shop.html 구매 신청 버튼 + 잔액 검증</li><li>my-talents.html 사용 대기 달란트 표시 + 구매 내역</li><li>product_orders 테이블 + RPC (request_product_order, confirm_product_purchase)</li><li>달란트 관리: 체크박스 선택 + 일괄 지급 확정 방식</li><li>달란트 반환 기능 (부장 교사 80+ 사유 입력)</li><li>상세 모달 지급자 컬럼 추가</li><li>로그 페이지: 관리자 전용 버튼 + is_deleted 폴백</li><li>명칭 통일: 물품→상품, 부장→부장 교사, 부서관리자→부서 담당 교사</li><li>shop.html 교사 기본 필터 수정</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-027', task_title:'v3.10.0 권한 세분화 + 구매 관리 개편 + 재고 제거', report_type:'change_report', content:'<h2>TASK-027: v3.10.0 권한/구매 개편</h2><p><b>버전:</b> v3.10.0</p><ul><li>달란트 관리 권한 세분화: rank 80 전체 조회/담당 부서 지급, give_talent RPC managed_dept 스코핑</li><li>가입 승인: 기존 로직 검증 완료 (부장 전체조회/담당부서 처리)</li><li>부서 이동: rank 60 섹션 표시, rank 80 전체조회/담당부서 처리, 버튼 명칭 변경</li><li>로그인: 승인 대기/거부/비밀번호 오류 메시지 세분화</li><li>재고 시스템 제거: shop.html + admin/shop.html stock 관련 UI/로직 제거</li><li>구매 관리 전면 개편: 처리자/일시 표시, 상태 컬럼 제거, 전체 탭+필터, 권한 60+/90+</li><li>구매 관리 네비게이션 배지: 처리 대기 건수(getPendingOrderCount)</li><li>페이지 접근/기능: initPage(100) 관리자 전용화</li><li>작업 이력: initPage(100) 관리자 전용화</li><li>전체 admin 네비게이션: page-access/features/audit data-min-perm 100, 구매 관리 배지 추가</li></ul>', created_by:'AI_Cursor' }
+        { task_id:'TASK-027', task_title:'v3.10.0 권한 세분화 + 구매 관리 개편 + 재고 제거', report_type:'change_report', content:'<h2>TASK-027: v3.10.0 권한/구매 개편</h2><p><b>버전:</b> v3.10.0</p><ul><li>달란트 관리 권한 세분화: rank 80 전체 조회/담당 부서 지급, give_talent RPC managed_dept 스코핑</li><li>가입 승인: 기존 로직 검증 완료 (부장 전체조회/담당부서 처리)</li><li>부서 이동: rank 60 섹션 표시, rank 80 전체조회/담당부서 처리, 버튼 명칭 변경</li><li>로그인: 승인 대기/거부/비밀번호 오류 메시지 세분화</li><li>재고 시스템 제거: shop.html + admin/shop.html stock 관련 UI/로직 제거</li><li>구매 관리 전면 개편: 처리자/일시 표시, 상태 컬럼 제거, 전체 탭+필터, 권한 60+/90+</li><li>구매 관리 네비게이션 배지: 처리 대기 건수(getPendingOrderCount)</li><li>페이지 접근/기능: initPage(100) 관리자 전용화</li><li>작업 이력: initPage(100) 관리자 전용화</li><li>전체 admin 네비게이션: page-access/features/audit data-min-perm 100, 구매 관리 배지 추가</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-028', task_title:'v3.11.0 반응형 페이지 + 네비게이션 통합', report_type:'change_report', content:'<h2>TASK-028: v3.11.0 반응형/네비게이션 통합</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응형 브레이크포인트: 480/640/768/1024px 4단계 통합</li><li>모바일 햄버거 네비게이션: admin 15개 + public 3개 파일</li><li>테이블 반응형: 1024px 스크롤 시작, 단계별 축소</li><li>모달/폼 모바일: flex-wrap + 전폭</li><li>대시보드 quickLinks/detailSummary 모바일 전환</li><li>my-talents.html Template A 네비게이션 통합</li><li>index.html 로그인 후 링크 보강</li><li>applyPermNav() 양방향 show/hide</li><li>admin nav 불일치 수정 3건</li></ul>', created_by:'AI_Cursor' }
       ];
       try {
         await _sb.from('reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -469,6 +472,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.10.0"></script>
+  <script src="../js/version.js?v=3.11.0"></script>
 </body>
 </html>

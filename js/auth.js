@@ -44,7 +44,7 @@ function getPermRank(level, isSuperAdmin) {
 function applyPermNav(rank) {
   document.querySelectorAll('[data-min-perm]').forEach(el => {
     const minPerm = parseInt(el.dataset.minPerm, 10);
-    if (rank < minPerm) el.style.display = 'none';
+    el.style.display = rank >= minPerm ? '' : 'none';
   });
 }
 const applyRoleNav = applyPermNav;

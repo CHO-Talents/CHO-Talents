@@ -2,9 +2,32 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.10.0',
+  current: '3.11.0',
   date: '2026-05-29',
   history: [
+    {
+      version: '3.11.0',
+      date: '2026-05-29',
+      title: '반응형 페이지 + 네비게이션 통합',
+      changes: [
+        'CSS 반응형 브레이크포인트 통합: 480/640/768/1024px 4단계 (실사용자 해상도 기반)',
+        'admin.css: 1024px 테이블 스크롤 시작, 768px 햄버거 메뉴 전환',
+        'common.css: 768px 햄버거 메뉴, data-table 모바일 스크롤 추가',
+        'style.css: 768px/480px 2단계 브레이크포인트 추가 (landing 페이지)',
+        '모바일 네비게이션: admin-nav 햄버거 버튼 + 세로 드롭다운 (15개 파일)',
+        '모바일 네비게이션: top-nav 햄버거 버튼 (shop/earn-talents/my-talents)',
+        '테이블 반응형: min-width 700→600→520px 단계별 축소, 셀 패딩 최적화',
+        '모달/폼 반응형: 640px 이하 flex-wrap 강제, 모달 전폭 확대',
+        '대시보드: quickLinks 그리드 640px 2열, 480px 1열 강제',
+        'detailSummary 3열→1열 모바일 전환 (640px)',
+        'my-talents.html: Template A 방식 네비게이션 통합 (navLinks/navMyTalent/navAuthArea)',
+        'index.html: 로그인 후 달란트 적립/상점/내 달란트/관리 링크 추가',
+        'applyPermNav() 양방향 처리: show + hide (display:none 초기값 지원)',
+        'admin nav 불일치 수정: page-access data-min-perm 80→100',
+        'admin nav 불일치 수정: audit data-min-perm 80→100',
+        'admin nav 불일치 수정: page-features active 클래스 추가'
+      ]
+    },
     {
       version: '3.10.0',
       date: '2026-05-29',
