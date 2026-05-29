@@ -75,10 +75,10 @@ body.page-body {
 .top-nav-links a {
   text-decoration: none;
   color: var(--c-text-muted);
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  padding: 0.45rem 0.75rem;
-  border-radius: 10px;
+  padding: 0.35rem 0.55rem;
+  border-radius: 6px;
   transition: all 0.2s;
 }
 
@@ -86,6 +86,31 @@ body.page-body {
 .top-nav-links a.active {
   background: #f3f0ff;
   color: var(--c-primary);
+}
+
+.top-nav-links a {
+  position: relative;
+}
+
+.top-nav-links a .badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: #e03131;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.top-nav-links a .badge.hidden {
+  display: none;
 }
 
 .top-nav-links .nav-user {
@@ -413,8 +438,16 @@ table.data-table tr:hover { background: #fafbfc; }
   .top-nav-links a {
     display: block;
     padding: 0.5rem 0.6rem;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     border-radius: 8px;
+  }
+  .top-nav-links a .badge {
+    position: static;
+    display: inline-flex;
+    margin-left: 0.3rem;
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.62rem;
   }
   .top-nav-links .btn-nav-logout {
     width: 100%;
