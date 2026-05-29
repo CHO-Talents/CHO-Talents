@@ -2,9 +2,18 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.12.3',
+  current: '3.12.4',
   date: '2026-05-30',
   history: [
+    {
+      version: '3.12.4',
+      date: '2026-05-30',
+      title: '달란트 관리 부서 필터 추가 + 메인 내 달란트 링크 수정',
+      changes: [
+        'admin/talents.html: 부서 필터 콤보박스 추가 (부장 교사 80+ 전용, 사용자/관리자 관리와 동일)',
+        'index.html: 내 달란트 카드 링크를 항상 my-talents.html로 이동하도록 수정'
+      ]
+    },
     {
       version: '3.12.3',
       date: '2026-05-30',
