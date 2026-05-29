@@ -16,6 +16,7 @@
       <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
       <li><a href="../my-talents.html">내 달란트</a></li>
+      <li><a href="../earn-talents.html">달란트 적립</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
       <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
@@ -72,10 +73,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.11.0"></script>
-  <script src="../js/activity-log.js?v=3.11.0"></script>
-  <script src="../js/auth.js?v=3.11.0"></script>
-  <script src="../js/user-mgmt.js?v=3.11.0"></script>
+  <script src="../js/supabase-config.js?v=3.12.0"></script>
+  <script src="../js/activity-log.js?v=3.12.0"></script>
+  <script src="../js/auth.js?v=3.12.0"></script>
+  <script src="../js/user-mgmt.js?v=3.12.0"></script>
   <script>
     initSupabase();
     let session, allAuditLogs = [], currentFilter = 'all';
@@ -111,6 +112,25 @@
     };
 
     const AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
+    const PERM_KEY_LABELS = {
+      super_admin: '최고 관리자', admin: '관리자', evangelist: '전도사님',
+      chief: '부장 교사', dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
+    };
+    const DETAIL_KEY_LABELS = {
+      targetName: '대상', displayName: '표시 이름', name: '이름', username: '아이디',
+      userId: '사용자 ID', roleKey: '역할', permissionKey: '권한', permissionLevel: '권한 등급',
+      rank: '순위', department: '부서', departmentId: '부서 ID', departmentName: '부서명',
+      fromDept: '이전 부서', toDept: '이동 부서', amount: '수량', balance: '잔액',
+      reason: '사유', taskId: '작업 ID', taskTitle: '작업 제목', pageId: '페이지 ID',
+      action: '작업', error: '오류', _userName: '작업자 이름', _client: '클라이언트 정보',
+      user_type: '유형', class_number: '반', old: '이전 값', new: '변경 값',
+      approval_scope: '승인 범위', transfer_type: '이동 유형', status: '상태',
+      product_name: '상품명', product_id: '상품 ID', price: '가격',
+      talent_balance: '달란트 잔액', pending_talent: '보류 달란트',
+      features: '기능 설정', description: '설명', email: '이메일',
+      fromDeptName: '이전 부서명', toDeptName: '이동 부서명',
+      is_super_admin: '슈퍼 관리자', is_active: '활성 상태'
+    };
 
     (async () => {
       session = await initPage(100, '../login.html');
@@ -211,7 +231,8 @@
       if (d.name) return d.name;
       if (d.username) return d.username;
       if (d.taskId) return d.taskId;
-      if (d.roleKey || d.permissionKey) return d.roleKey || d.permissionKey;
+      if (d.roleKey) return PERM_KEY_LABELS[d.roleKey] || d.roleKey;
+      if (d.permissionKey) return PERM_KEY_LABELS[d.permissionKey] || d.permissionKey;
       if (d.userId) return d.userId.substring(0, 8) + '...';
       return '-';
     }
@@ -230,11 +251,37 @@
         </table>
         <div style="margin-top:0.8rem;border-top:1px solid var(--admin-border);padding-top:0.6rem;">
           <div style="font-weight:700;margin-bottom:0.4rem;">상세 데이터</div>
-          <pre style="background:#f8f9fa;padding:0.6rem;border-radius:6px;font-size:0.78rem;overflow-x:auto;max-height:300px;">${JSON.stringify(details, null, 2)}</pre>
+          <pre style="background:#f8f9fa;padding:0.6rem;border-radius:6px;font-size:0.78rem;overflow-x:auto;max-height:300px;">${localizeDetailJson(details)}</pre>
         </div>`;
 
       document.getElementById('auditDetailBody').innerHTML = html;
       document.getElementById('auditDetailModal').classList.remove('hidden');
+    }
+
+    function localizeDetailJson(obj) {
+      function localizeValue(key, val) {
+        if ((key === 'roleKey' || key === 'permissionKey' || key === 'permissionLevel') && typeof val === 'string') {
+          return PERM_KEY_LABELS[val] || val;
+        }
+        if (key === 'user_type') {
+          return val === 'teacher' ? '교사' : val === 'student' ? '학생' : val;
+        }
+        return val;
+      }
+      function transform(o, depth) {
+        if (depth > 5) return JSON.stringify(o);
+        if (Array.isArray(o)) return o.map(item => transform(item, depth + 1));
+        if (o && typeof o === 'object') {
+          const result = {};
+          for (const [k, v] of Object.entries(o)) {
+            const label = DETAIL_KEY_LABELS[k] ? `${k} (${DETAIL_KEY_LABELS[k]})` : k;
+            result[label] = (typeof v === 'object' && v !== null) ? transform(v, depth + 1) : localizeValue(k, v);
+          }
+          return result;
+        }
+        return o;
+      }
+      return JSON.stringify(transform(obj, 0), null, 2);
     }
 
     function closeDetailModal() { document.getElementById('auditDetailModal').classList.add('hidden'); }
@@ -243,6 +290,6 @@
       if (e.target.classList.contains('modal-overlay')) closeDetailModal();
     });
   </script>
-  <script src="../js/version.js?v=3.11.0"></script>
+  <script src="../js/version.js?v=3.12.0"></script>
 </body>
 </html>

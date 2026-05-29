@@ -2,9 +2,33 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.11.0',
+  current: '3.12.0',
   date: '2026-05-29',
   history: [
+    {
+      version: '3.12.0',
+      date: '2026-05-29',
+      title: '기능 수정 + 문서 정비',
+      changes: [
+        '페이지 기능: role_page_features 테이블 생성 + RLS 정책 + 스키마 캐시 리로드',
+        '페이지 기능: 그리드 4열→6열 변경 (구분/유형/권한/등급/설명/관리)',
+        '메인 페이지: 로그인 🔐 / 로그아웃 🔓 이모지 구분 + try-catch 세션 로드',
+        '네비게이션: admin 15개 파일에 "달란트 적립" 링크 추가',
+        '네비게이션: public 3개 파일(shop/earn-talents/my-talents)에 admin nav 전체 항목 동일 순서 구성',
+        '네비게이션: public 페이지에 updateNavOrderBadge() 호출 추가',
+        '달란트 관리: "📋 달란트 항목 관리" 버튼 추가 (talent-items.html 링크)',
+        '구매 관리: 탭 순서 변경 (전체 > 구매 신청 > 상품 준비 > 상품 구매 > 상품 지급)',
+        '구매 관리: 기본 선택 탭 "전체" + 초기 제목 "전체 목록" + statusFilterWrap 표시',
+        '로그: 제목 카운트 "활동 로그 (X/Y)" 형식 (현재 건수/전체 활성 건수)',
+        '로그: 페이지네이션 번호 버튼 5개 + 말줄임(...) + 총 페이지 수 표시',
+        '작업 이력: PERM_KEY_LABELS 한글 매핑 (admin→관리자 등)',
+        '작업 이력: DETAIL_KEY_LABELS 40+ 필드 한글 매핑',
+        '작업 이력: extractTarget() roleKey/permissionKey 한글 변환',
+        '작업 이력: localizeDetailJson() 상세 모달 JSON 키 한글 라벨 병기',
+        '문서: TASK-029 4종 생성 (plan/test_scenario/test_result/change_report)',
+        '보고서: TASK-029 4종 + 기존 누락 문서(TASK-001~011) SEED 등록'
+      ]
+    },
     {
       version: '3.11.0',
       date: '2026-05-29',
