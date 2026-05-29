@@ -109,9 +109,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.12.0"></script>
-  <script src="../js/activity-log.js?v=3.12.0"></script>
-  <script src="../js/auth.js?v=3.12.0"></script>
+  <script src="../js/supabase-config.js?v=3.12.1"></script>
+  <script src="../js/activity-log.js?v=3.12.1"></script>
+  <script src="../js/auth.js?v=3.12.1"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -282,6 +282,8 @@
       'TASK-010': { task_title:'v2.3.0 초기 비밀번호 변경 강제', content:'<h2>TASK-010: 초기 비밀번호 변경 강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()에 isFirstLogin 리디렉트</li><li>보호 페이지 전환</li><li>autoLogPageView() 인증 후 이동</li></ul>' },
       'TASK-011': { task_title:'v2.4.0 관리자 대시보드 개선', content:'<h2>TASK-011: 관리자 대시보드 개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가입 대기자 수 카드 추가</li><li>바로가기 영역 5개 재구성</li><li>바로가기에 이모지 추가</li></ul>' },
       'TASK-012': { task_title:'v2.5.0 관리자/부서관리자 메뉴 통합', content:'<h2>TASK-012: 메뉴 통합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ 디렉토리 삭제</li><li>admin/talents.html 생성</li><li>applyRoleNav() 함수</li></ul>' },
+      'TASK-013A': { task_title:'v3.0.0 슈퍼관리자 체계 + 네비게이션 개편', content:'<h2>TASK-013A: v3.0.0 슈퍼관리자 체계</h2><p>docs/TASK-013A_change_report.md 참조</p>' },
+      'TASK-013BCD': { task_title:'v3.0.0 변경 보고서 + SQL 스키마', content:'<h2>TASK-013BCD: v3.0.0 변경 보고서</h2><p>docs/TASK-013BCD_change_report.md 참조</p>' },
       'TASK-013': { task_title:'v3.0.0~v3.6.0 유형/권한 6단계 체계', content:'<h2>TASK-013: 6단계 체계 전면 개편</h2><p><b>버전:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level 확장</li><li>get_permission_rank() 함수</li><li>RPC 12개 업데이트</li><li>달란트 지급 개편</li><li>반 시스템 추가</li></ul>' },
       'TASK-014': { task_title:'v3.7.0 다중 기능 개선 및 UX 향상', content:'<h2>TASK-014: 다중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>아이디 한글 입력 제한</li><li>로그 범위 삭제, 이름(아이디) 표시, 상세 팝업</li><li>대시보드 이슈 로그 필터</li><li>네비게이션 변경</li><li>물품 활성화/비활성화</li><li>승인 대기 메시지</li></ul>' },
       'TASK-015': { task_title:'v3.7.1~v3.7.2 보고서 버그 수정 + 로그 삭제 + 배지', content:'<h2>TASK-015: 보고서 버그 수정</h2><p><b>버전:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS 충돌 해결</li><li>로그 체크박스 + 선택 삭제</li><li>가입대기 배지</li></ul>' },
@@ -339,15 +341,19 @@
         { task_id:'TASK-005', task_title:'v1.4.0 사용자 관리 및 역할 배지', report_type:'change_report', content:'<h2>TASK-005: 사용자 관리 및 역할 배지</h2><p><b>버전:</b> v1.4.0</p><ul><li>관리자 사용자 관리 페이지</li><li>역할별 통계 대시보드</li><li>모든 페이지 역할 배지</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-006', task_title:'v1.5.0 계정 등록 신청', report_type:'change_report', content:'<h2>TASK-006: 계정 등록 신청</h2><p><b>버전:</b> v1.5.0</p><ul><li>계정 등록 신청 페이지</li><li>아이디 중복/신청 중복 검증</li><li>관리자 승인/거부 기능</li><li>registration_requests 테이블</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 전면 개선', report_type:'security_report', content:'<h2>TASK-007: DB 보안 구조 전면 개선 - 보안 보고서</h2><p>docs/TASK-007_security_report.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 전면 개선', report_type:'plan', content:'<h2>TASK-007: DB 보안 구조 전면 개선 - 백업 체크리스트</h2><p>docs/TASK-007_backup_checklist.md 참조</p>', created_by:'AI_Cursor' },
         { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 전면 개선', report_type:'change_report', content:'<h2>TASK-007: DB 보안 구조 전면 개선</h2><p><b>버전:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth 도입 (bcrypt)</li><li>profiles 테이블 신설</li><li>SECURITY DEFINER RPC 함수</li><li>전체 테이블 RLS 정책 재설계</li><li>모바일 반응형 대폭 개선</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-008', task_title:'v2.1.0 관리자 페이지 접근 제어', report_type:'change_report', content:'<h2>TASK-008: 관리자 페이지 접근 제어</h2><p><b>버전:</b> v2.1.0</p><ul><li>initPage() 역할 체크 리디렉트</li><li>CSS auth-ready 기반 콘텐츠 플래시 방지</li><li>부서 관리 역할별 인원 분리 표시</li><li>admin 전용 상품 관리 페이지</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-009', task_title:'v2.2.0 레거시 관리자 로그인 제거', report_type:'change_report', content:'<h2>TASK-009: 레거시 관리자 로그인 제거</h2><p><b>버전:</b> v2.2.0</p><ul><li>관리자 진입점 버튼 제거</li><li>admin/login.html 레거시 파일 삭제</li><li>로그인 진입점 login.html 단일화</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-010', task_title:'v2.3.0 초기 비밀번호 변경 강제', report_type:'security_report', content:'<h2>TASK-010: 초기 비밀번호 변경 강제 - 보안 보고서</h2><p>docs/TASK-010_security_report.md 참조</p>', created_by:'AI_Cursor' },
         { task_id:'TASK-010', task_title:'v2.3.0 초기 비밀번호 변경 강제', report_type:'change_report', content:'<h2>TASK-010: 초기 비밀번호 변경 강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()에 isFirstLogin 강제 리디렉트</li><li>student/shop.html 보호 페이지 전환</li><li>autoLogPageView() 인증 후 이동</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-011', task_title:'v2.4.0 관리자 대시보드 개선', report_type:'test_scenario', content:'<h2>TASK-011: 관리자 대시보드 개선 - 테스트 시나리오</h2><p>docs/TASK-011_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 관리자 대시보드 개선', report_type:'test_result', content:'<h2>TASK-011: 관리자 대시보드 개선 - 테스트 결과</h2><p>docs/TASK-011_test_report.md 참조</p>', created_by:'AI_Cursor' },
         { task_id:'TASK-011', task_title:'v2.4.0 관리자 대시보드 개선', report_type:'change_report', content:'<h2>TASK-011: 관리자 대시보드 개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가입 대기자 수 카드 추가</li><li>바로가기 영역 5개로 재구성</li><li>각 바로가기에 이모지 추가</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-012', task_title:'v2.5.0 관리자/부서관리자 메뉴 통합', report_type:'change_report', content:'<h2>TASK-012: 관리자/부서관리자 메뉴 통합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ 디렉토리 삭제 (admin/ 통합)</li><li>admin/talents.html 신규 생성</li><li>applyRoleNav() 함수 도입</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 유형/권한 6단계 체계', report_type:'change_report', content:'<h2>TASK-013: 유형/권한 6단계 체계 전면 개편</h2><p><b>버전:</b> v3.0.0 ~ v3.6.0</p><ul><li>profiles user_type + permission_level 확장</li><li>get_permission_rank() 헬퍼 함수</li><li>RPC 함수 12개 전면 업데이트</li><li>달란트 지급 방식 개편 (talent_items)</li><li>반 시스템 추가</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013A', task_title:'v3.0.0 슈퍼관리자 체계 + 네비게이션 개편', report_type:'change_report', content:'<h2>TASK-013A: v3.0.0 슈퍼관리자 체계</h2><p>docs/TASK-013A_change_report.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013BCD', task_title:'v3.0.0 변경 보고서 + SQL 스키마', report_type:'change_report', content:'<h2>TASK-013BCD: v3.0.0 변경 보고서</h2><p>docs/TASK-013BCD_change_report.md 참조</p>', created_by:'AI_Cursor' },
         { task_id:'TASK-014', task_title:'v3.7.0 다중 기능 개선 및 UX 향상', report_type:'change_report', content:'<h2>TASK-014: 다중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>아이디 한글 입력 제한</li><li>로그 범위 삭제, 사용자 이름(아이디) 표시, 상세 팝업</li><li>대시보드 이슈 로그 필터링</li><li>네비게이션 타이틀/링크 변경</li><li>물품 활성화/비활성화 토글</li><li>승인 대기 로그인 메시지 분기</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 보고서 버그 수정 + 로그 삭제 + 배지', report_type:'change_report', content:'<h2>TASK-015: 보고서 버그 수정</h2><p><b>버전:</b> v3.7.1 ~ v3.7.2</p><ul><li>reports.html TYPE_LABELS 충돌 해결</li><li>로그 체크박스 + 선택 삭제</li><li>사용자 관리 가입대기 배지</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-016', task_title:'v3.7.3 권한 기반 부서/사용자 관리 스코핑', report_type:'change_report', content:'<h2>TASK-016: 권한 기반 스코핑</h2><p><b>버전:</b> v3.7.3</p><ul><li>교사 수 카운트 전체 포함</li><li>본인 권한보다 낮은 사용자만 관리 가능</li><li>부장 이하 담당 부서만 표시</li></ul>', created_by:'AI_Cursor' },
@@ -487,6 +493,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.12.0"></script>
+  <script src="../js/version.js?v=3.12.1"></script>
 </body>
 </html>

@@ -2,9 +2,23 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.12.0',
+  current: '3.12.1',
   date: '2026-05-29',
   history: [
+    {
+      version: '3.12.1',
+      date: '2026-05-29',
+      title: '메인 로그인 수정 + 네비 배지/폰트 통일 + 보고서 누락 등록',
+      changes: [
+        'index.html: initSupabase() 누락 수정 (loadAuthSession 전 _sb 초기화)',
+        'common.css: .badge 스타일 추가 (position:absolute, 배경 빨강, 원형 배지)',
+        'common.css: top-nav-links 폰트 0.88rem→0.8rem, padding/border-radius admin.css와 통일',
+        'common.css: 768px 반응형 badge position:static 인라인 전환',
+        '보고서 SEED: TASK-007 backup_checklist, TASK-011 test_report 추가',
+        '보고서 SEED: TASK-013A, TASK-013BCD change_report 추가',
+        '보고서 REPORT_SEED_MAP: TASK-013A, TASK-013BCD 추가'
+      ]
+    },
     {
       version: '3.12.0',
       date: '2026-05-29',
