@@ -2,9 +2,21 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.12.2',
+  current: '3.12.3',
   date: '2026-05-30',
   history: [
+    {
+      version: '3.12.3',
+      date: '2026-05-30',
+      title: '데스크탑 네비게이션 표시 오류 수정 (항목 사라짐/2줄 표시)',
+      changes: [
+        'common.css: top-nav height 56px→48px(min-height) + overflow-x:auto 가로 스크롤 적용',
+        'common.css: top-nav-links flex-wrap:wrap→nowrap 제거 + flex-shrink:0 고정',
+        'common.css: top-nav-links li/a white-space:nowrap 적용 (한 줄 유지)',
+        'common.css: 모바일(768px) 반응형 overflow/white-space 별도 복원',
+        '영향 페이지: shop.html, earn-talents.html, my-talents.html, my-orders.html'
+      ]
+    },
     {
       version: '3.12.2',
       date: '2026-05-30',
