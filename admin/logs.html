@@ -16,6 +16,7 @@
       <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
       <li><a href="../my-talents.html">내 달란트</a></li>
+      <li><a href="../earn-talents.html">달란트 적립</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
       <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
@@ -116,14 +117,15 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.11.0"></script>
-  <script src="../js/activity-log.js?v=3.11.0"></script>
-  <script src="../js/auth.js?v=3.11.0"></script>
+  <script src="../js/supabase-config.js?v=3.12.0"></script>
+  <script src="../js/activity-log.js?v=3.12.0"></script>
+  <script src="../js/auth.js?v=3.12.0"></script>
   <script>
     initSupabase();
     let session;
     let currentPage = 0;
     const PAGE_SIZE = 50;
+    let totalLogCount = 0;
     let selectedLevels = [];
     let currentAckId = null;
     let userProfileMap = {};
@@ -230,6 +232,16 @@
       if (dateFrom) options.dateFrom = dateFrom + 'T00:00:00+09:00';
       if (dateTo) options.dateTo = dateTo + 'T23:59:59+09:00';
 
+      let countQuery = _sb.from('activity_logs').select('*', { count: 'exact', head: true });
+      try {
+        countQuery = countQuery.or('is_deleted.is.null,is_deleted.eq.false');
+      } catch (e) {}
+      if (options.levels) countQuery = countQuery.in('level', options.levels);
+      if (options.dateFrom) countQuery = countQuery.gte('created_at', options.dateFrom);
+      if (options.dateTo) countQuery = countQuery.lte('created_at', options.dateTo);
+      const { count: tc } = await countQuery;
+      totalLogCount = tc || 0;
+
       const { data } = await fetchLogs(options);
       renderLogs(data || []);
     }
@@ -237,7 +249,7 @@
     function renderLogs(logs) {
       const tbody = document.getElementById('logsList');
       const title = document.getElementById('tableTitle');
-      title.textContent = `활동 로그 (${logs.length}건)`;
+      title.textContent = `활동 로그 (${logs.length}/${totalLogCount})`;
 
       if (logs.length === 0) {
         tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
@@ -279,13 +291,32 @@
 
     function renderPagination(count) {
       const el = document.getElementById('pagination');
+      const totalPages = Math.max(1, Math.ceil(totalLogCount / PAGE_SIZE));
+      const cur = currentPage + 1;
       const hasPrev = currentPage > 0;
-      const hasNext = count >= PAGE_SIZE;
-      el.innerHTML = `
-        <button ${hasPrev ? '' : 'disabled'} onclick="goPage(${currentPage - 1})">이전</button>
-        <span class="page-info">${currentPage + 1} 페이지</span>
-        <button ${hasNext ? '' : 'disabled'} onclick="goPage(${currentPage + 1})">다음</button>
-      `;
+      const hasNext = cur < totalPages;
+
+      let pages = [];
+      const maxVisible = 5;
+      let start = Math.max(1, cur - Math.floor(maxVisible / 2));
+      let end = start + maxVisible - 1;
+      if (end > totalPages) { end = totalPages; start = Math.max(1, end - maxVisible + 1); }
+
+      let html = `<button ${hasPrev ? '' : 'disabled'} onclick="goPage(${currentPage - 1})">이전</button>`;
+      if (start > 1) {
+        html += `<button onclick="goPage(0)">1</button>`;
+        if (start > 2) html += `<span class="page-info">...</span>`;
+      }
+      for (let i = start; i <= end; i++) {
+        html += `<button class="${i === cur ? 'active' : ''}" onclick="goPage(${i - 1})">${i}</button>`;
+      }
+      if (end < totalPages) {
+        if (end < totalPages - 1) html += `<span class="page-info">...</span>`;
+        html += `<button onclick="goPage(${totalPages - 1})">${totalPages}</button>`;
+      }
+      html += `<button ${hasNext ? '' : 'disabled'} onclick="goPage(${currentPage + 1})">다음</button>`;
+      html += `<span class="page-info" style="margin-left:0.5rem;">(${totalPages} 페이지)</span>`;
+      el.innerHTML = html;
     }
 
     function goPage(page) {
@@ -533,6 +564,6 @@
       toggleDeletedView();
     }
   </script>
-  <script src="../js/version.js?v=3.11.0"></script>
+  <script src="../js/version.js?v=3.12.0"></script>
 </body>
 </html>

@@ -16,6 +16,7 @@
       <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
       <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
       <li><a href="../my-talents.html">내 달란트</a></li>
+      <li><a href="../earn-talents.html">달란트 적립</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
       <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
@@ -40,7 +41,7 @@
         <div class="admin-table-title">권한별 기능 설정</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>권한</th><th>등급</th><th>설명</th><th>관리</th></tr></thead>
+        <thead><tr><th>구분</th><th>유형</th><th>권한</th><th>등급</th><th>설명</th><th>관리</th></tr></thead>
         <tbody id="permList"></tbody>
       </table>
     </div>
@@ -59,23 +60,23 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.11.0"></script>
-  <script src="../js/activity-log.js?v=3.11.0"></script>
-  <script src="../js/auth.js?v=3.11.0"></script>
-  <script src="../js/user-mgmt.js?v=3.11.0"></script>
+  <script src="../js/supabase-config.js?v=3.12.0"></script>
+  <script src="../js/activity-log.js?v=3.12.0"></script>
+  <script src="../js/auth.js?v=3.12.0"></script>
+  <script src="../js/user-mgmt.js?v=3.12.0"></script>
   <script>
     initSupabase();
     let session;
     let editingPerm = null;
 
     const PERM_LIST = [
-      { key: 'super_admin', label: '최고 관리자', emoji: '🔒', rank: 110, desc: '모든 기능 접근 가능 (시스템 관리자)', superOnly: true },
-      { key: 'admin', label: '관리자', emoji: '👑', rank: 100, desc: '전체 시스템 관리' },
-      { key: 'evangelist', label: '전도사님', emoji: '✝️', rank: 90, desc: '사용자/부서/관리자 관리' },
-      { key: 'chief', label: '부장 교사', emoji: '📋', rank: 80, desc: '담당 부서 관리 + 조회' },
-      { key: 'dept_teacher', label: '부서 담당 교사', emoji: '👩‍🏫', rank: 60, desc: '담당 부서 사용자 관리' },
-      { key: 'teacher', label: '일반 교사', emoji: '👨‍🏫', rank: 40, desc: '달란트 지급' },
-      { key: 'student', label: '학생', emoji: '🎒', rank: 20, desc: '내 달란트 조회 / 상점 이용' }
+      { key: 'super_admin', userType: 'teacher', perm: 'admin', label: '최고 관리자', emoji: '🔒', rank: 110, desc: '모든 기능 접근 가능 (시스템 관리자)', superOnly: true },
+      { key: 'admin', userType: 'teacher', perm: 'admin', label: '관리자', emoji: '👑', rank: 100, desc: '전체 시스템 관리' },
+      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', label: '전도사님', emoji: '✝️', rank: 90, desc: '사용자/부서/관리자 관리' },
+      { key: 'chief', userType: 'teacher', perm: 'chief', label: '부장 교사', emoji: '📋', rank: 80, desc: '담당 부서 관리 + 조회' },
+      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', label: '부서 담당 교사', emoji: '👩‍🏫', rank: 60, desc: '담당 부서 사용자 관리' },
+      { key: 'teacher', userType: 'teacher', perm: 'teacher', label: '일반 교사', emoji: '👨‍🏫', rank: 40, desc: '달란트 지급' },
+      { key: 'student', userType: 'student', perm: 'student', label: '학생', emoji: '🎒', rank: 20, desc: '내 달란트 조회 / 상점 이용' }
     ];
 
     const PAGE_FEATURES = [
@@ -158,6 +159,8 @@
         .filter(p => !p.superOnly || isSA)
         .map(p => `<tr>
           <td><span class="level-badge">${p.emoji} ${p.label}</span></td>
+          <td>${p.userType === 'teacher' ? '교사' : '학생'}</td>
+          <td>${PERMISSION_LABELS[p.perm] || p.perm}</td>
           <td style="font-weight:700;">${p.rank}</td>
           <td style="font-size:0.82rem;color:var(--admin-text-muted);">${p.desc}</td>
           <td><button class="filter-btn" onclick="openFeatureModal('${p.key}')">설정</button></td>
@@ -233,6 +236,6 @@
 
     document.getElementById('featureModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeFeatureModal(); });
   </script>
-  <script src="../js/version.js?v=3.11.0"></script>
+  <script src="../js/version.js?v=3.12.0"></script>
 </body>
 </html>
