@@ -31,7 +31,9 @@
       <li data-min-perm="100" style="display:none;"><a href="admin/page-features.html">페이지 기능</a></li>
       <li data-min-perm="100" style="display:none;"><a href="admin/audit.html">작업 이력</a></li>
       <li data-min-perm="80" style="display:none;"><a href="admin/versions.html">버전</a></li>
-      <li id="navAuthArea"><a href="login.html">로그인</a></li>
+      <li id="navLoginArea"><a href="login.html">로그인</a></li>
+      <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
     </ul>
   </nav>
 
@@ -104,9 +106,9 @@
       if (session) {
         document.getElementById('navMyTalent').style.display = '';
         document.getElementById('navMyOrders').style.display = '';
-        document.getElementById('navAuthArea').innerHTML =
-          `<span class="nav-user" id="navUser"></span></li>` +
-          `<li><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button>`;
+        document.getElementById('navLoginArea').style.display = 'none';
+        document.getElementById('navAuthArea').style.display = '';
+        document.getElementById('navLogoutArea').style.display = '';
         renderRoleBadge('navUser', session, '');
         applyPermNav(session.permissionRank || 0);
         updateNavOrderBadge();
