@@ -19,6 +19,7 @@
       <li><a href="../earn-talents.html">달란트 적립</a></li>
       <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
       <li><a href="../shop.html">상품 구매</a></li>
+      <li><a href="../my-orders.html">내 구매 상품</a></li>
       <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
       <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
       <li data-min-perm="80"><a href="reports.html" class="active">보고서</a></li>
@@ -109,9 +110,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.12.1"></script>
-  <script src="../js/activity-log.js?v=3.12.1"></script>
-  <script src="../js/auth.js?v=3.12.1"></script>
+  <script src="../js/supabase-config.js?v=3.12.2"></script>
+  <script src="../js/activity-log.js?v=3.12.2"></script>
+  <script src="../js/auth.js?v=3.12.2"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -297,7 +298,8 @@
       'TASK-023': { task_title:'v3.8.2 페이지 접근 권한별 + 작업 이력 + DB 연동', content:'<h2>TASK-023: v3.8.2 개선</h2><p><b>버전:</b> v3.8.2</p><ul><li>페이지 접근 권한별 개편</li><li>작업 이력 관리 신규</li><li>initPage() DB 연동 적용</li><li>로그 삭제 디버그 강화</li><li>보고서 수정 버튼</li><li>별 이모지 회전 애니메이션</li></ul>' },
       'TASK-024': { task_title:'v3.8.3 작업자 실명 + 보고서 자동복구', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장</li><li>audit.html 작업자 실명 + 관리자 아이디</li><li>보고서 자동복구</li></ul>' },
       'TASK-025': { task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>is_deleted 소프트 삭제</li><li>삭제 대기 목록 + 복원</li><li>실제 삭제는 SQL로 직접</li></ul>' },
-      'TASK-026': { task_title:'v3.9.0 상품 구매 시스템 + 달란트 개편 + 명칭 통일', content:'<h2>TASK-026: v3.9.0 대규모 업데이트</h2><p><b>버전:</b> v3.9.0</p><ul><li>상품 구매 시스템 4단계 흐름 신규</li><li>admin/purchases.html 구매 관리 신규</li><li>shop.html 구매 신청 + 잔액 검증</li><li>my-talents.html 사용 대기/구매 내역</li><li>달란트: 체크박스 일괄 지급 + 반환 + 지급자 표시</li><li>명칭 통일: 물품→상품, 부장→부장 교사, 부서관리자→부서 담당 교사</li></ul>' }
+      'TASK-026': { task_title:'v3.9.0 상품 구매 시스템 + 달란트 개편 + 명칭 통일', content:'<h2>TASK-026: v3.9.0 대규모 업데이트</h2><p><b>버전:</b> v3.9.0</p><ul><li>상품 구매 시스템 4단계 흐름 신규</li><li>admin/purchases.html 구매 관리 신규</li><li>shop.html 구매 신청 + 잔액 검증</li><li>my-talents.html 사용 대기/구매 내역</li><li>달란트: 체크박스 일괄 지급 + 반환 + 지급자 표시</li><li>명칭 통일: 물품→상품, 부장→부장 교사, 부서관리자→부서 담당 교사</li></ul>' },
+      'TASK-030': { task_title:'v3.12.2 UI/기능 개선: 네비 통일, 달란트 스코핑, 대리 구매', content:'<h2>TASK-030: v3.12.2 UI/기능 개선</h2><p><b>버전:</b> v3.12.2</p><ul><li>네비게이션 통일: 전체 페이지에 "내 구매 상품" 메뉴 추가</li><li>보고서 리디렉트: initPage minRank 통과 시 role_page_access 차단 무시</li><li>달란트 관리: 일반 교사(40) 반 미배정 시 빈 목록 + 항목관리 버튼 60+</li><li>로그인 후: 모든 권한 index.html 이동</li><li>my-orders.html 신규: 본인 구매 내역 조회</li><li>대리 구매: shop.html에서 rank 40+ 대리 구매 모달</li><li>사용자 관리: 반 수정 60+ + 부서 필터 80+</li><li>관리자 관리: 학생 검색 제외 + 부서 필터 80+</li></ul>' }
     };
 
     async function autoFixReports() {
@@ -372,7 +374,8 @@
         { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'plan', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비 - 작업 계획서</h2><p>docs/TASK-029_plan.md 참조</p>', created_by:'AI_Cursor' },
         { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'test_scenario', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비 - 테스트 시나리오</h2><p>docs/TASK-029_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
         { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'test_result', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비 - 테스트 결과</h2><p>docs/TASK-029_test_result.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'change_report', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비</h2><p><b>버전:</b> v3.12.0</p><ul><li>페이지 기능: role_page_features 테이블 생성 + 6열 그리드</li><li>메인 페이지: 로그인/로그아웃 버튼 이모지 수정</li><li>네비게이션 통합: admin nav 기준 전체 일치화</li><li>달란트 관리: 달란트 항목 관리 버튼</li><li>구매 관리: 전체 탭 기본 선택</li><li>로그: 카운트 (X/Y) + 페이지네이션 개선</li><li>작업 이력: 한글화</li><li>문서 4종 + 보고서 등록</li></ul>', created_by:'AI_Cursor' }
+        { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'change_report', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비</h2><p><b>버전:</b> v3.12.0</p><ul><li>페이지 기능: role_page_features 테이블 생성 + 6열 그리드</li><li>메인 페이지: 로그인/로그아웃 버튼 이모지 수정</li><li>네비게이션 통합: admin nav 기준 전체 일치화</li><li>달란트 관리: 달란트 항목 관리 버튼</li><li>구매 관리: 전체 탭 기본 선택</li><li>로그: 카운트 (X/Y) + 페이지네이션 개선</li><li>작업 이력: 한글화</li><li>문서 4종 + 보고서 등록</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030', task_title:'v3.12.2 UI/기능 개선: 네비 통일, 달란트 스코핑, 대리 구매', report_type:'change_report', content:'<h2>TASK-030: v3.12.2 UI/기능 개선</h2><p><b>버전:</b> v3.12.2</p><ul><li>네비게이션 통일: 전체 페이지에 "내 구매 상품" 메뉴 추가</li><li>보고서 리디렉트 수정: initPage minRank 통과 시 role_page_access 차단 무시</li><li>달란트 관리: 일반 교사(40) 반 미배정 시 빈 목록 + 항목관리 버튼 60+</li><li>로그인 후 리디렉트: 모든 권한 index.html 통일</li><li>my-orders.html 신규: 본인 구매 내역 조회 (4단계 상태 배지)</li><li>대리 구매: shop.html에서 rank 40+ 대리 구매 모달 (스코핑 규칙)</li><li>사용자 관리: 반 수정 60+ 활성화, 부서 필터 80+</li><li>관리자 관리: 학생 검색 제외, 부서 필터 80+</li></ul>', created_by:'AI_Cursor' }
       ];
       try {
         await _sb.from('reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -493,6 +496,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.12.1"></script>
+  <script src="../js/version.js?v=3.12.2"></script>
 </body>
 </html>

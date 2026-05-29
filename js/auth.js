@@ -21,19 +21,19 @@ const PERMISSION_EMOJI = {
 const TYPE_LABELS = { teacher: '교사', student: '학생' };
 
 const PERMISSION_REDIRECT = {
-  admin: 'admin/index.html',
-  evangelist: 'admin/index.html',
-  chief: 'admin/index.html',
-  dept_teacher: 'admin/talents.html',
-  teacher: 'admin/talents.html',
-  student: 'my-talents.html'
+  admin: 'index.html',
+  evangelist: 'index.html',
+  chief: 'index.html',
+  dept_teacher: 'index.html',
+  teacher: 'index.html',
+  student: 'index.html'
 };
 
 const ROLE_REDIRECT = {
-  admin: 'admin/index.html',
-  dept_manager: 'admin/talents.html',
-  teacher: 'my-talents.html',
-  student: 'my-talents.html'
+  admin: 'index.html',
+  dept_manager: 'index.html',
+  teacher: 'index.html',
+  student: 'index.html'
 };
 
 function getPermRank(level, isSuperAdmin) {
@@ -215,9 +215,12 @@ async function initPage(allowedRolesOrMinRank, loginPath) {
         const pageId = detectCurrentPageId();
         const pageAccess = accessData.find(a => a.page_id === pageId);
         if (pageAccess && pageAccess.can_access === false) {
-          const basePath = loginPath ? loginPath.replace(/[^/]*$/, '') : '../';
-          window.location.href = getRedirectUrl(session, basePath);
-          return null;
+          const minRank = typeof allowedRolesOrMinRank === 'number' ? allowedRolesOrMinRank : 0;
+          if (rank < minRank || minRank === 0) {
+            const basePath = loginPath ? loginPath.replace(/[^/]*$/, '') : '../';
+            window.location.href = getRedirectUrl(session, basePath);
+            return null;
+          }
         }
         if (pageAccess && pageAccess.hidden_elements && pageAccess.hidden_elements.length > 0) {
           pageAccess.hidden_elements.forEach(elId => {

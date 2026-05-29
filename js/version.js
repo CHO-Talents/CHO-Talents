@@ -2,9 +2,25 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.12.1',
-  date: '2026-05-29',
+  current: '3.12.2',
+  date: '2026-05-30',
   history: [
+    {
+      version: '3.12.2',
+      date: '2026-05-30',
+      title: 'UI/기능 개선: 네비 통일, 달란트 스코핑, 대리 구매, 내 구매 상품 페이지',
+      changes: [
+        '네비게이션 통일: 전체 페이지에 "내 구매 상품" 메뉴 추가 (admin 15 + 공개 5)',
+        '보고서 리디렉트 수정: initPage minRank 통과 시 role_page_access can_access=false 무시',
+        '달란트 관리: 일반 교사(40) 반 미배정 시 빈 목록 + canGiveTalent classNumber 필수화',
+        '달란트 항목 관리 버튼: data-min-perm="60" (부서 담당 교사 이상만 표시)',
+        '로그인 후 리디렉트: 모든 권한 index.html(메인 페이지)로 통일',
+        'my-orders.html 신규 생성: 본인 구매 내역 조회 (4단계 상태 배지, 관리자 정보 미표시)',
+        '대리 구매 기능: shop.html에 rank 40+ 대리 구매 모달 추가 (스코핑 규칙 적용)',
+        '사용자 관리: 부서 담당 교사(60+) 반 수정 활성화, 부장 교사(80+) 부서 필터 추가',
+        '관리자 관리: 학생 검색 제외, 부장 교사(80+) 부서 필터 추가'
+      ]
+    },
     {
       version: '3.12.1',
       date: '2026-05-29',
