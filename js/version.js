@@ -2,9 +2,26 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.12.4',
+  current: '3.13.0',
   date: '2026-05-30',
   history: [
+    {
+      version: '3.13.0',
+      date: '2026-05-30',
+      title: '네비게이션 드롭다운 개편 + 사용자 가이드/Q&A 신규 + 로그인/비밀번호 개선',
+      changes: [
+        '네비게이션: 평면 단일행 → 드롭다운 5그룹 개편 (소개/달란트/상품/관리/운영)',
+        '네비게이션: 데스크탑 호버 펼침 + 모바일 아코디언 토글 방식',
+        '전체 admin(15) + public(4) HTML 파일 드롭다운 네비 적용',
+        'guide.html 신규: 사용자 가이드 (시각적 카드/스텝 기반 설명)',
+        'qna.html 신규: Q&A 게시판 (FAQ + 질문등록 + 관리자 답변 + FAQ 등록)',
+        'qna 테이블 생성 SQL + RLS 정책 + 초기 FAQ 9건',
+        '로그인: check_registration_status RPC로 승인대기 메시지 정상 표시',
+        '비밀번호 변경: 8자 이상 + 영문+숫자 조합 필수 + 1234 사용 금지',
+        '메인 페이지: 네비 간소화 (브랜드+로그인/로그아웃+관리 버튼만)',
+        'admin.css/common.css: .nav-dropdown-toggle/.nav-dropdown-menu 스타일 추가'
+      ]
+    },
     {
       version: '3.12.4',
       date: '2026-05-30',

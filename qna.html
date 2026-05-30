@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Q & A - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
+  <link rel="stylesheet" href="css/common.css" />
+  <style>
+    .qna-container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+    .qna-hero { text-align: center; margin-bottom: 2rem; }
+    .qna-hero h1 { font-size: 1.6rem; color: var(--c-primary); }
+    .qna-hero p { color: var(--c-text-muted); }
+    .qna-section-title { font-size: 1.1rem; font-weight: 700; margin: 1.5rem 0 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+    .faq-item { background: #fff; border: 1px solid var(--c-border); border-radius: 10px; margin-bottom: 0.6rem; overflow: hidden; }
+    .faq-q { padding: 0.8rem 1rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.15s; }
+    .faq-q:hover { background: #f8f5ff; }
+    .faq-q::after { content: '+'; font-size: 1.2rem; color: var(--c-primary); transition: transform 0.2s; }
+    .faq-item.open .faq-q::after { content: '−'; }
+    .faq-a { display: none; padding: 0 1rem 0.8rem; font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.6; border-top: 1px solid var(--c-border); padding-top: 0.8rem; margin-top: 0; }
+    .faq-item.open .faq-a { display: block; }
+    .qna-card { background: #fff; border: 1px solid var(--c-border); border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem; }
+    .qna-card .q-text { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .qna-card .a-text { font-size: 0.85rem; color: var(--c-text-muted); background: #f8f9fa; padding: 0.6rem 0.8rem; border-radius: 6px; margin-top: 0.4rem; }
+    .qna-card .meta { font-size: 0.75rem; color: #adb5bd; margin-top: 0.4rem; }
+    .qna-status { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+    .qna-status.pending { background: #fff3bf; color: #e67700; }
+    .qna-status.answered { background: #d3f9d8; color: #2b8a3e; }
+    .ask-form { background: #fff; border: 1px solid var(--c-border); border-radius: 12px; padding: 1.2rem; margin-top: 1.5rem; }
+    .ask-form h3 { font-size: 1rem; margin-bottom: 0.8rem; }
+    .ask-form textarea { width: 100%; min-height: 80px; border: 1px solid var(--c-border); border-radius: 8px; padding: 0.6rem; font-size: 0.9rem; resize: vertical; }
+    .ask-form button { margin-top: 0.6rem; padding: 0.5rem 1.5rem; background: var(--c-primary); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .ask-form button:hover { opacity: 0.9; }
+    .admin-answer { margin-top: 0.5rem; }
+    .admin-answer textarea { width: 100%; min-height: 60px; border: 1px solid var(--c-border); border-radius: 6px; padding: 0.5rem; font-size: 0.85rem; resize: vertical; }
+    .admin-answer .btn-row { display: flex; gap: 0.4rem; margin-top: 0.4rem; flex-wrap: wrap; }
+    .admin-answer .btn-row button { padding: 0.3rem 0.8rem; font-size: 0.78rem; border: 1px solid var(--c-border); border-radius: 6px; cursor: pointer; font-weight: 600; background: #fff; }
+    .admin-answer .btn-row button.primary { background: var(--c-primary); color: #fff; border-color: var(--c-primary); }
+    .admin-answer .btn-row button.faq-btn { background: #51cf66; color: #fff; border-color: #51cf66; }
+    .empty-state { text-align: center; padding: 2rem; color: var(--c-text-muted); }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="top-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
+    <ul class="top-nav-links" id="navLinks">
+      <li>
+        <button class="nav-dropdown-toggle active">소개</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="guide.html">사용자 가이드</a></li>
+          <li><a href="earn-talents.html">달란트 적립</a></li>
+          <li><a href="qna.html" class="active">Q &amp; A</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">달란트</button>
+        <ul class="nav-dropdown-menu">
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">상품</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="shop.html">상품 구매</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">내 구매 상품</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리</a></li>
+        </ul>
+      </li>
+      <li data-min-perm="60" style="display:none;">
+        <button class="nav-dropdown-toggle">관리</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="80"><a href="admin/index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="admin/users.html">사용자 관리</a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="qna.html">질문 관리</a></li>
+        </ul>
+      </li>
+      <li data-min-perm="80" style="display:none;">
+        <button class="nav-dropdown-toggle">운영</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
+          <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
+          <li data-min-perm="100"><a href="admin/logs.html">로그</a></li>
+        </ul>
+      </li>
+      <li id="navLoginArea"><a href="login.html">로그인</a></li>
+      <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
+    </ul>
+    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',()=>{b.parentElement.classList.toggle('mobile-open');})})</script>
+  </nav>
+
+  <div class="qna-container">
+    <div class="qna-hero">
+      <h1>💬 Q & A</h1>
+      <p>궁금한 점을 질문하고 답변을 확인하세요</p>
+    </div>
+
+    <div class="qna-section-title">⭐ 자주 묻는 질문</div>
+    <div id="faqList"><div class="empty-state">불러오는 중...</div></div>
+
+    <div class="qna-section-title">📝 질문 게시판</div>
+    <div id="qnaList"><div class="empty-state">불러오는 중...</div></div>
+
+    <div class="ask-form" id="askForm" style="display:none;">
+      <h3>✋ 질문하기</h3>
+      <textarea id="askQuestion" placeholder="궁금한 점을 입력해주세요..."></textarea>
+      <button onclick="submitQuestion()">질문 등록</button>
+      <div class="form-error" id="askError" style="margin-top:0.5rem;"></div>
+    </div>
+
+    <div id="loginPrompt" style="text-align:center;margin-top:1.5rem;">
+      <p style="color:var(--c-text-muted);font-size:0.9rem;">질문을 등록하려면 <a href="login.html" style="color:var(--c-primary);font-weight:600;">로그인</a>이 필요해요</p>
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=3.13.0"></script>
+  <script src="js/activity-log.js?v=3.13.0"></script>
+  <script src="js/auth.js?v=3.13.0"></script>
+  <script>
+    initSupabase();
+    let _session = null;
+    let _isAdmin = false;
+
+    (async () => {
+      _session = await loadAuthSession();
+      if (_session) {
+        document.getElementById('navMyTalent').style.display = '';
+        document.getElementById('navMyOrders').style.display = '';
+        document.getElementById('navLoginArea').style.display = 'none';
+        document.getElementById('navAuthArea').style.display = '';
+        document.getElementById('navLogoutArea').style.display = '';
+        renderRoleBadge('navUser', _session, '');
+        applyPermNav(_session.permissionRank || 0);
+        document.getElementById('askForm').style.display = '';
+        document.getElementById('loginPrompt').style.display = 'none';
+        _isAdmin = (_session.permissionRank || 0) >= 60;
+      }
+      await loadFAQ();
+      await loadQuestions();
+    })();
+
+    async function loadFAQ() {
+      const container = document.getElementById('faqList');
+      const { data, error } = await _sb.from('qna').select('*').eq('is_faq', true).order('created_at');
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state">등록된 FAQ가 없습니다.</div>';
+        return;
+      }
+      container.innerHTML = data.map(q => `
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-q">Q. ${escHtml(q.question)}</div>
+          <div class="faq-a">A. ${escHtml(q.answer || '답변 준비 중')}</div>
+        </div>`).join('');
+    }
+
+    async function loadQuestions() {
+      const container = document.getElementById('qnaList');
+      let query = _sb.from('qna').select('*').eq('is_faq', false).order('created_at', { ascending: false });
+      const { data, error } = await query;
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state">등록된 질문이 없습니다.</div>';
+        return;
+      }
+      container.innerHTML = data.map(q => {
+        const statusClass = q.status === 'answered' ? 'answered' : 'pending';
+        const statusText = q.status === 'answered' ? '답변완료' : '대기중';
+        const answerHtml = q.answer
+          ? `<div class="a-text">💬 ${escHtml(q.answer)}</div>`
+          : (_isAdmin ? renderAnswerForm(q.id) : '<div class="a-text" style="color:#adb5bd;">아직 답변이 없어요</div>');
+        const adminBtns = _isAdmin && q.answer && !q.is_faq
+          ? `<button class="faq-btn" onclick="markAsFaq('${q.id}')">FAQ 등록</button>` : '';
+        return `<div class="qna-card">
+          <div class="q-text"><span class="qna-status ${statusClass}">${statusText}</span> ${escHtml(q.question)}</div>
+          <div class="meta">${q.asked_by_name || '익명'} · ${formatDate(q.created_at)}</div>
+          ${answerHtml}
+          ${adminBtns ? `<div style="margin-top:0.4rem;">${adminBtns}</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    function renderAnswerForm(id) {
+      return `<div class="admin-answer">
+        <textarea id="ans_${id}" placeholder="답변을 입력하세요..."></textarea>
+        <div class="btn-row">
+          <button class="primary" onclick="submitAnswer('${id}')">답변 등록</button>
+          <button class="faq-btn" onclick="submitAnswer('${id}', true)">답변 + FAQ 등록</button>
+        </div>
+      </div>`;
+    }
+
+    async function submitQuestion() {
+      const errEl = document.getElementById('askError');
+      const text = document.getElementById('askQuestion').value.trim();
+      errEl.classList.remove('show');
+      if (!text) { errEl.textContent = '질문을 입력해주세요.'; errEl.classList.add('show'); return; }
+      const { error } = await _sb.from('qna').insert({
+        question: text,
+        asked_by: _session.id,
+        asked_by_name: _session.displayName || _session.username
+      });
+      if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+      document.getElementById('askQuestion').value = '';
+      await loadQuestions();
+    }
+
+    async function submitAnswer(id, asFaq) {
+      const textarea = document.getElementById('ans_' + id);
+      if (!textarea) return;
+      const answer = textarea.value.trim();
+      if (!answer) { alert('답변을 입력해주세요.'); return; }
+      const updates = {
+        answer,
+        answered_by: _session.id,
+        answered_by_name: _session.displayName || _session.username,
+        answered_at: new Date().toISOString(),
+        status: 'answered'
+      };
+      if (asFaq) { updates.is_faq = true; updates.status = 'faq'; }
+      const { error } = await _sb.from('qna').update(updates).eq('id', id);
+      if (error) { alert(tErr(error)); return; }
+      await loadFAQ();
+      await loadQuestions();
+    }
+
+    async function markAsFaq(id) {
+      if (!confirm('이 질문을 FAQ로 등록하시겠습니까?')) return;
+      const { error } = await _sb.from('qna').update({ is_faq: true, status: 'faq' }).eq('id', id);
+      if (error) { alert(tErr(error)); return; }
+      await loadFAQ();
+      await loadQuestions();
+    }
+
+    function escHtml(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
+    function formatDate(iso) { if (!iso) return ''; const d = new Date(iso); return `${d.getMonth()+1}/${d.getDate()}`; }
+  </script>
+  <script src="js/version.js?v=3.13.0"></script>
+</body>
+</html>

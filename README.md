@@ -12,18 +12,19 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.12.3` (`js/version.js` 기준, 2026-05-30) |
+| 현재 버전 | `v3.13.0` (`js/version.js` 기준, 2026-05-30) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.12.3`으로 맞춰져 있습니다.
-- **v3.12.3 수정 사항**:
-  - 데스크탑 네비게이션 표시 오류 수정: `common.css` `.top-nav` / `.top-nav-links` 가로 스크롤 방식으로 전환
-  - `top-nav` height 56px→48px + `overflow-x:auto` 적용 (admin-nav와 동일 패턴)
-  - `top-nav-links` `flex-wrap:wrap`→제거 + `flex-shrink:0`, `li`/`a`에 `white-space:nowrap` 적용
-  - 모바일(768px) 반응형: `overflow`/`white-space` 별도 복원으로 햄버거 메뉴 정상 동작 유지
-  - 영향 페이지: `shop.html`, `earn-talents.html`, `my-talents.html`, `my-orders.html`
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.13.0`으로 맞춰져 있습니다.
+- **v3.13.0 주요 변경 사항**:
+  - 네비게이션 전면 개편: 평면 단일행 → 드롭다운 5그룹 (소개/달란트/상품/관리/운영)
+  - `guide.html` 신규: 사용자 가이드 페이지 (카드/스텝 기반 시각적 설명)
+  - `qna.html` 신규: Q&A 게시판 (FAQ 상단 표시 + 질문 등록 + 관리자 답변 + FAQ 등록)
+  - 로그인: `check_registration_status` RPC로 승인 대기 메시지 정상 표시
+  - 비밀번호 변경: 8자 이상, 영문+숫자 필수, '1234' 사용 금지
+  - 메인 페이지 네비: 브랜드 + 로그인/로그아웃 + 관리(60+)만 표시
 - **v3.12.2 신규/변경 사항**:
   - 네비게이션 통일: 전체 페이지에 "내 구매 상품" 메뉴 추가, 보고서 리디렉트 수정
   - `my-orders.html` 신규: 로그인 사용자 본인 구매 내역 조회 (4단계 상태 배지, 관리자 정보 미표시)

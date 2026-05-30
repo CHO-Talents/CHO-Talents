@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>사용자 가이드 - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
+  <link rel="stylesheet" href="css/common.css" />
+  <style>
+    .guide-container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
+    .guide-hero { text-align: center; margin-bottom: 2.5rem; }
+    .guide-hero h1 { font-size: 1.8rem; color: var(--c-primary); margin-bottom: 0.5rem; }
+    .guide-hero p { color: var(--c-text-muted); font-size: 1rem; }
+    .guide-section { margin-bottom: 2rem; }
+    .guide-section h2 { font-size: 1.2rem; color: var(--c-text); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .guide-card { background: #fff; border: 1px solid var(--c-border); border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; transition: box-shadow 0.2s; }
+    .guide-card:hover { box-shadow: 0 4px 12px rgba(108,92,231,0.1); }
+    .guide-card h3 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--c-primary); }
+    .guide-card p { font-size: 0.9rem; color: var(--c-text-muted); line-height: 1.6; }
+    .guide-steps { counter-reset: step; list-style: none; padding: 0; }
+    .guide-steps li { counter-increment: step; position: relative; padding: 0.8rem 0.8rem 0.8rem 3rem; margin-bottom: 0.5rem; background: #f8f9fa; border-radius: 8px; font-size: 0.9rem; line-height: 1.5; }
+    .guide-steps li::before { content: counter(step); position: absolute; left: 0.8rem; top: 0.8rem; width: 1.6rem; height: 1.6rem; background: var(--c-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+    .guide-emoji { font-size: 1.5rem; }
+    .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+    .guide-grid-item { background: #fff; border: 1px solid var(--c-border); border-radius: 12px; padding: 1.2rem; text-align: center; }
+    .guide-grid-item .icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .guide-grid-item h4 { font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .guide-grid-item p { font-size: 0.82rem; color: var(--c-text-muted); }
+    .tip-box { background: linear-gradient(135deg, #f3f0ff 0%, #e8e0ff 100%); border-radius: 12px; padding: 1rem 1.2rem; margin: 1rem 0; }
+    .tip-box strong { color: var(--c-primary); }
+    @media (max-width: 640px) { .guide-grid { grid-template-columns: 1fr; } .guide-container { padding: 1rem 0.8rem; } }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="top-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
+    <ul class="top-nav-links" id="navLinks">
+      <li>
+        <button class="nav-dropdown-toggle active">소개</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="guide.html" class="active">사용자 가이드</a></li>
+          <li><a href="earn-talents.html">달란트 적립</a></li>
+          <li><a href="qna.html">Q &amp; A</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">달란트</button>
+        <ul class="nav-dropdown-menu">
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">상품</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="shop.html">상품 구매</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">내 구매 상품</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+        </ul>
+      </li>
+      <li data-min-perm="60" style="display:none;">
+        <button class="nav-dropdown-toggle">관리</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="80"><a href="admin/index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="admin/users.html">사용자 관리</a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="qna.html">질문 관리</a></li>
+        </ul>
+      </li>
+      <li data-min-perm="80" style="display:none;">
+        <button class="nav-dropdown-toggle">운영</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
+          <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
+          <li data-min-perm="100"><a href="admin/logs.html">로그</a></li>
+        </ul>
+      </li>
+      <li id="navLoginArea"><a href="login.html">로그인</a></li>
+      <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
+    </ul>
+    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',()=>{b.parentElement.classList.toggle('mobile-open');})})</script>
+  </nav>
+
+  <div class="guide-container">
+    <div class="guide-hero">
+      <h1>📖 사용자 가이드</h1>
+      <p>달란트 마을을 쉽고 재미있게 이용하는 방법을 알려드려요!</p>
+    </div>
+
+    <div class="guide-section">
+      <h2><span class="guide-emoji">🌟</span> 달란트 마을이란?</h2>
+      <div class="guide-card">
+        <p>달란트 마을은 <strong>초등부 학생과 교사</strong>를 위한 달란트(포인트) 관리 사이트예요.<br>
+        활동하면 달란트를 받고, 모은 달란트로 원하는 상품을 교환할 수 있답니다! 🎉</p>
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <h2><span class="guide-emoji">🚀</span> 시작하기</h2>
+      <ol class="guide-steps">
+        <li>사이트에 접속해서 <strong>계정 등록 신청</strong>을 해요</li>
+        <li>아이디, 이름, 소속 부서를 입력하고 신청!</li>
+        <li>선생님이 승인하면 <strong>초기 비밀번호 1234</strong>로 로그인해요</li>
+        <li>처음 로그인하면 <strong>새 비밀번호로 변경</strong>해야 해요 (8자 이상, 영문+숫자)</li>
+        <li>완료! 이제 달란트 마을을 자유롭게 이용할 수 있어요 🎊</li>
+      </ol>
+      <div class="tip-box">
+        <strong>💡 팁:</strong> 아이디는 영문, 숫자, _, - 만 사용할 수 있어요. 한글은 안 돼요!
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <h2><span class="guide-emoji">💰</span> 달란트 받는 방법</h2>
+      <div class="guide-grid">
+        <div class="guide-grid-item">
+          <div class="icon">📖</div>
+          <h4>성경 읽기</h4>
+          <p>매일 성경 한 장을 읽고 선생님께 확인받으세요</p>
+        </div>
+        <div class="guide-grid-item">
+          <div class="icon">✍️</div>
+          <h4>말씀 암송</h4>
+          <p>주간 말씀을 외우고 선생님 앞에서 암송하세요</p>
+        </div>
+        <div class="guide-grid-item">
+          <div class="icon">🙏</div>
+          <h4>예배 출석</h4>
+          <p>주일 예배에 빠지지 않고 출석하세요</p>
+        </div>
+        <div class="guide-grid-item">
+          <div class="icon">🤝</div>
+          <h4>봉사 활동</h4>
+          <p>교회 봉사나 특별 활동에 참여하세요</p>
+        </div>
+      </div>
+      <div class="tip-box">
+        <strong>💡 팁:</strong> 달란트는 선생님이 직접 지급해요. 활동을 열심히 하면 선생님이 확인하고 달란트를 넣어줍니다!
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <h2><span class="guide-emoji">🛒</span> 상품 구매하기</h2>
+      <ol class="guide-steps">
+        <li><strong>상품 구매</strong> 페이지에서 원하는 상품을 골라요</li>
+        <li><strong>구매 신청</strong> 버튼을 누르면 신청 완료!</li>
+        <li>달란트는 바로 빠지지 않고 <strong>"사용 대기"</strong> 상태가 돼요</li>
+        <li>선생님이 상품을 구해서 전달하면 그때 달란트가 차감돼요</li>
+      </ol>
+      <div class="guide-card">
+        <h3>📋 구매 진행 단계</h3>
+        <p style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;font-size:0.9rem;">
+          <span style="background:#e7f5ff;padding:0.3rem 0.6rem;border-radius:6px;">구매 신청</span>
+          <span>→</span>
+          <span style="background:#fff3bf;padding:0.3rem 0.6rem;border-radius:6px;">상품 준비</span>
+          <span>→</span>
+          <span style="background:#ffe8cc;padding:0.3rem 0.6rem;border-radius:6px;">상품 구매</span>
+          <span>→</span>
+          <span style="background:#d3f9d8;padding:0.3rem 0.6rem;border-radius:6px;">상품 지급 ✓</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <h2><span class="guide-emoji">📊</span> 내 달란트 확인하기</h2>
+      <div class="guide-card">
+        <p><strong>내 달란트</strong> 페이지에서 나의 달란트 현황을 한눈에 확인할 수 있어요:</p>
+        <ul style="margin-top:0.5rem;padding-left:1.2rem;line-height:2;">
+          <li><strong>누적 달란트</strong> - 지금까지 받은 달란트 합계</li>
+          <li><strong>사용 완료</strong> - 이미 사용 처리된 달란트</li>
+          <li><strong>사용 대기</strong> - 구매 신청했지만 아직 확정 안 된 달란트</li>
+          <li><strong>사용 가능</strong> - 실제로 지금 쓸 수 있는 달란트</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <h2><span class="guide-emoji">🔑</span> 비밀번호 & 계정</h2>
+      <div class="guide-card">
+        <ul style="padding-left:1.2rem;line-height:2;font-size:0.9rem;">
+          <li>첫 로그인 비밀번호는 <strong>1234</strong>예요</li>
+          <li>반드시 새 비밀번호로 변경해야 해요 (8자 이상, 영문+숫자)</li>
+          <li>비밀번호를 잊었다면? → 선생님께 <strong>초기화 요청</strong>하세요</li>
+          <li>초기화 후 다시 1234로 로그인하고 변경하면 돼요</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="guide-section">
+      <h2><span class="guide-emoji">❓</span> 궁금한 점이 있다면</h2>
+      <div class="guide-card" style="text-align:center;">
+        <p style="font-size:1.1rem;margin-bottom:0.8rem;">💬 <strong>Q & A 게시판</strong>에서 질문해보세요!</p>
+        <a href="qna.html" style="display:inline-block;padding:0.6rem 1.5rem;background:var(--c-primary);color:#fff;border-radius:50px;text-decoration:none;font-weight:700;">Q & A 바로가기 →</a>
+      </div>
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=3.13.0"></script>
+  <script src="js/activity-log.js?v=3.13.0"></script>
+  <script src="js/auth.js?v=3.13.0"></script>
+  <script>
+    initSupabase();
+    (async () => {
+      const session = await loadAuthSession();
+      if (session) {
+        document.getElementById('navMyTalent').style.display = '';
+        document.getElementById('navMyOrders').style.display = '';
+        document.getElementById('navLoginArea').style.display = 'none';
+        document.getElementById('navAuthArea').style.display = '';
+        document.getElementById('navLogoutArea').style.display = '';
+        renderRoleBadge('navUser', session, '');
+        applyPermNav(session.permissionRank || 0);
+      }
+    })();
+  </script>
+  <script src="js/version.js?v=3.13.0"></script>
+</body>
+</html>
