@@ -1,6 +1,6 @@
 # CHO-Talents
 
-초등부 달란트 운영을 위한 정적 웹 기반 관리 사이트입니다. 학생과 교사는 달란트 잔액과 상점 상품을 확인하고 구매 신청을 하며, 부서 담당 교사 이상 권한자는 권한 범위 안에서 달란트, 사용자, 상품, 구매, 부서, 로그, 보고서를 관리합니다.
+초등부 달란트 운영을 위한 정적 웹 기반 관리 사이트입니다. 학생과 교사는 달란트 잔액과 상점 상품, 구매 내역, Q&A를 확인하고 구매 신청을 하며, 부서 담당 교사 이상 권한자는 권한 범위 안에서 달란트, 사용자, 상품, 구매, 부서, 질문, 보고서, 로그를 관리합니다.
 
 **Live:** https://cho-talents.github.io/CHO-Talents/
 
@@ -22,6 +22,7 @@
   - 네비게이션 전면 개편: 평면 단일행 → 드롭다운 5그룹 (소개/달란트/상품/관리/운영)
   - `guide.html` 신규: 사용자 가이드 페이지 (카드/스텝 기반 시각적 설명)
   - `qna.html` 신규: Q&A 게시판 (FAQ 상단 표시 + 질문 등록 + 관리자 답변 + FAQ 등록)
+  - DB 변경: `docs/TASK-032_fixes.sql`에 `check_registration_status` RPC, `qna` 테이블/RLS, 초기 FAQ 9건 추가
   - 로그인: `check_registration_status` RPC로 승인 대기 메시지 정상 표시
   - 비밀번호 변경: 8자 이상, 영문+숫자 필수, '1234' 사용 금지
   - 메인 페이지 네비: 브랜드 + 로그인/로그아웃 + 관리(60+)만 표시
@@ -48,6 +49,8 @@ CHO-Talents/
 ├── index.html                     # 메인 환영 페이지
 ├── login.html                     # 통합 로그인
 ├── register.html                  # 계정 등록 신청
+├── guide.html                     # 사용자 가이드
+├── qna.html                       # Q&A / FAQ / 질문 관리
 ├── earn-talents.html              # 달란트 적립 방법 안내
 ├── shop.html                      # 달란트 상점 조회 + 구매 신청 + 대리 구매
 ├── my-talents.html                # 내 달란트 잔액/내역/구매 내역 조회
@@ -59,14 +62,14 @@ CHO-Talents/
 │   ├── managers.html              # 관리자/부서 담당 교사 권한 관리
 │   ├── talents.html               # 학생/교사 달란트 지급·사용·반환
 │   ├── talent-items.html          # 달란트 지급 항목 관리
-│   ├── shop.html                  # 상품 등록/수정/삭제
+│   ├── shop.html                  # 상품 등록/수정/삭제/활성 상태 관리
 │   ├── purchases.html             # 구매 관리 (4단계 구매 흐름)
 │   ├── reports.html               # 작업 보고서 조회 + JS 시더
 │   ├── logs.html                  # 활동 로그 조회/확인/삭제 대기
 │   ├── versions.html              # 버전 이력
-│   ├── page-access.html           # 권한별 페이지 접근/요소 가시성 관리
-│   ├── page-features.html         # 권한별 페이지 기능 관리
-│   ├── audit.html                 # 관리 작업 이력 조회
+│   ├── page-access.html           # 권한별 페이지 접근/요소 가시성 관리 (100+)
+│   ├── page-features.html         # 권한별 페이지 기능 설정 관리 (100+)
+│   ├── audit.html                 # 관리 작업 이력 조회 (100+)
 │   ├── page-permissions.html      # 페이지 권한 매트릭스 (레거시)
 │   └── change-password.html       # 최초 로그인/비밀번호 변경
 ├── css/
@@ -103,14 +106,14 @@ CHO-Talents/
 
 | 권한 | 코드 | 등급 | 기본 이동 | 주요 권한 |
 |---|---|---:|---|---|
-| 최고 관리자 | `admin` + `is_super_admin` | 110 | `admin/index.html` | 관리자 포함 전체 사용자 관리, 보고서 초기화, 시스템 설정 |
-| 관리자 | `admin` | 100 | `admin/index.html` | 전체 관리, 페이지 권한 관리, 로그 삭제 대기 처리 |
-| 전도사님 | `evangelist` | 90 | `admin/index.html` | 관리자 계열 화면, 달란트 항목 관리, 상품 삭제, 페이지 접근/기능 수정 |
-| 부장 교사 | `chief` | 80 | `admin/index.html` | 대시보드, 부서/관리자/보고서/버전/작업이력, 달란트 반환 처리 |
-| 부서 담당 교사 | `dept_teacher` | 60 | `admin/talents.html` | 담당 부서 중심 사용자/부서/달란트/상품/구매 관리 |
-| 일반 교사 | `teacher` | 40 | `admin/talents.html` | 담당 부서/반 학생 달란트 처리, 내 달란트, 교사용/학생용 상점 |
-| 학생 | `student` | 20 | `my-talents.html` | 내 달란트 확인, 학생용 상점 조회, 구매 신청 |
-| 비로그인 | 없음 | 0 | 공개 페이지 | 메인, 적립 안내, 학생용 상점, 계정 신청 |
+| 최고 관리자 | `admin` + `is_super_admin` | 110 | `index.html` | 관리자 포함 전체 사용자 관리, 보고서 초기화, 페이지 접근/기능/감사/로그 관리 |
+| 관리자 | `admin` | 100 | `index.html` | 전체 관리, 페이지 접근/기능/감사/로그 관리, 로그 삭제 대기 처리 |
+| 전도사님 | `evangelist` | 90 | `index.html` | 달란트 항목 관리, 상품 삭제, 부서 즉시 이동, 전체 구매 처리 |
+| 부장 교사 | `chief` | 80 | `index.html` | 대시보드, 부서/관리자/보고서/버전, 달란트 반환 처리 |
+| 부서 담당 교사 | `dept_teacher` | 60 | `index.html` | 담당 부서 중심 사용자/부서/달란트/상품/구매/Q&A 답변 관리 |
+| 일반 교사 | `teacher` | 40 | `index.html` | 담당 부서/반 학생 달란트 처리, 대리 구매, 내 달란트, 교사용/학생용 상점 |
+| 학생 | `student` | 20 | `index.html` | 내 달란트/구매 내역 확인, 학생용 상점 구매 신청, Q&A 질문 |
+| 비로그인 | 없음 | 0 | 공개 페이지 | 메인, 사용자 가이드, Q&A FAQ, 적립 안내, 학생용 상점, 계정 신청 |
 
 권한 노출 기준은 화면의 `data-min-perm`과 `initPage(minRank, loginPath)`로 관리합니다. 서버 작업은 Supabase RLS/RPC에서 한 번 더 제한합니다.
 
@@ -119,67 +122,72 @@ CHO-Talents/
 ```mermaid
 flowchart TD
   Public["공개 영역"] --> Home["index.html"]
+  Public --> Guide["guide.html"]
+  Public --> QNA["qna.html"]
   Public --> Earn["earn-talents.html"]
   Public --> Shop["shop.html"]
   Public --> Login["login.html"]
   Public --> Register["register.html"]
 
+  Home --> Guide
+  Home --> QNA
   Home --> Earn
   Home --> Shop
   Home --> MyTalents["my-talents.html"]
+  Home --> MyOrders["my-orders.html"]
   Login --> FirstLogin{"최초 로그인?"}
   FirstLogin -->|예| ChangePassword["admin/change-password.html"]
-  FirstLogin -->|아니오| Redirect["권한별 기본 페이지"]
+  FirstLogin -->|아니오| Home
 
-  Redirect --> AdminDash["admin/index.html<br/>admin/evangelist/chief"]
-  Redirect --> DeptTalent["admin/talents.html<br/>dept_teacher/teacher"]
-  Redirect --> MyTalents
-
-  AdminDash --> Users["admin/users.html"]
-  AdminDash --> Departments["admin/departments.html"]
-  AdminDash --> Managers["admin/managers.html"]
-  AdminDash --> Talents["admin/talents.html"]
-  AdminDash --> TalentItems["admin/talent-items.html"]
-  AdminDash --> AdminShop["admin/shop.html"]
-  AdminDash --> Purchases["admin/purchases.html"]
-  AdminDash --> Reports["admin/reports.html"]
-  AdminDash --> Logs["admin/logs.html"]
-  AdminDash --> Versions["admin/versions.html"]
-  AdminDash --> PageAccess["admin/page-access.html"]
-  AdminDash --> PageFeatures["admin/page-features.html"]
-  AdminDash --> Audit["admin/audit.html"]
-  AdminDash -.-> PagePerms["admin/page-permissions.html<br/>직접 주소 접근"]
+  Home --> AdminDash["admin/index.html<br/>80+"]
+  Home --> Users["admin/users.html<br/>60+"]
+  Home --> Departments["admin/departments.html<br/>60+"]
+  Home --> Managers["admin/managers.html<br/>80+"]
+  Home --> Talents["admin/talents.html<br/>40+"]
+  Home --> TalentItems["admin/talent-items.html<br/>90+"]
+  Home --> AdminShop["admin/shop.html<br/>60+"]
+  Home --> Purchases["admin/purchases.html<br/>60+"]
+  Home --> Reports["admin/reports.html<br/>80+"]
+  Home --> Versions["admin/versions.html<br/>80+"]
+  Home --> PageAccess["admin/page-access.html<br/>100+"]
+  Home --> PageFeatures["admin/page-features.html<br/>100+"]
+  Home --> Audit["admin/audit.html<br/>100+"]
+  Home --> Logs["admin/logs.html<br/>100+"]
+  Home -.-> PagePerms["admin/page-permissions.html<br/>100+ 직접 주소 접근"]
 ```
 
 ### 공개/사용자 화면
 
 | 페이지 | 연결 | 동작 |
 |---|---|---|
-| `index.html` | 상점, 로그인, 달란트 적립, 내 달란트 | 로그인 상태면 사용자 배지와 로그아웃 표시. 동적 로그인/로그아웃 버튼 |
+| `index.html` | 사용자 가이드, Q&A, 상점, 로그인, 달란트 적립, 내 달란트 | 로그인 상태면 로그아웃 버튼과 60등급 이상 관리 버튼 표시 |
 | `login.html` | 계정 등록 신청, 메인 | 로그인 성공/실패 로그 기록. 승인 대기/거부 계정 구분 안내 |
 | `register.html` | 로그인 | 영문/숫자/`_`/`-` 아이디 중복확인 후 가입 신청. 실패 시 에러 로깅 |
+| `guide.html` | 메인, Q&A, 상점, 내 달란트 | 사이트 이용 방법을 카드/스텝 형태로 안내 |
+| `qna.html` | 메인, 사용자 가이드 | FAQ 공개 조회, 로그인 사용자 질문 등록, 60등급 이상 답변/FAQ 등록 |
 | `earn-talents.html` | 메인, 상점, 내 달란트 | 달란트 적립 방법 안내. 로그인 상태면 권한별 메뉴 추가 표시 |
-| `shop.html` | 메인, 적립 안내, 내 달란트 | 학생용 상품 공개 조회. 교사/60등급 이상은 교사용 탭. 로그인 시 구매 신청 가능 |
+| `shop.html` | 메인, 적립 안내, 내 달란트, 내 구매 상품 | 학생용 상품 공개 조회. 교사/60등급 이상은 교사용 탭. 로그인 시 구매 신청, 40등급 이상은 대리 구매 가능 |
 | `my-talents.html` | 로그인 필요 | 누적 적립/사용 완료/사용 대기/사용 가능 잔액, 달란트 내역, 구매 내역 조회 |
+| `my-orders.html` | 로그인 필요 | 본인 구매 신청 내역과 4단계 진행 상태 조회 |
 
 ### 관리 화면
 
 | 페이지 | 최소 등급 | 주요 기능 |
 |---|---:|---|
-| `admin/index.html` | 80 | 사용자/부서/보고서/로그 요약, 미확인 오류 로그 알림, 가입 대기자 수 |
+| `admin/index.html` | 80 | 사용자/부서/보고서 요약, 가입 대기자 수. 미확인 오류 로그 알림/최근 이슈 로그는 100등급 이상 |
 | `admin/users.html` | 60 | 사용자 목록, 권한 범위 내 수정/삭제/비밀번호 초기화, 가입 신청 처리, 부서 이동 요청/승인 |
 | `admin/departments.html` | 60 | 부서 등록/수정/비활성화, 반 개수 관리, 부서별 인원/담당자 확인 |
 | `admin/managers.html` | 80 | 기존 사용자를 관리자 계열 권한으로 승격/수정, 담당 부서 지정 |
 | `admin/talents.html` | 40 | 학생/교사 탭별 달란트 체크박스 선택+일괄 지급, 수동 적립/사용, 반환(80+). 일반 교사는 담당 부서/반 제한 |
 | `admin/talent-items.html` | 90 | 달란트 지급 항목 등록/수정/활성화. 학생 항목은 주 1회 지급 규칙과 연동 |
-| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드, 재고 관리. 삭제 버튼은 90등급 이상 |
-| `admin/purchases.html` | 60 | 구매 관리: 4단계(구매 신청→상품 준비→상품 구매→상품 지급) 처리. 권한별 조회/처리 범위 제한 |
+| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드, 활성 상태 관리. 삭제 버튼은 90등급 이상 |
+| `admin/purchases.html` | 60 | 구매 관리: 4단계(구매 신청→상품 준비→상품 구매→상품 지급) 처리, 구매 확정 시 달란트 차감. 권한별 조회/처리 범위 제한 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록/수정, 선택 삭제 |
 | `admin/logs.html` | 100 | 활동 로그 필터링, 상세 보기, 오류 로그 확인 처리, 소프트 삭제(삭제 대기) |
 | `admin/versions.html` | 80 | 배포 버전과 변경 이력 확인 |
-| `admin/page-access.html` | 80 | 유형/권한별 페이지 접근/요소 가시성 설정. 수정은 90등급 이상 |
-| `admin/page-features.html` | 80 | 권한별 페이지 기능(수정/삭제/승인 등) 설정. 수정은 90등급 이상 |
-| `admin/audit.html` | 80 | 관리 작업 이력 조회 (사용자/부서/달란트/상품/권한 카테고리별 필터) |
+| `admin/page-access.html` | 100 | 유형/권한별 페이지 접근/요소 가시성 설정 |
+| `admin/page-features.html` | 100 | 권한별 페이지 기능(수정/삭제/승인 등) 설정값 관리 |
+| `admin/audit.html` | 100 | 관리 작업 이력 조회 (사용자/부서/달란트/상품/권한 카테고리별 필터) |
 | `admin/page-permissions.html` | 100 | 페이지별 조회/관리 권한 매트릭스 설정 (레거시) |
 | `admin/change-password.html` | 로그인 | 최초 로그인 또는 비밀번호 변경 처리 |
 
@@ -196,12 +204,13 @@ flowchart TD
   Profile --> Session["sessionStorage cho_session 저장"]
   Session --> First{"is_first_login?"}
   First -->|예| Change["admin/change-password.html"]
-  First -->|아니오| Role["permission_level 기준 기본 화면 이동"]
+  First -->|아니오| Home["index.html"]
 ```
 
 - 모든 보호 페이지는 `initPage()`에서 세션을 확인합니다.
 - 최초 로그인 사용자는 `change-password.html` 외 화면에 접근하려 하면 비밀번호 변경 화면으로 이동합니다.
-- 권한이 부족한 페이지에 접근하면 본인 권한의 기본 페이지로 이동합니다.
+- 일반 로그인 성공 후에는 모든 권한이 `index.html`로 이동하고, 상단 메뉴에서 권한에 맞는 기능만 표시됩니다.
+- 권한이 부족한 보호 페이지에 접근하면 현재 통합 기본 화면인 `index.html`로 이동합니다.
 - 승인 대기 계정 로그인 시 "승인 대기 중" 안내, 거부 계정은 "거부됨" 안내를 구분 표시합니다.
 
 ### 계정 등록 신청
@@ -254,7 +263,7 @@ flowchart TD
   Transfer --> Rank{"90등급 이상?"}
   Rank -->|예| Immediate["즉시 부서 이동<br/>class_number 초기화"]
   Rank -->|아니오| Request["department_transfer_requests 생성"]
-  Request --> Approval["90등급 이상 전체 처리<br/>80등급은 담당 부서 요청 처리"]
+  Request --> Approval["90등급 이상 전체 처리<br/>60~80등급은 담당 관리 부서 요청 처리"]
   Approval --> Apply["승인 시 profiles.department_id 변경"]
 ```
 
@@ -270,18 +279,20 @@ flowchart TD
   PublicShop --> StudentGoods["학생용 상품"]
   PublicShop --> TeacherGoods["교사용 상품<br/>교사/60등급 이상 조회"]
   PublicShop --> OrderRequest["🛒 구매 신청 → product_orders 생성<br/>pending_talent 증가"]
+  PublicShop --> ProxyOrder["40등급 이상 대리 구매<br/>권한별 대상자 스코핑"]
+  ProxyOrder --> OrderRequest
   OrderRequest --> PurchaseMgmt["admin/purchases.html"]
   PurchaseMgmt --> Preparing["📦 상품 준비<br/>부서 담당 교사+"]
-  Preparing --> Purchased["💳 상품 구매<br/>관리자 확정 → 달란트 차감"]
-  Purchased --> Delivered["✅ 상품 지급<br/>관리자 일괄 처리"]
+  Preparing --> Purchased["💳 상품 구매<br/>처리 권한자 확정 → 달란트 차감"]
+  Purchased --> Delivered["✅ 상품 지급<br/>권한 범위 내 일괄 처리"]
 ```
 
 구매 권한 범위:
 
 | 권한 | 조회 | 처리 |
 |---|---|---|
-| 부서 담당 교사 | 자기 부서 신청 | 상품 준비 처리 |
-| 부장 교사 | 전체 신청 | 담당 부서만 상품 준비 처리 |
+| 부서 담당 교사 | 담당 부서 신청 | 담당 부서 신청의 준비/구매 확정/지급 처리 |
+| 부장 교사 | 전체 신청 | 담당 관리 부서 신청 처리 |
 | 전도사님 이상 | 전체 신청 | 전체 처리 가능 |
 
 ### 로그/보고서
@@ -302,19 +313,21 @@ flowchart TD
 | 부서 이동 | `department_transfer_requests` | 부서 이동 요청, 승인/거부, 처리 기록 |
 | 달란트 | `talent_transactions` | 적립/사용 거래 내역 |
 | 달란트 항목 | `talent_items` | 지급 항목과 달란트 금액 |
-| 상품 | `products` | 상점 상품, 가격, 재고, 대상, 이미지 |
+| 상품 | `products` | 상점 상품, 가격, 대상, 이미지, 활성 상태 |
 | 상품 주문 | `product_orders` | 구매 신청, 4단계 상태 관리, 담당자 기록 |
+| Q&A | `qna` | FAQ, 사용자 질문, 답변, 공개 여부 |
 | 로그 | `activity_logs` | 페이지/오류/운영 활동 기록, 소프트 삭제 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
 | 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |
 | 권한별 접근 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
-| 권한별 기능 | `role_page_features` | 권한 등급별 페이지 기능 설정 |
+| 권한별 기능 | `role_page_features` | 권한 등급별 페이지 기능 설정값 |
 | 이미지 | `Talents_Items` Storage | 상품 이미지 업로드/공개 URL |
 
 | RPC | 목적 | 주요 호출 |
 |---|---|---|
 | `get_my_profile` | 로그인 사용자 프로필/권한 조회 | `auth.js`, `activity-log.js` |
 | `check_username_available` | 가입 신청 아이디 중복확인 | `register.html` |
+| `check_registration_status` | 미승인/거부 계정 로그인 안내 조회 | `login.html` |
 | `admin_list_users` | 사용자 목록 조회 | `user-mgmt.js` |
 | `admin_create_user` | Auth 사용자와 프로필 생성 | `user-mgmt.js` |
 | `admin_update_user` | 사용자 정보/권한/부서/반 수정 | `user-mgmt.js` |
@@ -333,6 +346,7 @@ flowchart TD
 - 아이디(`username`)는 관리자에게 전체 표시되고, 비관리자는 본인 아이디만 볼 수 있습니다. 동명이인은 표시명에 번호를 붙여 구분합니다.
 - 소속 부서/반 변경은 부서 이동 요청/승인 흐름으로 처리합니다 (수정 모달에서 부서 변경 불가).
 - 상품 삭제와 달란트 항목 관리는 90등급 이상에 제한됩니다.
+- 페이지 접근/페이지 기능/작업 이력/로그 화면은 100등급 이상만 접근합니다.
 - 교사가 `shop.html`에 접근하면 기본 필터가 교사용으로 자동 설정됩니다.
 - 영문 DB/RPC 에러는 `tErr()` 함수를 통해 한글로 변환되어 사용자에게 표시됩니다.
 - 활동 로그에는 브라우저, OS, 화면 크기, IP 등 클라이언트 정보가 저장됩니다.
@@ -345,6 +359,7 @@ flowchart TD
 |---|---|
 | `docs/TASK-023_fixes.sql` | `activity_logs`에 `is_deleted`/`deleted_at` 컬럼, `role_page_access`/`role_page_features` 테이블 |
 | `docs/TASK-026_schema.sql` | `product_orders` 테이블, `profiles.pending_talent` 컬럼, 구매 관련 RPC |
+| `docs/TASK-032_fixes.sql` | `check_registration_status` RPC, `qna` 테이블/RLS, 초기 FAQ 데이터 |
 
 ## 관련 문서
 
