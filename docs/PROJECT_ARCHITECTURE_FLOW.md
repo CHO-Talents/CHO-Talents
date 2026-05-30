@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-05-29 KST 현재 코드 기준 (v3.9.0)
+작성 기준: 2026-05-30 KST 현재 코드 기준 (v3.13.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -53,6 +53,7 @@ flowchart LR
   DB --> Reports["reports"]
   DB --> Logs["activity_logs"]
   DB --> RoleAccess["role_page_access"]
+  DB --> QnA["qna"]
   DB --> RoleFeatures["role_page_features"]
   DB --> PagePerms["page_permissions"]
 ```

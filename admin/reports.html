@@ -11,26 +11,55 @@
     <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
-      <li data-min-perm="80"><a href="index.html">대시보드</a></li>
-      <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-      <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
-      <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
-      <li><a href="../my-talents.html">내 달란트</a></li>
-      <li><a href="../earn-talents.html">달란트 적립</a></li>
-      <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
-      <li><a href="../shop.html">상품 구매</a></li>
-      <li><a href="../my-orders.html">내 구매 상품</a></li>
-      <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
-      <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
-      <li data-min-perm="80"><a href="reports.html" class="active">보고서</a></li>
-      <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-      <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
-      <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
-      <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
-      <li data-min-perm="80"><a href="versions.html">버전</a></li>
+      <li>
+        <button class="nav-dropdown-toggle">소개</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="../guide.html">사용자 가이드</a></li>
+          <li><a href="../earn-talents.html">달란트 적립</a></li>
+          <li><a href="../qna.html">Q &amp; A</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">달란트</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="../my-talents.html">내 달란트</a></li>
+          <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">상품</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="../shop.html">상품 구매</a></li>
+          <li><a href="../my-orders.html">내 구매 상품</a></li>
+          <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
+          <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+        </ul>
+      </li>
+      <li data-min-perm="60">
+        <button class="nav-dropdown-toggle">관리</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="80"><a href="index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="../qna.html">질문 관리</a></li>
+        </ul>
+      </li>
+      <li data-min-perm="80">
+        <button class="nav-dropdown-toggle">운영</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
+          <li data-min-perm="80"><a href="versions.html">버전</a></li>
+          <li data-min-perm="80"><a href="reports.html" class="active">보고서</a></li>
+          <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+        </ul>
+      </li>
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
+    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',()=>{b.parentElement.classList.toggle('mobile-open');})})</script>
   </nav>
 
   <div class="admin-container">
@@ -110,9 +139,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.12.4"></script>
-  <script src="../js/activity-log.js?v=3.12.4"></script>
-  <script src="../js/auth.js?v=3.12.4"></script>
+  <script src="../js/supabase-config.js?v=3.13.0"></script>
+  <script src="../js/activity-log.js?v=3.13.0"></script>
+  <script src="../js/auth.js?v=3.13.0"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -496,6 +525,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.12.4"></script>
+  <script src="../js/version.js?v=3.13.0"></script>
 </body>
 </html>

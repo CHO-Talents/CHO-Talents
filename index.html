@@ -76,9 +76,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.12.4"></script>
-  <script src="js/activity-log.js?v=3.12.4"></script>
-  <script src="js/auth.js?v=3.12.4"></script>
+  <script src="js/supabase-config.js?v=3.13.0"></script>
+  <script src="js/activity-log.js?v=3.13.0"></script>
+  <script src="js/auth.js?v=3.13.0"></script>
   <script src="js/app.js"></script>
   <script>
     (async () => {
@@ -89,27 +89,15 @@
       try { s = await loadAuthSession(); } catch (e) { /* session load failed */ }
       if (s) {
         const rank = s.permissionRank || 0;
-        const dashHref = getRoleRedirectUrl(s.permissionLevel, '');
-        let links = `<a href="earn-talents.html" class="nav-btn">💰 달란트 적립</a>` +
-          `<a href="shop.html" class="nav-btn">🛒 상점</a>` +
-          `<a href="my-talents.html" class="nav-btn">📊 내 달란트</a>` +
-          `<a href="my-orders.html" class="nav-btn">📋 내 구매 상품</a>`;
-        if (rank >= 40) links += `<a href="admin/talents.html" class="nav-btn">🏅 달란트 관리</a>`;
-        if (rank >= 80) links += `<a href="admin/index.html" class="nav-btn">⚙️ 관리</a>`;
-        links += `<div class="nav-user-info">` +
-          `<a href="index.html" class="nav-user-name">👤 ${s.displayName || s.username}</a>` +
-          `<button class="btn-nav-logout" onclick="logout('login.html')">🔓 로그아웃</button>` +
-          `</div>`;
+        let links = '';
+        if (rank >= 60) links += `<a href="admin/index.html" class="nav-btn">⚙️ 관리</a>`;
+        links += `<button class="btn-nav-logout" onclick="logout('login.html')">🔓 로그아웃</button>`;
         nav.innerHTML = links;
-        const myTalentCard = document.getElementById('cardMyTalent');
-        if (myTalentCard) {
-          myTalentCard.href = 'my-talents.html';
-        }
       } else {
         if (loginBtn) loginBtn.style.display = '';
       }
     })();
   </script>
-  <script src="js/version.js?v=3.12.4"></script>
+  <script src="js/version.js?v=3.13.0"></script>
 </body>
 </html>
