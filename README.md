@@ -12,12 +12,17 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.13.0` (`js/version.js` 기준, 2026-05-30) |
+| 현재 버전 | `v3.13.1` (`js/version.js` 기준, 2026-05-30) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.13.0`으로 맞춰져 있습니다.
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.13.1`으로 맞춰져 있습니다.
+- **v3.13.1 주요 변경 사항**:
+  - 드롭다운 네비게이션: hover + click-to-toggle 이중 동작 방식 적용 (데스크탑/모바일 모두 동작)
+  - `.admin-nav`/`.top-nav`에 `overflow: visible` 명시로 드롭다운 클리핑 해결
+  - 전체 HTML CSS link에 `?v=3.13.1` 캐시 버스팅 적용 (브라우저 구 CSS 캐시 방지)
+  - `docs/TASK-033_fixes.sql`: Q&A 테이블/RLS/초기 FAQ 데이터 안전 재실행 버전
 - **v3.13.0 주요 변경 사항**:
   - 네비게이션 전면 개편: 평면 단일행 → 드롭다운 5그룹 (소개/달란트/상품/관리/운영)
   - `guide.html` 신규: 사용자 가이드 페이지 (카드/스텝 기반 시각적 설명)
@@ -360,6 +365,7 @@ flowchart TD
 | `docs/TASK-023_fixes.sql` | `activity_logs`에 `is_deleted`/`deleted_at` 컬럼, `role_page_access`/`role_page_features` 테이블 |
 | `docs/TASK-026_schema.sql` | `product_orders` 테이블, `profiles.pending_talent` 컬럼, 구매 관련 RPC |
 | `docs/TASK-032_fixes.sql` | `check_registration_status` RPC, `qna` 테이블/RLS, 초기 FAQ 데이터 |
+| `docs/TASK-033_fixes.sql` | `qna` 테이블/RLS 재생성 (IF NOT EXISTS), 초기 FAQ 데이터 안전 재삽입 |
 
 ## 관련 문서
 

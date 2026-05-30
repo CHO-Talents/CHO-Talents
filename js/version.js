@@ -2,9 +2,22 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.13.0',
+  current: '3.13.1',
   date: '2026-05-30',
   history: [
+    {
+      version: '3.13.1',
+      date: '2026-05-30',
+      title: '드롭다운 네비게이션 클릭 동작 수정 + CSS 캐시 버스팅',
+      changes: [
+        '드롭다운 메뉴: hover + click-to-toggle 이중 방식 적용 (데스크탑/모바일 모두 동작)',
+        'admin.css/common.css: .admin-nav/.top-nav에 overflow:visible 명시 추가',
+        'admin.css/common.css: .dropdown-open 클래스 CSS 규칙 추가',
+        '전체 21개 HTML: 드롭다운 JS를 click-toggle + 외부클릭 닫기 로직으로 교체',
+        '전체 25개 HTML: CSS link에 ?v=3.13.1 캐시 버스팅 적용',
+        'Q&A: docs/TASK-033_fixes.sql 안전 재실행 가능 버전 작성'
+      ]
+    },
     {
       version: '3.13.0',
       date: '2026-05-30',

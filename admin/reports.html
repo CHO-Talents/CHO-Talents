@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>보고서 관리 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.1" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -59,7 +59,7 @@
       <li><span class="nav-user" id="navUser"></span></li>
       <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
-    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',()=>{b.parentElement.classList.toggle('mobile-open');})})</script>
+    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
@@ -139,9 +139,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.13.0"></script>
-  <script src="../js/activity-log.js?v=3.13.0"></script>
-  <script src="../js/auth.js?v=3.13.0"></script>
+  <script src="../js/supabase-config.js?v=3.13.1"></script>
+  <script src="../js/activity-log.js?v=3.13.1"></script>
+  <script src="../js/auth.js?v=3.13.1"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -525,6 +525,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.13.0"></script>
+  <script src="../js/version.js?v=3.13.1"></script>
 </body>
 </html>
