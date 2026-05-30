@@ -4,6 +4,24 @@
 -- 반복 실행 안전: 이 SQL은 여러 번 실행해도 안전합니다
 
 -- ============================================================
+-- 0. get_permission_rank UUID 오버로드 (기존 TEXT 버전 보완)
+--    auth.uid()를 직접 전달할 수 있도록 UUID→profiles 조회→TEXT 버전 호출
+-- ============================================================
+CREATE OR REPLACE FUNCTION get_permission_rank(p_user_id uuid)
+RETURNS integer
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+AS $$
+  SELECT get_permission_rank(
+    COALESCE(
+      (SELECT permission_level FROM profiles WHERE id = p_user_id),
+      'student'
+    )
+  );
+$$;
+
+-- ============================================================
 -- 1. Q&A 테이블 생성 (이미 존재하면 건너뜀)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS qna (
