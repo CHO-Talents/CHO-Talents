@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 상점 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.14.1" />
+  <link rel="stylesheet" href="css/common.css?v=3.15.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -74,6 +74,12 @@
       <button class="filter-btn" id="tabTeacher" onclick="switchShopTab('teacher')">👩‍🏫 교사용</button>
       <button class="filter-btn" id="btnProxyBuy" data-min-perm="40" style="display:none;background:#e67700;color:#fff;" onclick="openProxyModal()">🤝 대리 구매</button>
     </div>
+    <div id="shopFilterArea" style="display:none;margin-bottom:1rem;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+      <select id="shopCatFilter" onchange="renderShopProducts()" style="padding:0.4rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:0.84rem;">
+        <option value="">전체 카테고리</option>
+      </select>
+      <input type="text" id="shopSearchInput" oninput="renderShopProducts()" placeholder="상품명/카테고리 검색..." style="padding:0.4rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:0.84rem;flex:1;min-width:140px;" />
+    </div>
 
     <!-- 대리 구매 모달 -->
     <div id="proxyModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;">
@@ -115,9 +121,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.14.1"></script>
-  <script src="js/activity-log.js?v=3.14.1"></script>
-  <script src="js/auth.js?v=3.14.1"></script>
+  <script src="js/supabase-config.js?v=3.15.0"></script>
+  <script src="js/activity-log.js?v=3.15.0"></script>
+  <script src="js/auth.js?v=3.15.0"></script>
   <script src="js/product.js"></script>
   <script>
     initSupabase();
@@ -176,11 +182,24 @@
       currentShopTab = tab;
       document.getElementById('tabStudent').classList.toggle('active', tab === 'student');
       document.getElementById('tabTeacher').classList.toggle('active', tab === 'teacher');
+      updateCategoryFilter();
       renderShopProducts();
     }
 
-    function renderShopProducts() {
+    function updateCategoryFilter() {
       const filtered = allShopProducts.filter(p => p.target_role === currentShopTab);
+      const cats = [...new Set(filtered.map(p => p.category || '기타'))].sort();
+      const sel = document.getElementById('shopCatFilter');
+      sel.innerHTML = '<option value="">전체 카테고리</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+      document.getElementById('shopFilterArea').style.display = 'flex';
+    }
+
+    function renderShopProducts() {
+      const catFilter = (document.getElementById('shopCatFilter') || {}).value || '';
+      const searchText = ((document.getElementById('shopSearchInput') || {}).value || '').trim().toLowerCase();
+      let filtered = allShopProducts.filter(p => p.target_role === currentShopTab);
+      if (catFilter) filtered = filtered.filter(p => (p.category || '기타') === catFilter);
+      if (searchText) filtered = filtered.filter(p => (p.name || '').toLowerCase().includes(searchText) || (p.category || '').toLowerCase().includes(searchText));
       const area = document.getElementById('productArea');
       const label = currentShopTab === 'student' ? '학생' : '교사';
       document.getElementById('shopSub').textContent = `${label} 달란트 교환 상품입니다`;
@@ -190,31 +209,30 @@
         return;
       }
 
-      if (currentShopTab === 'teacher') {
-        const categories = {};
-        filtered.forEach(p => { const cat = p.category || '기타'; if (!categories[cat]) categories[cat] = []; categories[cat].push(p); });
-        let html = '';
-        for (const [cat, items] of Object.entries(categories)) {
-          html += `<h2 class="section-title">${cat}</h2><div class="product-grid">`;
-          html += items.map(p => renderProductCard(p)).join('');
-          html += '</div>';
-        }
-        area.innerHTML = html;
-      } else {
-        area.innerHTML = '<div class="product-grid">' + filtered.map(p => renderProductCard(p)).join('') + '</div>';
+      const categories = {};
+      filtered.forEach(p => { const cat = p.category || '기타'; if (!categories[cat]) categories[cat] = []; categories[cat].push(p); });
+      let html = '';
+      for (const [cat, items] of Object.entries(categories)) {
+        html += `<h2 class="section-title">${cat}</h2><div class="product-grid">`;
+        html += items.map(p => renderProductCard(p)).join('');
+        html += '</div>';
       }
+      area.innerHTML = html;
     }
 
     function renderProductCard(p) {
       const available = _userBalance - _userPending;
-      const canBuy = _shopSession && p.is_active && available >= p.price;
+      const isTeacherBuyingStudent = _shopSession && _shopSession.userType === 'teacher' && p.target_role === 'student';
+      const canBuy = _shopSession && p.is_active && available >= p.price && !isTeacherBuyingStudent;
       const buyBtnHtml = _shopSession
-        ? `<button class="product-buy-btn" onclick="requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'#dee2e6'};color:${canBuy?'#fff':'#868e96'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`
+        ? (isTeacherBuyingStudent
+          ? ''
+          : `<button class="product-buy-btn" onclick="requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'#dee2e6'};color:${canBuy?'#fff':'#868e96'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`)
         : '';
       return `<div class="product-card">
         ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" class="product-img" />` : `<span class="product-emoji">${p.image_emoji || '🎁'}</span>`}
         <div class="product-name">${p.name}</div>
-        <div class="product-price">${p.price} <span class="unit">달란트</span></div>
+        <div class="product-price">${fmtNum(p.price)} <span class="unit">달란트</span></div>
         <div class="product-desc">${p.description || ''}</div>
         
         ${buyBtnHtml}
@@ -226,10 +244,10 @@
       const available = _userBalance - _userPending;
       if (available < price) {
         logWarn('ORDER_INSUFFICIENT_BALANCE', { productName, price, balance: _userBalance, pending: _userPending, available });
-        alert(`사용 가능한 달란트가 부족합니다.\n잔여: ${_userBalance} / 사용 대기: ${_userPending} / 사용 가능: ${available}`);
+        alert(`사용 가능한 달란트가 부족합니다.\n잔여: ${fmtNum(_userBalance)} / 사용 대기: ${fmtNum(_userPending)} / 사용 가능: ${fmtNum(available)}`);
         return;
       }
-      if (!confirm(`"${productName}"을(를) 구매 신청하시겠습니까?\n가격: ${price} 달란트\n\n사용 가능 달란트: ${available}`)) return;
+      if (!confirm(`"${productName}"을(를) 구매 신청하시겠습니까?\n가격: ${fmtNum(price)} 달란트\n\n사용 가능 달란트: ${fmtNum(available)}`)) return;
 
       try {
         const { data, error } = await _sb.rpc('request_product_order', {
@@ -326,11 +344,11 @@
       document.getElementById('proxySelected').style.display = 'block';
 
       const bal = (u.talent_balance || 0) - (u.pending_talent || 0);
-      const tab = currentShopTab;
-      const products = allShopProducts.filter(p => p.target_role === tab && p.is_active);
+      const targetType = u.user_type === 'student' ? 'student' : 'teacher';
+      const products = allShopProducts.filter(p => p.target_role === targetType && p.is_active);
       document.getElementById('proxyProduct').innerHTML = '<option value="">상품 선택</option>' +
-        products.map(p => `<option value="${p.id}" data-price="${p.price}" ${p.price > bal ? 'disabled' : ''}>${p.name} (${p.price} 달란트)${p.price > bal ? ' - 잔액부족' : ''}</option>`).join('');
-      document.getElementById('proxyBalanceInfo').textContent = `사용 가능 달란트: ${bal}`;
+        products.map(p => `<option value="${p.id}" data-price="${p.price}" ${p.price > bal ? 'disabled' : ''}>${p.name} (${fmtNum(p.price)} 달란트)${p.price > bal ? ' - 잔액부족' : ''}</option>`).join('');
+      document.getElementById('proxyBalanceInfo').textContent = `사용 가능 달란트: ${fmtNum(bal)}`;
       document.getElementById('proxyProductArea').style.display = 'block';
       document.getElementById('proxyProduct').onchange = () => {
         document.getElementById('btnProxyConfirm').disabled = !document.getElementById('proxyProduct').value;
@@ -384,6 +402,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.14.1"></script>
+  <script src="js/version.js?v=3.15.0"></script>
 </body>
 </html>

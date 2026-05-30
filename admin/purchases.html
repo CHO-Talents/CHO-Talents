@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.14.1" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.15.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -99,10 +99,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.14.1"></script>
-  <script src="../js/activity-log.js?v=3.14.1"></script>
-  <script src="../js/auth.js?v=3.14.1"></script>
-  <script src="../js/user-mgmt.js?v=3.14.1"></script>
+  <script src="../js/supabase-config.js?v=3.15.0"></script>
+  <script src="../js/activity-log.js?v=3.15.0"></script>
+  <script src="../js/auth.js?v=3.15.0"></script>
+  <script src="../js/user-mgmt.js?v=3.15.0"></script>
   <script>
     initSupabase();
     let session;
@@ -244,14 +244,17 @@
           actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="updateStatus('${o.id}','preparing')">상품 준비</button>`;
         } else if (o.status === 'preparing' && canProc) {
           actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#1971c2;color:#fff;border-color:#1971c2;" onclick="confirmPurchase('${o.id}')">구매 확정</button>`;
+          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','requested')">↩ 되돌리기</button>`;
         } else if (o.status === 'purchased' && canProc) {
           actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#2b8a3e;color:#fff;border-color:#2b8a3e;" onclick="updateStatus('${o.id}','delivered')">지급 완료</button>`;
+          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','preparing')">↩ 되돌리기</button>`;
+        } else if (o.status === 'delivered' && canProc) {
+          actionBtn = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','purchased')">↩ 되돌리기</button>`;
         }
 
         let procInfo = '';
         if (isAllTab) {
-          const infos = [getProcessorInfo(o, 'preparing'), getProcessorInfo(o, 'purchased'), getProcessorInfo(o, 'delivered')].filter(Boolean).join('');
-          procInfo = infos || '<span style="font-size:0.75rem;color:#adb5bd;">-</span>';
+          procInfo = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;" onclick="showOrderDetail('${o.id}')">상세</button>`;
         } else if (currentPTab === 'preparing') {
           procInfo = '-';
         } else if (currentPTab === 'purchased') {
@@ -268,7 +271,7 @@
         if (isAllTab) row += `<td>${statusBadge}</td>`;
         row += `<td style="font-size:0.8rem;">${formatKSTShort(o.requested_at || o.created_at)}</td>`;
         row += `<td>${o.product_name}</td>`;
-        row += `<td>${o.price}</td>`;
+        row += `<td>${fmtNum(o.price)}</td>`;
         row += `<td>${o._userName}</td>`;
         row += `<td>${o._deptName}</td>`;
         if (currentPTab !== 'requested') row += `<td>${procInfo}</td>`;
@@ -297,6 +300,47 @@
         await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, newStatus, error: String(err) });
         alert('상태 변경 중 오류: ' + tErr(err.message));
       }
+    }
+
+    async function revertStatus(orderId, prevStatus) {
+      const PREV_LABELS = { requested: '구매 신청', preparing: '상품 준비', purchased: '상품 구매' };
+      if (!confirm(`"${PREV_LABELS[prevStatus]}" 단계로 되돌리시겠습니까?`)) return;
+      try {
+        const updateFields = { status: prevStatus };
+        if (prevStatus === 'requested') { updateFields.prepared_at = null; updateFields.prepared_by = null; }
+        if (prevStatus === 'preparing') { updateFields.purchased_at = null; updateFields.purchased_by = null; }
+        if (prevStatus === 'purchased') { updateFields.delivered_at = null; updateFields.delivered_by = null; }
+        const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
+        if (error) {
+          await logError('ORDER_REVERT_FAIL', { orderId, prevStatus, error: error.message });
+          alert('되돌리기 실패: ' + tErr(error.message));
+          return;
+        }
+        await logInfo('ORDER_REVERT', { orderId, prevStatus });
+        await loadOrders();
+      } catch (err) {
+        await logError('ORDER_REVERT_ERROR', { orderId, prevStatus, error: String(err) });
+        alert('되돌리기 중 오류: ' + tErr(err.message));
+      }
+    }
+
+    function showOrderDetail(orderId) {
+      const o = allOrders.find(x => x.id === orderId);
+      if (!o) return;
+      const infos = [getProcessorInfo(o, 'preparing'), getProcessorInfo(o, 'purchased'), getProcessorInfo(o, 'delivered')].filter(Boolean).join('<hr style="margin:0.4rem 0;border:none;border-top:1px solid #e9ecef;">');
+      const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.82rem;background:${STATUS_COLOR[o.status]}22;color:${STATUS_COLOR[o.status]};font-weight:600;">${STATUS_LABEL[o.status]}</span>`;
+      const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="this.remove()">
+        <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
+          <h3 style="margin:0 0 0.8rem;">📋 주문 상세</h3>
+          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} 달란트</div>
+          <div style="font-size:0.85rem;margin-bottom:0.5rem;">신청자: ${o._userName} | 부서: ${o._deptName}</div>
+          <div style="font-size:0.85rem;margin-bottom:0.8rem;">상태: ${statusBadge}</div>
+          <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">처리 이력</div>
+          <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">처리 이력 없음</span>'}</div>
+          <div style="text-align:right;margin-top:1rem;"><button onclick="this.closest('[style*=fixed]').remove()" style="padding:0.4rem 1rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;">닫기</button></div>
+        </div>
+      </div>`;
+      document.body.insertAdjacentHTML('beforeend', html);
     }
 
     async function confirmPurchase(orderId) {
@@ -380,6 +424,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.14.1"></script>
+  <script src="../js/version.js?v=3.15.0"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 구매 상품 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.14.1" />
+  <link rel="stylesheet" href="css/common.css?v=3.15.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -74,9 +74,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.14.1"></script>
-  <script src="js/activity-log.js?v=3.14.1"></script>
-  <script src="js/auth.js?v=3.14.1"></script>
+  <script src="js/supabase-config.js?v=3.15.0"></script>
+  <script src="js/activity-log.js?v=3.15.0"></script>
+  <script src="js/auth.js?v=3.15.0"></script>
   <script>
     initSupabase();
     let session;
@@ -128,7 +128,7 @@
             <tbody>` + orders.map(o => `<tr>
               <td>${formatKSTShort(o.requested_at || o.created_at)}</td>
               <td>${o.product_name || '-'}</td>
-              <td style="font-weight:700;">${o.price} 달란트</td>
+              <td style="font-weight:700;">${fmtNum(o.price)} 달란트</td>
               <td><span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.6rem;border-radius:6px;font-size:0.82rem;font-weight:600;background:${statusColor[o.status]||'#868e96'}15;color:${statusColor[o.status]||'#868e96'};">${statusEmoji[o.status]||''} ${statusMap[o.status]||o.status}</span></td>
             </tr>`).join('') + '</tbody></table></div>';
       }
@@ -136,6 +136,6 @@
       main.innerHTML = html;
     }
   </script>
-  <script src="js/version.js?v=3.14.1"></script>
+  <script src="js/version.js?v=3.15.0"></script>
 </body>
 </html>

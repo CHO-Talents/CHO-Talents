@@ -3,6 +3,8 @@
  * Supabase Auth 기반 인증 (유형 + 6단계 권한 체계)
  */
 
+function fmtNum(n) { return n == null ? '0' : Number(n).toLocaleString(); }
+
 const PERMISSION_RANK = {
   admin: 100, evangelist: 90, chief: 80,
   dept_teacher: 60, teacher: 40, student: 20
@@ -58,6 +60,30 @@ function hideEmptyDropdowns() {
     if (parentLi && !parentLi.hasAttribute('data-min-perm')) {
       if (!hasVisible) parentLi.style.display = 'none';
       else parentLi.style.display = '';
+    }
+  });
+  updateNavGroupBadges();
+}
+
+function updateNavGroupBadges() {
+  document.querySelectorAll('.nav-dropdown-menu').forEach(menu => {
+    const badges = menu.querySelectorAll('.badge:not(.hidden)');
+    let sum = 0;
+    badges.forEach(b => { const n = parseInt(b.textContent, 10); if (n > 0) sum += n; });
+    const toggle = menu.parentElement ? menu.parentElement.querySelector('.nav-dropdown-toggle') : null;
+    if (!toggle) return;
+    let groupBadge = toggle.querySelector('.nav-group-badge');
+    if (sum > 0) {
+      if (!groupBadge) {
+        groupBadge = document.createElement('span');
+        groupBadge.className = 'nav-group-badge';
+        groupBadge.style.cssText = 'display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;font-size:0.65rem;background:#e03131;color:#fff;border-radius:50%;margin-left:0.3rem;padding:0 3px;';
+        toggle.appendChild(groupBadge);
+      }
+      groupBadge.textContent = sum;
+      groupBadge.style.display = 'inline-flex';
+    } else if (groupBadge) {
+      groupBadge.style.display = 'none';
     }
   });
 }

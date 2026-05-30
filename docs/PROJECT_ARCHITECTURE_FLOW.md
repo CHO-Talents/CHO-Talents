@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-05-30 KST 현재 코드 기준 (v3.14.0)
+작성 기준: 2026-05-31 KST 현재 코드 기준 (v3.15.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -12,7 +12,7 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 |---|---|
 | 역할별 화면 분리 | 사용자 권한에 따라 필요한 메뉴와 화면만 표시한다. |
 | 달란트 운영 관리 | 적립/사용/반환 내역과 잔액을 `profiles`, `talent_transactions` 중심으로 관리한다. |
-| 상품 구매 시스템 | 4단계 구매 흐름(신청→준비→구매→지급)으로 상품 교환을 관리한다. |
+| 상품 구매 시스템 | 4단계 구매 흐름(신청→준비→구매→지급)으로 상품 교환을 관리하며, 되돌리기도 가능하다. |
 | 승인 기반 계정 운영 | 신규 사용자는 신청 후 관리자 승인으로 계정이 생성된다. |
 | 부서 이동 관리 | 부서 변경은 요청→승인 흐름으로 처리한다 (90등급 이상은 즉시 이동). |
 | 운영 추적 | 페이지 방문, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. |
@@ -25,7 +25,7 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 flowchart LR
   User["사용자 브라우저"] --> Pages["GitHub Pages 정적 화면<br/>HTML/CSS/Vanilla JS"]
 
-  Pages --> AuthJS["js/auth.js<br/>로그인/세션/권한/tErr()"]
+  Pages --> AuthJS["js/auth.js<br/>로그인/세션/권한/tErr()/fmtNum()"]
   Pages --> LogJS["js/activity-log.js<br/>로그/세션 캐시/소프트 삭제"]
   Pages --> UserMgmt["js/user-mgmt.js<br/>사용자/부서 관리"]
   Pages --> TalentJS["js/talent.js<br/>달란트 조회/지급/사용/반환"]
@@ -76,10 +76,10 @@ flowchart LR
 | `admin/users.html` | 60등급 이상 사용자 관리. 가입 신청/부서 이동 요청/승인 처리 |
 | `admin/departments.html` | 60등급 이상 부서 관리. 부서별 인원(교사 전체 포함)/담당자 확인 |
 | `admin/managers.html` | 80등급 이상 관리자 계열 권한 관리. 수정만 가능 |
-| `admin/talents.html` | 40등급 이상 달란트 처리. 체크박스 일괄 지급, 수동 적립/사용, 반환(80+), 출석 버튼(당일 중복 방지) |
+| `admin/talents.html` | 40등급 이상 달란트 처리. 체크박스 일괄 지급, 출석 버튼(당일 중복 방지). 수동 적립/사용은 100등급(관리자)만 표시 |
 | `admin/talent-items.html` | 90등급 이상 달란트 지급 항목 관리 |
 | `admin/shop.html` | 60등급 이상 상품 관리 |
-| `admin/purchases.html` | 60등급 이상 구매 관리. 4단계 구매 흐름 처리. 권한별 조회/처리 범위 제한 |
+| `admin/purchases.html` | 60등급 이상 구매 관리. 4단계 구매 흐름 처리 + 되돌리기(↩). '전체' 탭은 상세 다이얼로그로 처리 이력 표시 |
 | `admin/reports.html` | 80등급 이상 보고서 조회/등록/수정/삭제 |
 | `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리 |
 | `admin/versions.html` | 80등급 이상 버전 이력 확인 |
