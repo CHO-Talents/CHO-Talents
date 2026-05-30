@@ -26,6 +26,7 @@ body.page-body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  padding-top: 54px;
 }
 
 /* ===== Top Nav ===== */
@@ -39,12 +40,13 @@ body.page-body {
   align-items: center;
   justify-content: center;
   height: 54px;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   gap: 1rem;
   white-space: nowrap;
-  overflow: visible;
 }
 
 .top-nav-brand {
@@ -528,6 +530,7 @@ table.data-table tr:hover { background: #fafbfc; }
 /* ===== Responsive ===== */
 
 @media (max-width: 768px) {
+  body.page-body { padding-top: 0; }
   .top-nav {
     height: auto;
     min-height: 48px;

@@ -2,9 +2,19 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.13.3',
+  current: '3.13.4',
   date: '2026-05-30',
   history: [
+    {
+      version: '3.13.4',
+      date: '2026-05-30',
+      title: 'TASK-035: 네비게이션 드롭다운 Safari 호환성 수정',
+      changes: [
+        '핵심 수정: position:sticky → position:fixed 변경 (Safari 드롭다운 클리핑 해결)',
+        'body에 padding-top:54px 추가 (fixed nav 높이 보정)',
+        '모바일: position:relative 유지 + padding-top:0 (기존 동작 유지)'
+      ]
+    },
     {
       version: '3.13.3',
       date: '2026-05-30',

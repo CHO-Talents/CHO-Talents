@@ -31,6 +31,7 @@ body.admin-body {
   background: var(--admin-bg);
   color: var(--admin-text);
   min-height: 100vh;
+  padding-top: 54px;
 }
 
 /* ===== Admin Nav ===== */
@@ -42,12 +43,13 @@ body.admin-body {
   align-items: center;
   justify-content: center;
   height: 54px;
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 100;
   gap: 1rem;
   white-space: nowrap;
-  overflow: visible;
 }
 
 .admin-nav-brand {
@@ -685,6 +687,7 @@ table.admin-table tr:hover { background: #fafbfc; }
 }
 
 @media (max-width: 768px) {
+  body.admin-body { padding-top: 0; }
   .admin-nav {
     height: auto;
     min-height: 44px;
