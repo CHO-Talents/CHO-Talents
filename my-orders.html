@@ -93,6 +93,9 @@
       if (!session) return;
       document.getElementById('navMyTalent').style.display = '';
       document.getElementById('navMyOrders').style.display = '';
+      document.getElementById('navLoginArea').style.display = 'none';
+      document.getElementById('navAuthArea').style.display = '';
+      document.getElementById('navLogoutArea').style.display = '';
       applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '');
       autoLogPageView();

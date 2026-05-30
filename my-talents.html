@@ -84,8 +84,12 @@
       session = await initPage(20, 'login.html');
       if (!session) return;
 
+      document.getElementById('navMyTalent').style.display = '';
       const mo = document.getElementById('navMyOrders');
       if (mo) mo.style.display = '';
+      document.getElementById('navLoginArea').style.display = 'none';
+      document.getElementById('navAuthArea').style.display = '';
+      document.getElementById('navLogoutArea').style.display = '';
       applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '');
       autoLogPageView();
