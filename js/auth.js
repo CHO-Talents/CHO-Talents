@@ -46,8 +46,21 @@ function applyPermNav(rank) {
     const minPerm = parseInt(el.dataset.minPerm, 10);
     el.style.display = rank >= minPerm ? '' : 'none';
   });
+  hideEmptyDropdowns();
 }
 const applyRoleNav = applyPermNav;
+
+function hideEmptyDropdowns() {
+  document.querySelectorAll('.nav-dropdown-menu').forEach(menu => {
+    const items = menu.querySelectorAll('li');
+    const hasVisible = Array.from(items).some(li => li.style.display !== 'none');
+    const parentLi = menu.closest('.admin-nav-links > li, .top-nav-links > li');
+    if (parentLi && !parentLi.hasAttribute('data-min-perm')) {
+      if (!hasVisible) parentLi.style.display = 'none';
+      else parentLi.style.display = '';
+    }
+  });
+}
 
 function renderRoleBadge(elementId, session, basePath) {
   const el = document.getElementById(elementId);
@@ -328,3 +341,5 @@ function tErr(msg) {
   }
   return '오류가 발생했습니다 (' + s.substring(0, 80) + ')';
 }
+
+document.addEventListener('DOMContentLoaded', () => { if (typeof hideEmptyDropdowns === 'function') hideEmptyDropdowns(); });
