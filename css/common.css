@@ -560,6 +560,10 @@ table.data-table tr:hover { background: #fafbfc; }
   .top-nav-links > li.dropdown-open > .nav-dropdown-toggle::after { content: '▾'; }
   .top-nav-links .nav-dropdown-menu {
     position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    min-width: 0;
     box-shadow: none;
     border: none;
     border-left: 2px solid var(--c-primary-light);

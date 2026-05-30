@@ -719,6 +719,10 @@ table.admin-table tr:hover { background: #fafbfc; }
   .admin-nav-links > li.dropdown-open > .nav-dropdown-toggle::after { content: '▾'; }
   .nav-dropdown-menu {
     position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    min-width: 0;
     box-shadow: none;
     border: none;
     border-left: 2px solid var(--admin-primary-light);
