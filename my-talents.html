@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 달란트 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.14.1" />
+  <link rel="stylesheet" href="css/common.css?v=3.15.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -72,9 +72,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.14.1"></script>
-  <script src="js/activity-log.js?v=3.14.1"></script>
-  <script src="js/auth.js?v=3.14.1"></script>
+  <script src="js/supabase-config.js?v=3.15.0"></script>
+  <script src="js/activity-log.js?v=3.15.0"></script>
+  <script src="js/auth.js?v=3.15.0"></script>
   <script src="js/talent.js"></script>
   <script>
     initSupabase();
@@ -116,27 +116,28 @@
         <h1 class="page-title">💰 내 달란트</h1>
         <p class="page-sub">${session.displayName || session.username}님의 달란트 현황</p>
         <div class="summary-cards">
-          <div class="summary-card earn">
+          <div class="summary-card earn" onclick="showEarnBreakdown()" style="cursor:pointer;" title="클릭하여 항목별 현황 보기">
             <div class="summary-card-icon">📈</div>
             <div class="summary-card-label">누적 적립</div>
-            <div class="summary-card-value">${summary.earned}</div>
+            <div class="summary-card-value">${fmtNum(summary.earned)}</div>
           </div>
           <div class="summary-card use">
             <div class="summary-card-icon">📉</div>
             <div class="summary-card-label">사용 완료</div>
-            <div class="summary-card-value">${summary.used}</div>
+            <div class="summary-card-value">${fmtNum(summary.used)}</div>
           </div>
           ${pendingTalent > 0 ? `<div class="summary-card" style="background:#fff3bf;">
             <div class="summary-card-icon">⏳</div>
             <div class="summary-card-label">사용 대기</div>
-            <div class="summary-card-value" style="color:#e67700;">${pendingTalent}</div>
+            <div class="summary-card-value" style="color:#e67700;">${fmtNum(pendingTalent)}</div>
           </div>` : ''}
           <div class="summary-card balance">
             <div class="summary-card-icon">⭐</div>
             <div class="summary-card-label">사용 가능</div>
-            <div class="summary-card-value">${available}</div>
+            <div class="summary-card-value">${fmtNum(available)}</div>
           </div>
         </div>
+        <div id="earnBreakdown" style="display:none;margin-bottom:1.5rem;"></div>
         <div class="data-table-wrap">
           <div class="data-table-header"><div class="data-table-title">달란트 내역</div></div>
           <table class="data-table">
@@ -150,9 +151,9 @@
           <tr>
             <td>${formatKSTShort(t.created_at)}</td>
             <td><span class="type-badge ${t.type}">${t.type === 'earn' ? '적립' : '사용'}</span></td>
-            <td style="font-weight:700;color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'}">${t.type === 'earn' ? '+' : '-'}${t.amount}</td>
+            <td style="font-weight:700;color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'}">${t.type === 'earn' ? '+' : '-'}${fmtNum(t.amount)}</td>
             <td>${t.description || '-'}</td>
-            <td>${t.balance_after}</td>
+            <td>${fmtNum(t.balance_after)}</td>
           </tr>`).join('');
       }
 
@@ -163,7 +164,7 @@
         const { data: od, error: odErr } = await _sb.from('product_orders').select('*').eq('user_id', session.id).order('created_at', { ascending: false }).limit(20);
         if (odErr) { logWarn('MY_TALENT_ORDERS_QUERY', { error: odErr.message }); }
         else { orders = od; }
-      } catch (e) { /* product_orders table may not exist */ }
+      } catch (e) {}
       if (orders && orders.length > 0) {
         const statusMap = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
         const statusColor = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
@@ -174,14 +175,44 @@
             <tbody>` + orders.map(o => `<tr>
               <td>${formatKSTShort(o.requested_at || o.created_at)}</td>
               <td>${o.product_name}</td>
-              <td>${o.price} 달란트</td>
+              <td>${fmtNum(o.price)} 달란트</td>
               <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${statusColor[o.status]||'#868e96'}22;color:${statusColor[o.status]||'#868e96'};font-weight:600;">${statusMap[o.status]||o.status}</span></td>
             </tr>`).join('') + '</tbody></table></div>';
       }
 
       main.innerHTML = html;
     }
+
+    async function showEarnBreakdown() {
+      const el = document.getElementById('earnBreakdown');
+      if (!el) return;
+      if (el.style.display !== 'none') { el.style.display = 'none'; return; }
+      el.innerHTML = '<div style="text-align:center;color:#868e96;">불러오는 중...</div>';
+      el.style.display = '';
+      const { data: txns } = await _sb.from('talent_transactions')
+        .select('amount, description, talent_item_id')
+        .eq('user_id', session.id).eq('type', 'earn');
+      if (!txns || txns.length === 0) { el.innerHTML = '<div style="text-align:center;color:#868e96;">적립 내역이 없습니다.</div>'; return; }
+      const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
+      const byDesc = {};
+      txns.forEach(t => {
+        const key = t.description || '기타';
+        if (!byDesc[key]) byDesc[key] = { count: 0, amount: 0 };
+        byDesc[key].count++;
+        byDesc[key].amount += t.amount || 0;
+      });
+      const sorted = Object.entries(byDesc).sort((a, b) => b[1].amount - a[1].amount);
+      el.innerHTML = `<div style="background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:1rem;">
+        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.6rem;">📊 항목별 적립 현황</div>
+        <div style="font-size:0.82rem;">` + sorted.map(([name, v]) => {
+          const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
+          return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid #f1f3f5;">
+            <span>${name}</span>
+            <span style="font-weight:600;">${fmtNum(v.amount)} 달란트 × ${v.count}회 <span style="color:#868e96;">(${pct}%)</span></span>
+          </div>`;
+        }).join('') + `</div></div>`;
+    }
   </script>
-  <script src="js/version.js?v=3.14.1"></script>
+  <script src="js/version.js?v=3.15.0"></script>
 </body>
 </html>

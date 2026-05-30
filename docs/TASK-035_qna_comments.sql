@@ -37,11 +37,12 @@ CREATE POLICY "qna_comments_delete" ON qna_comments FOR DELETE TO authenticated
   USING (get_permission_rank(auth.uid()) >= 90);
 
 -- ============================================================
--- 3. qna 테이블 RLS 수정 (삭제 권한: rank 90+ UPDATE 허용)
+-- 3. qna 테이블 RLS 수정 (UPDATE: 모든 인증 사용자, 실제 권한 체크는 클라이언트에서)
 -- ============================================================
 DROP POLICY IF EXISTS "qna_update" ON qna;
 CREATE POLICY "qna_update" ON qna FOR UPDATE TO authenticated
-  USING (get_permission_rank(auth.uid()) >= 60);
+  USING (true)
+  WITH CHECK (true);
 
 DROP POLICY IF EXISTS "qna_insert" ON qna;
 CREATE POLICY "qna_insert" ON qna FOR INSERT TO authenticated

@@ -180,6 +180,7 @@ async function updatePendingBadge() {
   } else {
     badge.classList.add('hidden');
   }
+  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
 }
 
 /* ===== Session Helpers (Supabase Auth 연동) ===== */
@@ -311,6 +312,7 @@ async function updateNavOrderBadge() {
     if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
     else { badge.classList.add('hidden'); }
   } catch (e) {}
+  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
 }
 
 async function deleteLogsByDateRange(dateFrom, dateTo) {

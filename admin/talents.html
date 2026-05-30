@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.14.1" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.15.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -113,16 +113,16 @@
         <div style="font-size:0.85rem;color:var(--admin-text-muted);">현재 잔액</div>
         <div style="font-size:2rem;font-weight:800;" id="talentBalance">0</div>
       </div>
-      <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;">
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;" id="talentTypeArea">
         <button class="filter-btn" id="btnEarn" onclick="setTalentType('earn')" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">적립</button>
-        <button class="filter-btn" id="btnUse" onclick="setTalentType('use')" style="flex:1;padding:0.6rem;">사용</button>
+        <button class="filter-btn" id="btnUse" onclick="setTalentType('use')" style="flex:1;padding:0.6rem;display:none;">사용</button>
       </div>
 
       <div id="earnSection">
         <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">항목 선택 (체크 후 지급 확정)</div>
         <div id="talentItemBtns" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;"></div>
         <button class="btn-confirm" id="btnConfirmGive" onclick="confirmGiveItems()" style="width:100%;padding:0.6rem;margin-bottom:0.8rem;display:none;">✅ 지급 확정</button>
-        <details style="margin-bottom:0.8rem;">
+        <details id="manualGiveSection" style="margin-bottom:0.8rem;display:none;">
           <summary style="cursor:pointer;font-size:0.85rem;color:var(--admin-primary);">수동 입력 (항목에 없는 경우)</summary>
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
             <input type="number" id="talentAmount" min="1" style="flex:1;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="금액" />
@@ -188,11 +188,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.14.1"></script>
-  <script src="../js/activity-log.js?v=3.14.1"></script>
-  <script src="../js/auth.js?v=3.14.1"></script>
-  <script src="../js/user-mgmt.js?v=3.14.1"></script>
-  <script src="../js/talent.js?v=3.14.1"></script>
+  <script src="../js/supabase-config.js?v=3.15.0"></script>
+  <script src="../js/activity-log.js?v=3.15.0"></script>
+  <script src="../js/auth.js?v=3.15.0"></script>
+  <script src="../js/user-mgmt.js?v=3.15.0"></script>
+  <script src="../js/talent.js?v=3.15.0"></script>
   <script>
     initSupabase();
     let session;
@@ -314,9 +314,9 @@
         <td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
         <td>${getDeptName(u.department_id)}</td>
         <td>${classLabel}</td>
-        <td style="font-weight:700;color:#2b8a3e;">${u.talent_balance || 0}</td>
-        <td style="color:#e03131;">${sm.used}</td>
-        <td style="color:#1971c2;">${sm.earned}</td>
+        <td style="font-weight:700;color:#2b8a3e;">${fmtNum(u.talent_balance || 0)}</td>
+        <td style="color:#e03131;">${fmtNum(sm.used)}</td>
+        <td style="color:#1971c2;">${fmtNum(sm.earned)}</td>
         <td>
           ${attendBtn}
           ${canGiveTalent(u) ? `<button class="filter-btn" onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">달란트 지급</button>` : ''}
@@ -476,9 +476,13 @@
       talentUserId = userId;
       talentType = 'earn';
       document.getElementById('talentTitle').textContent = `${name} - 달란트 관리`;
-      document.getElementById('talentBalance').textContent = balance;
+      document.getElementById('talentBalance').textContent = fmtNum(balance);
       document.getElementById('talentError').classList.remove('show');
       setTalentType('earn');
+      if ((session.permissionRank || 0) >= 100) {
+        document.getElementById('manualGiveSection').style.display = '';
+        document.getElementById('btnUse').style.display = '';
+      }
       document.getElementById('talentModal').classList.remove('hidden');
       await renderTalentItemButtons();
       loadTalentHistory(userId);
@@ -561,7 +565,7 @@
         }
       }
       await logInfo('TALENT_GIVE_ITEMS', { userId: talentUserId, items: names, count: chks.length });
-      document.getElementById('talentBalance').textContent = lastBalance;
+      document.getElementById('talentBalance').textContent = fmtNum(lastBalance);
       await renderTalentItemButtons();
       await loadTalentHistory(talentUserId);
       await loadUsers();
@@ -580,7 +584,7 @@
           errEl.textContent = tErr(result.error) || '처리 실패'; errEl.classList.add('show'); return;
         }
         await logInfo('TALENT_MANUAL_GIVE', { userId: talentUserId, amount, desc });
-        document.getElementById('talentBalance').textContent = result.balance;
+        document.getElementById('talentBalance').textContent = fmtNum(result.balance);
         document.getElementById('talentAmount').value = '';
         document.getElementById('talentDesc').value = '';
         errEl.classList.remove('show');
@@ -605,7 +609,7 @@
           errEl.textContent = tErr(result.error) || '처리 실패'; errEl.classList.add('show'); return;
         }
         await logInfo('TALENT_USE', { userId: talentUserId, amount, desc });
-        document.getElementById('talentBalance').textContent = result.balance;
+        document.getElementById('talentBalance').textContent = fmtNum(result.balance);
         document.getElementById('useAmount').value = '';
         document.getElementById('useDesc').value = '';
         errEl.classList.remove('show');
@@ -663,6 +667,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.14.1"></script>
+  <script src="../js/version.js?v=3.15.0"></script>
 </body>
 </html>
