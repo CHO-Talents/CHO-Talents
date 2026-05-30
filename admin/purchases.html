@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.13.2" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.3" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -27,7 +27,7 @@
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">상품</button>
+        <button class="nav-dropdown-toggle active">상품</button>
         <ul class="nav-dropdown-menu">
           <li><a href="../shop.html">상품 구매</a></li>
           <li><a href="../my-orders.html">내 구매 상품</a></li>
@@ -100,10 +100,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.13.2"></script>
-  <script src="../js/activity-log.js?v=3.13.2"></script>
-  <script src="../js/auth.js?v=3.13.2"></script>
-  <script src="../js/user-mgmt.js?v=3.13.2"></script>
+  <script src="../js/supabase-config.js?v=3.13.3"></script>
+  <script src="../js/activity-log.js?v=3.13.3"></script>
+  <script src="../js/auth.js?v=3.13.3"></script>
+  <script src="../js/user-mgmt.js?v=3.13.3"></script>
   <script>
     initSupabase();
     let session;
@@ -381,6 +381,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.13.2"></script>
+  <script src="../js/version.js?v=3.13.3"></script>
 </body>
 </html>

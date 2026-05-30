@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Q & A - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.13.2" />
+  <link rel="stylesheet" href="css/common.css?v=3.13.3" />
   <style>
     .qna-container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
     .qna-hero { text-align: center; margin-bottom: 2rem; }
@@ -109,15 +109,14 @@
     <div class="qna-section-title">📝 질문 게시판</div>
     <div id="qnaList"><div class="empty-state">불러오는 중...</div></div>
 
-    <div class="ask-form" id="askForm" style="display:none;">
+    <div class="ask-form" id="askForm">
       <h3>✋ 질문하기</h3>
+      <div id="nameFieldWrap" style="margin-bottom:0.5rem;">
+        <input type="text" id="askName" placeholder="이름을 입력하세요" style="width:100%;padding:0.5rem;border:1px solid var(--c-border);border-radius:8px;font-size:0.9rem;margin-bottom:0.4rem;" />
+      </div>
       <textarea id="askQuestion" placeholder="궁금한 점을 입력해주세요..."></textarea>
       <button onclick="submitQuestion()">질문 등록</button>
       <div class="form-error" id="askError" style="margin-top:0.5rem;"></div>
-    </div>
-
-    <div id="loginPrompt" style="text-align:center;margin-top:1.5rem;">
-      <p style="color:var(--c-text-muted);font-size:0.9rem;">질문을 등록하려면 <a href="login.html" style="color:var(--c-primary);font-weight:600;">로그인</a>이 필요해요</p>
     </div>
   </div>
 
@@ -126,16 +125,19 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.13.2"></script>
-  <script src="js/activity-log.js?v=3.13.2"></script>
-  <script src="js/auth.js?v=3.13.2"></script>
+  <script src="js/supabase-config.js?v=3.13.3"></script>
+  <script src="js/activity-log.js?v=3.13.3"></script>
+  <script src="js/auth.js?v=3.13.3"></script>
   <script>
     initSupabase();
     let _session = null;
     let _isAdmin = false;
+    let _canDelete = false;
+    let _isSuperAdmin = false;
 
     (async () => {
       _session = await loadAuthSession();
+      const rank = _session ? (_session.permissionRank || 0) : 0;
       if (_session) {
         document.getElementById('navMyTalent').style.display = '';
         document.getElementById('navMyOrders').style.display = '';
@@ -143,10 +145,11 @@
         document.getElementById('navAuthArea').style.display = '';
         document.getElementById('navLogoutArea').style.display = '';
         renderRoleBadge('navUser', _session, '');
-        applyPermNav(_session.permissionRank || 0);
-        document.getElementById('askForm').style.display = '';
-        document.getElementById('loginPrompt').style.display = 'none';
-        _isAdmin = (_session.permissionRank || 0) >= 60;
+        applyPermNav(rank);
+        _isAdmin = rank >= 60;
+        _canDelete = rank >= 90;
+        _isSuperAdmin = rank >= 100;
+        document.getElementById('nameFieldWrap').style.display = 'none';
       }
       await loadFAQ();
       await loadQuestions();
@@ -174,21 +177,38 @@
         container.innerHTML = '<div class="empty-state">등록된 질문이 없습니다.</div>';
         return;
       }
-      container.innerHTML = data.map(q => {
+      const filtered = data.filter(q => !q.is_deleted);
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state">등록된 질문이 없습니다.</div>';
+        return;
+      }
+      container.innerHTML = filtered.map(q => {
         const statusClass = q.status === 'answered' ? 'answered' : 'pending';
         const statusText = q.status === 'answered' ? '답변완료' : '대기중';
+        const askerDisplay = renderAskerName(q);
+        const dateStr = formatDateTime(q.created_at);
+        const ansDateStr = q.answered_at ? ` · 답변 ${formatDateTime(q.answered_at)}` : '';
         const answerHtml = q.answer
-          ? `<div class="a-text">💬 ${escHtml(q.answer)}</div>`
+          ? `<div class="a-text">💬 ${escHtml(q.answer)}${q.answered_by_name ? `<span style="display:block;margin-top:0.3rem;font-size:0.75rem;color:#868e96;">— ${escHtml(q.answered_by_name)}</span>` : ''}</div>`
           : (_isAdmin ? renderAnswerForm(q.id) : '<div class="a-text" style="color:#adb5bd;">아직 답변이 없어요</div>');
-        const adminBtns = _isAdmin && q.answer && !q.is_faq
-          ? `<button class="faq-btn" onclick="markAsFaq('${q.id}')">FAQ 등록</button>` : '';
+        const adminBtns = [];
+        if (_isAdmin && q.answer && !q.is_faq) adminBtns.push(`<button class="faq-btn" onclick="markAsFaq('${q.id}')">FAQ 등록</button>`);
+        if (_canDelete) adminBtns.push(`<button style="background:#ff6b6b;color:#fff;border-color:#ff6b6b;" onclick="deleteQuestion('${q.id}')">삭제</button>`);
         return `<div class="qna-card">
           <div class="q-text"><span class="qna-status ${statusClass}">${statusText}</span> ${escHtml(q.question)}</div>
-          <div class="meta">${q.asked_by_name || '익명'} · ${formatDate(q.created_at)}</div>
+          <div class="meta">${askerDisplay} · ${dateStr}${ansDateStr}</div>
           ${answerHtml}
-          ${adminBtns ? `<div style="margin-top:0.4rem;">${adminBtns}</div>` : ''}
+          ${adminBtns.length ? `<div class="btn-row" style="margin-top:0.5rem;">${adminBtns.join('')}</div>` : ''}
         </div>`;
       }).join('');
+    }
+
+    function renderAskerName(q) {
+      const name = q.asked_by_name || '익명';
+      if (_isSuperAdmin && q.asked_by) {
+        return `${escHtml(name)} <span style="font-size:0.72rem;color:#868e96;">(${escHtml(q.asked_by.substring(0,8))}...)</span>`;
+      }
+      return escHtml(name);
     }
 
     function renderAnswerForm(id) {
@@ -206,12 +226,20 @@
       const text = document.getElementById('askQuestion').value.trim();
       errEl.classList.remove('show');
       if (!text) { errEl.textContent = '질문을 입력해주세요.'; errEl.classList.add('show'); return; }
-      const { error } = await _sb.from('qna').insert({
-        question: text,
-        asked_by: _session.id,
-        asked_by_name: _session.displayName || _session.username
-      });
-      if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+
+      if (_session) {
+        const { error } = await _sb.from('qna').insert({
+          question: text,
+          asked_by: _session.id,
+          asked_by_name: _session.displayName || _session.username
+        });
+        if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+      } else {
+        const name = (document.getElementById('askName').value || '').trim();
+        if (!name) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
+        const { error } = await _sb.rpc('submit_anonymous_question', { p_question: text, p_name: name });
+        if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+      }
       document.getElementById('askQuestion').value = '';
       await loadQuestions();
     }
@@ -243,9 +271,20 @@
       await loadQuestions();
     }
 
+    async function deleteQuestion(id) {
+      if (!confirm('이 질문을 삭제하시겠습니까?')) return;
+      const { error } = await _sb.from('qna').update({ is_deleted: true }).eq('id', id);
+      if (error) { alert(tErr(error)); return; }
+      await loadQuestions();
+    }
+
     function escHtml(str) { const d = document.createElement('div'); d.textContent = str || ''; return d.innerHTML; }
-    function formatDate(iso) { if (!iso) return ''; const d = new Date(iso); return `${d.getMonth()+1}/${d.getDate()}`; }
+    function formatDateTime(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
   </script>
-  <script src="js/version.js?v=3.13.2"></script>
+  <script src="js/version.js?v=3.13.3"></script>
 </body>
 </html>
