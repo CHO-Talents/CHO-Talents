@@ -2,9 +2,24 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.13.2',
+  current: '3.13.3',
   date: '2026-05-30',
   history: [
+    {
+      version: '3.13.3',
+      date: '2026-05-30',
+      title: 'TASK-035: 네비게이션/QnA/배지 수정',
+      changes: [
+        '네비: 모든 페이지 토글 버튼에 현재 그룹 active 클래스 추가',
+        '네비: common.css 깨진 CSS 블록 제거 (드롭다운 미표시 원인 수정)',
+        '메인: 비로그인/학생/교사 "달란트 상점"→"사용자 가이드" 변경, 60+만 "관리" 표시',
+        'Q&A: 비로그인 질문 등록(이름 입력) 지원 + RPC submit_anonymous_question',
+        'Q&A: 전도사(90+) 이상 삭제 버튼 + 소프트 삭제(is_deleted) + 삭제 항목 숨김',
+        'Q&A: 질문일시·답변일시 표시, 질문자 이름 표시 (관리자만 사용자ID 일부 확인 가능)',
+        '배지: common.css 드롭다운 내 badge를 position:static으로 인라인 표시',
+        '캐시: 전체 HTML v=3.13.3 캐시 버스팅'
+      ]
+    },
     {
       version: '3.13.2',
       date: '2026-05-30',

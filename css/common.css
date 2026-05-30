@@ -128,14 +128,6 @@ body.page-body {
   z-index: 200;
   list-style: none;
 }
-  background: #fff;
-  border: 1px solid var(--c-border);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  padding: 0.3rem 0;
-  z-index: 200;
-  list-style: none;
-}
 
 .top-nav-links > li:hover > .nav-dropdown-menu,
 .top-nav-links > li.dropdown-open > .nav-dropdown-menu {
@@ -205,6 +197,15 @@ body.page-body {
 
 .top-nav-links a .badge.hidden {
   display: none;
+}
+
+.top-nav-links .nav-dropdown-menu li a .badge {
+  position: static;
+  display: inline-flex;
+  margin-left: 0.3rem;
+  min-width: 16px;
+  height: 16px;
+  font-size: 0.6rem;
 }
 
 .top-nav-links .nav-user {

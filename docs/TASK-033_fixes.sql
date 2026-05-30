@@ -83,3 +83,39 @@ INSERT INTO qna (question, answer, is_faq, status) VALUES
 ('메뉴가 사람마다 달라요.', '사이트 권한에 따라 사용할 수 있는 메뉴만 보입니다.', true, 'faq'),
 ('오류 메시지가 표시돼요.', '에러는 한글로 안내됩니다. 같은 오류가 반복되면 관리자에게 문의하세요.', true, 'faq'),
 ('비밀번호를 잊어버렸어요.', '담당 선생님이나 관리자에게 비밀번호 초기화를 요청하세요. 초기화 후 1234로 로그인하고 새 비밀번호로 변경하면 됩니다.', true, 'faq');
+
+-- ============================================================
+-- 4. qna 테이블 is_deleted 컬럼 추가 (소프트 삭제)
+-- ============================================================
+ALTER TABLE qna ADD COLUMN IF NOT EXISTS is_deleted boolean DEFAULT false;
+
+-- 기존 SELECT 정책에 is_deleted 필터 추가 (기존 정책 교체)
+DROP POLICY IF EXISTS "qna_select_all" ON qna;
+CREATE POLICY "qna_select_all" ON qna FOR SELECT TO authenticated
+  USING ((is_faq = true OR asked_by = auth.uid() OR get_permission_rank(auth.uid()) >= 60) AND is_deleted = false);
+
+DROP POLICY IF EXISTS "qna_select_anon" ON qna;
+CREATE POLICY "qna_select_anon" ON qna FOR SELECT TO anon
+  USING (is_faq = true AND is_deleted = false);
+
+-- 비로그인 사용자 질문 등록 RPC
+CREATE OR REPLACE FUNCTION submit_anonymous_question(p_question text, p_name text)
+RETURNS uuid
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+DECLARE
+  v_id uuid;
+BEGIN
+  IF p_question IS NULL OR length(trim(p_question)) = 0 THEN
+    RAISE EXCEPTION 'question is required';
+  END IF;
+  INSERT INTO qna (question, asked_by_name, status)
+  VALUES (trim(p_question), COALESCE(NULLIF(trim(p_name), ''), '익명'), 'pending')
+  RETURNING id INTO v_id;
+  RETURN v_id;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION submit_anonymous_question(text, text) TO anon;
+GRANT EXECUTE ON FUNCTION submit_anonymous_question(text, text) TO authenticated;
