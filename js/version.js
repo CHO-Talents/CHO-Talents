@@ -2,9 +2,18 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.14.0',
+  current: '3.14.1',
   date: '2026-05-30',
   history: [
+    {
+      version: '3.14.1',
+      date: '2026-05-30',
+      title: 'TASK-035: 모바일 네비게이션 드롭다운 표시 수정',
+      changes: [
+        '모바일: nav-dropdown-menu에 transform:none, left:auto, top:auto, min-width:0 추가',
+        '데스크탑 transform:translateX(-50%)가 모바일에서도 적용되어 메뉴 밀림 현상 해결'
+      ]
+    },
     {
       version: '3.14.0',
       date: '2026-05-30',
