@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-05-30 KST 현재 코드 기준 (v3.13.1)
+작성 기준: 2026-05-30 KST 현재 코드 기준 (v3.14.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -54,6 +54,7 @@ flowchart LR
   DB --> Logs["activity_logs"]
   DB --> RoleAccess["role_page_access"]
   DB --> QnA["qna"]
+  DB --> QnAComments["qna_comments"]
   DB --> RoleFeatures["role_page_features"]
   DB --> PagePerms["page_permissions"]
 ```
@@ -66,7 +67,7 @@ flowchart LR
 | `login.html` | 통합 로그인. 성공/실패 로그 기록. 승인 대기/거부 계정 구분 안내 |
 | `register.html` | 계정 등록 신청. 영문/숫자/`_`/`-` 아이디 중복확인 후 승인 대기 등록 |
 | `guide.html` | 사용자 가이드. 사이트 이용 흐름을 카드/스텝 중심으로 안내 |
-| `qna.html` | Q&A/FAQ. 공개 FAQ 조회, 로그인 질문 등록, 60등급 이상 답변/FAQ 등록 |
+| `qna.html` | Q&A/FAQ. 공개 FAQ 조회, 관리자 FAQ 직접 등록, 로그인 질문 등록, 60등급 이상 댓글(답변)/FAQ 등록, 90등급 이상 삭제 |
 | `earn-talents.html` | 달란트 적립 방법 안내 |
 | `shop.html` | 상점 조회 + 구매 신청 + 대리 구매. 비로그인은 학생용, 교사는 교사용 기본 필터 |
 | `my-talents.html` | 로그인 사용자 본인의 누적/사용 완료/사용 대기/가용 잔액, 달란트 내역, 구매 내역 |
@@ -75,7 +76,7 @@ flowchart LR
 | `admin/users.html` | 60등급 이상 사용자 관리. 가입 신청/부서 이동 요청/승인 처리 |
 | `admin/departments.html` | 60등급 이상 부서 관리. 부서별 인원(교사 전체 포함)/담당자 확인 |
 | `admin/managers.html` | 80등급 이상 관리자 계열 권한 관리. 수정만 가능 |
-| `admin/talents.html` | 40등급 이상 달란트 처리. 체크박스 일괄 지급, 수동 적립/사용, 반환(80+) |
+| `admin/talents.html` | 40등급 이상 달란트 처리. 체크박스 일괄 지급, 수동 적립/사용, 반환(80+), 출석 버튼(당일 중복 방지) |
 | `admin/talent-items.html` | 90등급 이상 달란트 지급 항목 관리 |
 | `admin/shop.html` | 60등급 이상 상품 관리 |
 | `admin/purchases.html` | 60등급 이상 구매 관리. 4단계 구매 흐름 처리. 권한별 조회/처리 범위 제한 |
@@ -284,6 +285,7 @@ flowchart TD
 | 항목 | 내용 |
 |---|---|
 | 지급 방식 | 체크박스 선택 + 일괄 확정 |
+| 출석 버튼 | 테이블 각 행에 '출석' 버튼 → 클릭 즉시 출석 달란트 지급 (당일 중복 방지) |
 | 이미 지급된 항목 | 오늘/이번 주 지급 여부 자동 표시 |
 | 반환 | 80등급(부장 교사) 이상, 사유 필수, 잔여 > 0일 때만 |
 | 지급자 기록 | `created_by` 필드에 지급자 ID 저장, 상세 모달에서 확인 |
@@ -396,7 +398,8 @@ flowchart TD
 | `talent_transactions` | 달란트 적립/사용/반환 내역. `created_by`로 지급자 추적 |
 | `products` | 상점 상품 (학생용/교사용 구분) |
 | `product_orders` | 구매 신청/4단계 상태 관리/담당자 기록 |
-| `qna` | FAQ, 사용자 질문, 답변, 공개 여부 |
+| `qna` | FAQ, 사용자 질문, 답변, 공개 여부, 소프트 삭제 |
+| `qna_comments` | Q&A 질문별 댓글(답변) 스레드 |
 | `reports` | 작업 보고서 |
 | `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록 |
 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
@@ -441,7 +444,7 @@ flowchart TD
 15. 60등급 이상이 `admin/users.html`, `admin/shop.html`, `admin/purchases.html`을 사용할 수 있는지 확인한다.
 16. 80등급 이상이 대시보드, 관리자, 보고서, 버전 화면을 사용할 수 있는지 확인한다.
 17. 100등급 이상만 `admin/page-access.html`, `admin/page-features.html`, `admin/audit.html`, `admin/logs.html`에 접근 가능한지 확인한다.
-18. `qna.html`에서 공개 FAQ, 로그인 질문 등록, 60등급 이상 답변/FAQ 등록이 동작하는지 확인한다.
+18. `qna.html`에서 공개 FAQ, 로그인 질문 등록, 60등급 이상 댓글(답변)/FAQ 등록/직접 FAQ 추가, 90등급 이상 삭제가 동작하는지 확인한다.
 19. 아이디가 관리자에게만 표시되고 일반 사용자는 본인 것만 보이는지 확인한다.
 20. 에러 메시지가 한글로 변환되어 표시되는지 확인한다.
 21. 주요 기능의 성공/실패/거부가 활동 로그에 기록되는지 확인한다.
@@ -460,3 +463,4 @@ flowchart TD
 | 8 | `admin/*.html` | 각 관리 화면의 실제 접근 권한과 UI 동작 |
 | 9 | `docs/TASK-026_schema.sql` | 구매 시스템 DB 스키마 및 RPC |
 | 10 | `docs/TASK-032_fixes.sql` | Q&A 테이블/RLS와 미승인 로그인 안내 RPC |
+| 11 | `docs/TASK-035_qna_comments.sql` | Q&A 댓글 테이블/RLS 및 삭제 권한 수정 |

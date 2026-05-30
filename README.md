@@ -12,22 +12,25 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.13.1` (`js/version.js` 기준, 2026-05-30) |
+| 현재 버전 | `v3.14.0` (`js/version.js` 기준, 2026-05-30) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.13.1`으로 맞춰져 있습니다.
-- **v3.13.1 주요 변경 사항**:
-  - 드롭다운 네비게이션: hover + click-to-toggle 이중 동작 방식 적용 (데스크탑/모바일 모두 동작)
-  - `.admin-nav`/`.top-nav`에 `overflow: visible` 명시로 드롭다운 클리핑 해결
-  - 전체 HTML CSS link에 `?v=3.13.1` 캐시 버스팅 적용 (브라우저 구 CSS 캐시 방지)
-  - `docs/TASK-033_fixes.sql`: Q&A 테이블/RLS/초기 FAQ 데이터 안전 재실행 버전
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.14.0`으로 맞춰져 있습니다.
+- **v3.14.0 주요 변경 사항**:
+  - Q&A: 답변 → 댓글 형태로 변경 (`qna_comments` 테이블 활용, 여러 댓글 가능)
+  - Q&A: 관리자 FAQ 직접 등록 기능 추가
+  - Q&A: 삭제 권한 RLS 수정 (rank 60+ UPDATE 허용)
+  - 상품: 구매 페이지 한 줄에 3개 표시 (`grid-template-columns: repeat(3, 1fr)`)
+  - 대리구매: 모달 재오픈 시 사용자 검색 입력 필드 display 초기화
+  - 달란트 관리: 출석 버튼 추가 (클릭 시 즉시 출석 달란트 지급, 당일 중복 방지)
+  - 캐시: 전체 HTML `v=3.14.0` 캐시 버스팅
 - **v3.13.0 주요 변경 사항**:
   - 네비게이션 전면 개편: 평면 단일행 → 드롭다운 5그룹 (소개/달란트/상품/관리/운영)
   - `guide.html` 신규: 사용자 가이드 페이지 (카드/스텝 기반 시각적 설명)
-  - `qna.html` 신규: Q&A 게시판 (FAQ 상단 표시 + 질문 등록 + 관리자 답변 + FAQ 등록)
-  - DB 변경: `docs/TASK-032_fixes.sql`에 `check_registration_status` RPC, `qna` 테이블/RLS, 초기 FAQ 9건 추가
+  - `qna.html` 신규: Q&A 게시판 (FAQ 상단 표시 + 질문 등록 + 관리자 답변/댓글 + FAQ 등록)
+  - DB 변경: `qna` 테이블/RLS, `qna_comments` 테이블/RLS, 초기 FAQ 데이터
   - 로그인: `check_registration_status` RPC로 승인 대기 메시지 정상 표시
   - 비밀번호 변경: 8자 이상, 영문+숫자 필수, '1234' 사용 금지
   - 메인 페이지 네비: 브랜드 + 로그인/로그아웃 + 관리(60+)만 표시
@@ -43,7 +46,7 @@
   - 구매 신청 → 상품 준비 → 상품 구매 → 상품 지급 4단계 흐름
   - `shop.html`에서 구매/대리 구매, `my-orders.html`에서 내 구매 확인, `my-talents.html`에서 사용 대기 확인, `admin/purchases.html`에서 관리
   - 구매 신청 시 달란트는 `pending_talent`(사용 대기)로 관리
-- **달란트 관리**: 체크박스 선택 + 일괄 지급, 부장 교사(80+) 반환 처리, 일반 교사(40) 반 스코핑
+- **달란트 관리**: 체크박스 선택 + 일괄 지급, 부장 교사(80+) 반환 처리, 일반 교사(40) 반 스코핑, 출석 버튼 (당일 중복 방지)
 - **에러 처리**: `tErr()` 한글 번역, 전체 페이지 에러 로깅
 - **로그 관리**: 소프트 삭제(`is_deleted=true`), 관리자(100+)만 삭제 가능
 

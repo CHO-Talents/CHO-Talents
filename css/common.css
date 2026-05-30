@@ -321,10 +321,9 @@ body.page-body {
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 260px));
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.2rem;
   margin-bottom: 2rem;
-  justify-content: center;
 }
 
 .product-card {
