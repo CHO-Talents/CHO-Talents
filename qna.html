@@ -169,6 +169,8 @@
         </div>`).join('');
     }
 
+    let _usernameMap = {};
+
     async function loadQuestions() {
       const container = document.getElementById('qnaList');
       let query = _sb.from('qna').select('*').eq('is_faq', false).order('created_at', { ascending: false });
@@ -181,6 +183,13 @@
       if (filtered.length === 0) {
         container.innerHTML = '<div class="empty-state">등록된 질문이 없습니다.</div>';
         return;
+      }
+      if (_isSuperAdmin) {
+        const userIds = [...new Set(filtered.filter(q => q.asked_by).map(q => q.asked_by))];
+        if (userIds.length > 0) {
+          const { data: profiles } = await _sb.from('profiles').select('id, username').in('id', userIds);
+          if (profiles) profiles.forEach(p => { _usernameMap[p.id] = p.username; });
+        }
       }
       container.innerHTML = filtered.map(q => {
         const statusClass = q.status === 'answered' ? 'answered' : 'pending';
@@ -206,7 +215,10 @@
     function renderAskerName(q) {
       const name = q.asked_by_name || '익명';
       if (_isSuperAdmin && q.asked_by) {
-        return `${escHtml(name)} <span style="font-size:0.72rem;color:#868e96;">(${escHtml(q.asked_by.substring(0,8))}...)</span>`;
+        const username = _usernameMap[q.asked_by] || '';
+        if (username) {
+          return `${escHtml(name)} <span style="font-size:0.75rem;color:#868e96;">(${escHtml(username)})</span>`;
+        }
       }
       return escHtml(name);
     }
