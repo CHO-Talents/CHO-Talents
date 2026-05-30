@@ -43,10 +43,6 @@ body.page-body {
   z-index: 100;
   gap: 0.5rem;
   white-space: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
 }
 
 .top-nav-brand {
