@@ -186,13 +186,36 @@
       let query = _sb.from('activity_logs')
         .select('*')
         .in('action', AUDIT_ACTION_KEYS)
+        .eq('is_deleted', false)
         .order('created_at', { ascending: false })
         .limit(500);
 
       if (fromDate) query = query.gte('created_at', fromDate + 'T00:00:00+09:00');
       if (toDate) query = query.lte('created_at', toDate + 'T23:59:59+09:00');
 
-      const { data, error } = await query;
+      let { data, error } = await query;
+
+      if ((!data || data.length === 0) && !fromDate && !toDate) {
+        const restore = await _sb.from('activity_logs')
+          .select('*')
+          .in('action', AUDIT_ACTION_KEYS)
+          .eq('is_deleted', true)
+          .limit(1);
+        if (restore.data && restore.data.length > 0) {
+          await _sb.from('activity_logs')
+            .update({ is_deleted: false })
+            .in('action', AUDIT_ACTION_KEYS)
+            .eq('is_deleted', true);
+          const retry = await _sb.from('activity_logs')
+            .select('*')
+            .in('action', AUDIT_ACTION_KEYS)
+            .eq('is_deleted', false)
+            .order('created_at', { ascending: false })
+            .limit(500);
+          data = retry.data;
+          error = retry.error;
+        }
+      }
       if (error) {
         console.error('[AUDIT] load error:', error);
         document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 오류: ${tErr(error.message)}</td></tr>`;

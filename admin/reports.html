@@ -235,6 +235,7 @@
           return;
         }
 
+        await seedMissingReports();
         renderReports(allReports);
       } catch (err) {
         _stepLog('5-ERR', '쿼리 예외: ' + err.message);
@@ -353,6 +354,49 @@
         allReports = data || [];
       }
       renderReports(allReports);
+    }
+
+    async function seedMissingReports() {
+      if (!session || !session.isSuperAdmin) return;
+      const existingKeys = new Set(allReports.map(r => r.task_id + '|' + r.report_type));
+      const SEED = getSeedData();
+      const missing = SEED.filter(s => !existingKeys.has(s.task_id + '|' + s.report_type));
+      if (missing.length === 0) return;
+      _stepLog('SEED', `누락 보고서 ${missing.length}건 자동 등록 중...`);
+      const { data, error } = await _sb.from('reports').insert(missing).select();
+      if (!error && data) {
+        allReports = [...allReports, ...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      }
+    }
+
+    function getSeedData() {
+      return [
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'plan', content:'<h2>TASK-001: 초기 구축 - 작업 계획서</h2><p>docs/TASK-001_plan.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_scenario', content:'<h2>TASK-001: 초기 구축 - 테스트 시나리오</h2><p>docs/TASK-001_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_result', content:'<h2>TASK-001: 초기 구축 - 테스트 결과</h2><p>docs/TASK-001_test_result.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'change_report', content:'<h2>TASK-001: 초기 구축</h2><p><b>버전:</b> v1.0.0</p><ul><li>환영 메인 페이지 구현</li><li>관리자 로그인/패스워드 변경</li><li>관리자 대시보드</li><li>Supabase 연동 및 CRUD</li><li>활동 로그 시스템</li><li>GitHub Pages 배포</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 역할별 계정 시스템', report_type:'change_report', content:'<h2>TASK-002: 역할별 계정 시스템</h2><p><b>버전:</b> v1.1.0</p><ul><li>4단계 역할 구분</li><li>역할별 전용 페이지</li><li>달란트 상점</li><li>부서 관리자 기능</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-003', task_title:'v1.2.0 상품 이미지 및 메인 화면 개선', report_type:'change_report', content:'<h2>TASK-003: 상품 이미지 및 메인 화면</h2><p><b>버전:</b> v1.2.0</p><ul><li>상품 이미지 URL 지원</li><li>Supabase Storage 파일 업로드</li><li>메인 화면 카드 링크 연결</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-004', task_title:'v1.3.0 버전 관리 시스템', report_type:'change_report', content:'<h2>TASK-004: 버전 관리 시스템</h2><p><b>버전:</b> v1.3.0</p><ul><li>버전 관리 모듈 도입</li><li>모든 페이지 하단 버전 표시</li><li>관리자 버전 이력 조회</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-005', task_title:'v1.4.0 사용자 관리 및 역할 배지', report_type:'change_report', content:'<h2>TASK-005: 사용자 관리 및 역할 배지</h2><p><b>버전:</b> v1.4.0</p><ul><li>관리자 사용자 관리 페이지</li><li>역할별 통계 대시보드</li><li>모든 페이지 역할 배지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-006', task_title:'v1.5.0 계정 등록 신청', report_type:'change_report', content:'<h2>TASK-006: 계정 등록 신청</h2><p><b>버전:</b> v1.5.0</p><ul><li>계정 등록 신청 페이지</li><li>아이디 중복 검증</li><li>관리자 승인/거부 기능</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 전면 개선', report_type:'change_report', content:'<h2>TASK-007: DB 보안 구조 전면 개선</h2><p><b>버전:</b> v2.0.0</p><ul><li>Supabase Auth 도입</li><li>profiles 테이블 신설</li><li>SECURITY DEFINER RPC</li><li>전체 RLS 정책 재설계</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-008', task_title:'v2.1.0 관리자 페이지 접근 제어', report_type:'change_report', content:'<h2>TASK-008: 관리자 페이지 접근 제어</h2><p><b>버전:</b> v2.1.0</p><ul><li>initPage() 역할 체크 리디렉트</li><li>CSS auth-ready 콘텐츠 플래시 방지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-009', task_title:'v2.2.0 레거시 관리자 로그인 제거', report_type:'change_report', content:'<h2>TASK-009: 레거시 관리자 로그인 제거</h2><p><b>버전:</b> v2.2.0</p><ul><li>관리자 진입점 버튼 제거</li><li>admin/login.html 삭제</li><li>login.html 단일화</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-010', task_title:'v2.3.0 초기 비밀번호 변경 강제', report_type:'change_report', content:'<h2>TASK-010: 초기 비밀번호 변경 강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()에 isFirstLogin 리디렉트</li><li>autoLogPageView() 인증 후 이동</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 관리자 대시보드 개선', report_type:'change_report', content:'<h2>TASK-011: 관리자 대시보드 개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가입 대기자 수 카드 추가</li><li>바로가기 영역 5개 재구성</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-012', task_title:'v2.5.0 관리자/부서관리자 메뉴 통합', report_type:'change_report', content:'<h2>TASK-012: 메뉴 통합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ 디렉토리 삭제</li><li>admin/talents.html 생성</li><li>applyRoleNav() 함수</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 유형/권한 6단계 체계', report_type:'change_report', content:'<h2>TASK-013: 유형/권한 6단계 체계</h2><p><b>버전:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level 확장</li><li>get_permission_rank() 함수</li><li>RPC 12개 업데이트</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-014', task_title:'v3.7.0 다중 기능 개선 및 UX 향상', report_type:'change_report', content:'<h2>TASK-014: 다중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>아이디 한글 입력 제한</li><li>로그 범위 삭제</li><li>물품 활성화/비활성화</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 보고서 버그 수정', report_type:'change_report', content:'<h2>TASK-015: 보고서 버그 수정</h2><p><b>버전:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS 충돌 해결</li><li>로그 선택 삭제</li><li>가입대기 배지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-016', task_title:'v3.7.3 권한 기반 스코핑', report_type:'change_report', content:'<h2>TASK-016: 권한 기반 스코핑</h2><p><b>버전:</b> v3.7.3</p><ul><li>본인보다 낮은 권한만 관리</li><li>부장 이하 담당 부서만 표시</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-027', task_title:'v3.10.0 권한 세분화 + 구매 관리 개편', report_type:'change_report', content:'<h2>TASK-027: v3.10.0</h2><p><b>버전:</b> v3.10.0</p><ul><li>달란트 관리 권한 세분화</li><li>가입 승인/부서 이동 권한 개편</li><li>재고 시스템 제거</li><li>구매 관리 개편</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-028', task_title:'v3.11.0 반응형 + 네비게이션 통합', report_type:'change_report', content:'<h2>TASK-028: v3.11.0</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응형 4단계</li><li>모바일 햄버거 네비게이션</li><li>테이블 반응형</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'change_report', content:'<h2>TASK-029: v3.12.0</h2><p><b>버전:</b> v3.12.0</p><ul><li>페이지 기능 관리 개편</li><li>네비게이션 통합</li><li>달란트 관리 항목 관리 추가</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030', task_title:'v3.12.2 네비 통합 + 구매/관리 개선', report_type:'change_report', content:'<h2>TASK-030: v3.12.2</h2><p><b>버전:</b> v3.12.2</p><ul><li>네비게이션 통합</li><li>내 구매 상품 페이지</li><li>대리 구매 시스템</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-032', task_title:'v3.13.0 로그인 개선 + 5그룹 드롭다운 네비', report_type:'change_report', content:'<h2>TASK-032: v3.13.0</h2><p><b>버전:</b> v3.13.0</p><ul><li>승인 대기 메시지</li><li>비밀번호 복잡도</li><li>5그룹 드롭다운 네비게이션</li><li>사용자 가이드 페이지</li><li>Q&A 페이지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-035', task_title:'v3.13.3~v3.13.4 드롭다운/QnA/배지 수정', report_type:'change_report', content:'<h2>TASK-035: v3.13.3~v3.13.4</h2><p><b>버전:</b> v3.13.3~v3.13.4</p><ul><li>Safari 드롭다운 클리핑 수정 (position:fixed)</li><li>Q&A 삭제/일시/질문자 표시</li><li>메인 가이드 전환</li><li>배지 인라인 표시</li></ul>', created_by:'AI_Cursor' }
+      ];
     }
 
     async function seedAllReports() {
