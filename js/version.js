@@ -2,9 +2,23 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.13.4',
+  current: '3.14.0',
   date: '2026-05-30',
   history: [
+    {
+      version: '3.14.0',
+      date: '2026-05-30',
+      title: 'TASK-035: Q&A 댓글 시스템 + 출석 달란트 + 상품 그리드 + 대리구매 수정',
+      changes: [
+        'Q&A: 답변→댓글 형태로 변경 (qna_comments 테이블 활용, 여러 댓글 가능)',
+        'Q&A: 관리자 FAQ 직접 등록 기능 추가',
+        'Q&A: 삭제 권한 RLS 수정 (rank 60+ UPDATE 허용)',
+        '상품: 구매 페이지 3개씩 한 줄 표시 (grid-template-columns: repeat(3, 1fr))',
+        '대리구매: 모달 재오픈 시 사용자 검색 입력 필드 display 초기화',
+        '달란트 관리: 출석 버튼 추가 (클릭 시 즉시 출석 달란트 지급, 당일 중복 방지)',
+        '캐시: 전체 HTML v=3.14.0 캐시 버스팅'
+      ]
+    },
     {
       version: '3.13.4',
       date: '2026-05-30',

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.13.4" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.14.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -188,11 +188,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.13.4"></script>
-  <script src="../js/activity-log.js?v=3.13.4"></script>
-  <script src="../js/auth.js?v=3.13.4"></script>
-  <script src="../js/user-mgmt.js?v=3.13.4"></script>
-  <script src="../js/talent.js?v=3.13.4"></script>
+  <script src="../js/supabase-config.js?v=3.14.0"></script>
+  <script src="../js/activity-log.js?v=3.14.0"></script>
+  <script src="../js/auth.js?v=3.14.0"></script>
+  <script src="../js/user-mgmt.js?v=3.14.0"></script>
+  <script src="../js/talent.js?v=3.14.0"></script>
   <script>
     initSupabase();
     let session;
@@ -204,6 +204,7 @@
     let talentItems = [];
     let talentSummaryMap = {};
     let currentDeptFilter = '';
+    let _attendanceGivenToday = new Set();
 
     (async () => {
       session = await initPage(40, '../login.html');
@@ -297,6 +298,7 @@
 
       const userIds = data.map(u => u.id);
       await loadBatchSummary(userIds);
+      await loadAttendanceToday(userIds);
 
       const nameMap = resolveDisplayNames(data);
       tbody.innerHTML = data.map(u => {
@@ -304,6 +306,10 @@
         const isSelf = u.id === session.id;
         const classLabel = u.class_number ? u.class_number + '반' : '-';
         const sm = talentSummaryMap[u.id] || { earned: 0, used: 0 };
+        const attendDone = _attendanceGivenToday.has(u.id);
+        const attendBtn = canGiveTalent(u)
+          ? `<button class="filter-btn" style="background:${attendDone?'#adb5bd':'#51cf66'};color:#fff;border-color:${attendDone?'#adb5bd':'#51cf66'};" onclick="giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')" ${attendDone?'disabled':''}>${attendDone?'✓출석':'출석'}</button>`
+          : '';
         return `<tr>
         <td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
         <td>${getDeptName(u.department_id)}</td>
@@ -312,6 +318,7 @@
         <td style="color:#e03131;">${sm.used}</td>
         <td style="color:#1971c2;">${sm.earned}</td>
         <td>
+          ${attendBtn}
           ${canGiveTalent(u) ? `<button class="filter-btn" onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">달란트 지급</button>` : ''}
           <button class="filter-btn" onclick="openDetailModal('${u.id}','${dn.replace(/'/g,"\\'")}')">상세</button>
         </td>
@@ -328,6 +335,36 @@
         if (t.type === 'earn') talentSummaryMap[t.user_id].earned += t.amount;
         else talentSummaryMap[t.user_id].used += t.amount;
       });
+    }
+
+    async function loadAttendanceToday(userIds) {
+      _attendanceGivenToday = new Set();
+      if (!_sb || userIds.length === 0) return;
+      const attendItem = talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
+      if (!attendItem) return;
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const { data: txns } = await _sb.from('talent_transactions')
+        .select('user_id')
+        .in('user_id', userIds)
+        .eq('talent_item_id', attendItem.id)
+        .eq('type', 'earn')
+        .gte('created_at', todayStart.toISOString());
+      (txns || []).forEach(t => _attendanceGivenToday.add(t.user_id));
+    }
+
+    async function giveAttendance(userId, userName) {
+      const attendItem = talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
+      if (!attendItem) { alert('출석 달란트 항목이 설정되지 않았습니다.'); return; }
+      if (_attendanceGivenToday.has(userId)) { alert('이미 오늘 출석 달란트가 지급되었습니다.'); return; }
+      const result = await giveTalentByItem(userId, attendItem.id, session.id);
+      if (result && result.success === false) {
+        alert(tErr(result.error || '출석 지급 실패'));
+        return;
+      }
+      _attendanceGivenToday.add(userId);
+      await logInfo('ATTENDANCE_GIVE', { targetUser: userId, targetName: userName, amount: attendItem.talent_amount });
+      loadUsers();
     }
 
     async function openDetailModal(userId, name) {
@@ -626,6 +663,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.13.4"></script>
+  <script src="../js/version.js?v=3.14.0"></script>
 </body>
 </html>
