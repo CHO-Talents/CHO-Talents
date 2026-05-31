@@ -2,9 +2,21 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.15.0',
+  current: '3.15.1',
   date: '2026-05-31',
   history: [
+    {
+      version: '3.15.1',
+      date: '2026-05-31',
+      title: 'TASK-037: Q&A삭제 RPC, 사용기능 완전제거, 적립현황 자동표시, 달란트통계',
+      changes: [
+        'Q&A: 삭제를 admin_soft_delete_qna RPC 함수로 전환 (RLS 우회, SECURITY DEFINER)',
+        '달란트관리: 사용 탭/섹션/함수 완전 제거 (물품 구매로만 사용)',
+        '내달란트: 항목별 적립현황을 페이지 로드시 자동 표시 (클릭 불필요)',
+        '신규: admin/talent-stats.html 달란트 누적적립 통계 페이지 (전체/부서별/반별)',
+        '네비게이션: 달란트 드롭다운에 "달란트 통계" 메뉴 추가 (60등급 이상)'
+      ]
+    },
     {
       version: '3.15.0',
       date: '2026-05-31',

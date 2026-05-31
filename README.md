@@ -12,12 +12,18 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.15.0` (`js/version.js` 기준, 2026-05-31) |
+| 현재 버전 | `v3.15.1` (`js/version.js` 기준, 2026-05-31) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.15.0`으로 맞춰져 있습니다.
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.15.1`으로 맞춰져 있습니다.
+- **v3.15.1 주요 변경 사항**:
+  - Q&A: 삭제를 `admin_soft_delete_qna` RPC 함수로 전환 (SECURITY DEFINER, RLS 우회)
+  - 달란트 관리: 사용 탭/섹션/함수 완전 제거 (물품 구매로만 사용)
+  - 내 달란트: 항목별 적립현황 페이지 로드 시 자동 표시
+  - 신규: `admin/talent-stats.html` 달란트 누적적립 통계 (전체/부서별/개인별)
+  - 네비게이션: 달란트 드롭다운에 "달란트 통계" 메뉴 추가 (60등급 이상)
 - **v3.15.0 주요 변경 사항**:
   - 달란트 관리: 수기 지급(수동 입력) 관리자(rank 100+)만 표시
   - 달란트 관리: 사용 탭 관리자만 표시 (물품 구매로만 사용)

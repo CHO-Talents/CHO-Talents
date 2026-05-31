@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.15.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -24,6 +24,7 @@
         <ul class="nav-dropdown-menu">
           <li><a href="../my-talents.html">내 달란트</a></li>
           <li data-min-perm="40"><a href="talents.html" class="active">달란트 관리</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">달란트 통계</a></li>
         </ul>
       </li>
       <li>
@@ -114,8 +115,7 @@
         <div style="font-size:2rem;font-weight:800;" id="talentBalance">0</div>
       </div>
       <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;" id="talentTypeArea">
-        <button class="filter-btn" id="btnEarn" onclick="setTalentType('earn')" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">적립</button>
-        <button class="filter-btn" id="btnUse" onclick="setTalentType('use')" style="flex:1;padding:0.6rem;display:none;">사용</button>
+        <button class="filter-btn" id="btnEarn" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">적립</button>
       </div>
 
       <div id="earnSection">
@@ -132,16 +132,6 @@
             <button class="btn-confirm" onclick="submitManualTalent()" style="width:100%;padding:0.5rem;">수동 적립</button>
           </div>
         </details>
-      </div>
-
-      <div id="useSection" style="display:none;">
-        <div style="margin-bottom:0.8rem;">
-          <input type="number" id="useAmount" min="1" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="사용 금액" />
-        </div>
-        <div style="margin-bottom:0.8rem;">
-          <input type="text" id="useDesc" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="사유 (예: 상품 구매)" />
-        </div>
-        <button class="btn-confirm" onclick="submitUseTalent()" style="width:100%;padding:0.5rem;background:#ff6b6b;border-color:#ff6b6b;">사용 처리</button>
       </div>
 
       <div class="form-error" id="talentError"></div>
@@ -188,11 +178,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.15.0"></script>
-  <script src="../js/activity-log.js?v=3.15.0"></script>
-  <script src="../js/auth.js?v=3.15.0"></script>
-  <script src="../js/user-mgmt.js?v=3.15.0"></script>
-  <script src="../js/talent.js?v=3.15.0"></script>
+  <script src="../js/supabase-config.js?v=3.15.1"></script>
+  <script src="../js/activity-log.js?v=3.15.1"></script>
+  <script src="../js/auth.js?v=3.15.1"></script>
+  <script src="../js/user-mgmt.js?v=3.15.1"></script>
+  <script src="../js/talent.js?v=3.15.1"></script>
   <script>
     initSupabase();
     let session;
@@ -481,7 +471,6 @@
       setTalentType('earn');
       if ((session.permissionRank || 0) >= 100) {
         document.getElementById('manualGiveSection').style.display = '';
-        document.getElementById('btnUse').style.display = '';
       }
       document.getElementById('talentModal').classList.remove('hidden');
       await renderTalentItemButtons();
@@ -491,17 +480,8 @@
     function closeTalentModal() { document.getElementById('talentModal').classList.add('hidden'); }
 
     function setTalentType(type) {
-      talentType = type;
-      const eb = document.getElementById('btnEarn'), ub = document.getElementById('btnUse');
-      document.getElementById('earnSection').style.display = type === 'earn' ? 'block' : 'none';
-      document.getElementById('useSection').style.display = type === 'use' ? 'block' : 'none';
-      if (type === 'earn') {
-        eb.style.cssText = 'flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;';
-        ub.style.cssText = 'flex:1;padding:0.6rem;';
-      } else {
-        ub.style.cssText = 'flex:1;padding:0.6rem;background:#ff6b6b;color:#fff;border-color:#ff6b6b;';
-        eb.style.cssText = 'flex:1;padding:0.6rem;';
-      }
+      talentType = 'earn';
+      document.getElementById('earnSection').style.display = 'block';
     }
 
     async function renderTalentItemButtons() {
@@ -596,31 +576,6 @@
       }
     }
 
-    async function submitUseTalent() {
-      const errEl = document.getElementById('talentError');
-      const amount = parseInt(document.getElementById('useAmount').value);
-      const desc = document.getElementById('useDesc').value.trim();
-      if (!amount || amount <= 0) { errEl.textContent = '유효한 금액을 입력해주세요.'; errEl.classList.add('show'); return; }
-      if (!desc) { errEl.textContent = '사유를 입력해주세요.'; errEl.classList.add('show'); return; }
-      try {
-        const result = await useTalent(talentUserId, amount, desc, session.id);
-        if (result.success === false) {
-          await logError('TALENT_USE_FAIL', { userId: talentUserId, amount, desc, error: result.error });
-          errEl.textContent = tErr(result.error) || '처리 실패'; errEl.classList.add('show'); return;
-        }
-        await logInfo('TALENT_USE', { userId: talentUserId, amount, desc });
-        document.getElementById('talentBalance').textContent = fmtNum(result.balance);
-        document.getElementById('useAmount').value = '';
-        document.getElementById('useDesc').value = '';
-        errEl.classList.remove('show');
-        await loadTalentHistory(talentUserId);
-        await loadUsers();
-      } catch (err) {
-        await logError('TALENT_USE_ERROR', { userId: talentUserId, amount, error: String(err) });
-        errEl.textContent = '오류: ' + tErr(err.message); errEl.classList.add('show');
-      }
-    }
-
     async function loadTalentHistory(userId) {
       const { data } = await fetchTalentHistory(userId, { limit: 10 });
       const el = document.getElementById('talentHistory');
@@ -667,6 +622,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.15.0"></script>
+  <script src="../js/version.js?v=3.15.1"></script>
 </body>
 </html>

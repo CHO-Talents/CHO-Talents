@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>버전 이력 - 관리자</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.15.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
   <style>
     .ver-current {
       background: linear-gradient(135deg, #f3f0ff, #e8f5e9);
@@ -76,6 +76,7 @@
         <ul class="nav-dropdown-menu">
           <li><a href="../my-talents.html">내 달란트</a></li>
           <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">달란트 통계</a></li>
         </ul>
       </li>
       <li>
@@ -121,10 +122,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.15.0"></script>
-  <script src="../js/activity-log.js?v=3.15.0"></script>
-  <script src="../js/auth.js?v=3.15.0"></script>
-  <script src="../js/version.js?v=3.15.0"></script>
+  <script src="../js/supabase-config.js?v=3.15.1"></script>
+  <script src="../js/activity-log.js?v=3.15.1"></script>
+  <script src="../js/auth.js?v=3.15.1"></script>
+  <script src="../js/version.js?v=3.15.1"></script>
   <script>
     initSupabase();
     let session;
