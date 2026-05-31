@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>달란트 통계 - CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
+</head>
+<body class="admin-body">
+  <nav class="admin-nav">
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
+    <ul class="admin-nav-links">
+      <li>
+        <button class="nav-dropdown-toggle">소개</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="../guide.html">사용자 가이드</a></li>
+          <li><a href="../earn-talents.html">달란트 적립</a></li>
+          <li><a href="../qna.html">Q &amp; A</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle active">달란트</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="../my-talents.html">내 달란트</a></li>
+          <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html" class="active">달란트 통계</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">상품</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="../shop.html">상품 구매</a></li>
+          <li><a href="../my-orders.html">내 구매 상품</a></li>
+          <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
+          <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+        </ul>
+      </li>
+      <li data-min-perm="60">
+        <button class="nav-dropdown-toggle">관리</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="80"><a href="index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
+        </ul>
+      </li>
+      <li data-min-perm="80">
+        <button class="nav-dropdown-toggle">운영</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
+          <li data-min-perm="80"><a href="versions.html">버전</a></li>
+          <li data-min-perm="80"><a href="reports.html">보고서</a></li>
+          <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+        </ul>
+      </li>
+      <li><span class="nav-user" id="navUser"></span></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+    </ul>
+    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
+  </nav>
+
+  <div class="admin-container">
+    <h2>📊 달란트 누적 적립 통계</h2>
+
+    <div class="filters" style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+      <button class="filter-btn active" id="viewAll" onclick="switchView('all')">전체</button>
+      <button class="filter-btn" id="viewDept" onclick="switchView('dept')">부서별</button>
+      <button class="filter-btn" id="viewClass" onclick="switchView('class')">반별</button>
+      <select id="deptFilter" onchange="loadStats()" style="display:none;padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
+        <option value="">전체 부서</option>
+      </select>
+    </div>
+
+    <div id="statsContent" style="margin-top:1rem;">
+      <div style="text-align:center;color:var(--admin-text-muted);">불러오는 중...</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js?v=3.15.1"></script>
+  <script src="../js/activity-log.js?v=3.15.1"></script>
+  <script src="../js/auth.js?v=3.15.1"></script>
+  <script>
+    initSupabase();
+    let session, allTxns = [], allProfiles = [], allDepts = [];
+    let currentView = 'all';
+
+    (async () => {
+      session = await initPage(60, '../login.html');
+      renderRoleBadge('navUser', session, '../');
+      applyPermNav(session.permissionRank || 0);
+      await loadData();
+      loadStats();
+    })();
+
+    async function loadData() {
+      const [txnRes, profRes, deptRes] = await Promise.all([
+        _sb.from('talent_transactions').select('user_id, amount, description, talent_item_id, created_at').eq('type', 'earn'),
+        _sb.from('profiles').select('id, display_name, username, user_type, department_id'),
+        _sb.from('departments').select('id, name')
+      ]);
+      allTxns = txnRes.data || [];
+      allProfiles = profRes.data || [];
+      allDepts = deptRes.data || [];
+
+      const sel = document.getElementById('deptFilter');
+      sel.innerHTML = '<option value="">전체 부서</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+    }
+
+    function switchView(view) {
+      currentView = view;
+      ['All', 'Dept', 'Class'].forEach(v => document.getElementById('view' + v).classList.toggle('active', v.toLowerCase() === view));
+      document.getElementById('deptFilter').style.display = (view === 'dept' || view === 'class') ? '' : 'none';
+      loadStats();
+    }
+
+    function loadStats() {
+      const deptId = document.getElementById('deptFilter').value;
+      let txns = [...allTxns];
+      let profiles = [...allProfiles];
+
+      if (deptId) {
+        const userIds = new Set(profiles.filter(p => p.department_id === deptId).map(p => p.id));
+        txns = txns.filter(t => userIds.has(t.user_id));
+        profiles = profiles.filter(p => userIds.has(p.id));
+      }
+
+      if (currentView === 'all') {
+        renderOverallStats(txns, profiles);
+      } else if (currentView === 'dept') {
+        renderDeptStats(txns, profiles);
+      } else if (currentView === 'class') {
+        renderClassStats(txns, profiles);
+      }
+    }
+
+    function renderOverallStats(txns, profiles) {
+      if (txns.length === 0) {
+        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div><p>적립 데이터가 없습니다.</p></div>';
+        return;
+      }
+
+      const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
+      const byItem = {};
+      txns.forEach(t => {
+        const key = t.description || '기타';
+        if (!byItem[key]) byItem[key] = { amount: 0, count: 0 };
+        byItem[key].amount += t.amount || 0;
+        byItem[key].count++;
+      });
+      const sorted = Object.entries(byItem).sort((a, b) => b[1].amount - a[1].amount);
+
+      let html = `<div style="margin-bottom:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.8rem;">
+        <div style="background:#f8f9fa;border-radius:12px;padding:1rem;text-align:center;">
+          <div style="font-size:0.8rem;color:var(--admin-text-muted);">총 적립 달란트</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#2b8a3e;">${fmtNum(total)}</div>
+        </div>
+        <div style="background:#f8f9fa;border-radius:12px;padding:1rem;text-align:center;">
+          <div style="font-size:0.8rem;color:var(--admin-text-muted);">총 거래 수</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#1971c2;">${fmtNum(txns.length)}</div>
+        </div>
+        <div style="background:#f8f9fa;border-radius:12px;padding:1rem;text-align:center;">
+          <div style="font-size:0.8rem;color:var(--admin-text-muted);">항목 수</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#e67700;">${sorted.length}</div>
+        </div>
+      </div>`;
+
+      html += `<div class="data-table-wrap"><div class="data-table-header"><div class="data-table-title">항목별 적립 통계</div></div>
+        <table class="data-table"><thead><tr><th>항목</th><th>총 달란트</th><th>거래 수</th><th>비율</th><th>그래프</th></tr></thead><tbody>`;
+      sorted.forEach(([name, v]) => {
+        const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
+        html += `<tr><td style="font-weight:600;">${name}</td><td>${fmtNum(v.amount)}</td><td>${fmtNum(v.count)}</td><td>${pct}%</td>
+          <td><div style="background:#e9ecef;border-radius:4px;height:18px;width:100%;max-width:200px;"><div style="background:#51cf66;height:100%;border-radius:4px;width:${pct}%;"></div></div></td></tr>`;
+      });
+      html += '</tbody></table></div>';
+      document.getElementById('statsContent').innerHTML = html;
+    }
+
+    function renderDeptStats(txns, profiles) {
+      const profMap = {};
+      profiles.forEach(p => { profMap[p.id] = p; });
+      const deptMap = {};
+      allDepts.forEach(d => { deptMap[d.id] = d.name; });
+
+      const byDept = {};
+      txns.forEach(t => {
+        const prof = profMap[t.user_id];
+        const dName = prof && prof.department_id ? (deptMap[prof.department_id] || '미배정') : '미배정';
+        if (!byDept[dName]) byDept[dName] = { amount: 0, count: 0, users: new Set() };
+        byDept[dName].amount += t.amount || 0;
+        byDept[dName].count++;
+        byDept[dName].users.add(t.user_id);
+      });
+      const sorted = Object.entries(byDept).sort((a, b) => b[1].amount - a[1].amount);
+      const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
+
+      let html = `<div class="data-table-wrap"><div class="data-table-header"><div class="data-table-title">부서별 적립 통계</div></div>
+        <table class="data-table"><thead><tr><th>부서</th><th>총 달란트</th><th>거래 수</th><th>인원</th><th>1인 평균</th><th>비율</th></tr></thead><tbody>`;
+      sorted.forEach(([name, v]) => {
+        const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
+        const avg = v.users.size > 0 ? Math.round(v.amount / v.users.size) : 0;
+        html += `<tr><td style="font-weight:600;">${name}</td><td>${fmtNum(v.amount)}</td><td>${fmtNum(v.count)}</td><td>${v.users.size}</td><td>${fmtNum(avg)}</td><td>${pct}%</td></tr>`;
+      });
+      html += '</tbody></table></div>';
+      document.getElementById('statsContent').innerHTML = html;
+    }
+
+    function renderClassStats(txns, profiles) {
+      const profMap = {};
+      profiles.forEach(p => { profMap[p.id] = p; });
+      const deptMap = {};
+      allDepts.forEach(d => { deptMap[d.id] = d.name; });
+
+      const byUser = {};
+      txns.forEach(t => {
+        const prof = profMap[t.user_id];
+        if (!prof) return;
+        const dName = prof.department_id ? (deptMap[prof.department_id] || '미배정') : '미배정';
+        const uName = prof.display_name || prof.username || '-';
+        const key = `${dName}|${uName}|${prof.id}`;
+        if (!byUser[key]) byUser[key] = { dept: dName, name: uName, amount: 0, count: 0, items: {} };
+        byUser[key].amount += t.amount || 0;
+        byUser[key].count++;
+        const desc = t.description || '기타';
+        byUser[key].items[desc] = (byUser[key].items[desc] || 0) + (t.amount || 0);
+      });
+      const sorted = Object.values(byUser).sort((a, b) => b.amount - a.amount);
+
+      let html = `<div class="data-table-wrap"><div class="data-table-header"><div class="data-table-title">개인별 적립 통계 (${sorted.length}명)</div></div>
+        <table class="data-table"><thead><tr><th>부서</th><th>이름</th><th>총 달란트</th><th>거래 수</th><th>상위 항목</th></tr></thead><tbody>`;
+      sorted.forEach(u => {
+        const topItems = Object.entries(u.items).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([n, v]) => `${n}(${fmtNum(v)})`).join(', ');
+        html += `<tr><td>${u.dept}</td><td style="font-weight:600;">${u.name}</td><td>${fmtNum(u.amount)}</td><td>${fmtNum(u.count)}</td><td style="font-size:0.8rem;">${topItems}</td></tr>`;
+      });
+      html += '</tbody></table></div>';
+      document.getElementById('statsContent').innerHTML = html;
+    }
+  </script>
+  <script src="../js/version.js?v=3.15.1"></script>
+</body>
+</html>
