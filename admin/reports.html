@@ -1,91 +1,93 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ë³´ê³ ì„œ ê´€ë¦¬ - CHO Talents</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
+  <title>º¸°í¼­ °ü¸® - CHO Talents</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
+        <button class="nav-dropdown-toggle">¼Ò°³</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
-          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
+          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
+          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ë‹¬ë€íŠ¸</button>
+        <button class="nav-dropdown-toggle">´Ş¶õÆ®</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
-          <li data-min-perm="40"><a href="talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
+          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
+          <li data-min-perm="40"><a href="talents.html">´Ş¶õÆ® °ü¸®</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
+        <button class="nav-dropdown-toggle">»óÇ°</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
-          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
-          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
+          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
+          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
+          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
+        <button class="nav-dropdown-toggle">°ü¸®</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
+          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
+          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle active">ìš´ì˜</button>
+        <button class="nav-dropdown-toggle active">¿î¿µ</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
-          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
-          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
-          <li data-min-perm="80"><a href="reports.html" class="active">ë³´ê³ ì„œ</a></li>
-          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
+          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
+          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
+          <li data-min-perm="80"><a href="reports.html" class="active">º¸°í¼­</a></li>
+          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ë³´ê³ ì„œ ê´€ë¦¬</h2>
+    <h2 style="margin-bottom:1rem;">º¸°í¼­ °ü¸®</h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title">ì‘ì—… ë³´ê³ ì„œ ëª©ë¡</div>
+        <div class="admin-table-title">ÀÛ¾÷ º¸°í¼­ ¸ñ·Ï</div>
         <div class="filters" style="display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
-          <button class="filter-btn active" data-type="all" onclick="filterReports('all', this)">ì „ì²´</button>
-          <button class="filter-btn" data-type="plan" onclick="filterReports('plan', this)">ê³„íšì„œ</button>
-          <button class="filter-btn" data-type="test_scenario" onclick="filterReports('test_scenario', this)">ê²€ì¦ ì‹œë‚˜ë¦¬ì˜¤</button>
-          <button class="filter-btn" data-type="test_result" onclick="filterReports('test_result', this)">í…ŒìŠ¤íŠ¸ ê²°ê³¼</button>
-          <button class="filter-btn" data-type="security_report" onclick="filterReports('security_report', this)">ë³´ì•ˆ ë³´ê³ ì„œ</button>
-          <button class="filter-btn" data-type="change_report" onclick="filterReports('change_report', this)">ìˆ˜ì • ë³´ê³ ì„œ</button>
-          <button class="btn-ack" style="margin-left:auto;" onclick="openAddReportModal()">+ ë³´ê³ ì„œ ë“±ë¡</button>
-          <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedReports()" id="btnDeleteReports" disabled>ì„ íƒ ì‚­ì œ</button>
-          <button class="btn-ack" style="background:#6c5ce7;display:none;" id="btnSeedReports" onclick="seedAllReports()">ì „ì²´ ë³´ê³ ì„œ ì´ˆê¸°í™”</button>
+          <button class="filter-btn active" data-type="all" onclick="filterReports('all', this)">ÀüÃ¼</button>
+          <button class="filter-btn" data-type="plan" onclick="filterReports('plan', this)">°èÈ¹¼­</button>
+          <button class="filter-btn" data-type="test_scenario" onclick="filterReports('test_scenario', this)">°ËÁõ ½Ã³ª¸®¿À</button>
+          <button class="filter-btn" data-type="test_result" onclick="filterReports('test_result', this)">Å×½ºÆ® °á°ú</button>
+          <button class="filter-btn" data-type="security_report" onclick="filterReports('security_report', this)">º¸¾È º¸°í¼­</button>
+          <button class="filter-btn" data-type="change_report" onclick="filterReports('change_report', this)">¼öÁ¤ º¸°í¼­</button>
+          <button class="btn-ack" style="margin-left:auto;" onclick="openAddReportModal()">+ º¸°í¼­ µî·Ï</button>
+          <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedReports()" id="btnDeleteReports" disabled>¼±ÅÃ »èÁ¦</button>
+          <button class="btn-ack" style="background:#6c5ce7;display:none;" id="btnSeedReports" onclick="seedAllReports()">ÀüÃ¼ º¸°í¼­ ÃÊ±âÈ­</button>
         </div>
       </div>
       <table class="admin-table">
         <thead>
-          <tr><th style="width:30px;"><input type="checkbox" id="chkAll" onchange="toggleAllReports(this)"></th><th>ì‘ì—…ID</th><th>ì œëª©</th><th>ìœ í˜•</th><th>ì‘ì„±ì</th><th>ì‘ì„±ì¼</th><th></th></tr>
+          <tr><th style="width:30px;"><input type="checkbox" id="chkAll" onchange="toggleAllReports(this)"></th><th>ÀÛ¾÷ID</th><th>Á¦¸ñ</th><th>À¯Çü</th><th>ÀÛ¼ºÀÚ</th><th>ÀÛ¼ºÀÏ</th><th></th></tr>
         </thead>
         <tbody id="reportsList">
-          <tr><td colspan="7" class="empty-state">ë¡œë”© ì¤‘... <span id="loadStatus" style="font-size:0.75rem;color:#868e96;display:block;margin-top:0.3rem;"></span></td></tr>
+          <tr><td colspan="7" class="empty-state">·Îµù Áß... <span id="loadStatus" style="font-size:0.75rem;color:#868e96;display:block;margin-top:0.3rem;"></span></td></tr>
         </tbody>
       </table>
     </div>
@@ -95,8 +97,8 @@
   <div class="modal-overlay hidden" id="reportModal">
     <div class="modal-box" style="max-width:700px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 class="modal-title" id="modalTitle">ë³´ê³ ì„œ ìƒì„¸</h3>
-        <button class="btn-cancel" onclick="closeReportModal()">ë‹«ê¸°</button>
+        <h3 class="modal-title" id="modalTitle">º¸°í¼­ »ó¼¼</h3>
+        <button class="btn-cancel" onclick="closeReportModal()">´İ±â</button>
       </div>
       <div class="report-content" id="modalContent"></div>
     </div>
@@ -106,42 +108,42 @@
   <div class="modal-overlay hidden" id="addReportModal">
     <div class="modal-box" style="max-width:700px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 class="modal-title" id="addModalTitle">ë³´ê³ ì„œ ë“±ë¡</h3>
-        <button class="btn-cancel" onclick="closeAddReportModal()">ë‹«ê¸°</button>
+        <h3 class="modal-title" id="addModalTitle">º¸°í¼­ µî·Ï</h3>
+        <button class="btn-cancel" onclick="closeAddReportModal()">´İ±â</button>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì‘ì—… ID</label>
-        <input type="text" id="rTaskId" placeholder="ì˜ˆ: TASK-014" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÀÛ¾÷ ID</label>
+        <input type="text" id="rTaskId" placeholder="¿¹: TASK-014" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì œëª©</label>
-        <input type="text" id="rTaskTitle" placeholder="ë³´ê³ ì„œ ì œëª©" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Á¦¸ñ</label>
+        <input type="text" id="rTaskTitle" placeholder="º¸°í¼­ Á¦¸ñ" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ìœ í˜•</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">À¯Çü</label>
         <select id="rReportType" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;">
-          <option value="plan">ê³„íšì„œ</option>
-          <option value="test_scenario">ê²€ì¦ ì‹œë‚˜ë¦¬ì˜¤</option>
-          <option value="test_result">í…ŒìŠ¤íŠ¸ ê²°ê³¼</option>
-          <option value="security_report">ë³´ì•ˆ ë³´ê³ ì„œ</option>
-          <option value="change_report">ìˆ˜ì • ë³´ê³ ì„œ</option>
+          <option value="plan">°èÈ¹¼­</option>
+          <option value="test_scenario">°ËÁõ ½Ã³ª¸®¿À</option>
+          <option value="test_result">Å×½ºÆ® °á°ú</option>
+          <option value="security_report">º¸¾È º¸°í¼­</option>
+          <option value="change_report">¼öÁ¤ º¸°í¼­</option>
         </select>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë‚´ìš© (HTML ì§€ì›)</label>
-        <textarea id="rContent" rows="12" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;font-family:monospace;font-size:0.85rem;" placeholder="HTML í˜•ì‹ìœ¼ë¡œ ì‘ì„±í•˜ì„¸ìš”"></textarea>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">³»¿ë (HTML Áö¿ø)</label>
+        <textarea id="rContent" rows="12" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;font-family:monospace;font-size:0.85rem;" placeholder="HTML Çü½ÄÀ¸·Î ÀÛ¼ºÇÏ¼¼¿ä"></textarea>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:0.5rem;">
-        <button class="btn-cancel" onclick="closeAddReportModal()">ì·¨ì†Œ</button>
-        <button class="btn-ack" onclick="saveReport()" id="btnSaveReport">ë“±ë¡</button>
+        <button class="btn-cancel" onclick="closeAddReportModal()">Ãë¼Ò</button>
+        <button class="btn-ack" onclick="saveReport()" id="btnSaveReport">µî·Ï</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.15.1"></script>
-  <script src="../js/activity-log.js?v=3.15.1"></script>
-  <script src="../js/auth.js?v=3.15.1"></script>
+  <script src="../js/supabase-config.js?v=3.13.0"></script>
+  <script src="../js/activity-log.js?v=3.13.0"></script>
+  <script src="../js/auth.js?v=3.13.0"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -152,20 +154,20 @@
     let _initDone = false;
     setTimeout(() => {
       if (!_initDone) {
-        _stepLog('TIMEOUT', '3ì´ˆ íƒ€ì„ì•„ì›ƒ - ê°•ì œ í‘œì‹œ');
+        _stepLog('TIMEOUT', '3ÃÊ Å¸ÀÓ¾Æ¿ô - °­Á¦ Ç¥½Ã');
         document.body.classList.add('auth-ready');
       }
     }, 3000);
 
     initSupabase();
-    _stepLog('1', 'Supabase ì´ˆê¸°í™” ì™„ë£Œ (_sb=' + (!!_sb) + ')');
+    _stepLog('1', 'Supabase ÃÊ±âÈ­ ¿Ï·á (_sb=' + (!!_sb) + ')');
 
     let session;
     (async () => {
       try {
-        _stepLog('2', 'initPage í˜¸ì¶œ ì¤‘...');
+        _stepLog('2', 'initPage È£Ãâ Áß...');
         session = await initPage(80, '../login.html');
-        _stepLog('3', 'initPage ê²°ê³¼: ' + (session ? 'OK (rank=' + session.permissionRank + ')' : 'null'));
+        _stepLog('3', 'initPage °á°ú: ' + (session ? 'OK (rank=' + session.permissionRank + ')' : 'null'));
         if (!session) return;
 
         document.body.classList.add('auth-ready');
@@ -179,28 +181,28 @@
           const seedBtn = document.getElementById('btnSeedReports');
           if (seedBtn) seedBtn.style.display = '';
         }
-        _stepLog('4', 'loadReports í˜¸ì¶œ ì¤‘...');
+        _stepLog('4', 'loadReports È£Ãâ Áß...');
         await loadReports();
-        _stepLog('6', 'loadReports ì™„ë£Œ');
+        _stepLog('6', 'loadReports ¿Ï·á');
 
         updateBadge();
         _initDone = true;
-        _stepLog('7', 'í˜ì´ì§€ ì´ˆê¸°í™” ì™„ë£Œ');
+        _stepLog('7', 'ÆäÀÌÁö ÃÊ±âÈ­ ¿Ï·á');
       } catch (err) {
-        _stepLog('ERR', 'ì´ˆê¸°í™” ì˜¤ë¥˜: ' + err.message);
+        _stepLog('ERR', 'ÃÊ±âÈ­ ¿À·ù: ' + err.message);
         console.error('[REPORTS] init error:', err);
         document.body.classList.add('auth-ready');
         _initDone = true;
         document.getElementById('reportsList').innerHTML =
-          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">í˜ì´ì§€ ë¡œë“œ ì˜¤ë¥˜: ${err.message}</p></td></tr>`;
+          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">ÆäÀÌÁö ·Îµå ¿À·ù: ${err.message}</p></td></tr>`;
       }
     })();
 
     let allReports = [];
     const REPORT_TYPE_LABELS = {
-      plan: 'ê³„íšì„œ', test_scenario: 'ê²€ì¦ ì‹œë‚˜ë¦¬ì˜¤',
-      test_result: 'í…ŒìŠ¤íŠ¸ ê²°ê³¼', security_report: 'ë³´ì•ˆ ë³´ê³ ì„œ',
-      change_report: 'ìˆ˜ì • ë³´ê³ ì„œ'
+      plan: '°èÈ¹¼­', test_scenario: '°ËÁõ ½Ã³ª¸®¿À',
+      test_result: 'Å×½ºÆ® °á°ú', security_report: 'º¸¾È º¸°í¼­',
+      change_report: '¼öÁ¤ º¸°í¼­'
     };
 
     async function updateBadge() {
@@ -211,16 +213,16 @@
 
     async function loadReports() {
       try {
-        _stepLog('5a', 'reports í…Œì´ë¸” ì¿¼ë¦¬ ì¤‘...');
+        _stepLog('5a', 'reports Å×ÀÌºí Äõ¸® Áß...');
         const { data, error } = await _sb
           .from('reports').select('*').order('created_at', { ascending: false });
 
-        _stepLog('5b', 'ì¿¼ë¦¬ ê²°ê³¼: data=' + (data ? data.length + 'ê±´' : 'null') + ', error=' + (error ? error.message : 'none'));
+        _stepLog('5b', 'Äõ¸® °á°ú: data=' + (data ? data.length + '°Ç' : 'null') + ', error=' + (error ? error.message : 'none'));
 
         if (error) {
           console.error('[REPORTS] query error:', error);
           document.getElementById('reportsList').innerHTML =
-            `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">ë³´ê³ ì„œ ì¡°íšŒ ì˜¤ë¥˜: ${error.message || JSON.stringify(error)}</p><p style="font-size:0.8rem;color:#868e96;margin-top:0.5rem;">reports í…Œì´ë¸” RLS ì •ì±… ë˜ëŠ” ì ‘ê·¼ ê¶Œí•œì„ í™•ì¸í•´ì£¼ì„¸ìš”.</p></td></tr>`;
+            `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">º¸°í¼­ Á¶È¸ ¿À·ù: ${error.message || JSON.stringify(error)}</p><p style="font-size:0.8rem;color:#868e96;margin-top:0.5rem;">reports Å×ÀÌºí RLS Á¤Ã¥ ¶Ç´Â Á¢±Ù ±ÇÇÑÀ» È®ÀÎÇØÁÖ¼¼¿ä.</p></td></tr>`;
           return;
         }
         allReports = data || [];
@@ -231,7 +233,7 @@
           (r.content && r.content.includes('???'))
         );
         if (hasBroken) {
-          _stepLog('AUTO', 'ê¹¨ì§„ ë³´ê³ ì„œ ë°ì´í„° ê°ì§€ - ìë™ ë³µêµ¬ ì‹œì‘');
+          _stepLog('AUTO', '±úÁø º¸°í¼­ µ¥ÀÌÅÍ °¨Áö - ÀÚµ¿ º¹±¸ ½ÃÀÛ');
           await autoFixReports();
           return;
         }
@@ -239,10 +241,10 @@
         await seedMissingReports();
         renderReports(allReports);
       } catch (err) {
-        _stepLog('5-ERR', 'ì¿¼ë¦¬ ì˜ˆì™¸: ' + err.message);
+        _stepLog('5-ERR', 'Äõ¸® ¿¹¿Ü: ' + err.message);
         console.error('[REPORTS] exception:', err);
         document.getElementById('reportsList').innerHTML =
-          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">ì˜ˆì™¸ ë°œìƒ: ${err.message}</p></td></tr>`;
+          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">¿¹¿Ü ¹ß»ı: ${err.message}</p></td></tr>`;
       }
     }
 
@@ -250,7 +252,7 @@
       const tbody = document.getElementById('reportsList');
       if (!list || list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
-          <div class="empty-state-icon">ğŸ“„</div><p>ë³´ê³ ì„œê°€ ì—†ìŠµë‹ˆë‹¤.</p></div></td></tr>`;
+          <div class="empty-state-icon">??</div><p>º¸°í¼­°¡ ¾ø½À´Ï´Ù.</p></div></td></tr>`;
         return;
       }
       tbody.innerHTML = list.map(r => `
@@ -261,7 +263,7 @@
           <td><span class="report-type-tag ${r.report_type}">${REPORT_TYPE_LABELS[r.report_type] || r.report_type}</span></td>
           <td>${r.created_by || '-'}</td>
           <td>${formatKSTShort(r.created_at)}</td>
-          <td><button class="filter-btn" onclick="viewReport('${r.id}')">ë³´ê¸°</button> <button class="filter-btn" onclick="editReport('${r.id}')">ìˆ˜ì •</button></td>
+          <td><button class="filter-btn" onclick="viewReport('${r.id}')">º¸±â</button> <button class="filter-btn" onclick="editReport('${r.id}')">¼öÁ¤</button></td>
         </tr>
       `).join('');
     }
@@ -298,42 +300,43 @@
     });
 
     const REPORT_SEED_MAP = {
-      'TASK-029': { task_title:'v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„', content:'<h2>TASK-029: v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„</h2><p><b>ë²„ì „:</b> v3.12.0</p><ul><li>í˜ì´ì§€ ê¸°ëŠ¥: role_page_features í…Œì´ë¸” ìƒì„± + 6ì—´ ê·¸ë¦¬ë“œ</li><li>ë©”ì¸ í˜ì´ì§€: ë¡œê·¸ì¸/ë¡œê·¸ì•„ì›ƒ ë²„íŠ¼ ì´ëª¨ì§€ ìˆ˜ì •</li><li>ë„¤ë¹„ê²Œì´ì…˜ í†µí•©: admin nav ê¸°ì¤€ public/admin ì „ì²´ ì¼ì¹˜í™” + ë‹¬ë€íŠ¸ ì ë¦½ ì¶”ê°€</li><li>ë‹¬ë€íŠ¸ ê´€ë¦¬: ë‹¬ë€íŠ¸ í•­ëª© ê´€ë¦¬ ë²„íŠ¼ ì¶”ê°€</li><li>êµ¬ë§¤ ê´€ë¦¬: ì „ì²´ íƒ­ ê¸°ë³¸ ì„ íƒ + ìˆœì„œ ë³€ê²½</li><li>ë¡œê·¸: ì¹´ìš´íŠ¸ í˜•ì‹ (X/Y) + í˜ì´ì§€ë„¤ì´ì…˜ ë²ˆí˜¸ 5ê°œ</li><li>ì‘ì—… ì´ë ¥: roleKey/permissionKey í•œê¸€í™” + ìƒì„¸ JSON í‚¤ í•œê¸€ ë¼ë²¨</li><li>ë¬¸ì„œ 4ì¢… ìƒì„± + ë³´ê³ ì„œ ë“±ë¡ + ëˆ„ë½ ë¬¸ì„œ ì—°ê²°</li></ul>' },
-      'TASK-028': { task_title:'v3.11.0 ë°˜ì‘í˜• í˜ì´ì§€ + ë„¤ë¹„ê²Œì´ì…˜ í†µí•©', content:'<h2>TASK-028: v3.11.0 ë°˜ì‘í˜•/ë„¤ë¹„ê²Œì´ì…˜ ê°œí¸</h2><p><b>ë²„ì „:</b> v3.11.0</p><ul><li>CSS ë°˜ì‘í˜• ë¸Œë ˆì´í¬í¬ì¸íŠ¸ í†µí•©: 480/640/768/1024px 4ë‹¨ê³„</li><li>ëª¨ë°”ì¼ í–„ë²„ê±° ë„¤ë¹„ê²Œì´ì…˜: admin-nav 15ê°œ íŒŒì¼ + top-nav 3ê°œ íŒŒì¼</li><li>í…Œì´ë¸” ë°˜ì‘í˜•: 1024px ìŠ¤í¬ë¡¤ ì‹œì‘, min-width ë‹¨ê³„ë³„ ì¶•ì†Œ</li><li>ëª¨ë‹¬/í¼: ëª¨ë°”ì¼ flex-wrap + ì „í­ í™•ëŒ€</li><li>ëŒ€ì‹œë³´ë“œ quickLinks/detailSummary ëª¨ë°”ì¼ ê·¸ë¦¬ë“œ ì „í™˜</li><li>my-talents.html Template A ë„¤ë¹„ê²Œì´ì…˜ í†µí•©</li><li>index.html ë¡œê·¸ì¸ í›„ ë‚´ë¹„ê²Œì´ì…˜ ë§í¬ ë³´ê°•</li><li>applyPermNav() ì–‘ë°©í–¥ show/hide ì²˜ë¦¬</li><li>admin nav: page-access/audit data-min-perm 80â†’100, page-features active ì¶”ê°€</li></ul>' },
-      'TASK-027': { task_title:'v3.10.0 ê¶Œí•œ ì„¸ë¶„í™” + êµ¬ë§¤ ê´€ë¦¬ ê°œí¸ + ì¬ê³  ì œê±°', content:'<h2>TASK-027: v3.10.0 ëŒ€ê·œëª¨ ê¶Œí•œ/êµ¬ë§¤ ê°œí¸</h2><p><b>ë²„ì „:</b> v3.10.0</p><ul><li>ë‹¬ë€íŠ¸ ê´€ë¦¬ ê¶Œí•œ ì„¸ë¶„í™”: rank 80 ì „ì²´ ì¡°íšŒ/ë‹´ë‹¹ ë¶€ì„œ ì§€ê¸‰</li><li>give_talent RPC: managed_dept_id ìŠ¤ì½”í•‘ ì¶”ê°€</li><li>ê°€ì… ìŠ¹ì¸/ë¶€ì„œ ì´ë™ ê¶Œí•œ ê°œí¸: rank 60 ë¶€ì„œ ì´ë™ ì„¹ì…˜ í‘œì‹œ</li><li>ë¶€ì„œ ì´ë™ ë²„íŠ¼ ëª…ì¹­: rank &lt; 90 "ë¶€ì„œ ì´ë™ ì‹ ì²­"</li><li>ë¡œê·¸ì¸: ìŠ¹ì¸ ëŒ€ê¸°/ê±°ë¶€/ë¹„ë°€ë²ˆí˜¸ ì˜¤ë¥˜ ë©”ì‹œì§€ ì„¸ë¶„í™”</li><li>ì¬ê³  ì‹œìŠ¤í…œ ì œê±°: shop.html + admin/shop.html</li><li>êµ¬ë§¤ ê´€ë¦¬ ê°œí¸: ì²˜ë¦¬ì/ì¼ì‹œ í‘œì‹œ, ìƒíƒœ ì»¬ëŸ¼ ì œê±°, ì „ì²´ íƒ­ ì¶”ê°€</li><li>êµ¬ë§¤ ê´€ë¦¬ ê¶Œí•œ: rank 60+ ë‹´ë‹¹ ë¶€ì„œ, rank 90+ ì „ì²´</li><li>êµ¬ë§¤ ê´€ë¦¬ ë„¤ë¹„ê²Œì´ì…˜ ë°°ì§€: ì²˜ë¦¬ ëŒ€ê¸° ê±´ìˆ˜ í‘œì‹œ</li><li>í˜ì´ì§€ ì ‘ê·¼/ê¸°ëŠ¥/ì‘ì—… ì´ë ¥: initPage(100) ê´€ë¦¬ì ì „ìš©</li><li>ì „ì²´ admin ë„¤ë¹„ê²Œì´ì…˜ data-min-perm ì—…ë°ì´íŠ¸</li></ul>' },
-      'TASK-001': { task_title:'v1.0.0 ì´ˆê¸° êµ¬ì¶•', content:'<h2>TASK-001: ì´ˆê¸° êµ¬ì¶•</h2><p><b>ë²„ì „:</b> v1.0.0</p><ul><li>í™˜ì˜ ë©”ì¸ í˜ì´ì§€ êµ¬í˜„</li><li>ê´€ë¦¬ì ë¡œê·¸ì¸/íŒ¨ìŠ¤ì›Œë“œ ë³€ê²½</li><li>ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ (ë³´ê³ ì„œ, ë¡œê·¸)</li><li>Supabase ì—°ë™ ë° CRUD</li><li>í™œë™ ë¡œê·¸ ì‹œìŠ¤í…œ</li><li>GitHub Pages ë°°í¬</li></ul>' },
-      'TASK-002': { task_title:'v1.1.0 ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ', content:'<h2>TASK-002: ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ</h2><p><b>ë²„ì „:</b> v1.1.0</p><ul><li>4ë‹¨ê³„ ì—­í•  êµ¬ë¶„</li><li>ì—­í• ë³„ ì „ìš© í˜ì´ì§€ êµ¬í˜„</li><li>ë‹¬ë€íŠ¸ ìƒì  (í•™ìƒ/êµì‚¬ ë¶„ë¦¬)</li><li>ë¶€ì„œ ê´€ë¦¬ì ê¸°ëŠ¥</li><li>RPC í•¨ìˆ˜</li><li>í†µí•© ë¡œê·¸ì¸ í˜ì´ì§€</li></ul>' },
-      'TASK-003': { task_title:'v1.2.0 ìƒí’ˆ ì´ë¯¸ì§€ ë° ë©”ì¸ í™”ë©´ ê°œì„ ', content:'<h2>TASK-003: ìƒí’ˆ ì´ë¯¸ì§€ ë° ë©”ì¸ í™”ë©´</h2><p><b>ë²„ì „:</b> v1.2.0</p><ul><li>ìƒí’ˆ ì´ë¯¸ì§€ URL ì§€ì›</li><li>Supabase Storage íŒŒì¼ ì—…ë¡œë“œ</li><li>ë©”ì¸ í™”ë©´ ì¹´ë“œ ë§í¬ ì—°ê²°</li><li>ë‹¬ë€íŠ¸ ì ë¦½ ë°©ë²• ì•ˆë‚´ í˜ì´ì§€</li></ul>' },
-      'TASK-004': { task_title:'v1.3.0 ë²„ì „ ê´€ë¦¬ ì‹œìŠ¤í…œ', content:'<h2>TASK-004: ë²„ì „ ê´€ë¦¬ ì‹œìŠ¤í…œ</h2><p><b>ë²„ì „:</b> v1.3.0</p><ul><li>ë²„ì „ ê´€ë¦¬ ëª¨ë“ˆ ë„ì…</li><li>ëª¨ë“  í˜ì´ì§€ í•˜ë‹¨ ë²„ì „ í‘œì‹œ</li><li>ê´€ë¦¬ì ë²„ì „ ì´ë ¥ ì¡°íšŒ</li></ul>' },
-      'TASK-005': { task_title:'v1.4.0 ì‚¬ìš©ì ê´€ë¦¬ ë° ì—­í•  ë°°ì§€', content:'<h2>TASK-005: ì‚¬ìš©ì ê´€ë¦¬ ë° ì—­í•  ë°°ì§€</h2><p><b>ë²„ì „:</b> v1.4.0</p><ul><li>ê´€ë¦¬ì ì‚¬ìš©ì ê´€ë¦¬ í˜ì´ì§€</li><li>ì—­í• ë³„ í†µê³„ ëŒ€ì‹œë³´ë“œ</li><li>ëª¨ë“  í˜ì´ì§€ ì—­í•  ë°°ì§€</li></ul>' },
-      'TASK-006': { task_title:'v1.5.0 ê³„ì • ë“±ë¡ ì‹ ì²­', content:'<h2>TASK-006: ê³„ì • ë“±ë¡ ì‹ ì²­</h2><p><b>ë²„ì „:</b> v1.5.0</p><ul><li>ê³„ì • ë“±ë¡ ì‹ ì²­ í˜ì´ì§€</li><li>ì•„ì´ë”” ì¤‘ë³µ/ì‹ ì²­ ì¤‘ë³µ ê²€ì¦</li><li>ê´€ë¦¬ì ìŠ¹ì¸/ê±°ë¶€ ê¸°ëŠ¥</li></ul>' },
-      'TASK-007': { task_title:'v2.0.0 DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„ ', content:'<h2>TASK-007: DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„ </h2><p><b>ë²„ì „:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth ë„ì…</li><li>profiles í…Œì´ë¸” ì‹ ì„¤</li><li>SECURITY DEFINER RPC</li><li>ì „ì²´ RLS ì •ì±… ì¬ì„¤ê³„</li><li>ëª¨ë°”ì¼ ë°˜ì‘í˜• ê°œì„ </li></ul>' },
-      'TASK-008': { task_title:'v2.1.0 ê´€ë¦¬ì í˜ì´ì§€ ì ‘ê·¼ ì œì–´', content:'<h2>TASK-008: ê´€ë¦¬ì í˜ì´ì§€ ì ‘ê·¼ ì œì–´</h2><p><b>ë²„ì „:</b> v2.1.0</p><ul><li>initPage() ì—­í•  ì²´í¬ ë¦¬ë””ë ‰íŠ¸</li><li>CSS auth-ready ì½˜í…ì¸  í”Œë˜ì‹œ ë°©ì§€</li><li>ë¶€ì„œ ê´€ë¦¬ ì¸ì› ë¶„ë¦¬ í‘œì‹œ</li><li>admin ì „ìš© ìƒí’ˆ ê´€ë¦¬ í˜ì´ì§€</li></ul>' },
-      'TASK-009': { task_title:'v2.2.0 ë ˆê±°ì‹œ ê´€ë¦¬ì ë¡œê·¸ì¸ ì œê±°', content:'<h2>TASK-009: ë ˆê±°ì‹œ ê´€ë¦¬ì ë¡œê·¸ì¸ ì œê±°</h2><p><b>ë²„ì „:</b> v2.2.0</p><ul><li>ê´€ë¦¬ì ì§„ì…ì  ë²„íŠ¼ ì œê±°</li><li>admin/login.html ì‚­ì œ</li><li>login.html ë‹¨ì¼í™”</li></ul>' },
-      'TASK-010': { task_title:'v2.3.0 ì´ˆê¸° ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ê°•ì œ', content:'<h2>TASK-010: ì´ˆê¸° ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ê°•ì œ</h2><p><b>ë²„ì „:</b> v2.3.0</p><ul><li>initPage()ì— isFirstLogin ë¦¬ë””ë ‰íŠ¸</li><li>ë³´í˜¸ í˜ì´ì§€ ì „í™˜</li><li>autoLogPageView() ì¸ì¦ í›„ ì´ë™</li></ul>' },
-      'TASK-011': { task_title:'v2.4.0 ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„ ', content:'<h2>TASK-011: ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„ </h2><p><b>ë²„ì „:</b> v2.4.0</p><ul><li>ê°€ì… ëŒ€ê¸°ì ìˆ˜ ì¹´ë“œ ì¶”ê°€</li><li>ë°”ë¡œê°€ê¸° ì˜ì—­ 5ê°œ ì¬êµ¬ì„±</li><li>ë°”ë¡œê°€ê¸°ì— ì´ëª¨ì§€ ì¶”ê°€</li></ul>' },
-      'TASK-012': { task_title:'v2.5.0 ê´€ë¦¬ì/ë¶€ì„œê´€ë¦¬ì ë©”ë‰´ í†µí•©', content:'<h2>TASK-012: ë©”ë‰´ í†µí•©</h2><p><b>ë²„ì „:</b> v2.5.0</p><ul><li>manager/ ë””ë ‰í† ë¦¬ ì‚­ì œ</li><li>admin/talents.html ìƒì„±</li><li>applyRoleNav() í•¨ìˆ˜</li></ul>' },
-      'TASK-013A': { task_title:'v3.0.0 ìŠˆí¼ê´€ë¦¬ì ì²´ê³„ + ë„¤ë¹„ê²Œì´ì…˜ ê°œí¸', content:'<h2>TASK-013A: v3.0.0 ìŠˆí¼ê´€ë¦¬ì ì²´ê³„</h2><p>docs/TASK-013A_change_report.md ì°¸ì¡°</p>' },
-      'TASK-013BCD': { task_title:'v3.0.0 ë³€ê²½ ë³´ê³ ì„œ + SQL ìŠ¤í‚¤ë§ˆ', content:'<h2>TASK-013BCD: v3.0.0 ë³€ê²½ ë³´ê³ ì„œ</h2><p>docs/TASK-013BCD_change_report.md ì°¸ì¡°</p>' },
-      'TASK-013': { task_title:'v3.0.0~v3.6.0 ìœ í˜•/ê¶Œí•œ 6ë‹¨ê³„ ì²´ê³„', content:'<h2>TASK-013: 6ë‹¨ê³„ ì²´ê³„ ì „ë©´ ê°œí¸</h2><p><b>ë²„ì „:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level í™•ì¥</li><li>get_permission_rank() í•¨ìˆ˜</li><li>RPC 12ê°œ ì—…ë°ì´íŠ¸</li><li>ë‹¬ë€íŠ¸ ì§€ê¸‰ ê°œí¸</li><li>ë°˜ ì‹œìŠ¤í…œ ì¶”ê°€</li></ul>' },
-      'TASK-014': { task_title:'v3.7.0 ë‹¤ì¤‘ ê¸°ëŠ¥ ê°œì„  ë° UX í–¥ìƒ', content:'<h2>TASK-014: ë‹¤ì¤‘ ê¸°ëŠ¥ ê°œì„ </h2><p><b>ë²„ì „:</b> v3.7.0</p><ul><li>ì•„ì´ë”” í•œê¸€ ì…ë ¥ ì œí•œ</li><li>ë¡œê·¸ ë²”ìœ„ ì‚­ì œ, ì´ë¦„(ì•„ì´ë””) í‘œì‹œ, ìƒì„¸ íŒì—…</li><li>ëŒ€ì‹œë³´ë“œ ì´ìŠˆ ë¡œê·¸ í•„í„°</li><li>ë„¤ë¹„ê²Œì´ì…˜ ë³€ê²½</li><li>ë¬¼í’ˆ í™œì„±í™”/ë¹„í™œì„±í™”</li><li>ìŠ¹ì¸ ëŒ€ê¸° ë©”ì‹œì§€</li></ul>' },
-      'TASK-015': { task_title:'v3.7.1~v3.7.2 ë³´ê³ ì„œ ë²„ê·¸ ìˆ˜ì • + ë¡œê·¸ ì‚­ì œ + ë°°ì§€', content:'<h2>TASK-015: ë³´ê³ ì„œ ë²„ê·¸ ìˆ˜ì •</h2><p><b>ë²„ì „:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS ì¶©ëŒ í•´ê²°</li><li>ë¡œê·¸ ì²´í¬ë°•ìŠ¤ + ì„ íƒ ì‚­ì œ</li><li>ê°€ì…ëŒ€ê¸° ë°°ì§€</li></ul>' },
-      'TASK-016': { task_title:'v3.7.3 ê¶Œí•œ ê¸°ë°˜ ë¶€ì„œ/ì‚¬ìš©ì ê´€ë¦¬ ìŠ¤ì½”í•‘', content:'<h2>TASK-016: ê¶Œí•œ ê¸°ë°˜ ìŠ¤ì½”í•‘</h2><p><b>ë²„ì „:</b> v3.7.3</p><ul><li>êµì‚¬ ìˆ˜ ì¹´ìš´íŠ¸ ì „ì²´ í¬í•¨</li><li>ë³¸ì¸ë³´ë‹¤ ë‚®ì€ ê¶Œí•œë§Œ ê´€ë¦¬</li><li>ë¶€ì¥ ì´í•˜ ë‹´ë‹¹ ë¶€ì„œë§Œ í‘œì‹œ</li></ul>' },
-      'TASK-017': { task_title:'v3.7.4 ê°€ì… ì‹ ì²­ ê¶Œí•œë³„ ì¡°íšŒ/ì²˜ë¦¬', content:'<h2>TASK-017: ê°€ì… ì‹ ì²­ ê¶Œí•œë³„</h2><p><b>ë²„ì „:</b> v3.7.4</p><ul><li>ê´€ë¦¬ì/ì „ë„ì‚¬ë‹˜: ì „ì²´ ì¡°íšŒ+ì²˜ë¦¬</li><li>ë¶€ì¥: ì „ì²´ ì¡°íšŒ, ë‹´ë‹¹ë§Œ ì²˜ë¦¬</li><li>ë¶€ì„œ ë‹´ë‹¹ êµì‚¬: ë‹´ë‹¹ë§Œ ì¡°íšŒ+ì²˜ë¦¬</li><li>ë„¤ë¹„ê²Œì´ì…˜ ì•„ì´ë”” í‘œì‹œ</li></ul>' },
-      'TASK-018': { task_title:'v3.7.5 íƒ€ì¸ ì•„ì´ë”” ìˆ¨ê¹€ + ë¶€ì„œ ì´ë™ ê´€ë¦¬', content:'<h2>TASK-018: ì•„ì´ë”” ìˆ¨ê¹€ + ë¶€ì„œ ì´ë™</h2><p><b>ë²„ì „:</b> v3.7.5</p><ul><li>íƒ€ì¸ ì•„ì´ë”” ìˆ¨ê¹€</li><li>ë¶€ì„œ ì´ë™ ì¦‰ì‹œ/ìš”ì²­ ë¶„ê¸°</li><li>ë¶€ì„œ ì´ë™ ì‹ ì²­ ë‚´ì—­ + ìŠ¹ì¸</li></ul>' },
-      'TASK-019': { task_title:'v3.7.6 ë³´ê³ ì„œ ì¸ì½”ë”© ìˆ˜ì • + ê´€ë¦¬ì ì•„ì´ë”” ì˜ˆì™¸', content:'<h2>TASK-019: ë³´ê³ ì„œ ì¸ì½”ë”© + ê´€ë¦¬ì ì•„ì´ë””</h2><p><b>ë²„ì „:</b> v3.7.6</p><ul><li>ì „ì²´ HTML BOM ì œê±°</li><li>ê´€ë¦¬ì íƒ€ì¸ ì•„ì´ë”” í‘œì‹œ ê°€ëŠ¥</li></ul>' },
-      'TASK-020': { task_title:'v3.7.7 ìˆ˜ì • ëª¨ë‹¬ ë¶€ì„œ ë³€ê²½ ì œê±°', content:'<h2>TASK-020: ìˆ˜ì • ëª¨ë‹¬ ë¶€ì„œ ë³€ê²½ ì œê±°</h2><p><b>ë²„ì „:</b> v3.7.7</p><ul><li>ìˆ˜ì • ëª¨ë‹¬ ë¶€ì„œ ë¹„í™œì„±í™”</li><li>ë¶€ì„œ ë³€ê²½ì€ ë¶€ì„œì´ë™ìœ¼ë¡œë§Œ</li></ul>' },
-      'TASK-021': { task_title:'v3.8.0 ìŠˆí¼ê´€ë¦¬ì + ë„¤ë¹„ê²Œì´ì…˜ + í˜ì´ì§€ ê¶Œí•œ', content:'<h2>TASK-021: v3.8.0 ì „ë©´ ê°œì„ </h2><p><b>ë²„ì „:</b> v3.8.0</p><ul><li>ìŠˆí¼ê´€ë¦¬ì rank 110</li><li>ë„¤ë¹„ê²Œì´ì…˜ ë‹¬ë€íŠ¸ ë§ˆì„ í†µì¼</li><li>í˜ì´ì§€ ì ‘ê·¼/ê¸°ëŠ¥ ê´€ë¦¬ ì‹ ê·œ</li><li>ë¶€ì„œ ê·¸ë¦¬ë“œ ê°„ì†Œí™”</li><li>ë¶€ì¥ êµì‚¬ ëª…ì¹­</li><li>ê´€ë¦¬ì ê´€ë¦¬ ì •ë¦¬</li><li>ë‹¬ë€íŠ¸ ê´€ë¦¬ ì”ì—¬/ì‚¬ìš©/ëˆ„ì  ìƒì„¸</li></ul>' },
-      'TASK-022': { task_title:'v3.8.1 ìŠˆí¼ê´€ë¦¬ì ê´€ë¦¬ ìˆ˜ì • + UI/UX ê°œì„ ', content:'<h2>TASK-022: v3.8.1 ê°œì„ </h2><p><b>ë²„ì „:</b> v3.8.1</p><ul><li>ìŠˆí¼ê´€ë¦¬ì ê´€ë¦¬ì ê´€ë¦¬ ê°€ëŠ¥</li><li>ë„¤ë¹„ê²Œì´ì…˜ í•œ ì¤„ ìŠ¤í¬ë¡¤</li><li>ëª¨ë°”ì¼ ê·¸ë¦¬ë“œ ì—¬ë°± ì¶•ì†Œ</li><li>í˜ì´ì§€ ê¸°ëŠ¥ ê¶Œí•œë³„ ê°œí¸</li><li>ë³´ê³ ì„œ JS ì‹œë”</li><li>ë¡œê·¸ ì‚­ì œ RLS ì •ì±…</li></ul>' },
-      'TASK-023': { task_title:'v3.8.2 í˜ì´ì§€ ì ‘ê·¼ ê¶Œí•œë³„ + ì‘ì—… ì´ë ¥ + DB ì—°ë™', content:'<h2>TASK-023: v3.8.2 ê°œì„ </h2><p><b>ë²„ì „:</b> v3.8.2</p><ul><li>í˜ì´ì§€ ì ‘ê·¼ ê¶Œí•œë³„ ê°œí¸</li><li>ì‘ì—… ì´ë ¥ ê´€ë¦¬ ì‹ ê·œ</li><li>initPage() DB ì—°ë™ ì ìš©</li><li>ë¡œê·¸ ì‚­ì œ ë””ë²„ê·¸ ê°•í™”</li><li>ë³´ê³ ì„œ ìˆ˜ì • ë²„íŠ¼</li><li>ë³„ ì´ëª¨ì§€ íšŒì „ ì• ë‹ˆë©”ì´ì…˜</li></ul>' },
-      'TASK-024': { task_title:'v3.8.3 ì‘ì—…ì ì‹¤ëª… + ë³´ê³ ì„œ ìë™ë³µêµ¬', content:'<h2>TASK-024: v3.8.3 ê°œì„ </h2><p><b>ë²„ì „:</b> v3.8.3</p><ul><li>writeLog()ì— user_name ì €ì¥</li><li>audit.html ì‘ì—…ì ì‹¤ëª… + ê´€ë¦¬ì ì•„ì´ë””</li><li>ë³´ê³ ì„œ ìë™ë³µêµ¬</li></ul>' },
-      'TASK-025': { task_title:'v3.8.4 ë¡œê·¸ ì†Œí”„íŠ¸ ì‚­ì œ(ì‚­ì œ ëŒ€ê¸°) ì „í™˜', content:'<h2>TASK-025: v3.8.4 ì†Œí”„íŠ¸ ì‚­ì œ</h2><p><b>ë²„ì „:</b> v3.8.4</p><ul><li>is_deleted ì†Œí”„íŠ¸ ì‚­ì œ</li><li>ì‚­ì œ ëŒ€ê¸° ëª©ë¡ + ë³µì›</li><li>ì‹¤ì œ ì‚­ì œëŠ” SQLë¡œ ì§ì ‘</li></ul>' },
-      'TASK-026': { task_title:'v3.9.0 ìƒí’ˆ êµ¬ë§¤ ì‹œìŠ¤í…œ + ë‹¬ë€íŠ¸ ê°œí¸ + ëª…ì¹­ í†µì¼', content:'<h2>TASK-026: v3.9.0 ëŒ€ê·œëª¨ ì—…ë°ì´íŠ¸</h2><p><b>ë²„ì „:</b> v3.9.0</p><ul><li>ìƒí’ˆ êµ¬ë§¤ ì‹œìŠ¤í…œ 4ë‹¨ê³„ íë¦„ ì‹ ê·œ</li><li>admin/purchases.html êµ¬ë§¤ ê´€ë¦¬ ì‹ ê·œ</li><li>shop.html êµ¬ë§¤ ì‹ ì²­ + ì”ì•¡ ê²€ì¦</li><li>my-talents.html ì‚¬ìš© ëŒ€ê¸°/êµ¬ë§¤ ë‚´ì—­</li><li>ë‹¬ë€íŠ¸: ì²´í¬ë°•ìŠ¤ ì¼ê´„ ì§€ê¸‰ + ë°˜í™˜ + ì§€ê¸‰ì í‘œì‹œ</li><li>ëª…ì¹­ í†µì¼: ë¬¼í’ˆâ†’ìƒí’ˆ, ë¶€ì¥â†’ë¶€ì¥ êµì‚¬, ë¶€ì„œê´€ë¦¬ìâ†’ë¶€ì„œ ë‹´ë‹¹ êµì‚¬</li></ul>' },
-      'TASK-030': { task_title:'v3.12.2 UI/ê¸°ëŠ¥ ê°œì„ : ë„¤ë¹„ í†µì¼, ë‹¬ë€íŠ¸ ìŠ¤ì½”í•‘, ëŒ€ë¦¬ êµ¬ë§¤', content:'<h2>TASK-030: v3.12.2 UI/ê¸°ëŠ¥ ê°œì„ </h2><p><b>ë²„ì „:</b> v3.12.2</p><ul><li>ë„¤ë¹„ê²Œì´ì…˜ í†µì¼: ì „ì²´ í˜ì´ì§€ì— "ë‚´ êµ¬ë§¤ ìƒí’ˆ" ë©”ë‰´ ì¶”ê°€</li><li>ë³´ê³ ì„œ ë¦¬ë””ë ‰íŠ¸: initPage minRank í†µê³¼ ì‹œ role_page_access ì°¨ë‹¨ ë¬´ì‹œ</li><li>ë‹¬ë€íŠ¸ ê´€ë¦¬: ì¼ë°˜ êµì‚¬(40) ë°˜ ë¯¸ë°°ì • ì‹œ ë¹ˆ ëª©ë¡ + í•­ëª©ê´€ë¦¬ ë²„íŠ¼ 60+</li><li>ë¡œê·¸ì¸ í›„: ëª¨ë“  ê¶Œí•œ index.html ì´ë™</li><li>my-orders.html ì‹ ê·œ: ë³¸ì¸ êµ¬ë§¤ ë‚´ì—­ ì¡°íšŒ</li><li>ëŒ€ë¦¬ êµ¬ë§¤: shop.htmlì—ì„œ rank 40+ ëŒ€ë¦¬ êµ¬ë§¤ ëª¨ë‹¬</li><li>ì‚¬ìš©ì ê´€ë¦¬: ë°˜ ìˆ˜ì • 60+ + ë¶€ì„œ í•„í„° 80+</li><li>ê´€ë¦¬ì ê´€ë¦¬: í•™ìƒ ê²€ìƒ‰ ì œì™¸ + ë¶€ì„œ í•„í„° 80+</li></ul>' }
+      'TASK-030-QR': { task_title:'v3.13.0 QR ´Ş¶õÆ® ½Ã½ºÅÛ + °ü¸® °³¼± + Åë°è °³Æí', content:'<h2>TASK-030-QR: v3.13.0 QR ´Ş¶õÆ® ½Ã½ºÅÛ</h2><p><b>¹öÀü:</b> v3.13.0</p><ul><li>½Å±Ô: talent-receive.html QR ½ºÄµ ´Ş¶õÆ® ¼ö·É (±³»ç Àü¿ë)</li><li>½Å±Ô: admin/talent-qr.html QR ÄÚµå °ü¸® (Àüµµ»ç´Ô+)</li><li>DB: talent_qr_codes, talent_qr_scans Å×ÀÌºí + RLS</li><li>´Ş¶õÆ® Ãë¼Ò ±â´É + Ãâ¼® ÅëÀÏ + Áßº¹ ¹æÁö</li><li>´Ş¶õÆ® Áö±ŞÀÏ °ú°Å ³¯Â¥ ÁöÁ¤</li><li>³» ±¸¸Å »óÇ°: ±¸¸Å Ãë¼Ò + pending_talent º¹¿ø</li><li>´Ş¶õÆ® Åë°è: ÀüÆø + ³¯Â¥ ÇÊÅÍ + À¯Çü ±¸ºĞ</li><li>³×ºñ°ÔÀÌ¼Ç: ´Ş¶õÆ® ¼ö·É/QR °ü¸® ¸Ş´º Ãß°¡</li></ul>' },
+      'TASK-029': { task_title:'v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ', content:'<h2>TASK-029: v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ</h2><p><b>¹öÀü:</b> v3.12.0</p><ul><li>ÆäÀÌÁö ±â´É: role_page_features Å×ÀÌºí »ı¼º + 6¿­ ±×¸®µå</li><li>¸ŞÀÎ ÆäÀÌÁö: ·Î±×ÀÎ/·Î±×¾Æ¿ô ¹öÆ° ÀÌ¸ğÁö ¼öÁ¤</li><li>³×ºñ°ÔÀÌ¼Ç ÅëÇÕ: admin nav ±âÁØ public/admin ÀüÃ¼ ÀÏÄ¡È­ + ´Ş¶õÆ® Àû¸³ Ãß°¡</li><li>´Ş¶õÆ® °ü¸®: ´Ş¶õÆ® Ç×¸ñ °ü¸® ¹öÆ° Ãß°¡</li><li>±¸¸Å °ü¸®: ÀüÃ¼ ÅÇ ±âº» ¼±ÅÃ + ¼ø¼­ º¯°æ</li><li>·Î±×: Ä«¿îÆ® Çü½Ä (X/Y) + ÆäÀÌÁö³×ÀÌ¼Ç ¹øÈ£ 5°³</li><li>ÀÛ¾÷ ÀÌ·Â: roleKey/permissionKey ÇÑ±ÛÈ­ + »ó¼¼ JSON Å° ÇÑ±Û ¶óº§</li><li>¹®¼­ 4Á¾ »ı¼º + º¸°í¼­ µî·Ï + ´©¶ô ¹®¼­ ¿¬°á</li></ul>' },
+      'TASK-028': { task_title:'v3.11.0 ¹İÀÀÇü ÆäÀÌÁö + ³×ºñ°ÔÀÌ¼Ç ÅëÇÕ', content:'<h2>TASK-028: v3.11.0 ¹İÀÀÇü/³×ºñ°ÔÀÌ¼Ç °³Æí</h2><p><b>¹öÀü:</b> v3.11.0</p><ul><li>CSS ¹İÀÀÇü ºê·¹ÀÌÅ©Æ÷ÀÎÆ® ÅëÇÕ: 480/640/768/1024px 4´Ü°è</li><li>¸ğ¹ÙÀÏ ÇÜ¹ö°Å ³×ºñ°ÔÀÌ¼Ç: admin-nav 15°³ ÆÄÀÏ + top-nav 3°³ ÆÄÀÏ</li><li>Å×ÀÌºí ¹İÀÀÇü: 1024px ½ºÅ©·Ñ ½ÃÀÛ, min-width ´Ü°èº° Ãà¼Ò</li><li>¸ğ´Ş/Æû: ¸ğ¹ÙÀÏ flex-wrap + ÀüÆø È®´ë</li><li>´ë½Ãº¸µå quickLinks/detailSummary ¸ğ¹ÙÀÏ ±×¸®µå ÀüÈ¯</li><li>my-talents.html Template A ³×ºñ°ÔÀÌ¼Ç ÅëÇÕ</li><li>index.html ·Î±×ÀÎ ÈÄ ³»ºñ°ÔÀÌ¼Ç ¸µÅ© º¸°­</li><li>applyPermNav() ¾ç¹æÇâ show/hide Ã³¸®</li><li>admin nav: page-access/audit data-min-perm 80¡æ100, page-features active Ãß°¡</li></ul>' },
+      'TASK-027': { task_title:'v3.10.0 ±ÇÇÑ ¼¼ºĞÈ­ + ±¸¸Å °ü¸® °³Æí + Àç°í Á¦°Å', content:'<h2>TASK-027: v3.10.0 ´ë±Ô¸ğ ±ÇÇÑ/±¸¸Å °³Æí</h2><p><b>¹öÀü:</b> v3.10.0</p><ul><li>´Ş¶õÆ® °ü¸® ±ÇÇÑ ¼¼ºĞÈ­: rank 80 ÀüÃ¼ Á¶È¸/´ã´ç ºÎ¼­ Áö±Ş</li><li>give_talent RPC: managed_dept_id ½ºÄÚÇÎ Ãß°¡</li><li>°¡ÀÔ ½ÂÀÎ/ºÎ¼­ ÀÌµ¿ ±ÇÇÑ °³Æí: rank 60 ºÎ¼­ ÀÌµ¿ ¼½¼Ç Ç¥½Ã</li><li>ºÎ¼­ ÀÌµ¿ ¹öÆ° ¸íÄª: rank &lt; 90 "ºÎ¼­ ÀÌµ¿ ½ÅÃ»"</li><li>·Î±×ÀÎ: ½ÂÀÎ ´ë±â/°ÅºÎ/ºñ¹Ğ¹øÈ£ ¿À·ù ¸Ş½ÃÁö ¼¼ºĞÈ­</li><li>Àç°í ½Ã½ºÅÛ Á¦°Å: shop.html + admin/shop.html</li><li>±¸¸Å °ü¸® °³Æí: Ã³¸®ÀÚ/ÀÏ½Ã Ç¥½Ã, »óÅÂ ÄÃ·³ Á¦°Å, ÀüÃ¼ ÅÇ Ãß°¡</li><li>±¸¸Å °ü¸® ±ÇÇÑ: rank 60+ ´ã´ç ºÎ¼­, rank 90+ ÀüÃ¼</li><li>±¸¸Å °ü¸® ³×ºñ°ÔÀÌ¼Ç ¹èÁö: Ã³¸® ´ë±â °Ç¼ö Ç¥½Ã</li><li>ÆäÀÌÁö Á¢±Ù/±â´É/ÀÛ¾÷ ÀÌ·Â: initPage(100) °ü¸®ÀÚ Àü¿ë</li><li>ÀüÃ¼ admin ³×ºñ°ÔÀÌ¼Ç data-min-perm ¾÷µ¥ÀÌÆ®</li></ul>' },
+      'TASK-001': { task_title:'v1.0.0 ÃÊ±â ±¸Ãà', content:'<h2>TASK-001: ÃÊ±â ±¸Ãà</h2><p><b>¹öÀü:</b> v1.0.0</p><ul><li>È¯¿µ ¸ŞÀÎ ÆäÀÌÁö ±¸Çö</li><li>°ü¸®ÀÚ ·Î±×ÀÎ/ÆĞ½º¿öµå º¯°æ</li><li>°ü¸®ÀÚ ´ë½Ãº¸µå (º¸°í¼­, ·Î±×)</li><li>Supabase ¿¬µ¿ ¹× CRUD</li><li>È°µ¿ ·Î±× ½Ã½ºÅÛ</li><li>GitHub Pages ¹èÆ÷</li></ul>' },
+      'TASK-002': { task_title:'v1.1.0 ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ', content:'<h2>TASK-002: ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ</h2><p><b>¹öÀü:</b> v1.1.0</p><ul><li>4´Ü°è ¿ªÇÒ ±¸ºĞ</li><li>¿ªÇÒº° Àü¿ë ÆäÀÌÁö ±¸Çö</li><li>´Ş¶õÆ® »óÁ¡ (ÇĞ»ı/±³»ç ºĞ¸®)</li><li>ºÎ¼­ °ü¸®ÀÚ ±â´É</li><li>RPC ÇÔ¼ö</li><li>ÅëÇÕ ·Î±×ÀÎ ÆäÀÌÁö</li></ul>' },
+      'TASK-003': { task_title:'v1.2.0 »óÇ° ÀÌ¹ÌÁö ¹× ¸ŞÀÎ È­¸é °³¼±', content:'<h2>TASK-003: »óÇ° ÀÌ¹ÌÁö ¹× ¸ŞÀÎ È­¸é</h2><p><b>¹öÀü:</b> v1.2.0</p><ul><li>»óÇ° ÀÌ¹ÌÁö URL Áö¿ø</li><li>Supabase Storage ÆÄÀÏ ¾÷·Îµå</li><li>¸ŞÀÎ È­¸é Ä«µå ¸µÅ© ¿¬°á</li><li>´Ş¶õÆ® Àû¸³ ¹æ¹ı ¾È³» ÆäÀÌÁö</li></ul>' },
+      'TASK-004': { task_title:'v1.3.0 ¹öÀü °ü¸® ½Ã½ºÅÛ', content:'<h2>TASK-004: ¹öÀü °ü¸® ½Ã½ºÅÛ</h2><p><b>¹öÀü:</b> v1.3.0</p><ul><li>¹öÀü °ü¸® ¸ğµâ µµÀÔ</li><li>¸ğµç ÆäÀÌÁö ÇÏ´Ü ¹öÀü Ç¥½Ã</li><li>°ü¸®ÀÚ ¹öÀü ÀÌ·Â Á¶È¸</li></ul>' },
+      'TASK-005': { task_title:'v1.4.0 »ç¿ëÀÚ °ü¸® ¹× ¿ªÇÒ ¹èÁö', content:'<h2>TASK-005: »ç¿ëÀÚ °ü¸® ¹× ¿ªÇÒ ¹èÁö</h2><p><b>¹öÀü:</b> v1.4.0</p><ul><li>°ü¸®ÀÚ »ç¿ëÀÚ °ü¸® ÆäÀÌÁö</li><li>¿ªÇÒº° Åë°è ´ë½Ãº¸µå</li><li>¸ğµç ÆäÀÌÁö ¿ªÇÒ ¹èÁö</li></ul>' },
+      'TASK-006': { task_title:'v1.5.0 °èÁ¤ µî·Ï ½ÅÃ»', content:'<h2>TASK-006: °èÁ¤ µî·Ï ½ÅÃ»</h2><p><b>¹öÀü:</b> v1.5.0</p><ul><li>°èÁ¤ µî·Ï ½ÅÃ» ÆäÀÌÁö</li><li>¾ÆÀÌµğ Áßº¹/½ÅÃ» Áßº¹ °ËÁõ</li><li>°ü¸®ÀÚ ½ÂÀÎ/°ÅºÎ ±â´É</li></ul>' },
+      'TASK-007': { task_title:'v2.0.0 DB º¸¾È ±¸Á¶ Àü¸é °³¼±', content:'<h2>TASK-007: DB º¸¾È ±¸Á¶ Àü¸é °³¼±</h2><p><b>¹öÀü:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth µµÀÔ</li><li>profiles Å×ÀÌºí ½Å¼³</li><li>SECURITY DEFINER RPC</li><li>ÀüÃ¼ RLS Á¤Ã¥ Àç¼³°è</li><li>¸ğ¹ÙÀÏ ¹İÀÀÇü °³¼±</li></ul>' },
+      'TASK-008': { task_title:'v2.1.0 °ü¸®ÀÚ ÆäÀÌÁö Á¢±Ù Á¦¾î', content:'<h2>TASK-008: °ü¸®ÀÚ ÆäÀÌÁö Á¢±Ù Á¦¾î</h2><p><b>¹öÀü:</b> v2.1.0</p><ul><li>initPage() ¿ªÇÒ Ã¼Å© ¸®µğ·ºÆ®</li><li>CSS auth-ready ÄÜÅÙÃ÷ ÇÃ·¡½Ã ¹æÁö</li><li>ºÎ¼­ °ü¸® ÀÎ¿ø ºĞ¸® Ç¥½Ã</li><li>admin Àü¿ë »óÇ° °ü¸® ÆäÀÌÁö</li></ul>' },
+      'TASK-009': { task_title:'v2.2.0 ·¹°Å½Ã °ü¸®ÀÚ ·Î±×ÀÎ Á¦°Å', content:'<h2>TASK-009: ·¹°Å½Ã °ü¸®ÀÚ ·Î±×ÀÎ Á¦°Å</h2><p><b>¹öÀü:</b> v2.2.0</p><ul><li>°ü¸®ÀÚ ÁøÀÔÁ¡ ¹öÆ° Á¦°Å</li><li>admin/login.html »èÁ¦</li><li>login.html ´ÜÀÏÈ­</li></ul>' },
+      'TASK-010': { task_title:'v2.3.0 ÃÊ±â ºñ¹Ğ¹øÈ£ º¯°æ °­Á¦', content:'<h2>TASK-010: ÃÊ±â ºñ¹Ğ¹øÈ£ º¯°æ °­Á¦</h2><p><b>¹öÀü:</b> v2.3.0</p><ul><li>initPage()¿¡ isFirstLogin ¸®µğ·ºÆ®</li><li>º¸È£ ÆäÀÌÁö ÀüÈ¯</li><li>autoLogPageView() ÀÎÁõ ÈÄ ÀÌµ¿</li></ul>' },
+      'TASK-011': { task_title:'v2.4.0 °ü¸®ÀÚ ´ë½Ãº¸µå °³¼±', content:'<h2>TASK-011: °ü¸®ÀÚ ´ë½Ãº¸µå °³¼±</h2><p><b>¹öÀü:</b> v2.4.0</p><ul><li>°¡ÀÔ ´ë±âÀÚ ¼ö Ä«µå Ãß°¡</li><li>¹Ù·Î°¡±â ¿µ¿ª 5°³ Àç±¸¼º</li><li>¹Ù·Î°¡±â¿¡ ÀÌ¸ğÁö Ãß°¡</li></ul>' },
+      'TASK-012': { task_title:'v2.5.0 °ü¸®ÀÚ/ºÎ¼­°ü¸®ÀÚ ¸Ş´º ÅëÇÕ', content:'<h2>TASK-012: ¸Ş´º ÅëÇÕ</h2><p><b>¹öÀü:</b> v2.5.0</p><ul><li>manager/ µğ·ºÅä¸® »èÁ¦</li><li>admin/talents.html »ı¼º</li><li>applyRoleNav() ÇÔ¼ö</li></ul>' },
+      'TASK-013A': { task_title:'v3.0.0 ½´ÆÛ°ü¸®ÀÚ Ã¼°è + ³×ºñ°ÔÀÌ¼Ç °³Æí', content:'<h2>TASK-013A: v3.0.0 ½´ÆÛ°ü¸®ÀÚ Ã¼°è</h2><p>docs/TASK-013A_change_report.md ÂüÁ¶</p>' },
+      'TASK-013BCD': { task_title:'v3.0.0 º¯°æ º¸°í¼­ + SQL ½ºÅ°¸¶', content:'<h2>TASK-013BCD: v3.0.0 º¯°æ º¸°í¼­</h2><p>docs/TASK-013BCD_change_report.md ÂüÁ¶</p>' },
+      'TASK-013': { task_title:'v3.0.0~v3.6.0 À¯Çü/±ÇÇÑ 6´Ü°è Ã¼°è', content:'<h2>TASK-013: 6´Ü°è Ã¼°è Àü¸é °³Æí</h2><p><b>¹öÀü:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level È®Àå</li><li>get_permission_rank() ÇÔ¼ö</li><li>RPC 12°³ ¾÷µ¥ÀÌÆ®</li><li>´Ş¶õÆ® Áö±Ş °³Æí</li><li>¹İ ½Ã½ºÅÛ Ãß°¡</li></ul>' },
+      'TASK-014': { task_title:'v3.7.0 ´ÙÁß ±â´É °³¼± ¹× UX Çâ»ó', content:'<h2>TASK-014: ´ÙÁß ±â´É °³¼±</h2><p><b>¹öÀü:</b> v3.7.0</p><ul><li>¾ÆÀÌµğ ÇÑ±Û ÀÔ·Â Á¦ÇÑ</li><li>·Î±× ¹üÀ§ »èÁ¦, ÀÌ¸§(¾ÆÀÌµğ) Ç¥½Ã, »ó¼¼ ÆË¾÷</li><li>´ë½Ãº¸µå ÀÌ½´ ·Î±× ÇÊÅÍ</li><li>³×ºñ°ÔÀÌ¼Ç º¯°æ</li><li>¹°Ç° È°¼ºÈ­/ºñÈ°¼ºÈ­</li><li>½ÂÀÎ ´ë±â ¸Ş½ÃÁö</li></ul>' },
+      'TASK-015': { task_title:'v3.7.1~v3.7.2 º¸°í¼­ ¹ö±× ¼öÁ¤ + ·Î±× »èÁ¦ + ¹èÁö', content:'<h2>TASK-015: º¸°í¼­ ¹ö±× ¼öÁ¤</h2><p><b>¹öÀü:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS Ãæµ¹ ÇØ°á</li><li>·Î±× Ã¼Å©¹Ú½º + ¼±ÅÃ »èÁ¦</li><li>°¡ÀÔ´ë±â ¹èÁö</li></ul>' },
+      'TASK-016': { task_title:'v3.7.3 ±ÇÇÑ ±â¹İ ºÎ¼­/»ç¿ëÀÚ °ü¸® ½ºÄÚÇÎ', content:'<h2>TASK-016: ±ÇÇÑ ±â¹İ ½ºÄÚÇÎ</h2><p><b>¹öÀü:</b> v3.7.3</p><ul><li>±³»ç ¼ö Ä«¿îÆ® ÀüÃ¼ Æ÷ÇÔ</li><li>º»ÀÎº¸´Ù ³·Àº ±ÇÇÑ¸¸ °ü¸®</li><li>ºÎÀå ÀÌÇÏ ´ã´ç ºÎ¼­¸¸ Ç¥½Ã</li></ul>' },
+      'TASK-017': { task_title:'v3.7.4 °¡ÀÔ ½ÅÃ» ±ÇÇÑº° Á¶È¸/Ã³¸®', content:'<h2>TASK-017: °¡ÀÔ ½ÅÃ» ±ÇÇÑº°</h2><p><b>¹öÀü:</b> v3.7.4</p><ul><li>°ü¸®ÀÚ/Àüµµ»ç´Ô: ÀüÃ¼ Á¶È¸+Ã³¸®</li><li>ºÎÀå: ÀüÃ¼ Á¶È¸, ´ã´ç¸¸ Ã³¸®</li><li>ºÎ¼­ ´ã´ç ±³»ç: ´ã´ç¸¸ Á¶È¸+Ã³¸®</li><li>³×ºñ°ÔÀÌ¼Ç ¾ÆÀÌµğ Ç¥½Ã</li></ul>' },
+      'TASK-018': { task_title:'v3.7.5 Å¸ÀÎ ¾ÆÀÌµğ ¼û±è + ºÎ¼­ ÀÌµ¿ °ü¸®', content:'<h2>TASK-018: ¾ÆÀÌµğ ¼û±è + ºÎ¼­ ÀÌµ¿</h2><p><b>¹öÀü:</b> v3.7.5</p><ul><li>Å¸ÀÎ ¾ÆÀÌµğ ¼û±è</li><li>ºÎ¼­ ÀÌµ¿ Áï½Ã/¿äÃ» ºĞ±â</li><li>ºÎ¼­ ÀÌµ¿ ½ÅÃ» ³»¿ª + ½ÂÀÎ</li></ul>' },
+      'TASK-019': { task_title:'v3.7.6 º¸°í¼­ ÀÎÄÚµù ¼öÁ¤ + °ü¸®ÀÚ ¾ÆÀÌµğ ¿¹¿Ü', content:'<h2>TASK-019: º¸°í¼­ ÀÎÄÚµù + °ü¸®ÀÚ ¾ÆÀÌµğ</h2><p><b>¹öÀü:</b> v3.7.6</p><ul><li>ÀüÃ¼ HTML BOM Á¦°Å</li><li>°ü¸®ÀÚ Å¸ÀÎ ¾ÆÀÌµğ Ç¥½Ã °¡´É</li></ul>' },
+      'TASK-020': { task_title:'v3.7.7 ¼öÁ¤ ¸ğ´Ş ºÎ¼­ º¯°æ Á¦°Å', content:'<h2>TASK-020: ¼öÁ¤ ¸ğ´Ş ºÎ¼­ º¯°æ Á¦°Å</h2><p><b>¹öÀü:</b> v3.7.7</p><ul><li>¼öÁ¤ ¸ğ´Ş ºÎ¼­ ºñÈ°¼ºÈ­</li><li>ºÎ¼­ º¯°æÀº ºÎ¼­ÀÌµ¿À¸·Î¸¸</li></ul>' },
+      'TASK-021': { task_title:'v3.8.0 ½´ÆÛ°ü¸®ÀÚ + ³×ºñ°ÔÀÌ¼Ç + ÆäÀÌÁö ±ÇÇÑ', content:'<h2>TASK-021: v3.8.0 Àü¸é °³¼±</h2><p><b>¹öÀü:</b> v3.8.0</p><ul><li>½´ÆÛ°ü¸®ÀÚ rank 110</li><li>³×ºñ°ÔÀÌ¼Ç ´Ş¶õÆ® ¸¶À» ÅëÀÏ</li><li>ÆäÀÌÁö Á¢±Ù/±â´É °ü¸® ½Å±Ô</li><li>ºÎ¼­ ±×¸®µå °£¼ÒÈ­</li><li>ºÎÀå ±³»ç ¸íÄª</li><li>°ü¸®ÀÚ °ü¸® Á¤¸®</li><li>´Ş¶õÆ® °ü¸® ÀÜ¿©/»ç¿ë/´©Àû »ó¼¼</li></ul>' },
+      'TASK-022': { task_title:'v3.8.1 ½´ÆÛ°ü¸®ÀÚ °ü¸® ¼öÁ¤ + UI/UX °³¼±', content:'<h2>TASK-022: v3.8.1 °³¼±</h2><p><b>¹öÀü:</b> v3.8.1</p><ul><li>½´ÆÛ°ü¸®ÀÚ °ü¸®ÀÚ °ü¸® °¡´É</li><li>³×ºñ°ÔÀÌ¼Ç ÇÑ ÁÙ ½ºÅ©·Ñ</li><li>¸ğ¹ÙÀÏ ±×¸®µå ¿©¹é Ãà¼Ò</li><li>ÆäÀÌÁö ±â´É ±ÇÇÑº° °³Æí</li><li>º¸°í¼­ JS ½Ã´õ</li><li>·Î±× »èÁ¦ RLS Á¤Ã¥</li></ul>' },
+      'TASK-023': { task_title:'v3.8.2 ÆäÀÌÁö Á¢±Ù ±ÇÇÑº° + ÀÛ¾÷ ÀÌ·Â + DB ¿¬µ¿', content:'<h2>TASK-023: v3.8.2 °³¼±</h2><p><b>¹öÀü:</b> v3.8.2</p><ul><li>ÆäÀÌÁö Á¢±Ù ±ÇÇÑº° °³Æí</li><li>ÀÛ¾÷ ÀÌ·Â °ü¸® ½Å±Ô</li><li>initPage() DB ¿¬µ¿ Àû¿ë</li><li>·Î±× »èÁ¦ µğ¹ö±× °­È­</li><li>º¸°í¼­ ¼öÁ¤ ¹öÆ°</li><li>º° ÀÌ¸ğÁö È¸Àü ¾Ö´Ï¸ŞÀÌ¼Ç</li></ul>' },
+      'TASK-024': { task_title:'v3.8.3 ÀÛ¾÷ÀÚ ½Ç¸í + º¸°í¼­ ÀÚµ¿º¹±¸', content:'<h2>TASK-024: v3.8.3 °³¼±</h2><p><b>¹öÀü:</b> v3.8.3</p><ul><li>writeLog()¿¡ user_name ÀúÀå</li><li>audit.html ÀÛ¾÷ÀÚ ½Ç¸í + °ü¸®ÀÚ ¾ÆÀÌµğ</li><li>º¸°í¼­ ÀÚµ¿º¹±¸</li></ul>' },
+      'TASK-025': { task_title:'v3.8.4 ·Î±× ¼ÒÇÁÆ® »èÁ¦(»èÁ¦ ´ë±â) ÀüÈ¯', content:'<h2>TASK-025: v3.8.4 ¼ÒÇÁÆ® »èÁ¦</h2><p><b>¹öÀü:</b> v3.8.4</p><ul><li>is_deleted ¼ÒÇÁÆ® »èÁ¦</li><li>»èÁ¦ ´ë±â ¸ñ·Ï + º¹¿ø</li><li>½ÇÁ¦ »èÁ¦´Â SQL·Î Á÷Á¢</li></ul>' },
+      'TASK-026': { task_title:'v3.9.0 »óÇ° ±¸¸Å ½Ã½ºÅÛ + ´Ş¶õÆ® °³Æí + ¸íÄª ÅëÀÏ', content:'<h2>TASK-026: v3.9.0 ´ë±Ô¸ğ ¾÷µ¥ÀÌÆ®</h2><p><b>¹öÀü:</b> v3.9.0</p><ul><li>»óÇ° ±¸¸Å ½Ã½ºÅÛ 4´Ü°è Èå¸§ ½Å±Ô</li><li>admin/purchases.html ±¸¸Å °ü¸® ½Å±Ô</li><li>shop.html ±¸¸Å ½ÅÃ» + ÀÜ¾× °ËÁõ</li><li>my-talents.html »ç¿ë ´ë±â/±¸¸Å ³»¿ª</li><li>´Ş¶õÆ®: Ã¼Å©¹Ú½º ÀÏ°ı Áö±Ş + ¹İÈ¯ + Áö±ŞÀÚ Ç¥½Ã</li><li>¸íÄª ÅëÀÏ: ¹°Ç°¡æ»óÇ°, ºÎÀå¡æºÎÀå ±³»ç, ºÎ¼­°ü¸®ÀÚ¡æºÎ¼­ ´ã´ç ±³»ç</li></ul>' },
+      'TASK-030': { task_title:'v3.12.2 UI/±â´É °³¼±: ³×ºñ ÅëÀÏ, ´Ş¶õÆ® ½ºÄÚÇÎ, ´ë¸® ±¸¸Å', content:'<h2>TASK-030: v3.12.2 UI/±â´É °³¼±</h2><p><b>¹öÀü:</b> v3.12.2</p><ul><li>³×ºñ°ÔÀÌ¼Ç ÅëÀÏ: ÀüÃ¼ ÆäÀÌÁö¿¡ "³» ±¸¸Å »óÇ°" ¸Ş´º Ãß°¡</li><li>º¸°í¼­ ¸®µğ·ºÆ®: initPage minRank Åë°ú ½Ã role_page_access Â÷´Ü ¹«½Ã</li><li>´Ş¶õÆ® °ü¸®: ÀÏ¹İ ±³»ç(40) ¹İ ¹Ì¹èÁ¤ ½Ã ºó ¸ñ·Ï + Ç×¸ñ°ü¸® ¹öÆ° 60+</li><li>·Î±×ÀÎ ÈÄ: ¸ğµç ±ÇÇÑ index.html ÀÌµ¿</li><li>my-orders.html ½Å±Ô: º»ÀÎ ±¸¸Å ³»¿ª Á¶È¸</li><li>´ë¸® ±¸¸Å: shop.html¿¡¼­ rank 40+ ´ë¸® ±¸¸Å ¸ğ´Ş</li><li>»ç¿ëÀÚ °ü¸®: ¹İ ¼öÁ¤ 60+ + ºÎ¼­ ÇÊÅÍ 80+</li><li>°ü¸®ÀÚ °ü¸®: ÇĞ»ı °Ë»ö Á¦¿Ü + ºÎ¼­ ÇÊÅÍ 80+</li></ul>' }
     };
 
     async function autoFixReports() {
-      _stepLog('FIX', 'ê¹¨ì§„ ë³´ê³ ì„œ ìë™ ë³µêµ¬ ì‹œì‘...');
+      _stepLog('FIX', '±úÁø º¸°í¼­ ÀÚµ¿ º¹±¸ ½ÃÀÛ...');
       let fixCount = 0;
       for (const r of allReports) {
         const seed = REPORT_SEED_MAP[r.task_id];
@@ -346,10 +349,10 @@
             content: seed.content
           }).eq('id', r.id);
           if (!error) fixCount++;
-          else _stepLog('FIX-ERR', r.task_id + ' ë³µêµ¬ ì‹¤íŒ¨: ' + error.message);
+          else _stepLog('FIX-ERR', r.task_id + ' º¹±¸ ½ÇÆĞ: ' + error.message);
         }
       }
-      _stepLog('FIX', fixCount + 'ê±´ ìë™ ë³µêµ¬ ì™„ë£Œ');
+      _stepLog('FIX', fixCount + '°Ç ÀÚµ¿ º¹±¸ ¿Ï·á');
       if (fixCount > 0) {
         const { data } = await _sb.from('reports').select('*').order('created_at', { ascending: false });
         allReports = data || [];
@@ -363,7 +366,7 @@
       const SEED = getSeedData();
       const missing = SEED.filter(s => !existingKeys.has(s.task_id + '|' + s.report_type));
       if (missing.length === 0) return;
-      _stepLog('SEED', `ëˆ„ë½ ë³´ê³ ì„œ ${missing.length}ê±´ ìë™ ë“±ë¡ ì¤‘...`);
+      _stepLog('SEED', `´©¶ô º¸°í¼­ ${missing.length}°Ç ÀÚµ¿ µî·Ï Áß...`);
       const { data, error } = await _sb.from('reports').insert(missing).select();
       if (!error && data) {
         allReports = [...allReports, ...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -372,92 +375,96 @@
 
     function getSeedData() {
       return [
-        { task_id:'TASK-001', task_title:'v1.0.0 ì´ˆê¸° êµ¬ì¶•', report_type:'plan', content:'<h2>TASK-001: ì´ˆê¸° êµ¬ì¶• - ì‘ì—… ê³„íšì„œ</h2><p>docs/TASK-001_plan.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 ì´ˆê¸° êµ¬ì¶•', report_type:'test_scenario', content:'<h2>TASK-001: ì´ˆê¸° êµ¬ì¶• - í…ŒìŠ¤íŠ¸ ì‹œë‚˜ë¦¬ì˜¤</h2><p>docs/TASK-001_test_scenario.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 ì´ˆê¸° êµ¬ì¶•', report_type:'test_result', content:'<h2>TASK-001: ì´ˆê¸° êµ¬ì¶• - í…ŒìŠ¤íŠ¸ ê²°ê³¼</h2><p>docs/TASK-001_test_result.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 ì´ˆê¸° êµ¬ì¶•', report_type:'change_report', content:'<h2>TASK-001: ì´ˆê¸° êµ¬ì¶•</h2><p><b>ë²„ì „:</b> v1.0.0</p><ul><li>í™˜ì˜ ë©”ì¸ í˜ì´ì§€ êµ¬í˜„</li><li>ê´€ë¦¬ì ë¡œê·¸ì¸/íŒ¨ìŠ¤ì›Œë“œ ë³€ê²½</li><li>ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ</li><li>Supabase ì—°ë™ ë° CRUD</li><li>í™œë™ ë¡œê·¸ ì‹œìŠ¤í…œ</li><li>GitHub Pages ë°°í¬</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ', report_type:'change_report', content:'<h2>TASK-002: ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ</h2><p><b>ë²„ì „:</b> v1.1.0</p><ul><li>4ë‹¨ê³„ ì—­í•  êµ¬ë¶„</li><li>ì—­í• ë³„ ì „ìš© í˜ì´ì§€</li><li>ë‹¬ë€íŠ¸ ìƒì </li><li>ë¶€ì„œ ê´€ë¦¬ì ê¸°ëŠ¥</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-003', task_title:'v1.2.0 ìƒí’ˆ ì´ë¯¸ì§€ ë° ë©”ì¸ í™”ë©´ ê°œì„ ', report_type:'change_report', content:'<h2>TASK-003: ìƒí’ˆ ì´ë¯¸ì§€ ë° ë©”ì¸ í™”ë©´</h2><p><b>ë²„ì „:</b> v1.2.0</p><ul><li>ìƒí’ˆ ì´ë¯¸ì§€ URL ì§€ì›</li><li>Supabase Storage íŒŒì¼ ì—…ë¡œë“œ</li><li>ë©”ì¸ í™”ë©´ ì¹´ë“œ ë§í¬ ì—°ê²°</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-004', task_title:'v1.3.0 ë²„ì „ ê´€ë¦¬ ì‹œìŠ¤í…œ', report_type:'change_report', content:'<h2>TASK-004: ë²„ì „ ê´€ë¦¬ ì‹œìŠ¤í…œ</h2><p><b>ë²„ì „:</b> v1.3.0</p><ul><li>ë²„ì „ ê´€ë¦¬ ëª¨ë“ˆ ë„ì…</li><li>ëª¨ë“  í˜ì´ì§€ í•˜ë‹¨ ë²„ì „ í‘œì‹œ</li><li>ê´€ë¦¬ì ë²„ì „ ì´ë ¥ ì¡°íšŒ</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-005', task_title:'v1.4.0 ì‚¬ìš©ì ê´€ë¦¬ ë° ì—­í•  ë°°ì§€', report_type:'change_report', content:'<h2>TASK-005: ì‚¬ìš©ì ê´€ë¦¬ ë° ì—­í•  ë°°ì§€</h2><p><b>ë²„ì „:</b> v1.4.0</p><ul><li>ê´€ë¦¬ì ì‚¬ìš©ì ê´€ë¦¬ í˜ì´ì§€</li><li>ì—­í• ë³„ í†µê³„ ëŒ€ì‹œë³´ë“œ</li><li>ëª¨ë“  í˜ì´ì§€ ì—­í•  ë°°ì§€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-006', task_title:'v1.5.0 ê³„ì • ë“±ë¡ ì‹ ì²­', report_type:'change_report', content:'<h2>TASK-006: ê³„ì • ë“±ë¡ ì‹ ì²­</h2><p><b>ë²„ì „:</b> v1.5.0</p><ul><li>ê³„ì • ë“±ë¡ ì‹ ì²­ í˜ì´ì§€</li><li>ì•„ì´ë”” ì¤‘ë³µ ê²€ì¦</li><li>ê´€ë¦¬ì ìŠ¹ì¸/ê±°ë¶€ ê¸°ëŠ¥</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-007', task_title:'v2.0.0 DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„ ', report_type:'change_report', content:'<h2>TASK-007: DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„ </h2><p><b>ë²„ì „:</b> v2.0.0</p><ul><li>Supabase Auth ë„ì…</li><li>profiles í…Œì´ë¸” ì‹ ì„¤</li><li>SECURITY DEFINER RPC</li><li>ì „ì²´ RLS ì •ì±… ì¬ì„¤ê³„</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-008', task_title:'v2.1.0 ê´€ë¦¬ì í˜ì´ì§€ ì ‘ê·¼ ì œì–´', report_type:'change_report', content:'<h2>TASK-008: ê´€ë¦¬ì í˜ì´ì§€ ì ‘ê·¼ ì œì–´</h2><p><b>ë²„ì „:</b> v2.1.0</p><ul><li>initPage() ì—­í•  ì²´í¬ ë¦¬ë””ë ‰íŠ¸</li><li>CSS auth-ready ì½˜í…ì¸  í”Œë˜ì‹œ ë°©ì§€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-009', task_title:'v2.2.0 ë ˆê±°ì‹œ ê´€ë¦¬ì ë¡œê·¸ì¸ ì œê±°', report_type:'change_report', content:'<h2>TASK-009: ë ˆê±°ì‹œ ê´€ë¦¬ì ë¡œê·¸ì¸ ì œê±°</h2><p><b>ë²„ì „:</b> v2.2.0</p><ul><li>ê´€ë¦¬ì ì§„ì…ì  ë²„íŠ¼ ì œê±°</li><li>admin/login.html ì‚­ì œ</li><li>login.html ë‹¨ì¼í™”</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-010', task_title:'v2.3.0 ì´ˆê¸° ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ê°•ì œ', report_type:'change_report', content:'<h2>TASK-010: ì´ˆê¸° ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ê°•ì œ</h2><p><b>ë²„ì „:</b> v2.3.0</p><ul><li>initPage()ì— isFirstLogin ë¦¬ë””ë ‰íŠ¸</li><li>autoLogPageView() ì¸ì¦ í›„ ì´ë™</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-011', task_title:'v2.4.0 ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„ ', report_type:'change_report', content:'<h2>TASK-011: ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„ </h2><p><b>ë²„ì „:</b> v2.4.0</p><ul><li>ê°€ì… ëŒ€ê¸°ì ìˆ˜ ì¹´ë“œ ì¶”ê°€</li><li>ë°”ë¡œê°€ê¸° ì˜ì—­ 5ê°œ ì¬êµ¬ì„±</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-012', task_title:'v2.5.0 ê´€ë¦¬ì/ë¶€ì„œê´€ë¦¬ì ë©”ë‰´ í†µí•©', report_type:'change_report', content:'<h2>TASK-012: ë©”ë‰´ í†µí•©</h2><p><b>ë²„ì „:</b> v2.5.0</p><ul><li>manager/ ë””ë ‰í† ë¦¬ ì‚­ì œ</li><li>admin/talents.html ìƒì„±</li><li>applyRoleNav() í•¨ìˆ˜</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 ìœ í˜•/ê¶Œí•œ 6ë‹¨ê³„ ì²´ê³„', report_type:'change_report', content:'<h2>TASK-013: ìœ í˜•/ê¶Œí•œ 6ë‹¨ê³„ ì²´ê³„</h2><p><b>ë²„ì „:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level í™•ì¥</li><li>get_permission_rank() í•¨ìˆ˜</li><li>RPC 12ê°œ ì—…ë°ì´íŠ¸</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-014', task_title:'v3.7.0 ë‹¤ì¤‘ ê¸°ëŠ¥ ê°œì„  ë° UX í–¥ìƒ', report_type:'change_report', content:'<h2>TASK-014: ë‹¤ì¤‘ ê¸°ëŠ¥ ê°œì„ </h2><p><b>ë²„ì „:</b> v3.7.0</p><ul><li>ì•„ì´ë”” í•œê¸€ ì…ë ¥ ì œí•œ</li><li>ë¡œê·¸ ë²”ìœ„ ì‚­ì œ</li><li>ë¬¼í’ˆ í™œì„±í™”/ë¹„í™œì„±í™”</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 ë³´ê³ ì„œ ë²„ê·¸ ìˆ˜ì •', report_type:'change_report', content:'<h2>TASK-015: ë³´ê³ ì„œ ë²„ê·¸ ìˆ˜ì •</h2><p><b>ë²„ì „:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS ì¶©ëŒ í•´ê²°</li><li>ë¡œê·¸ ì„ íƒ ì‚­ì œ</li><li>ê°€ì…ëŒ€ê¸° ë°°ì§€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-016', task_title:'v3.7.3 ê¶Œí•œ ê¸°ë°˜ ìŠ¤ì½”í•‘', report_type:'change_report', content:'<h2>TASK-016: ê¶Œí•œ ê¸°ë°˜ ìŠ¤ì½”í•‘</h2><p><b>ë²„ì „:</b> v3.7.3</p><ul><li>ë³¸ì¸ë³´ë‹¤ ë‚®ì€ ê¶Œí•œë§Œ ê´€ë¦¬</li><li>ë¶€ì¥ ì´í•˜ ë‹´ë‹¹ ë¶€ì„œë§Œ í‘œì‹œ</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-027', task_title:'v3.10.0 ê¶Œí•œ ì„¸ë¶„í™” + êµ¬ë§¤ ê´€ë¦¬ ê°œí¸', report_type:'change_report', content:'<h2>TASK-027: v3.10.0</h2><p><b>ë²„ì „:</b> v3.10.0</p><ul><li>ë‹¬ë€íŠ¸ ê´€ë¦¬ ê¶Œí•œ ì„¸ë¶„í™”</li><li>ê°€ì… ìŠ¹ì¸/ë¶€ì„œ ì´ë™ ê¶Œí•œ ê°œí¸</li><li>ì¬ê³  ì‹œìŠ¤í…œ ì œê±°</li><li>êµ¬ë§¤ ê´€ë¦¬ ê°œí¸</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-028', task_title:'v3.11.0 ë°˜ì‘í˜• + ë„¤ë¹„ê²Œì´ì…˜ í†µí•©', report_type:'change_report', content:'<h2>TASK-028: v3.11.0</h2><p><b>ë²„ì „:</b> v3.11.0</p><ul><li>CSS ë°˜ì‘í˜• 4ë‹¨ê³„</li><li>ëª¨ë°”ì¼ í–„ë²„ê±° ë„¤ë¹„ê²Œì´ì…˜</li><li>í…Œì´ë¸” ë°˜ì‘í˜•</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„', report_type:'change_report', content:'<h2>TASK-029: v3.12.0</h2><p><b>ë²„ì „:</b> v3.12.0</p><ul><li>í˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬ ê°œí¸</li><li>ë„¤ë¹„ê²Œì´ì…˜ í†µí•©</li><li>ë‹¬ë€íŠ¸ ê´€ë¦¬ í•­ëª© ê´€ë¦¬ ì¶”ê°€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-030', task_title:'v3.12.2 ë„¤ë¹„ í†µí•© + êµ¬ë§¤/ê´€ë¦¬ ê°œì„ ', report_type:'change_report', content:'<h2>TASK-030: v3.12.2</h2><p><b>ë²„ì „:</b> v3.12.2</p><ul><li>ë„¤ë¹„ê²Œì´ì…˜ í†µí•©</li><li>ë‚´ êµ¬ë§¤ ìƒí’ˆ í˜ì´ì§€</li><li>ëŒ€ë¦¬ êµ¬ë§¤ ì‹œìŠ¤í…œ</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-032', task_title:'v3.13.0 ë¡œê·¸ì¸ ê°œì„  + 5ê·¸ë£¹ ë“œë¡­ë‹¤ìš´ ë„¤ë¹„', report_type:'change_report', content:'<h2>TASK-032: v3.13.0</h2><p><b>ë²„ì „:</b> v3.13.0</p><ul><li>ìŠ¹ì¸ ëŒ€ê¸° ë©”ì‹œì§€</li><li>ë¹„ë°€ë²ˆí˜¸ ë³µì¡ë„</li><li>5ê·¸ë£¹ ë“œë¡­ë‹¤ìš´ ë„¤ë¹„ê²Œì´ì…˜</li><li>ì‚¬ìš©ì ê°€ì´ë“œ í˜ì´ì§€</li><li>Q&A í˜ì´ì§€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-035', task_title:'v3.13.3~v3.13.4 ë“œë¡­ë‹¤ìš´/QnA/ë°°ì§€ ìˆ˜ì •', report_type:'change_report', content:'<h2>TASK-035: v3.13.3~v3.13.4</h2><p><b>ë²„ì „:</b> v3.13.3~v3.13.4</p><ul><li>Safari ë“œë¡­ë‹¤ìš´ í´ë¦¬í•‘ ìˆ˜ì • (position:fixed)</li><li>Q&A ì‚­ì œ/ì¼ì‹œ/ì§ˆë¬¸ì í‘œì‹œ</li><li>ë©”ì¸ ê°€ì´ë“œ ì „í™˜</li><li>ë°°ì§€ ì¸ë¼ì¸ í‘œì‹œ</li></ul>', created_by:'AI_Cursor' }
+        { task_id:'TASK-001', task_title:'v1.0.0 ÃÊ±â ±¸Ãà', report_type:'plan', content:'<h2>TASK-001: ÃÊ±â ±¸Ãà - ÀÛ¾÷ °èÈ¹¼­</h2><p>docs/TASK-001_plan.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 ÃÊ±â ±¸Ãà', report_type:'test_scenario', content:'<h2>TASK-001: ÃÊ±â ±¸Ãà - Å×½ºÆ® ½Ã³ª¸®¿À</h2><p>docs/TASK-001_test_scenario.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 ÃÊ±â ±¸Ãà', report_type:'test_result', content:'<h2>TASK-001: ÃÊ±â ±¸Ãà - Å×½ºÆ® °á°ú</h2><p>docs/TASK-001_test_result.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 ÃÊ±â ±¸Ãà', report_type:'change_report', content:'<h2>TASK-001: ÃÊ±â ±¸Ãà</h2><p><b>¹öÀü:</b> v1.0.0</p><ul><li>È¯¿µ ¸ŞÀÎ ÆäÀÌÁö ±¸Çö</li><li>°ü¸®ÀÚ ·Î±×ÀÎ/ÆĞ½º¿öµå º¯°æ</li><li>°ü¸®ÀÚ ´ë½Ãº¸µå</li><li>Supabase ¿¬µ¿ ¹× CRUD</li><li>È°µ¿ ·Î±× ½Ã½ºÅÛ</li><li>GitHub Pages ¹èÆ÷</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ', report_type:'change_report', content:'<h2>TASK-002: ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ</h2><p><b>¹öÀü:</b> v1.1.0</p><ul><li>4´Ü°è ¿ªÇÒ ±¸ºĞ</li><li>¿ªÇÒº° Àü¿ë ÆäÀÌÁö</li><li>´Ş¶õÆ® »óÁ¡</li><li>ºÎ¼­ °ü¸®ÀÚ ±â´É</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-003', task_title:'v1.2.0 »óÇ° ÀÌ¹ÌÁö ¹× ¸ŞÀÎ È­¸é °³¼±', report_type:'change_report', content:'<h2>TASK-003: »óÇ° ÀÌ¹ÌÁö ¹× ¸ŞÀÎ È­¸é</h2><p><b>¹öÀü:</b> v1.2.0</p><ul><li>»óÇ° ÀÌ¹ÌÁö URL Áö¿ø</li><li>Supabase Storage ÆÄÀÏ ¾÷·Îµå</li><li>¸ŞÀÎ È­¸é Ä«µå ¸µÅ© ¿¬°á</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-004', task_title:'v1.3.0 ¹öÀü °ü¸® ½Ã½ºÅÛ', report_type:'change_report', content:'<h2>TASK-004: ¹öÀü °ü¸® ½Ã½ºÅÛ</h2><p><b>¹öÀü:</b> v1.3.0</p><ul><li>¹öÀü °ü¸® ¸ğµâ µµÀÔ</li><li>¸ğµç ÆäÀÌÁö ÇÏ´Ü ¹öÀü Ç¥½Ã</li><li>°ü¸®ÀÚ ¹öÀü ÀÌ·Â Á¶È¸</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-005', task_title:'v1.4.0 »ç¿ëÀÚ °ü¸® ¹× ¿ªÇÒ ¹èÁö', report_type:'change_report', content:'<h2>TASK-005: »ç¿ëÀÚ °ü¸® ¹× ¿ªÇÒ ¹èÁö</h2><p><b>¹öÀü:</b> v1.4.0</p><ul><li>°ü¸®ÀÚ »ç¿ëÀÚ °ü¸® ÆäÀÌÁö</li><li>¿ªÇÒº° Åë°è ´ë½Ãº¸µå</li><li>¸ğµç ÆäÀÌÁö ¿ªÇÒ ¹èÁö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-006', task_title:'v1.5.0 °èÁ¤ µî·Ï ½ÅÃ»', report_type:'change_report', content:'<h2>TASK-006: °èÁ¤ µî·Ï ½ÅÃ»</h2><p><b>¹öÀü:</b> v1.5.0</p><ul><li>°èÁ¤ µî·Ï ½ÅÃ» ÆäÀÌÁö</li><li>¾ÆÀÌµğ Áßº¹ °ËÁõ</li><li>°ü¸®ÀÚ ½ÂÀÎ/°ÅºÎ ±â´É</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB º¸¾È ±¸Á¶ Àü¸é °³¼±', report_type:'change_report', content:'<h2>TASK-007: DB º¸¾È ±¸Á¶ Àü¸é °³¼±</h2><p><b>¹öÀü:</b> v2.0.0</p><ul><li>Supabase Auth µµÀÔ</li><li>profiles Å×ÀÌºí ½Å¼³</li><li>SECURITY DEFINER RPC</li><li>ÀüÃ¼ RLS Á¤Ã¥ Àç¼³°è</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-008', task_title:'v2.1.0 °ü¸®ÀÚ ÆäÀÌÁö Á¢±Ù Á¦¾î', report_type:'change_report', content:'<h2>TASK-008: °ü¸®ÀÚ ÆäÀÌÁö Á¢±Ù Á¦¾î</h2><p><b>¹öÀü:</b> v2.1.0</p><ul><li>initPage() ¿ªÇÒ Ã¼Å© ¸®µğ·ºÆ®</li><li>CSS auth-ready ÄÜÅÙÃ÷ ÇÃ·¡½Ã ¹æÁö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-009', task_title:'v2.2.0 ·¹°Å½Ã °ü¸®ÀÚ ·Î±×ÀÎ Á¦°Å', report_type:'change_report', content:'<h2>TASK-009: ·¹°Å½Ã °ü¸®ÀÚ ·Î±×ÀÎ Á¦°Å</h2><p><b>¹öÀü:</b> v2.2.0</p><ul><li>°ü¸®ÀÚ ÁøÀÔÁ¡ ¹öÆ° Á¦°Å</li><li>admin/login.html »èÁ¦</li><li>login.html ´ÜÀÏÈ­</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-010', task_title:'v2.3.0 ÃÊ±â ºñ¹Ğ¹øÈ£ º¯°æ °­Á¦', report_type:'change_report', content:'<h2>TASK-010: ÃÊ±â ºñ¹Ğ¹øÈ£ º¯°æ °­Á¦</h2><p><b>¹öÀü:</b> v2.3.0</p><ul><li>initPage()¿¡ isFirstLogin ¸®µğ·ºÆ®</li><li>autoLogPageView() ÀÎÁõ ÈÄ ÀÌµ¿</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 °ü¸®ÀÚ ´ë½Ãº¸µå °³¼±', report_type:'change_report', content:'<h2>TASK-011: °ü¸®ÀÚ ´ë½Ãº¸µå °³¼±</h2><p><b>¹öÀü:</b> v2.4.0</p><ul><li>°¡ÀÔ ´ë±âÀÚ ¼ö Ä«µå Ãß°¡</li><li>¹Ù·Î°¡±â ¿µ¿ª 5°³ Àç±¸¼º</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-012', task_title:'v2.5.0 °ü¸®ÀÚ/ºÎ¼­°ü¸®ÀÚ ¸Ş´º ÅëÇÕ', report_type:'change_report', content:'<h2>TASK-012: ¸Ş´º ÅëÇÕ</h2><p><b>¹öÀü:</b> v2.5.0</p><ul><li>manager/ µğ·ºÅä¸® »èÁ¦</li><li>admin/talents.html »ı¼º</li><li>applyRoleNav() ÇÔ¼ö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 À¯Çü/±ÇÇÑ 6´Ü°è Ã¼°è', report_type:'change_report', content:'<h2>TASK-013: À¯Çü/±ÇÇÑ 6´Ü°è Ã¼°è</h2><p><b>¹öÀü:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level È®Àå</li><li>get_permission_rank() ÇÔ¼ö</li><li>RPC 12°³ ¾÷µ¥ÀÌÆ®</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-014', task_title:'v3.7.0 ´ÙÁß ±â´É °³¼± ¹× UX Çâ»ó', report_type:'change_report', content:'<h2>TASK-014: ´ÙÁß ±â´É °³¼±</h2><p><b>¹öÀü:</b> v3.7.0</p><ul><li>¾ÆÀÌµğ ÇÑ±Û ÀÔ·Â Á¦ÇÑ</li><li>·Î±× ¹üÀ§ »èÁ¦</li><li>¹°Ç° È°¼ºÈ­/ºñÈ°¼ºÈ­</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 º¸°í¼­ ¹ö±× ¼öÁ¤', report_type:'change_report', content:'<h2>TASK-015: º¸°í¼­ ¹ö±× ¼öÁ¤</h2><p><b>¹öÀü:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS Ãæµ¹ ÇØ°á</li><li>·Î±× ¼±ÅÃ »èÁ¦</li><li>°¡ÀÔ´ë±â ¹èÁö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-016', task_title:'v3.7.3 ±ÇÇÑ ±â¹İ ½ºÄÚÇÎ', report_type:'change_report', content:'<h2>TASK-016: ±ÇÇÑ ±â¹İ ½ºÄÚÇÎ</h2><p><b>¹öÀü:</b> v3.7.3</p><ul><li>º»ÀÎº¸´Ù ³·Àº ±ÇÇÑ¸¸ °ü¸®</li><li>ºÎÀå ÀÌÇÏ ´ã´ç ºÎ¼­¸¸ Ç¥½Ã</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-027', task_title:'v3.10.0 ±ÇÇÑ ¼¼ºĞÈ­ + ±¸¸Å °ü¸® °³Æí', report_type:'change_report', content:'<h2>TASK-027: v3.10.0</h2><p><b>¹öÀü:</b> v3.10.0</p><ul><li>´Ş¶õÆ® °ü¸® ±ÇÇÑ ¼¼ºĞÈ­</li><li>°¡ÀÔ ½ÂÀÎ/ºÎ¼­ ÀÌµ¿ ±ÇÇÑ °³Æí</li><li>Àç°í ½Ã½ºÅÛ Á¦°Å</li><li>±¸¸Å °ü¸® °³Æí</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-028', task_title:'v3.11.0 ¹İÀÀÇü + ³×ºñ°ÔÀÌ¼Ç ÅëÇÕ', report_type:'change_report', content:'<h2>TASK-028: v3.11.0</h2><p><b>¹öÀü:</b> v3.11.0</p><ul><li>CSS ¹İÀÀÇü 4´Ü°è</li><li>¸ğ¹ÙÀÏ ÇÜ¹ö°Å ³×ºñ°ÔÀÌ¼Ç</li><li>Å×ÀÌºí ¹İÀÀÇü</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ', report_type:'change_report', content:'<h2>TASK-029: v3.12.0</h2><p><b>¹öÀü:</b> v3.12.0</p><ul><li>ÆäÀÌÁö ±â´É °ü¸® °³Æí</li><li>³×ºñ°ÔÀÌ¼Ç ÅëÇÕ</li><li>´Ş¶õÆ® °ü¸® Ç×¸ñ °ü¸® Ãß°¡</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030', task_title:'v3.12.2 ³×ºñ ÅëÇÕ + ±¸¸Å/°ü¸® °³¼±', report_type:'change_report', content:'<h2>TASK-030: v3.12.2</h2><p><b>¹öÀü:</b> v3.12.2</p><ul><li>³×ºñ°ÔÀÌ¼Ç ÅëÇÕ</li><li>³» ±¸¸Å »óÇ° ÆäÀÌÁö</li><li>´ë¸® ±¸¸Å ½Ã½ºÅÛ</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-032', task_title:'v3.13.0 ·Î±×ÀÎ °³¼± + 5±×·ì µå·Ó´Ù¿î ³×ºñ', report_type:'change_report', content:'<h2>TASK-032: v3.13.0</h2><p><b>¹öÀü:</b> v3.13.0</p><ul><li>½ÂÀÎ ´ë±â ¸Ş½ÃÁö</li><li>ºñ¹Ğ¹øÈ£ º¹Àâµµ</li><li>5±×·ì µå·Ó´Ù¿î ³×ºñ°ÔÀÌ¼Ç</li><li>»ç¿ëÀÚ °¡ÀÌµå ÆäÀÌÁö</li><li>Q&A ÆäÀÌÁö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-035', task_title:'v3.13.3~v3.13.4 µå·Ó´Ù¿î/QnA/¹èÁö ¼öÁ¤', report_type:'change_report', content:'<h2>TASK-035: v3.13.3~v3.13.4</h2><p><b>¹öÀü:</b> v3.13.3~v3.13.4</p><ul><li>Safari µå·Ó´Ù¿î Å¬¸®ÇÎ ¼öÁ¤ (position:fixed)</li><li>Q&A »èÁ¦/ÀÏ½Ã/Áú¹®ÀÚ Ç¥½Ã</li><li>¸ŞÀÎ °¡ÀÌµå ÀüÈ¯</li><li>¹èÁö ÀÎ¶óÀÎ Ç¥½Ã</li></ul>', created_by:'AI_Cursor' }
       ];
     }
 
     async function seedAllReports() {
-      if (!confirm('ê¸°ì¡´ ë³´ê³ ì„œë¥¼ ëª¨ë‘ ì‚­ì œí•˜ê³  ì „ì²´ ì‘ì—… ë³´ê³ ì„œë¥¼ ìƒˆë¡œ ë“±ë¡í•©ë‹ˆë‹¤.\nê³„ì†í•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
+      if (!confirm('±âÁ¸ º¸°í¼­¸¦ ¸ğµÎ »èÁ¦ÇÏ°í ÀüÃ¼ ÀÛ¾÷ º¸°í¼­¸¦ »õ·Î µî·ÏÇÕ´Ï´Ù.\n°è¼ÓÇÏ½Ã°Ú½À´Ï±î?')) return;
       const SEED = [
-        { task_id:'TASK-001', task_title:'v1.0.0 ì´ˆê¸° êµ¬ì¶•', report_type:'plan', content:'<h2>TASK-001: ì´ˆê¸° êµ¬ì¶• - ì‘ì—… ê³„íšì„œ</h2><p>docs/TASK-001_plan.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 ì´ˆê¸° êµ¬ì¶•', report_type:'test_scenario', content:'<h2>TASK-001: ì´ˆê¸° êµ¬ì¶• - í…ŒìŠ¤íŠ¸ ì‹œë‚˜ë¦¬ì˜¤</h2><p>docs/TASK-001_test_scenario.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 ì´ˆê¸° êµ¬ì¶•', report_type:'test_result', content:'<h2>TASK-001: ì´ˆê¸° êµ¬ì¶• - í…ŒìŠ¤íŠ¸ ê²°ê³¼</h2><p>docs/TASK-001_test_result.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 ì´ˆê¸° êµ¬ì¶•', report_type:'change_report', content:'<h2>TASK-001: ì´ˆê¸° êµ¬ì¶•</h2><p><b>ë²„ì „:</b> v1.0.0</p><ul><li>í™˜ì˜ ë©”ì¸ í˜ì´ì§€ êµ¬í˜„</li><li>ê´€ë¦¬ì ë¡œê·¸ì¸/íŒ¨ìŠ¤ì›Œë“œ ë³€ê²½</li><li>ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ (ë³´ê³ ì„œ, ë¡œê·¸)</li><li>Supabase ì—°ë™ ë° CRUD</li><li>í™œë™ ë¡œê·¸ ì‹œìŠ¤í…œ</li><li>GitHub Pages ë°°í¬</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ', report_type:'plan', content:'<h2>TASK-002: ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ - ì‘ì—… ê³„íšì„œ</h2><p>docs/TASK-002_plan.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ', report_type:'test_scenario', content:'<h2>TASK-002: ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ - í…ŒìŠ¤íŠ¸ ì‹œë‚˜ë¦¬ì˜¤</h2><p>docs/TASK-002_test_scenario.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ', report_type:'test_result', content:'<h2>TASK-002: ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ - í…ŒìŠ¤íŠ¸ ê²°ê³¼</h2><p>docs/TASK-002_test_result.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ', report_type:'change_report', content:'<h2>TASK-002: ì—­í• ë³„ ê³„ì • ì‹œìŠ¤í…œ</h2><p><b>ë²„ì „:</b> v1.1.0</p><ul><li>4ë‹¨ê³„ ì—­í•  êµ¬ë¶„</li><li>ì—­í• ë³„ ì „ìš© í˜ì´ì§€ êµ¬í˜„</li><li>ë‹¬ë€íŠ¸ ìƒì  (í•™ìƒ/êµì‚¬ ë¶„ë¦¬)</li><li>ë¶€ì„œ ê´€ë¦¬ì ê¸°ëŠ¥</li><li>RPC í•¨ìˆ˜ (verify_user, give_talent, use_talent)</li><li>í†µí•© ë¡œê·¸ì¸ í˜ì´ì§€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-003', task_title:'v1.2.0 ìƒí’ˆ ì´ë¯¸ì§€ ë° ë©”ì¸ í™”ë©´ ê°œì„ ', report_type:'change_report', content:'<h2>TASK-003: ìƒí’ˆ ì´ë¯¸ì§€ ë° ë©”ì¸ í™”ë©´</h2><p><b>ë²„ì „:</b> v1.2.0</p><ul><li>ìƒí’ˆ ì´ë¯¸ì§€ URL ì§€ì›</li><li>Supabase Storage íŒŒì¼ ì—…ë¡œë“œ</li><li>ë©”ì¸ í™”ë©´ ì¹´ë“œ ë§í¬ ì—°ê²°</li><li>ë‹¬ë€íŠ¸ ì ë¦½ ë°©ë²• ì•ˆë‚´ í˜ì´ì§€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-004', task_title:'v1.3.0 ë²„ì „ ê´€ë¦¬ ì‹œìŠ¤í…œ', report_type:'change_report', content:'<h2>TASK-004: ë²„ì „ ê´€ë¦¬ ì‹œìŠ¤í…œ</h2><p><b>ë²„ì „:</b> v1.3.0</p><ul><li>ë²„ì „ ê´€ë¦¬ ëª¨ë“ˆ (version.js) ë„ì…</li><li>ëª¨ë“  í˜ì´ì§€ í•˜ë‹¨ ë²„ì „ í‘œì‹œ</li><li>ê´€ë¦¬ì ë²„ì „ ì´ë ¥ ì¡°íšŒ</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-005', task_title:'v1.4.0 ì‚¬ìš©ì ê´€ë¦¬ ë° ì—­í•  ë°°ì§€', report_type:'change_report', content:'<h2>TASK-005: ì‚¬ìš©ì ê´€ë¦¬ ë° ì—­í•  ë°°ì§€</h2><p><b>ë²„ì „:</b> v1.4.0</p><ul><li>ê´€ë¦¬ì ì‚¬ìš©ì ê´€ë¦¬ í˜ì´ì§€</li><li>ì—­í• ë³„ í†µê³„ ëŒ€ì‹œë³´ë“œ</li><li>ëª¨ë“  í˜ì´ì§€ ì—­í•  ë°°ì§€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-006', task_title:'v1.5.0 ê³„ì • ë“±ë¡ ì‹ ì²­', report_type:'change_report', content:'<h2>TASK-006: ê³„ì • ë“±ë¡ ì‹ ì²­</h2><p><b>ë²„ì „:</b> v1.5.0</p><ul><li>ê³„ì • ë“±ë¡ ì‹ ì²­ í˜ì´ì§€</li><li>ì•„ì´ë”” ì¤‘ë³µ/ì‹ ì²­ ì¤‘ë³µ ê²€ì¦</li><li>ê´€ë¦¬ì ìŠ¹ì¸/ê±°ë¶€ ê¸°ëŠ¥</li><li>registration_requests í…Œì´ë¸”</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-007', task_title:'v2.0.0 DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„ ', report_type:'security_report', content:'<h2>TASK-007: DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„  - ë³´ì•ˆ ë³´ê³ ì„œ</h2><p>docs/TASK-007_security_report.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-007', task_title:'v2.0.0 DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„ ', report_type:'plan', content:'<h2>TASK-007: DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„  - ë°±ì—… ì²´í¬ë¦¬ìŠ¤íŠ¸</h2><p>docs/TASK-007_backup_checklist.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-007', task_title:'v2.0.0 DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„ ', report_type:'change_report', content:'<h2>TASK-007: DB ë³´ì•ˆ êµ¬ì¡° ì „ë©´ ê°œì„ </h2><p><b>ë²„ì „:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth ë„ì… (bcrypt)</li><li>profiles í…Œì´ë¸” ì‹ ì„¤</li><li>SECURITY DEFINER RPC í•¨ìˆ˜</li><li>ì „ì²´ í…Œì´ë¸” RLS ì •ì±… ì¬ì„¤ê³„</li><li>ëª¨ë°”ì¼ ë°˜ì‘í˜• ëŒ€í­ ê°œì„ </li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-008', task_title:'v2.1.0 ê´€ë¦¬ì í˜ì´ì§€ ì ‘ê·¼ ì œì–´', report_type:'change_report', content:'<h2>TASK-008: ê´€ë¦¬ì í˜ì´ì§€ ì ‘ê·¼ ì œì–´</h2><p><b>ë²„ì „:</b> v2.1.0</p><ul><li>initPage() ì—­í•  ì²´í¬ ë¦¬ë””ë ‰íŠ¸</li><li>CSS auth-ready ê¸°ë°˜ ì½˜í…ì¸  í”Œë˜ì‹œ ë°©ì§€</li><li>ë¶€ì„œ ê´€ë¦¬ ì—­í• ë³„ ì¸ì› ë¶„ë¦¬ í‘œì‹œ</li><li>admin ì „ìš© ìƒí’ˆ ê´€ë¦¬ í˜ì´ì§€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-009', task_title:'v2.2.0 ë ˆê±°ì‹œ ê´€ë¦¬ì ë¡œê·¸ì¸ ì œê±°', report_type:'change_report', content:'<h2>TASK-009: ë ˆê±°ì‹œ ê´€ë¦¬ì ë¡œê·¸ì¸ ì œê±°</h2><p><b>ë²„ì „:</b> v2.2.0</p><ul><li>ê´€ë¦¬ì ì§„ì…ì  ë²„íŠ¼ ì œê±°</li><li>admin/login.html ë ˆê±°ì‹œ íŒŒì¼ ì‚­ì œ</li><li>ë¡œê·¸ì¸ ì§„ì…ì  login.html ë‹¨ì¼í™”</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-010', task_title:'v2.3.0 ì´ˆê¸° ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ê°•ì œ', report_type:'security_report', content:'<h2>TASK-010: ì´ˆê¸° ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ê°•ì œ - ë³´ì•ˆ ë³´ê³ ì„œ</h2><p>docs/TASK-010_security_report.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-010', task_title:'v2.3.0 ì´ˆê¸° ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ê°•ì œ', report_type:'change_report', content:'<h2>TASK-010: ì´ˆê¸° ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ê°•ì œ</h2><p><b>ë²„ì „:</b> v2.3.0</p><ul><li>initPage()ì— isFirstLogin ê°•ì œ ë¦¬ë””ë ‰íŠ¸</li><li>student/shop.html ë³´í˜¸ í˜ì´ì§€ ì „í™˜</li><li>autoLogPageView() ì¸ì¦ í›„ ì´ë™</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-011', task_title:'v2.4.0 ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„ ', report_type:'test_scenario', content:'<h2>TASK-011: ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„  - í…ŒìŠ¤íŠ¸ ì‹œë‚˜ë¦¬ì˜¤</h2><p>docs/TASK-011_test_scenario.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-011', task_title:'v2.4.0 ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„ ', report_type:'test_result', content:'<h2>TASK-011: ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„  - í…ŒìŠ¤íŠ¸ ê²°ê³¼</h2><p>docs/TASK-011_test_report.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-011', task_title:'v2.4.0 ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„ ', report_type:'change_report', content:'<h2>TASK-011: ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ ê°œì„ </h2><p><b>ë²„ì „:</b> v2.4.0</p><ul><li>ê°€ì… ëŒ€ê¸°ì ìˆ˜ ì¹´ë“œ ì¶”ê°€</li><li>ë°”ë¡œê°€ê¸° ì˜ì—­ 5ê°œë¡œ ì¬êµ¬ì„±</li><li>ê° ë°”ë¡œê°€ê¸°ì— ì´ëª¨ì§€ ì¶”ê°€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-012', task_title:'v2.5.0 ê´€ë¦¬ì/ë¶€ì„œê´€ë¦¬ì ë©”ë‰´ í†µí•©', report_type:'change_report', content:'<h2>TASK-012: ê´€ë¦¬ì/ë¶€ì„œê´€ë¦¬ì ë©”ë‰´ í†µí•©</h2><p><b>ë²„ì „:</b> v2.5.0</p><ul><li>manager/ ë””ë ‰í† ë¦¬ ì‚­ì œ (admin/ í†µí•©)</li><li>admin/talents.html ì‹ ê·œ ìƒì„±</li><li>applyRoleNav() í•¨ìˆ˜ ë„ì…</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 ìœ í˜•/ê¶Œí•œ 6ë‹¨ê³„ ì²´ê³„', report_type:'change_report', content:'<h2>TASK-013: ìœ í˜•/ê¶Œí•œ 6ë‹¨ê³„ ì²´ê³„ ì „ë©´ ê°œí¸</h2><p><b>ë²„ì „:</b> v3.0.0 ~ v3.6.0</p><ul><li>profiles user_type + permission_level í™•ì¥</li><li>get_permission_rank() í—¬í¼ í•¨ìˆ˜</li><li>RPC í•¨ìˆ˜ 12ê°œ ì „ë©´ ì—…ë°ì´íŠ¸</li><li>ë‹¬ë€íŠ¸ ì§€ê¸‰ ë°©ì‹ ê°œí¸ (talent_items)</li><li>ë°˜ ì‹œìŠ¤í…œ ì¶”ê°€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-013A', task_title:'v3.0.0 ìŠˆí¼ê´€ë¦¬ì ì²´ê³„ + ë„¤ë¹„ê²Œì´ì…˜ ê°œí¸', report_type:'change_report', content:'<h2>TASK-013A: v3.0.0 ìŠˆí¼ê´€ë¦¬ì ì²´ê³„</h2><p>docs/TASK-013A_change_report.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-013BCD', task_title:'v3.0.0 ë³€ê²½ ë³´ê³ ì„œ + SQL ìŠ¤í‚¤ë§ˆ', report_type:'change_report', content:'<h2>TASK-013BCD: v3.0.0 ë³€ê²½ ë³´ê³ ì„œ</h2><p>docs/TASK-013BCD_change_report.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-014', task_title:'v3.7.0 ë‹¤ì¤‘ ê¸°ëŠ¥ ê°œì„  ë° UX í–¥ìƒ', report_type:'change_report', content:'<h2>TASK-014: ë‹¤ì¤‘ ê¸°ëŠ¥ ê°œì„ </h2><p><b>ë²„ì „:</b> v3.7.0</p><ul><li>ì•„ì´ë”” í•œê¸€ ì…ë ¥ ì œí•œ</li><li>ë¡œê·¸ ë²”ìœ„ ì‚­ì œ, ì‚¬ìš©ì ì´ë¦„(ì•„ì´ë””) í‘œì‹œ, ìƒì„¸ íŒì—…</li><li>ëŒ€ì‹œë³´ë“œ ì´ìŠˆ ë¡œê·¸ í•„í„°ë§</li><li>ë„¤ë¹„ê²Œì´ì…˜ íƒ€ì´í‹€/ë§í¬ ë³€ê²½</li><li>ë¬¼í’ˆ í™œì„±í™”/ë¹„í™œì„±í™” í† ê¸€</li><li>ìŠ¹ì¸ ëŒ€ê¸° ë¡œê·¸ì¸ ë©”ì‹œì§€ ë¶„ê¸°</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 ë³´ê³ ì„œ ë²„ê·¸ ìˆ˜ì • + ë¡œê·¸ ì‚­ì œ + ë°°ì§€', report_type:'change_report', content:'<h2>TASK-015: ë³´ê³ ì„œ ë²„ê·¸ ìˆ˜ì •</h2><p><b>ë²„ì „:</b> v3.7.1 ~ v3.7.2</p><ul><li>reports.html TYPE_LABELS ì¶©ëŒ í•´ê²°</li><li>ë¡œê·¸ ì²´í¬ë°•ìŠ¤ + ì„ íƒ ì‚­ì œ</li><li>ì‚¬ìš©ì ê´€ë¦¬ ê°€ì…ëŒ€ê¸° ë°°ì§€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-016', task_title:'v3.7.3 ê¶Œí•œ ê¸°ë°˜ ë¶€ì„œ/ì‚¬ìš©ì ê´€ë¦¬ ìŠ¤ì½”í•‘', report_type:'change_report', content:'<h2>TASK-016: ê¶Œí•œ ê¸°ë°˜ ìŠ¤ì½”í•‘</h2><p><b>ë²„ì „:</b> v3.7.3</p><ul><li>êµì‚¬ ìˆ˜ ì¹´ìš´íŠ¸ ì „ì²´ í¬í•¨</li><li>ë³¸ì¸ ê¶Œí•œë³´ë‹¤ ë‚®ì€ ì‚¬ìš©ìë§Œ ê´€ë¦¬ ê°€ëŠ¥</li><li>ë¶€ì¥ ì´í•˜ ë‹´ë‹¹ ë¶€ì„œë§Œ í‘œì‹œ</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-017', task_title:'v3.7.4 ê°€ì… ì‹ ì²­ ê¶Œí•œë³„ ì¡°íšŒ/ì²˜ë¦¬', report_type:'change_report', content:'<h2>TASK-017: ê°€ì… ì‹ ì²­ ê¶Œí•œë³„ ì¡°íšŒ/ì²˜ë¦¬</h2><p><b>ë²„ì „:</b> v3.7.4</p><ul><li>ê´€ë¦¬ì/ì „ë„ì‚¬ë‹˜: ëª¨ë“  ë¶€ì„œ ì‹ ì²­ì ì¡°íšŒ+ì²˜ë¦¬</li><li>ë¶€ì¥: ëª¨ë“  ë¶€ì„œ ì¡°íšŒ, ë‹´ë‹¹ ë¶€ì„œë§Œ ì²˜ë¦¬</li><li>ë¶€ì„œ ë‹´ë‹¹ êµì‚¬: ë‹´ë‹¹ ë¶€ì„œë§Œ ì¡°íšŒ+ì²˜ë¦¬</li><li>ë„¤ë¹„ê²Œì´ì…˜ ì•„ì´ë”” í‘œì‹œ ì¶”ê°€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-018', task_title:'v3.7.5 íƒ€ì¸ ì•„ì´ë”” ìˆ¨ê¹€ + ë¶€ì„œ ì´ë™ ê´€ë¦¬', report_type:'change_report', content:'<h2>TASK-018: ì•„ì´ë”” ìˆ¨ê¹€ + ë¶€ì„œ ì´ë™</h2><p><b>ë²„ì „:</b> v3.7.5</p><ul><li>íƒ€ì¸ ì•„ì´ë”” ìˆ¨ê¹€ (ìê¸°ë§Œ í‘œì‹œ)</li><li>ë¶€ì„œ ì´ë™ ë²„íŠ¼ + ì¦‰ì‹œ/ìš”ì²­ ë¶„ê¸°</li><li>ë¶€ì„œ ì´ë™ ì‹ ì²­ ë‚´ì—­ + ìŠ¹ì¸/ê±°ë¶€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-019', task_title:'v3.7.6 ë³´ê³ ì„œ ì¸ì½”ë”© ìˆ˜ì • + ê´€ë¦¬ì ì•„ì´ë”” ì˜ˆì™¸', report_type:'change_report', content:'<h2>TASK-019: ë³´ê³ ì„œ ì¸ì½”ë”© + ê´€ë¦¬ì ì•„ì´ë””</h2><p><b>ë²„ì „:</b> v3.7.6</p><ul><li>ì „ì²´ HTML BOM ì œê±°</li><li>ê´€ë¦¬ì ê¶Œí•œ: íƒ€ì¸ ì•„ì´ë”” í‘œì‹œ ê°€ëŠ¥</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-020', task_title:'v3.7.7 ìˆ˜ì • ëª¨ë‹¬ ë¶€ì„œ ë³€ê²½ ì œê±°', report_type:'change_report', content:'<h2>TASK-020: ìˆ˜ì • ëª¨ë‹¬ ë¶€ì„œ ë³€ê²½ ì œê±°</h2><p><b>ë²„ì „:</b> v3.7.7</p><ul><li>ì‚¬ìš©ì/ê´€ë¦¬ì ìˆ˜ì • ëª¨ë‹¬ ë¶€ì„œ ë¹„í™œì„±í™”</li><li>ë¶€ì„œ ë³€ê²½ì€ ë¶€ì„œì´ë™ìœ¼ë¡œë§Œ</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-021', task_title:'v3.8.0 ìŠˆí¼ê´€ë¦¬ì + ë„¤ë¹„ê²Œì´ì…˜ + í˜ì´ì§€ ê¶Œí•œ', report_type:'change_report', content:'<h2>TASK-021: v3.8.0 ì „ë©´ ê°œì„ </h2><p><b>ë²„ì „:</b> v3.8.0</p><ul><li>ìŠˆí¼ê´€ë¦¬ì rank 110 ì²´ê³„</li><li>ë„¤ë¹„ê²Œì´ì…˜: ë‹¬ë€íŠ¸ ë§ˆì„ í†µì¼ + ë‚´ë‹¬ë€íŠ¸/ìƒí’ˆêµ¬ë§¤ ì¶”ê°€</li><li>í˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬ + í˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬ ì‹ ê·œ</li><li>ë¶€ì„œ ê´€ë¦¬ ê·¸ë¦¬ë“œ ê°„ì†Œí™”</li><li>ë¶€ì¥ êµì‚¬ ëª…ì¹­ ë³€ê²½</li><li>ê´€ë¦¬ì ê´€ë¦¬ ì—´/ë²„íŠ¼ ì •ë¦¬</li><li>ë‹¬ë€íŠ¸ ê´€ë¦¬ ì”ì—¬/ì‚¬ìš©/ëˆ„ì  + ìƒì„¸ í†µê³„</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-022', task_title:'v3.8.1 ìŠˆí¼ê´€ë¦¬ì ê´€ë¦¬ ìˆ˜ì • + UI/UX ê°œì„ ', report_type:'change_report', content:'<h2>TASK-022: v3.8.1 ê°œì„ </h2><p><b>ë²„ì „:</b> v3.8.1</p><ul><li>ìŠˆí¼ê´€ë¦¬ì ê´€ë¦¬ì ê´€ë¦¬ ê°€ëŠ¥ ìˆ˜ì •</li><li>ë„¤ë¹„ê²Œì´ì…˜ í•œ ì¤„ ìŠ¤í¬ë¡¤ + ì»´íŒ©íŠ¸</li><li>ëª¨ë°”ì¼ ê·¸ë¦¬ë“œ ì—¬ë°± ì¶•ì†Œ</li><li>í˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬ ê¶Œí•œë³„ ê°œí¸</li><li>ë³´ê³ ì„œ JS ì‹œë”ë¡œ ì¸ì½”ë”© ë¬¸ì œ í•´ê²°</li><li>ë¡œê·¸ ì‚­ì œ RLS ì •ì±… ì¶”ê°€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-023', task_title:'v3.8.2 í˜ì´ì§€ ì ‘ê·¼ ê¶Œí•œë³„ + ì‘ì—… ì´ë ¥ + DB ì—°ë™', report_type:'change_report', content:'<h2>TASK-023: v3.8.2 ê°œì„ </h2><p><b>ë²„ì „:</b> v3.8.2</p><ul><li>í˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬: ì‚¬ìš©ìë³„ â†’ ìœ í˜•/ê¶Œí•œë³„ ê°œí¸ (role_page_access)</li><li>ì‘ì—… ì´ë ¥ ê´€ë¦¬ í˜ì´ì§€ ì‹ ê·œ (admin/audit.html)</li><li>initPage()ì—ì„œ role_page_access DB ì—°ë™ â†’ í˜ì´ì§€ ì°¨ë‹¨/ìš”ì†Œ ìˆ¨ê¹€ ì ìš©</li><li>ë¡œê·¸ ì‚­ì œ: ìƒì„¸ ë””ë²„ê·¸ ë¡œê·¸ + RLS ë¯¸ì ìš© ì‹œ ì•ˆë‚´ ë©”ì‹œì§€</li><li>ë³´ê³ ì„œ: ìˆ˜ì • ë²„íŠ¼ ì¶”ê°€ (editReport)</li><li>ë„¤ë¹„ê²Œì´ì…˜: ë³„ ì´ëª¨ì§€ íšŒì „ ì• ë‹ˆë©”ì´ì…˜ ì „ì²´ ì ìš©</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-024', task_title:'v3.8.3 ì‘ì—…ì ì‹¤ëª… + ë³´ê³ ì„œ ìë™ë³µêµ¬', report_type:'change_report', content:'<h2>TASK-024: v3.8.3 ê°œì„ </h2><p><b>ë²„ì „:</b> v3.8.3</p><ul><li>writeLog()ì— user_name ì €ì¥ìœ¼ë¡œ ì‘ì—…ì ì‹¤ëª… ê¸°ë¡</li><li>audit.html ì‘ì—…ì ì‹¤ëª… í‘œì‹œ + ê´€ë¦¬ì ì•„ì´ë”” í‘œì‹œ</li><li>ë³´ê³ ì„œ ê¹¨ì§(???) ìë™ ê°ì§€ + REPORT_SEED_MAP ìë™ ë³µêµ¬</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-025', task_title:'v3.8.4 ë¡œê·¸ ì†Œí”„íŠ¸ ì‚­ì œ(ì‚­ì œ ëŒ€ê¸°) ì „í™˜', report_type:'change_report', content:'<h2>TASK-025: v3.8.4 ì†Œí”„íŠ¸ ì‚­ì œ</h2><p><b>ë²„ì „:</b> v3.8.4</p><ul><li>ë¡œê·¸ ì‚­ì œ: ì‹¤ì œ DELETE ëŒ€ì‹  is_deleted=true ì†Œí”„íŠ¸ ì‚­ì œ</li><li>ì‚­ì œ ëŒ€ê¸° ëª©ë¡ ë³´ê¸° + ë³µì› ê¸°ëŠ¥</li><li>ì‹¤ì œ ì‚­ì œëŠ” ê´€ë¦¬ìê°€ SQLë¡œ ì§ì ‘ ìˆ˜í–‰</li><li>fetchLogs: ì‚­ì œ ëŒ€ê¸° í•­ëª© ìë™ ì œì™¸</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-026', task_title:'v3.9.0 ìƒí’ˆ êµ¬ë§¤ ì‹œìŠ¤í…œ + ë‹¬ë€íŠ¸ ê°œí¸ + ëª…ì¹­ í†µì¼', report_type:'change_report', content:'<h2>TASK-026: v3.9.0 ëŒ€ê·œëª¨ ì—…ë°ì´íŠ¸</h2><p><b>ë²„ì „:</b> v3.9.0</p><ul><li>ìƒí’ˆ êµ¬ë§¤ ì‹œìŠ¤í…œ ì‹ ê·œ êµ¬ì¶•: 4ë‹¨ê³„ êµ¬ë§¤ íë¦„</li><li>admin/purchases.html êµ¬ë§¤ ê´€ë¦¬ í˜ì´ì§€ ì‹ ê·œ</li><li>shop.html êµ¬ë§¤ ì‹ ì²­ ë²„íŠ¼ + ì”ì•¡ ê²€ì¦</li><li>my-talents.html ì‚¬ìš© ëŒ€ê¸° ë‹¬ë€íŠ¸ í‘œì‹œ + êµ¬ë§¤ ë‚´ì—­</li><li>product_orders í…Œì´ë¸” + RPC (request_product_order, confirm_product_purchase)</li><li>ë‹¬ë€íŠ¸ ê´€ë¦¬: ì²´í¬ë°•ìŠ¤ ì„ íƒ + ì¼ê´„ ì§€ê¸‰ í™•ì • ë°©ì‹</li><li>ë‹¬ë€íŠ¸ ë°˜í™˜ ê¸°ëŠ¥ (ë¶€ì¥ êµì‚¬ 80+ ì‚¬ìœ  ì…ë ¥)</li><li>ìƒì„¸ ëª¨ë‹¬ ì§€ê¸‰ì ì»¬ëŸ¼ ì¶”ê°€</li><li>ë¡œê·¸ í˜ì´ì§€: ê´€ë¦¬ì ì „ìš© ë²„íŠ¼ + is_deleted í´ë°±</li><li>ëª…ì¹­ í†µì¼: ë¬¼í’ˆâ†’ìƒí’ˆ, ë¶€ì¥â†’ë¶€ì¥ êµì‚¬, ë¶€ì„œê´€ë¦¬ìâ†’ë¶€ì„œ ë‹´ë‹¹ êµì‚¬</li><li>shop.html êµì‚¬ ê¸°ë³¸ í•„í„° ìˆ˜ì •</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-027', task_title:'v3.10.0 ê¶Œí•œ ì„¸ë¶„í™” + êµ¬ë§¤ ê´€ë¦¬ ê°œí¸ + ì¬ê³  ì œê±°', report_type:'change_report', content:'<h2>TASK-027: v3.10.0 ê¶Œí•œ/êµ¬ë§¤ ê°œí¸</h2><p><b>ë²„ì „:</b> v3.10.0</p><ul><li>ë‹¬ë€íŠ¸ ê´€ë¦¬ ê¶Œí•œ ì„¸ë¶„í™”: rank 80 ì „ì²´ ì¡°íšŒ/ë‹´ë‹¹ ë¶€ì„œ ì§€ê¸‰, give_talent RPC managed_dept ìŠ¤ì½”í•‘</li><li>ê°€ì… ìŠ¹ì¸: ê¸°ì¡´ ë¡œì§ ê²€ì¦ ì™„ë£Œ (ë¶€ì¥ ì „ì²´ì¡°íšŒ/ë‹´ë‹¹ë¶€ì„œ ì²˜ë¦¬)</li><li>ë¶€ì„œ ì´ë™: rank 60 ì„¹ì…˜ í‘œì‹œ, rank 80 ì „ì²´ì¡°íšŒ/ë‹´ë‹¹ë¶€ì„œ ì²˜ë¦¬, ë²„íŠ¼ ëª…ì¹­ ë³€ê²½</li><li>ë¡œê·¸ì¸: ìŠ¹ì¸ ëŒ€ê¸°/ê±°ë¶€/ë¹„ë°€ë²ˆí˜¸ ì˜¤ë¥˜ ë©”ì‹œì§€ ì„¸ë¶„í™”</li><li>ì¬ê³  ì‹œìŠ¤í…œ ì œê±°: shop.html + admin/shop.html stock ê´€ë ¨ UI/ë¡œì§ ì œê±°</li><li>êµ¬ë§¤ ê´€ë¦¬ ì „ë©´ ê°œí¸: ì²˜ë¦¬ì/ì¼ì‹œ í‘œì‹œ, ìƒíƒœ ì»¬ëŸ¼ ì œê±°, ì „ì²´ íƒ­+í•„í„°, ê¶Œí•œ 60+/90+</li><li>êµ¬ë§¤ ê´€ë¦¬ ë„¤ë¹„ê²Œì´ì…˜ ë°°ì§€: ì²˜ë¦¬ ëŒ€ê¸° ê±´ìˆ˜(getPendingOrderCount)</li><li>í˜ì´ì§€ ì ‘ê·¼/ê¸°ëŠ¥: initPage(100) ê´€ë¦¬ì ì „ìš©í™”</li><li>ì‘ì—… ì´ë ¥: initPage(100) ê´€ë¦¬ì ì „ìš©í™”</li><li>ì „ì²´ admin ë„¤ë¹„ê²Œì´ì…˜: page-access/features/audit data-min-perm 100, êµ¬ë§¤ ê´€ë¦¬ ë°°ì§€ ì¶”ê°€</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-028', task_title:'v3.11.0 ë°˜ì‘í˜• í˜ì´ì§€ + ë„¤ë¹„ê²Œì´ì…˜ í†µí•©', report_type:'change_report', content:'<h2>TASK-028: v3.11.0 ë°˜ì‘í˜•/ë„¤ë¹„ê²Œì´ì…˜ í†µí•©</h2><p><b>ë²„ì „:</b> v3.11.0</p><ul><li>CSS ë°˜ì‘í˜• ë¸Œë ˆì´í¬í¬ì¸íŠ¸: 480/640/768/1024px 4ë‹¨ê³„ í†µí•©</li><li>ëª¨ë°”ì¼ í–„ë²„ê±° ë„¤ë¹„ê²Œì´ì…˜: admin 15ê°œ + public 3ê°œ íŒŒì¼</li><li>í…Œì´ë¸” ë°˜ì‘í˜•: 1024px ìŠ¤í¬ë¡¤ ì‹œì‘, ë‹¨ê³„ë³„ ì¶•ì†Œ</li><li>ëª¨ë‹¬/í¼ ëª¨ë°”ì¼: flex-wrap + ì „í­</li><li>ëŒ€ì‹œë³´ë“œ quickLinks/detailSummary ëª¨ë°”ì¼ ì „í™˜</li><li>my-talents.html Template A ë„¤ë¹„ê²Œì´ì…˜ í†µí•©</li><li>index.html ë¡œê·¸ì¸ í›„ ë§í¬ ë³´ê°•</li><li>applyPermNav() ì–‘ë°©í–¥ show/hide</li><li>admin nav ë¶ˆì¼ì¹˜ ìˆ˜ì • 3ê±´</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„', report_type:'plan', content:'<h2>TASK-029: v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„ - ì‘ì—… ê³„íšì„œ</h2><p>docs/TASK-029_plan.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„', report_type:'test_scenario', content:'<h2>TASK-029: v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„ - í…ŒìŠ¤íŠ¸ ì‹œë‚˜ë¦¬ì˜¤</h2><p>docs/TASK-029_test_scenario.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„', report_type:'test_result', content:'<h2>TASK-029: v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„ - í…ŒìŠ¤íŠ¸ ê²°ê³¼</h2><p>docs/TASK-029_test_result.md ì°¸ì¡°</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„', report_type:'change_report', content:'<h2>TASK-029: v3.12.0 ê¸°ëŠ¥ ìˆ˜ì • + ë¬¸ì„œ ì •ë¹„</h2><p><b>ë²„ì „:</b> v3.12.0</p><ul><li>í˜ì´ì§€ ê¸°ëŠ¥: role_page_features í…Œì´ë¸” ìƒì„± + 6ì—´ ê·¸ë¦¬ë“œ</li><li>ë©”ì¸ í˜ì´ì§€: ë¡œê·¸ì¸/ë¡œê·¸ì•„ì›ƒ ë²„íŠ¼ ì´ëª¨ì§€ ìˆ˜ì •</li><li>ë„¤ë¹„ê²Œì´ì…˜ í†µí•©: admin nav ê¸°ì¤€ ì „ì²´ ì¼ì¹˜í™”</li><li>ë‹¬ë€íŠ¸ ê´€ë¦¬: ë‹¬ë€íŠ¸ í•­ëª© ê´€ë¦¬ ë²„íŠ¼</li><li>êµ¬ë§¤ ê´€ë¦¬: ì „ì²´ íƒ­ ê¸°ë³¸ ì„ íƒ</li><li>ë¡œê·¸: ì¹´ìš´íŠ¸ (X/Y) + í˜ì´ì§€ë„¤ì´ì…˜ ê°œì„ </li><li>ì‘ì—… ì´ë ¥: í•œê¸€í™”</li><li>ë¬¸ì„œ 4ì¢… + ë³´ê³ ì„œ ë“±ë¡</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-030', task_title:'v3.12.2 UI/ê¸°ëŠ¥ ê°œì„ : ë„¤ë¹„ í†µì¼, ë‹¬ë€íŠ¸ ìŠ¤ì½”í•‘, ëŒ€ë¦¬ êµ¬ë§¤', report_type:'change_report', content:'<h2>TASK-030: v3.12.2 UI/ê¸°ëŠ¥ ê°œì„ </h2><p><b>ë²„ì „:</b> v3.12.2</p><ul><li>ë„¤ë¹„ê²Œì´ì…˜ í†µì¼: ì „ì²´ í˜ì´ì§€ì— "ë‚´ êµ¬ë§¤ ìƒí’ˆ" ë©”ë‰´ ì¶”ê°€</li><li>ë³´ê³ ì„œ ë¦¬ë””ë ‰íŠ¸ ìˆ˜ì •: initPage minRank í†µê³¼ ì‹œ role_page_access ì°¨ë‹¨ ë¬´ì‹œ</li><li>ë‹¬ë€íŠ¸ ê´€ë¦¬: ì¼ë°˜ êµì‚¬(40) ë°˜ ë¯¸ë°°ì • ì‹œ ë¹ˆ ëª©ë¡ + í•­ëª©ê´€ë¦¬ ë²„íŠ¼ 60+</li><li>ë¡œê·¸ì¸ í›„ ë¦¬ë””ë ‰íŠ¸: ëª¨ë“  ê¶Œí•œ index.html í†µì¼</li><li>my-orders.html ì‹ ê·œ: ë³¸ì¸ êµ¬ë§¤ ë‚´ì—­ ì¡°íšŒ (4ë‹¨ê³„ ìƒíƒœ ë°°ì§€)</li><li>ëŒ€ë¦¬ êµ¬ë§¤: shop.htmlì—ì„œ rank 40+ ëŒ€ë¦¬ êµ¬ë§¤ ëª¨ë‹¬ (ìŠ¤ì½”í•‘ ê·œì¹™)</li><li>ì‚¬ìš©ì ê´€ë¦¬: ë°˜ ìˆ˜ì • 60+ í™œì„±í™”, ë¶€ì„œ í•„í„° 80+</li><li>ê´€ë¦¬ì ê´€ë¦¬: í•™ìƒ ê²€ìƒ‰ ì œì™¸, ë¶€ì„œ í•„í„° 80+</li></ul>', created_by:'AI_Cursor' }
+        { task_id:'TASK-001', task_title:'v1.0.0 ÃÊ±â ±¸Ãà', report_type:'plan', content:'<h2>TASK-001: ÃÊ±â ±¸Ãà - ÀÛ¾÷ °èÈ¹¼­</h2><p>docs/TASK-001_plan.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 ÃÊ±â ±¸Ãà', report_type:'test_scenario', content:'<h2>TASK-001: ÃÊ±â ±¸Ãà - Å×½ºÆ® ½Ã³ª¸®¿À</h2><p>docs/TASK-001_test_scenario.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 ÃÊ±â ±¸Ãà', report_type:'test_result', content:'<h2>TASK-001: ÃÊ±â ±¸Ãà - Å×½ºÆ® °á°ú</h2><p>docs/TASK-001_test_result.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 ÃÊ±â ±¸Ãà', report_type:'change_report', content:'<h2>TASK-001: ÃÊ±â ±¸Ãà</h2><p><b>¹öÀü:</b> v1.0.0</p><ul><li>È¯¿µ ¸ŞÀÎ ÆäÀÌÁö ±¸Çö</li><li>°ü¸®ÀÚ ·Î±×ÀÎ/ÆĞ½º¿öµå º¯°æ</li><li>°ü¸®ÀÚ ´ë½Ãº¸µå (º¸°í¼­, ·Î±×)</li><li>Supabase ¿¬µ¿ ¹× CRUD</li><li>È°µ¿ ·Î±× ½Ã½ºÅÛ</li><li>GitHub Pages ¹èÆ÷</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ', report_type:'plan', content:'<h2>TASK-002: ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ - ÀÛ¾÷ °èÈ¹¼­</h2><p>docs/TASK-002_plan.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ', report_type:'test_scenario', content:'<h2>TASK-002: ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ - Å×½ºÆ® ½Ã³ª¸®¿À</h2><p>docs/TASK-002_test_scenario.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ', report_type:'test_result', content:'<h2>TASK-002: ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ - Å×½ºÆ® °á°ú</h2><p>docs/TASK-002_test_result.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ', report_type:'change_report', content:'<h2>TASK-002: ¿ªÇÒº° °èÁ¤ ½Ã½ºÅÛ</h2><p><b>¹öÀü:</b> v1.1.0</p><ul><li>4´Ü°è ¿ªÇÒ ±¸ºĞ</li><li>¿ªÇÒº° Àü¿ë ÆäÀÌÁö ±¸Çö</li><li>´Ş¶õÆ® »óÁ¡ (ÇĞ»ı/±³»ç ºĞ¸®)</li><li>ºÎ¼­ °ü¸®ÀÚ ±â´É</li><li>RPC ÇÔ¼ö (verify_user, give_talent, use_talent)</li><li>ÅëÇÕ ·Î±×ÀÎ ÆäÀÌÁö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-003', task_title:'v1.2.0 »óÇ° ÀÌ¹ÌÁö ¹× ¸ŞÀÎ È­¸é °³¼±', report_type:'change_report', content:'<h2>TASK-003: »óÇ° ÀÌ¹ÌÁö ¹× ¸ŞÀÎ È­¸é</h2><p><b>¹öÀü:</b> v1.2.0</p><ul><li>»óÇ° ÀÌ¹ÌÁö URL Áö¿ø</li><li>Supabase Storage ÆÄÀÏ ¾÷·Îµå</li><li>¸ŞÀÎ È­¸é Ä«µå ¸µÅ© ¿¬°á</li><li>´Ş¶õÆ® Àû¸³ ¹æ¹ı ¾È³» ÆäÀÌÁö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-004', task_title:'v1.3.0 ¹öÀü °ü¸® ½Ã½ºÅÛ', report_type:'change_report', content:'<h2>TASK-004: ¹öÀü °ü¸® ½Ã½ºÅÛ</h2><p><b>¹öÀü:</b> v1.3.0</p><ul><li>¹öÀü °ü¸® ¸ğµâ (version.js) µµÀÔ</li><li>¸ğµç ÆäÀÌÁö ÇÏ´Ü ¹öÀü Ç¥½Ã</li><li>°ü¸®ÀÚ ¹öÀü ÀÌ·Â Á¶È¸</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-005', task_title:'v1.4.0 »ç¿ëÀÚ °ü¸® ¹× ¿ªÇÒ ¹èÁö', report_type:'change_report', content:'<h2>TASK-005: »ç¿ëÀÚ °ü¸® ¹× ¿ªÇÒ ¹èÁö</h2><p><b>¹öÀü:</b> v1.4.0</p><ul><li>°ü¸®ÀÚ »ç¿ëÀÚ °ü¸® ÆäÀÌÁö</li><li>¿ªÇÒº° Åë°è ´ë½Ãº¸µå</li><li>¸ğµç ÆäÀÌÁö ¿ªÇÒ ¹èÁö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-006', task_title:'v1.5.0 °èÁ¤ µî·Ï ½ÅÃ»', report_type:'change_report', content:'<h2>TASK-006: °èÁ¤ µî·Ï ½ÅÃ»</h2><p><b>¹öÀü:</b> v1.5.0</p><ul><li>°èÁ¤ µî·Ï ½ÅÃ» ÆäÀÌÁö</li><li>¾ÆÀÌµğ Áßº¹/½ÅÃ» Áßº¹ °ËÁõ</li><li>°ü¸®ÀÚ ½ÂÀÎ/°ÅºÎ ±â´É</li><li>registration_requests Å×ÀÌºí</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB º¸¾È ±¸Á¶ Àü¸é °³¼±', report_type:'security_report', content:'<h2>TASK-007: DB º¸¾È ±¸Á¶ Àü¸é °³¼± - º¸¾È º¸°í¼­</h2><p>docs/TASK-007_security_report.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB º¸¾È ±¸Á¶ Àü¸é °³¼±', report_type:'plan', content:'<h2>TASK-007: DB º¸¾È ±¸Á¶ Àü¸é °³¼± - ¹é¾÷ Ã¼Å©¸®½ºÆ®</h2><p>docs/TASK-007_backup_checklist.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB º¸¾È ±¸Á¶ Àü¸é °³¼±', report_type:'change_report', content:'<h2>TASK-007: DB º¸¾È ±¸Á¶ Àü¸é °³¼±</h2><p><b>¹öÀü:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth µµÀÔ (bcrypt)</li><li>profiles Å×ÀÌºí ½Å¼³</li><li>SECURITY DEFINER RPC ÇÔ¼ö</li><li>ÀüÃ¼ Å×ÀÌºí RLS Á¤Ã¥ Àç¼³°è</li><li>¸ğ¹ÙÀÏ ¹İÀÀÇü ´ëÆø °³¼±</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-008', task_title:'v2.1.0 °ü¸®ÀÚ ÆäÀÌÁö Á¢±Ù Á¦¾î', report_type:'change_report', content:'<h2>TASK-008: °ü¸®ÀÚ ÆäÀÌÁö Á¢±Ù Á¦¾î</h2><p><b>¹öÀü:</b> v2.1.0</p><ul><li>initPage() ¿ªÇÒ Ã¼Å© ¸®µğ·ºÆ®</li><li>CSS auth-ready ±â¹İ ÄÜÅÙÃ÷ ÇÃ·¡½Ã ¹æÁö</li><li>ºÎ¼­ °ü¸® ¿ªÇÒº° ÀÎ¿ø ºĞ¸® Ç¥½Ã</li><li>admin Àü¿ë »óÇ° °ü¸® ÆäÀÌÁö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-009', task_title:'v2.2.0 ·¹°Å½Ã °ü¸®ÀÚ ·Î±×ÀÎ Á¦°Å', report_type:'change_report', content:'<h2>TASK-009: ·¹°Å½Ã °ü¸®ÀÚ ·Î±×ÀÎ Á¦°Å</h2><p><b>¹öÀü:</b> v2.2.0</p><ul><li>°ü¸®ÀÚ ÁøÀÔÁ¡ ¹öÆ° Á¦°Å</li><li>admin/login.html ·¹°Å½Ã ÆÄÀÏ »èÁ¦</li><li>·Î±×ÀÎ ÁøÀÔÁ¡ login.html ´ÜÀÏÈ­</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-010', task_title:'v2.3.0 ÃÊ±â ºñ¹Ğ¹øÈ£ º¯°æ °­Á¦', report_type:'security_report', content:'<h2>TASK-010: ÃÊ±â ºñ¹Ğ¹øÈ£ º¯°æ °­Á¦ - º¸¾È º¸°í¼­</h2><p>docs/TASK-010_security_report.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-010', task_title:'v2.3.0 ÃÊ±â ºñ¹Ğ¹øÈ£ º¯°æ °­Á¦', report_type:'change_report', content:'<h2>TASK-010: ÃÊ±â ºñ¹Ğ¹øÈ£ º¯°æ °­Á¦</h2><p><b>¹öÀü:</b> v2.3.0</p><ul><li>initPage()¿¡ isFirstLogin °­Á¦ ¸®µğ·ºÆ®</li><li>student/shop.html º¸È£ ÆäÀÌÁö ÀüÈ¯</li><li>autoLogPageView() ÀÎÁõ ÈÄ ÀÌµ¿</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 °ü¸®ÀÚ ´ë½Ãº¸µå °³¼±', report_type:'test_scenario', content:'<h2>TASK-011: °ü¸®ÀÚ ´ë½Ãº¸µå °³¼± - Å×½ºÆ® ½Ã³ª¸®¿À</h2><p>docs/TASK-011_test_scenario.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 °ü¸®ÀÚ ´ë½Ãº¸µå °³¼±', report_type:'test_result', content:'<h2>TASK-011: °ü¸®ÀÚ ´ë½Ãº¸µå °³¼± - Å×½ºÆ® °á°ú</h2><p>docs/TASK-011_test_report.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 °ü¸®ÀÚ ´ë½Ãº¸µå °³¼±', report_type:'change_report', content:'<h2>TASK-011: °ü¸®ÀÚ ´ë½Ãº¸µå °³¼±</h2><p><b>¹öÀü:</b> v2.4.0</p><ul><li>°¡ÀÔ ´ë±âÀÚ ¼ö Ä«µå Ãß°¡</li><li>¹Ù·Î°¡±â ¿µ¿ª 5°³·Î Àç±¸¼º</li><li>°¢ ¹Ù·Î°¡±â¿¡ ÀÌ¸ğÁö Ãß°¡</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-012', task_title:'v2.5.0 °ü¸®ÀÚ/ºÎ¼­°ü¸®ÀÚ ¸Ş´º ÅëÇÕ', report_type:'change_report', content:'<h2>TASK-012: °ü¸®ÀÚ/ºÎ¼­°ü¸®ÀÚ ¸Ş´º ÅëÇÕ</h2><p><b>¹öÀü:</b> v2.5.0</p><ul><li>manager/ µğ·ºÅä¸® »èÁ¦ (admin/ ÅëÇÕ)</li><li>admin/talents.html ½Å±Ô »ı¼º</li><li>applyRoleNav() ÇÔ¼ö µµÀÔ</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 À¯Çü/±ÇÇÑ 6´Ü°è Ã¼°è', report_type:'change_report', content:'<h2>TASK-013: À¯Çü/±ÇÇÑ 6´Ü°è Ã¼°è Àü¸é °³Æí</h2><p><b>¹öÀü:</b> v3.0.0 ~ v3.6.0</p><ul><li>profiles user_type + permission_level È®Àå</li><li>get_permission_rank() ÇïÆÛ ÇÔ¼ö</li><li>RPC ÇÔ¼ö 12°³ Àü¸é ¾÷µ¥ÀÌÆ®</li><li>´Ş¶õÆ® Áö±Ş ¹æ½Ä °³Æí (talent_items)</li><li>¹İ ½Ã½ºÅÛ Ãß°¡</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013A', task_title:'v3.0.0 ½´ÆÛ°ü¸®ÀÚ Ã¼°è + ³×ºñ°ÔÀÌ¼Ç °³Æí', report_type:'change_report', content:'<h2>TASK-013A: v3.0.0 ½´ÆÛ°ü¸®ÀÚ Ã¼°è</h2><p>docs/TASK-013A_change_report.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013BCD', task_title:'v3.0.0 º¯°æ º¸°í¼­ + SQL ½ºÅ°¸¶', report_type:'change_report', content:'<h2>TASK-013BCD: v3.0.0 º¯°æ º¸°í¼­</h2><p>docs/TASK-013BCD_change_report.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-014', task_title:'v3.7.0 ´ÙÁß ±â´É °³¼± ¹× UX Çâ»ó', report_type:'change_report', content:'<h2>TASK-014: ´ÙÁß ±â´É °³¼±</h2><p><b>¹öÀü:</b> v3.7.0</p><ul><li>¾ÆÀÌµğ ÇÑ±Û ÀÔ·Â Á¦ÇÑ</li><li>·Î±× ¹üÀ§ »èÁ¦, »ç¿ëÀÚ ÀÌ¸§(¾ÆÀÌµğ) Ç¥½Ã, »ó¼¼ ÆË¾÷</li><li>´ë½Ãº¸µå ÀÌ½´ ·Î±× ÇÊÅÍ¸µ</li><li>³×ºñ°ÔÀÌ¼Ç Å¸ÀÌÆ²/¸µÅ© º¯°æ</li><li>¹°Ç° È°¼ºÈ­/ºñÈ°¼ºÈ­ Åä±Û</li><li>½ÂÀÎ ´ë±â ·Î±×ÀÎ ¸Ş½ÃÁö ºĞ±â</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 º¸°í¼­ ¹ö±× ¼öÁ¤ + ·Î±× »èÁ¦ + ¹èÁö', report_type:'change_report', content:'<h2>TASK-015: º¸°í¼­ ¹ö±× ¼öÁ¤</h2><p><b>¹öÀü:</b> v3.7.1 ~ v3.7.2</p><ul><li>reports.html TYPE_LABELS Ãæµ¹ ÇØ°á</li><li>·Î±× Ã¼Å©¹Ú½º + ¼±ÅÃ »èÁ¦</li><li>»ç¿ëÀÚ °ü¸® °¡ÀÔ´ë±â ¹èÁö</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-016', task_title:'v3.7.3 ±ÇÇÑ ±â¹İ ºÎ¼­/»ç¿ëÀÚ °ü¸® ½ºÄÚÇÎ', report_type:'change_report', content:'<h2>TASK-016: ±ÇÇÑ ±â¹İ ½ºÄÚÇÎ</h2><p><b>¹öÀü:</b> v3.7.3</p><ul><li>±³»ç ¼ö Ä«¿îÆ® ÀüÃ¼ Æ÷ÇÔ</li><li>º»ÀÎ ±ÇÇÑº¸´Ù ³·Àº »ç¿ëÀÚ¸¸ °ü¸® °¡´É</li><li>ºÎÀå ÀÌÇÏ ´ã´ç ºÎ¼­¸¸ Ç¥½Ã</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-017', task_title:'v3.7.4 °¡ÀÔ ½ÅÃ» ±ÇÇÑº° Á¶È¸/Ã³¸®', report_type:'change_report', content:'<h2>TASK-017: °¡ÀÔ ½ÅÃ» ±ÇÇÑº° Á¶È¸/Ã³¸®</h2><p><b>¹öÀü:</b> v3.7.4</p><ul><li>°ü¸®ÀÚ/Àüµµ»ç´Ô: ¸ğµç ºÎ¼­ ½ÅÃ»ÀÚ Á¶È¸+Ã³¸®</li><li>ºÎÀå: ¸ğµç ºÎ¼­ Á¶È¸, ´ã´ç ºÎ¼­¸¸ Ã³¸®</li><li>ºÎ¼­ ´ã´ç ±³»ç: ´ã´ç ºÎ¼­¸¸ Á¶È¸+Ã³¸®</li><li>³×ºñ°ÔÀÌ¼Ç ¾ÆÀÌµğ Ç¥½Ã Ãß°¡</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-018', task_title:'v3.7.5 Å¸ÀÎ ¾ÆÀÌµğ ¼û±è + ºÎ¼­ ÀÌµ¿ °ü¸®', report_type:'change_report', content:'<h2>TASK-018: ¾ÆÀÌµğ ¼û±è + ºÎ¼­ ÀÌµ¿</h2><p><b>¹öÀü:</b> v3.7.5</p><ul><li>Å¸ÀÎ ¾ÆÀÌµğ ¼û±è (ÀÚ±â¸¸ Ç¥½Ã)</li><li>ºÎ¼­ ÀÌµ¿ ¹öÆ° + Áï½Ã/¿äÃ» ºĞ±â</li><li>ºÎ¼­ ÀÌµ¿ ½ÅÃ» ³»¿ª + ½ÂÀÎ/°ÅºÎ</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-019', task_title:'v3.7.6 º¸°í¼­ ÀÎÄÚµù ¼öÁ¤ + °ü¸®ÀÚ ¾ÆÀÌµğ ¿¹¿Ü', report_type:'change_report', content:'<h2>TASK-019: º¸°í¼­ ÀÎÄÚµù + °ü¸®ÀÚ ¾ÆÀÌµğ</h2><p><b>¹öÀü:</b> v3.7.6</p><ul><li>ÀüÃ¼ HTML BOM Á¦°Å</li><li>°ü¸®ÀÚ ±ÇÇÑ: Å¸ÀÎ ¾ÆÀÌµğ Ç¥½Ã °¡´É</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-020', task_title:'v3.7.7 ¼öÁ¤ ¸ğ´Ş ºÎ¼­ º¯°æ Á¦°Å', report_type:'change_report', content:'<h2>TASK-020: ¼öÁ¤ ¸ğ´Ş ºÎ¼­ º¯°æ Á¦°Å</h2><p><b>¹öÀü:</b> v3.7.7</p><ul><li>»ç¿ëÀÚ/°ü¸®ÀÚ ¼öÁ¤ ¸ğ´Ş ºÎ¼­ ºñÈ°¼ºÈ­</li><li>ºÎ¼­ º¯°æÀº ºÎ¼­ÀÌµ¿À¸·Î¸¸</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-021', task_title:'v3.8.0 ½´ÆÛ°ü¸®ÀÚ + ³×ºñ°ÔÀÌ¼Ç + ÆäÀÌÁö ±ÇÇÑ', report_type:'change_report', content:'<h2>TASK-021: v3.8.0 Àü¸é °³¼±</h2><p><b>¹öÀü:</b> v3.8.0</p><ul><li>½´ÆÛ°ü¸®ÀÚ rank 110 Ã¼°è</li><li>³×ºñ°ÔÀÌ¼Ç: ´Ş¶õÆ® ¸¶À» ÅëÀÏ + ³»´Ş¶õÆ®/»óÇ°±¸¸Å Ãß°¡</li><li>ÆäÀÌÁö Á¢±Ù °ü¸® + ÆäÀÌÁö ±â´É °ü¸® ½Å±Ô</li><li>ºÎ¼­ °ü¸® ±×¸®µå °£¼ÒÈ­</li><li>ºÎÀå ±³»ç ¸íÄª º¯°æ</li><li>°ü¸®ÀÚ °ü¸® ¿­/¹öÆ° Á¤¸®</li><li>´Ş¶õÆ® °ü¸® ÀÜ¿©/»ç¿ë/´©Àû + »ó¼¼ Åë°è</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-022', task_title:'v3.8.1 ½´ÆÛ°ü¸®ÀÚ °ü¸® ¼öÁ¤ + UI/UX °³¼±', report_type:'change_report', content:'<h2>TASK-022: v3.8.1 °³¼±</h2><p><b>¹öÀü:</b> v3.8.1</p><ul><li>½´ÆÛ°ü¸®ÀÚ °ü¸®ÀÚ °ü¸® °¡´É ¼öÁ¤</li><li>³×ºñ°ÔÀÌ¼Ç ÇÑ ÁÙ ½ºÅ©·Ñ + ÄÄÆÑÆ®</li><li>¸ğ¹ÙÀÏ ±×¸®µå ¿©¹é Ãà¼Ò</li><li>ÆäÀÌÁö ±â´É °ü¸® ±ÇÇÑº° °³Æí</li><li>º¸°í¼­ JS ½Ã´õ·Î ÀÎÄÚµù ¹®Á¦ ÇØ°á</li><li>·Î±× »èÁ¦ RLS Á¤Ã¥ Ãß°¡</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-023', task_title:'v3.8.2 ÆäÀÌÁö Á¢±Ù ±ÇÇÑº° + ÀÛ¾÷ ÀÌ·Â + DB ¿¬µ¿', report_type:'change_report', content:'<h2>TASK-023: v3.8.2 °³¼±</h2><p><b>¹öÀü:</b> v3.8.2</p><ul><li>ÆäÀÌÁö Á¢±Ù °ü¸®: »ç¿ëÀÚº° ¡æ À¯Çü/±ÇÇÑº° °³Æí (role_page_access)</li><li>ÀÛ¾÷ ÀÌ·Â °ü¸® ÆäÀÌÁö ½Å±Ô (admin/audit.html)</li><li>initPage()¿¡¼­ role_page_access DB ¿¬µ¿ ¡æ ÆäÀÌÁö Â÷´Ü/¿ä¼Ò ¼û±è Àû¿ë</li><li>·Î±× »èÁ¦: »ó¼¼ µğ¹ö±× ·Î±× + RLS ¹ÌÀû¿ë ½Ã ¾È³» ¸Ş½ÃÁö</li><li>º¸°í¼­: ¼öÁ¤ ¹öÆ° Ãß°¡ (editReport)</li><li>³×ºñ°ÔÀÌ¼Ç: º° ÀÌ¸ğÁö È¸Àü ¾Ö´Ï¸ŞÀÌ¼Ç ÀüÃ¼ Àû¿ë</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-024', task_title:'v3.8.3 ÀÛ¾÷ÀÚ ½Ç¸í + º¸°í¼­ ÀÚµ¿º¹±¸', report_type:'change_report', content:'<h2>TASK-024: v3.8.3 °³¼±</h2><p><b>¹öÀü:</b> v3.8.3</p><ul><li>writeLog()¿¡ user_name ÀúÀåÀ¸·Î ÀÛ¾÷ÀÚ ½Ç¸í ±â·Ï</li><li>audit.html ÀÛ¾÷ÀÚ ½Ç¸í Ç¥½Ã + °ü¸®ÀÚ ¾ÆÀÌµğ Ç¥½Ã</li><li>º¸°í¼­ ±úÁü(???) ÀÚµ¿ °¨Áö + REPORT_SEED_MAP ÀÚµ¿ º¹±¸</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-025', task_title:'v3.8.4 ·Î±× ¼ÒÇÁÆ® »èÁ¦(»èÁ¦ ´ë±â) ÀüÈ¯', report_type:'change_report', content:'<h2>TASK-025: v3.8.4 ¼ÒÇÁÆ® »èÁ¦</h2><p><b>¹öÀü:</b> v3.8.4</p><ul><li>·Î±× »èÁ¦: ½ÇÁ¦ DELETE ´ë½Å is_deleted=true ¼ÒÇÁÆ® »èÁ¦</li><li>»èÁ¦ ´ë±â ¸ñ·Ï º¸±â + º¹¿ø ±â´É</li><li>½ÇÁ¦ »èÁ¦´Â °ü¸®ÀÚ°¡ SQL·Î Á÷Á¢ ¼öÇà</li><li>fetchLogs: »èÁ¦ ´ë±â Ç×¸ñ ÀÚµ¿ Á¦¿Ü</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-026', task_title:'v3.9.0 »óÇ° ±¸¸Å ½Ã½ºÅÛ + ´Ş¶õÆ® °³Æí + ¸íÄª ÅëÀÏ', report_type:'change_report', content:'<h2>TASK-026: v3.9.0 ´ë±Ô¸ğ ¾÷µ¥ÀÌÆ®</h2><p><b>¹öÀü:</b> v3.9.0</p><ul><li>»óÇ° ±¸¸Å ½Ã½ºÅÛ ½Å±Ô ±¸Ãà: 4´Ü°è ±¸¸Å Èå¸§</li><li>admin/purchases.html ±¸¸Å °ü¸® ÆäÀÌÁö ½Å±Ô</li><li>shop.html ±¸¸Å ½ÅÃ» ¹öÆ° + ÀÜ¾× °ËÁõ</li><li>my-talents.html »ç¿ë ´ë±â ´Ş¶õÆ® Ç¥½Ã + ±¸¸Å ³»¿ª</li><li>product_orders Å×ÀÌºí + RPC (request_product_order, confirm_product_purchase)</li><li>´Ş¶õÆ® °ü¸®: Ã¼Å©¹Ú½º ¼±ÅÃ + ÀÏ°ı Áö±Ş È®Á¤ ¹æ½Ä</li><li>´Ş¶õÆ® ¹İÈ¯ ±â´É (ºÎÀå ±³»ç 80+ »çÀ¯ ÀÔ·Â)</li><li>»ó¼¼ ¸ğ´Ş Áö±ŞÀÚ ÄÃ·³ Ãß°¡</li><li>·Î±× ÆäÀÌÁö: °ü¸®ÀÚ Àü¿ë ¹öÆ° + is_deleted Æú¹é</li><li>¸íÄª ÅëÀÏ: ¹°Ç°¡æ»óÇ°, ºÎÀå¡æºÎÀå ±³»ç, ºÎ¼­°ü¸®ÀÚ¡æºÎ¼­ ´ã´ç ±³»ç</li><li>shop.html ±³»ç ±âº» ÇÊÅÍ ¼öÁ¤</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-027', task_title:'v3.10.0 ±ÇÇÑ ¼¼ºĞÈ­ + ±¸¸Å °ü¸® °³Æí + Àç°í Á¦°Å', report_type:'change_report', content:'<h2>TASK-027: v3.10.0 ±ÇÇÑ/±¸¸Å °³Æí</h2><p><b>¹öÀü:</b> v3.10.0</p><ul><li>´Ş¶õÆ® °ü¸® ±ÇÇÑ ¼¼ºĞÈ­: rank 80 ÀüÃ¼ Á¶È¸/´ã´ç ºÎ¼­ Áö±Ş, give_talent RPC managed_dept ½ºÄÚÇÎ</li><li>°¡ÀÔ ½ÂÀÎ: ±âÁ¸ ·ÎÁ÷ °ËÁõ ¿Ï·á (ºÎÀå ÀüÃ¼Á¶È¸/´ã´çºÎ¼­ Ã³¸®)</li><li>ºÎ¼­ ÀÌµ¿: rank 60 ¼½¼Ç Ç¥½Ã, rank 80 ÀüÃ¼Á¶È¸/´ã´çºÎ¼­ Ã³¸®, ¹öÆ° ¸íÄª º¯°æ</li><li>·Î±×ÀÎ: ½ÂÀÎ ´ë±â/°ÅºÎ/ºñ¹Ğ¹øÈ£ ¿À·ù ¸Ş½ÃÁö ¼¼ºĞÈ­</li><li>Àç°í ½Ã½ºÅÛ Á¦°Å: shop.html + admin/shop.html stock °ü·Ã UI/·ÎÁ÷ Á¦°Å</li><li>±¸¸Å °ü¸® Àü¸é °³Æí: Ã³¸®ÀÚ/ÀÏ½Ã Ç¥½Ã, »óÅÂ ÄÃ·³ Á¦°Å, ÀüÃ¼ ÅÇ+ÇÊÅÍ, ±ÇÇÑ 60+/90+</li><li>±¸¸Å °ü¸® ³×ºñ°ÔÀÌ¼Ç ¹èÁö: Ã³¸® ´ë±â °Ç¼ö(getPendingOrderCount)</li><li>ÆäÀÌÁö Á¢±Ù/±â´É: initPage(100) °ü¸®ÀÚ Àü¿ëÈ­</li><li>ÀÛ¾÷ ÀÌ·Â: initPage(100) °ü¸®ÀÚ Àü¿ëÈ­</li><li>ÀüÃ¼ admin ³×ºñ°ÔÀÌ¼Ç: page-access/features/audit data-min-perm 100, ±¸¸Å °ü¸® ¹èÁö Ãß°¡</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-028', task_title:'v3.11.0 ¹İÀÀÇü ÆäÀÌÁö + ³×ºñ°ÔÀÌ¼Ç ÅëÇÕ', report_type:'change_report', content:'<h2>TASK-028: v3.11.0 ¹İÀÀÇü/³×ºñ°ÔÀÌ¼Ç ÅëÇÕ</h2><p><b>¹öÀü:</b> v3.11.0</p><ul><li>CSS ¹İÀÀÇü ºê·¹ÀÌÅ©Æ÷ÀÎÆ®: 480/640/768/1024px 4´Ü°è ÅëÇÕ</li><li>¸ğ¹ÙÀÏ ÇÜ¹ö°Å ³×ºñ°ÔÀÌ¼Ç: admin 15°³ + public 3°³ ÆÄÀÏ</li><li>Å×ÀÌºí ¹İÀÀÇü: 1024px ½ºÅ©·Ñ ½ÃÀÛ, ´Ü°èº° Ãà¼Ò</li><li>¸ğ´Ş/Æû ¸ğ¹ÙÀÏ: flex-wrap + ÀüÆø</li><li>´ë½Ãº¸µå quickLinks/detailSummary ¸ğ¹ÙÀÏ ÀüÈ¯</li><li>my-talents.html Template A ³×ºñ°ÔÀÌ¼Ç ÅëÇÕ</li><li>index.html ·Î±×ÀÎ ÈÄ ¸µÅ© º¸°­</li><li>applyPermNav() ¾ç¹æÇâ show/hide</li><li>admin nav ºÒÀÏÄ¡ ¼öÁ¤ 3°Ç</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030-QR', task_title:'v3.13.0 QR ´Ş¶õÆ® ½Ã½ºÅÛ + °ü¸® °³¼± + Åë°è °³Æí', report_type:'plan', content:'<h2>TASK-030-QR: ÀÛ¾÷ °èÈ¹¼­</h2><p>docs/TASK-030_plan.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030-QR', task_title:'v3.13.0 QR ´Ş¶õÆ® ½Ã½ºÅÛ + °ü¸® °³¼± + Åë°è °³Æí', report_type:'test_scenario', content:'<h2>TASK-030-QR: Å×½ºÆ® ½Ã³ª¸®¿À</h2><p>docs/TASK-030_test_scenario.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030-QR', task_title:'v3.13.0 QR ´Ş¶õÆ® ½Ã½ºÅÛ + °ü¸® °³¼± + Åë°è °³Æí', report_type:'test_result', content:'<h2>TASK-030-QR: Å×½ºÆ® °á°ú</h2><p>docs/TASK-030_test_result.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030-QR', task_title:'v3.13.0 QR ´Ş¶õÆ® ½Ã½ºÅÛ + °ü¸® °³¼± + Åë°è °³Æí', report_type:'change_report', content:'<h2>TASK-030-QR: v3.13.0 QR ´Ş¶õÆ® ½Ã½ºÅÛ</h2><p><b>¹öÀü:</b> v3.13.0</p><ul><li>½Å±Ô: talent-receive.html QR ½ºÄµ ´Ş¶õÆ® ¼ö·É</li><li>½Å±Ô: admin/talent-qr.html QR ÄÚµå °ü¸®</li><li>DB: talent_qr_codes, talent_qr_scans Å×ÀÌºí</li><li>´Ş¶õÆ® Ãë¼Ò + Ãâ¼® ÅëÀÏ + Áö±ŞÀÏ ÁöÁ¤</li><li>±¸¸Å Ãë¼Ò + pending_talent º¹¿ø</li><li>´Ş¶õÆ® Åë°è Àü¸é °³Æí</li><li>³×ºñ°ÔÀÌ¼Ç ¸Ş´º Ãß°¡</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ', report_type:'plan', content:'<h2>TASK-029: v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ - ÀÛ¾÷ °èÈ¹¼­</h2><p>docs/TASK-029_plan.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ', report_type:'test_scenario', content:'<h2>TASK-029: v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ - Å×½ºÆ® ½Ã³ª¸®¿À</h2><p>docs/TASK-029_test_scenario.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ', report_type:'test_result', content:'<h2>TASK-029: v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ - Å×½ºÆ® °á°ú</h2><p>docs/TASK-029_test_result.md ÂüÁ¶</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ', report_type:'change_report', content:'<h2>TASK-029: v3.12.0 ±â´É ¼öÁ¤ + ¹®¼­ Á¤ºñ</h2><p><b>¹öÀü:</b> v3.12.0</p><ul><li>ÆäÀÌÁö ±â´É: role_page_features Å×ÀÌºí »ı¼º + 6¿­ ±×¸®µå</li><li>¸ŞÀÎ ÆäÀÌÁö: ·Î±×ÀÎ/·Î±×¾Æ¿ô ¹öÆ° ÀÌ¸ğÁö ¼öÁ¤</li><li>³×ºñ°ÔÀÌ¼Ç ÅëÇÕ: admin nav ±âÁØ ÀüÃ¼ ÀÏÄ¡È­</li><li>´Ş¶õÆ® °ü¸®: ´Ş¶õÆ® Ç×¸ñ °ü¸® ¹öÆ°</li><li>±¸¸Å °ü¸®: ÀüÃ¼ ÅÇ ±âº» ¼±ÅÃ</li><li>·Î±×: Ä«¿îÆ® (X/Y) + ÆäÀÌÁö³×ÀÌ¼Ç °³¼±</li><li>ÀÛ¾÷ ÀÌ·Â: ÇÑ±ÛÈ­</li><li>¹®¼­ 4Á¾ + º¸°í¼­ µî·Ï</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030', task_title:'v3.12.2 UI/±â´É °³¼±: ³×ºñ ÅëÀÏ, ´Ş¶õÆ® ½ºÄÚÇÎ, ´ë¸® ±¸¸Å', report_type:'change_report', content:'<h2>TASK-030: v3.12.2 UI/±â´É °³¼±</h2><p><b>¹öÀü:</b> v3.12.2</p><ul><li>³×ºñ°ÔÀÌ¼Ç ÅëÀÏ: ÀüÃ¼ ÆäÀÌÁö¿¡ "³» ±¸¸Å »óÇ°" ¸Ş´º Ãß°¡</li><li>º¸°í¼­ ¸®µğ·ºÆ® ¼öÁ¤: initPage minRank Åë°ú ½Ã role_page_access Â÷´Ü ¹«½Ã</li><li>´Ş¶õÆ® °ü¸®: ÀÏ¹İ ±³»ç(40) ¹İ ¹Ì¹èÁ¤ ½Ã ºó ¸ñ·Ï + Ç×¸ñ°ü¸® ¹öÆ° 60+</li><li>·Î±×ÀÎ ÈÄ ¸®µğ·ºÆ®: ¸ğµç ±ÇÇÑ index.html ÅëÀÏ</li><li>my-orders.html ½Å±Ô: º»ÀÎ ±¸¸Å ³»¿ª Á¶È¸ (4´Ü°è »óÅÂ ¹èÁö)</li><li>´ë¸® ±¸¸Å: shop.html¿¡¼­ rank 40+ ´ë¸® ±¸¸Å ¸ğ´Ş (½ºÄÚÇÎ ±ÔÄ¢)</li><li>»ç¿ëÀÚ °ü¸®: ¹İ ¼öÁ¤ 60+ È°¼ºÈ­, ºÎ¼­ ÇÊÅÍ 80+</li><li>°ü¸®ÀÚ °ü¸®: ÇĞ»ı °Ë»ö Á¦¿Ü, ºÎ¼­ ÇÊÅÍ 80+</li></ul>', created_by:'AI_Cursor' }
       ];
       try {
         await _sb.from('reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
         const { error } = await _sb.from('reports').insert(SEED);
-        if (error) { await logError('REPORT_SEED_FAIL', { error: error.message }); alert('ë“±ë¡ ì‹¤íŒ¨: ' + tErr(error.message)); return; }
+        if (error) { await logError('REPORT_SEED_FAIL', { error: error.message }); alert('µî·Ï ½ÇÆĞ: ' + tErr(error.message)); return; }
         await logInfo('REPORT_SEED', { count: SEED.length });
-        alert(SEED.length + 'ê±´ì˜ ë³´ê³ ì„œê°€ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤.');
+        alert(SEED.length + '°ÇÀÇ º¸°í¼­°¡ µî·ÏµÇ¾ú½À´Ï´Ù.');
         await loadReports();
-      } catch (err) { await logError('REPORT_SEED_ERROR', { error: String(err) }); alert('ì˜¤ë¥˜: ' + tErr(err.message)); }
+      } catch (err) { await logError('REPORT_SEED_ERROR', { error: String(err) }); alert('¿À·ù: ' + tErr(err.message)); }
     }
 
     let editingReportId = null;
@@ -466,23 +473,23 @@
       const report = allReports.find(r => r.id === id);
       if (!report) return;
       editingReportId = id;
-      document.getElementById('addModalTitle').textContent = 'ë³´ê³ ì„œ ìˆ˜ì •';
+      document.getElementById('addModalTitle').textContent = 'º¸°í¼­ ¼öÁ¤';
       document.getElementById('rTaskId').value = report.task_id || '';
       document.getElementById('rTaskTitle').value = report.task_title || '';
       document.getElementById('rReportType').value = report.report_type || 'change_report';
       document.getElementById('rContent').value = report.content || '';
-      document.getElementById('btnSaveReport').textContent = 'ìˆ˜ì •';
+      document.getElementById('btnSaveReport').textContent = '¼öÁ¤';
       document.getElementById('addReportModal').classList.remove('hidden');
     }
 
     function openAddReportModal() {
       editingReportId = null;
-      document.getElementById('addModalTitle').textContent = 'ë³´ê³ ì„œ ë“±ë¡';
+      document.getElementById('addModalTitle').textContent = 'º¸°í¼­ µî·Ï';
       document.getElementById('rTaskId').value = '';
       document.getElementById('rTaskTitle').value = '';
       document.getElementById('rReportType').value = 'plan';
       document.getElementById('rContent').value = '';
-      document.getElementById('btnSaveReport').textContent = 'ë“±ë¡';
+      document.getElementById('btnSaveReport').textContent = 'µî·Ï';
       document.getElementById('addReportModal').classList.remove('hidden');
     }
 
@@ -497,13 +504,13 @@
       const content = document.getElementById('rContent').value.trim();
 
       if (!taskId || !taskTitle || !content) {
-        alert('ì‘ì—… ID, ì œëª©, ë‚´ìš©ì„ ëª¨ë‘ ì…ë ¥í•´ì£¼ì„¸ìš”.');
+        alert('ÀÛ¾÷ ID, Á¦¸ñ, ³»¿ëÀ» ¸ğµÎ ÀÔ·ÂÇØÁÖ¼¼¿ä.');
         return;
       }
 
       const btn = document.getElementById('btnSaveReport');
       btn.disabled = true;
-      btn.textContent = 'ì €ì¥ ì¤‘...';
+      btn.textContent = 'ÀúÀå Áß...';
 
       try {
         const row = {
@@ -523,7 +530,7 @@
 
         if (result.error) {
           await logError('REPORT_SAVE_FAIL', { taskId, reportType, error: result.error.message });
-          alert('ì €ì¥ ì‹¤íŒ¨: ' + tErr(result.error.message));
+          alert('ÀúÀå ½ÇÆĞ: ' + tErr(result.error.message));
         } else {
           closeAddReportModal();
           await loadReports();
@@ -531,10 +538,10 @@
         }
       } catch (err) {
         await logError('REPORT_SAVE_ERROR', { taskId, error: String(err) });
-        alert('ì˜¤ë¥˜: ' + tErr(err.message));
+        alert('¿À·ù: ' + tErr(err.message));
       } finally {
         btn.disabled = false;
-        btn.textContent = editingReportId ? 'ìˆ˜ì •' : 'ë“±ë¡';
+        btn.textContent = editingReportId ? '¼öÁ¤' : 'µî·Ï';
       }
     }
 
@@ -551,13 +558,13 @@
     async function deleteSelectedReports() {
       const ids = Array.from(document.querySelectorAll('.rpt-chk:checked')).map(c => c.value);
       if (ids.length === 0) return;
-      if (!confirm(ids.length + 'ê°œì˜ ë³´ê³ ì„œë¥¼ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
+      if (!confirm(ids.length + '°³ÀÇ º¸°í¼­¸¦ »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?')) return;
 
       try {
         const { error } = await _sb.from('reports').delete().in('id', ids);
         if (error) {
           await logError('REPORT_DELETE_FAIL', { count: ids.length, error: error.message });
-          alert('ì‚­ì œ ì‹¤íŒ¨: ' + tErr(error.message));
+          alert('»èÁ¦ ½ÇÆĞ: ' + tErr(error.message));
         } else {
           document.getElementById('chkAll').checked = false;
           await loadReports();
@@ -565,10 +572,10 @@
         }
       } catch (err) {
         await logError('REPORT_DELETE_ERROR', { error: String(err) });
-        alert('ì˜¤ë¥˜: ' + tErr(err.message));
+        alert('¿À·ù: ' + tErr(err.message));
       }
     }
   </script>
-  <script src="../js/version.js?v=3.15.1"></script>
+  <script src="../js/version.js?v=3.13.0"></script>
 </body>
 </html>

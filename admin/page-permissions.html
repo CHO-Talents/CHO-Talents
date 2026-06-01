@@ -1,10 +1,10 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>í˜ì´ì§€ ê¶Œí•œ ê´€ë¦¬ - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
+  <title>ÆäÀÌÁö ±ÇÇÑ °ü¸® - CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
   <style>
     .perm-matrix { width:100%; border-collapse:collapse; }
     .perm-matrix th, .perm-matrix td { padding:0.6rem 0.8rem; text-align:center; border:1px solid var(--admin-border); font-size:0.85rem; }
@@ -17,105 +17,107 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
+        <button class="nav-dropdown-toggle">¼Ò°³</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
-          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
+          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
+          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ë‹¬ë€íŠ¸</button>
+        <button class="nav-dropdown-toggle">´Ş¶õÆ®</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
-          <li data-min-perm="40"><a href="talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
+          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
+          <li data-min-perm="40"><a href="talents.html">´Ş¶õÆ® °ü¸®</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
+        <button class="nav-dropdown-toggle">»óÇ°</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
-          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
-          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
+          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
+          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
+          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
+        <button class="nav-dropdown-toggle">°ü¸®</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
+          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
+          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle active">ìš´ì˜</button>
+        <button class="nav-dropdown-toggle active">¿î¿µ</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
-          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
-          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
-          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
-          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
+          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
+          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
+          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
+          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:0.5rem;">ğŸ” í˜ì´ì§€ ê¶Œí•œ ê´€ë¦¬</h2>
-    <p style="color:var(--admin-text-muted);margin-bottom:1rem;">ê° í˜ì´ì§€ë³„ ê¶Œí•œ ë ˆë²¨ì˜ ì¡°íšŒ/ê´€ë¦¬ ê¶Œí•œì„ ì„¤ì •í•©ë‹ˆë‹¤.</p>
+    <h2 style="margin-bottom:0.5rem;">?? ÆäÀÌÁö ±ÇÇÑ °ü¸®</h2>
+    <p style="color:var(--admin-text-muted);margin-bottom:1rem;">°¢ ÆäÀÌÁöº° ±ÇÇÑ ·¹º§ÀÇ Á¶È¸/°ü¸® ±ÇÇÑÀ» ¼³Á¤ÇÕ´Ï´Ù.</p>
 
     <div class="perm-legend">
-      <span>V = ì¡°íšŒ(View)</span>
-      <span>M = ê´€ë¦¬(Manage)</span>
+      <span>V = Á¶È¸(View)</span>
+      <span>M = °ü¸®(Manage)</span>
     </div>
 
     <div class="admin-table-wrap" style="overflow-x:auto;">
       <table class="perm-matrix" id="permMatrix">
         <thead id="matrixHead"></thead>
-        <tbody id="matrixBody"><tr><td colspan="13" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <tbody id="matrixBody"><tr><td colspan="13" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
     </div>
 
     <div style="margin-top:1rem;display:flex;gap:0.5rem;">
-      <button class="btn-confirm" onclick="saveAll()">ë³€ê²½ì‚¬í•­ ì €ì¥</button>
+      <button class="btn-confirm" onclick="saveAll()">º¯°æ»çÇ× ÀúÀå</button>
       <span id="saveStatus" style="align-self:center;font-size:0.85rem;"></span>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.15.1"></script>
-  <script src="../js/activity-log.js?v=3.15.1"></script>
-  <script src="../js/auth.js?v=3.15.1"></script>
+  <script src="../js/supabase-config.js?v=3.13.0"></script>
+  <script src="../js/activity-log.js?v=3.13.0"></script>
+  <script src="../js/auth.js?v=3.13.0"></script>
   <script>
     initSupabase();
     let session;
     let permData = [];
     const LEVELS = ['admin','evangelist','chief','dept_teacher','teacher','student'];
-    const LEVEL_LABELS = { admin:'ê´€ë¦¬ì', evangelist:'ì „ë„ì‚¬ë‹˜', chief:'ë¶€ì¥ êµì‚¬', dept_teacher:'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', teacher:'ì¼ë°˜êµì‚¬', student:'í•™ìƒ' };
+    const LEVEL_LABELS = { admin:'°ü¸®ÀÚ', evangelist:'Àüµµ»ç´Ô', chief:'ºÎÀå ±³»ç', dept_teacher:'ºÎ¼­ ´ã´ç ±³»ç', teacher:'ÀÏ¹İ±³»ç', student:'ÇĞ»ı' };
     const PAGES = [
-      { key:'dashboard', label:'ëŒ€ì‹œë³´ë“œ' },
-      { key:'users', label:'ì‚¬ìš©ì ê´€ë¦¬' },
-      { key:'departments', label:'ë¶€ì„œ ê´€ë¦¬' },
-      { key:'managers', label:'ê´€ë¦¬ì ê´€ë¦¬' },
-      { key:'talents', label:'ë‹¬ë€íŠ¸ ê´€ë¦¬' },
-      { key:'talent_items', label:'ë‹¬ë€íŠ¸ í•­ëª©' },
-      { key:'shop', label:'ìƒí’ˆ ê´€ë¦¬' },
-      { key:'purchases', label:'êµ¬ë§¤ ê´€ë¦¬' },
-      { key:'reports', label:'ë³´ê³ ì„œ' },
-      { key:'logs', label:'ë¡œê·¸' },
-      { key:'versions', label:'ë²„ì „' },
-      { key:'page_permissions', label:'ê¶Œí•œ ê´€ë¦¬' }
+      { key:'dashboard', label:'´ë½Ãº¸µå' },
+      { key:'users', label:'»ç¿ëÀÚ °ü¸®' },
+      { key:'departments', label:'ºÎ¼­ °ü¸®' },
+      { key:'managers', label:'°ü¸®ÀÚ °ü¸®' },
+      { key:'talents', label:'´Ş¶õÆ® °ü¸®' },
+      { key:'talent_items', label:'´Ş¶õÆ® Ç×¸ñ' },
+      { key:'shop', label:'»óÇ° °ü¸®' },
+      { key:'purchases', label:'±¸¸Å °ü¸®' },
+      { key:'reports', label:'º¸°í¼­' },
+      { key:'logs', label:'·Î±×' },
+      { key:'versions', label:'¹öÀü' },
+      { key:'page_permissions', label:'±ÇÇÑ °ü¸®' }
     ];
 
     (async () => {
@@ -141,7 +143,7 @@
 
     function renderMatrix() {
       const head = document.getElementById('matrixHead');
-      head.innerHTML = '<tr><th>í˜ì´ì§€</th>' +
+      head.innerHTML = '<tr><th>ÆäÀÌÁö</th>' +
         LEVELS.map(l => `<th colspan="2">${LEVEL_LABELS[l]}</th>`).join('') + '</tr>' +
         '<tr><th></th>' + LEVELS.map(() => '<th>V</th><th>M</th>').join('') + '</tr>';
 
@@ -160,7 +162,7 @@
 
     async function saveAll() {
       const statusEl = document.getElementById('saveStatus');
-      statusEl.textContent = 'ì €ì¥ ì¤‘...';
+      statusEl.textContent = 'ÀúÀå Áß...';
       statusEl.style.color = 'var(--admin-primary)';
 
       const checkboxes = document.querySelectorAll('.perm-matrix input[type="checkbox"]');
@@ -187,23 +189,23 @@
       });
 
       if (upserts.length === 0) {
-        statusEl.textContent = 'ë³€ê²½ì‚¬í•­ ì—†ìŒ';
+        statusEl.textContent = 'º¯°æ»çÇ× ¾øÀ½';
         statusEl.style.color = 'var(--admin-text-muted)';
         return;
       }
 
       const { error } = await _sb.from('page_permissions').upsert(upserts, { onConflict: 'page_key,permission_level' });
       if (error) {
-        statusEl.textContent = 'ì €ì¥ ì‹¤íŒ¨: ' + error.message;
+        statusEl.textContent = 'ÀúÀå ½ÇÆĞ: ' + error.message;
         statusEl.style.color = '#e03131';
         return;
       }
 
-      statusEl.textContent = `${upserts.length}ê±´ ì €ì¥ ì™„ë£Œ`;
+      statusEl.textContent = `${upserts.length}°Ç ÀúÀå ¿Ï·á`;
       statusEl.style.color = '#2b8a3e';
       await loadPermissions();
     }
   </script>
-  <script src="../js/version.js?v=3.15.1"></script>
+  <script src="../js/version.js?v=3.13.0"></script>
 </body>
 </html>

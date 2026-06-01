@@ -281,7 +281,10 @@ function detectCurrentPageId() {
   if (path.includes('admin/departments.html')) return 'admin-departments';
   if (path.includes('admin/managers.html')) return 'admin-managers';
   if (path.includes('admin/talents.html')) return 'admin-talents';
+  if (path.includes('admin/talent-stats.html')) return 'admin-talent-stats';
+  if (path.includes('admin/talent-qr.html')) return 'admin-talent-qr';
   if (path.includes('admin/shop.html')) return 'admin-shop';
+  if (path.includes('admin/purchases.html')) return 'admin-purchases';
   if (path.includes('admin/reports.html')) return 'admin-reports';
   if (path.includes('admin/logs.html')) return 'admin-logs';
   if (path.includes('admin/versions.html')) return 'admin-versions';
@@ -289,7 +292,9 @@ function detectCurrentPageId() {
   if (path.includes('admin/page-access.html')) return 'admin-page-access';
   if (path.includes('admin/page-features.html')) return 'admin-page-features';
   if (path.includes('admin/audit.html')) return 'admin-audit';
+  if (path.includes('talent-receive.html')) return 'talent-receive';
   if (path.includes('my-talents.html')) return 'my-talents';
+  if (path.includes('my-orders.html')) return 'my-orders';
   if (path.includes('earn-talents.html')) return 'earn-talents';
   if (path.includes('shop.html')) return 'shop';
   if (path.includes('login.html')) return 'login';

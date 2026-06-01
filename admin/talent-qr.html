@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>?¬ë???QR ê´€ë¦?- CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
+  <style>
+    .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .qr-item-card {
+      background: var(--admin-card); border: 1px solid var(--admin-border); border-radius: 12px;
+      padding: 1rem 1.2rem; margin-bottom: 0.8rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    }
+    .qr-item-info { flex: 1; min-width: 180px; }
+    .qr-item-name { font-weight: 700; font-size: 0.95rem; }
+    .qr-item-amount { color: #2b8a3e; font-weight: 800; font-size: 0.9rem; }
+    .qr-item-status { font-size: 0.8rem; color: #868e96; margin-top: 0.2rem; }
+    .qr-item-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .qr-modal-content { max-width: 560px; }
+    #qrImageWrap { text-align: center; margin: 1rem 0; }
+    #qrImageWrap canvas, #qrImageWrap img { max-width: 280px; border-radius: 8px; }
+    .loc-search-area { margin-top: 0.8rem; padding: 0.8rem; background: #f8f9fa; border-radius: 10px; }
+    .loc-search-area input[type="text"] { width: 100%; padding: 0.5rem; border: 1px solid var(--admin-border); border-radius: 8px; margin-bottom: 0.5rem; }
+    .loc-result { font-size: 0.82rem; color: #636e72; margin-top: 0.3rem; }
+    .scan-log-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; font-size: 0.82rem; }
+  </style>
+</head>
+<body class="admin-body">
+  <nav class="admin-nav">
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­?/span> ?¬ë???ë§ˆì„</a>
+    <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
+    <ul class="admin-nav-links">
+      <li>
+        <button class="nav-dropdown-toggle">?Œê°œ</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="../guide.html">?¬ìš©??ê°€?´ë“œ</a></li>
+          <li><a href="../earn-talents.html">?¬ë????ë¦½</a></li>
+          <li><a href="../qna.html">Q &amp; A</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle active">?¬ë???/button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="../my-talents.html">???¬ë???/a></li>
+          <li><a href="../talent-receive.html">?¬ë????˜ë ¹</a></li>
+          <li data-min-perm="40"><a href="talents.html">?¬ë???ê´€ë¦?/a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">?¬ë????µê³„</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html" class="active">?¬ë???QR ê´€ë¦?/a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">?í’ˆ</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="../shop.html">?í’ˆ êµ¬ë§¤</a></li>
+          <li><a href="../my-orders.html">??êµ¬ë§¤ ?í’ˆ</a></li>
+          <li data-min-perm="60"><a href="shop.html">?í’ˆ ê´€ë¦?/a></li>
+          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
+        </ul>
+      </li>
+      <li data-min-perm="60">
+        <button class="nav-dropdown-toggle">ê´€ë¦?/button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="80"><a href="index.html">?€?œë³´??/a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">?¬ìš©??ê´€ë¦?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦?/a></li>
+          <li data-min-perm="60"><a href="departments.html">ë¶€??ê´€ë¦?/a></li>
+        </ul>
+      </li>
+      <li data-min-perm="80">
+        <button class="nav-dropdown-toggle">?´ì˜</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="100"><a href="page-access.html">?˜ì´ì§€ ?‘ê·¼</a></li>
+          <li data-min-perm="100"><a href="page-features.html">?˜ì´ì§€ ê¸°ëŠ¥</a></li>
+          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
+          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ??/a></li>
+          <li data-min-perm="100"><a href="audit.html">?‘ì—… ?´ë ¥</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+        </ul>
+      </li>
+      <li><span class="nav-user" id="navUser"></span></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸?„ì›ƒ</button></li>
+    </ul>
+    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
+  </nav>
+
+  <div class="admin-container">
+    <h2>?“± ?¬ë???QR ê´€ë¦?/h2>
+
+    <div class="qr-tabs filters" style="margin-bottom:1rem;">
+      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">?’ ?™ìƒ</button>
+      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">?‘©?ğŸ?êµì‚¬</button>
+    </div>
+
+    <div id="itemList">
+      <div style="text-align:center;color:var(--admin-text-muted);">ë¶ˆëŸ¬?¤ëŠ” ì¤?..</div>
+    </div>
+  </div>
+
+  <!-- QR ?ì„±/?¤ì • ëª¨ë‹¬ -->
+  <div class="modal-overlay hidden" id="qrCreateModal">
+    <div class="modal-box qr-modal-content">
+      <h3 class="modal-title" id="qrCreateTitle">QR ì½”ë“œ ?ì„±</h3>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">? íš¨ ê¸°ê°„</label>
+        <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+          <label style="font-size:0.85rem;display:flex;align-items:center;gap:0.3rem;">
+            <input type="checkbox" id="chkAlways" checked onchange="toggleValidity()"> ?ì‹œ ? íš¨
+          </label>
+        </div>
+        <div id="validityFields" style="display:none;margin-top:0.5rem;">
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <div style="flex:1;min-width:140px;">
+              <label style="font-size:0.8rem;color:#636e72;">?œì‘?¼ì‹œ</label>
+              <input type="datetime-local" id="validFrom" style="width:100%;padding:0.4rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;" />
+            </div>
+            <div style="flex:1;min-width:140px;">
+              <label style="font-size:0.8rem;color:#636e72;">ì¢…ë£Œ?¼ì‹œ</label>
+              <input type="datetime-local" id="validUntil" style="width:100%;padding:0.4rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?„ì¹˜ ?œí•œ</label>
+        <label style="font-size:0.85rem;display:flex;align-items:center;gap:0.3rem;">
+          <input type="checkbox" id="chkNoLocation" checked onchange="toggleLocation()"> ?„ì¹˜ ?œí•œ ?†ìŒ
+        </label>
+        <div id="locationFields" style="display:none;">
+          <div class="loc-search-area">
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" id="locAddress" placeholder="ì£¼ì†Œ ê²€??(?? ?œìš¸ ê°•ë‚¨êµ???‚¼??" />
+              <button class="filter-btn" onclick="searchAddress()" style="white-space:nowrap;padding:0.5rem 0.8rem;">?” ê²€??/button>
+            </div>
+            <div id="locSearchResult" class="loc-result"></div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.5rem;align-items:center;">
+              <label style="font-size:0.82rem;color:#636e72;white-space:nowrap;">?ˆìš© ë°˜ê²½:</label>
+              <input type="number" id="locRadius" min="0.1" max="50" step="0.1" value="0.5" style="width:80px;padding:0.4rem;border:1px solid var(--admin-border);border-radius:8px;" />
+              <span style="font-size:0.82rem;color:#636e72;">km</span>
+            </div>
+            <div style="font-size:0.78rem;color:#868e96;margin-top:0.3rem;">
+              ?„ë„: <span id="locLat">-</span>, ê²½ë„: <span id="locLng">-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-error" id="qrCreateError"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeQRCreateModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" onclick="generateQR()">QR ?ì„±</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR ë³´ê¸° ëª¨ë‹¬ -->
+  <div class="modal-overlay hidden" id="qrViewModal">
+    <div class="modal-box qr-modal-content">
+      <h3 class="modal-title" id="qrViewTitle">QR ì½”ë“œ</h3>
+      <div id="qrImageWrap"></div>
+      <div id="qrViewInfo" style="text-align:center;font-size:0.85rem;color:#636e72;margin-bottom:0.8rem;"></div>
+      <div style="display:flex;gap:0.5rem;justify-content:center;margin-bottom:1rem;">
+        <button class="filter-btn" onclick="downloadQR()" style="background:var(--admin-primary);color:#fff;">?“¥ ?¤ìš´ë¡œë“œ</button>
+        <button class="filter-btn" onclick="printQR()">?–¨ ?¸ì‡„</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeQRViewModal()">?«ê¸°</button>
+        <button class="btn-confirm" style="background:#e03131;border-color:#e03131;" onclick="deactivateQR()">?š« ë¹„í™œ?±í™”</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ?¤ìº” ?´ë ¥ ëª¨ë‹¬ -->
+  <div class="modal-overlay hidden" id="scanLogModal">
+    <div class="modal-box" style="max-width:600px;">
+      <h3 class="modal-title" id="scanLogTitle">?¤ìº” ?´ë ¥</h3>
+      <div id="scanLogContent" style="max-height:400px;overflow-y:auto;"></div>
+      <div class="modal-actions" style="margin-top:1rem;">
+        <button class="btn-cancel" onclick="closeScanLogModal()">?«ê¸°</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="../js/supabase-config.js?v=3.13.0"></script>
+  <script src="../js/activity-log.js?v=3.13.0"></script>
+  <script src="../js/auth.js?v=3.13.0"></script>
+  <script src="../js/talent.js?v=3.13.0"></script>
+  <script>
+    initSupabase();
+    let session;
+    let currentTab = 'student';
+    let talentItems = [];
+    let qrCodesMap = {};
+    let currentItemId = null;
+    let currentQRId = null;
+    let locCoords = { lat: null, lng: null };
+
+    (async () => {
+      session = await initPage(90, '../login.html');
+      if (!session) return;
+      applyPermNav(session.permissionRank || 0);
+      renderRoleBadge('navUser', session, '../');
+      autoLogPageView();
+      updatePendingBadge();
+      updateNavOrderBadge();
+      await loadData();
+    })();
+
+    async function loadData() {
+      const [itemRes, qrRes] = await Promise.all([
+        fetchAllTalentItems(),
+        _sb.from('talent_qr_codes').select('*').eq('is_active', true)
+      ]);
+      talentItems = itemRes.data || [];
+      qrCodesMap = {};
+      (qrRes.data || []).forEach(q => { qrCodesMap[q.talent_item_id] = q; });
+      renderItems();
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tabStudent').classList.toggle('active', tab === 'student');
+      document.getElementById('tabTeacher').classList.toggle('active', tab === 'teacher');
+      renderItems();
+    }
+
+    function renderItems() {
+      const items = talentItems.filter(i => i.target_type === currentTab);
+      const container = document.getElementById('itemList');
+
+      if (items.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">?±ë¡????ª©???†ìŠµ?ˆë‹¤.</div>';
+        return;
+      }
+
+      container.innerHTML = items.map(item => {
+        const qr = qrCodesMap[item.id];
+        const hasQR = !!qr;
+        const statusText = hasQR ? '??QR ?œì„±' : '??QR ?†ìŒ';
+        return `<div class="qr-item-card">
+          <div class="qr-item-info">
+            <div class="qr-item-name">${item.name}</div>
+            <div class="qr-item-amount">+${item.talent_amount} ?¬ë???/div>
+            <div class="qr-item-status">${statusText}${hasQR && qr.valid_until ? ' Â· ë§Œë£Œ: ' + formatDT(qr.valid_until) : ''}${hasQR && qr.location_address ? ' Â· ?“ ' + qr.location_address : ''}</div>
+          </div>
+          <div class="qr-item-actions">
+            <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openQRCreateModal('${item.id}','${item.name.replace(/'/g,"\\'")}')">?”„ QR ${hasQR ? '?¬ìƒ?? : '?ì„±'}</button>
+            ${hasQR ? `<button class="filter-btn" onclick="viewQR('${item.id}','${item.name.replace(/'/g,"\\'")}')">?‘ QR ë³´ê¸°</button>` : ''}
+            <button class="filter-btn" onclick="openScanLog('${item.id}','${item.name.replace(/'/g,"\\'")}')">?“‹ ?´ë ¥</button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function openQRCreateModal(itemId, itemName) {
+      currentItemId = itemId;
+      document.getElementById('qrCreateTitle').textContent = `${itemName} - QR ì½”ë“œ ?ì„±`;
+      document.getElementById('chkAlways').checked = true;
+      document.getElementById('chkNoLocation').checked = true;
+      toggleValidity();
+      toggleLocation();
+      locCoords = { lat: null, lng: null };
+      document.getElementById('locLat').textContent = '-';
+      document.getElementById('locLng').textContent = '-';
+      document.getElementById('locSearchResult').textContent = '';
+      document.getElementById('locAddress').value = '';
+      document.getElementById('qrCreateError').classList.remove('show');
+      document.getElementById('qrCreateModal').classList.remove('hidden');
+    }
+
+    function closeQRCreateModal() { document.getElementById('qrCreateModal').classList.add('hidden'); }
+
+    function toggleValidity() {
+      document.getElementById('validityFields').style.display = document.getElementById('chkAlways').checked ? 'none' : '';
+    }
+
+    function toggleLocation() {
+      document.getElementById('locationFields').style.display = document.getElementById('chkNoLocation').checked ? 'none' : '';
+    }
+
+    async function searchAddress() {
+      const addr = document.getElementById('locAddress').value.trim();
+      const resultEl = document.getElementById('locSearchResult');
+      if (!addr) { resultEl.textContent = 'ì£¼ì†Œë¥??…ë ¥?˜ì„¸??'; return; }
+
+      if (typeof kakao === 'undefined' || !kakao.maps || !kakao.maps.services) {
+        resultEl.innerHTML = '<span style="color:#e03131;">Kakao Maps APIê°€ ë¡œë“œ?˜ì? ?Šì•˜?µë‹ˆ?? API ?¤ë? ?•ì¸?˜ì„¸??</span>';
+        return;
+      }
+
+      resultEl.textContent = 'ê²€??ì¤?..';
+      const geocoder = new kakao.maps.services.Geocoder();
+      geocoder.addressSearch(addr, (result, status) => {
+        if (status === kakao.maps.services.Status.OK && result.length > 0) {
+          const r = result[0];
+          locCoords.lat = parseFloat(r.y);
+          locCoords.lng = parseFloat(r.x);
+          document.getElementById('locLat').textContent = locCoords.lat.toFixed(6);
+          document.getElementById('locLng').textContent = locCoords.lng.toFixed(6);
+          resultEl.innerHTML = `??<strong>${r.address_name}</strong> (${r.address_type})`;
+        } else {
+          resultEl.innerHTML = '<span style="color:#e03131;">ê²€??ê²°ê³¼ê°€ ?†ìŠµ?ˆë‹¤. ?¤ë¥¸ ì£¼ì†Œë¥??œë„?˜ì„¸??</span>';
+        }
+      });
+    }
+
+    async function generateQR() {
+      const errEl = document.getElementById('qrCreateError');
+      errEl.classList.remove('show');
+
+      const alwaysValid = document.getElementById('chkAlways').checked;
+      const noLocation = document.getElementById('chkNoLocation').checked;
+
+      let validFrom = null, validUntil = null;
+      if (!alwaysValid) {
+        validFrom = document.getElementById('validFrom').value ? new Date(document.getElementById('validFrom').value).toISOString() : null;
+        validUntil = document.getElementById('validUntil').value ? new Date(document.getElementById('validUntil').value).toISOString() : null;
+      }
+
+      let locationData = {};
+      if (!noLocation) {
+        if (!locCoords.lat || !locCoords.lng) {
+          errEl.textContent = '?„ì¹˜ë¥??¤ì •?˜ì„¸?? ì£¼ì†Œë¥?ê²€?‰í•˜??ì¢Œí‘œë¥??•ì¸?˜ì„¸??';
+          errEl.classList.add('show');
+          return;
+        }
+        const radius = parseFloat(document.getElementById('locRadius').value);
+        if (!radius || radius <= 0) {
+          errEl.textContent = '?ˆìš© ë°˜ê²½???…ë ¥?˜ì„¸??';
+          errEl.classList.add('show');
+          return;
+        }
+        locationData = {
+          location_address: document.getElementById('locAddress').value.trim(),
+          location_lat: locCoords.lat,
+          location_lng: locCoords.lng,
+          location_radius_km: radius
+        };
+      }
+
+      const qrKey = crypto.randomUUID();
+
+      const existingQR = qrCodesMap[currentItemId];
+      if (existingQR) {
+        await _sb.from('talent_qr_codes').update({ is_active: false }).eq('id', existingQR.id);
+      }
+
+      const insertData = {
+        talent_item_id: currentItemId,
+        qr_key: qrKey,
+        valid_from: validFrom,
+        valid_until: validUntil,
+        is_active: true,
+        created_by: session.id,
+        ...locationData
+      };
+
+      const { data, error } = await _sb.from('talent_qr_codes').insert(insertData).select().single();
+      if (error) {
+        errEl.textContent = tErr(error.message);
+        errEl.classList.add('show');
+        return;
+      }
+
+      await logInfo('QR_CREATE', { itemId: currentItemId, qrCodeId: data.id, hasLocation: !noLocation, alwaysValid });
+      closeQRCreateModal();
+      await loadData();
+      viewQR(currentItemId, document.getElementById('qrCreateTitle').textContent.replace(' - QR ì½”ë“œ ?ì„±', ''));
+    }
+
+    async function viewQR(itemId, itemName) {
+      const qr = qrCodesMap[itemId];
+      if (!qr) { alert('?œì„± QR ì½”ë“œê°€ ?†ìŠµ?ˆë‹¤.'); return; }
+
+      currentQRId = qr.id;
+      document.getElementById('qrViewTitle').textContent = `${itemName} - QR ì½”ë“œ`;
+
+      const wrap = document.getElementById('qrImageWrap');
+      wrap.innerHTML = '';
+      const canvas = document.createElement('canvas');
+      wrap.appendChild(canvas);
+
+      await QRCode.toCanvas(canvas, qr.qr_key, {
+        width: 280, margin: 2,
+        color: { dark: '#000000', light: '#ffffff' }
+      });
+
+      let info = '';
+      if (qr.valid_from || qr.valid_until) {
+        info += `??${qr.valid_from ? formatDT(qr.valid_from) : '?œì‘ ?†ìŒ'} ~ ${qr.valid_until ? formatDT(qr.valid_until) : 'ì¢…ë£Œ ?†ìŒ'}<br>`;
+      } else {
+        info += '???ì‹œ ? íš¨<br>';
+      }
+      if (qr.location_address) {
+        info += `?“ ${qr.location_address} (ë°˜ê²½ ${qr.location_radius_km}km)`;
+      } else {
+        info += '?“ ?„ì¹˜ ?œí•œ ?†ìŒ';
+      }
+      document.getElementById('qrViewInfo').innerHTML = info;
+      document.getElementById('qrViewModal').classList.remove('hidden');
+    }
+
+    function closeQRViewModal() { document.getElementById('qrViewModal').classList.add('hidden'); }
+
+    function downloadQR() {
+      const canvas = document.querySelector('#qrImageWrap canvas');
+      if (!canvas) return;
+      const link = document.createElement('a');
+      link.download = `qr_talent_${currentQRId}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    function printQR() {
+      const canvas = document.querySelector('#qrImageWrap canvas');
+      if (!canvas) return;
+      const win = window.open('', '_blank');
+      win.document.write(`<html><head><title>QR ?¸ì‡„</title></head><body style="text-align:center;padding:2rem;">
+        <h2>${document.getElementById('qrViewTitle').textContent}</h2>
+        <img src="${canvas.toDataURL('image/png')}" style="max-width:400px;"/><br>
+        <p>${document.getElementById('qrViewInfo').innerHTML}</p>
+        <script>window.print();<\/script></body></html>`);
+    }
+
+    async function deactivateQR() {
+      if (!currentQRId) return;
+      if (!confirm('??QR ì½”ë“œë¥?ë¹„í™œ?±í™”?˜ì‹œê² ìŠµ?ˆê¹Œ?\nê¸°ì¡´ QR ì½”ë“œë¡œëŠ” ???´ìƒ ?¬ë??¸ë? ?˜ë ¹?????†ìŠµ?ˆë‹¤.')) return;
+      await _sb.from('talent_qr_codes').update({ is_active: false }).eq('id', currentQRId);
+      await logInfo('QR_DEACTIVATE', { qrCodeId: currentQRId });
+      closeQRViewModal();
+      await loadData();
+    }
+
+    async function openScanLog(itemId, itemName) {
+      document.getElementById('scanLogTitle').textContent = `${itemName} - ?¤ìº” ?´ë ¥`;
+      document.getElementById('scanLogModal').classList.remove('hidden');
+      const content = document.getElementById('scanLogContent');
+      content.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);">ë¶ˆëŸ¬?¤ëŠ” ì¤?..</div>';
+
+      const { data: scans } = await _sb.from('talent_qr_scans')
+        .select('*, profiles:user_id(display_name, username)')
+        .eq('talent_item_id', itemId)
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (!scans || scans.length === 0) {
+        content.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:1rem;">?¤ìº” ?´ë ¥???†ìŠµ?ˆë‹¤.</div>';
+        return;
+      }
+
+      content.innerHTML = scans.map(s => {
+        const name = s.profiles ? (s.profiles.display_name || s.profiles.username) : '-';
+        const ok = s.scan_result === 'success';
+        const time = formatDT(s.created_at);
+        return `<div class="scan-log-row">
+          <span>${ok ? '?? : '??} ${name}</span>
+          <span style="color:${ok ? '#2b8a3e' : '#e03131'};">${ok ? '?±ê³µ' : (s.failure_reason || '?¤íŒ¨')}</span>
+          <span style="color:#868e96;">${time}</span>
+        </div>`;
+      }).join('');
+    }
+
+    function closeScanLogModal() { document.getElementById('scanLogModal').classList.add('hidden'); }
+
+    function formatDT(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    document.getElementById('qrCreateModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeQRCreateModal(); });
+    document.getElementById('qrViewModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeQRViewModal(); });
+    document.getElementById('scanLogModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeScanLogModal(); });
+  </script>
+  <script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=KAKAO_API_KEY&libraries=services" onerror="console.warn('Kakao Maps API not loaded')"></script>
+  <script src="../js/version.js?v=3.13.0"></script>
+</body>
+</html>

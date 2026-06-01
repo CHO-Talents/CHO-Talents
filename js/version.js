@@ -2,9 +2,28 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.15.1',
-  date: '2026-05-31',
+  current: '3.13.0',
+  date: '2026-06-01',
   history: [
+    {
+      version: '3.13.0',
+      date: '2026-06-01',
+      title: 'TASK-030: QR 달란트 시스템 + 관리 개선 + 통계 개편',
+      changes: [
+        '신규: talent-receive.html - QR 코드 스캔 달란트 수령 페이지 (교사 전용)',
+        '신규: admin/talent-qr.html - QR 코드 생성/관리 페이지 (전도사님+)',
+        'DB: talent_qr_codes, talent_qr_scans 테이블 생성 + RLS 정책',
+        '달란트관리: 달란트 취소 기능 추가 (전도사님+)',
+        '달란트관리: 출석 명칭 통일 + 중복 지급 방지 강화',
+        '달란트관리: 과거 날짜 지급일 지정 기능 (전도사님+)',
+        '내 구매 상품: requested 상태 구매 취소 + pending_talent 복원',
+        '달란트 통계: 전폭 레이아웃 + 날짜 범위 필터 + 프리셋',
+        '달란트 통계: 모든 뷰 요약 카드 통일 + 학생/교사 유형 구분',
+        '네비게이션: 달란트 수령/QR 관리 메뉴 전체 페이지 추가',
+        '감사 이력: QR_CREATE, QR_DEACTIVATE, TALENT_CANCEL, ORDER_CANCEL 액션 추가',
+        '인증: detectCurrentPageId 5개 신규 페이지 ID 추가'
+      ]
+    },
     {
       version: '3.15.1',
       date: '2026-05-31',

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>?¬ë????˜ë ¹ - ?¬ë???ë§ˆì„</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?“±</text></svg>" />
+  <link rel="stylesheet" href="css/common.css?v=3.13.0" />
+  <style>
+    .qr-hero { text-align: center; margin-bottom: 1.5rem; }
+    .qr-hero-icon { font-size: 3.5rem; margin-bottom: 0.5rem; }
+    .qr-hero h1 { font-size: 1.8rem; font-weight: 900; color: var(--primary); margin-bottom: 0.3rem; }
+    .qr-hero p { color: #636e72; font-size: 0.95rem; }
+
+    .qr-scan-area {
+      max-width: 440px; margin: 0 auto 1.5rem;
+      background: #fff; border-radius: 20px; padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(108,92,231,0.08);
+      border: 2px solid var(--primary);
+    }
+    #qr-reader { width: 100%; border-radius: 12px; overflow: hidden; }
+    #qr-reader video { border-radius: 12px; }
+    .scan-controls { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: center; }
+    .scan-btn {
+      padding: 0.7rem 1.5rem; border: none; border-radius: 12px;
+      font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .scan-btn-start { background: var(--primary); color: #fff; }
+    .scan-btn-start:hover { background: #5a4bd1; }
+    .scan-btn-stop { background: #e03131; color: #fff; }
+
+    .result-card {
+      max-width: 440px; margin: 0 auto 1rem;
+      background: #fff; border-radius: 16px; padding: 1.2rem 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      display: none;
+    }
+    .result-card.show { display: block; animation: fadeIn 0.3s ease; }
+    .result-success { border-left: 4px solid #2b8a3e; }
+    .result-fail { border-left: 4px solid #e03131; }
+    .result-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    .result-card p { font-size: 0.9rem; color: #636e72; line-height: 1.6; }
+    .result-amount { font-size: 1.8rem; font-weight: 800; color: #2b8a3e; }
+
+    .scan-history { max-width: 440px; margin: 1.5rem auto; }
+    .scan-history h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary); }
+    .history-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.6rem 0; border-bottom: 1px solid #f0f0f0;
+      font-size: 0.85rem;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .gps-status {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; color: #868e96; margin-top: 0.5rem; justify-content: center;
+    }
+    .gps-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .gps-dot.ok { background: #2b8a3e; }
+    .gps-dot.pending { background: #fcc419; animation: blink 1s infinite; }
+    .gps-dot.fail { background: #e03131; }
+    @keyframes blink { 50% { opacity: 0.3; } }
+  </style>
+</head>
+<body class="page-body">
+  <nav class="top-nav">
+    <a href="index.html" class="top-nav-brand">
+      <span class="brand-icon">â­?/span> ?¬ë???ë§ˆì„
+    </a>
+    <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
+    <ul class="top-nav-links" id="navLinks">
+      <li>
+        <button class="nav-dropdown-toggle">?Œê°œ</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="guide.html">?¬ìš©??ê°€?´ë“œ</a></li>
+          <li><a href="earn-talents.html">?¬ë????ë¦½</a></li>
+          <li><a href="qna.html">Q &amp; A</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle active">?¬ë???/button>
+        <ul class="nav-dropdown-menu">
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">???¬ë???/a></li>
+          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html" class="active">?¬ë????˜ë ¹</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">?¬ë???ê´€ë¦?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">?¬ë????µê³„</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">?í’ˆ</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="shop.html">?í’ˆ êµ¬ë§¤</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">??êµ¬ë§¤ ?í’ˆ</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">?í’ˆ ê´€ë¦?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">êµ¬ë§¤ ê´€ë¦?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
+        </ul>
+      </li>
+      <li data-min-perm="60" style="display:none;">
+        <button class="nav-dropdown-toggle">ê´€ë¦?/button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="80"><a href="admin/index.html">?€?œë³´??/a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">?¬ìš©??ê´€ë¦?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">ê´€ë¦¬ì ê´€ë¦?/a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">ë¶€??ê´€ë¦?/a></li>
+        </ul>
+      </li>
+      <li data-min-perm="80" style="display:none;">
+        <button class="nav-dropdown-toggle">?´ì˜</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="100"><a href="admin/page-access.html">?˜ì´ì§€ ?‘ê·¼</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">?˜ì´ì§€ ê¸°ëŠ¥</a></li>
+          <li data-min-perm="80"><a href="admin/versions.html">ë²„ì „</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">ë³´ê³ ??/a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">?‘ì—… ?´ë ¥</a></li>
+          <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+        </ul>
+      </li>
+      <li id="navLoginArea"><a href="login.html">ë¡œê·¸??/a></li>
+      <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">ë¡œê·¸?„ì›ƒ</button></li>
+    </ul>
+    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
+  </nav>
+
+  <div class="page-container">
+    <div class="qr-hero">
+      <div class="qr-hero-icon">?“±</div>
+      <h1>?¬ë????˜ë ¹</h1>
+      <p>QR ì½”ë“œë¥??¤ìº”?˜ì—¬ ?¬ë??¸ë? ?˜ë ¹?˜ì„¸??/p>
+    </div>
+
+    <div id="authGuard" style="display:none;">
+      <div class="qr-scan-area">
+        <div id="qr-reader"></div>
+        <div class="gps-status" id="gpsStatus">
+          <span class="gps-dot pending" id="gpsDot"></span>
+          <span id="gpsText">GPS ?„ì¹˜ ?•ì¸ ì¤?..</span>
+        </div>
+        <div class="scan-controls">
+          <button class="scan-btn scan-btn-start" id="btnStart" onclick="startScan()">?“· ?¤ìº” ?œì‘</button>
+          <button class="scan-btn scan-btn-stop" id="btnStop" onclick="stopScan()" style="display:none;">???¤ìº” ì¤‘ì?</button>
+        </div>
+      </div>
+
+      <div class="result-card" id="resultCard">
+        <h3 id="resultTitle"></h3>
+        <p id="resultMsg"></p>
+        <div id="resultAmount" style="display:none;"></div>
+      </div>
+
+      <div class="scan-history" id="scanHistoryWrap" style="display:none;">
+        <h3>?“‹ ?¤ëŠ˜ ?˜ë ¹ ?´ì—­</h3>
+        <div id="scanHistory"></div>
+      </div>
+    </div>
+
+    <div id="noAuthMsg" style="text-align:center;padding:2rem;">
+      <p style="font-size:1.1rem;color:#636e72;">êµì‚¬ë§??´ìš© ê°€?¥í•œ ê¸°ëŠ¥?…ë‹ˆ??</p>
+      <a href="login.html" style="color:var(--primary);font-weight:700;">ë¡œê·¸?¸í•˜ê¸?/a>
+    </div>
+  </div>
+
+  <footer class="page-footer">
+    <p>ì´ˆë“±ë¶€ ?¬ë???ê´€ë¦?&copy; 2026 CHO-Talents</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="js/supabase-config.js?v=3.13.0"></script>
+  <script src="js/activity-log.js?v=3.13.0"></script>
+  <script src="js/auth.js?v=3.13.0"></script>
+  <script src="js/talent.js?v=3.13.0"></script>
+  <script>
+    initSupabase();
+    let session;
+    let scanner = null;
+    let currentGPS = null;
+    let isScanning = false;
+    let todayScans = [];
+
+    (async () => {
+      session = await loadAuthSession();
+      if (!session || session.userType !== 'teacher') {
+        document.getElementById('noAuthMsg').style.display = '';
+        document.getElementById('authGuard').style.display = 'none';
+        if (session) {
+          document.getElementById('noAuthMsg').innerHTML = '<p style="font-size:1.1rem;color:#636e72;">êµì‚¬ë§??´ìš© ê°€?¥í•œ ê¸°ëŠ¥?…ë‹ˆ??</p>';
+        }
+        if (session) {
+          document.getElementById('navMyTalent').style.display = '';
+          document.getElementById('navLoginArea').style.display = 'none';
+          document.getElementById('navAuthArea').style.display = '';
+          document.getElementById('navLogoutArea').style.display = '';
+          renderRoleBadge('navUser', session, '');
+          applyPermNav(session.permissionRank || 0);
+          const mo = document.getElementById('navMyOrders');
+          if (mo) mo.style.display = '';
+        }
+        return;
+      }
+
+      document.getElementById('noAuthMsg').style.display = 'none';
+      document.getElementById('authGuard').style.display = '';
+      document.getElementById('navMyTalent').style.display = '';
+      document.getElementById('navLoginArea').style.display = 'none';
+      document.getElementById('navAuthArea').style.display = '';
+      document.getElementById('navLogoutArea').style.display = '';
+      renderRoleBadge('navUser', session, '');
+      applyPermNav(session.permissionRank || 0);
+      const mo = document.getElementById('navMyOrders');
+      if (mo) mo.style.display = '';
+      updateNavOrderBadge();
+      autoLogPageView();
+
+      requestGPS();
+      await loadTodayScans();
+    })();
+
+    function requestGPS() {
+      if (!navigator.geolocation) {
+        setGPSStatus('fail', 'GPSë¥?ì§€?í•˜ì§€ ?ŠëŠ” ê¸°ê¸°?…ë‹ˆ??);
+        return;
+      }
+      setGPSStatus('pending', 'GPS ?„ì¹˜ ?•ì¸ ì¤?..');
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          currentGPS = { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy };
+          setGPSStatus('ok', `GPS ?•ì¸??(?•í™•??${Math.round(pos.coords.accuracy)}m)`);
+        },
+        err => {
+          setGPSStatus('fail', 'GPS ?„ì¹˜ë¥?ê°€?¸ì˜¬ ???†ìŠµ?ˆë‹¤. ?„ì¹˜ ê¶Œí•œ???•ì¸?˜ì„¸??');
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
+      );
+    }
+
+    function setGPSStatus(status, text) {
+      const dot = document.getElementById('gpsDot');
+      dot.className = 'gps-dot ' + status;
+      document.getElementById('gpsText').textContent = text;
+    }
+
+    async function startScan() {
+      const resultCard = document.getElementById('resultCard');
+      resultCard.classList.remove('show', 'result-success', 'result-fail');
+
+      try {
+        scanner = new Html5Qrcode('qr-reader');
+        await scanner.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: { width: 250, height: 250 } },
+          onScanSuccess,
+          () => {}
+        );
+        isScanning = true;
+        document.getElementById('btnStart').style.display = 'none';
+        document.getElementById('btnStop').style.display = '';
+      } catch (err) {
+        showResult(false, 'ì¹´ë©”???¤ë¥˜', 'ì¹´ë©”?¼ë? ?¬ìš©?????†ìŠµ?ˆë‹¤. ì¹´ë©”??ê¶Œí•œ???•ì¸?˜ì„¸??\n' + (err.message || err));
+      }
+    }
+
+    async function stopScan() {
+      if (scanner && isScanning) {
+        try { await scanner.stop(); } catch (e) {}
+        isScanning = false;
+      }
+      document.getElementById('btnStart').style.display = '';
+      document.getElementById('btnStop').style.display = 'none';
+    }
+
+    let _processing = false;
+    async function onScanSuccess(qrKey) {
+      if (_processing) return;
+      _processing = true;
+
+      try {
+        await stopScan();
+        await processQRCode(qrKey);
+      } finally {
+        _processing = false;
+      }
+    }
+
+    async function processQRCode(qrKey) {
+      const { data: qrCodes, error: qrErr } = await _sb
+        .from('talent_qr_codes')
+        .select('*, talent_items(id, name, talent_amount, target_type)')
+        .eq('qr_key', qrKey)
+        .eq('is_active', true);
+
+      if (qrErr || !qrCodes || qrCodes.length === 0) {
+        await logScan(null, null, 'fail', 'INVALID_KEY');
+        showResult(false, '? íš¨?˜ì? ?Šì? QR ì½”ë“œ', '?±ë¡?˜ì? ?Šì•˜ê±°ë‚˜ ë¹„í™œ?±í™”??QR ì½”ë“œ?…ë‹ˆ??');
+        return;
+      }
+
+      const qr = qrCodes[0];
+      const item = qr.talent_items;
+
+      if (!item) {
+        await logScan(qr.id, null, 'fail', 'ITEM_NOT_FOUND');
+        showResult(false, '??ª© ?¤ë¥˜', '?°ê²°???¬ë?????ª©??ì°¾ì„ ???†ìŠµ?ˆë‹¤.');
+        return;
+      }
+
+      const now = new Date();
+      if (qr.valid_from && new Date(qr.valid_from) > now) {
+        await logScan(qr.id, item.id, 'fail', 'NOT_YET_VALID');
+        showResult(false, '?„ì§ ? íš¨?˜ì? ?Šì? QR ì½”ë“œ', `? íš¨ ?œì‘: ${formatDateTime(qr.valid_from)}`);
+        return;
+      }
+      if (qr.valid_until && new Date(qr.valid_until) < now) {
+        await logScan(qr.id, item.id, 'fail', 'EXPIRED');
+        showResult(false, 'QR ì½”ë“œ ë§Œë£Œ', `? íš¨ ê¸°ê°„??ì¢…ë£Œ?˜ì—ˆ?µë‹ˆ??\në§Œë£Œ: ${formatDateTime(qr.valid_until)}`);
+        return;
+      }
+
+      if (qr.location_lat != null && qr.location_lng != null && qr.location_radius_km != null) {
+        if (!currentGPS) {
+          requestGPS();
+          await new Promise(r => setTimeout(r, 3000));
+        }
+        if (!currentGPS) {
+          await logScan(qr.id, item.id, 'fail', 'NO_GPS');
+          showResult(false, 'GPS ?„ì¹˜ ?•ì¸ ë¶ˆê?', 'GPS ?„ì¹˜ë¥?ê°€?¸ì˜¬ ???†ìŠµ?ˆë‹¤. ?„ì¹˜ ê¶Œí•œ???•ì¸ ???¤ì‹œ ?œë„?˜ì„¸??');
+          return;
+        }
+        const dist = haversineKm(currentGPS.lat, currentGPS.lng, qr.location_lat, qr.location_lng);
+        if (dist > qr.location_radius_km) {
+          await logScan(qr.id, item.id, 'fail', 'OUT_OF_RANGE');
+          showResult(false, '?ˆìš© ë²”ìœ„ ë°?, `?„ì¬ ?„ì¹˜ê°€ ?ˆìš© ë²”ìœ„(${qr.location_radius_km}km) ë°–ì…?ˆë‹¤.\nê±°ë¦¬: ${dist.toFixed(2)}km`);
+          return;
+        }
+      }
+
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const { data: existing } = await _sb.from('talent_qr_scans')
+        .select('id')
+        .eq('user_id', session.id)
+        .eq('talent_item_id', item.id)
+        .eq('scan_result', 'success')
+        .gte('created_at', todayStart.toISOString())
+        .limit(1);
+
+      if (existing && existing.length > 0) {
+        await logScan(qr.id, item.id, 'fail', 'ALREADY_RECEIVED_TODAY');
+        showResult(false, '?´ë? ?˜ë ¹ ?„ë£Œ', '?¤ëŠ˜ ?´ë? ????ª©???¬ë??¸ë? ?˜ë ¹?˜ì…¨?µë‹ˆ??');
+        return;
+      }
+
+      const result = await giveTalentByItem(session.id, item.id, session.id);
+      if (result && result.success === false) {
+        await logScan(qr.id, item.id, 'fail', result.error || 'GIVE_FAILED');
+        showResult(false, 'ì§€ê¸??¤íŒ¨', tErr(result.error || '?¬ë???ì§€ê¸‰ì— ?¤íŒ¨?ˆìŠµ?ˆë‹¤.'));
+        return;
+      }
+
+      await logScan(qr.id, item.id, 'success', null);
+      showResult(true, '?¬ë????˜ë ¹ ?„ë£Œ!', `${item.name}`, result.amount || item.talent_amount);
+      await loadTodayScans();
+    }
+
+    async function logScan(qrCodeId, itemId, result, reason) {
+      try {
+        const scanData = {
+          user_id: session.id,
+          scan_result: result,
+          failure_reason: reason
+        };
+        if (qrCodeId) scanData.qr_code_id = qrCodeId;
+        if (itemId) scanData.talent_item_id = itemId;
+        if (currentGPS) {
+          scanData.scan_lat = currentGPS.lat;
+          scanData.scan_lng = currentGPS.lng;
+        }
+        await _sb.from('talent_qr_scans').insert(scanData);
+      } catch (e) { console.warn('Scan log failed:', e); }
+    }
+
+    function showResult(success, title, msg, amount) {
+      const card = document.getElementById('resultCard');
+      card.className = 'result-card show ' + (success ? 'result-success' : 'result-fail');
+      document.getElementById('resultTitle').textContent = (success ? '??' : '??') + title;
+      document.getElementById('resultMsg').textContent = msg;
+      const amtEl = document.getElementById('resultAmount');
+      if (success && amount) {
+        amtEl.style.display = 'block';
+        amtEl.innerHTML = `<span class="result-amount">+${amount}</span> <span style="font-size:0.9rem;color:#636e72;">?¬ë???/span>`;
+      } else {
+        amtEl.style.display = 'none';
+      }
+    }
+
+    function haversineKm(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function formatDateTime(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    async function loadTodayScans() {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const { data } = await _sb.from('talent_qr_scans')
+        .select('*, talent_items(name, talent_amount)')
+        .eq('user_id', session.id)
+        .gte('created_at', todayStart.toISOString())
+        .order('created_at', { ascending: false });
+
+      todayScans = data || [];
+      const wrap = document.getElementById('scanHistoryWrap');
+      const el = document.getElementById('scanHistory');
+
+      if (todayScans.length === 0) {
+        wrap.style.display = 'none';
+        return;
+      }
+
+      wrap.style.display = '';
+      el.innerHTML = todayScans.map(s => {
+        const itemName = s.talent_items ? s.talent_items.name : '-';
+        const amount = s.talent_items ? s.talent_items.talent_amount : 0;
+        const time = new Date(s.created_at);
+        const timeStr = `${String(time.getHours()).padStart(2,'0')}:${String(time.getMinutes()).padStart(2,'0')}`;
+        const ok = s.scan_result === 'success';
+        return `<div class="history-item">
+          <span>${ok ? '?? : '??} ${itemName}</span>
+          <span style="color:${ok ? '#2b8a3e' : '#e03131'};font-weight:700;">${ok ? '+' + amount : (s.failure_reason || '?¤íŒ¨')}</span>
+          <span style="color:#868e96;">${timeStr}</span>
+        </div>`;
+      }).join('');
+    }
+  </script>
+  <script src="js/version.js?v=3.13.0"></script>
+</body>
+</html>

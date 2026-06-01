@@ -1,63 +1,65 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ë¡œê·¸ ê´€ë¦¬ - CHO Talents</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
+  <title>·Î±× °ü¸® - CHO Talents</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
+        <button class="nav-dropdown-toggle">¼Ò°³</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
-          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
+          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
+          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ë‹¬ë€íŠ¸</button>
+        <button class="nav-dropdown-toggle">´Ş¶õÆ®</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
-          <li data-min-perm="40"><a href="talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
+          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
+          <li data-min-perm="40"><a href="talents.html">´Ş¶õÆ® °ü¸®</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
+        <button class="nav-dropdown-toggle">»óÇ°</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
-          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
-          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
+          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
+          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
+          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
+        <button class="nav-dropdown-toggle">°ü¸®</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
+          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
+          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle active">ìš´ì˜</button>
+        <button class="nav-dropdown-toggle active">¿î¿µ</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
-          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
-          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
-          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
-          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
-          <li data-min-perm="100"><a href="logs.html" class="active" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
+          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
+          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
+          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
+          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
+          <li data-min-perm="100"><a href="logs.html" class="active" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
@@ -66,16 +68,16 @@
     <!-- Unacknowledged ERROR+ Alert -->
     <div class="alert-banner hidden" id="unackAlert">
       <span>&#9888;</span>
-      <span id="unackAlertText">ë¯¸í™•ì¸ ERROR+ ë¡œê·¸ê°€ ìˆìŠµë‹ˆë‹¤.</span>
+      <span id="unackAlertText">¹ÌÈ®ÀÎ ERROR+ ·Î±×°¡ ÀÖ½À´Ï´Ù.</span>
     </div>
 
-    <h2 style="margin-bottom:1rem;">ë¡œê·¸ ê´€ë¦¬</h2>
+    <h2 style="margin-bottom:1rem;">·Î±× °ü¸®</h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">í™œë™ ë¡œê·¸</div>
+        <div class="admin-table-title" id="tableTitle">È°µ¿ ·Î±×</div>
         <div class="filters">
-          <button class="filter-btn active" data-level="ALL" onclick="toggleLevel('ALL', this)">ì „ì²´</button>
+          <button class="filter-btn active" data-level="ALL" onclick="toggleLevel('ALL', this)">ÀüÃ¼</button>
           <button class="filter-btn" data-level="TRACE" onclick="toggleLevel('TRACE', this)">TRACE</button>
           <button class="filter-btn" data-level="DEBUG" onclick="toggleLevel('DEBUG', this)">DEBUG</button>
           <button class="filter-btn" data-level="INFO" onclick="toggleLevel('INFO', this)">INFO</button>
@@ -87,17 +89,17 @@
           <input type="date" class="filter-input" id="dateFrom" onchange="applyFilters()" />
           <span style="font-size:0.8rem;color:#adb5bd;">~</span>
           <input type="date" class="filter-input" id="dateTo" onchange="applyFilters()" />
-          <button class="btn-ack admin-only-btn" style="margin-left:0.5rem;display:none;" onclick="deleteByRange()">ë²”ìœ„ ì‚­ì œ ëŒ€ê¸°</button>
-          <button class="btn-ack admin-only-btn" style="background:#d63031;display:none;" onclick="deleteSelectedLogs()" id="btnDeleteLogs" disabled>ì„ íƒ ì‚­ì œ ëŒ€ê¸°</button>
-          <button class="filter-btn admin-only-btn" onclick="toggleDeletedView()" id="btnToggleDeleted" style="margin-left:0.3rem;display:none;">ğŸ—‘ï¸ ì‚­ì œ ëŒ€ê¸° ëª©ë¡</button>
+          <button class="btn-ack admin-only-btn" style="margin-left:0.5rem;display:none;" onclick="deleteByRange()">¹üÀ§ »èÁ¦ ´ë±â</button>
+          <button class="btn-ack admin-only-btn" style="background:#d63031;display:none;" onclick="deleteSelectedLogs()" id="btnDeleteLogs" disabled>¼±ÅÃ »èÁ¦ ´ë±â</button>
+          <button class="filter-btn admin-only-btn" onclick="toggleDeletedView()" id="btnToggleDeleted" style="margin-left:0.3rem;display:none;">??? »èÁ¦ ´ë±â ¸ñ·Ï</button>
         </div>
       </div>
 
       <!-- Unacknowledged Logs Fixed Section -->
       <div id="unackSection" class="hidden" style="border-bottom:2px solid #ffc9c9;background:#fff5f5;">
         <div style="padding:0.6rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
-          <span style="font-weight:700;font-size:0.85rem;color:var(--level-error);">&#128680; ë¯¸í™•ì¸ ERROR+ ë¡œê·¸ (í™•ì¸ í•„ìˆ˜)</span>
-          <button class="btn-ack admin-only-btn" style="background:#e67700;font-size:0.78rem;padding:0.3rem 0.8rem;display:none;" onclick="bulkAcknowledge()">ğŸ“‹ ì¼ê´„ ì™„ë£Œì²˜ë¦¬</button>
+          <span style="font-weight:700;font-size:0.85rem;color:var(--level-error);">&#128680; ¹ÌÈ®ÀÎ ERROR+ ·Î±× (È®ÀÎ ÇÊ¼ö)</span>
+          <button class="btn-ack admin-only-btn" style="background:#e67700;font-size:0.78rem;padding:0.3rem 0.8rem;display:none;" onclick="bulkAcknowledge()">?? ÀÏ°ı ¿Ï·áÃ³¸®</button>
         </div>
         <table class="admin-table">
           <tbody id="unackLogs"></tbody>
@@ -108,12 +110,12 @@
         <thead>
           <tr>
             <th style="width:30px;" class="admin-only-btn" id="thChkAll"><input type="checkbox" id="logChkAll" onchange="toggleAllLogs(this)"></th>
-            <th>ì‹œê°„ (KST)</th><th>ë ˆë²¨</th><th>ì•¡ì…˜</th><th>í˜ì´ì§€</th>
-            <th>ì‚¬ìš©ì</th><th>í´ë¼ì´ì–¸íŠ¸</th><th>ìƒíƒœ</th><th></th>
+            <th>½Ã°£ (KST)</th><th>·¹º§</th><th>¾×¼Ç</th><th>ÆäÀÌÁö</th>
+            <th>»ç¿ëÀÚ</th><th>Å¬¶óÀÌ¾ğÆ®</th><th>»óÅÂ</th><th></th>
           </tr>
         </thead>
         <tbody id="logsList">
-          <tr><td colspan="9" class="empty-state">ë¡œë”© ì¤‘...</td></tr>
+          <tr><td colspan="9" class="empty-state">·Îµù Áß...</td></tr>
         </tbody>
       </table>
 
@@ -124,13 +126,13 @@
   <!-- Acknowledge Modal -->
   <div class="modal-overlay hidden" id="ackModal">
     <div class="modal-box">
-      <h3 class="modal-title">ë¡œê·¸ í™•ì¸ ë° í•´ê²° ì‚¬í•­ ì‘ì„±</h3>
+      <h3 class="modal-title">·Î±× È®ÀÎ ¹× ÇØ°á »çÇ× ÀÛ¼º</h3>
       <div id="ackLogDetail" style="margin-bottom:1rem;font-size:0.85rem;background:#f8f9fa;padding:0.8rem;border-radius:8px;"></div>
-      <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">í•´ê²° ì‚¬í•­</label>
-      <textarea id="ackNote" placeholder="í™•ì¸ ë‚´ìš© ë° í•´ê²° ì‚¬í•­ì„ ì‘ì„±í•´ì£¼ì„¸ìš” (í•„ìˆ˜)"></textarea>
+      <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÇØ°á »çÇ×</label>
+      <textarea id="ackNote" placeholder="È®ÀÎ ³»¿ë ¹× ÇØ°á »çÇ×À» ÀÛ¼ºÇØÁÖ¼¼¿ä (ÇÊ¼ö)"></textarea>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeAckModal()">ì·¨ì†Œ</button>
-        <button class="btn-confirm" id="btnAck" onclick="submitAck()">í™•ì¸ ì™„ë£Œ</button>
+        <button class="btn-cancel" onclick="closeAckModal()">Ãë¼Ò</button>
+        <button class="btn-confirm" id="btnAck" onclick="submitAck()">È®ÀÎ ¿Ï·á</button>
       </div>
     </div>
   </div>
@@ -139,17 +141,17 @@
   <div class="modal-overlay hidden" id="logDetailModal">
     <div class="modal-box" style="max-width:600px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 class="modal-title">ë¡œê·¸ ìƒì„¸ ì •ë³´</h3>
-        <button class="btn-cancel" onclick="closeLogDetailModal()">ë‹«ê¸°</button>
+        <h3 class="modal-title">·Î±× »ó¼¼ Á¤º¸</h3>
+        <button class="btn-cancel" onclick="closeLogDetailModal()">´İ±â</button>
       </div>
       <div id="logDetailContent"></div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.15.1"></script>
-  <script src="../js/activity-log.js?v=3.15.1"></script>
-  <script src="../js/auth.js?v=3.15.1"></script>
+  <script src="../js/supabase-config.js?v=3.13.0"></script>
+  <script src="../js/activity-log.js?v=3.13.0"></script>
+  <script src="../js/auth.js?v=3.13.0"></script>
   <script>
     initSupabase();
     let session;
@@ -214,7 +216,7 @@
       section.classList.remove('hidden');
       alert.classList.remove('hidden');
       document.getElementById('unackAlertText').textContent =
-        `ë¯¸í™•ì¸ ERROR ì´ìƒ ë¡œê·¸ê°€ ${data.length}ê±´ ìˆìŠµë‹ˆë‹¤. í™•ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.`;
+        `¹ÌÈ®ÀÎ ERROR ÀÌ»ó ·Î±×°¡ ${data.length}°Ç ÀÖ½À´Ï´Ù. È®ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.`;
 
       tbody.innerHTML = data.map(l => `
         <tr style="background:#fff5f5;">
@@ -223,8 +225,8 @@
           <td>${l.action}</td>
           <td>${l.page || '-'}</td>
           <td>${getUserDisplay(l.username)}</td>
-          <td><span class="ack-badge pending">ë¯¸í™•ì¸</span></td>
-          <td><button class="filter-btn" onclick="showLogDetail('${l.id}')" style="margin-right:0.3rem;">ìƒì„¸</button><button class="btn-ack" onclick="openAckModal('${l.id}')">í™•ì¸í•˜ê¸°</button></td>
+          <td><span class="ack-badge pending">¹ÌÈ®ÀÎ</span></td>
+          <td><button class="filter-btn" onclick="showLogDetail('${l.id}')" style="margin-right:0.3rem;">»ó¼¼</button><button class="btn-ack" onclick="openAckModal('${l.id}')">È®ÀÎÇÏ±â</button></td>
         </tr>
       `).join('');
     }
@@ -279,11 +281,11 @@
     function renderLogs(logs) {
       const tbody = document.getElementById('logsList');
       const title = document.getElementById('tableTitle');
-      title.textContent = `í™œë™ ë¡œê·¸ (${logs.length}/${totalLogCount})`;
+      title.textContent = `È°µ¿ ·Î±× (${logs.length}/${totalLogCount})`;
 
       if (logs.length === 0) {
         tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state">
-          <div class="empty-state-icon">ğŸ“„</div><p>í•´ë‹¹ ì¡°ê±´ì˜ ë¡œê·¸ê°€ ì—†ìŠµë‹ˆë‹¤.</p></div></td></tr>`;
+          <div class="empty-state-icon">??</div><p>ÇØ´ç Á¶°ÇÀÇ ·Î±×°¡ ¾ø½À´Ï´Ù.</p></div></td></tr>`;
         renderPagination(0);
         return;
       }
@@ -293,15 +295,15 @@
         const isError = ['ERROR', 'FATAL', 'CRITICAL'].includes(l.level);
         const ackHtml = isError
           ? (l.is_acknowledged
-            ? `<span class="ack-badge done" title="${l.resolution_note || ''}">í™•ì¸ë¨</span>`
-            : `<span class="ack-badge pending">ë¯¸í™•ì¸</span>`)
+            ? `<span class="ack-badge done" title="${l.resolution_note || ''}">È®ÀÎµÊ</span>`
+            : `<span class="ack-badge pending">¹ÌÈ®ÀÎ</span>`)
           : '-';
         const actionHtml = isError && !l.is_acknowledged
-          ? `<button class="btn-ack" onclick="openAckModal('${l.id}')">í™•ì¸</button>`
+          ? `<button class="btn-ack" onclick="openAckModal('${l.id}')">È®ÀÎ</button>`
           : '';
         const ci = l.details?._client;
         const clientHtml = ci
-          ? `<span style="font-size:0.72rem;line-height:1.3;display:block;cursor:pointer;" title="IP: ${ci.ip||'-'}\në¸Œë¼ìš°ì €: ${ci.browser||'-'}\nOS: ${ci.os||'-'}\ní•´ìƒë„: ${ci.screenRes||'-'}\nì°½: ${ci.windowSize||'-'}\nê¸°ê¸°: ${ci.deviceType||'-'}\nì–¸ì–´: ${ci.language||'-'}">${ci.ip||'-'}<br/>${ci.browser||'-'}<br/>${ci.deviceType||'-'}</span>`
+          ? `<span style="font-size:0.72rem;line-height:1.3;display:block;cursor:pointer;" title="IP: ${ci.ip||'-'}\nºê¶ó¿ìÀú: ${ci.browser||'-'}\nOS: ${ci.os||'-'}\nÇØ»óµµ: ${ci.screenRes||'-'}\nÃ¢: ${ci.windowSize||'-'}\n±â±â: ${ci.deviceType||'-'}\n¾ğ¾î: ${ci.language||'-'}">${ci.ip||'-'}<br/>${ci.browser||'-'}<br/>${ci.deviceType||'-'}</span>`
           : '<span style="font-size:0.72rem;color:#adb5bd;">-</span>';
         return `<tr>
           ${isAdminUser ? `<td><input type="checkbox" class="log-chk" value="${l.id}" onchange="updateLogDeleteBtn()"></td>` : ''}
@@ -312,7 +314,7 @@
           <td>${getUserDisplay(l.username)}</td>
           <td>${clientHtml}</td>
           <td>${ackHtml}</td>
-          <td><button class="filter-btn" onclick="showLogDetail('${l.id}')" style="margin-right:0.3rem;">ìƒì„¸</button>${actionHtml}</td>
+          <td><button class="filter-btn" onclick="showLogDetail('${l.id}')" style="margin-right:0.3rem;">»ó¼¼</button>${actionHtml}</td>
         </tr>`;
       }).join('');
 
@@ -332,7 +334,7 @@
       let end = start + maxVisible - 1;
       if (end > totalPages) { end = totalPages; start = Math.max(1, end - maxVisible + 1); }
 
-      let html = `<button ${hasPrev ? '' : 'disabled'} onclick="goPage(${currentPage - 1})">ì´ì „</button>`;
+      let html = `<button ${hasPrev ? '' : 'disabled'} onclick="goPage(${currentPage - 1})">ÀÌÀü</button>`;
       if (start > 1) {
         html += `<button onclick="goPage(0)">1</button>`;
         if (start > 2) html += `<span class="page-info">...</span>`;
@@ -344,8 +346,8 @@
         if (end < totalPages - 1) html += `<span class="page-info">...</span>`;
         html += `<button onclick="goPage(${totalPages - 1})">${totalPages}</button>`;
       }
-      html += `<button ${hasNext ? '' : 'disabled'} onclick="goPage(${currentPage + 1})">ë‹¤ìŒ</button>`;
-      html += `<span class="page-info" style="margin-left:0.5rem;">(${totalPages} í˜ì´ì§€)</span>`;
+      html += `<button ${hasNext ? '' : 'disabled'} onclick="goPage(${currentPage + 1})">´ÙÀ½</button>`;
+      html += `<span class="page-info" style="margin-left:0.5rem;">(${totalPages} ÆäÀÌÁö)</span>`;
       el.innerHTML = html;
     }
 
@@ -378,32 +380,32 @@
     async function submitAck() {
       const note = document.getElementById('ackNote').value.trim();
       if (!note) {
-        alert('í•´ê²° ì‚¬í•­ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.');
+        alert('ÇØ°á »çÇ×À» ÀÔ·ÂÇØÁÖ¼¼¿ä.');
         return;
       }
       const btn = document.getElementById('btnAck');
       btn.disabled = true;
-      btn.textContent = 'ì €ì¥ ì¤‘...';
+      btn.textContent = 'ÀúÀå Áß...';
 
       await acknowledgeLog(currentAckId, session.username, note);
       await logInfo('LOG_ACKNOWLEDGED', { logId: currentAckId });
 
       closeAckModal();
       btn.disabled = false;
-      btn.textContent = 'í™•ì¸ ì™„ë£Œ';
+      btn.textContent = 'È®ÀÎ ¿Ï·á';
       await loadAll();
     }
 
     async function bulkAcknowledge() {
-      if ((session.permissionRank || 0) < 100) { alert('ê´€ë¦¬ìë§Œ ì¼ê´„ ì™„ë£Œ ì²˜ë¦¬í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.'); return; }
-      const note = prompt('ì¼ê´„ ì™„ë£Œ ì‚¬ìœ ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”:', 'ì¼ê´„ í™•ì¸ ì²˜ë¦¬');
+      if ((session.permissionRank || 0) < 100) { alert('°ü¸®ÀÚ¸¸ ÀÏ°ı ¿Ï·á Ã³¸®ÇÒ ¼ö ÀÖ½À´Ï´Ù.'); return; }
+      const note = prompt('ÀÏ°ı ¿Ï·á »çÀ¯¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä:', 'ÀÏ°ı È®ÀÎ Ã³¸®');
       if (note === null) return;
-      if (!note.trim()) { alert('ì‚¬ìœ ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.'); return; }
+      if (!note.trim()) { alert('»çÀ¯¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.'); return; }
 
       const { data } = await fetchLogs({ unacknowledgedOnly: true, limit: 500 });
-      if (!data || data.length === 0) { alert('ì²˜ë¦¬í•  ë¡œê·¸ê°€ ì—†ìŠµë‹ˆë‹¤.'); return; }
+      if (!data || data.length === 0) { alert('Ã³¸®ÇÒ ·Î±×°¡ ¾ø½À´Ï´Ù.'); return; }
 
-      if (!confirm(`ë¯¸í™•ì¸ ë¡œê·¸ ${data.length}ê±´ì„ ì¼ê´„ ì™„ë£Œ ì²˜ë¦¬í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      if (!confirm(`¹ÌÈ®ÀÎ ·Î±× ${data.length}°ÇÀ» ÀÏ°ı ¿Ï·á Ã³¸®ÇÏ½Ã°Ú½À´Ï±î?`)) return;
 
       let done = 0;
       for (const log of data) {
@@ -411,15 +413,15 @@
         done++;
       }
       await logInfo('LOG_BULK_ACK', { count: done, note: note.trim() });
-      alert(`${done}ê±´ì˜ ë¡œê·¸ê°€ ì™„ë£Œ ì²˜ë¦¬ë˜ì—ˆìŠµë‹ˆë‹¤.`);
+      alert(`${done}°ÇÀÇ ·Î±×°¡ ¿Ï·á Ã³¸®µÇ¾ú½À´Ï´Ù.`);
       await loadAll();
     }
 
     async function deleteByRange() {
       const dateFrom = document.getElementById('dateFrom').value;
       const dateTo = document.getElementById('dateTo').value;
-      if (!dateFrom || !dateTo) { alert('ì‚­ì œí•  ë‚ ì§œ ë²”ìœ„(ì‹œì‘~ë)ë¥¼ ëª¨ë‘ ì„ íƒí•´ì£¼ì„¸ìš”.'); return; }
-      if (dateFrom > dateTo) { alert('ì‹œì‘ ë‚ ì§œê°€ ë ë‚ ì§œë³´ë‹¤ í´ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.'); return; }
+      if (!dateFrom || !dateTo) { alert('»èÁ¦ÇÒ ³¯Â¥ ¹üÀ§(½ÃÀÛ~³¡)¸¦ ¸ğµÎ ¼±ÅÃÇØÁÖ¼¼¿ä.'); return; }
+      if (dateFrom > dateTo) { alert('½ÃÀÛ ³¯Â¥°¡ ³¡ ³¯Â¥º¸´Ù Å¬ ¼ö ¾ø½À´Ï´Ù.'); return; }
       const fromStr = dateFrom + 'T00:00:00+09:00';
       const toStr = dateTo + 'T23:59:59+09:00';
       try {
@@ -429,24 +431,24 @@
         try { countQuery = countQuery.or('is_deleted.is.null,is_deleted.eq.false'); } catch(e) {}
         const { count, error: cntErr } = await countQuery;
         if (cntErr && /column|schema cache/i.test(cntErr.message)) {
-          alert(_SOFT_DEL_COL_ERR || 'DBì— ì‚­ì œ ê´€ë¦¬ ì»¬ëŸ¼ì´ ì—†ìŠµë‹ˆë‹¤.\nSupabase SQL Editorì—ì„œ docs/TASK-023_fixes.sql ì„ ì‹¤í–‰í•´ì£¼ì„¸ìš”.');
+          alert(_SOFT_DEL_COL_ERR || 'DB¿¡ »èÁ¦ °ü¸® ÄÃ·³ÀÌ ¾ø½À´Ï´Ù.\nSupabase SQL Editor¿¡¼­ docs/TASK-023_fixes.sql À» ½ÇÇàÇØÁÖ¼¼¿ä.');
           return;
         }
-        if (!count || count === 0) { alert('í•´ë‹¹ ë²”ìœ„ì— ì‚­ì œí•  ë¡œê·¸ê°€ ì—†ìŠµë‹ˆë‹¤.'); return; }
-        if (!confirm(dateFrom + ' ~ ' + dateTo + ' ê¸°ê°„ì˜ ë¡œê·¸ ' + count + 'ê±´ì„ ì‚­ì œ ëŒ€ê¸° ìƒíƒœë¡œ ë³€ê²½í•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
+        if (!count || count === 0) { alert('ÇØ´ç ¹üÀ§¿¡ »èÁ¦ÇÒ ·Î±×°¡ ¾ø½À´Ï´Ù.'); return; }
+        if (!confirm(dateFrom + ' ~ ' + dateTo + ' ±â°£ÀÇ ·Î±× ' + count + '°ÇÀ» »èÁ¦ ´ë±â »óÅÂ·Î º¯°æÇÏ½Ã°Ú½À´Ï±î?')) return;
         const result = await deleteLogsByDateRange(fromStr, toStr);
         if (result.error) {
           await logError('LOG_RANGE_DELETE_FAIL', { dateFrom, dateTo, error: result.error });
-          alert('ì‹¤íŒ¨:\n\n' + tErr(result.error));
+          alert('½ÇÆĞ:\n\n' + tErr(result.error));
           return;
         }
         const deleted = result.count || count;
         await logInfo('LOG_RANGE_DELETE', { dateFrom, dateTo, count: deleted });
-        alert(deleted + 'ê±´ì˜ ë¡œê·¸ê°€ ì‚­ì œ ëŒ€ê¸° ìƒíƒœë¡œ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤.\n\nì‹¤ì œ ì‚­ì œëŠ” ê´€ë¦¬ìê°€ SQLë¡œ ì§ì ‘ ìˆ˜í–‰í•©ë‹ˆë‹¤.');
+        alert(deleted + '°ÇÀÇ ·Î±×°¡ »èÁ¦ ´ë±â »óÅÂ·Î º¯°æµÇ¾ú½À´Ï´Ù.\n\n½ÇÁ¦ »èÁ¦´Â °ü¸®ÀÚ°¡ SQL·Î Á÷Á¢ ¼öÇàÇÕ´Ï´Ù.');
         await loadAll();
       } catch (err) {
         await logError('LOG_RANGE_DELETE_ERROR', { dateFrom, dateTo, error: String(err) });
-        alert('ì˜¤ë¥˜: ' + tErr(err.message));
+        alert('¿À·ù: ' + tErr(err.message));
       }
     }
 
@@ -458,22 +460,22 @@
         delete detailsClean._client;
         const hasDetails = Object.keys(detailsClean).length > 0;
         let html = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem;">';
-        html += '<tr><td style="padding:0.5rem;font-weight:700;width:100px;background:#fafbfc;border:1px solid #eee;">ì‹œê°„</td><td style="padding:0.5rem;border:1px solid #eee;">' + formatKST(l.created_at) + '</td></tr>';
-        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">ë ˆë²¨</td><td style="padding:0.5rem;border:1px solid #eee;"><span class="level-badge ' + l.level + '">' + l.level + '</span></td></tr>';
-        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">ì•¡ì…˜</td><td style="padding:0.5rem;border:1px solid #eee;">' + l.action + '</td></tr>';
-        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">í˜ì´ì§€</td><td style="padding:0.5rem;border:1px solid #eee;">' + (l.page || '-') + '</td></tr>';
-        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">ì‚¬ìš©ì</td><td style="padding:0.5rem;border:1px solid #eee;">' + getUserDisplay(l.username) + '</td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;width:100px;background:#fafbfc;border:1px solid #eee;">½Ã°£</td><td style="padding:0.5rem;border:1px solid #eee;">' + formatKST(l.created_at) + '</td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">·¹º§</td><td style="padding:0.5rem;border:1px solid #eee;"><span class="level-badge ' + l.level + '">' + l.level + '</span></td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">¾×¼Ç</td><td style="padding:0.5rem;border:1px solid #eee;">' + l.action + '</td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">ÆäÀÌÁö</td><td style="padding:0.5rem;border:1px solid #eee;">' + (l.page || '-') + '</td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">»ç¿ëÀÚ</td><td style="padding:0.5rem;border:1px solid #eee;">' + getUserDisplay(l.username) + '</td></tr>';
         if (ci) {
           html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">IP</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.ip||'-') + '</td></tr>';
-          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">ë¸Œë¼ìš°ì €</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.browser||'-') + '</td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">ºê¶ó¿ìÀú</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.browser||'-') + '</td></tr>';
           html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">OS</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.os||'-') + '</td></tr>';
-          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">ê¸°ê¸°</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.deviceType||'-') + '</td></tr>';
-          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">í•´ìƒë„</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.screenRes||'-') + ' (ì°½: ' + (ci.windowSize||'-') + ')</td></tr>';
-          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">ì–¸ì–´</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.language||'-') + '</td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">±â±â</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.deviceType||'-') + '</td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">ÇØ»óµµ</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.screenRes||'-') + ' (Ã¢: ' + (ci.windowSize||'-') + ')</td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">¾ğ¾î</td><td style="padding:0.5rem;border:1px solid #eee;">' + (ci.language||'-') + '</td></tr>';
         }
-        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">í™•ì¸</td><td style="padding:0.5rem;border:1px solid #eee;">' + (l.is_acknowledged ? '<span class="ack-badge done">í™•ì¸ë¨</span> ' + (l.acknowledged_by||'') + (l.resolution_note ? ' - ' + l.resolution_note : '') : '<span class="ack-badge pending">ë¯¸í™•ì¸</span>') + '</td></tr>';
+        html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;">È®ÀÎ</td><td style="padding:0.5rem;border:1px solid #eee;">' + (l.is_acknowledged ? '<span class="ack-badge done">È®ÀÎµÊ</span> ' + (l.acknowledged_by||'') + (l.resolution_note ? ' - ' + l.resolution_note : '') : '<span class="ack-badge pending">¹ÌÈ®ÀÎ</span>') + '</td></tr>';
         if (hasDetails) {
-          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;vertical-align:top;">ë°ì´í„°</td><td style="padding:0.5rem;border:1px solid #eee;"><pre style="font-size:0.75rem;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto;margin:0;background:#f8f9fa;padding:0.5rem;border-radius:6px;">' + JSON.stringify(detailsClean, null, 2) + '</pre></td></tr>';
+          html += '<tr><td style="padding:0.5rem;font-weight:700;background:#fafbfc;border:1px solid #eee;vertical-align:top;">µ¥ÀÌÅÍ</td><td style="padding:0.5rem;border:1px solid #eee;"><pre style="font-size:0.75rem;white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto;margin:0;background:#f8f9fa;padding:0.5rem;border-radius:6px;">' + JSON.stringify(detailsClean, null, 2) + '</pre></td></tr>';
         }
         html += '</table>';
         document.getElementById('logDetailContent').innerHTML = html;
@@ -501,28 +503,28 @@
     function updateLogDeleteBtn() {
       const checked = document.querySelectorAll('.log-chk:checked').length;
       document.getElementById('btnDeleteLogs').disabled = checked === 0;
-      document.getElementById('btnDeleteLogs').textContent = checked > 0 ? 'ì„ íƒ ì‚­ì œ ëŒ€ê¸° (' + checked + ')' : 'ì„ íƒ ì‚­ì œ ëŒ€ê¸°';
+      document.getElementById('btnDeleteLogs').textContent = checked > 0 ? '¼±ÅÃ »èÁ¦ ´ë±â (' + checked + ')' : '¼±ÅÃ »èÁ¦ ´ë±â';
     }
 
     async function deleteSelectedLogs() {
       const ids = Array.from(document.querySelectorAll('.log-chk:checked')).map(c => c.value);
       if (ids.length === 0) return;
-      if (!confirm(ids.length + 'ê±´ì˜ ë¡œê·¸ë¥¼ ì‚­ì œ ëŒ€ê¸° ìƒíƒœë¡œ ë³€ê²½í•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
+      if (!confirm(ids.length + '°ÇÀÇ ·Î±×¸¦ »èÁ¦ ´ë±â »óÅÂ·Î º¯°æÇÏ½Ã°Ú½À´Ï±î?')) return;
 
       try {
         const { error, count } = await deleteLogsByIds(ids);
         if (error) {
           await logError('LOG_SELECT_DELETE_FAIL', { count: ids.length, error });
-          alert('ì‹¤íŒ¨:\n\n' + tErr(error));
+          alert('½ÇÆĞ:\n\n' + tErr(error));
           return;
         }
         await logInfo('LOG_SELECT_DELETE', { count: count || ids.length });
         document.getElementById('logChkAll').checked = false;
-        alert((count || ids.length) + 'ê±´ì˜ ë¡œê·¸ê°€ ì‚­ì œ ëŒ€ê¸° ìƒíƒœë¡œ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤.\n\nì‹¤ì œ ì‚­ì œëŠ” ê´€ë¦¬ìê°€ SQLë¡œ ì§ì ‘ ìˆ˜í–‰í•©ë‹ˆë‹¤.');
+        alert((count || ids.length) + '°ÇÀÇ ·Î±×°¡ »èÁ¦ ´ë±â »óÅÂ·Î º¯°æµÇ¾ú½À´Ï´Ù.\n\n½ÇÁ¦ »èÁ¦´Â °ü¸®ÀÚ°¡ SQL·Î Á÷Á¢ ¼öÇàÇÕ´Ï´Ù.');
         await loadAll();
       } catch (err) {
         await logError('LOG_SELECT_DELETE_ERROR', { error: String(err) });
-        alert('ì˜¤ë¥˜: ' + tErr(err.message));
+        alert('¿À·ù: ' + tErr(err.message));
       }
     }
 
@@ -531,19 +533,19 @@
       showingDeleted = !showingDeleted;
       const btn = document.getElementById('btnToggleDeleted');
       if (showingDeleted) {
-        btn.textContent = 'ğŸ“‹ ì¼ë°˜ ëª©ë¡';
+        btn.textContent = '?? ÀÏ¹İ ¸ñ·Ï';
         btn.style.background = '#ffe3e3';
         const { data, error: delErr } = await _sb.from('activity_logs').select('*')
           .eq('is_deleted', true)
           .order('deleted_at', { ascending: false })
           .limit(200);
         if (delErr && /column|schema cache/i.test(delErr.message)) {
-          alert('DBì— ì‚­ì œ ê´€ë¦¬ ì»¬ëŸ¼ì´ ì—†ìŠµë‹ˆë‹¤.\nSupabase SQL Editorì—ì„œ docs/TASK-023_fixes.sql ì„ ì‹¤í–‰í•´ì£¼ì„¸ìš”.');
-          showingDeleted = false; btn.textContent = 'ğŸ—‘ï¸ ì‚­ì œ ëŒ€ê¸° ëª©ë¡'; btn.style.background = ''; return;
+          alert('DB¿¡ »èÁ¦ °ü¸® ÄÃ·³ÀÌ ¾ø½À´Ï´Ù.\nSupabase SQL Editor¿¡¼­ docs/TASK-023_fixes.sql À» ½ÇÇàÇØÁÖ¼¼¿ä.');
+          showingDeleted = false; btn.textContent = '??? »èÁ¦ ´ë±â ¸ñ·Ï'; btn.style.background = ''; return;
         }
         renderDeletedLogs(data || []);
       } else {
-        btn.textContent = 'ğŸ—‘ï¸ ì‚­ì œ ëŒ€ê¸° ëª©ë¡';
+        btn.textContent = '??? »èÁ¦ ´ë±â ¸ñ·Ï';
         btn.style.background = '';
         await loadAll();
       }
@@ -552,11 +554,11 @@
     function renderDeletedLogs(logs) {
       const tbody = document.getElementById('logsList');
       const title = document.getElementById('tableTitle');
-      title.textContent = `ğŸ—‘ï¸ ì‚­ì œ ëŒ€ê¸° ë¡œê·¸ (${logs.length}ê±´)`;
+      title.textContent = `??? »èÁ¦ ´ë±â ·Î±× (${logs.length}°Ç)`;
       document.getElementById('pagination').innerHTML = '';
 
       if (logs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-state-icon">âœ…</div><p>ì‚­ì œ ëŒ€ê¸° ì¤‘ì¸ ë¡œê·¸ê°€ ì—†ìŠµë‹ˆë‹¤.</p></div></td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-state-icon">?</div><p>»èÁ¦ ´ë±â ÁßÀÎ ·Î±×°¡ ¾ø½À´Ï´Ù.</p></div></td></tr>';
         return;
       }
 
@@ -569,9 +571,9 @@
           <td>${l.action}</td>
           <td>${l.page || '-'}</td>
           <td>${getUserDisplay(l.username)}</td>
-          <td><span style="font-size:0.72rem;color:#d63031;">ì‚­ì œ ëŒ€ê¸°<br/>${deletedAt}</span></td>
-          <td><span class="ack-badge pending" style="background:#ffe3e3;color:#d63031;">ì‚­ì œ ëŒ€ê¸°</span></td>
-          <td><button class="filter-btn" onclick="restoreLog('${l.id}')">ë³µì›</button></td>
+          <td><span style="font-size:0.72rem;color:#d63031;">»èÁ¦ ´ë±â<br/>${deletedAt}</span></td>
+          <td><span class="ack-badge pending" style="background:#ffe3e3;color:#d63031;">»èÁ¦ ´ë±â</span></td>
+          <td><button class="filter-btn" onclick="restoreLog('${l.id}')">º¹¿ø</button></td>
         </tr>`;
       }).join('');
     }
@@ -579,21 +581,21 @@
     function updateRestoreBtn() {}
 
     async function restoreLog(id) {
-      if (!confirm('ì´ ë¡œê·¸ë¥¼ ì‚­ì œ ëŒ€ê¸°ì—ì„œ ë³µì›í•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
+      if (!confirm('ÀÌ ·Î±×¸¦ »èÁ¦ ´ë±â¿¡¼­ º¹¿øÇÏ½Ã°Ú½À´Ï±î?')) return;
       const { error } = await _sb.from('activity_logs')
         .update({ is_deleted: false, deleted_at: null })
         .eq('id', id);
       if (error) {
-        if (/column|schema cache/i.test(error.message)) { alert('DBì— ì‚­ì œ ê´€ë¦¬ ì»¬ëŸ¼ì´ ì—†ìŠµë‹ˆë‹¤.\nSupabase SQL Editorì—ì„œ docs/TASK-023_fixes.sql ì„ ì‹¤í–‰í•´ì£¼ì„¸ìš”.'); return; }
-        await logError('LOG_RESTORE_FAIL', { logId: id, error: error.message }); alert('ë³µì› ì‹¤íŒ¨: ' + tErr(error.message)); return;
+        if (/column|schema cache/i.test(error.message)) { alert('DB¿¡ »èÁ¦ °ü¸® ÄÃ·³ÀÌ ¾ø½À´Ï´Ù.\nSupabase SQL Editor¿¡¼­ docs/TASK-023_fixes.sql À» ½ÇÇàÇØÁÖ¼¼¿ä.'); return; }
+        await logError('LOG_RESTORE_FAIL', { logId: id, error: error.message }); alert('º¹¿ø ½ÇÆĞ: ' + tErr(error.message)); return;
       }
       await logInfo('LOG_RESTORE', { logId: id });
-      alert('ë³µì›ë˜ì—ˆìŠµë‹ˆë‹¤.');
+      alert('º¹¿øµÇ¾ú½À´Ï´Ù.');
       toggleDeletedView();
       showingDeleted = false;
       toggleDeletedView();
     }
   </script>
-  <script src="../js/version.js?v=3.15.1"></script>
+  <script src="../js/version.js?v=3.13.0"></script>
 </body>
 </html>
