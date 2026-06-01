@@ -3,443 +3,249 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>?щ????섎졊 - ?щ???留덉쓣</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?벑</text></svg>" />
+  <title>달란트 수령 - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" />
   <link rel="stylesheet" href="css/common.css?v=3.13.0" />
   <style>
     .qr-hero { text-align: center; margin-bottom: 1.5rem; }
-    .qr-hero-icon { font-size: 3.5rem; margin-bottom: 0.5rem; }
-    .qr-hero h1 { font-size: 1.8rem; font-weight: 900; color: var(--primary); margin-bottom: 0.3rem; }
-    .qr-hero p { color: #636e72; font-size: 0.95rem; }
-
-    .qr-scan-area {
-      max-width: 440px; margin: 0 auto 1.5rem;
-      background: #fff; border-radius: 20px; padding: 1.5rem;
-      box-shadow: 0 4px 20px rgba(108,92,231,0.08);
-      border: 2px solid var(--primary);
-    }
-    #qr-reader { width: 100%; border-radius: 12px; overflow: hidden; }
-    #qr-reader video { border-radius: 12px; }
-    .scan-controls { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: center; }
-    .scan-btn {
-      padding: 0.7rem 1.5rem; border: none; border-radius: 12px;
-      font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
-    }
-    .scan-btn-start { background: var(--primary); color: #fff; }
-    .scan-btn-start:hover { background: #5a4bd1; }
-    .scan-btn-stop { background: #e03131; color: #fff; }
-
-    .result-card {
-      max-width: 440px; margin: 0 auto 1rem;
-      background: #fff; border-radius: 16px; padding: 1.2rem 1.5rem;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-      display: none;
-    }
-    .result-card.show { display: block; animation: fadeIn 0.3s ease; }
-    .result-success { border-left: 4px solid #2b8a3e; }
-    .result-fail { border-left: 4px solid #e03131; }
-    .result-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-    .result-card p { font-size: 0.9rem; color: #636e72; line-height: 1.6; }
-    .result-amount { font-size: 1.8rem; font-weight: 800; color: #2b8a3e; }
-
-    .scan-history { max-width: 440px; margin: 1.5rem auto; }
-    .scan-history h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary); }
-    .history-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0.6rem 0; border-bottom: 1px solid #f0f0f0;
-      font-size: 0.85rem;
-    }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-    .gps-status {
-      display: flex; align-items: center; gap: 0.4rem;
-      font-size: 0.82rem; color: #868e96; margin-top: 0.5rem; justify-content: center;
-    }
-    .gps-dot { width: 8px; height: 8px; border-radius: 50%; }
-    .gps-dot.ok { background: #2b8a3e; }
-    .gps-dot.pending { background: #fcc419; animation: blink 1s infinite; }
-    .gps-dot.fail { background: #e03131; }
-    @keyframes blink { 50% { opacity: 0.3; } }
+    .qr-hero h1 { font-size: 1.6rem; color: var(--c-primary); }
+    .qr-hero p { color: var(--c-text-muted); font-size: 0.9rem; }
+    .qr-container { max-width: 600px; margin: 0 auto; padding: 1rem; }
+    .qr-input-area { background: #fff; border: 2px dashed var(--c-border); border-radius: 16px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; }
+    .qr-input-area.success { border-color: #2b8a3e; background: #f0fff4; }
+    .qr-input-area.error { border-color: #e03131; background: #fff5f5; }
+    .qr-input { width: 100%; max-width: 360px; padding: 0.8rem 1rem; font-size: 1.1rem; border: 2px solid var(--c-border); border-radius: 12px; text-align: center; letter-spacing: 2px; font-weight: 700; }
+    .qr-input:focus { border-color: var(--c-primary); outline: none; }
+    .btn-scan { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.7rem 1.5rem; background: var(--c-primary); color: #fff; border: none; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+    .btn-scan:disabled { opacity: 0.5; cursor: not-allowed; }
+    .qr-result { margin-top: 1rem; padding: 1rem; border-radius: 12px; font-size: 0.95rem; display: none; }
+    .qr-result.show { display: block; }
+    .qr-result.ok { background: #d3f9d8; color: #2b8a3e; }
+    .qr-result.fail { background: #ffe3e3; color: #e03131; }
+    .scan-history { margin-top: 2rem; }
+    .scan-history h3 { font-size: 1rem; margin-bottom: 0.8rem; }
+    .scan-item { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.8rem; background: #f8f9fa; border-radius: 8px; margin-bottom: 0.4rem; font-size: 0.85rem; }
+    .scan-item .amt { font-weight: 700; color: #2b8a3e; }
+    #cameraPreview { display: none; width: 100%; max-width: 360px; margin: 0.8rem auto; border-radius: 12px; overflow: hidden; }
+    #cameraPreview video { width: 100%; display: block; }
   </style>
 </head>
 <body class="page-body">
   <nav class="top-nav">
     <a href="index.html" class="top-nav-brand">
-      <span class="brand-icon">狩?/span> ?щ???留덉쓣
+      <span class="brand-icon">⭐</span> 달란트 마을
     </a>
     <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="top-nav-links" id="navLinks">
       <li>
-        <button class="nav-dropdown-toggle">?뚭컻</button>
+        <button class="nav-dropdown-toggle">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">?ъ슜??媛?대뱶</a></li>
-          <li><a href="earn-talents.html">?щ????곷┰</a></li>
+          <li><a href="guide.html">사용자 가이드</a></li>
+          <li><a href="earn-talents.html">달란트 적립</a></li>
           <li><a href="qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">?щ???/button>
+        <button class="nav-dropdown-toggle active">달란트</button>
         <ul class="nav-dropdown-menu">
-          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">???щ???/a></li>
-          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html" class="active">?щ????섎졊</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">?щ???愿由?/a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">?щ????듦퀎</a></li>
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html" class="active">달란트 수령</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">달란트 통계</a></li>
+          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">달란트 QR 관리</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">?곹뭹</button>
+        <button class="nav-dropdown-toggle">상품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="shop.html">?곹뭹 援щℓ</a></li>
-          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">??援щℓ ?곹뭹</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">?곹뭹 愿由?/a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">援щℓ 愿由?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="shop.html">상품 구매</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">내 구매 상품</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60" style="display:none;">
-        <button class="nav-dropdown-toggle">愿由?/button>
+        <button class="nav-dropdown-toggle">관리</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="admin/index.html">??쒕낫??/a></li>
-          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">?ъ슜??愿由?<span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="admin/managers.html">愿由ъ옄 愿由?/a></li>
-          <li data-min-perm="60"><a href="admin/departments.html">遺??愿由?/a></li>
+          <li data-min-perm="80"><a href="admin/index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
         </ul>
       </li>
       <li data-min-perm="80" style="display:none;">
-        <button class="nav-dropdown-toggle">?댁쁺</button>
+        <button class="nav-dropdown-toggle">운영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="admin/page-access.html">?섏씠吏 ?묎렐</a></li>
-          <li data-min-perm="100"><a href="admin/page-features.html">?섏씠吏 湲곕뒫</a></li>
-          <li data-min-perm="80"><a href="admin/versions.html">踰꾩쟾</a></li>
-          <li data-min-perm="80"><a href="admin/reports.html">蹂닿퀬??/a></li>
-          <li data-min-perm="100"><a href="admin/audit.html">?묒뾽 ?대젰</a></li>
-          <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">濡쒓렇 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
+          <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
+          <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
-      <li id="navLoginArea"><a href="login.html">濡쒓렇??/a></li>
+      <li id="navLoginArea"><a href="login.html">로그인</a></li>
       <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
-      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">濡쒓렇?꾩썐</button></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
-  <div class="page-container">
+  <div class="qr-container">
     <div class="qr-hero">
-      <div class="qr-hero-icon">?벑</div>
-      <h1>?щ????섎졊</h1>
-      <p>QR 肄붾뱶瑜??ㅼ틪?섏뿬 ?щ??몃? ?섎졊?섏꽭??/p>
+      <h1>📱 달란트 수령</h1>
+      <p>QR 코드를 스캔하거나 코드를 입력하여 달란트를 수령하세요</p>
     </div>
 
-    <div id="authGuard" style="display:none;">
-      <div class="qr-scan-area">
-        <div id="qr-reader"></div>
-        <div class="gps-status" id="gpsStatus">
-          <span class="gps-dot pending" id="gpsDot"></span>
-          <span id="gpsText">GPS ?꾩튂 ?뺤씤 以?..</span>
-        </div>
-        <div class="scan-controls">
-          <button class="scan-btn scan-btn-start" id="btnStart" onclick="startScan()">?벜 ?ㅼ틪 ?쒖옉</button>
-          <button class="scan-btn scan-btn-stop" id="btnStop" onclick="stopScan()" style="display:none;">???ㅼ틪 以묒?</button>
-        </div>
+    <div class="qr-input-area" id="qrArea">
+      <div style="font-size:3rem;margin-bottom:0.5rem;">🎯</div>
+      <p style="margin-bottom:1rem;font-size:0.9rem;color:var(--c-text-muted);">QR 코드를 입력하세요</p>
+      <input type="text" class="qr-input" id="qrInput" placeholder="QR 코드 입력" maxlength="20" autocomplete="off" />
+      <div id="cameraPreview"><video id="cameraVideo" playsinline></video></div>
+      <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn-scan" id="btnScan" onclick="scanCode()">🔍 코드 확인</button>
+        <button class="btn-scan" id="btnCamera" onclick="toggleCamera()" style="background:#868e96;">📷 카메라</button>
       </div>
-
-      <div class="result-card" id="resultCard">
-        <h3 id="resultTitle"></h3>
-        <p id="resultMsg"></p>
-        <div id="resultAmount" style="display:none;"></div>
-      </div>
-
-      <div class="scan-history" id="scanHistoryWrap" style="display:none;">
-        <h3>?뱥 ?ㅻ뒛 ?섎졊 ?댁뿭</h3>
-        <div id="scanHistory"></div>
-      </div>
+      <div class="qr-result" id="qrResult"></div>
     </div>
 
-    <div id="noAuthMsg" style="text-align:center;padding:2rem;">
-      <p style="font-size:1.1rem;color:#636e72;">援먯궗留??댁슜 媛?ν븳 湲곕뒫?낅땲??</p>
-      <a href="login.html" style="color:var(--primary);font-weight:700;">濡쒓렇?명븯湲?/a>
+    <div class="scan-history" id="historySection" style="display:none;">
+      <h3>📋 최근 수령 내역</h3>
+      <div id="historyList"></div>
     </div>
   </div>
 
   <footer class="page-footer">
-    <p>珥덈벑遺 ?щ???愿由?&copy; 2026 CHO-Talents</p>
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
   <script src="js/supabase-config.js?v=3.13.0"></script>
   <script src="js/activity-log.js?v=3.13.0"></script>
   <script src="js/auth.js?v=3.13.0"></script>
-  <script src="js/talent.js?v=3.13.0"></script>
   <script>
     initSupabase();
     let session;
-    let scanner = null;
-    let currentGPS = null;
-    let isScanning = false;
-    let todayScans = [];
+    let cameraStream = null;
 
     (async () => {
-      session = await loadAuthSession();
-      if (!session || session.userType !== 'teacher') {
-        document.getElementById('noAuthMsg').style.display = '';
-        document.getElementById('authGuard').style.display = 'none';
-        if (session) {
-          document.getElementById('noAuthMsg').innerHTML = '<p style="font-size:1.1rem;color:#636e72;">援먯궗留??댁슜 媛?ν븳 湲곕뒫?낅땲??</p>';
-        }
-        if (session) {
-          document.getElementById('navMyTalent').style.display = '';
-          document.getElementById('navLoginArea').style.display = 'none';
-          document.getElementById('navAuthArea').style.display = '';
-          document.getElementById('navLogoutArea').style.display = '';
-          renderRoleBadge('navUser', session, '');
-          applyPermNav(session.permissionRank || 0);
-          const mo = document.getElementById('navMyOrders');
-          if (mo) mo.style.display = '';
-        }
-        return;
-      }
-
-      document.getElementById('noAuthMsg').style.display = 'none';
-      document.getElementById('authGuard').style.display = '';
+      session = await initPage(40, 'login.html');
+      if (!session) return;
       document.getElementById('navMyTalent').style.display = '';
+      document.getElementById('navMyOrders').style.display = '';
       document.getElementById('navLoginArea').style.display = 'none';
       document.getElementById('navAuthArea').style.display = '';
       document.getElementById('navLogoutArea').style.display = '';
-      renderRoleBadge('navUser', session, '');
       applyPermNav(session.permissionRank || 0);
-      const mo = document.getElementById('navMyOrders');
-      if (mo) mo.style.display = '';
-      updateNavOrderBadge();
+      renderRoleBadge('navUser', session, '');
       autoLogPageView();
-
-      requestGPS();
-      await loadTodayScans();
+      updateNavOrderBadge();
+      loadHistory();
     })();
 
-    function requestGPS() {
-      if (!navigator.geolocation) {
-        setGPSStatus('fail', 'GPS瑜?吏?먰븯吏 ?딅뒗 湲곌린?낅땲??);
-        return;
-      }
-      setGPSStatus('pending', 'GPS ?꾩튂 ?뺤씤 以?..');
-      navigator.geolocation.getCurrentPosition(
-        pos => {
-          currentGPS = { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy };
-          setGPSStatus('ok', `GPS ?뺤씤??(?뺥솗??${Math.round(pos.coords.accuracy)}m)`);
-        },
-        err => {
-          setGPSStatus('fail', 'GPS ?꾩튂瑜?媛?몄삱 ???놁뒿?덈떎. ?꾩튂 沅뚰븳???뺤씤?섏꽭??');
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
-      );
-    }
-
-    function setGPSStatus(status, text) {
-      const dot = document.getElementById('gpsDot');
-      dot.className = 'gps-dot ' + status;
-      document.getElementById('gpsText').textContent = text;
-    }
-
-    async function startScan() {
-      const resultCard = document.getElementById('resultCard');
-      resultCard.classList.remove('show', 'result-success', 'result-fail');
-
+    async function scanCode() {
+      const code = document.getElementById('qrInput').value.trim();
+      if (!code) { showResult('fail', '코드를 입력해주세요.'); return; }
+      const btn = document.getElementById('btnScan');
+      btn.disabled = true;
+      btn.textContent = '확인 중...';
       try {
-        scanner = new Html5Qrcode('qr-reader');
-        await scanner.start(
-          { facingMode: 'environment' },
-          { fps: 10, qrbox: { width: 250, height: 250 } },
-          onScanSuccess,
-          () => {}
-        );
-        isScanning = true;
-        document.getElementById('btnStart').style.display = 'none';
-        document.getElementById('btnStop').style.display = '';
-      } catch (err) {
-        showResult(false, '移대찓???ㅻ쪟', '移대찓?쇰? ?ъ슜?????놁뒿?덈떎. 移대찓??沅뚰븳???뺤씤?섏꽭??\n' + (err.message || err));
-      }
-    }
+        const { data: qr, error } = await _sb.from('talent_qr_codes')
+          .select('*').eq('code', code).eq('is_active', true).single();
+        if (error || !qr) { showResult('fail', '유효하지 않은 코드입니다.'); return; }
 
-    async function stopScan() {
-      if (scanner && isScanning) {
-        try { await scanner.stop(); } catch (e) {}
-        isScanning = false;
-      }
-      document.getElementById('btnStart').style.display = '';
-      document.getElementById('btnStop').style.display = 'none';
-    }
+        if (qr.expires_at && new Date(qr.expires_at) < new Date()) {
+          showResult('fail', '만료된 코드입니다.'); return;
+        }
+        if (qr.max_uses && qr.used_count >= qr.max_uses) {
+          showResult('fail', '사용 횟수가 초과된 코드입니다.'); return;
+        }
 
-    let _processing = false;
-    async function onScanSuccess(qrKey) {
-      if (_processing) return;
-      _processing = true;
+        const { data: existing } = await _sb.from('talent_qr_scans')
+          .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id);
+        if (existing && existing.length > 0) {
+          showResult('fail', '이미 수령한 코드입니다.'); return;
+        }
 
-      try {
-        await stopScan();
-        await processQRCode(qrKey);
+        await _sb.from('talent_qr_scans').insert({
+          qr_code_id: qr.id, user_id: session.id, scanned_at: new Date().toISOString()
+        });
+        await _sb.from('talent_qr_codes').update({
+          used_count: (qr.used_count || 0) + 1
+        }).eq('id', qr.id);
+
+        await _sb.from('talent_transactions').insert({
+          user_id: session.id, type: 'earn', amount: qr.amount,
+          description: qr.description || 'QR 달란트', talent_item_id: qr.talent_item_id || null,
+          created_at: new Date().toISOString()
+        });
+        const { data: u } = await _sb.from('users').select('total_talent').eq('id', session.id).single();
+        await _sb.from('users').update({
+          total_talent: (u?.total_talent || 0) + qr.amount
+        }).eq('id', session.id);
+
+        await logActivity('qr_scan', { code: qr.code, amount: qr.amount, description: qr.description });
+        showResult('ok', `✅ ${qr.amount} 달란트를 수령했습니다! (${qr.description || 'QR 달란트'})`);
+        document.getElementById('qrInput').value = '';
+        loadHistory();
+      } catch (e) {
+        showResult('fail', '오류가 발생했습니다: ' + (e.message || e));
       } finally {
-        _processing = false;
+        btn.disabled = false;
+        btn.textContent = '🔍 코드 확인';
       }
     }
 
-    async function processQRCode(qrKey) {
-      const { data: qrCodes, error: qrErr } = await _sb
-        .from('talent_qr_codes')
-        .select('*, talent_items(id, name, talent_amount, target_type)')
-        .eq('qr_key', qrKey)
-        .eq('is_active', true);
-
-      if (qrErr || !qrCodes || qrCodes.length === 0) {
-        await logScan(null, null, 'fail', 'INVALID_KEY');
-        showResult(false, '?좏슚?섏? ?딆? QR 肄붾뱶', '?깅줉?섏? ?딆븯嫄곕굹 鍮꾪솢?깊솕??QR 肄붾뱶?낅땲??');
-        return;
-      }
-
-      const qr = qrCodes[0];
-      const item = qr.talent_items;
-
-      if (!item) {
-        await logScan(qr.id, null, 'fail', 'ITEM_NOT_FOUND');
-        showResult(false, '??ぉ ?ㅻ쪟', '?곌껐???щ?????ぉ??李얠쓣 ???놁뒿?덈떎.');
-        return;
-      }
-
-      const now = new Date();
-      if (qr.valid_from && new Date(qr.valid_from) > now) {
-        await logScan(qr.id, item.id, 'fail', 'NOT_YET_VALID');
-        showResult(false, '?꾩쭅 ?좏슚?섏? ?딆? QR 肄붾뱶', `?좏슚 ?쒖옉: ${formatDateTime(qr.valid_from)}`);
-        return;
-      }
-      if (qr.valid_until && new Date(qr.valid_until) < now) {
-        await logScan(qr.id, item.id, 'fail', 'EXPIRED');
-        showResult(false, 'QR 肄붾뱶 留뚮즺', `?좏슚 湲곌컙??醫낅즺?섏뿀?듬땲??\n留뚮즺: ${formatDateTime(qr.valid_until)}`);
-        return;
-      }
-
-      if (qr.location_lat != null && qr.location_lng != null && qr.location_radius_km != null) {
-        if (!currentGPS) {
-          requestGPS();
-          await new Promise(r => setTimeout(r, 3000));
-        }
-        if (!currentGPS) {
-          await logScan(qr.id, item.id, 'fail', 'NO_GPS');
-          showResult(false, 'GPS ?꾩튂 ?뺤씤 遺덇?', 'GPS ?꾩튂瑜?媛?몄삱 ???놁뒿?덈떎. ?꾩튂 沅뚰븳???뺤씤 ???ㅼ떆 ?쒕룄?섏꽭??');
-          return;
-        }
-        const dist = haversineKm(currentGPS.lat, currentGPS.lng, qr.location_lat, qr.location_lng);
-        if (dist > qr.location_radius_km) {
-          await logScan(qr.id, item.id, 'fail', 'OUT_OF_RANGE');
-          showResult(false, '?덉슜 踰붿쐞 諛?, `?꾩옱 ?꾩튂媛 ?덉슜 踰붿쐞(${qr.location_radius_km}km) 諛뽰엯?덈떎.\n嫄곕━: ${dist.toFixed(2)}km`);
-          return;
-        }
-      }
-
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-      const { data: existing } = await _sb.from('talent_qr_scans')
-        .select('id')
-        .eq('user_id', session.id)
-        .eq('talent_item_id', item.id)
-        .eq('scan_result', 'success')
-        .gte('created_at', todayStart.toISOString())
-        .limit(1);
-
-      if (existing && existing.length > 0) {
-        await logScan(qr.id, item.id, 'fail', 'ALREADY_RECEIVED_TODAY');
-        showResult(false, '?대? ?섎졊 ?꾨즺', '?ㅻ뒛 ?대? ????ぉ???щ??몃? ?섎졊?섏뀲?듬땲??');
-        return;
-      }
-
-      const result = await giveTalentByItem(session.id, item.id, session.id);
-      if (result && result.success === false) {
-        await logScan(qr.id, item.id, 'fail', result.error || 'GIVE_FAILED');
-        showResult(false, '吏湲??ㅽ뙣', tErr(result.error || '?щ???吏湲됱뿉 ?ㅽ뙣?덉뒿?덈떎.'));
-        return;
-      }
-
-      await logScan(qr.id, item.id, 'success', null);
-      showResult(true, '?щ????섎졊 ?꾨즺!', `${item.name}`, result.amount || item.talent_amount);
-      await loadTodayScans();
+    function showResult(type, msg) {
+      const el = document.getElementById('qrResult');
+      const area = document.getElementById('qrArea');
+      el.className = 'qr-result show ' + type;
+      el.textContent = msg;
+      area.className = 'qr-input-area ' + (type === 'ok' ? 'success' : type === 'fail' ? 'error' : '');
+      setTimeout(() => { area.className = 'qr-input-area'; }, 3000);
     }
 
-    async function logScan(qrCodeId, itemId, result, reason) {
+    async function loadHistory() {
       try {
-        const scanData = {
-          user_id: session.id,
-          scan_result: result,
-          failure_reason: reason
-        };
-        if (qrCodeId) scanData.qr_code_id = qrCodeId;
-        if (itemId) scanData.talent_item_id = itemId;
-        if (currentGPS) {
-          scanData.scan_lat = currentGPS.lat;
-          scanData.scan_lng = currentGPS.lng;
-        }
-        await _sb.from('talent_qr_scans').insert(scanData);
-      } catch (e) { console.warn('Scan log failed:', e); }
+        const { data } = await _sb.from('talent_qr_scans')
+          .select('*, talent_qr_codes(code, amount, description)')
+          .eq('user_id', session.id)
+          .order('scanned_at', { ascending: false }).limit(10);
+        if (!data || data.length === 0) return;
+        const sec = document.getElementById('historySection');
+        sec.style.display = '';
+        const list = document.getElementById('historyList');
+        list.innerHTML = data.map(s => {
+          const qr = s.talent_qr_codes || {};
+          const dt = new Date(s.scanned_at);
+          const dateStr = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+          return `<div class="scan-item"><span>${dateStr} - ${qr.description || qr.code || '-'}</span><span class="amt">+${qr.amount || 0} 달란트</span></div>`;
+        }).join('');
+      } catch (e) { /* table may not exist yet */ }
     }
 
-    function showResult(success, title, msg, amount) {
-      const card = document.getElementById('resultCard');
-      card.className = 'result-card show ' + (success ? 'result-success' : 'result-fail');
-      document.getElementById('resultTitle').textContent = (success ? '??' : '??') + title;
-      document.getElementById('resultMsg').textContent = msg;
-      const amtEl = document.getElementById('resultAmount');
-      if (success && amount) {
-        amtEl.style.display = 'block';
-        amtEl.innerHTML = `<span class="result-amount">+${amount}</span> <span style="font-size:0.9rem;color:#636e72;">?щ???/span>`;
-      } else {
-        amtEl.style.display = 'none';
-      }
-    }
-
-    function haversineKm(lat1, lon1, lat2, lon2) {
-      const R = 6371;
-      const dLat = (lat2 - lat1) * Math.PI / 180;
-      const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
-      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    }
-
-    function formatDateTime(iso) {
-      if (!iso) return '-';
-      const d = new Date(iso);
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-    }
-
-    async function loadTodayScans() {
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-      const { data } = await _sb.from('talent_qr_scans')
-        .select('*, talent_items(name, talent_amount)')
-        .eq('user_id', session.id)
-        .gte('created_at', todayStart.toISOString())
-        .order('created_at', { ascending: false });
-
-      todayScans = data || [];
-      const wrap = document.getElementById('scanHistoryWrap');
-      const el = document.getElementById('scanHistory');
-
-      if (todayScans.length === 0) {
-        wrap.style.display = 'none';
+    async function toggleCamera() {
+      const preview = document.getElementById('cameraPreview');
+      const video = document.getElementById('cameraVideo');
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+        preview.style.display = 'none';
         return;
       }
-
-      wrap.style.display = '';
-      el.innerHTML = todayScans.map(s => {
-        const itemName = s.talent_items ? s.talent_items.name : '-';
-        const amount = s.talent_items ? s.talent_items.talent_amount : 0;
-        const time = new Date(s.created_at);
-        const timeStr = `${String(time.getHours()).padStart(2,'0')}:${String(time.getMinutes()).padStart(2,'0')}`;
-        const ok = s.scan_result === 'success';
-        return `<div class="history-item">
-          <span>${ok ? '?? : '??} ${itemName}</span>
-          <span style="color:${ok ? '#2b8a3e' : '#e03131'};font-weight:700;">${ok ? '+' + amount : (s.failure_reason || '?ㅽ뙣')}</span>
-          <span style="color:#868e96;">${timeStr}</span>
-        </div>`;
-      }).join('');
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        video.srcObject = cameraStream;
+        video.play();
+        preview.style.display = '';
+      } catch (e) {
+        alert('카메라를 사용할 수 없습니다: ' + (e.message || e));
+      }
     }
+
+    document.getElementById('qrInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') scanCode();
+    });
   </script>
   <script src="js/version.js?v=3.13.0"></script>
 </body>
