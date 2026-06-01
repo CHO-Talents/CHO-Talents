@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 수령 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.13.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.16.0" />
   <style>
     .qr-hero { text-align: center; margin-bottom: 1.5rem; }
     .qr-hero h1 { font-size: 1.6rem; color: var(--c-primary); }
@@ -14,7 +14,7 @@
     .qr-input-area { background: #fff; border: 2px dashed var(--c-border); border-radius: 16px; padding: 2rem; text-align: center; margin-bottom: 1.5rem; }
     .qr-input-area.success { border-color: #2b8a3e; background: #f0fff4; }
     .qr-input-area.error { border-color: #e03131; background: #fff5f5; }
-    .qr-input { width: 100%; max-width: 360px; padding: 0.8rem 1rem; font-size: 1.1rem; border: 2px solid var(--c-border); border-radius: 12px; text-align: center; letter-spacing: 2px; font-weight: 700; }
+    .qr-input { width: 100%; max-width: 360px; padding: 0.8rem 1rem; font-size: 1.1rem; border: 2px solid var(--c-border); border-radius: 12px; text-align: center; letter-spacing: 2px; font-weight: 700; box-sizing: border-box; }
     .qr-input:focus { border-color: var(--c-primary); outline: none; }
     .btn-scan { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1rem; padding: 0.7rem 1.5rem; background: var(--c-primary); color: #fff; border: none; border-radius: 50px; font-size: 1rem; font-weight: 700; cursor: pointer; }
     .btn-scan:disabled { opacity: 0.5; cursor: not-allowed; }
@@ -26,8 +26,16 @@
     .scan-history h3 { font-size: 1rem; margin-bottom: 0.8rem; }
     .scan-item { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.8rem; background: #f8f9fa; border-radius: 8px; margin-bottom: 0.4rem; font-size: 0.85rem; }
     .scan-item .amt { font-weight: 700; color: #2b8a3e; }
-    #cameraPreview { display: none; width: 100%; max-width: 360px; margin: 0.8rem auto; border-radius: 12px; overflow: hidden; }
-    #cameraPreview video { width: 100%; display: block; }
+    #cameraWrap { display: none; width: 100%; max-width: 360px; margin: 1rem auto; position: relative; border-radius: 12px; overflow: hidden; border: 3px solid var(--c-primary); }
+    #cameraWrap video { width: 100%; display: block; }
+    #cameraWrap canvas { display: none; }
+    .scan-overlay { position: absolute; inset: 0; pointer-events: none; }
+    .scan-overlay .scan-frame { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 65%; height: 65%; border: 2px solid rgba(255,255,255,0.7); border-radius: 12px; }
+    .scan-overlay .scan-frame::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: #51cf66; animation: scanLine 2s ease-in-out infinite; }
+    @keyframes scanLine { 0%, 100% { top: 0; } 50% { top: 100%; } }
+    .scan-status { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; font-size: 0.78rem; color: #fff; background: rgba(0,0,0,0.5); padding: 4px 0; }
+    .scan-detected { animation: flashGreen 0.3s; }
+    @keyframes flashGreen { 0% { border-color: var(--c-primary); } 50% { border-color: #51cf66; } 100% { border-color: var(--c-primary); } }
   </style>
 </head>
 <body class="page-body">
@@ -101,7 +109,16 @@
       <div style="font-size:3rem;margin-bottom:0.5rem;">🎯</div>
       <p style="margin-bottom:1rem;font-size:0.9rem;color:var(--c-text-muted);">QR 코드를 입력하세요</p>
       <input type="text" class="qr-input" id="qrInput" placeholder="QR 코드 입력" maxlength="20" autocomplete="off" />
-      <div id="cameraPreview"><video id="cameraVideo" playsinline></video></div>
+
+      <div id="cameraWrap">
+        <video id="cameraVideo" playsinline muted></video>
+        <canvas id="cameraCanvas"></canvas>
+        <div class="scan-overlay">
+          <div class="scan-frame"></div>
+        </div>
+        <div class="scan-status" id="scanStatus">QR 코드를 카메라에 비춰주세요</div>
+      </div>
+
       <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
         <button class="btn-scan" id="btnScan" onclick="scanCode()">🔍 코드 확인</button>
         <button class="btn-scan" id="btnCamera" onclick="toggleCamera()" style="background:#868e96;">📷 카메라</button>
@@ -120,13 +137,16 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.13.0"></script>
-  <script src="js/activity-log.js?v=3.13.0"></script>
-  <script src="js/auth.js?v=3.13.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <script src="js/supabase-config.js?v=3.16.0"></script>
+  <script src="js/activity-log.js?v=3.16.0"></script>
+  <script src="js/auth.js?v=3.16.0"></script>
   <script>
     initSupabase();
     let session;
     let cameraStream = null;
+    let scanAnimFrame = null;
+    let scanPaused = false;
 
     (async () => {
       session = await initPage(40, 'login.html');
@@ -200,6 +220,7 @@
       } finally {
         btn.disabled = false;
         btn.textContent = '🔍 코드 확인';
+        scanPaused = false;
       }
     }
 
@@ -232,28 +253,83 @@
     }
 
     async function toggleCamera() {
-      const preview = document.getElementById('cameraPreview');
+      const wrap = document.getElementById('cameraWrap');
       const video = document.getElementById('cameraVideo');
+      const btn = document.getElementById('btnCamera');
+
       if (cameraStream) {
-        cameraStream.getTracks().forEach(t => t.stop());
-        cameraStream = null;
-        preview.style.display = 'none';
+        stopCamera();
         return;
       }
+
       try {
-        cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        btn.textContent = '카메라 시작 중...';
+        btn.disabled = true;
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'environment', width: { ideal: 640 }, height: { ideal: 480 } }
+        });
         video.srcObject = cameraStream;
-        video.play();
-        preview.style.display = '';
+        await video.play();
+        wrap.style.display = '';
+        btn.textContent = '📷 카메라 끄기';
+        btn.style.background = '#e03131';
+        btn.disabled = false;
+        startQRScan();
       } catch (e) {
+        btn.textContent = '📷 카메라';
+        btn.style.background = '#868e96';
+        btn.disabled = false;
         alert('카메라를 사용할 수 없습니다: ' + (e.message || e));
       }
+    }
+
+    function stopCamera() {
+      if (scanAnimFrame) { cancelAnimationFrame(scanAnimFrame); scanAnimFrame = null; }
+      if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+      const video = document.getElementById('cameraVideo');
+      video.srcObject = null;
+      document.getElementById('cameraWrap').style.display = 'none';
+      const btn = document.getElementById('btnCamera');
+      btn.textContent = '📷 카메라';
+      btn.style.background = '#868e96';
+    }
+
+    function startQRScan() {
+      const video = document.getElementById('cameraVideo');
+      const canvas = document.getElementById('cameraCanvas');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      const statusEl = document.getElementById('scanStatus');
+
+      function tick() {
+        if (!cameraStream) return;
+        if (video.readyState === video.HAVE_ENOUGH_DATA && !scanPaused) {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          const qrResult = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+
+          if (qrResult && qrResult.data) {
+            scanPaused = true;
+            statusEl.textContent = '✅ QR 코드 감지: ' + qrResult.data;
+            document.getElementById('cameraWrap').classList.add('scan-detected');
+            setTimeout(() => document.getElementById('cameraWrap').classList.remove('scan-detected'), 300);
+
+            document.getElementById('qrInput').value = qrResult.data;
+            scanCode();
+          } else {
+            statusEl.textContent = 'QR 코드를 카메라에 비춰주세요';
+          }
+        }
+        scanAnimFrame = requestAnimationFrame(tick);
+      }
+      tick();
     }
 
     document.getElementById('qrInput').addEventListener('keydown', e => {
       if (e.key === 'Enter') scanCode();
     });
   </script>
-  <script src="js/version.js?v=3.13.0"></script>
+  <script src="js/version.js?v=3.16.0"></script>
 </body>
 </html>
