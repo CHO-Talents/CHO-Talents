@@ -87,19 +87,19 @@ CREATE POLICY "qr_codes_select" ON public.talent_qr_codes
 CREATE POLICY "qr_codes_insert" ON public.talent_qr_codes
   FOR INSERT TO authenticated
   WITH CHECK (
-    (SELECT permission_rank FROM public.profiles WHERE id = auth.uid()) >= 90
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND get_permission_rank(permission_level) >= 90)
   );
 
 CREATE POLICY "qr_codes_update" ON public.talent_qr_codes
   FOR UPDATE TO authenticated
   USING (
-    (SELECT permission_rank FROM public.profiles WHERE id = auth.uid()) >= 90
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND get_permission_rank(permission_level) >= 90)
   );
 
 CREATE POLICY "qr_codes_delete" ON public.talent_qr_codes
   FOR DELETE TO authenticated
   USING (
-    (SELECT permission_rank FROM public.profiles WHERE id = auth.uid()) >= 90
+    EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND get_permission_rank(permission_level) >= 90)
   );
 
 DROP POLICY IF EXISTS "qr_scans_select" ON public.talent_qr_scans;
