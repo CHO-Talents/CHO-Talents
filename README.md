@@ -12,12 +12,15 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.20.0` (`js/version.js` 기준, 2026-06-01) |
+| 현재 버전 | `v3.20.1` (`js/version.js` 기준, 2026-06-01) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.20.0`으로 맞춰져 있습니다.
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.20.1`으로 맞춰져 있습니다.
+- **v3.20.1 주요 변경 사항**:
+  - QR 수령: 카메라 영상 미리보기 미표시 버그 수정 (`#cameraWrap display:none` → `display:block` 전환)
+  - QR 수령: 모바일 Safari 호환성 강화 (`webkit-playsinline` 동적 추가, wrap 선행 표시 후 play 호출)
 - **v3.20.0 주요 변경 사항**:
   - QR 관리: 반복 수령 기능 추가 (X/O 라디오) - 매일/요일반복/주차+요일반복 3가지 방식
   - QR 관리: 생성 폼 섹션별 카드 UI로 모바일 가독성 개선
