@@ -2,9 +2,20 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.20.0',
+  current: '3.20.1',
   date: '2026-06-01',
   history: [
+    {
+      version: '3.20.1',
+      date: '2026-06-01',
+      title: '달란트 수령 카메라 미리보기 표시 수정',
+      changes: [
+        'QR수령: 카메라 영상 미표시 버그 수정 (#cameraWrap display:none → display:block 전환)',
+        'QR수령: wrap을 먼저 보이게 한 후 video.play() 호출 (모바일 호환성)',
+        'QR수령: webkit-playsinline 속성 동적 추가 (Safari 호환성 강화)',
+        'QR수령: 카메라 시작 실패 시 스트림 정리 + wrap 숨김 처리'
+      ]
+    },
     {
       version: '3.20.0',
       date: '2026-06-01',
