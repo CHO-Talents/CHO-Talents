@@ -371,7 +371,7 @@
     /* ── Kakao Maps SDK ── */
     async function loadKakaoSDK() {
       if (kakaoLoaded) return true;
-      if (!window.KAKAO_MAP_KEY || KAKAO_MAP_KEY === 'YOUR_KAKAO_JS_KEY') {
+      if (typeof KAKAO_MAP_KEY === 'undefined' || !KAKAO_MAP_KEY || KAKAO_MAP_KEY === 'YOUR_KAKAO_JS_KEY') {
         alert('카카오 맵 API 키가 설정되지 않았습니다.\njs/supabase-config.js 파일에서 KAKAO_MAP_KEY를 설정해주세요.\n\nhttps://developers.kakao.com 에서 앱 등록 후 JavaScript 키를 발급받으세요.');
         return false;
       }
