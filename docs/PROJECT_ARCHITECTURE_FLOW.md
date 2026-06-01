@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-01 KST 현재 코드 기준 (v3.16.0)
+작성 기준: 2026-06-01 KST 현재 코드 기준 (v3.19.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -72,22 +72,22 @@ flowchart LR
 | `shop.html` | 상점 조회 + 구매 신청 + 대리 구매. 비로그인은 학생용, 교사는 교사용 기본 필터 |
 | `my-talents.html` | 로그인 사용자 본인의 누적/사용 완료/사용 대기/가용 잔액, 달란트 내역, 구매 내역 |
 | `my-orders.html` | 로그인 사용자 본인의 구매 신청 내역과 4단계 상태 조회 |
-| `admin/index.html` | 80등급 이상 대시보드. 사용자/부서/보고서/가입대기 요약, 오류 로그 영역은 100등급 이상 |
+| `admin/index.html` | 80등급 이상 대시보드. 사용자/부서/보고서/가입대기 요약. 미확인 ERROR+ 카드는 100등급 이상만 표시(클릭→로그). 바로가기에 달란트 통계/QR 관리 포함 |
 | `admin/users.html` | 60등급 이상 사용자 관리. 가입 신청/부서 이동 요청/승인 처리 |
 | `admin/departments.html` | 60등급 이상 부서 관리. 부서별 인원(교사 전체 포함)/담당자 확인 |
 | `admin/managers.html` | 80등급 이상 관리자 계열 권한 관리. 수정만 가능 |
 | `admin/talents.html` | 40등급 이상 달란트 처리. 체크박스 일괄 지급, 출석 버튼(당일 중복 방지). 수동 적립은 100등급(관리자)만 표시. 사용 기능 제거됨 |
-| `admin/talent-stats.html` | 60등급 이상 달란트 누적적립 통계. 전체/부서별/개인별/유형별 뷰, 탭별 요약 카드, 기간/부서 필터(기본 오늘) |
+| `admin/talent-stats.html` | 60등급 이상 달란트 누적적립 통계. 전체/부서별/사용자별/유형별 뷰, 전체/학생/교사 라디오 필터, 부서 필터, 기간 프리셋(오늘/1주/1달/1년). 유형별은 학생/교사 각각 항목별 비율 |
 | `admin/talent-items.html` | 90등급 이상 달란트 지급 항목 관리 |
-| `admin/talent-qr.html` | 90등급 이상 QR 코드 생성(qrcode.js 이미지)/수정(새 코드 재생성)/비활성화. from~to datetime 기간 설정, 1회 사용 |
-| `admin/shop.html` | 60등급 이상 상품 관리. 주문 있는 상품은 FK 충돌 시 비활성화 제안 |
-| `admin/purchases.html` | 60등급 이상 구매 관리. 날짜/부서 필터(기본 오늘), 4단계 구매 흐름 + 되돌리기(↩) |
+| `admin/talent-qr.html` | 90등급 이상 QR 코드 생성(qrcode.js 이미지)/수정(새 코드 재생성)/비활성화. 지급 대상(학생/교사) 구분, 유효기간 라디오(지정일/기간/무기한), 위치 제한(카카오맵 API, 반경 500m~5km, Geolocation 검증) |
+| `admin/shop.html` | 60등급 이상 상품 관리. 삭제는 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
+| `admin/purchases.html` | 60등급 이상 구매 관리. 모든 상태 탭에 부서/기간 필터(기본 오늘) + 기간 프리셋, 4단계 구매 흐름 + 되돌리기(↩) |
 | `admin/reports.html` | 80등급 이상 보고서 조회/등록/수정/삭제 |
-| `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리. 기간 필터 기본값 오늘 |
+| `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리. 기간 프리셋(오늘/1주/1달/1년) |
 | `admin/versions.html` | 80등급 이상 버전 이력 확인 |
 | `admin/page-access.html` | 100등급 이상 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100등급 이상 권한별 페이지 기능 설정값 관리 |
-| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기본 오늘, 자동 조회, 카테고리별 필터) |
+| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기간 프리셋(오늘/1주/1달/1년), 자동 조회, 카테고리별 필터) |
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
@@ -336,7 +336,7 @@ flowchart TD
 | 교사용 상품 | 로그인한 교사 또는 60등급 이상만 조회 |
 | 교사 기본 필터 | 교사 접속 시 교사용 탭 자동 선택 |
 | 상품 등록/수정 | 60등급 이상 |
-| 상품 삭제 | 90등급 이상. FK 충돌(주문 존재) 시 비활성화 제안 |
+| 상품 삭제 | 90등급 이상. 소프트 삭제(삭제 대기=비활성화) - 목록에서 숨김 |
 | 구매 신청 | 로그인 사용자 (잔여 달란트 확인) |
 | 대리 구매 | 40등급 이상. 권한별 부서/반/사용자 범위 제한 |
 
@@ -403,7 +403,7 @@ flowchart TD
 | `qna` | FAQ, 사용자 질문, 답변, 공개 여부, 소프트 삭제 |
 | `qna_comments` | Q&A 질문별 댓글(답변) 스레드 |
 | `reports` | 작업 보고서 |
-| `talent_qr_codes` | QR 코드 생성/관리. `valid_from`/`valid_until` 기간, `max_uses=1` 1회 사용 |
+| `talent_qr_codes` | QR 코드 생성/관리. `target_type`(학생/교사), `valid_from`/`valid_until` 기간, `max_uses` (0=무제한, N=선착순), `location_lat`/`location_lng`/`location_name`/`location_radius` 위치 제한 |
 | `talent_qr_scans` | QR 코드 스캔 이력. 중복 수령 방지 |
 | `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록 |
 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
