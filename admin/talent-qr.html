@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>&#xB2EC;&#xB780;&#xD2B8; QR &#xAD00;&#xB9AC; - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.16.0" />
+  <title>달란트 QR 관리 - CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.17.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
     .qr-item-card.inactive { opacity: 0.5; }
-    .qr-img-wrap { flex-shrink: 0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 8px; border: 1px solid #e9ecef; overflow: hidden; }
+    .qr-img-wrap { flex-shrink: 0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 8px; border: 1px solid #e9ecef; overflow: hidden; position: relative; }
     .qr-img-wrap img, .qr-img-wrap canvas { max-width: 100%; max-height: 100%; }
     .qr-info { flex: 1; min-width: 160px; }
     .qr-code-label { font-family: monospace; font-size: 0.78rem; color: var(--admin-text-muted); letter-spacing: 1px; margin-bottom: 0.2rem; }
@@ -19,6 +19,7 @@
     .qr-actions button.danger { color: #e03131; border-color: #e03131; }
     .qr-actions button.primary { background: var(--admin-primary); color: #fff; border-color: var(--admin-primary); }
     .qr-actions button.edit { color: #1971c2; border-color: #1971c2; }
+    .qr-actions button.info { color: #1971c2; border-color: #1971c2; background: #e7f5ff; }
     .create-form { background: #f8f9fa; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; }
     .create-form h3 { margin-bottom: 1rem; font-size: 1rem; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; }
@@ -26,161 +27,308 @@
     .form-grid input, .form-grid select { width: 100%; padding: 0.5rem; border: 1px solid var(--admin-border); border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; }
     .period-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
     .period-row input { flex: 1; min-width: 140px; }
+    .radio-row { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.3rem; }
+    .radio-row label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 400; cursor: pointer; }
+    .radio-row label input[type="radio"] { margin: 0; }
+    .radio-row .inline-num { width: 90px; padding: 0.3rem 0.5rem; font-size: 0.85rem; display: inline-block; }
+    .item-info-box { background: #e7f5ff; padding: 0.6rem 0.8rem; border-radius: 8px; font-size: 0.85rem; margin-top: 0.3rem; display: flex; align-items: center; gap: 0.5rem; }
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; }
     .modal-overlay.show { display: flex; }
     .modal-box { background: #fff; border-radius: 16px; padding: 1.5rem; max-width: 480px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+    .modal-box.wide { max-width: 600px; }
     .modal-box h3 { margin-bottom: 1rem; }
     .modal-box .form-grid { grid-template-columns: 1fr; }
     .modal-actions { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: flex-end; }
+    .scan-list-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .scan-list-table th, .scan-list-table td { padding: 0.5rem 0.6rem; text-align: left; border-bottom: 1px solid #e9ecef; }
+    .scan-list-table th { background: #f8f9fa; font-weight: 600; font-size: 0.8rem; color: var(--admin-text-muted); }
+    .scan-list-table tr:hover td { background: #f1f3f5; }
+    .scan-empty { text-align: center; padding: 1.5rem; color: var(--admin-text-muted); font-size: 0.9rem; }
   </style>
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">&#x2B50;</span> &#xB2EC;&#xB780;&#xD2B8; &#xB9C8;&#xC744;</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">&#xC18C;&#xAC1C;</button>
+        <button class="nav-dropdown-toggle">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">&#xC0AC;&#xC6A9;&#xC790; &#xAC00;&#xC774;&#xB4DC;</a></li>
-          <li><a href="../earn-talents.html">&#xB2EC;&#xB780;&#xD2B8; &#xC801;&#xB9BD;</a></li>
+          <li><a href="../guide.html">사용자 가이드</a></li>
+          <li><a href="../earn-talents.html">달란트 적립</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">&#xB2EC;&#xB780;&#xD2B8;</button>
+        <button class="nav-dropdown-toggle active">달란트</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">&#xB0B4; &#xB2EC;&#xB780;&#xD2B8;</a></li>
-          <li><a href="../talent-receive.html">&#xB2EC;&#xB780;&#xD2B8; &#xC218;&#xB839;</a></li>
-          <li data-min-perm="40"><a href="talents.html">&#xB2EC;&#xB780;&#xD2B8; &#xAD00;&#xB9AC;</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">&#xB2EC;&#xB780;&#xD2B8; &#xD1B5;&#xACC4;</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html" class="active">&#xB2EC;&#xB780;&#xD2B8; QR &#xAD00;&#xB9AC;</a></li>
+          <li><a href="../my-talents.html">내 달란트</a></li>
+          <li><a href="../talent-receive.html">달란트 수령</a></li>
+          <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">달란트 통계</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html" class="active">달란트 QR 관리</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">&#xC0C1;&#xD488;</button>
+        <button class="nav-dropdown-toggle">상품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">&#xC0C1;&#xD488; &#xAD6C;&#xB9E4;</a></li>
-          <li><a href="../my-orders.html">&#xB0B4; &#xAD6C;&#xB9E4; &#xC0C1;&#xD488;</a></li>
-          <li data-min-perm="60"><a href="shop.html">&#xC0C1;&#xD488; &#xAD00;&#xB9AC;</a></li>
-          <li data-min-perm="60"><a href="purchases.html">&#xAD6C;&#xB9E4; &#xAD00;&#xB9AC; <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">상품 구매</a></li>
+          <li><a href="../my-orders.html">내 구매 상품</a></li>
+          <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
+          <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">&#xAD00;&#xB9AC;</button>
+        <button class="nav-dropdown-toggle">관리</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">&#xB300;&#xC2DC;&#xBCF4;&#xB4DC;</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">&#xC0AC;&#xC6A9;&#xC790; &#xAD00;&#xB9AC; <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">&#xAD00;&#xB9AC;&#xC790; &#xAD00;&#xB9AC;</a></li>
-          <li data-min-perm="60"><a href="departments.html">&#xBD80;&#xC11C; &#xAD00;&#xB9AC;</a></li>
+          <li data-min-perm="80"><a href="index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">&#xC6B4;&#xC601;</button>
+        <button class="nav-dropdown-toggle">운영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">&#xD398;&#xC774;&#xC9C0; &#xC811;&#xADFC;</a></li>
-          <li data-min-perm="100"><a href="page-features.html">&#xD398;&#xC774;&#xC9C0; &#xAE30;&#xB2A5;</a></li>
-          <li data-min-perm="80"><a href="versions.html">&#xBC84;&#xC804;</a></li>
-          <li data-min-perm="80"><a href="reports.html">&#xBCF4;&#xACE0;&#xC11C;</a></li>
-          <li data-min-perm="100"><a href="audit.html">&#xC791;&#xC5C5; &#xC774;&#xB825;</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">&#xB85C;&#xADF8; <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
+          <li data-min-perm="80"><a href="versions.html">버전</a></li>
+          <li data-min-perm="80"><a href="reports.html">보고서</a></li>
+          <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">&#xB85C;&#xADF8;&#xC544;&#xC6C3;</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2>&#x1F3AB; &#xB2EC;&#xB780;&#xD2B8; QR &#xCF54;&#xB4DC; &#xAD00;&#xB9AC;</h2>
+    <h2>🎫 달란트 QR 코드 관리</h2>
 
     <div class="create-form" id="createForm">
-      <h3>&#x2795; &#xC0C8; QR &#xCF54;&#xB4DC; &#xC0DD;&#xC131;</h3>
+      <h3>➕ 새 QR 코드 생성</h3>
       <div class="form-grid">
-        <div>
-          <label>&#xC124;&#xBA85; (&#xD56D;&#xBAA9;&#xBA85;)</label>
-          <input type="text" id="qrDesc" placeholder="&#xC608;: &#xC608;&#xBC30; &#xCD9C;&#xC11D;" />
+        <div style="grid-column:1/-1;">
+          <label>달란트 항목</label>
+          <select id="qrItemSelect" onchange="onItemSelectChange()">
+            <option value="">-- 항목을 선택하세요 --</option>
+            <option value="manual">✏️ 직접 입력</option>
+          </select>
+          <div id="selectedItemInfo" class="item-info-box" style="display:none;">
+            📌 <strong id="selectedItemName"></strong> · <span id="selectedItemAmount"></span> 달란트
+          </div>
         </div>
-        <div>
-          <label>&#xB2EC;&#xB780;&#xD2B8; &#xAE08;&#xC561;</label>
-          <input type="number" id="qrAmount" min="1" max="100" value="1" />
+        <div id="manualFields" style="display:none;grid-column:1/-1;">
+          <div class="form-grid">
+            <div>
+              <label>항목 설명</label>
+              <input type="text" id="qrDesc" placeholder="예: 특별 활동 참여" />
+            </div>
+            <div>
+              <label>달란트 금액</label>
+              <input type="number" id="qrAmount" min="1" max="100" value="1" />
+            </div>
+          </div>
         </div>
       </div>
       <div style="margin-top:0.8rem;">
-        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:0.3rem;">&#xC720;&#xD6A8; &#xAE30;&#xAC04; (&#xBE44;&#xC6B0;&#xBA74; &#xBB34;&#xAE30;&#xD55C;)</label>
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:0.3rem;">지급 방식</label>
+        <div class="radio-row">
+          <label><input type="radio" name="maxUsesType" value="unlimited" checked onchange="onMaxUsesTypeChange()" /> 지급 제한 없음 (무제한)</label>
+          <label>
+            <input type="radio" name="maxUsesType" value="limited" onchange="onMaxUsesTypeChange()" />
+            선착순 지급
+            <input type="number" id="maxUsesCount" class="inline-num" min="1" max="100000" value="30" disabled />
+            명
+          </label>
+        </div>
+      </div>
+      <div style="margin-top:0.8rem;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:0.3rem;">유효 기간 (비우면 무기한)</label>
         <div class="period-row">
           <input type="datetime-local" id="qrValidFrom" />
           <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
           <input type="datetime-local" id="qrValidTo" />
-          <button type="button" class="admin-btn" onclick="clearPeriod()" style="padding:0.35rem 0.6rem;font-size:0.78rem;">&#xCD08;&#xAE30;&#xD654;</button>
+          <button type="button" class="admin-btn" onclick="clearPeriod()" style="padding:0.35rem 0.6rem;font-size:0.78rem;">초기화</button>
         </div>
       </div>
       <div style="margin-top:1rem;display:flex;gap:0.5rem;">
-        <button class="admin-btn primary" onclick="createQR()">&#xC0DD;&#xC131;</button>
-        <button class="admin-btn" onclick="createBulkQR()">5&#xAC1C; &#xC77C;&#xAD04; &#xC0DD;&#xC131;</button>
+        <button class="admin-btn primary" onclick="createQR()">생성</button>
+        <button class="admin-btn" onclick="createBulkQR()">5개 일괄 생성</button>
       </div>
     </div>
 
     <div class="qr-tabs">
-      <button class="filter-btn active" id="tabActive" onclick="switchTab('active')">&#xD65C;&#xC131; &#xCF54;&#xB4DC;</button>
-      <button class="filter-btn" id="tabAll" onclick="switchTab('all')">&#xC804;&#xCCB4;</button>
+      <button class="filter-btn active" id="tabActive" onclick="switchTab('active')">활성 코드</button>
+      <button class="filter-btn" id="tabAll" onclick="switchTab('all')">전체</button>
       <span id="qrCount" style="margin-left:auto;font-size:0.82rem;color:var(--admin-text-muted);"></span>
     </div>
 
     <div id="qrList">
-      <div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">&#xBD88;&#xB7EC;&#xC624;&#xB294; &#xC911;...</div>
+      <div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">불러오는 중...</div>
     </div>
   </div>
 
   <!-- Edit Modal -->
   <div class="modal-overlay" id="editModal">
     <div class="modal-box">
-      <h3>&#x270F;&#xFE0F; QR &#xCF54;&#xB4DC; &#xC218;&#xC815;</h3>
+      <h3>✏️ QR 코드 수정</h3>
       <input type="hidden" id="editId" />
       <div class="form-grid">
         <div>
-          <label>&#xC124;&#xBA85;</label>
+          <label>달란트 항목</label>
+          <select id="editItemSelect" onchange="onEditItemChange()">
+            <option value="">-- 항목 선택 --</option>
+            <option value="manual">✏️ 직접 입력</option>
+          </select>
+          <div id="editItemInfo" class="item-info-box" style="display:none;">
+            📌 <strong id="editItemName"></strong> · <span id="editItemAmount"></span> 달란트
+          </div>
+        </div>
+        <div id="editManualFields" style="display:none;">
+          <label>설명</label>
           <input type="text" id="editDesc" />
         </div>
-        <div>
-          <label>&#xB2EC;&#xB780;&#xD2B8; &#xAE08;&#xC561;</label>
+        <div id="editManualAmountField" style="display:none;">
+          <label>달란트 금액</label>
           <input type="number" id="editAmount" min="1" max="100" />
         </div>
         <div>
-          <label>&#xC720;&#xD6A8; &#xC2DC;&#xC791;</label>
+          <label>지급 방식</label>
+          <div class="radio-row">
+            <label><input type="radio" name="editMaxUsesType" value="unlimited" checked onchange="onEditMaxUsesTypeChange()" /> 지급 제한 없음</label>
+            <label>
+              <input type="radio" name="editMaxUsesType" value="limited" onchange="onEditMaxUsesTypeChange()" />
+              선착순
+              <input type="number" id="editMaxUsesCount" class="inline-num" min="1" max="100000" value="30" disabled />
+              명
+            </label>
+          </div>
+        </div>
+        <div>
+          <label>유효 시작</label>
           <input type="datetime-local" id="editValidFrom" />
         </div>
         <div>
-          <label>&#xC720;&#xD6A8; &#xC885;&#xB8CC;</label>
+          <label>유효 종료</label>
           <input type="datetime-local" id="editValidTo" />
         </div>
       </div>
-      <p style="font-size:0.78rem;color:var(--admin-text-muted);margin-top:0.6rem;">&#x26A0; &#xC800;&#xC7A5; &#xC2DC; &#xC0C8; QR &#xCF54;&#xB4DC;&#xAC00; &#xC0DD;&#xC131;&#xB429;&#xB2C8;&#xB2E4;.</p>
+      <p style="font-size:0.78rem;color:var(--admin-text-muted);margin-top:0.6rem;">⚠ 저장 시 새 QR 코드가 생성됩니다.</p>
       <div class="modal-actions">
-        <button class="admin-btn" onclick="closeEditModal()">&#xCDE8;&#xC18C;</button>
-        <button class="admin-btn primary" onclick="saveEdit()">&#xC800;&#xC7A5; (&#xC0C8; QR &#xC0DD;&#xC131;)</button>
+        <button class="admin-btn" onclick="closeEditModal()">취소</button>
+        <button class="admin-btn primary" onclick="saveEdit()">저장 (새 QR 생성)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scan List Modal -->
+  <div class="modal-overlay" id="scanListModal">
+    <div class="modal-box wide">
+      <h3>👥 수령자 목록 <span id="scanListTitle" style="font-size:0.85rem;font-weight:400;color:var(--admin-text-muted);"></span></h3>
+      <div id="scanListContent"><div class="scan-empty">불러오는 중...</div></div>
+      <div class="modal-actions">
+        <button class="admin-btn" onclick="closeScanListModal()">닫기</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../js/supabase-config.js?v=3.16.0"></script>
-  <script src="../js/activity-log.js?v=3.16.0"></script>
-  <script src="../js/auth.js?v=3.16.0"></script>
+  <script src="../js/supabase-config.js?v=3.17.0"></script>
+  <script src="../js/activity-log.js?v=3.17.0"></script>
+  <script src="../js/auth.js?v=3.17.0"></script>
+  <script src="../js/talent.js?v=3.17.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
+    let talentItems = [];
+    let isAdmin = false;
 
     (async () => {
       session = await initPage(90, '../login.html');
       renderRoleBadge('navUser', session, '../');
       applyPermNav(session.permissionRank || 0);
       autoLogPageView();
+      isAdmin = (session.permissionRank || 0) >= 100;
       initPeriodDefaults();
+      await loadTalentItems();
       await loadQRList();
     })();
+
+    async function loadTalentItems() {
+      const { data } = await fetchAllTalentItems();
+      talentItems = (data || []).filter(i => i.is_active);
+      populateItemSelect('qrItemSelect');
+      populateItemSelect('editItemSelect');
+    }
+
+    function populateItemSelect(selectId) {
+      const sel = document.getElementById(selectId);
+      const existingManual = sel.querySelector('option[value="manual"]');
+      while (sel.options.length > 1) {
+        if (sel.options[1] === existingManual) break;
+        sel.remove(1);
+      }
+      talentItems.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.id;
+        opt.textContent = `${item.name} (${item.talent_amount} 달란트)`;
+        opt.dataset.amount = item.talent_amount;
+        opt.dataset.name = item.name;
+        sel.insertBefore(opt, existingManual);
+      });
+    }
+
+    function onItemSelectChange() {
+      const val = document.getElementById('qrItemSelect').value;
+      const manualDiv = document.getElementById('manualFields');
+      const infoDiv = document.getElementById('selectedItemInfo');
+      if (val === 'manual' || val === '') {
+        manualDiv.style.display = val === 'manual' ? '' : 'none';
+        infoDiv.style.display = 'none';
+      } else {
+        manualDiv.style.display = 'none';
+        const item = talentItems.find(i => i.id === val);
+        if (item) {
+          document.getElementById('selectedItemName').textContent = item.name;
+          document.getElementById('selectedItemAmount').textContent = item.talent_amount;
+          infoDiv.style.display = '';
+        }
+      }
+    }
+
+    function onEditItemChange() {
+      const val = document.getElementById('editItemSelect').value;
+      const manualF = document.getElementById('editManualFields');
+      const manualA = document.getElementById('editManualAmountField');
+      const infoDiv = document.getElementById('editItemInfo');
+      if (val === 'manual') {
+        manualF.style.display = ''; manualA.style.display = ''; infoDiv.style.display = 'none';
+      } else if (val) {
+        manualF.style.display = 'none'; manualA.style.display = 'none';
+        const item = talentItems.find(i => i.id === val);
+        if (item) {
+          document.getElementById('editItemName').textContent = item.name;
+          document.getElementById('editItemAmount').textContent = item.talent_amount;
+          infoDiv.style.display = '';
+        }
+      } else {
+        manualF.style.display = 'none'; manualA.style.display = 'none'; infoDiv.style.display = 'none';
+      }
+    }
+
+    function onMaxUsesTypeChange() {
+      const isLimited = document.querySelector('input[name="maxUsesType"][value="limited"]').checked;
+      document.getElementById('maxUsesCount').disabled = !isLimited;
+    }
+
+    function onEditMaxUsesTypeChange() {
+      const isLimited = document.querySelector('input[name="editMaxUsesType"][value="limited"]').checked;
+      document.getElementById('editMaxUsesCount').disabled = !isLimited;
+    }
 
     function nowKST() {
       return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
@@ -203,14 +351,48 @@
     }
 
     function generateCode() {
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let code = '';
-      for (let i = 0; i < 8; i++) code += chars[Math.floor(Math.random() * chars.length)];
-      return code;
+      const arr = new Uint8Array(18);
+      crypto.getRandomValues(arr);
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+      let raw = '';
+      for (let i = 0; i < 18; i++) raw += chars[arr[i] % chars.length];
+      return raw.slice(0,6) + '-' + raw.slice(6,12) + '-' + raw.slice(12,18);
     }
 
-    function buildRow(code, desc, amount, validFrom, validTo) {
-      const row = { code, description: desc, amount, max_uses: 1, is_active: true, used_count: 0, created_by: session.id, created_at: new Date().toISOString() };
+    function getFormValues(prefix) {
+      const isCreate = prefix === '';
+      const itemSel = document.getElementById(isCreate ? 'qrItemSelect' : 'editItemSelect').value;
+      const maxUsesType = document.querySelector(`input[name="${isCreate ? 'maxUsesType' : 'editMaxUsesType'}"]:checked`).value;
+      const maxUsesCount = parseInt(document.getElementById(isCreate ? 'maxUsesCount' : 'editMaxUsesCount').value) || 30;
+      const validFrom = document.getElementById(isCreate ? 'qrValidFrom' : 'editValidFrom').value;
+      const validTo = document.getElementById(isCreate ? 'qrValidTo' : 'editValidTo').value;
+
+      let desc, amount, talentItemId = null;
+      if (itemSel === 'manual' || itemSel === '') {
+        if (itemSel === '') return { error: '달란트 항목을 선택하세요.' };
+        desc = document.getElementById(isCreate ? 'qrDesc' : 'editDesc').value.trim();
+        amount = parseInt(document.getElementById(isCreate ? 'qrAmount' : 'editAmount').value) || 0;
+        if (!desc) return { error: '설명을 입력하세요.' };
+        if (amount < 1) return { error: '금액은 1 이상이어야 합니다.' };
+        if (amount > 100) return { error: '달란트는 최대 100까지만 설정할 수 있습니다.' };
+      } else {
+        const item = talentItems.find(i => i.id === itemSel);
+        if (!item) return { error: '선택한 항목을 찾을 수 없습니다.' };
+        desc = item.name;
+        amount = item.talent_amount;
+        talentItemId = item.id;
+      }
+
+      const maxUses = maxUsesType === 'limited' ? maxUsesCount : 0;
+      if (maxUsesType === 'limited' && (maxUsesCount < 1 || maxUsesCount > 100000)) {
+        return { error: '선착순 인원은 1~100,000 사이여야 합니다.' };
+      }
+
+      return { desc, amount, talentItemId, maxUses, validFrom, validTo };
+    }
+
+    function buildRow(code, desc, amount, talentItemId, maxUses, validFrom, validTo) {
+      const row = { code, description: desc, amount, max_uses: maxUses, talent_item_id: talentItemId, is_active: true, used_count: 0, created_by: session.id, created_at: new Date().toISOString() };
       if (validFrom) row.valid_from = new Date(validFrom).toISOString();
       if (validTo) row.valid_until = new Date(validTo).toISOString();
       if (validFrom && !validTo) {
@@ -222,36 +404,26 @@
     }
 
     async function createQR() {
-      const desc = document.getElementById('qrDesc').value.trim();
-      const amount = parseInt(document.getElementById('qrAmount').value) || 0;
-      const validFrom = document.getElementById('qrValidFrom').value;
-      const validTo = document.getElementById('qrValidTo').value;
-      if (!desc) { alert('\uC124\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694.'); return; }
-      if (amount < 1) { alert('\uAE08\uC561\uC740 1 \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'); return; }
-      if (amount > 100) { alert('\uB2EC\uB780\uD2B8\uB294 \uCD5C\uB300 100\uAE4C\uC9C0\uB9CC \uC124\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.'); return; }
+      const v = getFormValues('');
+      if (v.error) { alert(v.error); return; }
       const code = generateCode();
-      const row = buildRow(code, desc, amount, validFrom, validTo);
+      const row = buildRow(code, v.desc, v.amount, v.talentItemId, v.maxUses, v.validFrom, v.validTo);
       const { error } = await _sb.from('talent_qr_codes').insert(row);
-      if (error) { alert('\uC0DD\uC131 \uC2E4\uD328: ' + error.message); return; }
-      await logInfo('qr_create', { code, amount, description: desc });
-      alert('QR \uCF54\uB4DC \uC0DD\uC131 \uC644\uB8CC: ' + code);
+      if (error) { alert('생성 실패: ' + error.message); return; }
+      await logInfo('qr_create', { code, amount: v.amount, description: v.desc, max_uses: v.maxUses });
+      alert('QR 코드 생성 완료');
       await loadQRList();
     }
 
     async function createBulkQR() {
-      const desc = document.getElementById('qrDesc').value.trim();
-      const amount = parseInt(document.getElementById('qrAmount').value) || 0;
-      const validFrom = document.getElementById('qrValidFrom').value;
-      const validTo = document.getElementById('qrValidTo').value;
-      if (!desc) { alert('\uC124\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694.'); return; }
-      if (amount < 1) { alert('\uAE08\uC561\uC740 1 \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'); return; }
-      if (amount > 100) { alert('\uB2EC\uB780\uD2B8\uB294 \uCD5C\uB300 100\uAE4C\uC9C0\uB9CC \uC124\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.'); return; }
+      const v = getFormValues('');
+      if (v.error) { alert(v.error); return; }
       const rows = [];
-      for (let i = 0; i < 5; i++) rows.push(buildRow(generateCode(), desc, amount, validFrom, validTo));
+      for (let i = 0; i < 5; i++) rows.push(buildRow(generateCode(), v.desc, v.amount, v.talentItemId, v.maxUses, v.validFrom, v.validTo));
       const { error } = await _sb.from('talent_qr_codes').insert(rows);
-      if (error) { alert('\uC77C\uAD04 \uC0DD\uC131 \uC2E4\uD328: ' + error.message); return; }
-      await logInfo('qr_bulk_create', { count: 5, amount, description: desc });
-      alert('5\uAC1C QR \uCF54\uB4DC\uAC00 \uC0DD\uC131\uB418\uC5C8\uC2B5\uB2C8\uB2E4.');
+      if (error) { alert('일괄 생성 실패: ' + error.message); return; }
+      await logInfo('qr_bulk_create', { count: 5, amount: v.amount, description: v.desc, max_uses: v.maxUses });
+      alert('5개 QR 코드가 생성되었습니다.');
       await loadQRList();
     }
 
@@ -283,10 +455,15 @@
     function getPeriodText(q) {
       const from = q.valid_from ? fmtDateTime(q.valid_from) : '';
       const to = q.valid_until ? fmtDateTime(q.valid_until) : '';
-      if (!from && !to) return '\uBB34\uAE30\uD55C';
+      if (!from && !to) return '무기한';
       if (from && to) return from + ' ~ ' + to;
       if (from) return from + ' ~';
       return '~ ' + to;
+    }
+
+    function getMaxUsesText(q) {
+      if (!q.max_uses || q.max_uses === 0) return '무제한';
+      return '선착순 ' + q.max_uses.toLocaleString() + '명';
     }
 
     function isExpired(q) {
@@ -299,33 +476,37 @@
     function renderQRList() {
       const list = document.getElementById('qrList');
       let items = currentTab === 'active' ? allQR.filter(q => q.is_active) : allQR;
-      document.getElementById('qrCount').textContent = items.length + '\uAC1C';
+      document.getElementById('qrCount').textContent = items.length + '개';
       if (items.length === 0) {
-        list.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">QR \uCF54\uB4DC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.</div>';
+        list.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">QR 코드가 없습니다.</div>';
         return;
       }
       list.innerHTML = items.map((q, idx) => {
         const expired = isExpired(q);
-        const usedUp = q.max_uses && (q.used_count || 0) >= q.max_uses;
+        const usedUp = q.max_uses > 0 && (q.used_count || 0) >= q.max_uses;
         const periodText = getPeriodText(q);
+        const maxUsesText = getMaxUsesText(q);
+        const usedText = q.max_uses > 0 ? `${q.used_count || 0}/${q.max_uses}` : `${q.used_count || 0}`;
         const safeDesc = (q.description || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         return `<div class="qr-item-card${q.is_active ? '' : ' inactive'}">
           <div class="qr-img-wrap" id="qr-img-${idx}"></div>
           <div class="qr-info">
-            <div class="qr-code-label">${q.code}</div>
-            <div style="font-weight:600;margin:0.2rem 0;">${q.description || '-'} \u00B7 ${q.amount} \uB2EC\uB780\uD2B8</div>
+            ${isAdmin ? `<div class="qr-code-label">${q.code}</div>` : ''}
+            <div style="font-weight:600;margin:0.2rem 0;">${q.description || '-'} · ${q.amount} 달란트</div>
             <div class="qr-meta">
-              <span>\uD83D\uDCC5 ${fmtDate(q.created_at)}</span>
-              <span>\uD83D\uDC65 \uC0AC\uC6A9: ${q.used_count || 0}/${q.max_uses || 1}${usedUp ? ' (\uC0AC\uC6A9\uC644\uB8CC)' : ''}</span>
-              <span>\u23F0 ${periodText}${expired ? ' (\uB9CC\uB8CC)' : ''}</span>
-              <span>${q.is_active ? '\uD83D\uDFE2 \uD65C\uC131' : '\uD83D\uDD34 \uBE44\uD65C\uC131'}</span>
+              <span>📅 ${fmtDate(q.created_at)}</span>
+              <span>👥 사용: ${usedText}${usedUp ? ' (완료)' : ''}</span>
+              <span>📊 ${maxUsesText}</span>
+              <span>⏰ ${periodText}${expired ? ' (만료)' : ''}</span>
+              <span>${q.is_active ? '🟢 활성' : '🔴 비활성'}</span>
             </div>
           </div>
           <div class="qr-actions">
-            <button onclick="copyCode('${q.code}')">\uD83D\uDCCB \uBCF5\uC0AC</button>
-            <button onclick="printQR('${q.code}','${safeDesc}',${q.amount})">\uD83D\uDDA8\uFE0F \uC778\uC1C4</button>
-            <button class="edit" onclick="openEditModal('${q.id}')">\u270F\uFE0F \uC218\uC815</button>
-            <button class="${q.is_active ? 'danger' : 'primary'}" onclick="toggleActive('${q.id}',${q.is_active})">${q.is_active ? '\uBE44\uD65C\uC131\uD654' : '\uD65C\uC131\uD654'}</button>
+            <button class="info" onclick="openScanListModal('${q.id}','${safeDesc}')">👥 수령자</button>
+            ${isAdmin ? `<button onclick="copyCode('${q.code}')">📋 복사</button>` : ''}
+            <button onclick="printQR('${q.code}','${safeDesc}',${q.amount})">🖨️ 인쇄</button>
+            <button class="edit" onclick="openEditModal('${q.id}')">✏️ 수정</button>
+            <button class="${q.is_active ? 'danger' : 'primary'}" onclick="toggleActive('${q.id}',${q.is_active})">${q.is_active ? '비활성화' : '활성화'}</button>
           </div>
         </div>`;
       }).join('');
@@ -334,41 +515,109 @@
         const el = document.getElementById('qr-img-' + idx);
         if (el) {
           try { new QRCode(el, { text: q.code, width: 88, height: 88, correctLevel: QRCode.CorrectLevel.M }); }
-          catch (e) { el.textContent = q.code; }
+          catch (e) { el.textContent = '?'; }
         }
       });
     }
 
     function copyCode(code) {
-      navigator.clipboard.writeText(code).then(() => alert('\uCF54\uB4DC\uAC00 \uBCF5\uC0AC\uB418\uC5C8\uC2B5\uB2C8\uB2E4: ' + code));
+      navigator.clipboard.writeText(code).then(() => alert('코드가 복사되었습니다: ' + code));
     }
 
     function printQR(code, desc, amount) {
       const tmp = document.createElement('div');
       tmp.style.cssText = 'position:absolute;left:-9999px;top:-9999px;';
       document.body.appendChild(tmp);
-      const qr = new QRCode(tmp, { text: code, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M });
+      new QRCode(tmp, { text: code, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M });
       setTimeout(() => {
         const canvas = tmp.querySelector('canvas');
         const imgSrc = canvas ? canvas.toDataURL('image/png') : '';
         document.body.removeChild(tmp);
+        const codeSection = isAdmin ? `<p style="font-family:monospace;font-size:0.85rem;color:#888;letter-spacing:1px;margin:0.3rem 0;">${code}</p>` : '';
         const w = window.open('', '_blank', 'width=420,height=500');
-        w.document.write(`<html><head><title>QR \uC778\uC1C4</title></head><body style="text-align:center;padding:2rem;font-family:sans-serif;">
-          <h2 style="margin-bottom:0.5rem;">\uD83C\uDFAB \uB2EC\uB780\uD2B8 QR \uCF54\uB4DC</h2>
+        w.document.write(`<html><head><title>QR 인쇄</title></head><body style="text-align:center;padding:2rem;font-family:sans-serif;">
+          <h2 style="margin-bottom:0.5rem;">🎫 달란트 QR 코드</h2>
           <img src="${imgSrc}" style="width:200px;height:200px;margin:1rem auto;display:block;" />
-          <p style="font-family:monospace;font-size:0.9rem;color:#666;letter-spacing:2px;">${code}</p>
-          <p style="font-size:1.2rem;font-weight:700;">${desc} \u00B7 ${amount} \uB2EC\uB780\uD2B8</p>
-          <hr/><p style="font-size:0.8rem;color:#888;">\uB2EC\uB780\uD2B8 \uB9C8\uC744 (CHO-Talents)</p>
+          ${codeSection}
+          <p style="font-size:1.2rem;font-weight:700;">${desc} · ${amount} 달란트</p>
+          <hr/><p style="font-size:0.8rem;color:#888;">달란트 마을 (CHO-Talents)</p>
           <script>setTimeout(()=>window.print(),300);<\/script></body></html>`);
       }, 150);
+    }
+
+    async function openScanListModal(qrId, desc) {
+      document.getElementById('scanListModal').classList.add('show');
+      document.getElementById('scanListTitle').textContent = desc ? ` - ${desc}` : '';
+      document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">불러오는 중...</div>';
+
+      try {
+        const { data: scans } = await _sb.from('talent_qr_scans')
+          .select('*').eq('qr_code_id', qrId).order('scanned_at', { ascending: false });
+
+        if (!scans || scans.length === 0) {
+          document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">수령자가 없습니다.</div>';
+          return;
+        }
+
+        const userIds = [...new Set(scans.map(s => s.user_id))];
+        const { data: profiles } = await _sb.from('profiles')
+          .select('id, display_name, username, department_id').in('id', userIds);
+        const profileMap = {};
+        (profiles || []).forEach(p => { profileMap[p.id] = p; });
+
+        let deptIds = [...new Set((profiles || []).map(p => p.department_id).filter(Boolean))];
+        let deptMap = {};
+        if (deptIds.length > 0) {
+          const { data: depts } = await _sb.from('departments').select('id, name').in('id', deptIds);
+          (depts || []).forEach(d => { deptMap[d.id] = d.name; });
+        }
+
+        let html = `<table class="scan-list-table">
+          <thead><tr><th>#</th><th>이름</th><th>아이디</th><th>부서</th><th>수령 시간</th></tr></thead><tbody>`;
+        scans.forEach((s, i) => {
+          const p = profileMap[s.user_id] || {};
+          const dt = new Date(s.scanned_at);
+          const timeStr = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0')
+            + ' ' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+          html += `<tr><td>${i+1}</td><td>${p.display_name || '-'}</td><td>${p.username || '-'}</td><td>${deptMap[p.department_id] || '-'}</td><td>${timeStr}</td></tr>`;
+        });
+        html += '</tbody></table>';
+        html += `<div style="margin-top:0.5rem;font-size:0.82rem;color:var(--admin-text-muted);">총 ${scans.length}명 수령</div>`;
+        document.getElementById('scanListContent').innerHTML = html;
+      } catch (e) {
+        document.getElementById('scanListContent').innerHTML = `<div class="scan-empty">조회 실패: ${e.message || e}</div>`;
+      }
+    }
+
+    function closeScanListModal() {
+      document.getElementById('scanListModal').classList.remove('show');
     }
 
     function openEditModal(id) {
       const q = allQR.find(x => x.id === id);
       if (!q) return;
       document.getElementById('editId').value = id;
+
+      const editSel = document.getElementById('editItemSelect');
+      if (q.talent_item_id && talentItems.find(i => i.id === q.talent_item_id)) {
+        editSel.value = q.talent_item_id;
+      } else {
+        editSel.value = 'manual';
+      }
+      onEditItemChange();
+
       document.getElementById('editDesc').value = q.description || '';
       document.getElementById('editAmount').value = q.amount || 1;
+
+      if (q.max_uses > 0) {
+        document.querySelector('input[name="editMaxUsesType"][value="limited"]').checked = true;
+        document.getElementById('editMaxUsesCount').value = q.max_uses;
+        document.getElementById('editMaxUsesCount').disabled = false;
+      } else {
+        document.querySelector('input[name="editMaxUsesType"][value="unlimited"]').checked = true;
+        document.getElementById('editMaxUsesCount').disabled = true;
+      }
+
       document.getElementById('editValidFrom').value = q.valid_from ? toLocalInput(new Date(q.valid_from)) : '';
       document.getElementById('editValidTo').value = q.valid_until ? toLocalInput(new Date(q.valid_until)) : '';
       document.getElementById('editModal').classList.add('show');
@@ -380,41 +629,39 @@
 
     async function saveEdit() {
       const id = document.getElementById('editId').value;
-      const desc = document.getElementById('editDesc').value.trim();
-      const amount = parseInt(document.getElementById('editAmount').value) || 0;
-      const validFrom = document.getElementById('editValidFrom').value;
-      const validTo = document.getElementById('editValidTo').value;
-      if (!desc) { alert('\uC124\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694.'); return; }
-      if (amount < 1 || amount > 100) { alert('\uAE08\uC561\uC740 1~100 \uC0AC\uC774\uC5EC\uC57C \uD569\uB2C8\uB2E4.'); return; }
+      const v = getFormValues('edit');
+      if (v.error) { alert(v.error); return; }
       const newCode = generateCode();
-      const update = { code: newCode, description: desc, amount };
-      update.valid_from = validFrom ? new Date(validFrom).toISOString() : null;
-      update.valid_until = validTo ? new Date(validTo).toISOString() : null;
-      if (validFrom && !validTo) {
-        const d = new Date(validFrom); d.setHours(23, 59, 59, 999);
+      const update = {
+        code: newCode, description: v.desc, amount: v.amount,
+        talent_item_id: v.talentItemId, max_uses: v.maxUses
+      };
+      update.valid_from = v.validFrom ? new Date(v.validFrom).toISOString() : null;
+      update.valid_until = v.validTo ? new Date(v.validTo).toISOString() : null;
+      if (v.validFrom && !v.validTo) {
+        const d = new Date(v.validFrom); d.setHours(23, 59, 59, 999);
         update.valid_until = d.toISOString();
       }
       const { error } = await _sb.from('talent_qr_codes').update(update).eq('id', id);
-      if (error) { alert('\uC218\uC815 \uC2E4\uD328: ' + error.message); return; }
-      await logInfo('qr_edit', { qr_id: id, new_code: newCode, amount, description: desc });
+      if (error) { alert('수정 실패: ' + error.message); return; }
+      await logInfo('qr_edit', { qr_id: id, new_code: newCode, amount: v.amount, description: v.desc });
       closeEditModal();
-      alert('\uC218\uC815 \uC644\uB8CC. \uC0C8 QR \uCF54\uB4DC: ' + newCode);
+      alert('수정 완료. 새 QR 코드가 생성되었습니다.');
       await loadQRList();
     }
 
     async function toggleActive(id, current) {
-      const action = current ? '\uBE44\uD65C\uC131\uD654' : '\uD65C\uC131\uD654';
-      if (!confirm('\uC774 \uCF54\uB4DC\uB97C ' + action + '\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?')) return;
+      const action = current ? '비활성화' : '활성화';
+      if (!confirm('이 코드를 ' + action + '하시겠습니까?')) return;
       const { error } = await _sb.from('talent_qr_codes').update({ is_active: !current }).eq('id', id);
-      if (error) { alert(action + ' \uC2E4\uD328: ' + error.message); return; }
+      if (error) { alert(action + ' 실패: ' + error.message); return; }
       await logInfo('qr_toggle', { qr_id: id, new_state: !current });
       await loadQRList();
     }
 
-    document.getElementById('editModal').addEventListener('click', function(e) {
-      if (e.target === this) closeEditModal();
-    });
+    document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
+    document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.16.0"></script>
+  <script src="../js/version.js?v=3.17.0"></script>
 </body>
 </html>
