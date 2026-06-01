@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>관리자 가이드 - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
+  <link rel="stylesheet" href="css/common.css?v=3.19.1" />
+  <link rel="stylesheet" href="css/guide.css?v=3.19.1" />
+</head>
+<body class="page-body">
+  <nav class="top-nav">
+    <a href="index.html" class="top-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
+    <ul class="top-nav-links" id="navLinks">
+      <li>
+        <button class="nav-dropdown-toggle active">소개</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="guide.html">사용자 가이드</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가이드</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html" class="active">관리자 가이드</a></li>
+          <li><a href="earn-talents.html">달란트 적립</a></li>
+          <li><a href="qna.html">Q &amp; A</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">달란트</button>
+        <ul class="nav-dropdown-menu">
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html">달란트 수령</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">달란트 통계</a></li>
+          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">달란트 QR 관리</a></li>
+        </ul>
+      </li>
+      <li>
+        <button class="nav-dropdown-toggle">상품</button>
+        <ul class="nav-dropdown-menu">
+          <li><a href="shop.html">상품 구매</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">내 구매 상품</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+        </ul>
+      </li>
+      <li data-min-perm="60" style="display:none;">
+        <button class="nav-dropdown-toggle">관리</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="80"><a href="admin/index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
+        </ul>
+      </li>
+      <li data-min-perm="80" style="display:none;">
+        <button class="nav-dropdown-toggle">운영</button>
+        <ul class="nav-dropdown-menu">
+          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
+          <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
+          <li data-min-perm="100"><a href="admin/logs.html">로그</a></li>
+        </ul>
+      </li>
+      <li id="navLoginArea"><a href="login.html">로그인</a></li>
+      <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
+    </ul>
+    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
+  </nav>
+
+  <main class="guide-container">
+    <section class="guide-hero">
+      <div class="guide-kicker">부서 담당 교사 · 부장 교사 · 전도사님 · 관리자</div>
+      <h1>관리자 가이드</h1>
+      <p>운영 권한을 가진 계정이 사용자, 부서, 달란트, 상품, 구매, QR, 통계, 로그를 관리하는 방법을 설명합니다. 실제로 보이는 메뉴와 버튼은 계정 권한 등급에 따라 자동으로 달라집니다.</p>
+    </section>
+
+    <div class="guide-switcher">
+      <a href="guide.html">사용자 가이드</a>
+      <a href="teacher-guide.html">교사 가이드</a>
+      <a href="admin-guide.html" class="active">관리자 가이드</a>
+    </div>
+
+    <section class="guide-section">
+      <h2>🧭 권한별 큰 차이</h2>
+      <div class="guide-table-wrap">
+        <table class="guide-table">
+          <thead><tr><th>권한</th><th>주요 역할</th><th>대표 메뉴</th></tr></thead>
+          <tbody>
+            <tr><td><span class="guide-badge badge-oper">부서 담당 교사</span></td><td>담당 부서의 사용자, 달란트, 상품 신청을 관리합니다.</td><td>사용자 관리, 부서 관리, 달란트 관리, 달란트 통계, 상품 관리, 구매 관리</td></tr>
+            <tr><td><span class="guide-badge badge-teacher">부장 교사</span></td><td>전체 현황을 보고 담당 관리 부서 중심으로 승인과 운영을 처리합니다.</td><td>대시보드, 관리자 관리, 보고서, 버전, 달란트 반환</td></tr>
+            <tr><td><span class="guide-badge badge-admin">전도사님</span></td><td>QR 코드, 상품 삭제 대기, 더 넓은 범위의 운영 처리를 담당합니다.</td><td>달란트 QR 관리, 달란트 항목 관리, Q&amp;A 삭제, 부서 비활성화</td></tr>
+            <tr><td><span class="guide-badge badge-admin">관리자</span></td><td>시스템 설정과 로그, 작업 이력, 권한별 접근 설정을 관리합니다.</td><td>페이지 접근, 페이지 기능, 로그, 작업 이력, 코드 복사, 수동 달란트 지급</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>👥 사용자 관리</h2>
+      <ol class="guide-steps">
+        <li><strong>관리 &gt; 사용자 관리</strong>로 이동합니다.</li>
+        <li>가입 신청이 있으면 신청자의 이름, 부서, 신청 사유를 확인합니다.</li>
+        <li>사용자 유형과 권한을 선택한 뒤 승인하거나, 사유를 입력해 거부합니다.</li>
+        <li>사용자 목록에서 이름, 부서, 반, 권한, 달란트 잔액을 확인합니다.</li>
+        <li>필요하면 사용자 수정, 비밀번호 초기화, 삭제, 부서 이동을 처리합니다.</li>
+      </ol>
+      <div class="guide-note">부서 이동은 권한에 따라 즉시 처리되거나 승인 요청으로 생성됩니다. 담당 범위 밖의 사용자는 처리 권한이 없을 수 있습니다.</div>
+    </section>
+
+    <section class="guide-section">
+      <h2>🏢 부서와 관리자 관리</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h3>부서 관리</h3>
+          <ul class="guide-list">
+            <li>부서명을 등록하거나 설명, 반 개수를 수정합니다.</li>
+            <li>반 개수가 0이면 반 구분 없이 운영합니다.</li>
+            <li>소속보기로 해당 부서의 교사와 학생을 확인합니다.</li>
+          </ul>
+        </div>
+        <div class="guide-card">
+          <h3>관리자 관리</h3>
+          <ul class="guide-list">
+            <li>기존 교사 사용자를 검색해 운영 권한을 부여합니다.</li>
+            <li>권한과 소속 부서, 담당 관리 부서를 지정합니다.</li>
+            <li>본인보다 높은 권한은 수정할 수 없습니다.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>💰 달란트 관리</h2>
+      <div class="guide-table-wrap">
+        <table class="guide-table">
+          <thead><tr><th>기능</th><th>설명</th><th>권한 기준</th></tr></thead>
+          <tbody>
+            <tr><td>달란트 지급</td><td>대상 사용자를 선택하고 항목 체크 후 지급 확정을 누릅니다.</td><td>일반 교사 이상, 담당 범위 기준</td></tr>
+            <tr><td>출석 빠른 지급</td><td>학생 행의 출석 버튼으로 출석 항목을 즉시 지급합니다.</td><td>담당 범위 기준</td></tr>
+            <tr><td>상세 내역</td><td>적립 내역, 지급자, 잔액을 확인합니다.</td><td>달란트 관리 접근 권한</td></tr>
+            <tr><td>달란트 반환</td><td>잘못 지급된 달란트를 사유 입력 후 반환합니다.</td><td>부장 교사 이상</td></tr>
+            <tr><td>수동 입력</td><td>항목에 없는 사유와 금액을 직접 입력해 지급합니다.</td><td>관리자</td></tr>
+            <tr><td>달란트 항목 관리</td><td>학생용/교사용 지급 항목, 금액, 정렬 순서, 활성 상태를 관리합니다.</td><td>전도사님 이상</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>🎫 달란트 QR 관리</h2>
+      <ol class="guide-steps">
+        <li><strong>달란트 &gt; 달란트 QR 관리</strong>로 이동합니다.</li>
+        <li>지급 대상이 학생인지 교사인지 선택합니다.</li>
+        <li>달란트 항목을 선택하거나 직접 설명과 금액을 입력합니다.</li>
+        <li>지급 제한 없음 또는 선착순 지급 인원을 선택합니다.</li>
+        <li>유효 기간을 지정일, 기간, 무기한 중에서 선택합니다.</li>
+        <li>필요하면 위치 제한을 켜고 카카오맵 주소 검색으로 장소와 반경을 지정합니다.</li>
+        <li>QR 코드를 생성한 뒤 인쇄하거나, 수령자 목록을 확인합니다.</li>
+      </ol>
+      <div class="guide-note">QR을 수정하면 기존 코드 값을 그대로 고치는 것이 아니라 새 QR 코드가 만들어집니다. 이미 배포한 QR을 바꿀 때는 새 코드로 다시 안내하세요.</div>
+    </section>
+
+    <section class="guide-section">
+      <h2>🛒 상품과 구매 관리</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h3>상품 관리</h3>
+          <ul class="guide-list">
+            <li>학생용/교사용 상품을 따로 등록합니다.</li>
+            <li>상품명, 카테고리, 가격, 설명, 이미지 또는 이모지를 입력합니다.</li>
+            <li>상품 삭제는 목록에서 숨기는 삭제 대기 처리입니다.</li>
+          </ul>
+        </div>
+        <div class="guide-card">
+          <h3>구매 관리</h3>
+          <ul class="guide-list">
+            <li>전체, 구매 신청, 상품 준비, 상품 구매, 상품 지급 탭으로 주문을 봅니다.</li>
+            <li>부서와 기간 필터로 필요한 주문만 조회합니다.</li>
+            <li>상품 준비, 구매 확정, 지급 완료 순서로 처리합니다.</li>
+            <li>구매 확정 단계에서 달란트가 실제 차감됩니다.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>📊 통계와 운영 확인</h2>
+      <div class="guide-table-wrap">
+        <table class="guide-table">
+          <thead><tr><th>메뉴</th><th>용도</th></tr></thead>
+          <tbody>
+            <tr><td>달란트 통계</td><td>전체, 부서별, 사용자별, 유형별 적립 현황을 기간과 부서, 사용자 유형으로 필터링해 확인합니다.</td></tr>
+            <tr><td>대시보드</td><td>사용자 수, 부서 수, 보고서 수, 가입 대기자, 바로가기를 확인합니다.</td></tr>
+            <tr><td>보고서</td><td>작업 계획, 테스트 결과, 보안 보고서, 수정 보고서를 확인하거나 등록합니다.</td></tr>
+            <tr><td>버전</td><td>배포된 기능 변경 이력을 확인합니다.</td></tr>
+            <tr><td>Q &amp; A</td><td>질문에 답변을 남기고, 필요한 항목을 FAQ로 등록합니다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>🔐 관리자 전용 설정</h2>
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h3>로그</h3>
+          <p>오류와 주요 활동 기록을 확인합니다. 미확인 ERROR 이상 로그는 확인 완료 처리를 남겨야 합니다. 삭제는 삭제 대기 방식으로 처리됩니다.</p>
+        </div>
+        <div class="guide-card">
+          <h3>작업 이력</h3>
+          <p>사용자 수정, 부서 이동, 비밀번호 초기화, 권한 변경 같은 운영 작업 이력을 조회합니다.</p>
+        </div>
+        <div class="guide-card">
+          <h3>페이지 접근</h3>
+          <p>권한별로 어떤 페이지와 화면 요소를 사용할 수 있는지 설정합니다.</p>
+        </div>
+        <div class="guide-card">
+          <h3>페이지 기능</h3>
+          <p>권한별 기능 사용 설정값을 관리합니다. 실제 적용 범위는 각 화면의 권한 로직과 함께 동작합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>✅ 운영할 때 기억할 점</h2>
+      <div class="guide-card">
+        <ul class="guide-list">
+          <li>비밀번호는 확인할 수 없고, 필요한 경우 1234로 초기화만 할 수 있습니다.</li>
+          <li>구매 신청은 바로 차감이 아니며, 구매 확정 시점에 달란트가 차감됩니다.</li>
+          <li>권한이 낮은 계정은 일부 버튼이 보이지 않거나, 보이더라도 처리 권한이 제한될 수 있습니다.</li>
+          <li>삭제 대기 처리된 로그나 상품은 일반 목록에서 숨겨지지만 기록은 남습니다.</li>
+          <li>QR 위치 제한을 쓰려면 사용자가 수령할 때 브라우저 위치 권한을 허용해야 합니다.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js?v=3.19.1"></script>
+  <script src="js/activity-log.js?v=3.19.1"></script>
+  <script src="js/auth.js?v=3.19.1"></script>
+  <script>
+    initSupabase();
+    (async () => {
+      const session = await loadAuthSession();
+      if (session) {
+        document.getElementById('navMyTalent').style.display = '';
+        document.getElementById('navMyOrders').style.display = '';
+        document.getElementById('navLoginArea').style.display = 'none';
+        document.getElementById('navAuthArea').style.display = '';
+        document.getElementById('navLogoutArea').style.display = '';
+        renderRoleBadge('navUser', session, '');
+        applyPermNav(session.permissionRank || 0);
+        updateNavOrderBadge();
+      }
+      autoLogPageView();
+    })();
+  </script>
+  <script src="js/version.js?v=3.19.1"></script>
+</body>
+</html>

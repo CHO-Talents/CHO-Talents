@@ -91,7 +91,10 @@
         const rank = s.permissionRank || 0;
         let links = '';
         if (rank >= 60) {
+          links += `<a href="admin-guide.html" class="nav-btn">🛠️ 관리자 가이드</a>`;
           links += `<a href="admin/index.html" class="nav-btn">⚙️ 관리</a>`;
+        } else if (rank >= 40) {
+          links += `<a href="teacher-guide.html" class="nav-btn">👩‍🏫 교사 가이드</a>`;
         } else {
           links += `<a href="guide.html" class="nav-btn">📖 사용자 가이드</a>`;
         }
