@@ -2,9 +2,29 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.13.0',
+  current: '3.16.0',
   date: '2026-06-01',
   history: [
+    {
+      version: '3.16.0',
+      date: '2026-06-01',
+      title: 'QR 이미지·기간, 통계 UI, 구매/로그/작업이력 필터, 상품삭제 개선',
+      changes: [
+        'QR관리: QR코드를 qrcode.js CDN으로 2차원 이미지 생성·표시·인쇄',
+        'QR관리: 최대 사용횟수 제거 → 1회 고정(max_uses=1)',
+        'QR관리: 만료일을 from~to datetime-local 기간으로 변경 (무기한 지원)',
+        'QR관리: 수정 버튼 추가 → 설명/금액/기간 편집 시 새 QR코드 재생성',
+        'QR수령: valid_from/valid_until 기간 검증 추가',
+        '통계: 유형별 탭에도 부서/반 필터 추가',
+        '통계: 기간 필터 기본값 오늘(from, to)',
+        '통계: 전체 레이아웃/디자인 개선 - 탭별 요약 카드·테이블 스타일·그래프',
+        '구매관리: 날짜(from~to) 및 부서 필터 추가 (기본 오늘)',
+        '로그: 기간 필터 기본값 오늘(from, to)',
+        '작업이력: 기간 필터 기본값 오늘(from, to) + 자동 조회',
+        '상품관리: FK 에러 시 soft delete(비활성화) 처리 안내',
+        'product.js: deactivateProduct 함수 추가, deleteProduct FK 감지'
+      ]
+    },
     {
       version: '3.13.0',
       date: '2026-06-01',

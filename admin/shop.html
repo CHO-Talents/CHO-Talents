@@ -303,8 +303,27 @@
 
     async function confirmDelete(id, name) {
       if (!confirm(`"${name}" 상품을 삭제하시겠습니까?`)) return;
-      await deleteProduct(id);
-      await logInfo('PRODUCT_DELETE', { id, name });
+      const result = await deleteProduct(id);
+      if (result.error) {
+        if (result.fkConflict) {
+          if (confirm(`"${name}" 상품에 주문 내역이 있어 삭제할 수 없습니다.\n비활성화 처리하시겠습니까?`)) {
+            const deactResult = await deactivateProduct(id);
+            if (deactResult.error) {
+              alert('비활성화 실패: ' + deactResult.error);
+              return;
+            }
+            await logInfo('PRODUCT_DEACTIVATE', { id, name, reason: 'fk_conflict_soft_delete' });
+            alert(`"${name}" 상품이 비활성화되었습니다.`);
+          } else {
+            return;
+          }
+        } else {
+          alert('삭제 실패: ' + result.error);
+          return;
+        }
+      } else {
+        await logInfo('PRODUCT_DELETE', { id, name });
+      }
       await loadProducts();
     }
 

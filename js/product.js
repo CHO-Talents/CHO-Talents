@@ -84,6 +84,9 @@ async function deleteProduct(id) {
   try {
     const { error } = await _sb.from('products').delete().eq('id', id);
     if (error) {
+      if (/foreign key|violates|referenced/i.test(error.message)) {
+        return { error: error.message, fkConflict: true };
+      }
       await logError('PRODUCT_DELETE_FAIL', { id, error: error.message });
       return { error: error.message };
     }
@@ -91,6 +94,22 @@ async function deleteProduct(id) {
     return { error: null };
   } catch (err) {
     await logError('PRODUCT_DELETE_ERROR', { id, error: String(err) });
+    return { error: String(err) };
+  }
+}
+
+async function deactivateProduct(id) {
+  if (!_sb) return { error: 'Supabase not initialized' };
+  try {
+    const { error } = await _sb.from('products').update({ is_active: false }).eq('id', id);
+    if (error) {
+      await logError('PRODUCT_DEACTIVATE_FAIL', { id, error: error.message });
+      return { error: error.message };
+    }
+    await logInfo('PRODUCT_DEACTIVATE', { id });
+    return { error: null };
+  } catch (err) {
+    await logError('PRODUCT_DEACTIVATE_ERROR', { id, error: String(err) });
     return { error: String(err) };
   }
 }

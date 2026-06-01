@@ -172,6 +172,9 @@
       autoLogPageView();
       updatePendingBadge();
       updateNavOrderBadge();
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('auditDateFrom').value = today;
+      document.getElementById('auditDateTo').value = today;
       await loadAuditLogs();
     })();
 

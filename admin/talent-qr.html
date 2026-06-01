@@ -4,22 +4,34 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>&#xB2EC;&#xB780;&#xD2B8; QR &#xAD00;&#xB9AC; - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.16.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
-    .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
     .qr-item-card.inactive { opacity: 0.5; }
-    .qr-code-text { font-family: monospace; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; background: #f8f9fa; padding: 0.3rem 0.6rem; border-radius: 6px; }
-    .qr-meta { font-size: 0.82rem; color: var(--admin-text-muted); display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .qr-actions { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .qr-img-wrap { flex-shrink: 0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 8px; border: 1px solid #e9ecef; overflow: hidden; }
+    .qr-img-wrap img, .qr-img-wrap canvas { max-width: 100%; max-height: 100%; }
+    .qr-info { flex: 1; min-width: 160px; }
+    .qr-code-label { font-family: monospace; font-size: 0.78rem; color: var(--admin-text-muted); letter-spacing: 1px; margin-bottom: 0.2rem; }
+    .qr-meta { font-size: 0.82rem; color: var(--admin-text-muted); display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.3rem; }
+    .qr-actions { display: flex; gap: 0.3rem; flex-wrap: wrap; align-self: center; }
     .qr-actions button { padding: 0.3rem 0.6rem; font-size: 0.78rem; border-radius: 6px; border: 1px solid var(--admin-border); cursor: pointer; font-weight: 600; background: #fff; }
     .qr-actions button.danger { color: #e03131; border-color: #e03131; }
     .qr-actions button.primary { background: var(--admin-primary); color: #fff; border-color: var(--admin-primary); }
+    .qr-actions button.edit { color: #1971c2; border-color: #1971c2; }
     .create-form { background: #f8f9fa; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; }
     .create-form h3 { margin-bottom: 1rem; font-size: 1rem; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; }
     .form-grid label { font-size: 0.82rem; font-weight: 600; display: block; margin-bottom: 0.3rem; }
-    .form-grid input, .form-grid select { width: 100%; padding: 0.5rem; border: 1px solid var(--admin-border); border-radius: 8px; font-size: 0.85rem; }
+    .form-grid input, .form-grid select { width: 100%; padding: 0.5rem; border: 1px solid var(--admin-border); border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; }
+    .period-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+    .period-row input { flex: 1; min-width: 140px; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal-box { background: #fff; border-radius: 16px; padding: 1.5rem; max-width: 480px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+    .modal-box h3 { margin-bottom: 1rem; }
+    .modal-box .form-grid { grid-template-columns: 1fr; }
+    .modal-actions { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: flex-end; }
   </style>
 </head>
 <body class="admin-body">
@@ -94,13 +106,14 @@
           <label>&#xB2EC;&#xB780;&#xD2B8; &#xAE08;&#xC561;</label>
           <input type="number" id="qrAmount" min="1" max="100" value="1" />
         </div>
-        <div>
-          <label>&#xCD5C;&#xB300; &#xC0AC;&#xC6A9; &#xD69F;&#xC218; (0=&#xBB34;&#xC81C;&#xD55C;)</label>
-          <input type="number" id="qrMaxUses" min="0" value="0" />
-        </div>
-        <div>
-          <label>&#xB9CC;&#xB8CC;&#xC77C; (&#xC120;&#xD0DD;)</label>
-          <input type="date" id="qrExpiry" />
+      </div>
+      <div style="margin-top:0.8rem;">
+        <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:0.3rem;">&#xC720;&#xD6A8; &#xAE30;&#xAC04; (&#xBE44;&#xC6B0;&#xBA74; &#xBB34;&#xAE30;&#xD55C;)</label>
+        <div class="period-row">
+          <input type="datetime-local" id="qrValidFrom" />
+          <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
+          <input type="datetime-local" id="qrValidTo" />
+          <button type="button" class="admin-btn" onclick="clearPeriod()" style="padding:0.35rem 0.6rem;font-size:0.78rem;">&#xCD08;&#xAE30;&#xD654;</button>
         </div>
       </div>
       <div style="margin-top:1rem;display:flex;gap:0.5rem;">
@@ -120,10 +133,42 @@
     </div>
   </div>
 
+  <!-- Edit Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+      <h3>&#x270F;&#xFE0F; QR &#xCF54;&#xB4DC; &#xC218;&#xC815;</h3>
+      <input type="hidden" id="editId" />
+      <div class="form-grid">
+        <div>
+          <label>&#xC124;&#xBA85;</label>
+          <input type="text" id="editDesc" />
+        </div>
+        <div>
+          <label>&#xB2EC;&#xB780;&#xD2B8; &#xAE08;&#xC561;</label>
+          <input type="number" id="editAmount" min="1" max="100" />
+        </div>
+        <div>
+          <label>&#xC720;&#xD6A8; &#xC2DC;&#xC791;</label>
+          <input type="datetime-local" id="editValidFrom" />
+        </div>
+        <div>
+          <label>&#xC720;&#xD6A8; &#xC885;&#xB8CC;</label>
+          <input type="datetime-local" id="editValidTo" />
+        </div>
+      </div>
+      <p style="font-size:0.78rem;color:var(--admin-text-muted);margin-top:0.6rem;">&#x26A0; &#xC800;&#xC7A5; &#xC2DC; &#xC0C8; QR &#xCF54;&#xB4DC;&#xAC00; &#xC0DD;&#xC131;&#xB429;&#xB2C8;&#xB2E4;.</p>
+      <div class="modal-actions">
+        <button class="admin-btn" onclick="closeEditModal()">&#xCDE8;&#xC18C;</button>
+        <button class="admin-btn primary" onclick="saveEdit()">&#xC800;&#xC7A5; (&#xC0C8; QR &#xC0DD;&#xC131;)</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.13.0"></script>
-  <script src="../js/activity-log.js?v=3.13.0"></script>
-  <script src="../js/auth.js?v=3.13.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="../js/supabase-config.js?v=3.16.0"></script>
+  <script src="../js/activity-log.js?v=3.16.0"></script>
+  <script src="../js/auth.js?v=3.16.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -133,8 +178,29 @@
       renderRoleBadge('navUser', session, '../');
       applyPermNav(session.permissionRank || 0);
       autoLogPageView();
+      initPeriodDefaults();
       await loadQRList();
     })();
+
+    function nowKST() {
+      return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+    }
+
+    function toLocalInput(d) {
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + 'T' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    }
+
+    function initPeriodDefaults() {
+      const now = nowKST();
+      const later = new Date(now.getTime() + 3600000);
+      document.getElementById('qrValidFrom').value = toLocalInput(now);
+      document.getElementById('qrValidTo').value = toLocalInput(later);
+    }
+
+    function clearPeriod() {
+      document.getElementById('qrValidFrom').value = '';
+      document.getElementById('qrValidTo').value = '';
+    }
 
     function generateCode() {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -143,16 +209,28 @@
       return code;
     }
 
+    function buildRow(code, desc, amount, validFrom, validTo) {
+      const row = { code, description: desc, amount, max_uses: 1, is_active: true, used_count: 0, created_by: session.id, created_at: new Date().toISOString() };
+      if (validFrom) row.valid_from = new Date(validFrom).toISOString();
+      if (validTo) row.valid_until = new Date(validTo).toISOString();
+      if (validFrom && !validTo) {
+        const d = new Date(validFrom);
+        d.setHours(23, 59, 59, 999);
+        row.valid_until = d.toISOString();
+      }
+      return row;
+    }
+
     async function createQR() {
       const desc = document.getElementById('qrDesc').value.trim();
       const amount = parseInt(document.getElementById('qrAmount').value) || 0;
-      const maxUses = parseInt(document.getElementById('qrMaxUses').value) || 0;
-      const expiry = document.getElementById('qrExpiry').value;
+      const validFrom = document.getElementById('qrValidFrom').value;
+      const validTo = document.getElementById('qrValidTo').value;
       if (!desc) { alert('\uC124\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694.'); return; }
       if (amount < 1) { alert('\uAE08\uC561\uC740 1 \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'); return; }
       if (amount > 100) { alert('\uB2EC\uB780\uD2B8\uB294 \uCD5C\uB300 100\uAE4C\uC9C0\uB9CC \uC124\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.'); return; }
       const code = generateCode();
-      const row = { code, description: desc, amount, max_uses: maxUses || null, expires_at: expiry || null, is_active: true, used_count: 0, created_by: session.id, created_at: new Date().toISOString() };
+      const row = buildRow(code, desc, amount, validFrom, validTo);
       const { error } = await _sb.from('talent_qr_codes').insert(row);
       if (error) { alert('\uC0DD\uC131 \uC2E4\uD328: ' + error.message); return; }
       await logInfo('qr_create', { code, amount, description: desc });
@@ -163,15 +241,13 @@
     async function createBulkQR() {
       const desc = document.getElementById('qrDesc').value.trim();
       const amount = parseInt(document.getElementById('qrAmount').value) || 0;
-      const maxUses = parseInt(document.getElementById('qrMaxUses').value) || 0;
-      const expiry = document.getElementById('qrExpiry').value;
+      const validFrom = document.getElementById('qrValidFrom').value;
+      const validTo = document.getElementById('qrValidTo').value;
       if (!desc) { alert('\uC124\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694.'); return; }
       if (amount < 1) { alert('\uAE08\uC561\uC740 1 \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'); return; }
       if (amount > 100) { alert('\uB2EC\uB780\uD2B8\uB294 \uCD5C\uB300 100\uAE4C\uC9C0\uB9CC \uC124\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.'); return; }
       const rows = [];
-      for (let i = 0; i < 5; i++) {
-        rows.push({ code: generateCode(), description: desc, amount, max_uses: maxUses || null, expires_at: expiry || null, is_active: true, used_count: 0, created_by: session.id, created_at: new Date().toISOString() });
-      }
+      for (let i = 0; i < 5; i++) rows.push(buildRow(generateCode(), desc, amount, validFrom, validTo));
       const { error } = await _sb.from('talent_qr_codes').insert(rows);
       if (error) { alert('\uC77C\uAD04 \uC0DD\uC131 \uC2E4\uD328: ' + error.message); return; }
       await logInfo('qr_bulk_create', { count: 5, amount, description: desc });
@@ -198,6 +274,28 @@
       return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
     }
 
+    function fmtDateTime(iso) {
+      if (!iso) return '';
+      const d = new Date(iso);
+      return String(d.getMonth()+1).padStart(2,'0') + '/' + String(d.getDate()).padStart(2,'0') + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    }
+
+    function getPeriodText(q) {
+      const from = q.valid_from ? fmtDateTime(q.valid_from) : '';
+      const to = q.valid_until ? fmtDateTime(q.valid_until) : '';
+      if (!from && !to) return '\uBB34\uAE30\uD55C';
+      if (from && to) return from + ' ~ ' + to;
+      if (from) return from + ' ~';
+      return '~ ' + to;
+    }
+
+    function isExpired(q) {
+      const now = new Date();
+      if (q.valid_until && new Date(q.valid_until) < now) return true;
+      if (q.expires_at && new Date(q.expires_at) < now) return true;
+      return false;
+    }
+
     function renderQRList() {
       const list = document.getElementById('qrList');
       let items = currentTab === 'active' ? allQR.filter(q => q.is_active) : allQR;
@@ -206,42 +304,102 @@
         list.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">QR \uCF54\uB4DC\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.</div>';
         return;
       }
-      list.innerHTML = items.map(q => {
-        const expired = q.expires_at && new Date(q.expires_at) < new Date();
-        const usesText = q.max_uses ? `${q.used_count||0}/${q.max_uses}` : `${q.used_count||0}/\u221E`;
-        const expiryText = q.expires_at ? q.expires_at.slice(0,10) : '\uBB34\uAE30\uD55C';
-        return `<div class="qr-item-card${q.is_active?'':' inactive'}">
-          <div>
-            <div class="qr-code-text">${q.code}</div>
-            <div style="font-weight:600;margin:0.3rem 0;">${q.description||'-'} \u00B7 ${q.amount} \uB2EC\uB780\uD2B8</div>
+      list.innerHTML = items.map((q, idx) => {
+        const expired = isExpired(q);
+        const usedUp = q.max_uses && (q.used_count || 0) >= q.max_uses;
+        const periodText = getPeriodText(q);
+        const safeDesc = (q.description || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        return `<div class="qr-item-card${q.is_active ? '' : ' inactive'}">
+          <div class="qr-img-wrap" id="qr-img-${idx}"></div>
+          <div class="qr-info">
+            <div class="qr-code-label">${q.code}</div>
+            <div style="font-weight:600;margin:0.2rem 0;">${q.description || '-'} \u00B7 ${q.amount} \uB2EC\uB780\uD2B8</div>
             <div class="qr-meta">
               <span>\uD83D\uDCC5 ${fmtDate(q.created_at)}</span>
-              <span>\uD83D\uDC65 \uC0AC\uC6A9: ${usesText}</span>
-              <span>\u23F0 \uB9CC\uB8CC: ${expiryText}${expired?' (\uB9CC\uB8CC\uB428)':''}</span>
-              <span>${q.is_active?'\uD83D\uDFE2 \uD65C\uC131':'\uD83D\uDD34 \uBE44\uD65C\uC131'}</span>
+              <span>\uD83D\uDC65 \uC0AC\uC6A9: ${q.used_count || 0}/${q.max_uses || 1}${usedUp ? ' (\uC0AC\uC6A9\uC644\uB8CC)' : ''}</span>
+              <span>\u23F0 ${periodText}${expired ? ' (\uB9CC\uB8CC)' : ''}</span>
+              <span>${q.is_active ? '\uD83D\uDFE2 \uD65C\uC131' : '\uD83D\uDD34 \uBE44\uD65C\uC131'}</span>
             </div>
           </div>
           <div class="qr-actions">
             <button onclick="copyCode('${q.code}')">\uD83D\uDCCB \uBCF5\uC0AC</button>
-            <button onclick="printCode('${q.code}','${(q.description||'').replace(/'/g,"\\'")}',${q.amount})">\uD83D\uDDA8\uFE0F \uC778\uC1C4</button>
-            <button class="${q.is_active?'danger':'primary'}" onclick="toggleActive('${q.id}',${q.is_active})">${q.is_active?'\uBE44\uD65C\uC131\uD654':'\uD65C\uC131\uD654'}</button>
+            <button onclick="printQR('${q.code}','${safeDesc}',${q.amount})">\uD83D\uDDA8\uFE0F \uC778\uC1C4</button>
+            <button class="edit" onclick="openEditModal('${q.id}')">\u270F\uFE0F \uC218\uC815</button>
+            <button class="${q.is_active ? 'danger' : 'primary'}" onclick="toggleActive('${q.id}',${q.is_active})">${q.is_active ? '\uBE44\uD65C\uC131\uD654' : '\uD65C\uC131\uD654'}</button>
           </div>
         </div>`;
       }).join('');
+
+      items.forEach((q, idx) => {
+        const el = document.getElementById('qr-img-' + idx);
+        if (el) {
+          try { new QRCode(el, { text: q.code, width: 88, height: 88, correctLevel: QRCode.CorrectLevel.M }); }
+          catch (e) { el.textContent = q.code; }
+        }
+      });
     }
 
     function copyCode(code) {
       navigator.clipboard.writeText(code).then(() => alert('\uCF54\uB4DC\uAC00 \uBCF5\uC0AC\uB418\uC5C8\uC2B5\uB2C8\uB2E4: ' + code));
     }
 
-    function printCode(code, desc, amount) {
-      const w = window.open('','_blank','width=400,height=300');
-      w.document.write(`<html><head><title>QR \uC778\uC1C4</title></head><body style="text-align:center;padding:2rem;">
-        <h2>\uD83C\uDFAB \uB2EC\uB780\uD2B8 QR \uCF54\uB4DC</h2>
-        <p style="font-size:2rem;font-weight:800;letter-spacing:4px;font-family:monospace;margin:1rem 0;">${code}</p>
-        <p style="font-size:1.2rem;">${desc} \u00B7 ${amount} \uB2EC\uB780\uD2B8</p>
-        <hr/><p style="font-size:0.8rem;color:#888;">\uB2EC\uB780\uD2B8 \uB9C8\uC744 (CHO-Talents)</p>
-        <script>window.print();<\/script></body></html>`);
+    function printQR(code, desc, amount) {
+      const tmp = document.createElement('div');
+      tmp.style.cssText = 'position:absolute;left:-9999px;top:-9999px;';
+      document.body.appendChild(tmp);
+      const qr = new QRCode(tmp, { text: code, width: 200, height: 200, correctLevel: QRCode.CorrectLevel.M });
+      setTimeout(() => {
+        const canvas = tmp.querySelector('canvas');
+        const imgSrc = canvas ? canvas.toDataURL('image/png') : '';
+        document.body.removeChild(tmp);
+        const w = window.open('', '_blank', 'width=420,height=500');
+        w.document.write(`<html><head><title>QR \uC778\uC1C4</title></head><body style="text-align:center;padding:2rem;font-family:sans-serif;">
+          <h2 style="margin-bottom:0.5rem;">\uD83C\uDFAB \uB2EC\uB780\uD2B8 QR \uCF54\uB4DC</h2>
+          <img src="${imgSrc}" style="width:200px;height:200px;margin:1rem auto;display:block;" />
+          <p style="font-family:monospace;font-size:0.9rem;color:#666;letter-spacing:2px;">${code}</p>
+          <p style="font-size:1.2rem;font-weight:700;">${desc} \u00B7 ${amount} \uB2EC\uB780\uD2B8</p>
+          <hr/><p style="font-size:0.8rem;color:#888;">\uB2EC\uB780\uD2B8 \uB9C8\uC744 (CHO-Talents)</p>
+          <script>setTimeout(()=>window.print(),300);<\/script></body></html>`);
+      }, 150);
+    }
+
+    function openEditModal(id) {
+      const q = allQR.find(x => x.id === id);
+      if (!q) return;
+      document.getElementById('editId').value = id;
+      document.getElementById('editDesc').value = q.description || '';
+      document.getElementById('editAmount').value = q.amount || 1;
+      document.getElementById('editValidFrom').value = q.valid_from ? toLocalInput(new Date(q.valid_from)) : '';
+      document.getElementById('editValidTo').value = q.valid_until ? toLocalInput(new Date(q.valid_until)) : '';
+      document.getElementById('editModal').classList.add('show');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('show');
+    }
+
+    async function saveEdit() {
+      const id = document.getElementById('editId').value;
+      const desc = document.getElementById('editDesc').value.trim();
+      const amount = parseInt(document.getElementById('editAmount').value) || 0;
+      const validFrom = document.getElementById('editValidFrom').value;
+      const validTo = document.getElementById('editValidTo').value;
+      if (!desc) { alert('\uC124\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694.'); return; }
+      if (amount < 1 || amount > 100) { alert('\uAE08\uC561\uC740 1~100 \uC0AC\uC774\uC5EC\uC57C \uD569\uB2C8\uB2E4.'); return; }
+      const newCode = generateCode();
+      const update = { code: newCode, description: desc, amount };
+      update.valid_from = validFrom ? new Date(validFrom).toISOString() : null;
+      update.valid_until = validTo ? new Date(validTo).toISOString() : null;
+      if (validFrom && !validTo) {
+        const d = new Date(validFrom); d.setHours(23, 59, 59, 999);
+        update.valid_until = d.toISOString();
+      }
+      const { error } = await _sb.from('talent_qr_codes').update(update).eq('id', id);
+      if (error) { alert('\uC218\uC815 \uC2E4\uD328: ' + error.message); return; }
+      await logInfo('qr_edit', { qr_id: id, new_code: newCode, amount, description: desc });
+      closeEditModal();
+      alert('\uC218\uC815 \uC644\uB8CC. \uC0C8 QR \uCF54\uB4DC: ' + newCode);
+      await loadQRList();
     }
 
     async function toggleActive(id, current) {
@@ -252,7 +410,11 @@
       await logInfo('qr_toggle', { qr_id: id, new_state: !current });
       await loadQRList();
     }
+
+    document.getElementById('editModal').addEventListener('click', function(e) {
+      if (e.target === this) closeEditModal();
+    });
   </script>
-  <script src="../js/version.js?v=3.13.0"></script>
+  <script src="../js/version.js?v=3.16.0"></script>
 </body>
 </html>
