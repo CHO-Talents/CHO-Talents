@@ -4,7 +4,7 @@
 const SUPABASE_URL = 'https://blitrrcdkkkszvgylnus.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6';
 const AUTH_EMAIL_DOMAIN = '@cho-talents.app';
-const KAKAO_MAP_KEY = 'YOUR_KAKAO_JS_KEY';
+const KAKAO_MAP_KEY = '0ef8925b28135eeac474bc411c456170';
 
 var _sb = null;
 
