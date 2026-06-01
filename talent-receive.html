@@ -188,6 +188,24 @@
           showResult('fail', '사용 횟수가 초과된 코드입니다.'); return;
         }
 
+        if (qr.location_lat && qr.location_lng && qr.location_radius) {
+          try {
+            const pos = await new Promise((resolve, reject) => {
+              if (!navigator.geolocation) { reject(new Error('위치 서비스를 지원하지 않는 브라우저입니다.')); return; }
+              navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 });
+            });
+            const dist = haversineDistance(pos.coords.latitude, pos.coords.longitude, qr.location_lat, qr.location_lng);
+            if (dist > qr.location_radius) {
+              const radiusText = qr.location_radius >= 1000 ? (qr.location_radius/1000) + 'km' : qr.location_radius + 'm';
+              showResult('fail', '📍 위치 제한 코드입니다.\n' + (qr.location_name || '지정 위치') + ' 반경 ' + radiusText + ' 이내에서만 수령 가능합니다.\n현재 거리: 약 ' + Math.round(dist) + 'm');
+              return;
+            }
+          } catch (geoErr) {
+            showResult('fail', '📍 위치 확인이 필요한 코드입니다.\n위치 권한을 허용해주세요.\n(' + (geoErr.message || geoErr) + ')');
+            return;
+          }
+        }
+
         const { data: existing } = await _sb.from('talent_qr_scans')
           .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id);
         if (existing && existing.length > 0) {
@@ -233,6 +251,16 @@
         btn.textContent = '🔍 코드 확인';
         scanPaused = false;
       }
+    }
+
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371000;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2)
+        + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180)
+        * Math.sin(dLon/2) * Math.sin(dLon/2);
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
     function showResult(type, msg) {
