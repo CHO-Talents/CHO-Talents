@@ -3,131 +3,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>»óÇ° °ü¸® - CHO Talents Admin</title>
+  <title>ìƒí’ˆ ê´€ë¦¬ - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">¼Ò°³</button>
+        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
-          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
+          <li><a href="../guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
+          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">´Ş¶õÆ®</button>
+        <button class="nav-dropdown-toggle">ë‹¬ë€íŠ¸</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
-          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
-          <li data-min-perm="40"><a href="talents.html">´Ş¶õÆ® °ü¸®</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
+          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
+          <li><a href="../talent-receive.html">ë‹¬ë€íŠ¸ ìˆ˜ë ¹</a></li>
+          <li data-min-perm="40"><a href="talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">ë‹¬ë€íŠ¸ QR ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">»óÇ°</button>
+        <button class="nav-dropdown-toggle active">ìƒí’ˆ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
-          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
-          <li data-min-perm="60"><a href="shop.html" class="active">»óÇ° °ü¸®</a></li>
-          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
+          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
+          <li data-min-perm="60"><a href="shop.html" class="active">ìƒí’ˆ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">°ü¸®</button>
+        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
-          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
+          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">¿î¿µ</button>
+        <button class="nav-dropdown-toggle">ìš´ì˜</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
-          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
-          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
-          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
-          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
+          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
+          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
+          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
+          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? »óÇ° °ü¸®</h2>
+    <h2 style="margin-bottom:1rem;">?? ìƒí’ˆ ê´€ë¦¬</h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">»óÇ° ¸ñ·Ï</div>
+        <div class="admin-table-title" id="tableTitle">ìƒí’ˆ ëª©ë¡</div>
         <div class="filters">
-          <button class="filter-btn active" onclick="filterRole('all',this)">ÀüÃ¼</button>
-          <button class="filter-btn" onclick="filterRole('student',this)">?? ÇĞ»ı¿ë</button>
-          <button class="filter-btn" onclick="filterRole('teacher',this)">????? ±³»ç¿ë</button>
+          <button class="filter-btn active" onclick="filterRole('all',this)">ì „ì²´</button>
+          <button class="filter-btn" onclick="filterRole('student',this)">?? í•™ìƒìš©</button>
+          <button class="filter-btn" onclick="filterRole('teacher',this)">????? êµì‚¬ìš©</button>
           <span style="margin-left:0.5rem;"></span>
-          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ »óÇ° µî·Ï</button>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ ìƒí’ˆ ë“±ë¡</button>
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th></th><th>»óÇ°¸í</th><th>´ë»ó</th><th>Ä«Å×°í¸®</th><th>°¡°İ</th><th>»óÅÂ</th><th>°ü¸®</th></tr></thead>
-        <tbody id="productList"><tr><td colspan="7" class="empty-state">·Îµù Áß...</td></tr></tbody>
+        <thead><tr><th></th><th>ìƒí’ˆëª…</th><th>ëŒ€ìƒ</th><th>ì¹´í…Œê³ ë¦¬</th><th>ê°€ê²©</th><th>ìƒíƒœ</th><th>ê´€ë¦¬</th></tr></thead>
+        <tbody id="productList"><tr><td colspan="7" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="productModal">
     <div class="modal-box" style="max-width:480px;">
-      <h3 class="modal-title" id="modalTitle">»óÇ° µî·Ï</h3>
+      <h3 class="modal-title" id="modalTitle">ìƒí’ˆ ë“±ë¡</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">»óÇ°¸í</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ìƒí’ˆëª…</label>
         <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´ë»ó</label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ëŒ€ìƒ</label>
           <select id="mTarget" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-            <option value="student">ÇĞ»ı</option>
-            <option value="teacher">±³»ç</option>
+            <option value="student">í•™ìƒ</option>
+            <option value="teacher">êµì‚¬</option>
           </select>
         </div>
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Ä«Å×°í¸®</label>
-          <input type="text" id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="¿¹: ÇĞ¿ëÇ°" />
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì¹´í…Œê³ ë¦¬</label>
+          <input type="text" id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ì˜ˆ: í•™ìš©í’ˆ" />
         </div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">°¡°İ (´Ş¶õÆ®)</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ê°€ê²© (ë‹¬ë€íŠ¸)</label>
         <input type="number" id="mPrice" min="1" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÀÌ¸ğÁö</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì´ëª¨ì§€</label>
         <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="??" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">»óÇ° ÀÌ¹ÌÁö</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ìƒí’ˆ ì´ë¯¸ì§€</label>
         <div id="dropZone" style="border:2px dashed var(--admin-border);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;">
           <div id="dropContent">
             <div style="font-size:2rem;margin-bottom:0.3rem;">??</div>
-            <div style="font-size:0.85rem;color:#636e72;">Å¬¸¯ÇÏ°Å³ª ÀÌ¹ÌÁö¸¦ µå·¡±×ÇØ¼­ ³õÀ¸¼¼¿ä</div>
-            <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">JPG, PNG, GIF, WebP (ÃÖ´ë 5MB)</div>
+            <div style="font-size:0.85rem;color:#636e72;">í´ë¦­í•˜ê±°ë‚˜ ì´ë¯¸ì§€ë¥¼ ë“œë˜ê·¸í•´ì„œ ë†“ìœ¼ì„¸ìš”</div>
+            <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">JPG, PNG, GIF, WebP (ìµœëŒ€ 5MB)</div>
           </div>
           <div id="imgPreview" style="display:none;"></div>
         </div>
         <input type="file" id="mImageFile" accept="image/*" style="display:none;" />
         <input type="hidden" id="mImageUrl" />
         <div style="margin-top:0.4rem;">
-          <button type="button" id="btnUrlToggle" onclick="toggleUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL Á÷Á¢ ÀÔ·Â</button>
+          <button type="button" id="btnUrlToggle" onclick="toggleUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL ì§ì ‘ ì…ë ¥</button>
           <div id="urlInputWrap" style="display:none;margin-top:0.4rem;">
             <input type="text" id="mImageUrlText" style="width:100%;padding:0.5rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;" placeholder="https://example.com/image.jpg" />
           </div>
@@ -135,25 +135,25 @@
         <div id="uploadStatus" style="margin-top:0.3rem;font-size:0.8rem;text-align:center;"></div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¼³¸í</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì„¤ëª…</label>
         <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:0.8rem;" id="activeWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">»óÇ° »óÅÂ</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ìƒí’ˆ ìƒíƒœ</label>
         <div style="display:flex;align-items:center;gap:1rem;">
           <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
             <input type="radio" name="mIsActive" value="true" checked />
-            <span class="level-badge INFO">È°¼º</span>
+            <span class="level-badge INFO">í™œì„±</span>
           </label>
           <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
             <input type="radio" name="mIsActive" value="false" />
-            <span class="level-badge FATAL">ºñÈ°¼º</span>
+            <span class="level-badge FATAL">ë¹„í™œì„±</span>
           </label>
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">Ãë¼Ò</button>
-        <button class="btn-confirm" onclick="saveProduct()">ÀúÀå</button>
+        <button class="btn-cancel" onclick="closeModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" onclick="saveProduct()">ì €ì¥</button>
       </div>
     </div>
   </div>
@@ -203,28 +203,28 @@
     function renderProducts() {
       const list = currentFilter === 'all' ? allProducts : allProducts.filter(p => p.target_role === currentFilter);
       const tbody = document.getElementById('productList');
-      document.getElementById('tableTitle').textContent = `»óÇ° ¸ñ·Ï (${list.length}°Ç)`;
+      document.getElementById('tableTitle').textContent = `ìƒí’ˆ ëª©ë¡ (${list.length}ê±´)`;
 
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">µî·ÏµÈ »óÇ°ÀÌ ¾ø½À´Ï´Ù.</td></tr>'; return; }
+      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">ë“±ë¡ëœ ìƒí’ˆì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>'; return; }
 
       const myRank = session.permissionRank || 0;
       tbody.innerHTML = list.map(p => `<tr${!p.is_active ? ' style="opacity:0.5;"' : ''}>
         <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '??'}</span>`}</td>
         <td><strong>${p.name}</strong><br><small style="color:var(--admin-text-muted);">${p.description || ''}</small></td>
-        <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '?? ÇĞ»ı' : '????? ±³»ç'}</span></td>
+        <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '?? í•™ìƒ' : '????? êµì‚¬'}</span></td>
         <td>${p.category || '-'}</td>
         <td style="font-weight:700;">${fmtNum(p.price)}</td>
-        <td>${p.is_active ? '<span class="level-badge INFO">È°¼º</span>' : '<span class="level-badge FATAL">ºñÈ°¼º</span>'}</td>
+        <td>${p.is_active ? '<span class="level-badge INFO">í™œì„±</span>' : '<span class="level-badge FATAL">ë¹„í™œì„±</span>'}</td>
         <td>
-          <button class="filter-btn" onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>¼öÁ¤</button>
-          ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${p.id}','${p.name}')">»èÁ¦</button>` : ''}
+          <button class="filter-btn" onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>ìˆ˜ì •</button>
+          ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${p.id}','${p.name}')">ì‚­ì œ</button>` : ''}
         </td>
       </tr>`).join('');
     }
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = '»óÇ° µî·Ï';
+      document.getElementById('modalTitle').textContent = 'ìƒí’ˆ ë“±ë¡';
       ['mName','mCategory','mEmoji','mImageUrlText','mDesc'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('mTarget').value = 'student';
       document.getElementById('mPrice').value = '';
@@ -239,7 +239,7 @@
 
     function openEditModal(p) {
       editingId = p.id;
-      document.getElementById('modalTitle').textContent = '»óÇ° ¼öÁ¤';
+      document.getElementById('modalTitle').textContent = 'ìƒí’ˆ ìˆ˜ì •';
       document.getElementById('mName').value = p.name;
       document.getElementById('mTarget').value = p.target_role;
       document.getElementById('mCategory').value = p.category || '';
@@ -262,16 +262,16 @@
       const errEl = document.getElementById('modalError');
       const name = document.getElementById('mName').value.trim();
       const price = parseInt(document.getElementById('mPrice').value);
-      if (!name) { errEl.textContent = '»óÇ°¸íÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
-      if (!price || price <= 0) { errEl.textContent = 'À¯È¿ÇÑ °¡°İÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!name) { errEl.textContent = 'ìƒí’ˆëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+      if (!price || price <= 0) { errEl.textContent = 'ìœ íš¨í•œ ê°€ê²©ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
 
       const fileInput = document.getElementById('mImageFile');
       let imageUrl = document.getElementById('mImageUrl').value.trim() || null;
       if (fileInput.files.length > 0) {
         const statusEl = document.getElementById('uploadStatus');
-        statusEl.innerHTML = '<span style="color:var(--admin-primary);">? ÀÌ¹ÌÁö ¾÷·Îµå Áß...</span>';
+        statusEl.innerHTML = '<span style="color:var(--admin-primary);">? ì´ë¯¸ì§€ ì—…ë¡œë“œ ì¤‘...</span>';
         const { url, error: uploadErr } = await uploadProductImage(fileInput.files[0]);
-        if (uploadErr) { statusEl.innerHTML = `<span style="color:#ff6b6b;">¾÷·Îµå ½ÇÆĞ: ${uploadErr}</span>`; return; }
+        if (uploadErr) { statusEl.innerHTML = `<span style="color:#ff6b6b;">ì—…ë¡œë“œ ì‹¤íŒ¨: ${uploadErr}</span>`; return; }
         imageUrl = url; statusEl.innerHTML = '';
       }
       const urlText = document.getElementById('mImageUrlText').value.trim();
@@ -302,7 +302,7 @@
     }
 
     async function confirmDelete(id, name) {
-      if (!confirm(`"${name}" »óÇ°À» »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?`)) return;
+      if (!confirm(`"${name}" ìƒí’ˆì„ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
       await deleteProduct(id);
       await logInfo('PRODUCT_DELETE', { id, name });
       await loadProducts();
@@ -313,7 +313,7 @@
       const preview = document.getElementById('imgPreview');
       preview.style.display = 'block';
       preview.innerHTML = `<img src="${src}" style="max-width:160px;max-height:120px;border-radius:8px;" onerror="resetImgPreview()" />
-        <div style="margin-top:0.3rem;"><button type="button" onclick="removeImage(event)" style="background:#ff6b6b;color:#fff;border:none;padding:0.2rem 0.8rem;border-radius:6px;cursor:pointer;font-size:0.8rem;">ÀÌ¹ÌÁö »èÁ¦</button></div>`;
+        <div style="margin-top:0.3rem;"><button type="button" onclick="removeImage(event)" style="background:#ff6b6b;color:#fff;border:none;padding:0.2rem 0.8rem;border-radius:6px;cursor:pointer;font-size:0.8rem;">ì´ë¯¸ì§€ ì‚­ì œ</button></div>`;
     }
     function resetImgPreview() { document.getElementById('dropContent').style.display = 'block'; const p = document.getElementById('imgPreview'); p.style.display = 'none'; p.innerHTML = ''; }
     function removeImage(e) { e.stopPropagation(); document.getElementById('mImageUrl').value = ''; document.getElementById('mImageFile').value = ''; document.getElementById('mImageUrlText').value = ''; resetImgPreview(); }
@@ -327,7 +327,7 @@
     dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--admin-border)'; dropZone.style.background = '#fafafa'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) handleFileSelect(f); });
     fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFileSelect(fileInput.files[0]); });
     function handleFileSelect(file) {
-      if (file.size > 5*1024*1024) { document.getElementById('uploadStatus').innerHTML = '<span style="color:#ff6b6b;">5MB ÀÌÇÏ ÆÄÀÏ¸¸ ¾÷·Îµå °¡´ÉÇÕ´Ï´Ù</span>'; return; }
+      if (file.size > 5*1024*1024) { document.getElementById('uploadStatus').innerHTML = '<span style="color:#ff6b6b;">5MB ì´í•˜ íŒŒì¼ë§Œ ì—…ë¡œë“œ ê°€ëŠ¥í•©ë‹ˆë‹¤</span>'; return; }
       const dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files;
       const reader = new FileReader(); reader.onload = e => showImgPreview(e.target.result); reader.readAsDataURL(file);
       document.getElementById('uploadStatus').innerHTML = `<span style="color:#636e72;">?? ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;

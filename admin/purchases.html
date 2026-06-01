@@ -3,100 +3,100 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>±¸¸Å °ü¸® - CHO Talents Admin</title>
+  <title>êµ¬ë§¤ ê´€ë¦¬ - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">¼Ò°³</button>
+        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
-          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
+          <li><a href="../guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
+          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">´Ş¶õÆ®</button>
+        <button class="nav-dropdown-toggle">ë‹¬ë€íŠ¸</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
-          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
-          <li data-min-perm="40"><a href="talents.html">´Ş¶õÆ® °ü¸®</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
+          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
+          <li><a href="../talent-receive.html">ë‹¬ë€íŠ¸ ìˆ˜ë ¹</a></li>
+          <li data-min-perm="40"><a href="talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">ë‹¬ë€íŠ¸ QR ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">»óÇ°</button>
+        <button class="nav-dropdown-toggle active">ìƒí’ˆ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
-          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
-          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
-          <li data-min-perm="60"><a href="purchases.html" class="active">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
+          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
+          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="purchases.html" class="active">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">°ü¸®</button>
+        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
-          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
+          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">¿î¿µ</button>
+        <button class="nav-dropdown-toggle">ìš´ì˜</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
-          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
-          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
-          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
-          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
+          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
+          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
+          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
+          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? ±¸¸Å °ü¸®</h2>
+    <h2 style="margin-bottom:1rem;">?? êµ¬ë§¤ ê´€ë¦¬</h2>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="tabAll" onclick="switchPurchaseTab('all')">?? ÀüÃ¼</button>
-      <button class="filter-btn" id="tabRequested" onclick="switchPurchaseTab('requested')">?? ±¸¸Å ½ÅÃ»</button>
-      <button class="filter-btn" id="tabPreparing" onclick="switchPurchaseTab('preparing')">?? »óÇ° ÁØºñ</button>
-      <button class="filter-btn" id="tabPurchased" onclick="switchPurchaseTab('purchased')">?? »óÇ° ±¸¸Å</button>
-      <button class="filter-btn" id="tabDelivered" onclick="switchPurchaseTab('delivered')">? »óÇ° Áö±Ş</button>
+      <button class="filter-btn active" id="tabAll" onclick="switchPurchaseTab('all')">?? ì „ì²´</button>
+      <button class="filter-btn" id="tabRequested" onclick="switchPurchaseTab('requested')">?? êµ¬ë§¤ ì‹ ì²­</button>
+      <button class="filter-btn" id="tabPreparing" onclick="switchPurchaseTab('preparing')">?? ìƒí’ˆ ì¤€ë¹„</button>
+      <button class="filter-btn" id="tabPurchased" onclick="switchPurchaseTab('purchased')">?? ìƒí’ˆ êµ¬ë§¤</button>
+      <button class="filter-btn" id="tabDelivered" onclick="switchPurchaseTab('delivered')">? ìƒí’ˆ ì§€ê¸‰</button>
     </div>
 
     <div id="statusFilterWrap" style="margin-bottom:0.8rem;">
       <select id="statusFilter" onchange="renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
-        <option value="">ÀüÃ¼ »óÅÂ</option>
-        <option value="requested">?? ±¸¸Å ½ÅÃ»</option>
-        <option value="preparing">?? »óÇ° ÁØºñ</option>
-        <option value="purchased">?? »óÇ° ±¸¸Å</option>
-        <option value="delivered">? »óÇ° Áö±Ş</option>
+        <option value="">ì „ì²´ ìƒíƒœ</option>
+        <option value="requested">?? êµ¬ë§¤ ì‹ ì²­</option>
+        <option value="preparing">?? ìƒí’ˆ ì¤€ë¹„</option>
+        <option value="purchased">?? ìƒí’ˆ êµ¬ë§¤</option>
+        <option value="delivered">? ìƒí’ˆ ì§€ê¸‰</option>
       </select>
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">ÀüÃ¼ ¸ñ·Ï</div>
+        <div class="admin-table-title" id="tableTitle">ì „ì²´ ëª©ë¡</div>
         <div id="bulkActions" style="display:none;">
-          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="padding:0.4rem 1rem;font-size:0.85rem;">? ¼±ÅÃ Áö±Ş ¿Ï·á</button>
+          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="padding:0.4rem 1rem;font-size:0.85rem;">? ì„ íƒ ì§€ê¸‰ ì™„ë£Œ</button>
         </div>
       </div>
       <table class="admin-table">
         <thead>
           <tr id="tableHead"></tr>
         </thead>
-        <tbody id="orderList"><tr><td colspan="7" class="empty-state">·Îµù Áß...</td></tr></tbody>
+        <tbody id="orderList"><tr><td colspan="7" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -114,7 +114,7 @@
     let profileMap = {};
     let processorMap = {};
 
-    const STATUS_LABEL = { requested:'±¸¸Å ½ÅÃ»', preparing:'»óÇ° ÁØºñ', purchased:'»óÇ° ±¸¸Å', delivered:'»óÇ° Áö±Ş' };
+    const STATUS_LABEL = { requested:'êµ¬ë§¤ ì‹ ì²­', preparing:'ìƒí’ˆ ì¤€ë¹„', purchased:'ìƒí’ˆ êµ¬ë§¤', delivered:'ìƒí’ˆ ì§€ê¸‰' };
     const STATUS_COLOR = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
     const TAB_IDS = ['all','requested','preparing','purchased','delivered'];
 
@@ -143,7 +143,7 @@
       const { data, error } = await _sb.from('product_orders').select('*').order('created_at', { ascending: false });
       if (error) {
         logError('PURCHASE_LOAD_FAIL', { error: error.message });
-        document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">µ¥ÀÌÅÍ Á¶È¸ ½ÇÆĞ</td></tr>';
+        document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">ë°ì´í„° ì¡°íšŒ ì‹¤íŒ¨</td></tr>';
         return;
       }
       allOrders = data || [];
@@ -198,11 +198,11 @@
     function getProcessorInfo(order, stage) {
       let byField, atField, label;
       if (stage === 'preparing') {
-        byField = order.prepared_by; atField = order.prepared_at; label = 'ÁØºñ';
+        byField = order.prepared_by; atField = order.prepared_at; label = 'ì¤€ë¹„';
       } else if (stage === 'purchased') {
-        byField = order.purchased_by; atField = order.purchased_at; label = '±¸¸Å';
+        byField = order.purchased_by; atField = order.purchased_at; label = 'êµ¬ë§¤';
       } else if (stage === 'delivered') {
-        byField = order.delivered_by; atField = order.delivered_at; label = 'Áö±Ş';
+        byField = order.delivered_by; atField = order.delivered_at; label = 'ì§€ê¸‰';
       }
       if (!byField) return '';
       const name = processorMap[byField] || '-';
@@ -215,8 +215,8 @@
       const tbody = document.getElementById('orderList');
       const title = document.getElementById('tableTitle');
       const isAllTab = currentPTab === 'all';
-      const tabLabel = isAllTab ? 'ÀüÃ¼' : STATUS_LABEL[currentPTab];
-      title.textContent = `${tabLabel} ¸ñ·Ï (${orders.length}°Ç)`;
+      const tabLabel = isAllTab ? 'ì „ì²´' : STATUS_LABEL[currentPTab];
+      title.textContent = `${tabLabel} ëª©ë¡ (${orders.length}ê±´)`;
 
       const myRank = session.permissionRank || 0;
       const showBulk = currentPTab === 'purchased' && myRank >= 60;
@@ -224,19 +224,19 @@
 
       let headCols = '';
       if (showBulk) headCols += '<th style="width:30px;"><input type="checkbox" onchange="toggleAllOrders(this)"></th>';
-      if (isAllTab) headCols += '<th>»óÅÂ</th>';
-      headCols += '<th>½ÅÃ»ÀÏ</th><th>»óÇ°¸í</th><th>°¡°İ</th><th>½ÅÃ»ÀÚ</th><th>ºÎ¼­</th>';
+      if (isAllTab) headCols += '<th>ìƒíƒœ</th>';
+      headCols += '<th>ì‹ ì²­ì¼</th><th>ìƒí’ˆëª…</th><th>ê°€ê²©</th><th>ì‹ ì²­ì</th><th>ë¶€ì„œ</th>';
 
-      if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>ÀÌÀü Ã³¸®</th>';
-      else if (currentPTab === 'purchased') headCols += '<th>ÁØºñ Ã³¸®</th>';
-      else if (currentPTab === 'delivered') headCols += '<th>±¸¸Å Ã³¸®</th>';
+      if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>ì´ì „ ì²˜ë¦¬</th>';
+      else if (currentPTab === 'purchased') headCols += '<th>ì¤€ë¹„ ì²˜ë¦¬</th>';
+      else if (currentPTab === 'delivered') headCols += '<th>êµ¬ë§¤ ì²˜ë¦¬</th>';
 
-      headCols += '<th>°ü¸®</th>';
+      headCols += '<th>ê´€ë¦¬</th>';
       document.getElementById('tableHead').innerHTML = headCols;
 
       const colCount = document.getElementById('tableHead').children.length;
       if (orders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">ÇØ´ç »óÅÂÀÇ ÁÖ¹®ÀÌ ¾ø½À´Ï´Ù.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">í•´ë‹¹ ìƒíƒœì˜ ì£¼ë¬¸ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>`;
         return;
       }
 
@@ -244,20 +244,20 @@
         const canProc = canProcessOrder(o);
         let actionBtn = '';
         if (o.status === 'requested' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="updateStatus('${o.id}','preparing')">»óÇ° ÁØºñ</button>`;
+          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="updateStatus('${o.id}','preparing')">ìƒí’ˆ ì¤€ë¹„</button>`;
         } else if (o.status === 'preparing' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#1971c2;color:#fff;border-color:#1971c2;" onclick="confirmPurchase('${o.id}')">±¸¸Å È®Á¤</button>`;
-          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','requested')">? µÇµ¹¸®±â</button>`;
+          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#1971c2;color:#fff;border-color:#1971c2;" onclick="confirmPurchase('${o.id}')">êµ¬ë§¤ í™•ì •</button>`;
+          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','requested')">? ë˜ëŒë¦¬ê¸°</button>`;
         } else if (o.status === 'purchased' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#2b8a3e;color:#fff;border-color:#2b8a3e;" onclick="updateStatus('${o.id}','delivered')">Áö±Ş ¿Ï·á</button>`;
-          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','preparing')">? µÇµ¹¸®±â</button>`;
+          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#2b8a3e;color:#fff;border-color:#2b8a3e;" onclick="updateStatus('${o.id}','delivered')">ì§€ê¸‰ ì™„ë£Œ</button>`;
+          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','preparing')">? ë˜ëŒë¦¬ê¸°</button>`;
         } else if (o.status === 'delivered' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','purchased')">? µÇµ¹¸®±â</button>`;
+          actionBtn = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','purchased')">? ë˜ëŒë¦¬ê¸°</button>`;
         }
 
         let procInfo = '';
         if (isAllTab) {
-          procInfo = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;" onclick="showOrderDetail('${o.id}')">»ó¼¼</button>`;
+          procInfo = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;" onclick="showOrderDetail('${o.id}')">ìƒì„¸</button>`;
         } else if (currentPTab === 'preparing') {
           procInfo = '-';
         } else if (currentPTab === 'purchased') {
@@ -294,20 +294,20 @@
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
           await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, newStatus, error: error.message });
-          alert('»óÅÂ º¯°æ ½ÇÆĞ: ' + tErr(error.message));
+          alert('ìƒíƒœ ë³€ê²½ ì‹¤íŒ¨: ' + tErr(error.message));
           return;
         }
         await logInfo('ORDER_STATUS_CHANGE', { orderId, newStatus });
         await loadOrders();
       } catch (err) {
         await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, newStatus, error: String(err) });
-        alert('»óÅÂ º¯°æ Áß ¿À·ù: ' + tErr(err.message));
+        alert('ìƒíƒœ ë³€ê²½ ì¤‘ ì˜¤ë¥˜: ' + tErr(err.message));
       }
     }
 
     async function revertStatus(orderId, prevStatus) {
-      const PREV_LABELS = { requested: '±¸¸Å ½ÅÃ»', preparing: '»óÇ° ÁØºñ', purchased: '»óÇ° ±¸¸Å' };
-      if (!confirm(`"${PREV_LABELS[prevStatus]}" ´Ü°è·Î µÇµ¹¸®½Ã°Ú½À´Ï±î?`)) return;
+      const PREV_LABELS = { requested: 'êµ¬ë§¤ ì‹ ì²­', preparing: 'ìƒí’ˆ ì¤€ë¹„', purchased: 'ìƒí’ˆ êµ¬ë§¤' };
+      if (!confirm(`"${PREV_LABELS[prevStatus]}" ë‹¨ê³„ë¡œ ë˜ëŒë¦¬ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
       try {
         const updateFields = { status: prevStatus };
         if (prevStatus === 'requested') { updateFields.prepared_at = null; updateFields.prepared_by = null; }
@@ -316,14 +316,14 @@
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
           await logError('ORDER_REVERT_FAIL', { orderId, prevStatus, error: error.message });
-          alert('µÇµ¹¸®±â ½ÇÆĞ: ' + tErr(error.message));
+          alert('ë˜ëŒë¦¬ê¸° ì‹¤íŒ¨: ' + tErr(error.message));
           return;
         }
         await logInfo('ORDER_REVERT', { orderId, prevStatus });
         await loadOrders();
       } catch (err) {
         await logError('ORDER_REVERT_ERROR', { orderId, prevStatus, error: String(err) });
-        alert('µÇµ¹¸®±â Áß ¿À·ù: ' + tErr(err.message));
+        alert('ë˜ëŒë¦¬ê¸° ì¤‘ ì˜¤ë¥˜: ' + tErr(err.message));
       }
     }
 
@@ -334,20 +334,20 @@
       const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.82rem;background:${STATUS_COLOR[o.status]}22;color:${STATUS_COLOR[o.status]};font-weight:600;">${STATUS_LABEL[o.status]}</span>`;
       const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="this.remove()">
         <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
-          <h3 style="margin:0 0 0.8rem;">?? ÁÖ¹® »ó¼¼</h3>
-          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} ´Ş¶õÆ®</div>
-          <div style="font-size:0.85rem;margin-bottom:0.5rem;">½ÅÃ»ÀÚ: ${o._userName} | ºÎ¼­: ${o._deptName}</div>
-          <div style="font-size:0.85rem;margin-bottom:0.8rem;">»óÅÂ: ${statusBadge}</div>
-          <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">Ã³¸® ÀÌ·Â</div>
-          <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">Ã³¸® ÀÌ·Â ¾øÀ½</span>'}</div>
-          <div style="text-align:right;margin-top:1rem;"><button onclick="this.closest('[style*=fixed]').remove()" style="padding:0.4rem 1rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;">´İ±â</button></div>
+          <h3 style="margin:0 0 0.8rem;">?? ì£¼ë¬¸ ìƒì„¸</h3>
+          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} ë‹¬ë€íŠ¸</div>
+          <div style="font-size:0.85rem;margin-bottom:0.5rem;">ì‹ ì²­ì: ${o._userName} | ë¶€ì„œ: ${o._deptName}</div>
+          <div style="font-size:0.85rem;margin-bottom:0.8rem;">ìƒíƒœ: ${statusBadge}</div>
+          <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">ì²˜ë¦¬ ì´ë ¥</div>
+          <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">ì²˜ë¦¬ ì´ë ¥ ì—†ìŒ</span>'}</div>
+          <div style="text-align:right;margin-top:1rem;"><button onclick="this.closest('[style*=fixed]').remove()" style="padding:0.4rem 1rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;">ë‹«ê¸°</button></div>
         </div>
       </div>`;
       document.body.insertAdjacentHTML('beforeend', html);
     }
 
     async function confirmPurchase(orderId) {
-      if (!confirm('»óÇ° ±¸¸Å¸¦ È®Á¤ÇÏ½Ã°Ú½À´Ï±î?\n´Ş¶õÆ®°¡ ½ÇÁ¦ Â÷°¨µË´Ï´Ù.')) return;
+      if (!confirm('ìƒí’ˆ êµ¬ë§¤ë¥¼ í™•ì •í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\në‹¬ë€íŠ¸ê°€ ì‹¤ì œ ì°¨ê°ë©ë‹ˆë‹¤.')) return;
       try {
         const { data, error } = await _sb.rpc('confirm_product_purchase', {
           p_order_id: orderId,
@@ -355,7 +355,7 @@
         });
         if (error) {
           await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, error: error.message });
-          alert('±¸¸Å È®Á¤ ½ÇÆĞ: ' + tErr(error.message));
+          alert('êµ¬ë§¤ í™•ì • ì‹¤íŒ¨: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
@@ -367,7 +367,7 @@
         await loadOrders();
       } catch (err) {
         await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, error: String(err) });
-        alert('±¸¸Å È®Á¤ Áß ¿À·ù: ' + tErr(err.message));
+        alert('êµ¬ë§¤ í™•ì • ì¤‘ ì˜¤ë¥˜: ' + tErr(err.message));
       }
     }
 
@@ -377,8 +377,8 @@
 
     async function bulkDeliver() {
       const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
-      if (ids.length === 0) { alert('Áö±Ş ¿Ï·á Ã³¸®ÇÒ Ç×¸ñÀ» ¼±ÅÃÇØÁÖ¼¼¿ä.'); return; }
-      if (!confirm(`${ids.length}°ÇÀ» Áö±Ş ¿Ï·á Ã³¸®ÇÏ½Ã°Ú½À´Ï±î?`)) return;
+      if (ids.length === 0) { alert('ì§€ê¸‰ ì™„ë£Œ ì²˜ë¦¬í•  í•­ëª©ì„ ì„ íƒí•´ì£¼ì„¸ìš”.'); return; }
+      if (!confirm(`${ids.length}ê±´ì„ ì§€ê¸‰ ì™„ë£Œ ì²˜ë¦¬í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
 
       let failCount = 0;
       for (const id of ids) {
@@ -389,7 +389,7 @@
         }).eq('id', id);
         if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, error: error.message }); }
       }
-      if (failCount > 0) alert(`${failCount}°Ç Ã³¸® ½ÇÆĞ. ·Î±×¸¦ È®ÀÎÇØÁÖ¼¼¿ä.`);
+      if (failCount > 0) alert(`${failCount}ê±´ ì²˜ë¦¬ ì‹¤íŒ¨. ë¡œê·¸ë¥¼ í™•ì¸í•´ì£¼ì„¸ìš”.`);
       await logInfo('ORDER_BULK_DELIVER', { count: ids.length, failCount });
       await loadOrders();
     }
