@@ -155,7 +155,7 @@
       const row = { code, description: desc, amount, max_uses: maxUses || null, expires_at: expiry || null, is_active: true, used_count: 0, created_by: session.id, created_at: new Date().toISOString() };
       const { error } = await _sb.from('talent_qr_codes').insert(row);
       if (error) { alert('\uC0DD\uC131 \uC2E4\uD328: ' + error.message); return; }
-      await logActivity('qr_create', { code, amount, description: desc });
+      await logInfo('qr_create', { code, amount, description: desc });
       alert('QR \uCF54\uB4DC \uC0DD\uC131 \uC644\uB8CC: ' + code);
       await loadQRList();
     }
@@ -174,7 +174,7 @@
       }
       const { error } = await _sb.from('talent_qr_codes').insert(rows);
       if (error) { alert('\uC77C\uAD04 \uC0DD\uC131 \uC2E4\uD328: ' + error.message); return; }
-      await logActivity('qr_bulk_create', { count: 5, amount, description: desc });
+      await logInfo('qr_bulk_create', { count: 5, amount, description: desc });
       alert('5\uAC1C QR \uCF54\uB4DC\uAC00 \uC0DD\uC131\uB418\uC5C8\uC2B5\uB2C8\uB2E4.');
       await loadQRList();
     }
@@ -249,7 +249,7 @@
       if (!confirm('\uC774 \uCF54\uB4DC\uB97C ' + action + '\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?')) return;
       const { error } = await _sb.from('talent_qr_codes').update({ is_active: !current }).eq('id', id);
       if (error) { alert(action + ' \uC2E4\uD328: ' + error.message); return; }
-      await logActivity('qr_toggle', { qr_id: id, new_state: !current });
+      await logInfo('qr_toggle', { qr_id: id, new_state: !current });
       await loadQRList();
     }
   </script>
