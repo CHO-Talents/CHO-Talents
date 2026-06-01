@@ -189,7 +189,7 @@
         </div>
         <div id="locationFields" style="display:none;">
           <div style="display:flex;gap:0.4rem;margin-bottom:0.4rem;">
-            <input type="text" id="qrLocationSearch" class="form-input" placeholder="주소나 명칭을 입력하세요" style="flex:1;" />
+            <input type="text" id="qrLocationSearch" class="form-input" placeholder="주소나 명칭을 입력하세요" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();searchLocationFor('qr');}" />
             <button type="button" class="admin-btn" onclick="searchLocationFor('qr')" style="padding:0.4rem 0.8rem;font-size:0.82rem;white-space:nowrap;">🔍 검색</button>
           </div>
           <div id="qrLocationResults" class="location-results" style="display:none;"></div>
@@ -301,7 +301,7 @@
           </div>
           <div id="editLocationFields" style="display:none;">
             <div style="display:flex;gap:0.4rem;margin-bottom:0.4rem;">
-              <input type="text" id="editLocationSearch" class="form-input" placeholder="주소나 명칭 입력" style="flex:1;" />
+              <input type="text" id="editLocationSearch" class="form-input" placeholder="주소나 명칭 입력" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();searchLocationFor('edit');}" />
               <button type="button" class="admin-btn" onclick="searchLocationFor('edit')" style="padding:0.35rem 0.6rem;font-size:0.78rem;">🔍 검색</button>
             </div>
             <div id="editLocationResults" class="location-results" style="display:none;"></div>
@@ -377,9 +377,19 @@
       }
       return new Promise(resolve => {
         const s = document.createElement('script');
-        s.src = '//dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_MAP_KEY + '&libraries=services&autoload=false';
-        s.onload = () => { kakao.maps.load(() => { kakaoLoaded = true; resolve(true); }); };
-        s.onerror = () => { alert('카카오 맵 SDK 로드에 실패했습니다.'); resolve(false); };
+        s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_MAP_KEY + '&libraries=services';
+        s.onload = () => {
+          if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.services) {
+            kakaoLoaded = true; resolve(true);
+          } else {
+            alert('카카오 맵 SDK가 정상 로드되지 않았습니다.\n\nKakao Developers (developers.kakao.com) 에서\n내 애플리케이션 > 앱 설정 > 플랫폼 > Web\n사이트 도메인에 아래 주소를 등록해주세요:\n\n' + location.origin);
+            resolve(false);
+          }
+        };
+        s.onerror = () => {
+          alert('카카오 맵 SDK 로드 실패\n\nKakao Developers (developers.kakao.com) 에서\n내 애플리케이션 > 앱 설정 > 플랫폼 > Web\n사이트 도메인에 아래 주소를 등록해주세요:\n\n' + location.origin);
+          resolve(false);
+        };
         document.head.appendChild(s);
       });
     }
