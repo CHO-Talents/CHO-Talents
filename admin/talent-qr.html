@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.20.1" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.21.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
@@ -90,7 +90,7 @@
       <li>
         <button class="nav-dropdown-toggle">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">사용자 가이드</a></li>
+          <li><a href="../guide.html">학생 가이드</a></li>
           <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
           <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li>
           <li><a href="../earn-talents.html">달란트 적립</a></li>
@@ -311,8 +311,15 @@
         <option value="location">위치 제한</option>
         <option value="repeat">반복 수령</option>
       </select>
-      <input type="date" id="qrFilterDate" onchange="renderQRList()" title="생성일 필터" />
-      <button class="filter-btn" onclick="clearQRFilters()" style="font-size:0.78rem;">초기화</button>
+    </div>
+    <div class="filter-bar" style="margin-top:-0.4rem;">
+      <input type="date" id="qrFilterDateFrom" onchange="renderQRList()" title="시작일" />
+      <span style="font-size:0.82rem;color:var(--admin-text-muted);">~</span>
+      <input type="date" id="qrFilterDateTo" onchange="renderQRList()" title="종료일" />
+      <button class="filter-btn" onclick="setQRDatePreset('today')" style="font-size:0.75rem;">오늘</button>
+      <button class="filter-btn" onclick="setQRDatePreset('week')" style="font-size:0.75rem;">1주</button>
+      <button class="filter-btn" onclick="setQRDatePreset('month')" style="font-size:0.75rem;">1달</button>
+      <button class="filter-btn" onclick="setQRDatePreset('year')" style="font-size:0.75rem;">1년</button>
     </div>
 
     <div id="qrList">
@@ -471,10 +478,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../js/supabase-config.js?v=3.20.1"></script>
-  <script src="../js/activity-log.js?v=3.20.1"></script>
-  <script src="../js/auth.js?v=3.20.1"></script>
-  <script src="../js/talent.js?v=3.20.1"></script>
+  <script src="../js/supabase-config.js?v=3.21.0"></script>
+  <script src="../js/activity-log.js?v=3.21.0"></script>
+  <script src="../js/auth.js?v=3.21.0"></script>
+  <script src="../js/talent.js?v=3.21.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -490,6 +497,7 @@
       autoLogPageView();
       isAdmin = (session.permissionRank || 0) >= 100;
       initDefaults();
+      initQRDateFilter();
       await loadTalentItems();
       await loadQRList();
     })();
@@ -964,7 +972,8 @@
       const search = (document.getElementById('qrSearchInput').value || '').trim().toLowerCase();
       const targetF = document.getElementById('qrFilterTarget').value;
       const condF = document.getElementById('qrFilterCondition').value;
-      const dateF = document.getElementById('qrFilterDate').value;
+      const dateFrom = document.getElementById('qrFilterDateFrom').value;
+      const dateTo = document.getElementById('qrFilterDateTo').value;
       return items.filter(q => {
         if (search && !(q.description || '').toLowerCase().includes(search) && !(q.code || '').toLowerCase().includes(search)) return false;
         if (targetF && q.target_type !== targetF) return false;
@@ -972,20 +981,36 @@
         if (condF === 'limited' && (!q.max_uses || q.max_uses === 0)) return false;
         if (condF === 'location' && !q.location_lat) return false;
         if (condF === 'repeat' && (!q.repeat_type || q.repeat_type === 'none')) return false;
-        if (dateF && q.created_at) {
+        if (q.created_at) {
           const cd = q.created_at.substring(0, 10);
-          if (cd !== dateF) return false;
+          if (dateFrom && cd < dateFrom) return false;
+          if (dateTo && cd > dateTo) return false;
         }
         return true;
       });
     }
 
-    function clearQRFilters() {
-      document.getElementById('qrSearchInput').value = '';
-      document.getElementById('qrFilterTarget').value = '';
-      document.getElementById('qrFilterCondition').value = '';
-      document.getElementById('qrFilterDate').value = '';
+    function setQRDatePreset(preset) {
+      const today = toDateStr(nowKST());
+      let from = today;
+      if (preset === 'today') { from = today; }
+      else if (preset === 'week') {
+        const d = nowKST(); d.setDate(d.getDate() - 6);
+        from = toDateStr(d);
+      } else if (preset === 'month') {
+        from = today.substring(0, 8) + '01';
+      } else if (preset === 'year') {
+        from = today.substring(0, 5) + '01-01';
+      }
+      document.getElementById('qrFilterDateFrom').value = from;
+      document.getElementById('qrFilterDateTo').value = today;
       renderQRList();
+    }
+
+    function initQRDateFilter() {
+      const today = toDateStr(nowKST());
+      document.getElementById('qrFilterDateFrom').value = today;
+      document.getElementById('qrFilterDateTo').value = today;
     }
 
     function renderQRList() {
@@ -1199,6 +1224,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.20.1"></script>
+  <script src="../js/version.js?v=3.21.0"></script>
 </body>
 </html>

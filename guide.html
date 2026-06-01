@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>사용자 가이드 - 달란트 마을</title>
+  <title>학생 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.20.1" />
-  <link rel="stylesheet" href="css/guide.css?v=3.20.1" />
+  <link rel="stylesheet" href="css/common.css?v=3.21.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.21.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -16,7 +16,7 @@
       <li>
         <button class="nav-dropdown-toggle active">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html" class="active">사용자 가이드</a></li>
+          <li><a href="guide.html" class="active">학생 가이드</a></li>
           <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가이드</a></li>
           <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가이드</a></li>
           <li><a href="earn-talents.html">달란트 적립</a></li>
@@ -72,12 +72,12 @@
   <main class="guide-container">
     <section class="guide-hero">
       <div class="guide-kicker">학생 · 비로그인 사용자</div>
-      <h1>사용자 가이드</h1>
-      <p>달란트 마을을 처음 사용하는 학생과 아직 로그인하지 않은 사용자를 위한 안내입니다. 계정 신청, 로그인, 내 달란트 확인, 상품 구매 신청, 질문 등록 방법을 차근차근 볼 수 있어요.</p>
+      <h1>학생 가이드</h1>
+      <p>달란트 마을을 처음 사용하는 학생을 위한 안내입니다. 계정 신청부터 달란트 확인, 상품 구매까지 순서대로 알려드립니다.</p>
     </section>
 
     <div class="guide-switcher">
-      <a href="guide.html" class="active">사용자 가이드</a>
+      <a href="guide.html" class="active">학생 가이드</a>
       <a href="teacher-guide.html">교사 가이드</a>
       <a href="admin-guide.html">관리자 가이드</a>
     </div>
@@ -125,13 +125,13 @@
       <h2>📌 메뉴별 사용 방법</h2>
       <div class="guide-table-wrap">
         <table class="guide-table">
-          <thead><tr><th>메뉴</th><th>언제 사용하나요?</th><th>알아둘 점</th></tr></thead>
+          <thead><tr><th>메뉴</th><th>설명</th></tr></thead>
           <tbody>
-            <tr><td>달란트 적립</td><td>어떤 활동으로 달란트를 받을 수 있는지 볼 때 사용합니다.</td><td>실제 지급 항목과 금액은 선생님이 정한 설정에 따라 달라질 수 있습니다.</td></tr>
-            <tr><td>상품 구매</td><td>달란트로 바꿀 수 있는 상품을 볼 때 사용합니다.</td><td>로그인하면 구매 신청 버튼이 보입니다. 달란트가 부족하면 신청할 수 없습니다.</td></tr>
-            <tr><td>내 달란트</td><td>내 잔액과 적립/사용 내역을 확인할 때 사용합니다.</td><td>구매 신청 중인 달란트는 사용 대기로 따로 표시됩니다.</td></tr>
-            <tr><td>내 구매 상품</td><td>내가 신청한 상품이 어디까지 진행됐는지 볼 때 사용합니다.</td><td>구매 신청 상태일 때는 취소할 수 있습니다.</td></tr>
-            <tr><td>Q &amp; A</td><td>궁금한 점을 질문하거나 답변을 확인할 때 사용합니다.</td><td>로그인하지 않아도 이름을 입력해 질문할 수 있습니다.</td></tr>
+            <tr><td>달란트 적립</td><td>달란트를 받을 수 있는 활동 목록을 확인합니다.</td></tr>
+            <tr><td>상품 구매</td><td>달란트로 살 수 있는 상품을 보고 구매를 신청합니다.</td></tr>
+            <tr><td>내 달란트</td><td>사용 가능 달란트, 적립/사용 내역, 구매 진행 상태를 확인합니다.</td></tr>
+            <tr><td>내 구매 상품</td><td>신청한 상품의 진행 단계를 확인하고, 신청 단계에서 취소할 수 있습니다.</td></tr>
+            <tr><td>Q &amp; A</td><td>자주 묻는 질문을 보거나, 궁금한 점을 질문합니다.</td></tr>
           </tbody>
         </table>
       </div>
@@ -158,12 +158,23 @@
         <table class="guide-table">
           <thead><tr><th>항목</th><th>뜻</th></tr></thead>
           <tbody>
-            <tr><td>누적 적립</td><td>지금까지 받은 달란트의 합계입니다.</td></tr>
-            <tr><td>사용 완료</td><td>상품 구매가 확정되어 실제로 사용된 달란트입니다.</td></tr>
-            <tr><td>사용 대기</td><td>구매 신청은 했지만 아직 실제 차감 전인 달란트입니다.</td></tr>
-            <tr><td>사용 가능</td><td>지금 바로 사용할 수 있는 달란트입니다.</td></tr>
+            <tr><td>사용 가능 달란트</td><td>지금 바로 상품 구매에 사용할 수 있는 달란트입니다.</td></tr>
+            <tr><td>상품 수령 예정</td><td>구매가 진행 중이고 아직 상품을 받지 않은 건수입니다.</td></tr>
+            <tr><td>사용 대기 달란트</td><td>구매 신청은 했지만 아직 달란트가 차감되지 않은 금액입니다.</td></tr>
+            <tr><td>사용 완료 달란트</td><td>상품 구매가 확정되어 실제로 차감된 달란트입니다.</td></tr>
+            <tr><td>누적 적립 달란트</td><td>지금까지 받은 달란트의 총 합계입니다.</td></tr>
           </tbody>
         </table>
+      </div>
+      <div class="guide-card">
+        <h3>상품 구매 진행 흐름</h3>
+        <p><span class="guide-badge badge-student">구매 신청</span> → <span class="guide-badge badge-teacher">상품 준비</span> → <span class="guide-badge badge-oper">상품 구매</span> → <span class="guide-badge badge-admin">상품 지급</span></p>
+        <ul class="guide-list" style="margin-top:0.5rem;font-size:0.85rem;">
+          <li><strong>구매 신청</strong> : 학생이 상품을 선택하고 신청합니다. 이 단계에서 취소할 수 있습니다.</li>
+          <li><strong>상품 준비</strong> : 선생님이 신청을 확인하고 상품을 준비합니다.</li>
+          <li><strong>상품 구매</strong> : 상품 구매가 확정되면 달란트가 차감됩니다.</li>
+          <li><strong>상품 지급</strong> : 상품을 실제로 전달받으면 완료됩니다.</li>
+        </ul>
       </div>
     </section>
 
@@ -191,9 +202,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.20.1"></script>
-  <script src="js/activity-log.js?v=3.20.1"></script>
-  <script src="js/auth.js?v=3.20.1"></script>
+  <script src="js/supabase-config.js?v=3.21.0"></script>
+  <script src="js/activity-log.js?v=3.21.0"></script>
+  <script src="js/auth.js?v=3.21.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -211,6 +222,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.20.1"></script>
+  <script src="js/version.js?v=3.21.0"></script>
 </body>
 </html>

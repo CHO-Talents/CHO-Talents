@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>보고서 관리 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.20.1" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.21.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -14,7 +14,7 @@
       <li>
         <button class="nav-dropdown-toggle">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">사용자 가이드</a></li>
+          <li><a href="../guide.html">학생 가이드</a></li>
           <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
           <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li>
           <li><a href="../earn-talents.html">달란트 적립</a></li>
@@ -143,9 +143,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.20.1"></script>
-  <script src="../js/activity-log.js?v=3.20.1"></script>
-  <script src="../js/auth.js?v=3.20.1"></script>
+  <script src="../js/supabase-config.js?v=3.21.0"></script>
+  <script src="../js/activity-log.js?v=3.21.0"></script>
+  <script src="../js/auth.js?v=3.21.0"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -399,7 +399,7 @@
         { task_id:'TASK-028', task_title:'v3.11.0 반응형 + 네비게이션 통합', report_type:'change_report', content:'<h2>TASK-028: v3.11.0</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응형 4단계</li><li>모바일 햄버거 네비게이션</li><li>테이블 반응형</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'change_report', content:'<h2>TASK-029: v3.12.0</h2><p><b>버전:</b> v3.12.0</p><ul><li>페이지 기능 관리 개편</li><li>네비게이션 통합</li><li>달란트 관리 항목 관리 추가</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-030', task_title:'v3.12.2 네비 통합 + 구매/관리 개선', report_type:'change_report', content:'<h2>TASK-030: v3.12.2</h2><p><b>버전:</b> v3.12.2</p><ul><li>네비게이션 통합</li><li>내 구매 상품 페이지</li><li>대리 구매 시스템</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-032', task_title:'v3.13.0 로그인 개선 + 5그룹 드롭다운 네비', report_type:'change_report', content:'<h2>TASK-032: v3.13.0</h2><p><b>버전:</b> v3.13.0</p><ul><li>승인 대기 메시지</li><li>비밀번호 복잡도</li><li>5그룹 드롭다운 네비게이션</li><li>사용자 가이드 페이지</li><li>Q&A 페이지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-032', task_title:'v3.13.0 로그인 개선 + 5그룹 드롭다운 네비', report_type:'change_report', content:'<h2>TASK-032: v3.13.0</h2><p><b>버전:</b> v3.13.0</p><ul><li>승인 대기 메시지</li><li>비밀번호 복잡도</li><li>5그룹 드롭다운 네비게이션</li><li>학생 가이드 페이지</li><li>Q&A 페이지</li></ul>', created_by:'AI_Cursor' },
         { task_id:'TASK-035', task_title:'v3.13.3~v3.13.4 드롭다운/QnA/배지 수정', report_type:'change_report', content:'<h2>TASK-035: v3.13.3~v3.13.4</h2><p><b>버전:</b> v3.13.3~v3.13.4</p><ul><li>Safari 드롭다운 클리핑 수정 (position:fixed)</li><li>Q&A 삭제/일시/질문자 표시</li><li>메인 가이드 전환</li><li>배지 인라인 표시</li></ul>', created_by:'AI_Cursor' }
       ];
     }
@@ -573,6 +573,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.20.1"></script>
+  <script src="../js/version.js?v=3.21.0"></script>
 </body>
 </html>

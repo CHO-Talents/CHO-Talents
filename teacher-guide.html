@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>교사 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.20.1" />
-  <link rel="stylesheet" href="css/guide.css?v=3.20.1" />
+  <link rel="stylesheet" href="css/common.css?v=3.21.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.21.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -16,7 +16,7 @@
       <li>
         <button class="nav-dropdown-toggle active">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">사용자 가이드</a></li>
+          <li><a href="guide.html">학생 가이드</a></li>
           <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html" class="active">교사 가이드</a></li>
           <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가이드</a></li>
           <li><a href="earn-talents.html">달란트 적립</a></li>
@@ -71,13 +71,13 @@
 
   <main class="guide-container">
     <section class="guide-hero">
-      <div class="guide-kicker">일반 교사 계정</div>
+      <div class="guide-kicker">일반 교사 · 부서 담당 교사</div>
       <h1>교사 가이드</h1>
-      <p>일반 교사 계정으로 학생 달란트를 지급하고, QR 달란트를 수령하고, 학생 대신 상품 구매 신청을 도와주는 방법을 정리했습니다. 화면에 보이는 메뉴는 내 권한과 담당 부서/반 설정에 따라 달라집니다.</p>
+      <p>교사 계정으로 학생 달란트 지급, QR 달란트 수령, 대리 구매 신청을 하는 방법을 안내합니다. 보이는 메뉴는 권한과 담당 부서 설정에 따라 달라집니다.</p>
     </section>
 
     <div class="guide-switcher">
-      <a href="guide.html">사용자 가이드</a>
+      <a href="guide.html">학생 가이드</a>
       <a href="teacher-guide.html" class="active">교사 가이드</a>
       <a href="admin-guide.html">관리자 가이드</a>
     </div>
@@ -93,16 +93,16 @@
     </section>
 
     <section class="guide-section">
-      <h2>📌 일반 교사가 주로 쓰는 메뉴</h2>
+      <h2>📌 교사가 주로 쓰는 메뉴</h2>
       <div class="guide-table-wrap">
         <table class="guide-table">
-          <thead><tr><th>메뉴</th><th>무엇을 하나요?</th><th>주의할 점</th></tr></thead>
+          <thead><tr><th>메뉴</th><th>설명</th></tr></thead>
           <tbody>
-            <tr><td>달란트 관리</td><td>담당 범위 학생을 조회하고 달란트 항목을 선택해 지급합니다.</td><td>일반 교사는 보통 본인 부서와 반 학생 중심으로 사용할 수 있습니다.</td></tr>
-            <tr><td>달란트 수령</td><td>QR 코드나 코드 입력으로 달란트를 수령합니다.</td><td>코드가 만료됐거나 이미 수령한 코드면 실패 메시지가 표시됩니다.</td></tr>
-            <tr><td>상품 구매</td><td>교사용 상품을 직접 신청하거나 학생용 상품을 확인합니다.</td><td>학생용 상품은 직접 구매하지 않고 대리 구매 기능을 사용합니다.</td></tr>
-            <tr><td>대리 구매</td><td>담당 범위 학생을 선택해 학생 명의로 상품 구매 신청을 넣습니다.</td><td>선택한 학생의 사용 가능 달란트가 부족하면 신청할 수 없습니다.</td></tr>
-            <tr><td>내 달란트 / 내 구매 상품</td><td>교사 본인의 달란트와 구매 신청 상태를 확인합니다.</td><td>학생 내역과 내 내역은 화면이 다릅니다.</td></tr>
+            <tr><td>달란트 관리</td><td>담당 학생에게 달란트 항목을 선택하여 지급합니다. 출석 버튼으로 빠르게 지급할 수 있습니다.</td></tr>
+            <tr><td>달란트 수령</td><td>QR 코드 스캔 또는 코드 입력으로 달란트를 수령합니다.</td></tr>
+            <tr><td>상품 구매</td><td>교사용 상품을 구매하거나 학생용 상품을 확인합니다. 교사는 학생 상품을 직접 구매할 수 없습니다.</td></tr>
+            <tr><td>대리 구매</td><td>학생을 선택하여 학생 명의로 상품 구매 신청을 합니다.</td></tr>
+            <tr><td>내 달란트</td><td>사용 가능 달란트, 적립/사용 내역, 상품 수령 예정 현황을 확인합니다.</td></tr>
           </tbody>
         </table>
       </div>
@@ -186,9 +186,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.20.1"></script>
-  <script src="js/activity-log.js?v=3.20.1"></script>
-  <script src="js/auth.js?v=3.20.1"></script>
+  <script src="js/supabase-config.js?v=3.21.0"></script>
+  <script src="js/activity-log.js?v=3.21.0"></script>
+  <script src="js/auth.js?v=3.21.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -206,6 +206,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.20.1"></script>
+  <script src="js/version.js?v=3.21.0"></script>
 </body>
 </html>

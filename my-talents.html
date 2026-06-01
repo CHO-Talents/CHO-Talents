@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 달란트 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.20.1" />
+  <link rel="stylesheet" href="css/common.css?v=3.21.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -17,7 +17,7 @@
       <li>
         <button class="nav-dropdown-toggle">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">사용자 가이드</a></li>
+          <li><a href="guide.html">학생 가이드</a></li>
           <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가이드</a></li>
           <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가이드</a></li>
           <li><a href="earn-talents.html">달란트 적립</a></li>
@@ -77,9 +77,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.20.1"></script>
-  <script src="js/activity-log.js?v=3.20.1"></script>
-  <script src="js/auth.js?v=3.20.1"></script>
+  <script src="js/supabase-config.js?v=3.21.0"></script>
+  <script src="js/activity-log.js?v=3.21.0"></script>
+  <script src="js/auth.js?v=3.21.0"></script>
   <script src="js/talent.js"></script>
   <script>
     initSupabase();
@@ -117,29 +117,41 @@
       const available = summary.balance - pendingTalent;
       const { data: history } = await fetchTalentHistory(session.id, { limit: 50 });
 
+      let deliveryCount = 0;
+      try {
+        const { data: delOrders } = await _sb.from('product_orders')
+          .select('id').eq('user_id', session.id).in('status', ['preparing', 'purchased']);
+        deliveryCount = (delOrders || []).length;
+      } catch (e) {}
+
       let html = `
         <h1 class="page-title">💰 내 달란트</h1>
         <p class="page-sub">${session.displayName || session.username}님의 달란트 현황</p>
         <div class="summary-cards">
-          <div class="summary-card earn">
-            <div class="summary-card-icon">📈</div>
-            <div class="summary-card-label">누적 적립</div>
-            <div class="summary-card-value">${fmtNum(summary.earned)}</div>
-          </div>
-          <div class="summary-card use">
-            <div class="summary-card-icon">📉</div>
-            <div class="summary-card-label">사용 완료</div>
-            <div class="summary-card-value">${fmtNum(summary.used)}</div>
-          </div>
-          ${pendingTalent > 0 ? `<div class="summary-card" style="background:#fff3bf;">
-            <div class="summary-card-icon">⏳</div>
-            <div class="summary-card-label">사용 대기</div>
-            <div class="summary-card-value" style="color:#e67700;">${fmtNum(pendingTalent)}</div>
-          </div>` : ''}
           <div class="summary-card balance">
             <div class="summary-card-icon">⭐</div>
-            <div class="summary-card-label">사용 가능</div>
+            <div class="summary-card-label">사용 가능 달란트</div>
             <div class="summary-card-value">${fmtNum(available)}</div>
+          </div>
+          ${deliveryCount > 0 ? `<div class="summary-card" style="background:#e7f5ff;">
+            <div class="summary-card-icon">📦</div>
+            <div class="summary-card-label">상품 수령 예정</div>
+            <div class="summary-card-value" style="color:#1971c2;">${fmtNum(deliveryCount)}건</div>
+          </div>` : ''}
+          ${pendingTalent > 0 ? `<div class="summary-card" style="background:#fff3bf;">
+            <div class="summary-card-icon">⏳</div>
+            <div class="summary-card-label">사용 대기 달란트</div>
+            <div class="summary-card-value" style="color:#e67700;">${fmtNum(pendingTalent)}</div>
+          </div>` : ''}
+          <div class="summary-card use">
+            <div class="summary-card-icon">📉</div>
+            <div class="summary-card-label">사용 완료 달란트</div>
+            <div class="summary-card-value">${fmtNum(summary.used)}</div>
+          </div>
+          <div class="summary-card earn">
+            <div class="summary-card-icon">📈</div>
+            <div class="summary-card-label">누적 적립 달란트</div>
+            <div class="summary-card-value">${fmtNum(summary.earned)}</div>
           </div>
         </div>
         <div id="earnBreakdown" style="margin-bottom:1.5rem;"></div>
@@ -217,6 +229,6 @@
         }).join('') + `</div></div>`;
     }
   </script>
-  <script src="js/version.js?v=3.20.1"></script>
+  <script src="js/version.js?v=3.21.0"></script>
 </body>
 </html>
