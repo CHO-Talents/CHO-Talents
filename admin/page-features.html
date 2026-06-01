@@ -3,77 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ÆäÀÌÁö ±â´É °ü¸® - ´Þ¶õÆ® ¸¶À»</title>
+  <title>íŽ˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬ - ë‹¬ëž€íŠ¸ ë§ˆì„</title>
   <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Þ¶õÆ® ¸¶À»</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ë‹¬ëž€íŠ¸ ë§ˆì„</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">¼Ò°³</button>
+        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
-          <li><a href="../earn-talents.html">´Þ¶õÆ® Àû¸³</a></li>
+          <li><a href="../guide.html">ì‚¬ìš©ìž ê°€ì´ë“œ</a></li>
+          <li><a href="../earn-talents.html">ë‹¬ëž€íŠ¸ ì ë¦½</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">´Þ¶õÆ®</button>
+        <button class="nav-dropdown-toggle">ë‹¬ëž€íŠ¸</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">³» ´Þ¶õÆ®</a></li>
-          <li><a href="../talent-receive.html">´Þ¶õÆ® ¼ö·É</a></li>
-          <li data-min-perm="40"><a href="talents.html">´Þ¶õÆ® °ü¸®</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">´Þ¶õÆ® Åë°è</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">´Þ¶õÆ® QR °ü¸®</a></li>
+          <li><a href="../my-talents.html">ë‚´ ë‹¬ëž€íŠ¸</a></li>
+          <li><a href="../talent-receive.html">ë‹¬ëž€íŠ¸ ìˆ˜ë ¹</a></li>
+          <li data-min-perm="40"><a href="talents.html">ë‹¬ëž€íŠ¸ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ëž€íŠ¸ í†µê³„</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">ë‹¬ëž€íŠ¸ QR ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">»óÇ°</button>
+        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
-          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
-          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
-          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
+          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
+          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">°ü¸®</button>
+        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
-          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
+          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ìž ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ìž ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle active">¿î¿µ</button>
+        <button class="nav-dropdown-toggle active">ìš´ì˜</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
-          <li data-min-perm="100"><a href="page-features.html" class="active">ÆäÀÌÁö ±â´É</a></li>
-          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
-          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
-          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">íŽ˜ì´ì§€ ì ‘ê·¼</a></li>
+          <li data-min-perm="100"><a href="page-features.html" class="active">íŽ˜ì´ì§€ ê¸°ëŠ¥</a></li>
+          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
+          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
+          <li data-min-perm="100"><a href="audit.html">ìž‘ì—… ì´ë ¥</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? ÆäÀÌÁö ±â´É °ü¸®</h2>
-    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">±ÇÇÑ µî±Þº°·Î °¢ ÆäÀÌÁö¿¡¼­ »ç¿ë °¡´ÉÇÑ ±â´ÉÀ» °ü¸®ÇÕ´Ï´Ù.</p>
+    <h2 style="margin-bottom:1rem;">?? íŽ˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬</h2>
+    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">ê¶Œí•œ ë“±ê¸‰ë³„ë¡œ ê° íŽ˜ì´ì§€ì—ì„œ ì‚¬ìš© ê°€ëŠ¥í•œ ê¸°ëŠ¥ì„ ê´€ë¦¬í•©ë‹ˆë‹¤.</p>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title">±ÇÇÑº° ±â´É ¼³Á¤</div>
+        <div class="admin-table-title">ê¶Œí•œë³„ ê¸°ëŠ¥ ì„¤ì •</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>±¸ºÐ</th><th>À¯Çü</th><th>±ÇÇÑ</th><th>µî±Þ</th><th>¼³¸í</th><th>°ü¸®</th></tr></thead>
+        <thead><tr><th>êµ¬ë¶„</th><th>ìœ í˜•</th><th>ê¶Œí•œ</th><th>ë“±ê¸‰</th><th>ì„¤ëª…</th><th>ê´€ë¦¬</th></tr></thead>
         <tbody id="permList"></tbody>
       </table>
     </div>
@@ -81,12 +81,12 @@
 
   <div class="modal-overlay hidden" id="featureModal">
     <div class="modal-box" style="max-width:750px;max-height:85vh;overflow-y:auto;">
-      <h3 class="modal-title" id="featureTitle">ÆäÀÌÁö ±â´É ¼³Á¤</h3>
+      <h3 class="modal-title" id="featureTitle">íŽ˜ì´ì§€ ê¸°ëŠ¥ ì„¤ì •</h3>
       <div class="form-error" id="featureError"></div>
       <div id="featureBody"></div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="closeFeatureModal()">Ãë¼Ò</button>
-        <button class="btn-confirm" id="btnSaveFeature" onclick="saveFeatures()">ÀúÀå</button>
+        <button class="btn-cancel" onclick="closeFeatureModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" id="btnSaveFeature" onclick="saveFeatures()">ì €ìž¥</button>
       </div>
     </div>
   </div>
@@ -102,70 +102,70 @@
     let editingPerm = null;
 
     const PERM_LIST = [
-      { key: 'super_admin', userType: 'teacher', perm: 'admin', label: 'ÃÖ°í °ü¸®ÀÚ', emoji: '??', rank: 110, desc: '¸ðµç ±â´É Á¢±Ù °¡´É (½Ã½ºÅÛ °ü¸®ÀÚ)', superOnly: true },
-      { key: 'admin', userType: 'teacher', perm: 'admin', label: '°ü¸®ÀÚ', emoji: '??', rank: 100, desc: 'ÀüÃ¼ ½Ã½ºÅÛ °ü¸®' },
-      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', label: 'Àüµµ»ç´Ô', emoji: '??', rank: 90, desc: '»ç¿ëÀÚ/ºÎ¼­/°ü¸®ÀÚ °ü¸®' },
-      { key: 'chief', userType: 'teacher', perm: 'chief', label: 'ºÎÀå ±³»ç', emoji: '??', rank: 80, desc: '´ã´ç ºÎ¼­ °ü¸® + Á¶È¸' },
-      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', label: 'ºÎ¼­ ´ã´ç ±³»ç', emoji: '?????', rank: 60, desc: '´ã´ç ºÎ¼­ »ç¿ëÀÚ °ü¸®' },
-      { key: 'teacher', userType: 'teacher', perm: 'teacher', label: 'ÀÏ¹Ý ±³»ç', emoji: '?????', rank: 40, desc: '´Þ¶õÆ® Áö±Þ' },
-      { key: 'student', userType: 'student', perm: 'student', label: 'ÇÐ»ý', emoji: '??', rank: 20, desc: '³» ´Þ¶õÆ® Á¶È¸ / »óÁ¡ ÀÌ¿ë' }
+      { key: 'super_admin', userType: 'teacher', perm: 'admin', label: 'ìµœê³  ê´€ë¦¬ìž', emoji: '??', rank: 110, desc: 'ëª¨ë“  ê¸°ëŠ¥ ì ‘ê·¼ ê°€ëŠ¥ (ì‹œìŠ¤í…œ ê´€ë¦¬ìž)', superOnly: true },
+      { key: 'admin', userType: 'teacher', perm: 'admin', label: 'ê´€ë¦¬ìž', emoji: '??', rank: 100, desc: 'ì „ì²´ ì‹œìŠ¤í…œ ê´€ë¦¬' },
+      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', label: 'ì „ë„ì‚¬ë‹˜', emoji: '??', rank: 90, desc: 'ì‚¬ìš©ìž/ë¶€ì„œ/ê´€ë¦¬ìž ê´€ë¦¬' },
+      { key: 'chief', userType: 'teacher', perm: 'chief', label: 'ë¶€ìž¥ êµì‚¬', emoji: '??', rank: 80, desc: 'ë‹´ë‹¹ ë¶€ì„œ ê´€ë¦¬ + ì¡°íšŒ' },
+      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', label: 'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', emoji: '?????', rank: 60, desc: 'ë‹´ë‹¹ ë¶€ì„œ ì‚¬ìš©ìž ê´€ë¦¬' },
+      { key: 'teacher', userType: 'teacher', perm: 'teacher', label: 'ì¼ë°˜ êµì‚¬', emoji: '?????', rank: 40, desc: 'ë‹¬ëž€íŠ¸ ì§€ê¸‰' },
+      { key: 'student', userType: 'student', perm: 'student', label: 'í•™ìƒ', emoji: '??', rank: 20, desc: 'ë‚´ ë‹¬ëž€íŠ¸ ì¡°íšŒ / ìƒì  ì´ìš©' }
     ];
 
     const PAGE_FEATURES = [
-      { id: 'admin-users', name: '»ç¿ëÀÚ °ü¸®', features: [
-        { key: 'user_create', label: '»ç¿ëÀÚ µî·Ï' },
-        { key: 'user_edit', label: '»ç¿ëÀÚ ¼öÁ¤' },
-        { key: 'user_delete', label: '»ç¿ëÀÚ »èÁ¦' },
-        { key: 'user_pw_reset', label: 'ºñ¹Ð¹øÈ£ ÃÊ±âÈ­' },
-        { key: 'request_approve', label: '°¡ÀÔ ½ÅÃ» ½ÂÀÎ' },
-        { key: 'request_reject', label: '°¡ÀÔ ½ÅÃ» °ÅºÎ' },
-        { key: 'transfer_request', label: 'ºÎ¼­ ÀÌµ¿ ¿äÃ»' },
-        { key: 'transfer_approve', label: 'ºÎ¼­ ÀÌµ¿ ½ÂÀÎ' }
+      { id: 'admin-users', name: 'ì‚¬ìš©ìž ê´€ë¦¬', features: [
+        { key: 'user_create', label: 'ì‚¬ìš©ìž ë“±ë¡' },
+        { key: 'user_edit', label: 'ì‚¬ìš©ìž ìˆ˜ì •' },
+        { key: 'user_delete', label: 'ì‚¬ìš©ìž ì‚­ì œ' },
+        { key: 'user_pw_reset', label: 'ë¹„ë°€ë²ˆí˜¸ ì´ˆê¸°í™”' },
+        { key: 'request_approve', label: 'ê°€ìž… ì‹ ì²­ ìŠ¹ì¸' },
+        { key: 'request_reject', label: 'ê°€ìž… ì‹ ì²­ ê±°ë¶€' },
+        { key: 'transfer_request', label: 'ë¶€ì„œ ì´ë™ ìš”ì²­' },
+        { key: 'transfer_approve', label: 'ë¶€ì„œ ì´ë™ ìŠ¹ì¸' }
       ]},
-      { id: 'admin-departments', name: 'ºÎ¼­ °ü¸®', features: [
-        { key: 'dept_create', label: 'ºÎ¼­ µî·Ï' },
-        { key: 'dept_edit', label: 'ºÎ¼­ ¼öÁ¤' },
-        { key: 'dept_delete', label: 'ºÎ¼­ »èÁ¦' },
-        { key: 'dept_view_members', label: '¼Ò¼Ó º¸±â' }
+      { id: 'admin-departments', name: 'ë¶€ì„œ ê´€ë¦¬', features: [
+        { key: 'dept_create', label: 'ë¶€ì„œ ë“±ë¡' },
+        { key: 'dept_edit', label: 'ë¶€ì„œ ìˆ˜ì •' },
+        { key: 'dept_delete', label: 'ë¶€ì„œ ì‚­ì œ' },
+        { key: 'dept_view_members', label: 'ì†Œì† ë³´ê¸°' }
       ]},
-      { id: 'admin-managers', name: '°ü¸®ÀÚ °ü¸®', features: [
-        { key: 'mgr_register', label: '°ü¸®ÀÚ µî·Ï' },
-        { key: 'mgr_edit', label: '°ü¸®ÀÚ ¼öÁ¤' }
+      { id: 'admin-managers', name: 'ê´€ë¦¬ìž ê´€ë¦¬', features: [
+        { key: 'mgr_register', label: 'ê´€ë¦¬ìž ë“±ë¡' },
+        { key: 'mgr_edit', label: 'ê´€ë¦¬ìž ìˆ˜ì •' }
       ]},
-      { id: 'admin-talents', name: '´Þ¶õÆ® °ü¸®', features: [
-        { key: 'talent_give', label: '´Þ¶õÆ® Áö±Þ' },
-        { key: 'talent_use', label: '´Þ¶õÆ® »ç¿ë Ã³¸®' },
-        { key: 'talent_view_detail', label: '»ó¼¼ Á¶È¸' }
+      { id: 'admin-talents', name: 'ë‹¬ëž€íŠ¸ ê´€ë¦¬', features: [
+        { key: 'talent_give', label: 'ë‹¬ëž€íŠ¸ ì§€ê¸‰' },
+        { key: 'talent_use', label: 'ë‹¬ëž€íŠ¸ ì‚¬ìš© ì²˜ë¦¬' },
+        { key: 'talent_view_detail', label: 'ìƒì„¸ ì¡°íšŒ' }
       ]},
-      { id: 'admin-shop', name: '»óÇ° °ü¸®', features: [
-        { key: 'product_create', label: '»óÇ° µî·Ï' },
-        { key: 'product_edit', label: '»óÇ° ¼öÁ¤' },
-        { key: 'product_delete', label: '»óÇ° »èÁ¦' },
-        { key: 'product_toggle', label: 'È°¼º/ºñÈ°¼º ÀüÈ¯' }
+      { id: 'admin-shop', name: 'ìƒí’ˆ ê´€ë¦¬', features: [
+        { key: 'product_create', label: 'ìƒí’ˆ ë“±ë¡' },
+        { key: 'product_edit', label: 'ìƒí’ˆ ìˆ˜ì •' },
+        { key: 'product_delete', label: 'ìƒí’ˆ ì‚­ì œ' },
+        { key: 'product_toggle', label: 'í™œì„±/ë¹„í™œì„± ì „í™˜' }
       ]},
-      { id: 'admin-purchases', name: '±¸¸Å °ü¸®', features: [
-        { key: 'order_prepare', label: '»óÇ° ÁØºñ Ã³¸®' },
-        { key: 'order_purchase', label: '±¸¸Å È®Á¤ Ã³¸®' },
-        { key: 'order_deliver', label: 'Áö±Þ ¿Ï·á Ã³¸®' }
+      { id: 'admin-purchases', name: 'êµ¬ë§¤ ê´€ë¦¬', features: [
+        { key: 'order_prepare', label: 'ìƒí’ˆ ì¤€ë¹„ ì²˜ë¦¬' },
+        { key: 'order_purchase', label: 'êµ¬ë§¤ í™•ì • ì²˜ë¦¬' },
+        { key: 'order_deliver', label: 'ì§€ê¸‰ ì™„ë£Œ ì²˜ë¦¬' }
       ]},
-      { id: 'admin-reports', name: 'º¸°í¼­', features: [
-        { key: 'report_create', label: 'º¸°í¼­ µî·Ï' },
-        { key: 'report_delete', label: 'º¸°í¼­ »èÁ¦' }
+      { id: 'admin-reports', name: 'ë³´ê³ ì„œ', features: [
+        { key: 'report_create', label: 'ë³´ê³ ì„œ ë“±ë¡' },
+        { key: 'report_delete', label: 'ë³´ê³ ì„œ ì‚­ì œ' }
       ]},
-      { id: 'admin-logs', name: '·Î±×', features: [
-        { key: 'log_delete', label: '·Î±× »èÁ¦' },
-        { key: 'log_acknowledge', label: '·Î±× È®ÀÎ Ã³¸®' }
+      { id: 'admin-logs', name: 'ë¡œê·¸', features: [
+        { key: 'log_delete', label: 'ë¡œê·¸ ì‚­ì œ' },
+        { key: 'log_acknowledge', label: 'ë¡œê·¸ í™•ì¸ ì²˜ë¦¬' }
       ]},
-      { id: 'admin-talent-items', name: '´Þ¶õÆ® Ç×¸ñ °ü¸®', features: [
-        { key: 'item_create', label: 'Ç×¸ñ µî·Ï' },
-        { key: 'item_edit', label: 'Ç×¸ñ ¼öÁ¤' },
-        { key: 'item_delete', label: 'Ç×¸ñ »èÁ¦' }
+      { id: 'admin-talent-items', name: 'ë‹¬ëž€íŠ¸ í•­ëª© ê´€ë¦¬', features: [
+        { key: 'item_create', label: 'í•­ëª© ë“±ë¡' },
+        { key: 'item_edit', label: 'í•­ëª© ìˆ˜ì •' },
+        { key: 'item_delete', label: 'í•­ëª© ì‚­ì œ' }
       ]},
-      { id: 'admin-page-access', name: 'ÆäÀÌÁö Á¢±Ù °ü¸®', features: [
-        { key: 'access_edit', label: 'Á¢±Ù ¼³Á¤ ¼öÁ¤' }
+      { id: 'admin-page-access', name: 'íŽ˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬', features: [
+        { key: 'access_edit', label: 'ì ‘ê·¼ ì„¤ì • ìˆ˜ì •' }
       ]},
-      { id: 'admin-page-features', name: 'ÆäÀÌÁö ±â´É °ü¸®', features: [
-        { key: 'feature_edit', label: '±â´É ¼³Á¤ ¼öÁ¤' }
+      { id: 'admin-page-features', name: 'íŽ˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬', features: [
+        { key: 'feature_edit', label: 'ê¸°ëŠ¥ ì„¤ì • ìˆ˜ì •' }
       ]}
     ];
 
@@ -191,11 +191,11 @@
         .filter(p => !p.superOnly || isSA)
         .map(p => `<tr>
           <td><span class="level-badge">${p.emoji} ${p.label}</span></td>
-          <td>${p.userType === 'teacher' ? '±³»ç' : 'ÇÐ»ý'}</td>
+          <td>${p.userType === 'teacher' ? 'êµì‚¬' : 'í•™ìƒ'}</td>
           <td>${PERMISSION_LABELS[p.perm] || p.perm}</td>
           <td style="font-weight:700;">${p.rank}</td>
           <td style="font-size:0.82rem;color:var(--admin-text-muted);">${p.desc}</td>
-          <td><button class="filter-btn" onclick="openFeatureModal('${p.key}')">¼³Á¤</button></td>
+          <td><button class="filter-btn" onclick="openFeatureModal('${p.key}')">ì„¤ì •</button></td>
         </tr>`).join('');
     }
 
@@ -203,7 +203,7 @@
       editingPerm = permKey;
       const perm = PERM_LIST.find(p => p.key === permKey);
       if (!perm) return;
-      document.getElementById('featureTitle').textContent = `${perm.emoji} ${perm.label} - ÆäÀÌÁö ±â´É ¼³Á¤`;
+      document.getElementById('featureTitle').textContent = `${perm.emoji} ${perm.label} - íŽ˜ì´ì§€ ê¸°ëŠ¥ ì„¤ì •`;
 
       let saved = {};
       const { data } = await _sb.from('role_page_features').select('*').eq('permission_key', permKey);
@@ -257,13 +257,13 @@
       const { error } = await _sb.from('role_page_features').insert(rows);
       if (error) {
         await logError('ROLE_FEATURE_UPDATE_FAIL', { permissionKey: editingPerm, error: error.message });
-        errEl.textContent = 'ÀúÀå ½ÇÆÐ: ' + tErr(error.message);
+        errEl.textContent = 'ì €ìž¥ ì‹¤íŒ¨: ' + tErr(error.message);
         errEl.classList.add('show');
         return;
       }
       await logInfo('ROLE_FEATURE_UPDATE', { permissionKey: editingPerm });
       closeFeatureModal();
-      alert('ÀúÀåµÇ¾ú½À´Ï´Ù.');
+      alert('ì €ìž¥ë˜ì—ˆìŠµë‹ˆë‹¤.');
     }
 
     document.getElementById('featureModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeFeatureModal(); });

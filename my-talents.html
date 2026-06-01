@@ -3,67 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>³» ´Ş¶õÆ® - ´Ş¶õÆ® ¸¶À»</title>
+  <title>ë‚´ ë‹¬ë€íŠ¸ - ë‹¬ë€íŠ¸ ë§ˆì„</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>" />
   <link rel="stylesheet" href="css/common.css?v=3.13.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
     <a href="index.html" class="top-nav-brand">
-      <span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»
+      <span class="brand-icon">?</span> ë‹¬ë€íŠ¸ ë§ˆì„
     </a>
     <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="top-nav-links" id="navLinks">
       <li>
-        <button class="nav-dropdown-toggle">¼Ò°³</button>
+        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
-          <li><a href="earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
+          <li><a href="guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
+          <li><a href="earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
           <li><a href="qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">´Ş¶õÆ®</button>
+        <button class="nav-dropdown-toggle active">ë‹¬ë€íŠ¸</button>
         <ul class="nav-dropdown-menu">
-          <li id="navMyTalent" style="display:none;"><a href="my-talents.html" class="active">³» ´Ş¶õÆ®</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">´Ş¶õÆ® °ü¸®</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
-          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html" class="active">ë‚´ ë‹¬ë€íŠ¸</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html">ë‹¬ë€íŠ¸ ìˆ˜ë ¹</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">ë‹¬ë€íŠ¸ QR ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">»óÇ°</button>
+        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="shop.html">»óÇ° ±¸¸Å</a></li>
-          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">³» ±¸¸Å »óÇ°</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">»óÇ° °ü¸®</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60" style="display:none;">
-        <button class="nav-dropdown-toggle">°ü¸®</button>
+        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="admin/index.html">´ë½Ãº¸µå</a></li>
-          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="admin/managers.html">°ü¸®ÀÚ °ü¸®</a></li>
-          <li data-min-perm="60"><a href="admin/departments.html">ºÎ¼­ °ü¸®</a></li>
+          <li data-min-perm="80"><a href="admin/index.html">ëŒ€ì‹œë³´ë“œ</a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li data-min-perm="80" style="display:none;">
-        <button class="nav-dropdown-toggle">¿î¿µ</button>
+        <button class="nav-dropdown-toggle">ìš´ì˜</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="admin/page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
-          <li data-min-perm="100"><a href="admin/page-features.html">ÆäÀÌÁö ±â´É</a></li>
-          <li data-min-perm="80"><a href="admin/versions.html">¹öÀü</a></li>
-          <li data-min-perm="80"><a href="admin/reports.html">º¸°í¼­</a></li>
-          <li data-min-perm="100"><a href="admin/audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
-          <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="admin/page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
+          <li data-min-perm="80"><a href="admin/versions.html">ë²„ì „</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">ë³´ê³ ì„œ</a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">ì‘ì—… ì´ë ¥</a></li>
+          <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
-      <li id="navLoginArea"><a href="login.html">·Î±×ÀÎ</a></li>
+      <li id="navLoginArea"><a href="login.html">ë¡œê·¸ì¸</a></li>
       <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
-      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">·Î±×¾Æ¿ô</button></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
@@ -71,7 +71,7 @@
   <div class="page-container" id="mainContent"></div>
 
   <footer class="page-footer">
-    <p>ÃÊµîºÎ ´Ş¶õÆ® °ü¸® &copy; 2026 CHO-Talents</p>
+    <p>ì´ˆë“±ë¶€ ë‹¬ë€íŠ¸ ê´€ë¦¬ &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -116,44 +116,44 @@
       const { data: history } = await fetchTalentHistory(session.id, { limit: 50 });
 
       let html = `
-        <h1 class="page-title">?? ³» ´Ş¶õÆ®</h1>
-        <p class="page-sub">${session.displayName || session.username}´ÔÀÇ ´Ş¶õÆ® ÇöÈ²</p>
+        <h1 class="page-title">?? ë‚´ ë‹¬ë€íŠ¸</h1>
+        <p class="page-sub">${session.displayName || session.username}ë‹˜ì˜ ë‹¬ë€íŠ¸ í˜„í™©</p>
         <div class="summary-cards">
           <div class="summary-card earn">
             <div class="summary-card-icon">??</div>
-            <div class="summary-card-label">´©Àû Àû¸³</div>
+            <div class="summary-card-label">ëˆ„ì  ì ë¦½</div>
             <div class="summary-card-value">${fmtNum(summary.earned)}</div>
           </div>
           <div class="summary-card use">
             <div class="summary-card-icon">??</div>
-            <div class="summary-card-label">»ç¿ë ¿Ï·á</div>
+            <div class="summary-card-label">ì‚¬ìš© ì™„ë£Œ</div>
             <div class="summary-card-value">${fmtNum(summary.used)}</div>
           </div>
           ${pendingTalent > 0 ? `<div class="summary-card" style="background:#fff3bf;">
             <div class="summary-card-icon">?</div>
-            <div class="summary-card-label">»ç¿ë ´ë±â</div>
+            <div class="summary-card-label">ì‚¬ìš© ëŒ€ê¸°</div>
             <div class="summary-card-value" style="color:#e67700;">${fmtNum(pendingTalent)}</div>
           </div>` : ''}
           <div class="summary-card balance">
             <div class="summary-card-icon">?</div>
-            <div class="summary-card-label">»ç¿ë °¡´É</div>
+            <div class="summary-card-label">ì‚¬ìš© ê°€ëŠ¥</div>
             <div class="summary-card-value">${fmtNum(available)}</div>
           </div>
         </div>
         <div id="earnBreakdown" style="margin-bottom:1.5rem;"></div>
         <div class="data-table-wrap">
-          <div class="data-table-header"><div class="data-table-title">´Ş¶õÆ® ³»¿ª</div></div>
+          <div class="data-table-header"><div class="data-table-title">ë‹¬ë€íŠ¸ ë‚´ì—­</div></div>
           <table class="data-table">
-            <thead><tr><th>³¯Â¥</th><th>À¯Çü</th><th>±İ¾×</th><th>¼³¸í</th><th>ÀÜ¾×</th></tr></thead>
+            <thead><tr><th>ë‚ ì§œ</th><th>ìœ í˜•</th><th>ê¸ˆì•¡</th><th>ì„¤ëª…</th><th>ì”ì•¡</th></tr></thead>
             <tbody>`;
 
       if (!history || history.length === 0) {
-        html += '<tr><td colspan="5" class="empty-state">¾ÆÁ÷ ´Ş¶õÆ® ³»¿ªÀÌ ¾ø½À´Ï´Ù.</td></tr>';
+        html += '<tr><td colspan="5" class="empty-state">ì•„ì§ ë‹¬ë€íŠ¸ ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
       } else {
         html += history.map(t => `
           <tr>
             <td>${formatKSTShort(t.created_at)}</td>
-            <td><span class="type-badge ${t.type}">${t.type === 'earn' ? 'Àû¸³' : '»ç¿ë'}</span></td>
+            <td><span class="type-badge ${t.type}">${t.type === 'earn' ? 'ì ë¦½' : 'ì‚¬ìš©'}</span></td>
             <td style="font-weight:700;color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'}">${t.type === 'earn' ? '+' : '-'}${fmtNum(t.amount)}</td>
             <td>${t.description || '-'}</td>
             <td>${fmtNum(t.balance_after)}</td>
@@ -169,16 +169,16 @@
         else { orders = od; }
       } catch (e) {}
       if (orders && orders.length > 0) {
-        const statusMap = { requested:'±¸¸Å ½ÅÃ»', preparing:'»óÇ° ÁØºñ', purchased:'»óÇ° ±¸¸Å', delivered:'»óÇ° Áö±Ş' };
+        const statusMap = { requested:'êµ¬ë§¤ ì‹ ì²­', preparing:'ìƒí’ˆ ì¤€ë¹„', purchased:'ìƒí’ˆ êµ¬ë§¤', delivered:'ìƒí’ˆ ì§€ê¸‰' };
         const statusColor = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
         html += `<div class="data-table-wrap" style="margin-top:1.5rem;">
-          <div class="data-table-header"><div class="data-table-title">?? ±¸¸Å ³»¿ª</div></div>
+          <div class="data-table-header"><div class="data-table-title">?? êµ¬ë§¤ ë‚´ì—­</div></div>
           <table class="data-table">
-            <thead><tr><th>³¯Â¥</th><th>»óÇ°¸í</th><th>°¡°İ</th><th>»óÅÂ</th></tr></thead>
+            <thead><tr><th>ë‚ ì§œ</th><th>ìƒí’ˆëª…</th><th>ê°€ê²©</th><th>ìƒíƒœ</th></tr></thead>
             <tbody>` + orders.map(o => `<tr>
               <td>${formatKSTShort(o.requested_at || o.created_at)}</td>
               <td>${o.product_name}</td>
-              <td>${fmtNum(o.price)} ´Ş¶õÆ®</td>
+              <td>${fmtNum(o.price)} ë‹¬ë€íŠ¸</td>
               <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${statusColor[o.status]||'#868e96'}22;color:${statusColor[o.status]||'#868e96'};font-weight:600;">${statusMap[o.status]||o.status}</span></td>
             </tr>`).join('') + '</tbody></table></div>';
       }
@@ -190,27 +190,27 @@
     async function showEarnBreakdown() {
       const el = document.getElementById('earnBreakdown');
       if (!el) return;
-      el.innerHTML = '<div style="text-align:center;color:#868e96;">ºÒ·¯¿À´Â Áß...</div>';
+      el.innerHTML = '<div style="text-align:center;color:#868e96;">ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</div>';
       const { data: txns } = await _sb.from('talent_transactions')
         .select('amount, description, talent_item_id')
         .eq('user_id', session.id).eq('type', 'earn');
-      if (!txns || txns.length === 0) { el.innerHTML = '<div style="text-align:center;color:#868e96;">Àû¸³ ³»¿ªÀÌ ¾ø½À´Ï´Ù.</div>'; return; }
+      if (!txns || txns.length === 0) { el.innerHTML = '<div style="text-align:center;color:#868e96;">ì ë¦½ ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.</div>'; return; }
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
       const byDesc = {};
       txns.forEach(t => {
-        const key = t.description || '±âÅ¸';
+        const key = t.description || 'ê¸°íƒ€';
         if (!byDesc[key]) byDesc[key] = { count: 0, amount: 0 };
         byDesc[key].count++;
         byDesc[key].amount += t.amount || 0;
       });
       const sorted = Object.entries(byDesc).sort((a, b) => b[1].amount - a[1].amount);
       el.innerHTML = `<div style="background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:1rem;">
-        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.6rem;">?? Ç×¸ñº° Àû¸³ ÇöÈ²</div>
+        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.6rem;">?? í•­ëª©ë³„ ì ë¦½ í˜„í™©</div>
         <div style="font-size:0.82rem;">` + sorted.map(([name, v]) => {
           const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
           return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid #f1f3f5;">
             <span>${name}</span>
-            <span style="font-weight:600;">${fmtNum(v.amount)} ´Ş¶õÆ® ¡¿ ${v.count}È¸ <span style="color:#868e96;">(${pct}%)</span></span>
+            <span style="font-weight:600;">${fmtNum(v.amount)} ë‹¬ë€íŠ¸ Ã— ${v.count}íšŒ <span style="color:#868e96;">(${pct}%)</span></span>
           </div>`;
         }).join('') + `</div></div>`;
     }

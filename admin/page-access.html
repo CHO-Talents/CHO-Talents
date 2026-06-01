@@ -3,77 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ÆäÀÌÁö Á¢±Ù °ü¸® - ´Þ¶õÆ® ¸¶À»</title>
+  <title>íŽ˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬ - ë‹¬ëž€íŠ¸ ë§ˆì„</title>
   <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Þ¶õÆ® ¸¶À»</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ë‹¬ëž€íŠ¸ ë§ˆì„</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">¼Ò°³</button>
+        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
-          <li><a href="../earn-talents.html">´Þ¶õÆ® Àû¸³</a></li>
+          <li><a href="../guide.html">ì‚¬ìš©ìž ê°€ì´ë“œ</a></li>
+          <li><a href="../earn-talents.html">ë‹¬ëž€íŠ¸ ì ë¦½</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">´Þ¶õÆ®</button>
+        <button class="nav-dropdown-toggle">ë‹¬ëž€íŠ¸</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">³» ´Þ¶õÆ®</a></li>
-          <li><a href="../talent-receive.html">´Þ¶õÆ® ¼ö·É</a></li>
-          <li data-min-perm="40"><a href="talents.html">´Þ¶õÆ® °ü¸®</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">´Þ¶õÆ® Åë°è</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">´Þ¶õÆ® QR °ü¸®</a></li>
+          <li><a href="../my-talents.html">ë‚´ ë‹¬ëž€íŠ¸</a></li>
+          <li><a href="../talent-receive.html">ë‹¬ëž€íŠ¸ ìˆ˜ë ¹</a></li>
+          <li data-min-perm="40"><a href="talents.html">ë‹¬ëž€íŠ¸ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ëž€íŠ¸ í†µê³„</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">ë‹¬ëž€íŠ¸ QR ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">»óÇ°</button>
+        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
-          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
-          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
-          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
+          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
+          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">°ü¸®</button>
+        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
-          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
+          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ìž ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ìž ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle active">¿î¿µ</button>
+        <button class="nav-dropdown-toggle active">ìš´ì˜</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html" class="active">ÆäÀÌÁö Á¢±Ù</a></li>
-          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
-          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
-          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
-          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html" class="active">íŽ˜ì´ì§€ ì ‘ê·¼</a></li>
+          <li data-min-perm="100"><a href="page-features.html">íŽ˜ì´ì§€ ê¸°ëŠ¥</a></li>
+          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
+          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
+          <li data-min-perm="100"><a href="audit.html">ìž‘ì—… ì´ë ¥</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? ÆäÀÌÁö Á¢±Ù °ü¸®</h2>
-    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">»ç¿ëÀÚ À¯Çü ¹× ±ÇÇÑº°·Î Á¢±Ù °¡´ÉÇÑ ÆäÀÌÁö¿Í È­¸é ¿ä¼Ò¸¦ °ü¸®ÇÕ´Ï´Ù.</p>
+    <h2 style="margin-bottom:1rem;">?? íŽ˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬</h2>
+    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">ì‚¬ìš©ìž ìœ í˜• ë° ê¶Œí•œë³„ë¡œ ì ‘ê·¼ ê°€ëŠ¥í•œ íŽ˜ì´ì§€ì™€ í™”ë©´ ìš”ì†Œë¥¼ ê´€ë¦¬í•©ë‹ˆë‹¤.</p>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title">À¯Çü/±ÇÇÑº° Á¢±Ù ¼³Á¤</div>
+        <div class="admin-table-title">ìœ í˜•/ê¶Œí•œë³„ ì ‘ê·¼ ì„¤ì •</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>±¸ºÐ</th><th>À¯Çü</th><th>±ÇÇÑ</th><th>µî±Þ</th><th>¼³¸í</th><th>°ü¸®</th></tr></thead>
+        <thead><tr><th>êµ¬ë¶„</th><th>ìœ í˜•</th><th>ê¶Œí•œ</th><th>ë“±ê¸‰</th><th>ì„¤ëª…</th><th>ê´€ë¦¬</th></tr></thead>
         <tbody id="roleList"></tbody>
       </table>
     </div>
@@ -81,12 +81,12 @@
 
   <div class="modal-overlay hidden" id="accessModal">
     <div class="modal-box" style="max-width:750px;max-height:85vh;overflow-y:auto;">
-      <h3 class="modal-title" id="accessTitle">ÆäÀÌÁö Á¢±Ù ¼³Á¤</h3>
+      <h3 class="modal-title" id="accessTitle">íŽ˜ì´ì§€ ì ‘ê·¼ ì„¤ì •</h3>
       <div class="form-error" id="accessError"></div>
       <div id="accessBody"></div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="closeAccessModal()">Ãë¼Ò</button>
-        <button class="btn-confirm" id="btnSaveAccess" onclick="saveAccess()">ÀúÀå</button>
+        <button class="btn-cancel" onclick="closeAccessModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" id="btnSaveAccess" onclick="saveAccess()">ì €ìž¥</button>
       </div>
     </div>
   </div>
@@ -102,36 +102,36 @@
     let editingKey = null;
 
     const ROLE_LIST = [
-      { key: 'super_admin', userType: 'teacher', perm: 'admin', rank: 110, label: 'ÃÖ°í °ü¸®ÀÚ', emoji: '??', desc: '¸ðµç ÆäÀÌÁö Á¢±Ù °¡´É', superOnly: true },
-      { key: 'admin', userType: 'teacher', perm: 'admin', rank: 100, label: '°ü¸®ÀÚ', emoji: '??', desc: 'ÀüÃ¼ ½Ã½ºÅÛ °ü¸®' },
-      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', rank: 90, label: 'Àüµµ»ç´Ô', emoji: '??', desc: '»ç¿ëÀÚ/ºÎ¼­/°ü¸®ÀÚ °ü¸®' },
-      { key: 'chief', userType: 'teacher', perm: 'chief', rank: 80, label: 'ºÎÀå ±³»ç', emoji: '??', desc: '´ã´ç ºÎ¼­ °ü¸®' },
-      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', rank: 60, label: 'ºÎ¼­ ´ã´ç ±³»ç', emoji: '?????', desc: '´ã´ç ºÎ¼­ »ç¿ëÀÚ °ü¸®' },
-      { key: 'teacher', userType: 'teacher', perm: 'teacher', rank: 40, label: 'ÀÏ¹Ý ±³»ç', emoji: '?????', desc: '´Þ¶õÆ® Áö±Þ' },
-      { key: 'student', userType: 'student', perm: 'student', rank: 20, label: 'ÇÐ»ý', emoji: '??', desc: '³» ´Þ¶õÆ® Á¶È¸ / »óÁ¡' }
+      { key: 'super_admin', userType: 'teacher', perm: 'admin', rank: 110, label: 'ìµœê³  ê´€ë¦¬ìž', emoji: '??', desc: 'ëª¨ë“  íŽ˜ì´ì§€ ì ‘ê·¼ ê°€ëŠ¥', superOnly: true },
+      { key: 'admin', userType: 'teacher', perm: 'admin', rank: 100, label: 'ê´€ë¦¬ìž', emoji: '??', desc: 'ì „ì²´ ì‹œìŠ¤í…œ ê´€ë¦¬' },
+      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', rank: 90, label: 'ì „ë„ì‚¬ë‹˜', emoji: '??', desc: 'ì‚¬ìš©ìž/ë¶€ì„œ/ê´€ë¦¬ìž ê´€ë¦¬' },
+      { key: 'chief', userType: 'teacher', perm: 'chief', rank: 80, label: 'ë¶€ìž¥ êµì‚¬', emoji: '??', desc: 'ë‹´ë‹¹ ë¶€ì„œ ê´€ë¦¬' },
+      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', rank: 60, label: 'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', emoji: '?????', desc: 'ë‹´ë‹¹ ë¶€ì„œ ì‚¬ìš©ìž ê´€ë¦¬' },
+      { key: 'teacher', userType: 'teacher', perm: 'teacher', rank: 40, label: 'ì¼ë°˜ êµì‚¬', emoji: '?????', desc: 'ë‹¬ëž€íŠ¸ ì§€ê¸‰' },
+      { key: 'student', userType: 'student', perm: 'student', rank: 20, label: 'í•™ìƒ', emoji: '??', desc: 'ë‚´ ë‹¬ëž€íŠ¸ ì¡°íšŒ / ìƒì ' }
     ];
 
     const PAGE_LIST = [
-      { id: 'index', name: '¸ÞÀÎ ÆäÀÌÁö', path: 'index.html', elements: ['feature-cards', 'status-box'] },
-      { id: 'login', name: '·Î±×ÀÎ', path: 'login.html', elements: [] },
-      { id: 'register', name: '°èÁ¤ µî·Ï', path: 'register.html', elements: [] },
-      { id: 'my-talents', name: '³» ´Þ¶õÆ®', path: 'my-talents.html', elements: ['history-table'] },
-      { id: 'earn-talents', name: '´Þ¶õÆ® Àû¸³ ¹æ¹ý', path: 'earn-talents.html', elements: [] },
-      { id: 'shop', name: '»óÇ° ±¸¸Å', path: 'shop.html', elements: ['purchase-btn'] },
-      { id: 'admin-dashboard', name: '´ë½Ãº¸µå', path: 'admin/index.html', elements: ['stats-cards', 'shortcuts', 'recent-logs'] },
-      { id: 'admin-users', name: '»ç¿ëÀÚ °ü¸®', path: 'admin/users.html', elements: ['request-section', 'transfer-section', 'user-table'] },
-      { id: 'admin-departments', name: 'ºÎ¼­ °ü¸®', path: 'admin/departments.html', elements: ['dept-table', 'member-modal'] },
-      { id: 'admin-managers', name: '°ü¸®ÀÚ °ü¸®', path: 'admin/managers.html', elements: ['manager-table'] },
-      { id: 'admin-talents', name: '´Þ¶õÆ® °ü¸®', path: 'admin/talents.html', elements: ['talent-table', 'talent-modal', 'detail-modal'] },
-      { id: 'admin-shop', name: '»óÇ° °ü¸®', path: 'admin/shop.html', elements: ['product-table'] },
-      { id: 'admin-purchases', name: '±¸¸Å °ü¸®', path: 'admin/purchases.html', elements: ['order-table'] },
-      { id: 'admin-reports', name: 'º¸°í¼­', path: 'admin/reports.html', elements: ['report-table'] },
-      { id: 'admin-logs', name: '·Î±×', path: 'admin/logs.html', elements: ['log-table', 'detail-modal'] },
-      { id: 'admin-versions', name: '¹öÀü', path: 'admin/versions.html', elements: ['version-list'] },
-      { id: 'admin-talent-items', name: '´Þ¶õÆ® Ç×¸ñ °ü¸®', path: 'admin/talent-items.html', elements: ['item-table'] },
-      { id: 'admin-page-access', name: 'ÆäÀÌÁö Á¢±Ù °ü¸®', path: 'admin/page-access.html', elements: [] },
-      { id: 'admin-page-features', name: 'ÆäÀÌÁö ±â´É °ü¸®', path: 'admin/page-features.html', elements: [] },
-      { id: 'admin-audit', name: 'ÀÛ¾÷ ÀÌ·Â', path: 'admin/audit.html', elements: [] }
+      { id: 'index', name: 'ë©”ì¸ íŽ˜ì´ì§€', path: 'index.html', elements: ['feature-cards', 'status-box'] },
+      { id: 'login', name: 'ë¡œê·¸ì¸', path: 'login.html', elements: [] },
+      { id: 'register', name: 'ê³„ì • ë“±ë¡', path: 'register.html', elements: [] },
+      { id: 'my-talents', name: 'ë‚´ ë‹¬ëž€íŠ¸', path: 'my-talents.html', elements: ['history-table'] },
+      { id: 'earn-talents', name: 'ë‹¬ëž€íŠ¸ ì ë¦½ ë°©ë²•', path: 'earn-talents.html', elements: [] },
+      { id: 'shop', name: 'ìƒí’ˆ êµ¬ë§¤', path: 'shop.html', elements: ['purchase-btn'] },
+      { id: 'admin-dashboard', name: 'ëŒ€ì‹œë³´ë“œ', path: 'admin/index.html', elements: ['stats-cards', 'shortcuts', 'recent-logs'] },
+      { id: 'admin-users', name: 'ì‚¬ìš©ìž ê´€ë¦¬', path: 'admin/users.html', elements: ['request-section', 'transfer-section', 'user-table'] },
+      { id: 'admin-departments', name: 'ë¶€ì„œ ê´€ë¦¬', path: 'admin/departments.html', elements: ['dept-table', 'member-modal'] },
+      { id: 'admin-managers', name: 'ê´€ë¦¬ìž ê´€ë¦¬', path: 'admin/managers.html', elements: ['manager-table'] },
+      { id: 'admin-talents', name: 'ë‹¬ëž€íŠ¸ ê´€ë¦¬', path: 'admin/talents.html', elements: ['talent-table', 'talent-modal', 'detail-modal'] },
+      { id: 'admin-shop', name: 'ìƒí’ˆ ê´€ë¦¬', path: 'admin/shop.html', elements: ['product-table'] },
+      { id: 'admin-purchases', name: 'êµ¬ë§¤ ê´€ë¦¬', path: 'admin/purchases.html', elements: ['order-table'] },
+      { id: 'admin-reports', name: 'ë³´ê³ ì„œ', path: 'admin/reports.html', elements: ['report-table'] },
+      { id: 'admin-logs', name: 'ë¡œê·¸', path: 'admin/logs.html', elements: ['log-table', 'detail-modal'] },
+      { id: 'admin-versions', name: 'ë²„ì „', path: 'admin/versions.html', elements: ['version-list'] },
+      { id: 'admin-talent-items', name: 'ë‹¬ëž€íŠ¸ í•­ëª© ê´€ë¦¬', path: 'admin/talent-items.html', elements: ['item-table'] },
+      { id: 'admin-page-access', name: 'íŽ˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬', path: 'admin/page-access.html', elements: [] },
+      { id: 'admin-page-features', name: 'íŽ˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬', path: 'admin/page-features.html', elements: [] },
+      { id: 'admin-audit', name: 'ìž‘ì—… ì´ë ¥', path: 'admin/audit.html', elements: [] }
     ];
 
     (async () => {
@@ -154,11 +154,11 @@
         .filter(r => !r.superOnly || isSA)
         .map(r => `<tr>
           <td><span class="level-badge">${r.emoji} ${r.label}</span></td>
-          <td>${r.userType === 'teacher' ? '±³»ç' : 'ÇÐ»ý'}</td>
+          <td>${r.userType === 'teacher' ? 'êµì‚¬' : 'í•™ìƒ'}</td>
           <td>${PERMISSION_LABELS[r.perm] || r.perm}</td>
           <td style="font-weight:700;">${r.rank}</td>
           <td style="font-size:0.82rem;color:var(--admin-text-muted);">${r.desc}</td>
-          <td><button class="filter-btn" onclick="openAccessModal('${r.key}')">¼³Á¤</button></td>
+          <td><button class="filter-btn" onclick="openAccessModal('${r.key}')">ì„¤ì •</button></td>
         </tr>`).join('');
     }
 
@@ -166,7 +166,7 @@
       editingKey = roleKey;
       const role = ROLE_LIST.find(r => r.key === roleKey);
       if (!role) return;
-      document.getElementById('accessTitle').textContent = `${role.emoji} ${role.label} - ÆäÀÌÁö Á¢±Ù ¼³Á¤`;
+      document.getElementById('accessTitle').textContent = `${role.emoji} ${role.label} - íŽ˜ì´ì§€ ì ‘ê·¼ ì„¤ì •`;
 
       let saved = {};
       const { data } = await _sb.from('role_page_access').select('*').eq('role_key', roleKey);
@@ -220,13 +220,13 @@
       const { error } = await _sb.from('role_page_access').insert(rows);
       if (error) {
         await logError('ROLE_ACCESS_UPDATE_FAIL', { roleKey: editingKey, error: error.message });
-        errEl.textContent = 'ÀúÀå ½ÇÆÐ: ' + tErr(error.message);
+        errEl.textContent = 'ì €ìž¥ ì‹¤íŒ¨: ' + tErr(error.message);
         errEl.classList.add('show');
         return;
       }
       await logInfo('ROLE_ACCESS_UPDATE', { roleKey: editingKey });
       closeAccessModal();
-      alert('ÀúÀåµÇ¾ú½À´Ï´Ù.');
+      alert('ì €ìž¥ë˜ì—ˆìŠµë‹ˆë‹¤.');
     }
 
     document.getElementById('accessModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeAccessModal(); });

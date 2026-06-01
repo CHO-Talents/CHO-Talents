@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>?��????�령 - ?��???마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?��</text></svg>" />
+  <title>?щ????섎졊 - ?щ???留덉쓣</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?벑</text></svg>" />
   <link rel="stylesheet" href="css/common.css?v=3.13.0" />
   <style>
     .qr-hero { text-align: center; margin-bottom: 1.5rem; }
@@ -66,68 +66,68 @@
 <body class="page-body">
   <nav class="top-nav">
     <a href="index.html" class="top-nav-brand">
-      <span class="brand-icon">�?/span> ?��???마을
+      <span class="brand-icon">狩?/span> ?щ???留덉쓣
     </a>
     <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="top-nav-links" id="navLinks">
       <li>
-        <button class="nav-dropdown-toggle">?�개</button>
+        <button class="nav-dropdown-toggle">?뚭컻</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">?�용??가?�드</a></li>
-          <li><a href="earn-talents.html">?��????�립</a></li>
+          <li><a href="guide.html">?ъ슜??媛?대뱶</a></li>
+          <li><a href="earn-talents.html">?щ????곷┰</a></li>
           <li><a href="qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">?��???/button>
+        <button class="nav-dropdown-toggle active">?щ???/button>
         <ul class="nav-dropdown-menu">
-          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">???��???/a></li>
-          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html" class="active">?��????�령</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">?��???관�?/a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">?��????�계</a></li>
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">???щ???/a></li>
+          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html" class="active">?щ????섎졊</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">?щ???愿由?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">?щ????듦퀎</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">?�품</button>
+        <button class="nav-dropdown-toggle">?곹뭹</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="shop.html">?�품 구매</a></li>
-          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">??구매 ?�품</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">?�품 관�?/a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="shop.html">?곹뭹 援щℓ</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">??援щℓ ?곹뭹</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">?곹뭹 愿由?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">援щℓ 愿由?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60" style="display:none;">
-        <button class="nav-dropdown-toggle">관�?/button>
+        <button class="nav-dropdown-toggle">愿由?/button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="admin/index.html">?�?�보??/a></li>
-          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="admin/managers.html">관리자 관�?/a></li>
-          <li data-min-perm="60"><a href="admin/departments.html">부??관�?/a></li>
+          <li data-min-perm="80"><a href="admin/index.html">??쒕낫??/a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">?ъ슜??愿由?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">愿由ъ옄 愿由?/a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">遺??愿由?/a></li>
         </ul>
       </li>
       <li data-min-perm="80" style="display:none;">
-        <button class="nav-dropdown-toggle">?�영</button>
+        <button class="nav-dropdown-toggle">?댁쁺</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="admin/page-access.html">?�이지 ?�근</a></li>
-          <li data-min-perm="100"><a href="admin/page-features.html">?�이지 기능</a></li>
-          <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="admin/reports.html">보고??/a></li>
-          <li data-min-perm="100"><a href="admin/audit.html">?�업 ?�력</a></li>
-          <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="admin/page-access.html">?섏씠吏 ?묎렐</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">?섏씠吏 湲곕뒫</a></li>
+          <li data-min-perm="80"><a href="admin/versions.html">踰꾩쟾</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">蹂닿퀬??/a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">?묒뾽 ?대젰</a></li>
+          <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">濡쒓렇 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
-      <li id="navLoginArea"><a href="login.html">로그??/a></li>
+      <li id="navLoginArea"><a href="login.html">濡쒓렇??/a></li>
       <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
-      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그?�웃</button></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">濡쒓렇?꾩썐</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="page-container">
     <div class="qr-hero">
-      <div class="qr-hero-icon">?��</div>
-      <h1>?��????�령</h1>
-      <p>QR 코드�??�캔?�여 ?��??��? ?�령?�세??/p>
+      <div class="qr-hero-icon">?벑</div>
+      <h1>?щ????섎졊</h1>
+      <p>QR 肄붾뱶瑜??ㅼ틪?섏뿬 ?щ??몃? ?섎졊?섏꽭??/p>
     </div>
 
     <div id="authGuard" style="display:none;">
@@ -135,11 +135,11 @@
         <div id="qr-reader"></div>
         <div class="gps-status" id="gpsStatus">
           <span class="gps-dot pending" id="gpsDot"></span>
-          <span id="gpsText">GPS ?�치 ?�인 �?..</span>
+          <span id="gpsText">GPS ?꾩튂 ?뺤씤 以?..</span>
         </div>
         <div class="scan-controls">
-          <button class="scan-btn scan-btn-start" id="btnStart" onclick="startScan()">?�� ?�캔 ?�작</button>
-          <button class="scan-btn scan-btn-stop" id="btnStop" onclick="stopScan()" style="display:none;">???�캔 중�?</button>
+          <button class="scan-btn scan-btn-start" id="btnStart" onclick="startScan()">?벜 ?ㅼ틪 ?쒖옉</button>
+          <button class="scan-btn scan-btn-stop" id="btnStop" onclick="stopScan()" style="display:none;">???ㅼ틪 以묒?</button>
         </div>
       </div>
 
@@ -150,19 +150,19 @@
       </div>
 
       <div class="scan-history" id="scanHistoryWrap" style="display:none;">
-        <h3>?�� ?�늘 ?�령 ?�역</h3>
+        <h3>?뱥 ?ㅻ뒛 ?섎졊 ?댁뿭</h3>
         <div id="scanHistory"></div>
       </div>
     </div>
 
     <div id="noAuthMsg" style="text-align:center;padding:2rem;">
-      <p style="font-size:1.1rem;color:#636e72;">교사�??�용 가?�한 기능?�니??</p>
-      <a href="login.html" style="color:var(--primary);font-weight:700;">로그?�하�?/a>
+      <p style="font-size:1.1rem;color:#636e72;">援먯궗留??댁슜 媛?ν븳 湲곕뒫?낅땲??</p>
+      <a href="login.html" style="color:var(--primary);font-weight:700;">濡쒓렇?명븯湲?/a>
     </div>
   </div>
 
   <footer class="page-footer">
-    <p>초등부 ?��???관�?&copy; 2026 CHO-Talents</p>
+    <p>珥덈벑遺 ?щ???愿由?&copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -185,7 +185,7 @@
         document.getElementById('noAuthMsg').style.display = '';
         document.getElementById('authGuard').style.display = 'none';
         if (session) {
-          document.getElementById('noAuthMsg').innerHTML = '<p style="font-size:1.1rem;color:#636e72;">교사�??�용 가?�한 기능?�니??</p>';
+          document.getElementById('noAuthMsg').innerHTML = '<p style="font-size:1.1rem;color:#636e72;">援먯궗留??댁슜 媛?ν븳 湲곕뒫?낅땲??</p>';
         }
         if (session) {
           document.getElementById('navMyTalent').style.display = '';
@@ -219,17 +219,17 @@
 
     function requestGPS() {
       if (!navigator.geolocation) {
-        setGPSStatus('fail', 'GPS�?지?�하지 ?�는 기기?�니??);
+        setGPSStatus('fail', 'GPS瑜?吏?먰븯吏 ?딅뒗 湲곌린?낅땲??);
         return;
       }
-      setGPSStatus('pending', 'GPS ?�치 ?�인 �?..');
+      setGPSStatus('pending', 'GPS ?꾩튂 ?뺤씤 以?..');
       navigator.geolocation.getCurrentPosition(
         pos => {
           currentGPS = { lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy };
-          setGPSStatus('ok', `GPS ?�인??(?�확??${Math.round(pos.coords.accuracy)}m)`);
+          setGPSStatus('ok', `GPS ?뺤씤??(?뺥솗??${Math.round(pos.coords.accuracy)}m)`);
         },
         err => {
-          setGPSStatus('fail', 'GPS ?�치�?가?�올 ???�습?�다. ?�치 권한???�인?�세??');
+          setGPSStatus('fail', 'GPS ?꾩튂瑜?媛?몄삱 ???놁뒿?덈떎. ?꾩튂 沅뚰븳???뺤씤?섏꽭??');
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 }
       );
@@ -257,7 +257,7 @@
         document.getElementById('btnStart').style.display = 'none';
         document.getElementById('btnStop').style.display = '';
       } catch (err) {
-        showResult(false, '카메???�류', '카메?��? ?�용?????�습?�다. 카메??권한???�인?�세??\n' + (err.message || err));
+        showResult(false, '移대찓???ㅻ쪟', '移대찓?쇰? ?ъ슜?????놁뒿?덈떎. 移대찓??沅뚰븳???뺤씤?섏꽭??\n' + (err.message || err));
       }
     }
 
@@ -292,7 +292,7 @@
 
       if (qrErr || !qrCodes || qrCodes.length === 0) {
         await logScan(null, null, 'fail', 'INVALID_KEY');
-        showResult(false, '?�효?��? ?��? QR 코드', '?�록?��? ?�았거나 비활?�화??QR 코드?�니??');
+        showResult(false, '?좏슚?섏? ?딆? QR 肄붾뱶', '?깅줉?섏? ?딆븯嫄곕굹 鍮꾪솢?깊솕??QR 肄붾뱶?낅땲??');
         return;
       }
 
@@ -301,19 +301,19 @@
 
       if (!item) {
         await logScan(qr.id, null, 'fail', 'ITEM_NOT_FOUND');
-        showResult(false, '??�� ?�류', '?�결???��?????��??찾을 ???�습?�다.');
+        showResult(false, '??ぉ ?ㅻ쪟', '?곌껐???щ?????ぉ??李얠쓣 ???놁뒿?덈떎.');
         return;
       }
 
       const now = new Date();
       if (qr.valid_from && new Date(qr.valid_from) > now) {
         await logScan(qr.id, item.id, 'fail', 'NOT_YET_VALID');
-        showResult(false, '?�직 ?�효?��? ?��? QR 코드', `?�효 ?�작: ${formatDateTime(qr.valid_from)}`);
+        showResult(false, '?꾩쭅 ?좏슚?섏? ?딆? QR 肄붾뱶', `?좏슚 ?쒖옉: ${formatDateTime(qr.valid_from)}`);
         return;
       }
       if (qr.valid_until && new Date(qr.valid_until) < now) {
         await logScan(qr.id, item.id, 'fail', 'EXPIRED');
-        showResult(false, 'QR 코드 만료', `?�효 기간??종료?�었?�니??\n만료: ${formatDateTime(qr.valid_until)}`);
+        showResult(false, 'QR 肄붾뱶 留뚮즺', `?좏슚 湲곌컙??醫낅즺?섏뿀?듬땲??\n留뚮즺: ${formatDateTime(qr.valid_until)}`);
         return;
       }
 
@@ -324,13 +324,13 @@
         }
         if (!currentGPS) {
           await logScan(qr.id, item.id, 'fail', 'NO_GPS');
-          showResult(false, 'GPS ?�치 ?�인 불�?', 'GPS ?�치�?가?�올 ???�습?�다. ?�치 권한???�인 ???�시 ?�도?�세??');
+          showResult(false, 'GPS ?꾩튂 ?뺤씤 遺덇?', 'GPS ?꾩튂瑜?媛?몄삱 ???놁뒿?덈떎. ?꾩튂 沅뚰븳???뺤씤 ???ㅼ떆 ?쒕룄?섏꽭??');
           return;
         }
         const dist = haversineKm(currentGPS.lat, currentGPS.lng, qr.location_lat, qr.location_lng);
         if (dist > qr.location_radius_km) {
           await logScan(qr.id, item.id, 'fail', 'OUT_OF_RANGE');
-          showResult(false, '?�용 범위 �?, `?�재 ?�치가 ?�용 범위(${qr.location_radius_km}km) 밖입?�다.\n거리: ${dist.toFixed(2)}km`);
+          showResult(false, '?덉슜 踰붿쐞 諛?, `?꾩옱 ?꾩튂媛 ?덉슜 踰붿쐞(${qr.location_radius_km}km) 諛뽰엯?덈떎.\n嫄곕━: ${dist.toFixed(2)}km`);
           return;
         }
       }
@@ -347,19 +347,19 @@
 
       if (existing && existing.length > 0) {
         await logScan(qr.id, item.id, 'fail', 'ALREADY_RECEIVED_TODAY');
-        showResult(false, '?��? ?�령 ?�료', '?�늘 ?��? ????��???��??��? ?�령?�셨?�니??');
+        showResult(false, '?대? ?섎졊 ?꾨즺', '?ㅻ뒛 ?대? ????ぉ???щ??몃? ?섎졊?섏뀲?듬땲??');
         return;
       }
 
       const result = await giveTalentByItem(session.id, item.id, session.id);
       if (result && result.success === false) {
         await logScan(qr.id, item.id, 'fail', result.error || 'GIVE_FAILED');
-        showResult(false, '지�??�패', tErr(result.error || '?��???지급에 ?�패?�습?�다.'));
+        showResult(false, '吏湲??ㅽ뙣', tErr(result.error || '?щ???吏湲됱뿉 ?ㅽ뙣?덉뒿?덈떎.'));
         return;
       }
 
       await logScan(qr.id, item.id, 'success', null);
-      showResult(true, '?��????�령 ?�료!', `${item.name}`, result.amount || item.talent_amount);
+      showResult(true, '?щ????섎졊 ?꾨즺!', `${item.name}`, result.amount || item.talent_amount);
       await loadTodayScans();
     }
 
@@ -388,7 +388,7 @@
       const amtEl = document.getElementById('resultAmount');
       if (success && amount) {
         amtEl.style.display = 'block';
-        amtEl.innerHTML = `<span class="result-amount">+${amount}</span> <span style="font-size:0.9rem;color:#636e72;">?��???/span>`;
+        amtEl.innerHTML = `<span class="result-amount">+${amount}</span> <span style="font-size:0.9rem;color:#636e72;">?щ???/span>`;
       } else {
         amtEl.style.display = 'none';
       }
@@ -435,7 +435,7 @@
         const ok = s.scan_result === 'success';
         return `<div class="history-item">
           <span>${ok ? '?? : '??} ${itemName}</span>
-          <span style="color:${ok ? '#2b8a3e' : '#e03131'};font-weight:700;">${ok ? '+' + amount : (s.failure_reason || '?�패')}</span>
+          <span style="color:${ok ? '#2b8a3e' : '#e03131'};font-weight:700;">${ok ? '+' + amount : (s.failure_reason || '?ㅽ뙣')}</span>
           <span style="color:#868e96;">${timeStr}</span>
         </div>`;
       }).join('');
