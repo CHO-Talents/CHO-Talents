@@ -1,145 +1,147 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ê´€ë¦¬ì ê´€ë¦¬ - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
+  <title>°ü¸®ÀÚ °ü¸® - CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
+        <button class="nav-dropdown-toggle">¼Ò°³</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
-          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
+          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
+          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ë‹¬ë€íŠ¸</button>
+        <button class="nav-dropdown-toggle">´Ş¶õÆ®</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
-          <li data-min-perm="40"><a href="talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
+          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
+          <li data-min-perm="40"><a href="talents.html">´Ş¶õÆ® °ü¸®</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
+        <button class="nav-dropdown-toggle">»óÇ°</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
-          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
-          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
+          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
+          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
+          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle active">ê´€ë¦¬</button>
+        <button class="nav-dropdown-toggle active">°ü¸®</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html" class="active">ê´€ë¦¬ì ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
+          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html" class="active">°ü¸®ÀÚ °ü¸®</a></li>
+          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">ìš´ì˜</button>
+        <button class="nav-dropdown-toggle">¿î¿µ</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
-          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
-          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
-          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
-          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
+          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
+          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
+          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
+          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ê´€ë¦¬ì ê´€ë¦¬</h2>
+    <h2 style="margin-bottom:1rem;">°ü¸®ÀÚ °ü¸®</h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">ê´€ë¦¬ì ëª©ë¡</div>
+        <div class="admin-table-title" id="tableTitle">°ü¸®ÀÚ ¸ñ·Ï</div>
         <div class="filters" style="flex-wrap:wrap;gap:0.4rem;">
-          <button class="filter-btn active" onclick="setMgrFilter('all',this)">ì „ì²´</button>
-          <button class="filter-btn" onclick="setMgrFilter('admin',this)">ğŸ‘‘ ê´€ë¦¬ì</button>
-          <button class="filter-btn" onclick="setMgrFilter('dept_manager',this)">ğŸ“‹ ë¶€ì„œ ë‹´ë‹¹ êµì‚¬</button>
+          <button class="filter-btn active" onclick="setMgrFilter('all',this)">ÀüÃ¼</button>
+          <button class="filter-btn" onclick="setMgrFilter('admin',this)">?? °ü¸®ÀÚ</button>
+          <button class="filter-btn" onclick="setMgrFilter('dept_manager',this)">?? ºÎ¼­ ´ã´ç ±³»ç</button>
           <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
-            <option value="">ì „ì²´ ë¶€ì„œ</option>
+            <option value="">ÀüÃ¼ ºÎ¼­</option>
           </select>
           <span style="margin-left:0.5rem;"></span>
-          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ ê´€ë¦¬ì ë“±ë¡</button>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ °ü¸®ÀÚ µî·Ï</button>
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ê¶Œí•œ</th><th>ì´ë¦„</th><th>ì†Œì† ë¶€ì„œ</th><th>ë‹´ë‹¹ ë¶€ì„œ</th><th>ê´€ë¦¬</th></tr></thead>
-        <tbody id="mgrList"><tr><td colspan="7" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <thead><tr><th>±ÇÇÑ</th><th>ÀÌ¸§</th><th>¼Ò¼Ó ºÎ¼­</th><th>´ã´ç ºÎ¼­</th><th>°ü¸®</th></tr></thead>
+        <tbody id="mgrList"><tr><td colspan="7" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="mgrModal">
     <div class="modal-box">
-      <h3 class="modal-title" id="modalTitle">ê´€ë¦¬ì ë“±ë¡</h3>
+      <h3 class="modal-title" id="modalTitle">°ü¸®ÀÚ µî·Ï</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;" id="userSearchWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì‚¬ìš©ì ê²€ìƒ‰</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">»ç¿ëÀÚ °Ë»ö</label>
         <div style="position:relative;">
-          <input type="text" id="mSearchInput" placeholder="ì´ë¦„ ë˜ëŠ” ì•„ì´ë””ë¡œ ê²€ìƒ‰..."
+          <input type="text" id="mSearchInput" placeholder="ÀÌ¸§ ¶Ç´Â ¾ÆÀÌµğ·Î °Ë»ö..."
             style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;"
             autocomplete="off" oninput="onSearchInput()" />
           <div id="searchResults" style="display:none;position:absolute;top:100%;left:0;right:0;max-height:200px;overflow-y:auto;background:#fff;border:1px solid var(--admin-border);border-top:none;border-radius:0 0 8px 8px;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
         </div>
         <div id="selectedUser" style="display:none;margin-top:0.5rem;padding:0.6rem;background:#f3f0ff;border-radius:8px;font-size:0.88rem;">
           <span id="selectedUserInfo"></span>
-          <button onclick="clearSelectedUser()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">âœ•</button>
+          <button onclick="clearSelectedUser()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">?</button>
         </div>
       </div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì•„ì´ë””</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¾ÆÀÌµğ</label>
         <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" disabled />
       </div>
       <div style="margin-bottom:0.8rem;" id="displayNameWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì´ë¦„</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÀÌ¸§</label>
         <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" disabled />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ê¶Œí•œ</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">±ÇÇÑ</label>
         <select id="mRole" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onRoleChange()">
         </select>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì†Œì† ë¶€ì„œ</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¼Ò¼Ó ºÎ¼­</label>
         <select id="mOwnDeptId" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="">-- ë¶€ì„œ ì„ íƒ --</option>
+          <option value="">-- ºÎ¼­ ¼±ÅÃ --</option>
         </select>
       </div>
       <div id="managedDeptWrap" style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë‹´ë‹¹ ê´€ë¦¬ ë¶€ì„œ</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´ã´ç °ü¸® ºÎ¼­</label>
         <select id="mDeptId" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="">-- ë¶€ì„œ ì„ íƒ --</option>
+          <option value="">-- ºÎ¼­ ¼±ÅÃ --</option>
         </select>
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">ì·¨ì†Œ</button>
-        <button class="btn-confirm" onclick="saveManager()">ì €ì¥</button>
+        <button class="btn-cancel" onclick="closeModal()">Ãë¼Ò</button>
+        <button class="btn-confirm" onclick="saveManager()">ÀúÀå</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.15.1"></script>
-  <script src="../js/activity-log.js?v=3.15.1"></script>
-  <script src="../js/auth.js?v=3.15.1"></script>
-  <script src="../js/user-mgmt.js?v=3.15.1"></script>
+  <script src="../js/supabase-config.js?v=3.13.0"></script>
+  <script src="../js/activity-log.js?v=3.13.0"></script>
+  <script src="../js/auth.js?v=3.13.0"></script>
+  <script src="../js/user-mgmt.js?v=3.13.0"></script>
   <script>
     initSupabase();
     let session;
@@ -168,7 +170,7 @@
     async function loadData() {
       const { data: depts } = await fetchDepartments();
       deptList = depts || [];
-      const opts = '<option value="">-- ë¶€ì„œ ì„ íƒ --</option>' +
+      const opts = '<option value="">-- ºÎ¼­ ¼±ÅÃ --</option>' +
         deptList.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
       document.getElementById('mDeptId').innerHTML = opts;
       document.getElementById('mOwnDeptId').innerHTML = opts;
@@ -178,10 +180,10 @@
 
     const MGMT_LEVELS = ['dept_teacher','chief','evangelist','admin'];
     const PERM_LEVELS = [
-      { value: 'dept_teacher', label: 'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', rank: 60 },
-      { value: 'chief', label: 'ë¶€ì¥ êµì‚¬', rank: 80 },
-      { value: 'evangelist', label: 'ì „ë„ì‚¬ë‹˜', rank: 90 },
-      { value: 'admin', label: 'ê´€ë¦¬ì', rank: 100 }
+      { value: 'dept_teacher', label: 'ºÎ¼­ ´ã´ç ±³»ç', rank: 60 },
+      { value: 'chief', label: 'ºÎÀå ±³»ç', rank: 80 },
+      { value: 'evangelist', label: 'Àüµµ»ç´Ô', rank: 90 },
+      { value: 'admin', label: '°ü¸®ÀÚ', rank: 100 }
     ];
     function buildMgrPermOptions(maxRank, selectedValue) {
       return PERM_LEVELS.filter(l => l.rank < maxRank)
@@ -213,7 +215,7 @@
     function populateDeptFilter() {
       const sel = document.getElementById('deptFilter');
       if (!sel) return;
-      sel.innerHTML = '<option value="">ì „ì²´ ë¶€ì„œ</option>' + deptList.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      sel.innerHTML = '<option value="">ÀüÃ¼ ºÎ¼­</option>' + deptList.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
     const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
@@ -250,18 +252,18 @@
       let list = currentFilter === 'all' ? allManagers : allManagers.filter(u => managerMatchesFilter(u, currentFilter));
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter || u.managed_dept_id === currentDeptFilter);
       const tbody = document.getElementById('mgrList');
-      document.getElementById('tableTitle').textContent = `ê´€ë¦¬ì ëª©ë¡ (${list.length}ëª…)`;
+      document.getElementById('tableTitle').textContent = `°ü¸®ÀÚ ¸ñ·Ï (${list.length}¸í)`;
 
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">ë“±ë¡ëœ ê´€ë¦¬ìê°€ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">µî·ÏµÈ °ü¸®ÀÚ°¡ ¾ø½À´Ï´Ù.</td></tr>';
         return;
       }
 
       const ROLE_BADGE = {
-        admin: { emoji: 'ğŸ‘‘', label: 'ê´€ë¦¬ì', cls: 'ERROR' },
-        evangelist: { emoji: 'âœï¸', label: 'ì „ë„ì‚¬ë‹˜', cls: 'WARN' },
-        chief: { emoji: 'ğŸ“‹', label: 'ë¶€ì¥ êµì‚¬', cls: 'WARN' },
-        dept_teacher: { emoji: 'ğŸ‘©â€ğŸ«', label: 'ë¶€ì„œ ë‹´ë‹¹', cls: 'INFO' }
+        admin: { emoji: '??', label: '°ü¸®ÀÚ', cls: 'ERROR' },
+        evangelist: { emoji: '??', label: 'Àüµµ»ç´Ô', cls: 'WARN' },
+        chief: { emoji: '??', label: 'ºÎÀå ±³»ç', cls: 'WARN' },
+        dept_teacher: { emoji: '?????', label: 'ºÎ¼­ ´ã´ç', cls: 'INFO' }
       };
 
       const nameMap = resolveDisplayNames(allManagers);
@@ -282,7 +284,7 @@
           <td>${ownDept ? ownDept.name : '-'}</td>
           <td>${mgrDept ? mgrDept.name : '<span style="color:var(--admin-text-muted);">-</span>'}</td>
           <td>
-            ${canManage ? `<button class="filter-btn" onclick="openEditModal('${u.id}')">ìˆ˜ì •</button>` : ''}
+            ${canManage ? `<button class="filter-btn" onclick="openEditModal('${u.id}')">¼öÁ¤</button>` : ''}
           </td>
         </tr>`;
       }).join('');
@@ -308,14 +310,14 @@
           ((u.display_name || '').toLowerCase().includes(q) || (u.username || '').toLowerCase().includes(q))
         ).slice(0, 10);
         if (matches.length === 0) {
-          box.innerHTML = '<div style="padding:0.6rem;color:var(--admin-text-muted);font-size:0.85rem;">ê²€ìƒ‰ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤.</div>';
+          box.innerHTML = '<div style="padding:0.6rem;color:var(--admin-text-muted);font-size:0.85rem;">°Ë»ö °á°ú°¡ ¾ø½À´Ï´Ù.</div>';
         } else {
           box.innerHTML = matches.map(u => {
             const dept = deptList.find(d => d.id === u.department_id);
             const deptName = dept ? dept.name : '';
             return `<div style="padding:0.6rem 0.8rem;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:0.88rem;" onmousedown="selectUser('${u.id}')" onmouseover="this.style.background='#f3f0ff'" onmouseout="this.style.background='#fff'">
               <strong>${u.display_name || u.username}</strong>
-              <span style="margin-left:0.5rem;color:var(--admin-text-muted);font-size:0.78rem;">${u.user_type === 'student' ? 'í•™ìƒ' : 'êµì‚¬'}${deptName ? ' / ' + deptName : ''}</span>
+              <span style="margin-left:0.5rem;color:var(--admin-text-muted);font-size:0.78rem;">${u.user_type === 'student' ? 'ÇĞ»ı' : '±³»ç'}${deptName ? ' / ' + deptName : ''}</span>
             </div>`;
           }).join('');
         }
@@ -331,7 +333,7 @@
       document.getElementById('mSearchInput').style.display = 'none';
       const dept = deptList.find(d => d.id === u.department_id);
       document.getElementById('selectedUserInfo').innerHTML =
-        `<strong>${u.display_name || u.username}</strong> - ${u.user_type === 'student' ? 'í•™ìƒ' : 'êµì‚¬'}${dept ? ' / ' + dept.name : ''}`;
+        `<strong>${u.display_name || u.username}</strong> - ${u.user_type === 'student' ? 'ÇĞ»ı' : '±³»ç'}${dept ? ' / ' + dept.name : ''}`;
       document.getElementById('selectedUser').style.display = 'block';
       document.getElementById('mUsername').value = u.username;
       document.getElementById('mDisplayName').value = u.display_name || u.username;
@@ -350,7 +352,7 @@
     function openAddModal() {
       editingId = null;
       _selectedUserId = null;
-      document.getElementById('modalTitle').textContent = 'ê´€ë¦¬ì ë“±ë¡';
+      document.getElementById('modalTitle').textContent = '°ü¸®ÀÚ µî·Ï';
       document.getElementById('userSearchWrap').style.display = 'block';
       document.getElementById('usernameWrap').style.display = 'none';
       document.getElementById('displayNameWrap').style.display = 'none';
@@ -375,7 +377,7 @@
       _selectedUserId = null;
       const user = allManagers.find(u => u.id === id);
       if (!user) return;
-      document.getElementById('modalTitle').textContent = 'ê´€ë¦¬ì ìˆ˜ì •';
+      document.getElementById('modalTitle').textContent = '°ü¸®ÀÚ ¼öÁ¤';
       document.getElementById('userSearchWrap').style.display = 'none';
       document.getElementById('usernameWrap').style.display = _isAdmin() ? 'block' : 'none';
       document.getElementById('displayNameWrap').style.display = 'block';
@@ -401,13 +403,13 @@
       const managedDeptId = document.getElementById('mDeptId').value || null;
 
       if (editingId) {
-        if (!displayName) { errEl.textContent = 'ì´ë¦„ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+        if (!displayName) { errEl.textContent = 'ÀÌ¸§À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
         const updates = { displayName, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(editingId, updates);
         if (error) { await logError('MANAGER_UPDATE_FAIL', { id: editingId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
         await logInfo('MANAGER_UPDATE', { id: editingId, displayName, permLevel });
       } else {
-        if (!_selectedUserId) { errEl.textContent = 'ì‚¬ìš©ìë¥¼ ê²€ìƒ‰í•˜ì—¬ ì„ íƒí•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+        if (!_selectedUserId) { errEl.textContent = '»ç¿ëÀÚ¸¦ °Ë»öÇÏ¿© ¼±ÅÃÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
         const updates = { displayName: displayName || undefined, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(_selectedUserId, updates);
         if (error) { await logError('MANAGER_PROMOTE_FAIL', { id: _selectedUserId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
@@ -418,19 +420,19 @@
     }
 
     async function resetPw(id, username) {
-      if (!confirm(`"${username}" ë¹„ë°€ë²ˆí˜¸ë¥¼ 1234ë¡œ ì´ˆê¸°í™”í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      if (!confirm(`"${username}" ºñ¹Ğ¹øÈ£¸¦ 1234·Î ÃÊ±âÈ­ÇÏ½Ã°Ú½À´Ï±î?`)) return;
       await resetUserPassword(id, username);
-      alert('ë¹„ë°€ë²ˆí˜¸ê°€ ì´ˆê¸°í™”ë˜ì—ˆìŠµë‹ˆë‹¤.');
+      alert('ºñ¹Ğ¹øÈ£°¡ ÃÊ±âÈ­µÇ¾ú½À´Ï´Ù.');
     }
 
     async function confirmDelete(id, username) {
-      if (!confirm(`"${username}" ë¶€ì„œ ë‹´ë‹¹ êµì‚¬ë¥¼ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      if (!confirm(`"${username}" ºÎ¼­ ´ã´ç ±³»ç¸¦ »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?`)) return;
       await deleteUser(id);
       await loadManagers();
     }
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.15.1"></script>
+  <script src="../js/version.js?v=3.13.0"></script>
 </body>
 </html>

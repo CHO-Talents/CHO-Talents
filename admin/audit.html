@@ -1,93 +1,95 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ì‘ì—… ì´ë ¥ - ë‹¬ë€íŠ¸ ë§ˆì„</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
+  <title>ÀÛ¾÷ ÀÌ·Â - ´Ş¶õÆ® ¸¶À»</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
+        <button class="nav-dropdown-toggle">¼Ò°³</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
-          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
+          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
+          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ë‹¬ë€íŠ¸</button>
+        <button class="nav-dropdown-toggle">´Ş¶õÆ®</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
-          <li data-min-perm="40"><a href="talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
+          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
+          <li data-min-perm="40"><a href="talents.html">´Ş¶õÆ® °ü¸®</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
+        <button class="nav-dropdown-toggle">»óÇ°</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
-          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
-          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
+          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
+          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
+          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
+        <button class="nav-dropdown-toggle">°ü¸®</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
+          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
+          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle active">ìš´ì˜</button>
+        <button class="nav-dropdown-toggle active">¿î¿µ</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
-          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
-          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
-          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
-          <li data-min-perm="100"><a href="audit.html" class="active">ì‘ì—… ì´ë ¥</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
+          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
+          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
+          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
+          <li data-min-perm="100"><a href="audit.html" class="active">ÀÛ¾÷ ÀÌ·Â</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ğŸ“ ì‘ì—… ì´ë ¥ ê´€ë¦¬</h2>
-    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">ê´€ë¦¬ì ì‘ì—…(ì‚¬ìš©ì ìˆ˜ì •, ê¶Œí•œ ë³€ê²½, ë¶€ì„œ ì´ë™, ë¹„ë°€ë²ˆí˜¸ ì´ˆê¸°í™” ë“±)ì˜ ì´ë ¥ì„ ì¡°íšŒí•©ë‹ˆë‹¤.</p>
+    <h2 style="margin-bottom:1rem;">?? ÀÛ¾÷ ÀÌ·Â °ü¸®</h2>
+    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">°ü¸®ÀÚ ÀÛ¾÷(»ç¿ëÀÚ ¼öÁ¤, ±ÇÇÑ º¯°æ, ºÎ¼­ ÀÌµ¿, ºñ¹Ğ¹øÈ£ ÃÊ±âÈ­ µî)ÀÇ ÀÌ·ÂÀ» Á¶È¸ÇÕ´Ï´Ù.</p>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
-      <button class="filter-btn active" onclick="setFilter('all',this)">ì „ì²´</button>
-      <button class="filter-btn" onclick="setFilter('USER',this)">ì‚¬ìš©ì</button>
-      <button class="filter-btn" onclick="setFilter('DEPT',this)">ë¶€ì„œ</button>
-      <button class="filter-btn" onclick="setFilter('TALENT',this)">ë‹¬ë€íŠ¸</button>
-      <button class="filter-btn" onclick="setFilter('PRODUCT',this)">ìƒí’ˆ</button>
-      <button class="filter-btn" onclick="setFilter('PERM',this)">ê¶Œí•œ/ì„¤ì •</button>
+      <button class="filter-btn active" onclick="setFilter('all',this)">ÀüÃ¼</button>
+      <button class="filter-btn" onclick="setFilter('USER',this)">»ç¿ëÀÚ</button>
+      <button class="filter-btn" onclick="setFilter('DEPT',this)">ºÎ¼­</button>
+      <button class="filter-btn" onclick="setFilter('TALENT',this)">´Ş¶õÆ®</button>
+      <button class="filter-btn" onclick="setFilter('PRODUCT',this)">»óÇ°</button>
+      <button class="filter-btn" onclick="setFilter('PERM',this)">±ÇÇÑ/¼³Á¤</button>
       <span style="margin-left:0.5rem;color:#adb5bd;">|</span>
       <input type="date" class="filter-input" id="auditDateFrom" />
       <span style="font-size:0.8rem;color:#adb5bd;">~</span>
       <input type="date" class="filter-input" id="auditDateTo" />
-      <button class="filter-btn" onclick="loadAuditLogs()">ì¡°íšŒ</button>
-      <input type="text" id="auditSearch" placeholder="ì‘ì—…ì/ëŒ€ìƒ ê²€ìƒ‰..." class="filter-input" style="flex:1;min-width:120px;" oninput="renderAudit()" />
+      <button class="filter-btn" onclick="loadAuditLogs()">Á¶È¸</button>
+      <input type="text" id="auditSearch" placeholder="ÀÛ¾÷ÀÚ/´ë»ó °Ë»ö..." class="filter-input" style="flex:1;min-width:120px;" oninput="renderAudit()" />
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="auditTitle">ì‘ì—… ì´ë ¥ (0ê±´)</div>
+        <div class="admin-table-title" id="auditTitle">ÀÛ¾÷ ÀÌ·Â (0°Ç)</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ì‹œê°„</th><th>ì‘ì—…ì</th><th>ì‘ì—… ìœ í˜•</th><th>ëŒ€ìƒ</th><th>ìƒì„¸</th></tr></thead>
-        <tbody id="auditList"><tr><td colspan="5" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <thead><tr><th>½Ã°£</th><th>ÀÛ¾÷ÀÚ</th><th>ÀÛ¾÷ À¯Çü</th><th>´ë»ó</th><th>»ó¼¼</th></tr></thead>
+        <tbody id="auditList"><tr><td colspan="5" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -95,71 +97,75 @@
   <div class="modal-overlay hidden" id="auditDetailModal">
     <div class="modal-box" style="max-width:650px;max-height:80vh;overflow-y:auto;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 class="modal-title">ì‘ì—… ìƒì„¸ ì •ë³´</h3>
-        <button class="btn-cancel" onclick="closeDetailModal()">ë‹«ê¸°</button>
+        <h3 class="modal-title">ÀÛ¾÷ »ó¼¼ Á¤º¸</h3>
+        <button class="btn-cancel" onclick="closeDetailModal()">´İ±â</button>
       </div>
       <div id="auditDetailBody" style="font-size:0.85rem;"></div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.15.1"></script>
-  <script src="../js/activity-log.js?v=3.15.1"></script>
-  <script src="../js/auth.js?v=3.15.1"></script>
-  <script src="../js/user-mgmt.js?v=3.15.1"></script>
+  <script src="../js/supabase-config.js?v=3.13.0"></script>
+  <script src="../js/activity-log.js?v=3.13.0"></script>
+  <script src="../js/auth.js?v=3.13.0"></script>
+  <script src="../js/user-mgmt.js?v=3.13.0"></script>
   <script>
     initSupabase();
     let session, allAuditLogs = [], currentFilter = 'all';
 
     const AUDIT_ACTIONS = {
-      USER_CREATE: { label: 'ì‚¬ìš©ì ë“±ë¡', category: 'USER', emoji: 'â•' },
-      USER_UPDATE: { label: 'ì‚¬ìš©ì ìˆ˜ì •', category: 'USER', emoji: 'âœï¸' },
-      USER_DELETE: { label: 'ì‚¬ìš©ì ì‚­ì œ', category: 'USER', emoji: 'ğŸ—‘ï¸' },
-      USER_PW_RESET: { label: 'ë¹„ë°€ë²ˆí˜¸ ì´ˆê¸°í™”', category: 'USER', emoji: 'ğŸ”‘' },
-      REQUEST_APPROVE: { label: 'ê°€ì… ìŠ¹ì¸', category: 'USER', emoji: 'âœ…' },
-      REQUEST_REJECT: { label: 'ê°€ì… ê±°ë¶€', category: 'USER', emoji: 'âŒ' },
-      DEPT_CREATE: { label: 'ë¶€ì„œ ë“±ë¡', category: 'DEPT', emoji: 'ğŸ¢' },
-      DEPT_UPDATE: { label: 'ë¶€ì„œ ìˆ˜ì •', category: 'DEPT', emoji: 'âœï¸' },
-      DEPT_DELETE: { label: 'ë¶€ì„œ ì‚­ì œ', category: 'DEPT', emoji: 'ğŸ—‘ï¸' },
-      DEPT_TRANSFER: { label: 'ë¶€ì„œ ì´ë™', category: 'DEPT', emoji: 'ğŸ”„' },
-      DEPT_TRANSFER_APPROVE: { label: 'ë¶€ì„œ ì´ë™ ìŠ¹ì¸', category: 'DEPT', emoji: 'âœ…' },
-      DEPT_TRANSFER_REJECT: { label: 'ë¶€ì„œ ì´ë™ ê±°ë¶€', category: 'DEPT', emoji: 'âŒ' },
-      TALENT_GIVE: { label: 'ë‹¬ë€íŠ¸ ì§€ê¸‰', category: 'TALENT', emoji: 'ğŸ’°' },
-      TALENT_USE: { label: 'ë‹¬ë€íŠ¸ ì‚¬ìš©', category: 'TALENT', emoji: 'ğŸ›’' },
-      PRODUCT_CREATE: { label: 'ìƒí’ˆ ë“±ë¡', category: 'PRODUCT', emoji: 'ğŸ“¦' },
-      PRODUCT_UPDATE: { label: 'ìƒí’ˆ ìˆ˜ì •', category: 'PRODUCT', emoji: 'âœï¸' },
-      PRODUCT_DELETE: { label: 'ìƒí’ˆ ì‚­ì œ', category: 'PRODUCT', emoji: 'ğŸ—‘ï¸' },
-      MGR_REGISTER: { label: 'ê´€ë¦¬ì ë“±ë¡', category: 'PERM', emoji: 'ğŸ‘‘' },
-      MGR_UPDATE: { label: 'ê´€ë¦¬ì ìˆ˜ì •', category: 'PERM', emoji: 'âœï¸' },
-      PAGE_ACCESS_UPDATE: { label: 'í˜ì´ì§€ ì ‘ê·¼ ì„¤ì •', category: 'PERM', emoji: 'ğŸ”' },
-      ROLE_ACCESS_UPDATE: { label: 'ê¶Œí•œë³„ ì ‘ê·¼ ì„¤ì •', category: 'PERM', emoji: 'ğŸ”' },
-      PAGE_FEATURE_UPDATE: { label: 'í˜ì´ì§€ ê¸°ëŠ¥ ì„¤ì •', category: 'PERM', emoji: 'âš™ï¸' },
-      ROLE_FEATURE_UPDATE: { label: 'ê¶Œí•œë³„ ê¸°ëŠ¥ ì„¤ì •', category: 'PERM', emoji: 'âš™ï¸' },
-      REPORT_SAVE: { label: 'ë³´ê³ ì„œ ì €ì¥', category: 'PERM', emoji: 'ğŸ“„' },
-      REPORT_DELETE: { label: 'ë³´ê³ ì„œ ì‚­ì œ', category: 'PERM', emoji: 'ğŸ—‘ï¸' },
-      LOG_SELECT_DELETE: { label: 'ë¡œê·¸ ì„ íƒ ì‚­ì œ', category: 'PERM', emoji: 'ğŸ—‘ï¸' },
-      LOG_RANGE_DELETE: { label: 'ë¡œê·¸ ë²”ìœ„ ì‚­ì œ', category: 'PERM', emoji: 'ğŸ—‘ï¸' }
+      USER_CREATE: { label: '»ç¿ëÀÚ µî·Ï', category: 'USER', emoji: '?' },
+      USER_UPDATE: { label: '»ç¿ëÀÚ ¼öÁ¤', category: 'USER', emoji: '??' },
+      USER_DELETE: { label: '»ç¿ëÀÚ »èÁ¦', category: 'USER', emoji: '???' },
+      USER_PW_RESET: { label: 'ºñ¹Ğ¹øÈ£ ÃÊ±âÈ­', category: 'USER', emoji: '??' },
+      REQUEST_APPROVE: { label: '°¡ÀÔ ½ÂÀÎ', category: 'USER', emoji: '?' },
+      REQUEST_REJECT: { label: '°¡ÀÔ °ÅºÎ', category: 'USER', emoji: '?' },
+      DEPT_CREATE: { label: 'ºÎ¼­ µî·Ï', category: 'DEPT', emoji: '??' },
+      DEPT_UPDATE: { label: 'ºÎ¼­ ¼öÁ¤', category: 'DEPT', emoji: '??' },
+      DEPT_DELETE: { label: 'ºÎ¼­ »èÁ¦', category: 'DEPT', emoji: '???' },
+      DEPT_TRANSFER: { label: 'ºÎ¼­ ÀÌµ¿', category: 'DEPT', emoji: '??' },
+      DEPT_TRANSFER_APPROVE: { label: 'ºÎ¼­ ÀÌµ¿ ½ÂÀÎ', category: 'DEPT', emoji: '?' },
+      DEPT_TRANSFER_REJECT: { label: 'ºÎ¼­ ÀÌµ¿ °ÅºÎ', category: 'DEPT', emoji: '?' },
+      TALENT_GIVE: { label: '´Ş¶õÆ® Áö±Ş', category: 'TALENT', emoji: '??' },
+      TALENT_USE: { label: '´Ş¶õÆ® »ç¿ë', category: 'TALENT', emoji: '??' },
+      TALENT_CANCEL: { label: '´Ş¶õÆ® Ãë¼Ò', category: 'TALENT', emoji: '??' },
+      QR_CREATE: { label: 'QR ÄÚµå »ı¼º', category: 'TALENT', emoji: '??' },
+      QR_DEACTIVATE: { label: 'QR ÄÚµå ºñÈ°¼ºÈ­', category: 'TALENT', emoji: '??' },
+      ORDER_CANCEL: { label: '±¸¸Å Ãë¼Ò', category: 'PRODUCT', emoji: '??' },
+      PRODUCT_CREATE: { label: '»óÇ° µî·Ï', category: 'PRODUCT', emoji: '??' },
+      PRODUCT_UPDATE: { label: '»óÇ° ¼öÁ¤', category: 'PRODUCT', emoji: '??' },
+      PRODUCT_DELETE: { label: '»óÇ° »èÁ¦', category: 'PRODUCT', emoji: '???' },
+      MGR_REGISTER: { label: '°ü¸®ÀÚ µî·Ï', category: 'PERM', emoji: '??' },
+      MGR_UPDATE: { label: '°ü¸®ÀÚ ¼öÁ¤', category: 'PERM', emoji: '??' },
+      PAGE_ACCESS_UPDATE: { label: 'ÆäÀÌÁö Á¢±Ù ¼³Á¤', category: 'PERM', emoji: '??' },
+      ROLE_ACCESS_UPDATE: { label: '±ÇÇÑº° Á¢±Ù ¼³Á¤', category: 'PERM', emoji: '??' },
+      PAGE_FEATURE_UPDATE: { label: 'ÆäÀÌÁö ±â´É ¼³Á¤', category: 'PERM', emoji: '??' },
+      ROLE_FEATURE_UPDATE: { label: '±ÇÇÑº° ±â´É ¼³Á¤', category: 'PERM', emoji: '??' },
+      REPORT_SAVE: { label: 'º¸°í¼­ ÀúÀå', category: 'PERM', emoji: '??' },
+      REPORT_DELETE: { label: 'º¸°í¼­ »èÁ¦', category: 'PERM', emoji: '???' },
+      LOG_SELECT_DELETE: { label: '·Î±× ¼±ÅÃ »èÁ¦', category: 'PERM', emoji: '???' },
+      LOG_RANGE_DELETE: { label: '·Î±× ¹üÀ§ »èÁ¦', category: 'PERM', emoji: '???' }
     };
 
     const AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
     const PERM_KEY_LABELS = {
-      super_admin: 'ìµœê³  ê´€ë¦¬ì', admin: 'ê´€ë¦¬ì', evangelist: 'ì „ë„ì‚¬ë‹˜',
-      chief: 'ë¶€ì¥ êµì‚¬', dept_teacher: 'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', teacher: 'ì¼ë°˜ êµì‚¬', student: 'í•™ìƒ'
+      super_admin: 'ÃÖ°í °ü¸®ÀÚ', admin: '°ü¸®ÀÚ', evangelist: 'Àüµµ»ç´Ô',
+      chief: 'ºÎÀå ±³»ç', dept_teacher: 'ºÎ¼­ ´ã´ç ±³»ç', teacher: 'ÀÏ¹İ ±³»ç', student: 'ÇĞ»ı'
     };
     const DETAIL_KEY_LABELS = {
-      targetName: 'ëŒ€ìƒ', displayName: 'í‘œì‹œ ì´ë¦„', name: 'ì´ë¦„', username: 'ì•„ì´ë””',
-      userId: 'ì‚¬ìš©ì ID', roleKey: 'ì—­í• ', permissionKey: 'ê¶Œí•œ', permissionLevel: 'ê¶Œí•œ ë“±ê¸‰',
-      rank: 'ìˆœìœ„', department: 'ë¶€ì„œ', departmentId: 'ë¶€ì„œ ID', departmentName: 'ë¶€ì„œëª…',
-      fromDept: 'ì´ì „ ë¶€ì„œ', toDept: 'ì´ë™ ë¶€ì„œ', amount: 'ìˆ˜ëŸ‰', balance: 'ì”ì•¡',
-      reason: 'ì‚¬ìœ ', taskId: 'ì‘ì—… ID', taskTitle: 'ì‘ì—… ì œëª©', pageId: 'í˜ì´ì§€ ID',
-      action: 'ì‘ì—…', error: 'ì˜¤ë¥˜', _userName: 'ì‘ì—…ì ì´ë¦„', _client: 'í´ë¼ì´ì–¸íŠ¸ ì •ë³´',
-      user_type: 'ìœ í˜•', class_number: 'ë°˜', old: 'ì´ì „ ê°’', new: 'ë³€ê²½ ê°’',
-      approval_scope: 'ìŠ¹ì¸ ë²”ìœ„', transfer_type: 'ì´ë™ ìœ í˜•', status: 'ìƒíƒœ',
-      product_name: 'ìƒí’ˆëª…', product_id: 'ìƒí’ˆ ID', price: 'ê°€ê²©',
-      talent_balance: 'ë‹¬ë€íŠ¸ ì”ì•¡', pending_talent: 'ë³´ë¥˜ ë‹¬ë€íŠ¸',
-      features: 'ê¸°ëŠ¥ ì„¤ì •', description: 'ì„¤ëª…', email: 'ì´ë©”ì¼',
-      fromDeptName: 'ì´ì „ ë¶€ì„œëª…', toDeptName: 'ì´ë™ ë¶€ì„œëª…',
-      is_super_admin: 'ìŠˆí¼ ê´€ë¦¬ì', is_active: 'í™œì„± ìƒíƒœ'
+      targetName: '´ë»ó', displayName: 'Ç¥½Ã ÀÌ¸§', name: 'ÀÌ¸§', username: '¾ÆÀÌµğ',
+      userId: '»ç¿ëÀÚ ID', roleKey: '¿ªÇÒ', permissionKey: '±ÇÇÑ', permissionLevel: '±ÇÇÑ µî±Ş',
+      rank: '¼øÀ§', department: 'ºÎ¼­', departmentId: 'ºÎ¼­ ID', departmentName: 'ºÎ¼­¸í',
+      fromDept: 'ÀÌÀü ºÎ¼­', toDept: 'ÀÌµ¿ ºÎ¼­', amount: '¼ö·®', balance: 'ÀÜ¾×',
+      reason: '»çÀ¯', taskId: 'ÀÛ¾÷ ID', taskTitle: 'ÀÛ¾÷ Á¦¸ñ', pageId: 'ÆäÀÌÁö ID',
+      action: 'ÀÛ¾÷', error: '¿À·ù', _userName: 'ÀÛ¾÷ÀÚ ÀÌ¸§', _client: 'Å¬¶óÀÌ¾ğÆ® Á¤º¸',
+      user_type: 'À¯Çü', class_number: '¹İ', old: 'ÀÌÀü °ª', new: 'º¯°æ °ª',
+      approval_scope: '½ÂÀÎ ¹üÀ§', transfer_type: 'ÀÌµ¿ À¯Çü', status: '»óÅÂ',
+      product_name: '»óÇ°¸í', product_id: '»óÇ° ID', price: '°¡°İ',
+      talent_balance: '´Ş¶õÆ® ÀÜ¾×', pending_talent: 'º¸·ù ´Ş¶õÆ®',
+      features: '±â´É ¼³Á¤', description: '¼³¸í', email: 'ÀÌ¸ŞÀÏ',
+      fromDeptName: 'ÀÌÀü ºÎ¼­¸í', toDeptName: 'ÀÌµ¿ ºÎ¼­¸í',
+      is_super_admin: '½´ÆÛ °ü¸®ÀÚ', is_active: 'È°¼º »óÅÂ'
     };
 
     (async () => {
@@ -219,7 +225,7 @@
       }
       if (error) {
         console.error('[AUDIT] load error:', error);
-        document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">ì¡°íšŒ ì˜¤ë¥˜: ${tErr(error.message)}</td></tr>`;
+        document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">Á¶È¸ ¿À·ù: ${tErr(error.message)}</td></tr>`;
         return;
       }
       allAuditLogs = data || [];
@@ -244,17 +250,17 @@
         });
       }
 
-      document.getElementById('auditTitle').textContent = `ì‘ì—… ì´ë ¥ (${list.length}ê±´)`;
+      document.getElementById('auditTitle').textContent = `ÀÛ¾÷ ÀÌ·Â (${list.length}°Ç)`;
       const tbody = document.getElementById('auditList');
 
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">ì¡°íšŒëœ ì‘ì—… ì´ë ¥ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Á¶È¸µÈ ÀÛ¾÷ ÀÌ·ÂÀÌ ¾ø½À´Ï´Ù.</td></tr>';
         return;
       }
 
       const isAdmin = session.permissionRank >= 100;
       tbody.innerHTML = list.map(l => {
-        const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: 'ğŸ“‹', category: '' };
+        const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '??', category: '' };
         const dt = l.created_at ? formatKSTShort(l.created_at) : '-';
         const actorName = l.user_name || (l.details && l.details._userName) || null;
         const actorId = l.username || null;
@@ -264,7 +270,7 @@
         } else if (actorId) {
           actor = actorId;
         } else {
-          actor = 'ì‹œìŠ¤í…œ';
+          actor = '½Ã½ºÅÛ';
         }
         const target = extractTarget(l);
         return `<tr>
@@ -272,7 +278,7 @@
           <td>${actor}</td>
           <td><span class="level-badge INFO">${info.emoji} ${info.label}</span></td>
           <td>${target}</td>
-          <td><button class="filter-btn" onclick='showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>ìƒì„¸</button></td>
+          <td><button class="filter-btn" onclick='showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>»ó¼¼</button></td>
         </tr>`;
       }).join('');
     }
@@ -291,19 +297,19 @@
     }
 
     function showDetail(log) {
-      const info = AUDIT_ACTIONS[log.action] || { label: log.action, emoji: 'ğŸ“‹' };
+      const info = AUDIT_ACTIONS[log.action] || { label: log.action, emoji: '??' };
       const dt = log.created_at ? new Date(log.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }) : '-';
       const details = log.details || {};
 
       let html = `
         <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
-          <tr><td style="padding:0.4rem;font-weight:700;width:100px;">ì‹œê°„</td><td style="padding:0.4rem;">${dt}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">ì‘ì—…ì</td><td style="padding:0.4rem;">${log.user_name || '-'}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">ì‘ì—…</td><td style="padding:0.4rem;">${info.emoji} ${info.label}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">í˜ì´ì§€</td><td style="padding:0.4rem;">${log.page || '-'}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;width:100px;">½Ã°£</td><td style="padding:0.4rem;">${dt}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">ÀÛ¾÷ÀÚ</td><td style="padding:0.4rem;">${log.user_name || '-'}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">ÀÛ¾÷</td><td style="padding:0.4rem;">${info.emoji} ${info.label}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">ÆäÀÌÁö</td><td style="padding:0.4rem;">${log.page || '-'}</td></tr>
         </table>
         <div style="margin-top:0.8rem;border-top:1px solid var(--admin-border);padding-top:0.6rem;">
-          <div style="font-weight:700;margin-bottom:0.4rem;">ìƒì„¸ ë°ì´í„°</div>
+          <div style="font-weight:700;margin-bottom:0.4rem;">»ó¼¼ µ¥ÀÌÅÍ</div>
           <pre style="background:#f8f9fa;padding:0.6rem;border-radius:6px;font-size:0.78rem;overflow-x:auto;max-height:300px;">${localizeDetailJson(details)}</pre>
         </div>`;
 
@@ -317,7 +323,7 @@
           return PERM_KEY_LABELS[val] || val;
         }
         if (key === 'user_type') {
-          return val === 'teacher' ? 'êµì‚¬' : val === 'student' ? 'í•™ìƒ' : val;
+          return val === 'teacher' ? '±³»ç' : val === 'student' ? 'ÇĞ»ı' : val;
         }
         return val;
       }
@@ -343,6 +349,6 @@
       if (e.target.classList.contains('modal-overlay')) closeDetailModal();
     });
   </script>
-  <script src="../js/version.js?v=3.15.1"></script>
+  <script src="../js/version.js?v=3.13.0"></script>
 </body>
 </html>

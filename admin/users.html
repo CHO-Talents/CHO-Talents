@@ -1,219 +1,221 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ì‚¬ìš©ì ê´€ë¦¬ - ê´€ë¦¬ì</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
+  <title>»ç¿ëÀÚ °ü¸® - °ü¸®ÀÚ</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
+        <button class="nav-dropdown-toggle">¼Ò°³</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
-          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
+          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
+          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ë‹¬ë€íŠ¸</button>
+        <button class="nav-dropdown-toggle">´Ş¶õÆ®</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
-          <li data-min-perm="40"><a href="talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
+          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
+          <li data-min-perm="40"><a href="talents.html">´Ş¶õÆ® °ü¸®</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
+        <button class="nav-dropdown-toggle">»óÇ°</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
-          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
-          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
+          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
+          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
+          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle active">ê´€ë¦¬</button>
+        <button class="nav-dropdown-toggle active">°ü¸®</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
-          <li data-min-perm="60"><a href="users.html" class="active" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
+          <li data-min-perm="80"><a href="index.html">´ë½Ãº¸µå</a></li>
+          <li data-min-perm="60"><a href="users.html" class="active" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
+          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">ìš´ì˜</button>
+        <button class="nav-dropdown-toggle">¿î¿µ</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
-          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
-          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
-          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
-          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
+          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
+          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
+          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
+          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ğŸ‘¥ ì‚¬ìš©ì ê´€ë¦¬</h2>
+    <h2 style="margin-bottom:1rem;">?? »ç¿ëÀÚ °ü¸®</h2>
 
     <div class="cards-grid" style="margin-bottom:1.5rem;">
-      <div class="stat-card"><div class="stat-card-label">ì „ì²´</div><div class="stat-card-value" id="cntAll">-</div></div>
-      <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">ğŸ‘‘ ê´€ë¦¬ì</div><div class="stat-card-value" id="cntAdmin">-</div></div>
-      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">ğŸ“‹ ë¶€ì„œ ë‹´ë‹¹ êµì‚¬</div><div class="stat-card-value" id="cntMgr">-</div></div>
-      <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">ğŸ‘©â€ğŸ« êµì‚¬</div><div class="stat-card-value" id="cntTeacher">-</div></div>
-      <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">ğŸ’ í•™ìƒ</div><div class="stat-card-value" id="cntStudent">-</div></div>
+      <div class="stat-card"><div class="stat-card-label">ÀüÃ¼</div><div class="stat-card-value" id="cntAll">-</div></div>
+      <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">?? °ü¸®ÀÚ</div><div class="stat-card-value" id="cntAdmin">-</div></div>
+      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">?? ºÎ¼­ ´ã´ç ±³»ç</div><div class="stat-card-value" id="cntMgr">-</div></div>
+      <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">????? ±³»ç</div><div class="stat-card-value" id="cntTeacher">-</div></div>
+      <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">?? ÇĞ»ı</div><div class="stat-card-value" id="cntStudent">-</div></div>
     </div>
 
-    <!-- ê°€ì… ì‹ ì²­ ë‚´ì—­ -->
+    <!-- °¡ÀÔ ½ÅÃ» ³»¿ª -->
     <div class="admin-table-wrap" id="reqSection" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="reqTitle" style="color:#e67700;">ğŸ“ ê°€ì… ì‹ ì²­ ë‚´ì—­</div>
+        <div class="admin-table-title" id="reqTitle" style="color:#e67700;">?? °¡ÀÔ ½ÅÃ» ³»¿ª</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ì—­í• </th><th>ì´ë¦„</th><th>ë¶€ì„œ</th><th>ì‚¬ìœ </th><th>ì‹ ì²­ì¼</th><th>ì²˜ë¦¬</th></tr></thead>
+        <thead><tr><th>¿ªÇÒ</th><th>ÀÌ¸§</th><th>ºÎ¼­</th><th>»çÀ¯</th><th>½ÅÃ»ÀÏ</th><th>Ã³¸®</th></tr></thead>
         <tbody id="reqList"></tbody>
       </table>
     </div>
 
-    <!-- ë¶€ì„œ ì´ë™ ì‹ ì²­ ë‚´ì—­ -->
+    <!-- ºÎ¼­ ÀÌµ¿ ½ÅÃ» ³»¿ª -->
     <div class="admin-table-wrap" id="transferSection" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="transferTitle" style="color:#1971c2;">ğŸ”„ ë¶€ì„œ ì´ë™ ì‹ ì²­ ë‚´ì—­</div>
+        <div class="admin-table-title" id="transferTitle" style="color:#1971c2;">?? ºÎ¼­ ÀÌµ¿ ½ÅÃ» ³»¿ª</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ì´ë¦„</th><th>í˜„ì¬ ë¶€ì„œ</th><th>ì´ë™ ìš”ì²­ ë¶€ì„œ</th><th>ìš”ì²­ì</th><th>ìš”ì²­ì¼</th><th>ì²˜ë¦¬</th></tr></thead>
+        <thead><tr><th>ÀÌ¸§</th><th>ÇöÀç ºÎ¼­</th><th>ÀÌµ¿ ¿äÃ» ºÎ¼­</th><th>¿äÃ»ÀÚ</th><th>¿äÃ»ÀÏ</th><th>Ã³¸®</th></tr></thead>
         <tbody id="transferList"></tbody>
       </table>
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">ì‚¬ìš©ì ëª©ë¡</div>
+        <div class="admin-table-title" id="tableTitle">»ç¿ëÀÚ ¸ñ·Ï</div>
         <div class="filters" style="flex-wrap:wrap;gap:0.4rem;">
-          <button class="filter-btn active" onclick="setFilter('all',this)">ì „ì²´</button>
-          <button class="filter-btn" data-min-perm="80" onclick="setFilter('admin',this)">ê´€ë¦¬ì</button>
-          <button class="filter-btn" data-min-perm="80" onclick="setFilter('dept_manager',this)">ë¶€ì„œ ë‹´ë‹¹ êµì‚¬</button>
-          <button class="filter-btn" onclick="setFilter('teacher',this)">êµì‚¬</button>
-          <button class="filter-btn" onclick="setFilter('student',this)">í•™ìƒ</button>
+          <button class="filter-btn active" onclick="setFilter('all',this)">ÀüÃ¼</button>
+          <button class="filter-btn" data-min-perm="80" onclick="setFilter('admin',this)">°ü¸®ÀÚ</button>
+          <button class="filter-btn" data-min-perm="80" onclick="setFilter('dept_manager',this)">ºÎ¼­ ´ã´ç ±³»ç</button>
+          <button class="filter-btn" onclick="setFilter('teacher',this)">±³»ç</button>
+          <button class="filter-btn" onclick="setFilter('student',this)">ÇĞ»ı</button>
           <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
-            <option value="">ì „ì²´ ë¶€ì„œ</option>
+            <option value="">ÀüÃ¼ ºÎ¼­</option>
           </select>
           <span style="margin-left:0.5rem;"></span>
-          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ ì‚¬ìš©ì ë“±ë¡</button>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ »ç¿ëÀÚ µî·Ï</button>
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ì—­í• </th><th>ê¶Œí•œ</th><th>ì´ë¦„</th><th>ë¶€ì„œ</th><th>ë°˜</th><th>ë‹¬ë€íŠ¸</th><th>ë“±ë¡ì¼</th><th>ë§ˆì§€ë§‰ ë¡œê·¸ì¸</th><th>ê´€ë¦¬</th></tr></thead>
-        <tbody id="userList"><tr><td colspan="9" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <thead><tr><th>¿ªÇÒ</th><th>±ÇÇÑ</th><th>ÀÌ¸§</th><th>ºÎ¼­</th><th>¹İ</th><th>´Ş¶õÆ®</th><th>µî·ÏÀÏ</th><th>¸¶Áö¸· ·Î±×ÀÎ</th><th>°ü¸®</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="9" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
     </div>
   </div>
 
-  <!-- ì‚¬ìš©ì ë“±ë¡/ìˆ˜ì • ëª¨ë‹¬ -->
+  <!-- »ç¿ëÀÚ µî·Ï/¼öÁ¤ ¸ğ´Ş -->
   <div class="modal-overlay hidden" id="userModal">
     <div class="modal-box" style="max-width:500px;">
-      <h3 class="modal-title" id="modalTitle">ì‚¬ìš©ì ë“±ë¡</h3>
+      <h3 class="modal-title" id="modalTitle">»ç¿ëÀÚ µî·Ï</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì•„ì´ë””</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¾ÆÀÌµğ</label>
         <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì´ë¦„ (í‘œì‹œëª…)</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÀÌ¸§ (Ç¥½Ã¸í)</label>
         <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì—­í• </label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¿ªÇÒ</label>
           <select id="mUserType" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onUserTypeChange()">
-            <option value="student">ğŸ’ í•™ìƒ</option>
-            <option value="teacher">ğŸ‘©â€ğŸ« êµì‚¬</option>
+            <option value="student">?? ÇĞ»ı</option>
+            <option value="teacher">????? ±³»ç</option>
           </select>
         </div>
         <div style="flex:1;" id="permLevelWrap">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ê¶Œí•œ</label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">±ÇÇÑ</label>
           <select id="mPermLevel" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onPermLevelChange()">
           </select>
         </div>
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì†Œì† ë¶€ì„œ <span style="color:#e03131;">*</span></label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¼Ò¼Ó ºÎ¼­ <span style="color:#e03131;">*</span></label>
           <select id="mDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onDeptChange()">
-            <option value="">ì—†ìŒ</option>
+            <option value="">¾øÀ½</option>
           </select>
         </div>
         <div style="flex:1;" id="classWrap">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë°˜</label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¹İ</label>
           <select id="mClassNumber" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-            <option value="">ì—†ìŒ</option>
+            <option value="">¾øÀ½</option>
           </select>
         </div>
       </div>
       <div id="managedDeptWrap" style="margin-bottom:0.8rem;display:none;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë‹´ë‹¹ ê´€ë¦¬ ë¶€ì„œ <span style="color:#e03131;">*í•„ìˆ˜</span></label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´ã´ç °ü¸® ºÎ¼­ <span style="color:#e03131;">*ÇÊ¼ö</span></label>
         <select id="mManagedDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="">ì—†ìŒ</option>
+          <option value="">¾øÀ½</option>
         </select>
       </div>
       <div id="passwordWrap" style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì´ˆê¸° ë¹„ë°€ë²ˆí˜¸</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÃÊ±â ºñ¹Ğ¹øÈ£</label>
         <input type="text" id="mPassword" value="1234" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
-        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">ì²« ë¡œê·¸ì¸ ì‹œ ë³€ê²½ í•„ìˆ˜</div>
+        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">Ã¹ ·Î±×ÀÎ ½Ã º¯°æ ÇÊ¼ö</div>
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">ì·¨ì†Œ</button>
-        <button class="btn-confirm" onclick="saveUser()">ì €ì¥</button>
+        <button class="btn-cancel" onclick="closeModal()">Ãë¼Ò</button>
+        <button class="btn-confirm" onclick="saveUser()">ÀúÀå</button>
       </div>
     </div>
   </div>
 
-  <!-- ë¶€ì„œ ì´ë™ ëª¨ë‹¬ -->
+  <!-- ºÎ¼­ ÀÌµ¿ ¸ğ´Ş -->
   <div class="modal-overlay hidden" id="transferModal">
     <div class="modal-box" style="max-width:420px;">
-      <h3 class="modal-title">ğŸ”„ ë¶€ì„œ ì´ë™</h3>
+      <h3 class="modal-title">?? ºÎ¼­ ÀÌµ¿</h3>
       <div class="form-error" id="transferError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ëŒ€ìƒ ì‚¬ìš©ì</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´ë»ó »ç¿ëÀÚ</label>
         <div id="transferUserInfo" style="padding:0.6rem;background:#f8f9fa;border-radius:8px;font-size:0.9rem;"></div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">í˜„ì¬ ë¶€ì„œ</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÇöÀç ºÎ¼­</label>
         <div id="transferFromDept" style="padding:0.6rem;background:#f8f9fa;border-radius:8px;font-size:0.9rem;color:#868e96;"></div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì´ë™í•  ë¶€ì„œ <span style="color:#e03131;">*</span></label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÀÌµ¿ÇÒ ºÎ¼­ <span style="color:#e03131;">*</span></label>
         <select id="transferToDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="">-- ë¶€ì„œ ì„ íƒ --</option>
+          <option value="">-- ºÎ¼­ ¼±ÅÃ --</option>
         </select>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì‚¬ìœ </label>
-        <input type="text" id="transferReason" placeholder="ì´ë™ ì‚¬ìœ  ì…ë ¥" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">»çÀ¯</label>
+        <input type="text" id="transferReason" placeholder="ÀÌµ¿ »çÀ¯ ÀÔ·Â" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div id="transferNote" style="font-size:0.78rem;color:#868e96;margin-bottom:0.8rem;"></div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeTransferModal()">ì·¨ì†Œ</button>
-        <button class="btn-confirm" onclick="submitTransfer()">í™•ì¸</button>
+        <button class="btn-cancel" onclick="closeTransferModal()">Ãë¼Ò</button>
+        <button class="btn-confirm" onclick="submitTransfer()">È®ÀÎ</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.15.1"></script>
-  <script src="../js/activity-log.js?v=3.15.1"></script>
-  <script src="../js/auth.js?v=3.15.1"></script>
-  <script src="../js/user-mgmt.js?v=3.15.1"></script>
-  <script src="../js/version.js?v=3.15.1"></script>
+  <script src="../js/supabase-config.js?v=3.13.0"></script>
+  <script src="../js/activity-log.js?v=3.13.0"></script>
+  <script src="../js/auth.js?v=3.13.0"></script>
+  <script src="../js/user-mgmt.js?v=3.13.0"></script>
+  <script src="../js/version.js?v=3.13.0"></script>
   <script>
     initSupabase();
     let session;
@@ -290,9 +292,9 @@
       }
 
       if (myRank >= 90) {
-        // ì „ë„ì‚¬ë‹˜+: ëª¨ë“  ì´ë™ ìš”ì²­ í‘œì‹œ
+        // Àüµµ»ç´Ô+: ¸ğµç ÀÌµ¿ ¿äÃ» Ç¥½Ã
       } else if (myRank >= 80) {
-        // ë¶€ì¥ êµì‚¬: ëª¨ë“  ì´ë™ ìš”ì²­ í‘œì‹œ (ì²˜ë¦¬ëŠ” ê´€ë¦¬ ë¶€ì„œë§Œ)
+        // ºÎÀå ±³»ç: ¸ğµç ÀÌµ¿ ¿äÃ» Ç¥½Ã (Ã³¸®´Â °ü¸® ºÎ¼­¸¸)
       } else if (myRank >= 60) {
         transfers = myManagedDept ? transfers.filter(t => t.to_department_id === myManagedDept) : [];
       } else {
@@ -315,11 +317,11 @@
     const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
 
     const PERM_LEVELS = [
-      { value: 'teacher', label: 'ì¼ë°˜ êµì‚¬', rank: 40 },
-      { value: 'dept_teacher', label: 'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', rank: 60 },
-      { value: 'chief', label: 'ë¶€ì¥ êµì‚¬', rank: 80 },
-      { value: 'evangelist', label: 'ì „ë„ì‚¬ë‹˜', rank: 90 },
-      { value: 'admin', label: 'ê´€ë¦¬ì', rank: 100 }
+      { value: 'teacher', label: 'ÀÏ¹İ ±³»ç', rank: 40 },
+      { value: 'dept_teacher', label: 'ºÎ¼­ ´ã´ç ±³»ç', rank: 60 },
+      { value: 'chief', label: 'ºÎÀå ±³»ç', rank: 80 },
+      { value: 'evangelist', label: 'Àüµµ»ç´Ô', rank: 90 },
+      { value: 'admin', label: '°ü¸®ÀÚ', rank: 100 }
     ];
 
     function buildPermOptions(maxRank, selectedValue) {
@@ -352,13 +354,13 @@
     }
 
     function populateDeptSelects() {
-      const opts = '<option value="">ì—†ìŒ</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      const opts = '<option value="">¾øÀ½</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
       document.getElementById('mDept').innerHTML = opts;
       document.getElementById('mManagedDept').innerHTML = opts;
     }
 
     function getClassLabel(classNum) {
-      return classNum ? classNum + 'ë°˜' : '-';
+      return classNum ? classNum + '¹İ' : '-';
     }
 
     function onDeptChange() {
@@ -366,8 +368,8 @@
       const classSelect = document.getElementById('mClassNumber');
       const dept = allDepts.find(d => d.id === deptId);
       const count = (dept && dept.class_count) ? dept.class_count : 0;
-      let html = '<option value="">ì—†ìŒ</option>';
-      for (let i = 1; i <= count; i++) html += `<option value="${i}">${i}ë°˜</option>`;
+      let html = '<option value="">¾øÀ½</option>';
+      for (let i = 1; i <= count; i++) html += `<option value="${i}">${i}¹İ</option>`;
       classSelect.innerHTML = html;
       document.getElementById('classWrap').style.display = count > 0 ? 'block' : 'none';
     }
@@ -389,7 +391,7 @@
     function populateDeptFilter() {
       const sel = document.getElementById('deptFilter');
       if (!sel) return;
-      sel.innerHTML = '<option value="">ì „ì²´ ë¶€ì„œ</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      sel.innerHTML = '<option value="">ÀüÃ¼ ºÎ¼­</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
     function getDeptName(id) {
@@ -398,10 +400,10 @@
     }
 
     const ROLE_BADGES = {
-      admin: { emoji: 'ğŸ‘‘', label: 'ê´€ë¦¬ì', cls: 'ERROR' },
-      dept_manager: { emoji: 'ğŸ“‹', label: 'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', cls: 'WARN' },
-      teacher: { emoji: 'ğŸ‘©â€ğŸ«', label: 'êµì‚¬', cls: 'INFO' },
-      student: { emoji: 'ğŸ’', label: 'í•™ìƒ', cls: 'DEBUG' }
+      admin: { emoji: '??', label: '°ü¸®ÀÚ', cls: 'ERROR' },
+      dept_manager: { emoji: '??', label: 'ºÎ¼­ ´ã´ç ±³»ç', cls: 'WARN' },
+      teacher: { emoji: '?????', label: '±³»ç', cls: 'INFO' },
+      student: { emoji: '??', label: 'ÇĞ»ı', cls: 'DEBUG' }
     };
 
     let _nameMap = {};
@@ -411,20 +413,20 @@
       let list = currentFilter === 'all' ? allUsers : allUsers.filter(u => userMatchesFilter(u, currentFilter));
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter);
       const tbody = document.getElementById('userList');
-      document.getElementById('tableTitle').textContent = `ì‚¬ìš©ì ëª©ë¡ (${list.length}ëª…)`;
+      document.getElementById('tableTitle').textContent = `»ç¿ëÀÚ ¸ñ·Ï (${list.length}¸í)`;
 
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="empty-state">ë“±ë¡ëœ ì‚¬ìš©ìê°€ ì—†ìŠµë‹ˆë‹¤.</td></tr>'; return; }
+      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="empty-state">µî·ÏµÈ »ç¿ëÀÚ°¡ ¾ø½À´Ï´Ù.</td></tr>'; return; }
 
       _nameMap = resolveDisplayNames(allUsers);
       const myRank = session.permissionRank || 0;
       tbody.innerHTML = list.map(u => {
         const perm = u.permission_level;
         const typeLabel = TYPE_LABELS[u.user_type] || u.user_type;
-        const typeEmoji = u.user_type === 'student' ? 'ğŸ’' : 'ğŸ‘©â€ğŸ«';
+        const typeEmoji = u.user_type === 'student' ? '??' : '?????';
         const permLabel = PERMISSION_LABELS[perm] || perm;
         const permEmoji = PERMISSION_EMOJI[perm] || '';
         const dn = _nameMap[u.id] || u.display_name || '-';
-        const lastLogin = u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '<span style="color:#adb5bd;font-size:0.8rem;">ì—†ìŒ</span>';
+        const lastLogin = u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '<span style="color:#adb5bd;font-size:0.8rem;">¾øÀ½</span>';
         const isSuperAdmin = u.is_super_admin || false;
         const targetRank = getPermRank(perm, isSuperAdmin);
         const canManage = u.id === session.id || (myRank > targetRank);
@@ -440,10 +442,10 @@
           <td>${formatKSTShort(u.created_at)}</td>
           <td>${lastLogin}</td>
           <td>
-            ${canManage ? `<button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>ìˆ˜ì •</button>` : ''}
-            ${(canManage && !isSelf) ? `<button class="filter-btn" style="background:#1971c2;color:#fff;" onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">${myRank >= 90 ? 'ë¶€ì„œ ì´ë™' : 'ë¶€ì„œ ì´ë™ ì‹ ì²­'}</button>` : ''}
-            ${canManage && !isSelf ? `<button class="filter-btn" onclick="resetPw('${u.id}','${_nameMap[u.id]||u.display_name}')">ë¹„ë°€ë²ˆí˜¸ì´ˆê¸°í™”</button>` : ''}
-            ${canManage && !isSelf ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${_nameMap[u.id]||u.display_name}')">ì‚­ì œ</button>` : ''}
+            ${canManage ? `<button class="filter-btn" onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>¼öÁ¤</button>` : ''}
+            ${(canManage && !isSelf) ? `<button class="filter-btn" style="background:#1971c2;color:#fff;" onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">${myRank >= 90 ? 'ºÎ¼­ ÀÌµ¿' : 'ºÎ¼­ ÀÌµ¿ ½ÅÃ»'}</button>` : ''}
+            ${canManage && !isSelf ? `<button class="filter-btn" onclick="resetPw('${u.id}','${_nameMap[u.id]||u.display_name}')">ºñ¹Ğ¹øÈ£ÃÊ±âÈ­</button>` : ''}
+            ${canManage && !isSelf ? `<button class="btn-ack" onclick="confirmDelete('${u.id}','${_nameMap[u.id]||u.display_name}')">»èÁ¦</button>` : ''}
           </td>
         </tr>`;
       }).join('');
@@ -471,7 +473,7 @@
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = 'ì‚¬ìš©ì ë“±ë¡';
+      document.getElementById('modalTitle').textContent = '»ç¿ëÀÚ µî·Ï';
       document.getElementById('usernameWrap').style.display = _isAdmin() ? 'block' : 'none';
       document.getElementById('mUsername').value = '';
       document.getElementById('mUsername').disabled = false;
@@ -493,7 +495,7 @@
 
     function openEditModal(u) {
       editingId = u.id;
-      document.getElementById('modalTitle').textContent = 'ì‚¬ìš©ì ìˆ˜ì •';
+      document.getElementById('modalTitle').textContent = '»ç¿ëÀÚ ¼öÁ¤';
       document.getElementById('usernameWrap').style.display = _isAdmin() ? 'block' : 'none';
       document.getElementById('mUsername').value = u.username;
       document.getElementById('mUsername').disabled = true;
@@ -531,12 +533,12 @@
       const managedDeptId = document.getElementById('mManagedDept').value || null;
       const needsManagedDept = MGMT_LEVELS.includes(permLevel);
 
-      if (!displayName) { errEl.textContent = 'ì´ë¦„ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
-      if (!editingId && username && !/^[a-zA-Z0-9_-]+$/.test(username)) { errEl.textContent = 'ì•„ì´ë””ëŠ” ì˜ë¬¸, ìˆ«ì, _, - ë§Œ ì‚¬ìš© ê°€ëŠ¥í•©ë‹ˆë‹¤.'; errEl.classList.add('show'); return; }
+      if (!displayName) { errEl.textContent = 'ÀÌ¸§À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!editingId && username && !/^[a-zA-Z0-9_-]+$/.test(username)) { errEl.textContent = '¾ÆÀÌµğ´Â ¿µ¹®, ¼ıÀÚ, _, - ¸¸ »ç¿ë °¡´ÉÇÕ´Ï´Ù.'; errEl.classList.add('show'); return; }
       if (!editingId && !username) username = 'user_' + Date.now().toString(36);
-      if (_isAdmin() && !editingId && !username) { errEl.textContent = 'ì•„ì´ë””ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
-      if (!deptId) { errEl.textContent = 'ì†Œì† ë¶€ì„œë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
-      if (needsManagedDept && !managedDeptId) { errEl.textContent = 'ë‹´ë‹¹ ê´€ë¦¬ ë¶€ì„œë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+      if (_isAdmin() && !editingId && !username) { errEl.textContent = '¾ÆÀÌµğ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!deptId) { errEl.textContent = '¼Ò¼Ó ºÎ¼­¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (needsManagedDept && !managedDeptId) { errEl.textContent = '´ã´ç °ü¸® ºÎ¼­¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
         const { error } = await updateUser(editingId, { displayName, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null, classNumber });
@@ -553,23 +555,23 @@
     }
 
     async function resetPw(id, username) {
-      if (!confirm(`"${username}" ë¹„ë°€ë²ˆí˜¸ë¥¼ ì´ˆê¸°í™”(1234)í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      if (!confirm(`"${username}" ºñ¹Ğ¹øÈ£¸¦ ÃÊ±âÈ­(1234)ÇÏ½Ã°Ú½À´Ï±î?`)) return;
       const { error } = await resetUserPassword(id, username);
-      if (error) { await logError('USER_PW_RESET_FAIL', { id, username, error }); alert('ì´ˆê¸°í™” ì‹¤íŒ¨: ' + tErr(error)); }
-      else { await logInfo('USER_PW_RESET', { id, username }); alert('ë¹„ë°€ë²ˆí˜¸ê°€ 1234ë¡œ ì´ˆê¸°í™”ë˜ì—ˆìŠµë‹ˆë‹¤.'); }
+      if (error) { await logError('USER_PW_RESET_FAIL', { id, username, error }); alert('ÃÊ±âÈ­ ½ÇÆĞ: ' + tErr(error)); }
+      else { await logInfo('USER_PW_RESET', { id, username }); alert('ºñ¹Ğ¹øÈ£°¡ 1234·Î ÃÊ±âÈ­µÇ¾ú½À´Ï´Ù.'); }
     }
 
     async function confirmDelete(id, username) {
-      if (!confirm(`"${username}" ì‚¬ìš©ìë¥¼ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?\nì´ ì‘ì—…ì€ ë˜ëŒë¦´ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.`)) return;
+      if (!confirm(`"${username}" »ç¿ëÀÚ¸¦ »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?\nÀÌ ÀÛ¾÷Àº µÇµ¹¸± ¼ö ¾ø½À´Ï´Ù.`)) return;
       const { error } = await deleteUser(id);
-      if (error) { await logError('USER_DELETE_FAIL', { id, username, error }); alert('ì‚­ì œ ì‹¤íŒ¨: ' + tErr(error)); }
+      if (error) { await logError('USER_DELETE_FAIL', { id, username, error }); alert('»èÁ¦ ½ÇÆĞ: ' + tErr(error)); }
       else { await logInfo('USER_DELETE', { id, username }); await loadData(); }
     }
 
     function renderRequests() {
-      document.getElementById('reqTitle').textContent = `ğŸ“ ê°€ì… ì‹ ì²­ ë‚´ì—­ (${allRequests.length}ê±´)`;
+      document.getElementById('reqTitle').textContent = `?? °¡ÀÔ ½ÅÃ» ³»¿ª (${allRequests.length}°Ç)`;
       if (allRequests.length === 0) {
-        document.getElementById('reqList').innerHTML = '<tr><td colspan="7" class="empty-state">ëŒ€ê¸° ì¤‘ì¸ ê°€ì… ì‹ ì²­ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
+        document.getElementById('reqList').innerHTML = '<tr><td colspan="7" class="empty-state">´ë±â ÁßÀÎ °¡ÀÔ ½ÅÃ»ÀÌ ¾ø½À´Ï´Ù.</td></tr>';
         return;
       }
       const myRank = session.permissionRank || 0;
@@ -586,20 +588,20 @@
           <td>${formatKSTShort(r.created_at)}</td>
           <td>
             ${canProcess ? `<select id="reqType_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;" onchange="onReqTypeChange('${r.id}')">
-              <option value="student">ğŸ’ í•™ìƒ</option>
-              <option value="teacher">ğŸ‘©â€ğŸ« êµì‚¬</option>
+              <option value="student">?? ÇĞ»ı</option>
+              <option value="teacher">????? ±³»ç</option>
             </select>
             <select id="reqPerm_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;display:none;">
               ${buildPermOptions(session.permissionRank || 0, 'teacher')}
             </select>
             <div id="reqManagedWrap_${r.id}" style="display:none;margin:0.3rem 0;">
               <select id="reqManaged_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;width:100%;">
-                <option value="">ë‹´ë‹¹ ë¶€ì„œ ì„ íƒ</option>
+                <option value="">´ã´ç ºÎ¼­ ¼±ÅÃ</option>
                 ${allDepts.map(d => '<option value="' + d.id + '">' + d.name + '</option>').join('')}
               </select>
             </div>
-            <button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveReq('${r.id}','${r.username}','${r.display_name}','${r.department_id || ''}')">ìŠ¹ì¸</button>
-            <button class="btn-ack" onclick="rejectReq('${r.id}','${r.username}')">ê±°ë¶€</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">ì²˜ë¦¬ ê¶Œí•œ ì—†ìŒ</span>'}
+            <button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveReq('${r.id}','${r.username}','${r.display_name}','${r.department_id || ''}')">½ÂÀÎ</button>
+            <button class="btn-ack" onclick="rejectReq('${r.id}','${r.username}')">°ÅºÎ</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">Ã³¸® ±ÇÇÑ ¾øÀ½</span>'}
           </td>
         </tr>`;
       }).join('');
@@ -621,21 +623,21 @@
       const needsManagedDept = MGMT_LEVELS.includes(permLevel);
       const managedDeptId = (needsManagedDept && managedEl) ? managedEl.value || null : null;
       const permLabel = PERMISSION_LABELS[permLevel] || permLevel;
-      if (!confirm(`"${username}" (${displayName})ì„(ë¥¼) [${permLabel}] ì—­í• ë¡œ ìŠ¹ì¸í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      if (!confirm(`"${username}" (${displayName})À»(¸¦) [${permLabel}] ¿ªÇÒ·Î ½ÂÀÎÇÏ½Ã°Ú½À´Ï±î?`)) return;
       const { error } = await createUser({ username, password: '1234', displayName, userType, permissionLevel: permLevel, departmentId: deptId || null, managedDeptId });
-      if (error) { await logError('REGISTER_APPROVE_FAIL', { username, error }); alert('ê³„ì • ìƒì„± ì‹¤íŒ¨: ' + tErr(error)); return; }
+      if (error) { await logError('REGISTER_APPROVE_FAIL', { username, error }); alert('°èÁ¤ »ı¼º ½ÇÆĞ: ' + tErr(error)); return; }
       await _sb.from('registration_requests').update({
-        status: 'approved', reviewed_by: session.username, review_note: 'ìŠ¹ì¸ë¨', reviewed_at: new Date().toISOString()
+        status: 'approved', reviewed_by: session.username, review_note: '½ÂÀÎµÊ', reviewed_at: new Date().toISOString()
       }).eq('id', reqId);
       await logInfo('REGISTER_APPROVE', { username, permissionLevel: permLevel });
       await loadData();
     }
 
     async function rejectReq(reqId, username) {
-      const note = prompt(`"${username}" ê°€ì… ê±°ë¶€ ì‚¬ìœ ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”:`, '');
+      const note = prompt(`"${username}" °¡ÀÔ °ÅºÎ »çÀ¯¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä:`, '');
       if (note === null) return;
       await _sb.from('registration_requests').update({
-        status: 'rejected', reviewed_by: session.username, review_note: note || 'ê±°ë¶€ë¨', reviewed_at: new Date().toISOString()
+        status: 'rejected', reviewed_by: session.username, review_note: note || '°ÅºÎµÊ', reviewed_at: new Date().toISOString()
       }).eq('id', reqId);
       await logInfo('REGISTER_REJECT', { username, reason: note });
       await loadData();
@@ -648,7 +650,7 @@
     document.getElementById('userModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
     document.getElementById('transferModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeTransferModal(); });
 
-    // â”€â”€ ë¶€ì„œ ì´ë™ ê´€ë¦¬ â”€â”€
+    // ¦¡¦¡ ºÎ¼­ ÀÌµ¿ °ü¸® ¦¡¦¡
     let _transferUserId = null;
     let _transferFromDeptId = null;
 
@@ -656,17 +658,17 @@
       _transferUserId = userId;
       _transferFromDeptId = deptId;
       document.getElementById('transferUserInfo').textContent = displayName;
-      document.getElementById('transferFromDept').textContent = getDeptName(deptId) || 'ì—†ìŒ';
-      const opts = '<option value="">-- ë¶€ì„œ ì„ íƒ --</option>' +
+      document.getElementById('transferFromDept').textContent = getDeptName(deptId) || '¾øÀ½';
+      const opts = '<option value="">-- ºÎ¼­ ¼±ÅÃ --</option>' +
         allDepts.filter(d => d.id !== deptId).map(d => `<option value="${d.id}">${d.name}</option>`).join('');
       document.getElementById('transferToDept').innerHTML = opts;
       document.getElementById('transferReason').value = '';
       document.getElementById('transferError').classList.remove('show');
       const myRank = session.permissionRank || 0;
       if (myRank >= 90) {
-        document.getElementById('transferNote').textContent = 'ì¦‰ì‹œ ë¶€ì„œ ì´ë™ì´ ì²˜ë¦¬ë©ë‹ˆë‹¤.';
+        document.getElementById('transferNote').textContent = 'Áï½Ã ºÎ¼­ ÀÌµ¿ÀÌ Ã³¸®µË´Ï´Ù.';
       } else {
-        document.getElementById('transferNote').textContent = 'ì´ë™ ìš”ì²­ì´ ìƒì„±ë˜ë©°, í•´ë‹¹ ë¶€ì„œ ë¶€ì¥ êµì‚¬ ë˜ëŠ” ê´€ë¦¬ìì˜ ìŠ¹ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.';
+        document.getElementById('transferNote').textContent = 'ÀÌµ¿ ¿äÃ»ÀÌ »ı¼ºµÇ¸ç, ÇØ´ç ºÎ¼­ ºÎÀå ±³»ç ¶Ç´Â °ü¸®ÀÚÀÇ ½ÂÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.';
       }
       document.getElementById('transferModal').classList.remove('hidden');
     }
@@ -677,14 +679,14 @@
       const errEl = document.getElementById('transferError');
       const toDeptId = document.getElementById('transferToDept').value;
       const reason = document.getElementById('transferReason').value.trim();
-      if (!toDeptId) { errEl.textContent = 'ì´ë™í•  ë¶€ì„œë¥¼ ì„ íƒí•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+      if (!toDeptId) { errEl.textContent = 'ÀÌµ¿ÇÒ ºÎ¼­¸¦ ¼±ÅÃÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
       const myRank = session.permissionRank || 0;
       const user = allUsers.find(u => u.id === _transferUserId);
       const toDeptName = getDeptName(toDeptId);
       const userName = user ? (user.display_name || user.username) : '';
 
       if (myRank >= 90) {
-        if (!confirm(`"${userName}"ì„(ë¥¼) "${toDeptName}" ë¶€ì„œë¡œ ì¦‰ì‹œ ì´ë™í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+        if (!confirm(`"${userName}"À»(¸¦) "${toDeptName}" ºÎ¼­·Î Áï½Ã ÀÌµ¿ÇÏ½Ã°Ú½À´Ï±î?`)) return;
         const { error } = await updateUser(_transferUserId, {
           displayName: user.display_name,
           userType: user.user_type,
@@ -693,11 +695,11 @@
           managedDeptId: user.managed_dept_id,
           classNumber: null
         });
-        if (error) { await logError('DEPT_TRANSFER_IMMEDIATE_FAIL', { userId: _transferUserId, error }); errEl.textContent = 'ì´ë™ ì‹¤íŒ¨: ' + tErr(error); errEl.classList.add('show'); return; }
+        if (error) { await logError('DEPT_TRANSFER_IMMEDIATE_FAIL', { userId: _transferUserId, error }); errEl.textContent = 'ÀÌµ¿ ½ÇÆĞ: ' + tErr(error); errEl.classList.add('show'); return; }
         await logInfo('DEPT_TRANSFER_IMMEDIATE', { userId: _transferUserId, username: user.username, from: getDeptName(_transferFromDeptId), to: toDeptName, reason });
-        alert(`"${userName}"ì´(ê°€) "${toDeptName}" ë¶€ì„œë¡œ ì´ë™ë˜ì—ˆìŠµë‹ˆë‹¤.`);
+        alert(`"${userName}"ÀÌ(°¡) "${toDeptName}" ºÎ¼­·Î ÀÌµ¿µÇ¾ú½À´Ï´Ù.`);
       } else {
-        if (!confirm(`"${userName}"ì˜ "${toDeptName}" ë¶€ì„œ ì´ë™ ìš”ì²­ì„ ìƒì„±í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\ní•´ë‹¹ ë¶€ì„œ ë¶€ì¥ êµì‚¬ ë˜ëŠ” ê´€ë¦¬ì ìŠ¹ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.`)) return;
+        if (!confirm(`"${userName}"ÀÇ "${toDeptName}" ºÎ¼­ ÀÌµ¿ ¿äÃ»À» »ı¼ºÇÏ½Ã°Ú½À´Ï±î?\nÇØ´ç ºÎ¼­ ºÎÀå ±³»ç ¶Ç´Â °ü¸®ÀÚ ½ÂÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.`)) return;
         const { error } = await _sb.from('department_transfer_requests').insert({
           user_id: _transferUserId,
           username: user.username,
@@ -707,9 +709,9 @@
           requested_by: session.username,
           request_reason: reason || null
         });
-        if (error) { await logError('DEPT_TRANSFER_REQUEST_FAIL', { userId: _transferUserId, error: error.message }); errEl.textContent = 'ìš”ì²­ ì‹¤íŒ¨: ' + tErr(error.message); errEl.classList.add('show'); return; }
+        if (error) { await logError('DEPT_TRANSFER_REQUEST_FAIL', { userId: _transferUserId, error: error.message }); errEl.textContent = '¿äÃ» ½ÇÆĞ: ' + tErr(error.message); errEl.classList.add('show'); return; }
         await logInfo('DEPT_TRANSFER_REQUEST', { userId: _transferUserId, username: user.username, from: getDeptName(_transferFromDeptId), to: toDeptName, reason });
-        alert(`ë¶€ì„œ ì´ë™ ìš”ì²­ì´ ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.\n"${toDeptName}" ë¶€ì„œ ë‹´ë‹¹ êµì‚¬ì˜ ìŠ¹ì¸ì„ ê¸°ë‹¤ë¦½ë‹ˆë‹¤.`);
+        alert(`ºÎ¼­ ÀÌµ¿ ¿äÃ»ÀÌ »ı¼ºµÇ¾ú½À´Ï´Ù.\n"${toDeptName}" ºÎ¼­ ´ã´ç ±³»çÀÇ ½ÂÀÎÀ» ±â´Ù¸³´Ï´Ù.`);
       }
       closeTransferModal();
       await loadData();
@@ -720,10 +722,10 @@
       const myRank = session.permissionRank || 0;
       if (myRank < 60) { section.style.display = 'none'; return; }
       section.style.display = '';
-      document.getElementById('transferTitle').textContent = `ğŸ”„ ë¶€ì„œ ì´ë™ ì‹ ì²­ ë‚´ì—­ (${allTransfers.length}ê±´)`;
+      document.getElementById('transferTitle').textContent = `?? ºÎ¼­ ÀÌµ¿ ½ÅÃ» ³»¿ª (${allTransfers.length}°Ç)`;
       const tbody = document.getElementById('transferList');
       if (allTransfers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">ëŒ€ê¸° ì¤‘ì¸ ë¶€ì„œ ì´ë™ ìš”ì²­ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">´ë±â ÁßÀÎ ºÎ¼­ ÀÌµ¿ ¿äÃ»ÀÌ ¾ø½À´Ï´Ù.</td></tr>';
         return;
       }
       const myManagedDept = session.managedDeptId || session.departmentId;
@@ -736,8 +738,8 @@
           <td style="font-size:0.82rem;">${t.requested_by}${t.request_reason ? '<br><span style="color:#868e96;font-size:0.75rem;">' + t.request_reason + '</span>' : ''}</td>
           <td>${formatKSTShort(t.created_at)}</td>
           <td>
-            ${canApprove ? `<button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveTransfer('${t.id}','${t.user_id}','${(t.display_name||t.username).replace(/'/g,"\\'")}','${t.to_department_id}')">ìŠ¹ì¸</button>
-            <button class="btn-ack" onclick="rejectTransfer('${t.id}','${(t.display_name||t.username).replace(/'/g,"\\'")}')">ê±°ë¶€</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">ì²˜ë¦¬ ê¶Œí•œ ì—†ìŒ</span>'}
+            ${canApprove ? `<button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveTransfer('${t.id}','${t.user_id}','${(t.display_name||t.username).replace(/'/g,"\\'")}','${t.to_department_id}')">½ÂÀÎ</button>
+            <button class="btn-ack" onclick="rejectTransfer('${t.id}','${(t.display_name||t.username).replace(/'/g,"\\'")}')">°ÅºÎ</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">Ã³¸® ±ÇÇÑ ¾øÀ½</span>'}
           </td>
         </tr>`;
       }).join('');
@@ -745,7 +747,7 @@
 
     async function approveTransfer(trfId, userId, displayName, toDeptId) {
       const toDeptName = getDeptName(toDeptId);
-      if (!confirm(`"${displayName}"ì˜ "${toDeptName}" ë¶€ì„œ ì´ë™ì„ ìŠ¹ì¸í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      if (!confirm(`"${displayName}"ÀÇ "${toDeptName}" ºÎ¼­ ÀÌµ¿À» ½ÂÀÎÇÏ½Ã°Ú½À´Ï±î?`)) return;
       const user = allUsers.find(u => u.id === userId);
       if (user) {
         const { error } = await updateUser(userId, {
@@ -756,24 +758,24 @@
           managedDeptId: user.managed_dept_id,
           classNumber: null
         });
-        if (error) { alert('ë¶€ì„œ ì´ë™ ì‹¤íŒ¨: ' + tErr(error)); return; }
+        if (error) { alert('ºÎ¼­ ÀÌµ¿ ½ÇÆĞ: ' + tErr(error)); return; }
       } else {
         const { error } = await _sb.from('profiles').update({ department_id: toDeptId, class_number: null }).eq('id', userId);
-        if (error) { alert('ë¶€ì„œ ì´ë™ ì‹¤íŒ¨: ' + tErr(error.message)); return; }
+        if (error) { alert('ºÎ¼­ ÀÌµ¿ ½ÇÆĞ: ' + tErr(error.message)); return; }
       }
       await _sb.from('department_transfer_requests').update({
-        status: 'approved', reviewed_by: session.username, review_note: 'ìŠ¹ì¸ë¨', reviewed_at: new Date().toISOString()
+        status: 'approved', reviewed_by: session.username, review_note: '½ÂÀÎµÊ', reviewed_at: new Date().toISOString()
       }).eq('id', trfId);
       await logInfo('DEPT_TRANSFER_APPROVE', { userId, displayName, toDept: toDeptName });
-      alert(`"${displayName}"ì´(ê°€) "${toDeptName}" ë¶€ì„œë¡œ ì´ë™ë˜ì—ˆìŠµë‹ˆë‹¤.`);
+      alert(`"${displayName}"ÀÌ(°¡) "${toDeptName}" ºÎ¼­·Î ÀÌµ¿µÇ¾ú½À´Ï´Ù.`);
       await loadData();
     }
 
     async function rejectTransfer(trfId, displayName) {
-      const note = prompt(`"${displayName}" ë¶€ì„œ ì´ë™ ê±°ë¶€ ì‚¬ìœ ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”:`, '');
+      const note = prompt(`"${displayName}" ºÎ¼­ ÀÌµ¿ °ÅºÎ »çÀ¯¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä:`, '');
       if (note === null) return;
       await _sb.from('department_transfer_requests').update({
-        status: 'rejected', reviewed_by: session.username, review_note: note || 'ê±°ë¶€ë¨', reviewed_at: new Date().toISOString()
+        status: 'rejected', reviewed_by: session.username, review_note: note || '°ÅºÎµÊ', reviewed_at: new Date().toISOString()
       }).eq('id', trfId);
       await logInfo('DEPT_TRANSFER_REJECT', { displayName, reason: note });
       await loadData();

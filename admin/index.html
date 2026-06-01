@@ -1,63 +1,65 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ê´€ë¦¬ì ëŒ€ì‹œë³´ë“œ - CHO Talents</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.15.1" />
+  <title>°ü¸®ÀÚ ´ë½Ãº¸µå - CHO Talents</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
+        <button class="nav-dropdown-toggle">¼Ò°³</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">ì‚¬ìš©ì ê°€ì´ë“œ</a></li>
-          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
+          <li><a href="../guide.html">»ç¿ëÀÚ °¡ÀÌµå</a></li>
+          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ë‹¬ë€íŠ¸</button>
+        <button class="nav-dropdown-toggle">´Ş¶õÆ®</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
-          <li data-min-perm="40"><a href="talents.html">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
+          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
+          <li data-min-perm="40"><a href="talents.html">´Ş¶õÆ® °ü¸®</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
+        <button class="nav-dropdown-toggle">»óÇ°</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
-          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
-          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
+          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
+          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
+          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle active">ê´€ë¦¬</button>
+        <button class="nav-dropdown-toggle active">°ü¸®</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html" class="active">ëŒ€ì‹œë³´ë“œ</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
+          <li data-min-perm="80"><a href="index.html" class="active">´ë½Ãº¸µå</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
+          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">ìš´ì˜</button>
+        <button class="nav-dropdown-toggle">¿î¿µ</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
-          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
-          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
-          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
-          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
+          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
+          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
+          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
+          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
@@ -65,46 +67,46 @@
   <div class="admin-container">
     <div class="alert-banner hidden" id="alertBanner" data-min-perm="100">
       <span>&#9888;</span>
-      <span id="alertText">ë¯¸í™•ì¸ ERROR ë¡œê·¸ê°€ ìˆìŠµë‹ˆë‹¤.</span>
-      <a href="logs.html" style="margin-left:auto;color:inherit;font-weight:700;">í™•ì¸í•˜ê¸°</a>
+      <span id="alertText">¹ÌÈ®ÀÎ ERROR ·Î±×°¡ ÀÖ½À´Ï´Ù.</span>
+      <a href="logs.html" style="margin-left:auto;color:inherit;font-weight:700;">È®ÀÎÇÏ±â</a>
     </div>
 
-    <h2 style="margin-bottom:1rem;" id="dashTitle">ëŒ€ì‹œë³´ë“œ</h2>
+    <h2 style="margin-bottom:1rem;" id="dashTitle">´ë½Ãº¸µå</h2>
 
     <div class="cards-grid">
       <div class="stat-card">
-        <div class="stat-card-label" id="totalUsersLabel">ì „ì²´ ì‚¬ìš©ì</div>
+        <div class="stat-card-label" id="totalUsersLabel">ÀüÃ¼ »ç¿ëÀÚ</div>
         <div class="stat-card-value" id="totalUsers">-</div>
       </div>
       <div class="stat-card" data-min-perm="80">
-        <div class="stat-card-label">ë¶€ì„œ</div>
+        <div class="stat-card-label">ºÎ¼­</div>
         <div class="stat-card-value" id="totalDepts">-</div>
       </div>
       <div class="stat-card" data-min-perm="80">
-        <div class="stat-card-label">ë³´ê³ ì„œ</div>
+        <div class="stat-card-label">º¸°í¼­</div>
         <div class="stat-card-value" id="totalReports">-</div>
       </div>
       <div class="stat-card error-card" data-min-perm="80">
-        <div class="stat-card-label">ë¯¸í™•ì¸ ERROR+</div>
+        <div class="stat-card-label">¹ÌÈ®ÀÎ ERROR+</div>
         <div class="stat-card-value" id="unackCount">-</div>
       </div>
     </div>
 
     <div class="cards-grid" style="margin-bottom:1.5rem;">
       <div class="stat-card" style="border-left-color:#51cf66;">
-        <div class="stat-card-label">í•™ìƒ</div>
+        <div class="stat-card-label">ÇĞ»ı</div>
         <div class="stat-card-value" id="studentCount">-</div>
       </div>
       <div class="stat-card" style="border-left-color:#4dabf7;">
-        <div class="stat-card-label">êµì‚¬</div>
+        <div class="stat-card-label">±³»ç</div>
         <div class="stat-card-value" id="teacherCount">-</div>
       </div>
       <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80">
-        <div class="stat-card-label">ë¶€ì„œ ë‹´ë‹¹ êµì‚¬</div>
+        <div class="stat-card-label">ºÎ¼­ ´ã´ç ±³»ç</div>
         <div class="stat-card-value" id="managerCount">-</div>
       </div>
       <a href="users.html" class="stat-card" style="border-left-color:#e67700;text-decoration:none;color:inherit;" data-min-perm="80">
-        <div class="stat-card-label">ğŸ“ ê°€ì… ëŒ€ê¸°ì</div>
+        <div class="stat-card-label">?? °¡ÀÔ ´ë±âÀÚ</div>
         <div class="stat-card-value" id="pendingCount">-</div>
       </a>
     </div>
@@ -113,19 +115,19 @@
 
     <div class="admin-table-wrap" data-min-perm="100">
       <div class="admin-table-header">
-        <div class="admin-table-title">ìµœê·¼ ì´ìŠˆ ë¡œê·¸</div>
+        <div class="admin-table-title">ÃÖ±Ù ÀÌ½´ ·Î±×</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ì‹œê°„</th><th>ë ˆë²¨</th><th>ì•¡ì…˜</th><th>í˜ì´ì§€</th><th>ì‚¬ìš©ì</th></tr></thead>
-        <tbody id="recentLogs"><tr><td colspan="5" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <thead><tr><th>½Ã°£</th><th>·¹º§</th><th>¾×¼Ç</th><th>ÆäÀÌÁö</th><th>»ç¿ëÀÚ</th></tr></thead>
+        <tbody id="recentLogs"><tr><td colspan="5" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.15.1"></script>
-  <script src="../js/activity-log.js?v=3.15.1"></script>
-  <script src="../js/auth.js?v=3.15.1"></script>
+  <script src="../js/supabase-config.js?v=3.13.0"></script>
+  <script src="../js/activity-log.js?v=3.13.0"></script>
+  <script src="../js/auth.js?v=3.13.0"></script>
   <script>
     initSupabase();
     let session;
@@ -143,13 +145,13 @@
 
     function buildQuickLinks() {
       const links = [
-        { href: 'users.html', emoji: 'ğŸ‘¥', label: 'ì‚¬ìš©ì ê´€ë¦¬', bg: '#e8e0ff', color: 'var(--admin-primary)', minRank: 60 },
-        { href: 'departments.html', emoji: 'ğŸ¢', label: 'ë¶€ì„œ ê´€ë¦¬', bg: '#f3f0ff', color: '#7048c6', minRank: 80 },
-        { href: 'managers.html', emoji: 'ğŸ‘‘', label: 'ê´€ë¦¬ì ê´€ë¦¬', bg: '#fff9db', color: '#e67700', minRank: 80 },
-        { href: 'talents.html', emoji: 'ğŸ’°', label: 'ë‹¬ë€íŠ¸ ê´€ë¦¬', bg: '#fff5f5', color: '#e03131', minRank: 40 },
-        { href: 'talent-items.html', emoji: 'ğŸ¯', label: 'ë‹¬ë€íŠ¸ í•­ëª©', bg: '#f0fff4', color: '#2b8a3e', minRank: 90 },
-        { href: 'shop.html', emoji: 'ğŸ“¦', label: 'ìƒí’ˆ ê´€ë¦¬', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
-        { href: 'purchases.html', emoji: 'ğŸ›’', label: 'êµ¬ë§¤ ê´€ë¦¬', bg: '#e7f5ff', color: '#1864ab', minRank: 60 },
+        { href: 'users.html', emoji: '??', label: '»ç¿ëÀÚ °ü¸®', bg: '#e8e0ff', color: 'var(--admin-primary)', minRank: 60 },
+        { href: 'departments.html', emoji: '??', label: 'ºÎ¼­ °ü¸®', bg: '#f3f0ff', color: '#7048c6', minRank: 80 },
+        { href: 'managers.html', emoji: '??', label: '°ü¸®ÀÚ °ü¸®', bg: '#fff9db', color: '#e67700', minRank: 80 },
+        { href: 'talents.html', emoji: '??', label: '´Ş¶õÆ® °ü¸®', bg: '#fff5f5', color: '#e03131', minRank: 40 },
+        { href: 'talent-items.html', emoji: '??', label: '´Ş¶õÆ® Ç×¸ñ', bg: '#f0fff4', color: '#2b8a3e', minRank: 90 },
+        { href: 'shop.html', emoji: '??', label: '»óÇ° °ü¸®', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
+        { href: 'purchases.html', emoji: '??', label: '±¸¸Å °ü¸®', bg: '#e7f5ff', color: '#1864ab', minRank: 60 },
       ];
       const rank = session.permissionRank || 0;
       document.getElementById('quickLinks').innerHTML = links
@@ -174,8 +176,8 @@
         studentsQ = studentsQ.eq('department_id', deptId);
         teachersQ = teachersQ.eq('department_id', deptId);
         totalQ = totalQ.eq('department_id', deptId);
-        document.getElementById('dashTitle').textContent = 'ë¶€ì„œ ëŒ€ì‹œë³´ë“œ';
-        document.getElementById('totalUsersLabel').textContent = 'ë¶€ì„œ ì‚¬ìš©ì';
+        document.getElementById('dashTitle').textContent = 'ºÎ¼­ ´ë½Ãº¸µå';
+        document.getElementById('totalUsersLabel').textContent = 'ºÎ¼­ »ç¿ëÀÚ';
       }
 
       const promises = [totalQ, studentsQ, teachersQ];
@@ -206,13 +208,13 @@
           const badge = document.getElementById('navLogBadge');
           badge.textContent = unack; badge.classList.remove('hidden');
           document.getElementById('alertBanner').classList.remove('hidden');
-          document.getElementById('alertText').textContent = `ë¯¸í™•ì¸ ERROR ì´ìƒ ë¡œê·¸ê°€ ${unack}ê±´ ìˆìŠµë‹ˆë‹¤.`;
+          document.getElementById('alertText').textContent = `¹ÌÈ®ÀÎ ERROR ÀÌ»ó ·Î±×°¡ ${unack}°Ç ÀÖ½À´Ï´Ù.`;
         }
 
         const { data: logs } = await fetchLogs({ limit: 10, levels: ['WARN','ERROR','FATAL','CRITICAL'] });
         const tbody = document.getElementById('recentLogs');
         if (!logs || logs.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" class="empty-state">ë¡œê·¸ê°€ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" class="empty-state">·Î±×°¡ ¾ø½À´Ï´Ù.</td></tr>';
         } else {
           tbody.innerHTML = logs.map(l => `<tr>
             <td>${formatKSTShort(l.created_at)}</td>
@@ -225,6 +227,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.15.1"></script>
+  <script src="../js/version.js?v=3.13.0"></script>
 </body>
 </html>
