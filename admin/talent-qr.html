@@ -356,6 +356,7 @@
     let talentItems = [];
     let isAdmin = false;
     let kakaoLoaded = false;
+    let kakaoLoadPromise = null;
 
     (async () => {
       session = await initPage(90, '../login.html');
@@ -375,23 +376,45 @@
         alert('카카오 맵 API 키가 설정되지 않았습니다.\njs/supabase-config.js 파일에서 KAKAO_MAP_KEY를 설정해주세요.\n\nhttps://developers.kakao.com 에서 앱 등록 후 JavaScript 키를 발급받으세요.');
         return false;
       }
-      return new Promise(resolve => {
-        const s = document.createElement('script');
-        s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_MAP_KEY + '&libraries=services';
-        s.onload = () => {
+      if (kakaoLoadPromise) return kakaoLoadPromise;
+
+      kakaoLoadPromise = new Promise(resolve => {
+        const finishLoad = () => {
           if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.services) {
-            kakaoLoaded = true; resolve(true);
+            kakaoLoaded = true;
+            resolve(true);
+          } else {
+            alert('카카오 맵 SDK가 정상 로드되지 않았습니다.\n\n브라우저 새로고침 후 다시 시도해주세요.\n문제가 계속되면 Kakao Developers의 JavaScript 키/도메인 설정을 확인해주세요:\n\n' + location.origin);
+            kakaoLoadPromise = null;
+            resolve(false);
+          }
+        };
+
+        if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.load) {
+          kakao.maps.load(finishLoad);
+          return;
+        }
+
+        const s = document.createElement('script');
+        s.src = 'https://dapi.kakao.com/v2/maps/sdk.js?appkey=' + KAKAO_MAP_KEY + '&libraries=services&autoload=false';
+        s.onload = () => {
+          if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.load) {
+            kakao.maps.load(finishLoad);
           } else {
             alert('카카오 맵 SDK가 정상 로드되지 않았습니다.\n\nKakao Developers (developers.kakao.com) 에서\n내 애플리케이션 > 앱 설정 > 플랫폼 > Web\n사이트 도메인에 아래 주소를 등록해주세요:\n\n' + location.origin);
+            kakaoLoadPromise = null;
             resolve(false);
           }
         };
         s.onerror = () => {
           alert('카카오 맵 SDK 로드 실패\n\nKakao Developers (developers.kakao.com) 에서\n내 애플리케이션 > 앱 설정 > 플랫폼 > Web\n사이트 도메인에 아래 주소를 등록해주세요:\n\n' + location.origin);
+          kakaoLoadPromise = null;
           resolve(false);
         };
         document.head.appendChild(s);
       });
+
+      return kakaoLoadPromise;
     }
 
     /* ── Talent Items ── */
