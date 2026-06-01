@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 수령 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.16.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.17.0" />
   <style>
     .qr-hero { text-align: center; margin-bottom: 1.5rem; }
     .qr-hero h1 { font-size: 1.6rem; color: var(--c-primary); }
@@ -108,7 +108,7 @@
     <div class="qr-input-area" id="qrArea">
       <div style="font-size:3rem;margin-bottom:0.5rem;">🎯</div>
       <p style="margin-bottom:1rem;font-size:0.9rem;color:var(--c-text-muted);">QR 코드를 입력하세요</p>
-      <input type="text" class="qr-input" id="qrInput" placeholder="QR 코드 입력" maxlength="20" autocomplete="off" />
+      <input type="text" class="qr-input" id="qrInput" placeholder="QR 코드 입력" maxlength="30" autocomplete="off" />
 
       <div id="cameraWrap">
         <video id="cameraVideo" playsinline muted></video>
@@ -138,9 +138,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-  <script src="js/supabase-config.js?v=3.16.0"></script>
-  <script src="js/activity-log.js?v=3.16.0"></script>
-  <script src="js/auth.js?v=3.16.0"></script>
+  <script src="js/supabase-config.js?v=3.17.0"></script>
+  <script src="js/activity-log.js?v=3.17.0"></script>
+  <script src="js/auth.js?v=3.17.0"></script>
   <script>
     initSupabase();
     let session;
@@ -184,7 +184,7 @@
         if (qr.expires_at && new Date(qr.expires_at) < now) {
           showResult('fail', '만료된 코드입니다.'); return;
         }
-        if (qr.max_uses && qr.used_count >= qr.max_uses) {
+        if (qr.max_uses > 0 && (qr.used_count || 0) >= qr.max_uses) {
           showResult('fail', '사용 횟수가 초과된 코드입니다.'); return;
         }
 
@@ -201,17 +201,28 @@
           used_count: (qr.used_count || 0) + 1
         }).eq('id', qr.id);
 
+        const { data: profile } = await _sb.from('profiles')
+          .select('talent_balance').eq('id', session.id).single();
+        const currentBalance = profile?.talent_balance || 0;
+        const newBalance = currentBalance + qr.amount;
+
         await _sb.from('talent_transactions').insert({
           user_id: session.id, type: 'earn', amount: qr.amount,
-          description: qr.description || 'QR 달란트', talent_item_id: qr.talent_item_id || null,
+          description: qr.description || 'QR 달란트',
+          talent_item_id: qr.talent_item_id || null,
+          balance_after: newBalance,
+          created_by: session.id,
           created_at: new Date().toISOString()
         });
-        const { data: u } = await _sb.from('users').select('total_talent').eq('id', session.id).single();
-        await _sb.from('users').update({
-          total_talent: (u?.total_talent || 0) + qr.amount
+
+        await _sb.from('profiles').update({
+          talent_balance: newBalance
         }).eq('id', session.id);
 
-        await logInfo('qr_scan', { code: qr.code, amount: qr.amount, description: qr.description });
+        session.talentBalance = newBalance;
+        setSession(session);
+
+        await logInfo('qr_scan', { code: qr.code, amount: qr.amount, description: qr.description, balance_after: newBalance });
         showResult('ok', `✅ ${qr.amount} 달란트를 수령했습니다! (${qr.description || 'QR 달란트'})`);
         document.getElementById('qrInput').value = '';
         loadHistory();
@@ -311,7 +322,7 @@
 
           if (qrResult && qrResult.data) {
             scanPaused = true;
-            statusEl.textContent = '✅ QR 코드 감지: ' + qrResult.data;
+            statusEl.textContent = '✅ QR 코드 감지됨';
             document.getElementById('cameraWrap').classList.add('scan-detected');
             setTimeout(() => document.getElementById('cameraWrap').classList.remove('scan-detected'), 300);
 
@@ -330,6 +341,6 @@
       if (e.key === 'Enter') scanCode();
     });
   </script>
-  <script src="js/version.js?v=3.16.0"></script>
+  <script src="js/version.js?v=3.17.0"></script>
 </body>
 </html>

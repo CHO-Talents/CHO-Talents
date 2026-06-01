@@ -2,9 +2,27 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.16.0',
+  current: '3.17.0',
   date: '2026-06-01',
   history: [
+    {
+      version: '3.17.0',
+      date: '2026-06-01',
+      title: 'QR 관리 고도화 - 수령자 목록, 항목 연동, 암호 강화, 계정 연동',
+      changes: [
+        'QR관리: 수령자 목록 모달 (이름/아이디/부서/수령시간 테이블)',
+        'QR관리: 지급방식 라디오 - 무제한 or 선착순(1~100,000명)',
+        'QR관리: 코드값 관리자(rank>=100)만 표시, 인쇄시에도 동일 적용',
+        'QR관리: crypto.getRandomValues 18자리 암호학적 랜덤 코드 생성',
+        'QR관리: 달란트 항목 드롭다운 연동 (없을때만 직접입력)',
+        'QR관리: 수정 모달에도 항목선택/지급방식/기간 동일 적용',
+        'QR수령: profiles.talent_balance 연동 (기존 users.total_talent 대체)',
+        'QR수령: balance_after/created_by 트랜잭션 기록, 세션 잔액 동기화',
+        'QR수령: talent_item_id QR코드에서 트랜잭션으로 자동 매핑',
+        'QR수령: max_uses=0 무제한 지원, 코드 maxlength 30으로 확장',
+        'talent.js CDN 추가: talent-qr.html에서 fetchAllTalentItems 사용'
+      ]
+    },
     {
       version: '3.16.0',
       date: '2026-06-01',
