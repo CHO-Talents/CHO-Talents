@@ -600,17 +600,19 @@ table.data-table tr:hover { background: #fafbfc; }
   .product-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
 
   .data-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table.data-table { min-width: 500px; font-size: 0.82rem; }
-  table.data-table th { padding: 0.5rem 0.6rem; font-size: 0.72rem; }
-  table.data-table td { padding: 0.45rem 0.6rem; }
+  table.data-table { min-width: auto; font-size: 0.82rem; width: 100%; }
+  table.data-table th { padding: 0.4rem 0.3rem; font-size: 0.72rem; white-space: nowrap; }
+  table.data-table td { padding: 0.4rem 0.3rem; }
 }
 
 @media (max-width: 480px) {
   .summary-cards { grid-template-columns: 1fr; }
+  .summary-card-value { font-size: 1.5rem; }
   .product-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
   .product-card { padding: 1rem 0.8rem; }
   .product-emoji { font-size: 2.5rem; }
   .page-container { padding: 0.8rem 0.5rem; }
   .page-title { font-size: 1.15rem; }
   .page-sub { font-size: 0.82rem; }
+  table.data-table th, table.data-table td { font-size: 0.75rem; padding: 0.3rem 0.2rem; }
 }

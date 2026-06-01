@@ -151,6 +151,12 @@
     (async () => {
       session = await initPage(40, 'login.html');
       if (!session) return;
+      const _isAdminQR = (session.permissionRank || 0) >= 100;
+      if (!_isAdminQR) {
+        const qi = document.getElementById('qrInput');
+        qi.type = 'password';
+        qi.style.webkitTextSecurity = 'disc';
+      }
       document.getElementById('navMyTalent').style.display = '';
       document.getElementById('navMyOrders').style.display = '';
       document.getElementById('navLoginArea').style.display = 'none';

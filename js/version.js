@@ -2,9 +2,21 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.19.0',
+  current: '3.19.1',
   date: '2026-06-01',
   history: [
+    {
+      version: '3.19.1',
+      date: '2026-06-01',
+      title: 'QR 코드 텍스트 숨기기 + 모바일 반응형 전면 개선',
+      changes: [
+        'QR수령: 관리자(100+) 외 QR 코드 텍스트 값 마스킹 (type=password)',
+        '모바일: admin.css 테이블 min-width 강제값 제거 → auto로 전환 (화면 맞춤)',
+        '모바일: common.css 데이터 테이블 min-width 제거, th white-space:nowrap',
+        '모바일: 480px 이하 summary-card-value 크기 축소 (2rem→1.5rem)',
+        '모바일: 640px 이하 테이블 패딩/폰트 최적화, table-layout:auto'
+      ]
+    },
     {
       version: '3.19.0',
       date: '2026-06-01',

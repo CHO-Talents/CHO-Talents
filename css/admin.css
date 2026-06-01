@@ -680,7 +680,7 @@ table.admin-table tr:hover { background: #fafbfc; }
 
 @media (max-width: 1024px) {
   .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table.admin-table { min-width: 700px; }
+  table.admin-table { min-width: auto; }
   .admin-nav-links a { font-size: 0.75rem; padding: 0.3rem 0.45rem; }
   .btn-logout { font-size: 0.75rem; padding: 0.25rem 0.5rem; }
   .nav-user { font-size: 0.75rem; }
@@ -764,9 +764,10 @@ table.admin-table tr:hover { background: #fafbfc; }
   .stat-card { padding: 0.8rem; }
   .stat-card-value { font-size: 1.4rem; }
   .stat-card-label { font-size: 0.7rem; }
-  table.admin-table { min-width: 600px; font-size: 0.78rem; }
-  table.admin-table th { padding: 0.4rem 0.5rem; font-size: 0.7rem; }
-  table.admin-table td { padding: 0.4rem 0.5rem; }
+  .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table.admin-table { min-width: auto; font-size: 0.78rem; width: 100%; }
+  table.admin-table th { padding: 0.35rem 0.3rem; font-size: 0.7rem; white-space: nowrap; }
+  table.admin-table td { padding: 0.35rem 0.3rem; }
   .modal-box { width: 95%; max-width: none; }
 }
 
@@ -779,10 +780,10 @@ table.admin-table tr:hover { background: #fafbfc; }
     gap: 0.4rem;
   }
   .filters { gap: 0.2rem; }
-  .filter-btn { font-size: 0.7rem; padding: 0.25rem 0.45rem; min-height: 32px; }
-  table.admin-table { min-width: 520px; font-size: 0.75rem; }
-  table.admin-table th { padding: 0.35rem 0.4rem; font-size: 0.68rem; }
-  table.admin-table td { padding: 0.35rem 0.4rem; }
+  .filter-btn { font-size: 0.72rem; padding: 0.25rem 0.5rem; min-height: 30px; }
+  table.admin-table { min-width: auto; font-size: 0.75rem; width: 100%; table-layout: auto; }
+  table.admin-table th { padding: 0.3rem 0.25rem; font-size: 0.68rem; white-space: nowrap; }
+  table.admin-table td { padding: 0.3rem 0.25rem; word-break: break-all; }
   .modal-box { padding: 0.8rem; width: 98%; max-height: 90vh; }
   .modal-box [style*="display:flex"][style*="gap"] { flex-wrap: wrap; }
   .login-card { padding: 1.2rem; margin: 0.3rem; }
@@ -802,6 +803,7 @@ table.admin-table tr:hover { background: #fafbfc; }
   .filter-btn { font-size: 0.68rem; padding: 0.2rem 0.4rem; }
   .modal-title { font-size: 0.95rem; }
   #quickLinks { grid-template-columns: 1fr !important; }
+  table.admin-table th, table.admin-table td { font-size: 0.7rem; padding: 0.25rem 0.2rem; }
 }
 
 /* Spinning star animation for nav brand */
