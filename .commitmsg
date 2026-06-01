@@ -1,0 +1,10 @@
+fix: QR camera scan - add jsQR decoder for real-time QR detection
+
+- Root cause: toggleCamera() only opened camera stream without any
+  QR decoding logic - frames were never analyzed
+- Added jsQR CDN library for QR code decoding
+- Camera frames captured via canvas and decoded in requestAnimationFrame loop
+- Auto-fills code input and triggers scanCode() on QR detection
+- Visual feedback: scan frame overlay, animated scan line, status text
+- Camera button state changes (text/color) when active
+- Proper cleanup on camera stop
