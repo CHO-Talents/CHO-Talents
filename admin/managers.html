@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
@@ -72,8 +72,8 @@
         <div class="admin-table-title" id="tableTitle">관리자 목록</div>
         <div class="filters" style="flex-wrap:wrap;gap:0.4rem;">
           <button class="filter-btn active" onclick="setMgrFilter('all',this)">전체</button>
-          <button class="filter-btn" onclick="setMgrFilter('admin',this)">?? 관리자</button>
-          <button class="filter-btn" onclick="setMgrFilter('dept_manager',this)">?? 부서 담당 교사</button>
+          <button class="filter-btn" onclick="setMgrFilter('admin',this)">👑 관리자</button>
+          <button class="filter-btn" onclick="setMgrFilter('dept_manager',this)">📋 부서 담당 교사</button>
           <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
             <option value="">전체 부서</option>
           </select>
@@ -102,7 +102,7 @@
         </div>
         <div id="selectedUser" style="display:none;margin-top:0.5rem;padding:0.6rem;background:#f3f0ff;border-radius:8px;font-size:0.88rem;">
           <span id="selectedUserInfo"></span>
-          <button onclick="clearSelectedUser()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">?</button>
+          <button onclick="clearSelectedUser()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">✕</button>
         </div>
       </div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
@@ -260,10 +260,10 @@
       }
 
       const ROLE_BADGE = {
-        admin: { emoji: '??', label: '관리자', cls: 'ERROR' },
-        evangelist: { emoji: '??', label: '전도사님', cls: 'WARN' },
-        chief: { emoji: '??', label: '부장 교사', cls: 'WARN' },
-        dept_teacher: { emoji: '?????', label: '부서 담당', cls: 'INFO' }
+        admin: { emoji: '👑', label: '관리자', cls: 'ERROR' },
+        evangelist: { emoji: '✝️', label: '전도사님', cls: 'WARN' },
+        chief: { emoji: '📋', label: '부장 교사', cls: 'WARN' },
+        dept_teacher: { emoji: '👩‍🏫', label: '부서 담당', cls: 'INFO' }
       };
 
       const nameMap = resolveDisplayNames(allManagers);

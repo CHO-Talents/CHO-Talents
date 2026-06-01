@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
@@ -65,7 +65,7 @@
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? 작업 이력 관리</h2>
+    <h2 style="margin-bottom:1rem;">📝 작업 이력 관리</h2>
     <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">관리자 작업(사용자 수정, 권한 변경, 부서 이동, 비밀번호 초기화 등)의 이력을 조회합니다.</p>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
@@ -114,37 +114,33 @@
     let session, allAuditLogs = [], currentFilter = 'all';
 
     const AUDIT_ACTIONS = {
-      USER_CREATE: { label: '사용자 등록', category: 'USER', emoji: '?' },
-      USER_UPDATE: { label: '사용자 수정', category: 'USER', emoji: '??' },
-      USER_DELETE: { label: '사용자 삭제', category: 'USER', emoji: '???' },
-      USER_PW_RESET: { label: '비밀번호 초기화', category: 'USER', emoji: '??' },
-      REQUEST_APPROVE: { label: '가입 승인', category: 'USER', emoji: '?' },
-      REQUEST_REJECT: { label: '가입 거부', category: 'USER', emoji: '?' },
-      DEPT_CREATE: { label: '부서 등록', category: 'DEPT', emoji: '??' },
-      DEPT_UPDATE: { label: '부서 수정', category: 'DEPT', emoji: '??' },
-      DEPT_DELETE: { label: '부서 삭제', category: 'DEPT', emoji: '???' },
-      DEPT_TRANSFER: { label: '부서 이동', category: 'DEPT', emoji: '??' },
-      DEPT_TRANSFER_APPROVE: { label: '부서 이동 승인', category: 'DEPT', emoji: '?' },
-      DEPT_TRANSFER_REJECT: { label: '부서 이동 거부', category: 'DEPT', emoji: '?' },
-      TALENT_GIVE: { label: '달란트 지급', category: 'TALENT', emoji: '??' },
-      TALENT_USE: { label: '달란트 사용', category: 'TALENT', emoji: '??' },
-      TALENT_CANCEL: { label: '달란트 취소', category: 'TALENT', emoji: '??' },
-      QR_CREATE: { label: 'QR 코드 생성', category: 'TALENT', emoji: '??' },
-      QR_DEACTIVATE: { label: 'QR 코드 비활성화', category: 'TALENT', emoji: '??' },
-      ORDER_CANCEL: { label: '구매 취소', category: 'PRODUCT', emoji: '??' },
-      PRODUCT_CREATE: { label: '상품 등록', category: 'PRODUCT', emoji: '??' },
-      PRODUCT_UPDATE: { label: '상품 수정', category: 'PRODUCT', emoji: '??' },
-      PRODUCT_DELETE: { label: '상품 삭제', category: 'PRODUCT', emoji: '???' },
-      MGR_REGISTER: { label: '관리자 등록', category: 'PERM', emoji: '??' },
-      MGR_UPDATE: { label: '관리자 수정', category: 'PERM', emoji: '??' },
-      PAGE_ACCESS_UPDATE: { label: '페이지 접근 설정', category: 'PERM', emoji: '??' },
-      ROLE_ACCESS_UPDATE: { label: '권한별 접근 설정', category: 'PERM', emoji: '??' },
-      PAGE_FEATURE_UPDATE: { label: '페이지 기능 설정', category: 'PERM', emoji: '??' },
-      ROLE_FEATURE_UPDATE: { label: '권한별 기능 설정', category: 'PERM', emoji: '??' },
-      REPORT_SAVE: { label: '보고서 저장', category: 'PERM', emoji: '??' },
-      REPORT_DELETE: { label: '보고서 삭제', category: 'PERM', emoji: '???' },
-      LOG_SELECT_DELETE: { label: '로그 선택 삭제', category: 'PERM', emoji: '???' },
-      LOG_RANGE_DELETE: { label: '로그 범위 삭제', category: 'PERM', emoji: '???' }
+      USER_CREATE: { label: '사용자 등록', category: 'USER', emoji: '➕' },
+      USER_UPDATE: { label: '사용자 수정', category: 'USER', emoji: '✏️' },
+      USER_DELETE: { label: '사용자 삭제', category: 'USER', emoji: '🗑️' },
+      USER_PW_RESET: { label: '비밀번호 초기화', category: 'USER', emoji: '🔑' },
+      REQUEST_APPROVE: { label: '가입 승인', category: 'USER', emoji: '✅' },
+      REQUEST_REJECT: { label: '가입 거부', category: 'USER', emoji: '❌' },
+      DEPT_CREATE: { label: '부서 등록', category: 'DEPT', emoji: '🏢' },
+      DEPT_UPDATE: { label: '부서 수정', category: 'DEPT', emoji: '✏️' },
+      DEPT_DELETE: { label: '부서 삭제', category: 'DEPT', emoji: '🗑️' },
+      DEPT_TRANSFER: { label: '부서 이동', category: 'DEPT', emoji: '🔄' },
+      DEPT_TRANSFER_APPROVE: { label: '부서 이동 승인', category: 'DEPT', emoji: '✅' },
+      DEPT_TRANSFER_REJECT: { label: '부서 이동 거부', category: 'DEPT', emoji: '❌' },
+      TALENT_GIVE: { label: '달란트 지급', category: 'TALENT', emoji: '💰' },
+      TALENT_USE: { label: '달란트 사용', category: 'TALENT', emoji: '🛒' },
+      PRODUCT_CREATE: { label: '상품 등록', category: 'PRODUCT', emoji: '📦' },
+      PRODUCT_UPDATE: { label: '상품 수정', category: 'PRODUCT', emoji: '✏️' },
+      PRODUCT_DELETE: { label: '상품 삭제', category: 'PRODUCT', emoji: '🗑️' },
+      MGR_REGISTER: { label: '관리자 등록', category: 'PERM', emoji: '👑' },
+      MGR_UPDATE: { label: '관리자 수정', category: 'PERM', emoji: '✏️' },
+      PAGE_ACCESS_UPDATE: { label: '페이지 접근 설정', category: 'PERM', emoji: '🔐' },
+      ROLE_ACCESS_UPDATE: { label: '권한별 접근 설정', category: 'PERM', emoji: '🔐' },
+      PAGE_FEATURE_UPDATE: { label: '페이지 기능 설정', category: 'PERM', emoji: '⚙️' },
+      ROLE_FEATURE_UPDATE: { label: '권한별 기능 설정', category: 'PERM', emoji: '⚙️' },
+      REPORT_SAVE: { label: '보고서 저장', category: 'PERM', emoji: '📄' },
+      REPORT_DELETE: { label: '보고서 삭제', category: 'PERM', emoji: '🗑️' },
+      LOG_SELECT_DELETE: { label: '로그 선택 삭제', category: 'PERM', emoji: '🗑️' },
+      LOG_RANGE_DELETE: { label: '로그 범위 삭제', category: 'PERM', emoji: '🗑️' }
     };
 
     const AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
@@ -260,7 +256,7 @@
 
       const isAdmin = session.permissionRank >= 100;
       tbody.innerHTML = list.map(l => {
-        const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '??', category: '' };
+        const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '📋', category: '' };
         const dt = l.created_at ? formatKSTShort(l.created_at) : '-';
         const actorName = l.user_name || (l.details && l.details._userName) || null;
         const actorId = l.username || null;
@@ -297,7 +293,7 @@
     }
 
     function showDetail(log) {
-      const info = AUDIT_ACTIONS[log.action] || { label: log.action, emoji: '??' };
+      const info = AUDIT_ACTIONS[log.action] || { label: log.action, emoji: '📋' };
       const dt = log.created_at ? new Date(log.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }) : '-';
       const details = log.details || {};
 

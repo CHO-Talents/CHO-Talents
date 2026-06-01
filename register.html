@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>계정 등록 신청 - 달란트 마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
   <link rel="stylesheet" href="css/admin.css?v=3.13.0" />
   <style>
     .login-wrapper { background: linear-gradient(135deg, #f8f5ff 0%, #e0f7fa 50%, #e8f5e9 100%); }
@@ -21,7 +21,7 @@
 <body class="admin-body">
   <div class="login-wrapper">
     <div class="login-card">
-      <div style="text-align:center;font-size:2.5rem;margin-bottom:0.5rem;">??</div>
+      <div style="text-align:center;font-size:2.5rem;margin-bottom:0.5rem;">📝</div>
       <div class="login-title">계정 등록 신청</div>
       <p class="login-sub">정보를 입력하면 관리자 승인 후 사용할 수 있어요</p>
 
@@ -58,7 +58,7 @@
 
       <div id="resultArea" style="display:none;">
         <div class="result-box">
-          <div class="r-icon">?</div>
+          <div class="r-icon">✅</div>
           <h3>신청이 완료되었어요!</h3>
           <p>관리자가 신청 내용을 확인한 후<br/>승인이 되면 로그인할 수 있어요.<br/>초기 비밀번호는 <strong>1234</strong>입니다.</p>
         </div>
@@ -115,11 +115,11 @@
         idChecked = false; return;
       }
       if (!available) {
-        resultEl.innerHTML = '<span style="color:#e03131;">? 이미 사용 중이거나 신청 중인 아이디입니다.</span>';
+        resultEl.innerHTML = '<span style="color:#e03131;">❌ 이미 사용 중이거나 신청 중인 아이디입니다.</span>';
         idChecked = false; return;
       }
 
-      resultEl.innerHTML = '<span style="color:#2b8a3e;">? 사용 가능한 아이디입니다.</span>';
+      resultEl.innerHTML = '<span style="color:#2b8a3e;">✅ 사용 가능한 아이디입니다.</span>';
       idChecked = true;
       checkedUsername = username;
     }

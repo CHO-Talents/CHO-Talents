@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
@@ -66,13 +66,13 @@
 
   <div class="admin-container">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
-      <h2>?? 달란트 관리</h2>
-      <a href="talent-items.html" class="filter-btn" data-min-perm="60" style="text-decoration:none;">?? 달란트 항목 관리</a>
+      <h2>💰 달란트 관리</h2>
+      <a href="talent-items.html" class="filter-btn" data-min-perm="60" style="text-decoration:none;">📋 달란트 항목 관리</a>
     </div>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">?? 학생</button>
-      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">????? 교사</button>
+      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">🎒 학생</button>
+      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">👩‍🏫 교사</button>
       <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
         <option value="">전체 부서</option>
       </select>
@@ -120,16 +120,10 @@
         <button class="filter-btn" id="btnEarn" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">적립</button>
       </div>
 
-      <div id="giveDateSection" style="margin-bottom:0.8rem;display:none;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?? 지급일 지정</label>
-        <input type="date" id="giveDate" style="padding:0.4rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;" />
-        <span style="font-size:0.78rem;color:#868e96;margin-left:0.3rem;">비워두면 오늘 날짜</span>
-      </div>
-
       <div id="earnSection">
         <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">항목 선택 (체크 후 지급 확정)</div>
         <div id="talentItemBtns" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;"></div>
-        <button class="btn-confirm" id="btnConfirmGive" onclick="confirmGiveItems()" style="width:100%;padding:0.6rem;margin-bottom:0.8rem;display:none;">? 지급 확정</button>
+        <button class="btn-confirm" id="btnConfirmGive" onclick="confirmGiveItems()" style="width:100%;padding:0.6rem;margin-bottom:0.8rem;display:none;">✅ 지급 확정</button>
         <details id="manualGiveSection" style="margin-bottom:0.8rem;display:none;">
           <summary style="cursor:pointer;font-size:0.85rem;color:var(--admin-primary);">수동 입력 (항목에 없는 경우)</summary>
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
@@ -306,7 +300,7 @@
         const sm = talentSummaryMap[u.id] || { earned: 0, used: 0 };
         const attendDone = _attendanceGivenToday.has(u.id);
         const attendBtn = canGiveTalent(u)
-          ? `<button class="filter-btn" style="background:${attendDone?'#adb5bd':'#51cf66'};color:#fff;border-color:${attendDone?'#adb5bd':'#51cf66'};" onclick="giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')" ${attendDone?'disabled':''}>${attendDone?'?출석':'출석'}</button>`
+          ? `<button class="filter-btn" style="background:${attendDone?'#adb5bd':'#51cf66'};color:#fff;border-color:${attendDone?'#adb5bd':'#51cf66'};" onclick="giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')" ${attendDone?'disabled':''}>${attendDone?'✓출석':'출석'}</button>`
           : '';
         return `<tr>
         <td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
@@ -394,16 +388,11 @@
           (creators || []).forEach(c => { creatorMap[c.id] = c.display_name || c.username || '-'; });
         }
         const canReturn = (session.permissionRank || 0) >= 80;
-        const canCancel = (session.permissionRank || 0) >= 90;
         tbody.innerHTML = history.map(t => {
           const creatorName = t.created_by ? (creatorMap[t.created_by] || '-') : '-';
           const isReturn = t.description && t.description.startsWith('반환:');
-          const isCancelled = t.description && t.description.startsWith('취소:');
-          const returnBtn = (canReturn && t.type === 'earn' && !isReturn && !isCancelled)
+          const returnBtn = (canReturn && t.type === 'earn' && !isReturn)
             ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="openReturnModal('${userId}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">반환</button>`
-            : '';
-          const cancelBtn = (canCancel && t.type === 'earn' && !isReturn && !isCancelled)
-            ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#fd7e14;border-color:#fd7e14;" onclick="cancelTalent('${userId}','${t.id}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">취소</button>`
             : '';
           return `<tr>
           <td>${formatKSTShort(t.created_at)}</td>
@@ -412,7 +401,7 @@
           <td>${t.description || '-'}</td>
           <td style="font-size:0.78rem;">${creatorName}</td>
           <td>${t.balance_after != null ? t.balance_after : '-'}</td>
-          <td>${cancelBtn} ${returnBtn}</td>
+          <td>${returnBtn}</td>
         </tr>`;
         }).join('');
       }
@@ -485,13 +474,6 @@
       if ((session.permissionRank || 0) >= 100) {
         document.getElementById('manualGiveSection').style.display = '';
       }
-      const giveDateSection = document.getElementById('giveDateSection');
-      if ((session.permissionRank || 0) >= 90) {
-        giveDateSection.style.display = '';
-        document.getElementById('giveDate').value = '';
-      } else {
-        giveDateSection.style.display = 'none';
-      }
       document.getElementById('talentModal').classList.remove('hidden');
       await renderTalentItemButtons();
       loadTalentHistory(userId);
@@ -528,7 +510,7 @@
         return `<label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1px solid ${done?'#51cf66':'#dee2e6'};border-radius:8px;cursor:${done?'default':'pointer'};background:${done?'#e6fcf5':'#fff'};opacity:${done?'0.7':'1'};font-size:0.88rem;">
           <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${i.talent_amount}" ${done?'checked disabled':''} onchange="updateConfirmBtn()" />
           ${i.name} <strong style="color:${done?'#868e96':'#2b8a3e'};">+${i.talent_amount}</strong>
-          ${done?'<span style="font-size:0.7rem;color:#51cf66;">?완료</span>':''}
+          ${done?'<span style="font-size:0.7rem;color:#51cf66;">✓완료</span>':''}
         </label>`;
       }).join('');
       updateConfirmBtn();
@@ -538,23 +520,7 @@
       const chks = document.querySelectorAll('.talent-item-chk:not(:disabled):checked');
       const btn = document.getElementById('btnConfirmGive');
       btn.style.display = chks.length > 0 ? 'block' : 'none';
-      btn.textContent = `? 지급 확정 (${chks.length}건)`;
-    }
-
-    function getGiveDateISO() {
-      const val = document.getElementById('giveDate') ? document.getElementById('giveDate').value : '';
-      if (!val) return null;
-      return new Date(val + 'T09:00:00').toISOString();
-    }
-
-    async function updateTxnDate(userId, itemId, dateISO) {
-      if (!dateISO) return;
-      const { data } = await _sb.from('talent_transactions')
-        .select('id').eq('user_id', userId)
-        .order('created_at', { ascending: false }).limit(1);
-      if (data && data[0]) {
-        await _sb.from('talent_transactions').update({ created_at: dateISO }).eq('id', data[0].id);
-      }
+      btn.textContent = `✅ 지급 확정 (${chks.length}건)`;
     }
 
     async function confirmGiveItems() {
@@ -564,7 +530,6 @@
       if (!confirm(`${chks.length}건의 달란트를 지급하시겠습니까?\n항목: ${names}`)) return;
       const errEl = document.getElementById('talentError');
       errEl.classList.remove('show');
-      const giveDateISO = getGiveDateISO();
       let lastBalance = 0;
       for (const chk of chks) {
         try {
@@ -576,13 +541,12 @@
             break;
           }
           lastBalance = result.balance;
-          if (giveDateISO) await updateTxnDate(talentUserId, chk.value, giveDateISO);
         } catch (err) {
           await logError('TALENT_GIVE_ITEM_ERROR', { userId: talentUserId, itemId: chk.value, error: String(err) });
           errEl.textContent = `오류 발생: ${tErr(err.message)}`; errEl.classList.add('show'); break;
         }
       }
-      await logInfo('TALENT_GIVE_ITEMS', { userId: talentUserId, items: names, count: chks.length, giveDate: giveDateISO });
+      await logInfo('TALENT_GIVE_ITEMS', { userId: talentUserId, items: names, count: chks.length });
       document.getElementById('talentBalance').textContent = fmtNum(lastBalance);
       await renderTalentItemButtons();
       await loadTalentHistory(talentUserId);
@@ -601,9 +565,7 @@
           await logError('TALENT_MANUAL_GIVE_FAIL', { userId: talentUserId, amount, desc, error: result.error });
           errEl.textContent = tErr(result.error) || '처리 실패'; errEl.classList.add('show'); return;
         }
-        const giveDateISO = getGiveDateISO();
-        if (giveDateISO) await updateTxnDate(talentUserId, null, giveDateISO);
-        await logInfo('TALENT_MANUAL_GIVE', { userId: talentUserId, amount, desc, giveDate: giveDateISO });
+        await logInfo('TALENT_MANUAL_GIVE', { userId: talentUserId, amount, desc });
         document.getElementById('talentBalance').textContent = fmtNum(result.balance);
         document.getElementById('talentAmount').value = '';
         document.getElementById('talentDesc').value = '';
@@ -626,23 +588,6 @@
           <span style="color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'};font-weight:700;">${t.type === 'earn' ? '+' : '-'}${t.amount}</span>
           <span style="color:var(--admin-text-muted);">${t.description || '-'}</span>
         </div>`).join('');
-    }
-
-    async function cancelTalent(userId, txnId, amount, desc) {
-      if (!confirm(`이 달란트 거래를 취소하시겠습니까?\n항목: ${desc}\n금액: ${amount} 달란트\n\n취소 시 해당 금액이 차감됩니다.`)) return;
-      try {
-        const result = await useTalent(userId, parseInt(amount), '취소: ' + desc, session.id);
-        if (result && result.success === false) {
-          alert(tErr(result.error || '취소 처리 실패'));
-          return;
-        }
-        await logInfo('TALENT_CANCEL', { userId, txnId, amount: parseInt(amount), originalDesc: desc });
-        const detailName = document.getElementById('detailTitle').textContent.replace(' - 달란트 상세', '');
-        await openDetailModal(userId, detailName);
-        await loadUsers();
-      } catch (err) {
-        alert('취소 처리 중 오류: ' + tErr(err.message));
-      }
     }
 
     let returnCtx = {};

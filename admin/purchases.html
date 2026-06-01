@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
@@ -65,23 +65,23 @@
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? 구매 관리</h2>
+    <h2 style="margin-bottom:1rem;">🛒 구매 관리</h2>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="tabAll" onclick="switchPurchaseTab('all')">?? 전체</button>
-      <button class="filter-btn" id="tabRequested" onclick="switchPurchaseTab('requested')">?? 구매 신청</button>
-      <button class="filter-btn" id="tabPreparing" onclick="switchPurchaseTab('preparing')">?? 상품 준비</button>
-      <button class="filter-btn" id="tabPurchased" onclick="switchPurchaseTab('purchased')">?? 상품 구매</button>
-      <button class="filter-btn" id="tabDelivered" onclick="switchPurchaseTab('delivered')">? 상품 지급</button>
+      <button class="filter-btn active" id="tabAll" onclick="switchPurchaseTab('all')">📊 전체</button>
+      <button class="filter-btn" id="tabRequested" onclick="switchPurchaseTab('requested')">📋 구매 신청</button>
+      <button class="filter-btn" id="tabPreparing" onclick="switchPurchaseTab('preparing')">📦 상품 준비</button>
+      <button class="filter-btn" id="tabPurchased" onclick="switchPurchaseTab('purchased')">💳 상품 구매</button>
+      <button class="filter-btn" id="tabDelivered" onclick="switchPurchaseTab('delivered')">✅ 상품 지급</button>
     </div>
 
     <div id="statusFilterWrap" style="margin-bottom:0.8rem;">
       <select id="statusFilter" onchange="renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
         <option value="">전체 상태</option>
-        <option value="requested">?? 구매 신청</option>
-        <option value="preparing">?? 상품 준비</option>
-        <option value="purchased">?? 상품 구매</option>
-        <option value="delivered">? 상품 지급</option>
+        <option value="requested">📋 구매 신청</option>
+        <option value="preparing">📦 상품 준비</option>
+        <option value="purchased">💳 상품 구매</option>
+        <option value="delivered">✅ 상품 지급</option>
       </select>
     </div>
 
@@ -89,7 +89,7 @@
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">전체 목록</div>
         <div id="bulkActions" style="display:none;">
-          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="padding:0.4rem 1rem;font-size:0.85rem;">? 선택 지급 완료</button>
+          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="padding:0.4rem 1rem;font-size:0.85rem;">✅ 선택 지급 완료</button>
         </div>
       </div>
       <table class="admin-table">
@@ -247,12 +247,12 @@
           actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="updateStatus('${o.id}','preparing')">상품 준비</button>`;
         } else if (o.status === 'preparing' && canProc) {
           actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#1971c2;color:#fff;border-color:#1971c2;" onclick="confirmPurchase('${o.id}')">구매 확정</button>`;
-          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','requested')">? 되돌리기</button>`;
+          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','requested')">↩ 되돌리기</button>`;
         } else if (o.status === 'purchased' && canProc) {
           actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#2b8a3e;color:#fff;border-color:#2b8a3e;" onclick="updateStatus('${o.id}','delivered')">지급 완료</button>`;
-          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','preparing')">? 되돌리기</button>`;
+          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','preparing')">↩ 되돌리기</button>`;
         } else if (o.status === 'delivered' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','purchased')">? 되돌리기</button>`;
+          actionBtn = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','purchased')">↩ 되돌리기</button>`;
         }
 
         let procInfo = '';
@@ -334,7 +334,7 @@
       const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.82rem;background:${STATUS_COLOR[o.status]}22;color:${STATUS_COLOR[o.status]};font-weight:600;">${STATUS_LABEL[o.status]}</span>`;
       const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="this.remove()">
         <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
-          <h3 style="margin:0 0 0.8rem;">?? 주문 상세</h3>
+          <h3 style="margin:0 0 0.8rem;">📋 주문 상세</h3>
           <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} 달란트</div>
           <div style="font-size:0.85rem;margin-bottom:0.5rem;">신청자: ${o._userName} | 부서: ${o._deptName}</div>
           <div style="font-size:0.85rem;margin-bottom:0.8rem;">상태: ${statusBadge}</div>

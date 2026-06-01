@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 달란트 - 달란트 마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
   <link rel="stylesheet" href="css/common.css?v=3.13.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
     <a href="index.html" class="top-nav-brand">
-      <span class="brand-icon">?</span> 달란트 마을
+      <span class="brand-icon">⭐</span> 달란트 마을
     </a>
     <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="top-nav-links" id="navLinks">
@@ -116,26 +116,26 @@
       const { data: history } = await fetchTalentHistory(session.id, { limit: 50 });
 
       let html = `
-        <h1 class="page-title">?? 내 달란트</h1>
+        <h1 class="page-title">💰 내 달란트</h1>
         <p class="page-sub">${session.displayName || session.username}님의 달란트 현황</p>
         <div class="summary-cards">
           <div class="summary-card earn">
-            <div class="summary-card-icon">??</div>
+            <div class="summary-card-icon">📈</div>
             <div class="summary-card-label">누적 적립</div>
             <div class="summary-card-value">${fmtNum(summary.earned)}</div>
           </div>
           <div class="summary-card use">
-            <div class="summary-card-icon">??</div>
+            <div class="summary-card-icon">📉</div>
             <div class="summary-card-label">사용 완료</div>
             <div class="summary-card-value">${fmtNum(summary.used)}</div>
           </div>
           ${pendingTalent > 0 ? `<div class="summary-card" style="background:#fff3bf;">
-            <div class="summary-card-icon">?</div>
+            <div class="summary-card-icon">⏳</div>
             <div class="summary-card-label">사용 대기</div>
             <div class="summary-card-value" style="color:#e67700;">${fmtNum(pendingTalent)}</div>
           </div>` : ''}
           <div class="summary-card balance">
-            <div class="summary-card-icon">?</div>
+            <div class="summary-card-icon">⭐</div>
             <div class="summary-card-label">사용 가능</div>
             <div class="summary-card-value">${fmtNum(available)}</div>
           </div>
@@ -172,7 +172,7 @@
         const statusMap = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
         const statusColor = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
         html += `<div class="data-table-wrap" style="margin-top:1.5rem;">
-          <div class="data-table-header"><div class="data-table-title">?? 구매 내역</div></div>
+          <div class="data-table-header"><div class="data-table-title">🛒 구매 내역</div></div>
           <table class="data-table">
             <thead><tr><th>날짜</th><th>상품명</th><th>가격</th><th>상태</th></tr></thead>
             <tbody>` + orders.map(o => `<tr>
@@ -205,7 +205,7 @@
       });
       const sorted = Object.entries(byDesc).sort((a, b) => b[1].amount - a[1].amount);
       el.innerHTML = `<div style="background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:1rem;">
-        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.6rem;">?? 항목별 적립 현황</div>
+        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.6rem;">📊 항목별 적립 현황</div>
         <div style="font-size:0.82rem;">` + sorted.map(([name, v]) => {
           const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
           return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid #f1f3f5;">
