@@ -184,7 +184,7 @@
           total_talent: (u?.total_talent || 0) + qr.amount
         }).eq('id', session.id);
 
-        await logActivity('qr_scan', { code: qr.code, amount: qr.amount, description: qr.description });
+        await logInfo('qr_scan', { code: qr.code, amount: qr.amount, description: qr.description });
         showResult('ok', `✅ ${qr.amount} 달란트를 수령했습니다! (${qr.description || 'QR 달란트'})`);
         document.getElementById('qrInput').value = '';
         loadHistory();

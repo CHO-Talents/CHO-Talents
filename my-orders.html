@@ -150,7 +150,7 @@
         const { data: u } = await _sb.from('users').select('pending_talent').eq('id', session.id).single();
         const newPending = Math.max(0, (u?.pending_talent || 0) - price);
         await _sb.from('users').update({ pending_talent: newPending }).eq('id', session.id);
-        await logActivity('order_cancel', { product_name: productName, refunded: price, order_id: orderId });
+        await logInfo('order_cancel', { product_name: productName, refunded: price, order_id: orderId });
         alert('\uad6c\ub9e4\uac00 \ucde8\uc18c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.');
         await loadOrders();
       } catch (e) {
