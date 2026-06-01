@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
@@ -65,15 +65,15 @@
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? 상품 관리</h2>
+    <h2 style="margin-bottom:1rem;">📦 상품 관리</h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">상품 목록</div>
         <div class="filters">
           <button class="filter-btn active" onclick="filterRole('all',this)">전체</button>
-          <button class="filter-btn" onclick="filterRole('student',this)">?? 학생용</button>
-          <button class="filter-btn" onclick="filterRole('teacher',this)">????? 교사용</button>
+          <button class="filter-btn" onclick="filterRole('student',this)">🎒 학생용</button>
+          <button class="filter-btn" onclick="filterRole('teacher',this)">👩‍🏫 교사용</button>
           <span style="margin-left:0.5rem;"></span>
           <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 상품 등록</button>
         </div>
@@ -112,13 +112,13 @@
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이모지</label>
-        <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="??" />
+        <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="🎁" />
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상품 이미지</label>
         <div id="dropZone" style="border:2px dashed var(--admin-border);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;">
           <div id="dropContent">
-            <div style="font-size:2rem;margin-bottom:0.3rem;">??</div>
+            <div style="font-size:2rem;margin-bottom:0.3rem;">📷</div>
             <div style="font-size:0.85rem;color:#636e72;">클릭하거나 이미지를 드래그해서 놓으세요</div>
             <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">JPG, PNG, GIF, WebP (최대 5MB)</div>
           </div>
@@ -209,9 +209,9 @@
 
       const myRank = session.permissionRank || 0;
       tbody.innerHTML = list.map(p => `<tr${!p.is_active ? ' style="opacity:0.5;"' : ''}>
-        <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '??'}</span>`}</td>
+        <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '🎁'}</span>`}</td>
         <td><strong>${p.name}</strong><br><small style="color:var(--admin-text-muted);">${p.description || ''}</small></td>
-        <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '?? 학생' : '????? 교사'}</span></td>
+        <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '🎒 학생' : '👩‍🏫 교사'}</span></td>
         <td>${p.category || '-'}</td>
         <td style="font-weight:700;">${fmtNum(p.price)}</td>
         <td>${p.is_active ? '<span class="level-badge INFO">활성</span>' : '<span class="level-badge FATAL">비활성</span>'}</td>
@@ -269,7 +269,7 @@
       let imageUrl = document.getElementById('mImageUrl').value.trim() || null;
       if (fileInput.files.length > 0) {
         const statusEl = document.getElementById('uploadStatus');
-        statusEl.innerHTML = '<span style="color:var(--admin-primary);">? 이미지 업로드 중...</span>';
+        statusEl.innerHTML = '<span style="color:var(--admin-primary);">⏳ 이미지 업로드 중...</span>';
         const { url, error: uploadErr } = await uploadProductImage(fileInput.files[0]);
         if (uploadErr) { statusEl.innerHTML = `<span style="color:#ff6b6b;">업로드 실패: ${uploadErr}</span>`; return; }
         imageUrl = url; statusEl.innerHTML = '';
@@ -281,7 +281,7 @@
         name, target_role: document.getElementById('mTarget').value,
         category: document.getElementById('mCategory').value.trim() || null,
         price,
-        image_emoji: document.getElementById('mEmoji').value.trim() || '??',
+        image_emoji: document.getElementById('mEmoji').value.trim() || '🎁',
         image_url: imageUrl, description: document.getElementById('mDesc').value.trim() || null
       };
 
@@ -330,7 +330,7 @@
       if (file.size > 5*1024*1024) { document.getElementById('uploadStatus').innerHTML = '<span style="color:#ff6b6b;">5MB 이하 파일만 업로드 가능합니다</span>'; return; }
       const dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files;
       const reader = new FileReader(); reader.onload = e => showImgPreview(e.target.result); reader.readAsDataURL(file);
-      document.getElementById('uploadStatus').innerHTML = `<span style="color:#636e72;">?? ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;
+      document.getElementById('uploadStatus').innerHTML = `<span style="color:#636e72;">📎 ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;
     }
     document.getElementById('mImageUrlText').addEventListener('input', function() { const u = this.value.trim(); if (u) { document.getElementById('mImageFile').value = ''; showImgPreview(u); } else resetImgPreview(); });
     document.getElementById('productModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });

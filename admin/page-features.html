@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
@@ -65,7 +65,7 @@
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? 페이지 기능 관리</h2>
+    <h2 style="margin-bottom:1rem;">⚙️ 페이지 기능 관리</h2>
     <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">권한 등급별로 각 페이지에서 사용 가능한 기능을 관리합니다.</p>
 
     <div class="admin-table-wrap">
@@ -102,13 +102,13 @@
     let editingPerm = null;
 
     const PERM_LIST = [
-      { key: 'super_admin', userType: 'teacher', perm: 'admin', label: '최고 관리자', emoji: '??', rank: 110, desc: '모든 기능 접근 가능 (시스템 관리자)', superOnly: true },
-      { key: 'admin', userType: 'teacher', perm: 'admin', label: '관리자', emoji: '??', rank: 100, desc: '전체 시스템 관리' },
-      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', label: '전도사님', emoji: '??', rank: 90, desc: '사용자/부서/관리자 관리' },
-      { key: 'chief', userType: 'teacher', perm: 'chief', label: '부장 교사', emoji: '??', rank: 80, desc: '담당 부서 관리 + 조회' },
-      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', label: '부서 담당 교사', emoji: '?????', rank: 60, desc: '담당 부서 사용자 관리' },
-      { key: 'teacher', userType: 'teacher', perm: 'teacher', label: '일반 교사', emoji: '?????', rank: 40, desc: '달란트 지급' },
-      { key: 'student', userType: 'student', perm: 'student', label: '학생', emoji: '??', rank: 20, desc: '내 달란트 조회 / 상점 이용' }
+      { key: 'super_admin', userType: 'teacher', perm: 'admin', label: '최고 관리자', emoji: '🔒', rank: 110, desc: '모든 기능 접근 가능 (시스템 관리자)', superOnly: true },
+      { key: 'admin', userType: 'teacher', perm: 'admin', label: '관리자', emoji: '👑', rank: 100, desc: '전체 시스템 관리' },
+      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', label: '전도사님', emoji: '✝️', rank: 90, desc: '사용자/부서/관리자 관리' },
+      { key: 'chief', userType: 'teacher', perm: 'chief', label: '부장 교사', emoji: '📋', rank: 80, desc: '담당 부서 관리 + 조회' },
+      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', label: '부서 담당 교사', emoji: '👩‍🏫', rank: 60, desc: '담당 부서 사용자 관리' },
+      { key: 'teacher', userType: 'teacher', perm: 'teacher', label: '일반 교사', emoji: '👨‍🏫', rank: 40, desc: '달란트 지급' },
+      { key: 'student', userType: 'student', perm: 'student', label: '학생', emoji: '🎒', rank: 20, desc: '내 달란트 조회 / 상점 이용' }
     ];
 
     const PAGE_FEATURES = [

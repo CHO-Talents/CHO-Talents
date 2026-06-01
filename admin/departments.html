@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
@@ -168,7 +168,7 @@
         const students = deptUsers.filter(u => u.user_type === 'student');
         const managers = (users||[]).filter(u => u.managed_dept_id === d.id && ['admin', 'evangelist', 'chief', 'dept_teacher'].includes(u.permission_level));
         const managerNames = managers.map(m => {
-          const e = PERMISSION_EMOJI[m.permission_level] || '??';
+          const e = PERMISSION_EMOJI[m.permission_level] || '📋';
           return `${e}${m.display_name || '-'}`;
         }).join(', ') || '-';
         const classLabel = d.class_count > 0 ? d.class_count + '개' : '없음';
@@ -252,7 +252,7 @@
       } else {
         html += `<table class="admin-table" style="font-size:0.85rem;"><thead><tr><th>역할</th><th>권한</th><th>이름</th>${hasClasses ? '<th>반</th>' : ''}</tr></thead><tbody>`;
         html += members.map(u => {
-          const typeLabel = u.user_type === 'student' ? '?? 학생' : '????? 교사';
+          const typeLabel = u.user_type === 'student' ? '🎒 학생' : '👩‍🏫 교사';
           const permLabel = (PERMISSION_EMOJI[u.permission_level]||'') + ' ' + (PERMISSION_LABELS[u.permission_level]||u.permission_level);
           const dn = nameMap[u.id] || u.display_name || '-';
           const isSelf = u.id === session.id;

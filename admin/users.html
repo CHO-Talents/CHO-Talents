@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
@@ -65,20 +65,20 @@
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? 사용자 관리</h2>
+    <h2 style="margin-bottom:1rem;">👥 사용자 관리</h2>
 
     <div class="cards-grid" style="margin-bottom:1.5rem;">
       <div class="stat-card"><div class="stat-card-label">전체</div><div class="stat-card-value" id="cntAll">-</div></div>
-      <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">?? 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
-      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">?? 부서 담당 교사</div><div class="stat-card-value" id="cntMgr">-</div></div>
-      <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">????? 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
-      <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">?? 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
+      <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
+      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">📋 부서 담당 교사</div><div class="stat-card-value" id="cntMgr">-</div></div>
+      <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">👩‍🏫 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
+      <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">🎒 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
     </div>
 
     <!-- 가입 신청 내역 -->
     <div class="admin-table-wrap" id="reqSection" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="reqTitle" style="color:#e67700;">?? 가입 신청 내역</div>
+        <div class="admin-table-title" id="reqTitle" style="color:#e67700;">📝 가입 신청 내역</div>
       </div>
       <table class="admin-table">
         <thead><tr><th>역할</th><th>이름</th><th>부서</th><th>사유</th><th>신청일</th><th>처리</th></tr></thead>
@@ -89,7 +89,7 @@
     <!-- 부서 이동 신청 내역 -->
     <div class="admin-table-wrap" id="transferSection" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="transferTitle" style="color:#1971c2;">?? 부서 이동 신청 내역</div>
+        <div class="admin-table-title" id="transferTitle" style="color:#1971c2;">🔄 부서 이동 신청 내역</div>
       </div>
       <table class="admin-table">
         <thead><tr><th>이름</th><th>현재 부서</th><th>이동 요청 부서</th><th>요청자</th><th>요청일</th><th>처리</th></tr></thead>
@@ -137,8 +137,8 @@
         <div style="flex:1;">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">역할</label>
           <select id="mUserType" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onUserTypeChange()">
-            <option value="student">?? 학생</option>
-            <option value="teacher">????? 교사</option>
+            <option value="student">🎒 학생</option>
+            <option value="teacher">👩‍🏫 교사</option>
           </select>
         </div>
         <div style="flex:1;" id="permLevelWrap">
@@ -182,7 +182,7 @@
   <!-- 부서 이동 모달 -->
   <div class="modal-overlay hidden" id="transferModal">
     <div class="modal-box" style="max-width:420px;">
-      <h3 class="modal-title">?? 부서 이동</h3>
+      <h3 class="modal-title">🔄 부서 이동</h3>
       <div class="form-error" id="transferError"></div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">대상 사용자</label>
@@ -400,10 +400,10 @@
     }
 
     const ROLE_BADGES = {
-      admin: { emoji: '??', label: '관리자', cls: 'ERROR' },
-      dept_manager: { emoji: '??', label: '부서 담당 교사', cls: 'WARN' },
-      teacher: { emoji: '?????', label: '교사', cls: 'INFO' },
-      student: { emoji: '??', label: '학생', cls: 'DEBUG' }
+      admin: { emoji: '👑', label: '관리자', cls: 'ERROR' },
+      dept_manager: { emoji: '📋', label: '부서 담당 교사', cls: 'WARN' },
+      teacher: { emoji: '👩‍🏫', label: '교사', cls: 'INFO' },
+      student: { emoji: '🎒', label: '학생', cls: 'DEBUG' }
     };
 
     let _nameMap = {};
@@ -422,7 +422,7 @@
       tbody.innerHTML = list.map(u => {
         const perm = u.permission_level;
         const typeLabel = TYPE_LABELS[u.user_type] || u.user_type;
-        const typeEmoji = u.user_type === 'student' ? '??' : '?????';
+        const typeEmoji = u.user_type === 'student' ? '🎒' : '👩‍🏫';
         const permLabel = PERMISSION_LABELS[perm] || perm;
         const permEmoji = PERMISSION_EMOJI[perm] || '';
         const dn = _nameMap[u.id] || u.display_name || '-';
@@ -569,7 +569,7 @@
     }
 
     function renderRequests() {
-      document.getElementById('reqTitle').textContent = `?? 가입 신청 내역 (${allRequests.length}건)`;
+      document.getElementById('reqTitle').textContent = `📝 가입 신청 내역 (${allRequests.length}건)`;
       if (allRequests.length === 0) {
         document.getElementById('reqList').innerHTML = '<tr><td colspan="7" class="empty-state">대기 중인 가입 신청이 없습니다.</td></tr>';
         return;
@@ -588,8 +588,8 @@
           <td>${formatKSTShort(r.created_at)}</td>
           <td>
             ${canProcess ? `<select id="reqType_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;" onchange="onReqTypeChange('${r.id}')">
-              <option value="student">?? 학생</option>
-              <option value="teacher">????? 교사</option>
+              <option value="student">🎒 학생</option>
+              <option value="teacher">👩‍🏫 교사</option>
             </select>
             <select id="reqPerm_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;display:none;">
               ${buildPermOptions(session.permissionRank || 0, 'teacher')}
@@ -722,7 +722,7 @@
       const myRank = session.permissionRank || 0;
       if (myRank < 60) { section.style.display = 'none'; return; }
       section.style.display = '';
-      document.getElementById('transferTitle').textContent = `?? 부서 이동 신청 내역 (${allTransfers.length}건)`;
+      document.getElementById('transferTitle').textContent = `🔄 부서 이동 신청 내역 (${allTransfers.length}건)`;
       const tbody = document.getElementById('transferList');
       if (allTransfers.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="empty-state">대기 중인 부서 이동 요청이 없습니다.</td></tr>';

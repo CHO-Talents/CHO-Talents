@@ -134,7 +134,7 @@
               <td style="font-weight:700;">${fmtNum(o.price)} 달란트</td>
               <td>
                 <span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.6rem;border-radius:6px;font-size:0.82rem;font-weight:600;background:${statusColor[o.status]||'#868e96'}15;color:${statusColor[o.status]||'#868e96'};">${statusEmoji[o.status]||''} ${statusMap[o.status]||o.status}</span>
-                ${o.status === 'requested' ? `<button onclick="cancelOrder('${o.id}','${(o.product_name||'').replace(/'/g,"\\'")}',${o.price})" style="margin-left:0.4rem;padding:0.15rem 0.5rem;font-size:0.75rem;border:1px solid #e03131;color:#e03131;background:#fff;border-radius:4px;cursor:pointer;">취소</button>` : ''}
+                ${o.status === 'requested' ? `<button onclick="cancelOrder('${o.id}','${(o.product_name||'').replace(/'/g,"\\'")}',${o.price})" style="margin-left:0.4rem;padding:0.15rem 0.5rem;font-size:0.75rem;border:1px solid #e03131;color:#e03131;background:#fff;border-radius:4px;cursor:pointer;">\ucde8\uc18c</button>` : ''}
               </td>
             </tr>`).join('') + '</tbody></table></div>';
       }
@@ -143,7 +143,7 @@
     }
 
     async function cancelOrder(orderId, productName, price) {
-      if (!confirm(`"${productName}" 구매를 취소하시겠습니까?\n${price} 달란트가 복원됩니다.`)) return;
+      if (!confirm(`"${productName}" \uad6c\ub9e4\ub97c \ucde8\uc18c\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?\n${price} \ub2ec\ub780\ud2b8\uac00 \ubcf5\uc6d0\ub429\ub2c8\ub2e4.`)) return;
       try {
         const { error: delErr } = await _sb.from('product_orders').delete().eq('id', orderId).eq('user_id', session.id).eq('status', 'requested');
         if (delErr) throw delErr;
@@ -151,10 +151,10 @@
         const newPending = Math.max(0, (u?.pending_talent || 0) - price);
         await _sb.from('users').update({ pending_talent: newPending }).eq('id', session.id);
         await logActivity('order_cancel', { product_name: productName, refunded: price, order_id: orderId });
-        alert('구매가 취소되었습니다.');
+        alert('\uad6c\ub9e4\uac00 \ucde8\uc18c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.');
         await loadOrders();
       } catch (e) {
-        alert('취소 실패: ' + (e.message || e));
+        alert('\ucde8\uc18c \uc2e4\ud328: ' + (e.message || e));
       }
     }
   </script>

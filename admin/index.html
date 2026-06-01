@@ -8,7 +8,7 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
@@ -106,7 +106,7 @@
         <div class="stat-card-value" id="managerCount">-</div>
       </div>
       <a href="users.html" class="stat-card" style="border-left-color:#e67700;text-decoration:none;color:inherit;" data-min-perm="80">
-        <div class="stat-card-label">?? 가입 대기자</div>
+        <div class="stat-card-label">📝 가입 대기자</div>
         <div class="stat-card-value" id="pendingCount">-</div>
       </a>
     </div>
@@ -145,13 +145,13 @@
 
     function buildQuickLinks() {
       const links = [
-        { href: 'users.html', emoji: '??', label: '사용자 관리', bg: '#e8e0ff', color: 'var(--admin-primary)', minRank: 60 },
-        { href: 'departments.html', emoji: '??', label: '부서 관리', bg: '#f3f0ff', color: '#7048c6', minRank: 80 },
-        { href: 'managers.html', emoji: '??', label: '관리자 관리', bg: '#fff9db', color: '#e67700', minRank: 80 },
-        { href: 'talents.html', emoji: '??', label: '달란트 관리', bg: '#fff5f5', color: '#e03131', minRank: 40 },
-        { href: 'talent-items.html', emoji: '??', label: '달란트 항목', bg: '#f0fff4', color: '#2b8a3e', minRank: 90 },
-        { href: 'shop.html', emoji: '??', label: '상품 관리', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
-        { href: 'purchases.html', emoji: '??', label: '구매 관리', bg: '#e7f5ff', color: '#1864ab', minRank: 60 },
+        { href: 'users.html', emoji: '👥', label: '사용자 관리', bg: '#e8e0ff', color: 'var(--admin-primary)', minRank: 60 },
+        { href: 'departments.html', emoji: '🏢', label: '부서 관리', bg: '#f3f0ff', color: '#7048c6', minRank: 80 },
+        { href: 'managers.html', emoji: '👑', label: '관리자 관리', bg: '#fff9db', color: '#e67700', minRank: 80 },
+        { href: 'talents.html', emoji: '💰', label: '달란트 관리', bg: '#fff5f5', color: '#e03131', minRank: 40 },
+        { href: 'talent-items.html', emoji: '🎯', label: '달란트 항목', bg: '#f0fff4', color: '#2b8a3e', minRank: 90 },
+        { href: 'shop.html', emoji: '📦', label: '상품 관리', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
+        { href: 'purchases.html', emoji: '🛒', label: '구매 관리', bg: '#e7f5ff', color: '#1864ab', minRank: 60 },
       ];
       const rank = session.permissionRank || 0;
       document.getElementById('quickLinks').innerHTML = links
