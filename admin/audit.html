@@ -79,6 +79,12 @@
       <input type="date" class="filter-input" id="auditDateFrom" />
       <span style="font-size:0.8rem;color:#adb5bd;">~</span>
       <input type="date" class="filter-input" id="auditDateTo" />
+      <span style="display:inline-flex;gap:0.2rem;">
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('today')">오늘</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('week')">1주</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('month')">1달</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('year')">1년</button>
+      </span>
       <button class="filter-btn" onclick="loadAuditLogs()">조회</button>
       <input type="text" id="auditSearch" placeholder="작업자/대상 검색..." class="filter-input" style="flex:1;min-width:120px;" oninput="renderAudit()" />
     </div>
@@ -172,9 +178,7 @@
       autoLogPageView();
       updatePendingBadge();
       updateNavOrderBadge();
-      const today = new Date().toISOString().slice(0, 10);
-      document.getElementById('auditDateFrom').value = today;
-      document.getElementById('auditDateTo').value = today;
+      setAuditPeriod('today');
       await loadAuditLogs();
     })();
 
@@ -183,6 +187,18 @@
       document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
       if (btn) btn.classList.add('active');
       renderAudit();
+    }
+
+    function setAuditPeriod(type) {
+      const today = new Date();
+      const todayStr = today.toISOString().slice(0, 10);
+      let fromStr = todayStr;
+      if (type === 'week') { const d = new Date(today); d.setDate(d.getDate() - 6); fromStr = d.toISOString().slice(0, 10); }
+      else if (type === 'month') { fromStr = todayStr.slice(0, 8) + '01'; }
+      else if (type === 'year') { fromStr = todayStr.slice(0, 4) + '-01-01'; }
+      document.getElementById('auditDateFrom').value = fromStr;
+      document.getElementById('auditDateTo').value = todayStr;
+      loadAuditLogs();
     }
 
     async function loadAuditLogs() {

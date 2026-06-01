@@ -79,7 +79,7 @@
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th></th><th>상품명</th><th>대상</th><th>카테고리</th><th>가격</th><th>상태</th><th>관리</th></tr></thead>
+        <thead><tr><th></th><th>상품명</th><th>대상</th><th>카테고리</th><th>가격</th><th>관리</th></tr></thead>
         <tbody id="productList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
@@ -188,7 +188,7 @@
     }
 
     async function loadProducts() {
-      const { data } = await fetchProducts(null, { activeOnly: false });
+      const { data } = await fetchProducts(null, { activeOnly: true });
       allProducts = data || [];
       renderProducts();
     }
@@ -205,19 +205,18 @@
       const tbody = document.getElementById('productList');
       document.getElementById('tableTitle').textContent = `상품 목록 (${list.length}건)`;
 
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 상품이 없습니다.</td></tr>'; return; }
+      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 상품이 없습니다.</td></tr>'; return; }
 
       const myRank = session.permissionRank || 0;
-      tbody.innerHTML = list.map(p => `<tr${!p.is_active ? ' style="opacity:0.5;"' : ''}>
+      tbody.innerHTML = list.map(p => `<tr>
         <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '🎁'}</span>`}</td>
         <td><strong>${p.name}</strong><br><small style="color:var(--admin-text-muted);">${p.description || ''}</small></td>
         <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '🎒 학생' : '👩‍🏫 교사'}</span></td>
         <td>${p.category || '-'}</td>
         <td style="font-weight:700;">${fmtNum(p.price)}</td>
-        <td>${p.is_active ? '<span class="level-badge INFO">활성</span>' : '<span class="level-badge FATAL">비활성</span>'}</td>
         <td>
           <button class="filter-btn" onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>수정</button>
-          ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${p.id}','${p.name}')">삭제</button>` : ''}
+          ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${p.id}','${p.name}')">삭제 대기</button>` : ''}
         </td>
       </tr>`).join('');
     }
@@ -302,28 +301,14 @@
     }
 
     async function confirmDelete(id, name) {
-      if (!confirm(`"${name}" 상품을 삭제하시겠습니까?`)) return;
-      const result = await deleteProduct(id);
+      if (!confirm(`"${name}" 상품을 삭제 대기 상태로 변경하시겠습니까?\n(목록에서 숨겨지며 DB에는 유지됩니다)`)) return;
+      const result = await deactivateProduct(id);
       if (result.error) {
-        if (result.fkConflict) {
-          if (confirm(`"${name}" 상품에 주문 내역이 있어 삭제할 수 없습니다.\n비활성화 처리하시겠습니까?`)) {
-            const deactResult = await deactivateProduct(id);
-            if (deactResult.error) {
-              alert('비활성화 실패: ' + deactResult.error);
-              return;
-            }
-            await logInfo('PRODUCT_DEACTIVATE', { id, name, reason: 'fk_conflict_soft_delete' });
-            alert(`"${name}" 상품이 비활성화되었습니다.`);
-          } else {
-            return;
-          }
-        } else {
-          alert('삭제 실패: ' + result.error);
-          return;
-        }
-      } else {
-        await logInfo('PRODUCT_DELETE', { id, name });
+        alert('삭제 대기 처리 실패: ' + result.error);
+        return;
       }
+      await logInfo('PRODUCT_SOFT_DELETE', { id, name });
+      alert(`"${name}" 상품이 삭제 대기 상태로 변경되었습니다.`);
       await loadProducts();
     }
 

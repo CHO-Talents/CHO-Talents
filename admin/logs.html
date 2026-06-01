@@ -89,6 +89,12 @@
           <input type="date" class="filter-input" id="dateFrom" onchange="applyFilters()" />
           <span style="font-size:0.8rem;color:#adb5bd;">~</span>
           <input type="date" class="filter-input" id="dateTo" onchange="applyFilters()" />
+          <span style="display:inline-flex;gap:0.2rem;margin-left:0.2rem;">
+            <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('today')">오늘</button>
+            <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('week')">1주</button>
+            <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('month')">1달</button>
+            <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('year')">1년</button>
+          </span>
           <button class="btn-ack admin-only-btn" style="margin-left:0.5rem;display:none;" onclick="deleteByRange()">범위 삭제 대기</button>
           <button class="btn-ack admin-only-btn" style="background:#d63031;display:none;" onclick="deleteSelectedLogs()" id="btnDeleteLogs" disabled>선택 삭제 대기</button>
           <button class="filter-btn admin-only-btn" onclick="toggleDeletedView()" id="btnToggleDeleted" style="margin-left:0.3rem;display:none;">🗑️ 삭제 대기 목록</button>
@@ -184,11 +190,21 @@
         if ((session.permissionRank || 0) >= 100) {
           document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = '');
         }
-        const today = new Date().toISOString().slice(0, 10);
-        document.getElementById('dateFrom').value = today;
-        document.getElementById('dateTo').value = today;
+        setLogPeriod('today');
         loadAll();
       }
+
+    function setLogPeriod(type) {
+      const today = new Date();
+      const todayStr = today.toISOString().slice(0, 10);
+      let fromStr = todayStr;
+      if (type === 'week') { const d = new Date(today); d.setDate(d.getDate() - 6); fromStr = d.toISOString().slice(0, 10); }
+      else if (type === 'month') { fromStr = todayStr.slice(0, 8) + '01'; }
+      else if (type === 'year') { fromStr = todayStr.slice(0, 4) + '-01-01'; }
+      document.getElementById('dateFrom').value = fromStr;
+      document.getElementById('dateTo').value = todayStr;
+      applyFilters();
+    }
     })();
 
     async function loadAll() {

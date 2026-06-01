@@ -90,6 +90,12 @@
       <input type="date" id="dateFrom" onchange="renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="font-size:0.82rem;">~</span>
       <input type="date" id="dateTo" onchange="renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
+      <span style="display:inline-flex;gap:0.2rem;">
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">오늘</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1주</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('month')">1달</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('year')">1년</button>
+      </span>
     </div>
 
     <div class="admin-table-wrap">
@@ -133,11 +139,21 @@
       autoLogPageView();
       updatePendingBadge();
       updateNavOrderBadge();
-      const today = new Date().toISOString().slice(0, 10);
-      document.getElementById('dateFrom').value = today;
-      document.getElementById('dateTo').value = today;
+      setOrderPeriod('today');
       await loadOrders();
     })();
+
+    function setOrderPeriod(type) {
+      const today = new Date();
+      const todayStr = today.toISOString().slice(0, 10);
+      let fromStr = todayStr;
+      if (type === 'week') { const d = new Date(today); d.setDate(d.getDate() - 6); fromStr = d.toISOString().slice(0, 10); }
+      else if (type === 'month') { fromStr = todayStr.slice(0, 8) + '01'; }
+      else if (type === 'year') { fromStr = todayStr.slice(0, 4) + '-01-01'; }
+      document.getElementById('dateFrom').value = fromStr;
+      document.getElementById('dateTo').value = todayStr;
+      renderOrders();
+    }
 
     function switchPurchaseTab(tab) {
       currentPTab = tab;
@@ -145,7 +161,7 @@
         const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
         if (el) el.classList.toggle('active', t === tab);
       });
-      document.getElementById('statusFilterWrap').style.display = tab === 'all' ? '' : 'none';
+      document.getElementById('statusFilter').style.display = tab === 'all' ? '' : 'none';
       renderOrders();
     }
 

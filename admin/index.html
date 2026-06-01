@@ -65,7 +65,7 @@
   </nav>
 
   <div class="admin-container">
-    <div class="alert-banner hidden" id="alertBanner" data-min-perm="100">
+    <div class="alert-banner hidden" id="alertBanner" data-min-perm="100" onclick="location.href='logs.html'" style="cursor:pointer;">
       <span>&#9888;</span>
       <span id="alertText">미확인 ERROR 로그가 있습니다.</span>
       <a href="logs.html" style="margin-left:auto;color:inherit;font-weight:700;">확인하기</a>
@@ -86,10 +86,10 @@
         <div class="stat-card-label">보고서</div>
         <div class="stat-card-value" id="totalReports">-</div>
       </div>
-      <div class="stat-card error-card" data-min-perm="80">
+      <a href="logs.html" class="stat-card error-card" style="text-decoration:none;color:inherit;cursor:pointer;" data-min-perm="100">
         <div class="stat-card-label">미확인 ERROR+</div>
         <div class="stat-card-value" id="unackCount">-</div>
-      </div>
+      </a>
     </div>
 
     <div class="cards-grid" style="margin-bottom:1.5rem;">
@@ -152,6 +152,8 @@
         { href: 'talent-items.html', emoji: '🎯', label: '달란트 항목', bg: '#f0fff4', color: '#2b8a3e', minRank: 90 },
         { href: 'shop.html', emoji: '📦', label: '상품 관리', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
         { href: 'purchases.html', emoji: '🛒', label: '구매 관리', bg: '#e7f5ff', color: '#1864ab', minRank: 60 },
+        { href: 'talent-stats.html', emoji: '📊', label: '달란트 통계', bg: '#f0fff4', color: '#2b8a3e', minRank: 60 },
+        { href: 'talent-qr.html', emoji: '📱', label: '달란트 QR 관리', bg: '#fff0f6', color: '#c2255c', minRank: 90 },
       ];
       const rank = session.permissionRank || 0;
       document.getElementById('quickLinks').innerHTML = links
