@@ -92,7 +92,7 @@
         </div>
         <div>
           <label>&#xB2EC;&#xB780;&#xD2B8; &#xAE08;&#xC561;</label>
-          <input type="number" id="qrAmount" min="1" max="9999" value="1" />
+          <input type="number" id="qrAmount" min="1" max="100" value="1" />
         </div>
         <div>
           <label>&#xCD5C;&#xB300; &#xC0AC;&#xC6A9; &#xD69F;&#xC218; (0=&#xBB34;&#xC81C;&#xD55C;)</label>
@@ -150,6 +150,7 @@
       const expiry = document.getElementById('qrExpiry').value;
       if (!desc) { alert('\uC124\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694.'); return; }
       if (amount < 1) { alert('\uAE08\uC561\uC740 1 \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'); return; }
+      if (amount > 100) { alert('\uB2EC\uB780\uD2B8\uB294 \uCD5C\uB300 100\uAE4C\uC9C0\uB9CC \uC124\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.'); return; }
       const code = generateCode();
       const row = { code, description: desc, amount, max_uses: maxUses || null, expires_at: expiry || null, is_active: true, used_count: 0, created_by: session.id, created_at: new Date().toISOString() };
       const { error } = await _sb.from('talent_qr_codes').insert(row);
@@ -166,6 +167,7 @@
       const expiry = document.getElementById('qrExpiry').value;
       if (!desc) { alert('\uC124\uBA85\uC744 \uC785\uB825\uD558\uC138\uC694.'); return; }
       if (amount < 1) { alert('\uAE08\uC561\uC740 1 \uC774\uC0C1\uC774\uC5B4\uC57C \uD569\uB2C8\uB2E4.'); return; }
+      if (amount > 100) { alert('\uB2EC\uB780\uD2B8\uB294 \uCD5C\uB300 100\uAE4C\uC9C0\uB9CC \uC124\uC815\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.'); return; }
       const rows = [];
       for (let i = 0; i < 5; i++) {
         rows.push({ code: generateCode(), description: desc, amount, max_uses: maxUses || null, expires_at: expiry || null, is_active: true, used_count: 0, created_by: session.id, created_at: new Date().toISOString() });

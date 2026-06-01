@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
@@ -97,7 +97,7 @@
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">지급 달란트</label>
-          <input type="number" id="mAmount" min="1" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+          <input type="number" id="mAmount" min="1" max="100" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="최대 100" />
         </div>
         <div style="flex:1;">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">정렬 순서</label>
@@ -210,6 +210,7 @@
 
       if (!name) { errEl.textContent = '항목명을 입력해주세요.'; errEl.classList.add('show'); return; }
       if (!amount || amount <= 0) { errEl.textContent = '유효한 달란트 수를 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (amount > 100) { errEl.textContent = '달란트는 최대 100까지만 설정할 수 있습니다.'; errEl.classList.add('show'); return; }
 
       const row = { name, talent_amount: amount, sort_order: sortOrder, target_type: targetType };
 
