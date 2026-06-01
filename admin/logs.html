@@ -184,6 +184,9 @@
         if ((session.permissionRank || 0) >= 100) {
           document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = '');
         }
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('dateFrom').value = today;
+        document.getElementById('dateTo').value = today;
         loadAll();
       }
     })();

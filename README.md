@@ -12,12 +12,25 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.15.1` (`js/version.js` 기준, 2026-05-31) |
+| 현재 버전 | `v3.16.0` (`js/version.js` 기준, 2026-06-01) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.15.1`으로 맞춰져 있습니다.
+- 모든 HTML의 JS 캐시 버스팅과 `APP_VERSION.current`는 `3.16.0`으로 맞춰져 있습니다.
+- **v3.16.0 주요 변경 사항**:
+  - QR 관리: `qrcode.js` CDN으로 QR 코드 2차원 이미지 생성·표시·인쇄
+  - QR 관리: 최대 사용횟수 제거 → 1회 고정 (`max_uses=1`)
+  - QR 관리: 만료일을 from~to `datetime-local` 기간으로 변경 (무기한 지원)
+  - QR 관리: 수정 버튼 추가 → 설명/금액/기간 편집 시 새 QR 코드 재생성
+  - QR 수령: `valid_from`/`valid_until` 기간 검증 추가
+  - 달란트 통계: 유형별 탭에도 부서/반 필터 추가
+  - 달란트 통계: 기간 필터 기본값 오늘, 전체 레이아웃/디자인 개선 (탭별 요약 카드, 테이블 스타일)
+  - 구매 관리: 날짜(from~to) 및 부서 필터 추가 (기본 오늘)
+  - 로그: 기간 필터 기본값 오늘
+  - 작업 이력: 기간 필터 기본값 오늘 + 자동 조회
+  - 상품 관리: FK 에러 시 soft delete(비활성화) 안내 처리
+  - `product.js`: `deactivateProduct` 함수 추가, `deleteProduct` FK 충돌 감지
 - **v3.15.1 주요 변경 사항**:
   - Q&A: 삭제를 `admin_soft_delete_qna` RPC 함수로 전환 (SECURITY DEFINER, RLS 우회)
   - 달란트 관리: 사용 탭/섹션/함수 완전 제거 (물품 구매로만 사용)
@@ -105,7 +118,7 @@ CHO-Talents/
 │   ├── auth.js                    # 로그인, 세션, 권한, 비밀번호 변경, tErr() 에러 번역
 │   ├── user-mgmt.js               # 사용자/부서 관리 RPC 래퍼
 │   ├── talent.js                  # 달란트 잔액/내역/지급/사용/반환
-│   ├── product.js                 # 상품 조회/등록/수정/삭제/이미지 업로드
+│   ├── product.js                 # 상품 조회/등록/수정/삭제/비활성화/이미지 업로드
 │   └── version.js                 # 버전 정보와 변경 이력
 └── docs/                          # 작업 보고서, SQL, 구성 문서, 사용자 안내서
 ```
@@ -202,14 +215,15 @@ flowchart TD
 | `admin/managers.html` | 80 | 기존 사용자를 관리자 계열 권한으로 승격/수정, 담당 부서 지정 |
 | `admin/talents.html` | 40 | 학생/교사 탭별 달란트 체크박스 선택+일괄 지급, 수동 적립/사용, 반환(80+). 일반 교사는 담당 부서/반 제한 |
 | `admin/talent-items.html` | 90 | 달란트 지급 항목 등록/수정/활성화. 학생 항목은 주 1회 지급 규칙과 연동 |
-| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드, 활성 상태 관리. 삭제 버튼은 90등급 이상 |
-| `admin/purchases.html` | 60 | 구매 관리: 4단계(구매 신청→상품 준비→상품 구매→상품 지급) 처리, 구매 확정 시 달란트 차감. 권한별 조회/처리 범위 제한 |
+| `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), 수정(새 코드 재생성), 비활성화. 기간(from~to datetime) 설정 |
+| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드, 활성 상태 관리. 삭제 버튼은 90등급 이상. FK 충돌 시 비활성화 제안 |
+| `admin/purchases.html` | 60 | 구매 관리: 4단계 처리 + 날짜/부서 필터(기본 오늘), 구매 확정 시 달란트 차감. 권한별 조회/처리 범위 제한 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록/수정, 선택 삭제 |
-| `admin/logs.html` | 100 | 활동 로그 필터링, 상세 보기, 오류 로그 확인 처리, 소프트 삭제(삭제 대기) |
+| `admin/logs.html` | 100 | 활동 로그 필터링(기본 오늘), 상세 보기, 오류 로그 확인 처리, 소프트 삭제(삭제 대기) |
 | `admin/versions.html` | 80 | 배포 버전과 변경 이력 확인 |
 | `admin/page-access.html` | 100 | 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100 | 권한별 페이지 기능(수정/삭제/승인 등) 설정값 관리 |
-| `admin/audit.html` | 100 | 관리 작업 이력 조회 (사용자/부서/달란트/상품/권한 카테고리별 필터) |
+| `admin/audit.html` | 100 | 관리 작업 이력 조회 (기본 오늘, 자동 조회, 카테고리별 필터) |
 | `admin/page-permissions.html` | 100 | 페이지별 조회/관리 권한 매트릭스 설정 (레거시) |
 | `admin/change-password.html` | 로그인 | 최초 로그인 또는 비밀번호 변경 처리 |
 
@@ -338,6 +352,8 @@ flowchart TD
 | 상품 | `products` | 상점 상품, 가격, 대상, 이미지, 활성 상태 |
 | 상품 주문 | `product_orders` | 구매 신청, 4단계 상태 관리, 담당자 기록 |
 | Q&A | `qna` | FAQ, 사용자 질문, 답변, 공개 여부 |
+| QR 코드 | `talent_qr_codes` | QR 코드 생성/유효기간(`valid_from`/`valid_until`)/1회 사용 관리 |
+| QR 스캔 | `talent_qr_scans` | QR 코드 스캔 이력 (중복 수령 방지) |
 | 로그 | `activity_logs` | 페이지/오류/운영 활동 기록, 소프트 삭제 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
 | 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |

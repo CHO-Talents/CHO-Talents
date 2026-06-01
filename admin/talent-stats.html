@@ -4,7 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 통계 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.16.0" />
+  <style>
+    .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; margin-bottom: 1.5rem; }
+    .stat-card { background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border: 1px solid #e9ecef; border-radius: 14px; padding: 1rem 1.2rem; text-align: center; transition: transform 0.15s, box-shadow 0.15s; }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .stat-card .stat-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+    .stat-card .stat-label { font-size: 0.78rem; color: var(--admin-text-muted); font-weight: 600; }
+    .stat-card .stat-value { font-size: 1.6rem; font-weight: 800; margin-top: 0.1rem; }
+    .stat-card .stat-value.green { color: #2b8a3e; }
+    .stat-card .stat-value.blue { color: #1971c2; }
+    .stat-card .stat-value.orange { color: #e67700; }
+    .stat-card .stat-value.purple { color: #7048e8; }
+    .stats-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .stats-table thead th { background: #f1f3f5; padding: 0.6rem 0.8rem; text-align: left; font-weight: 700; font-size: 0.82rem; border-bottom: 2px solid #dee2e6; }
+    .stats-table tbody tr { border-bottom: 1px solid #e9ecef; transition: background 0.1s; }
+    .stats-table tbody tr:hover { background: #f8f9fa; }
+    .stats-table tbody tr:nth-child(even) { background: #fafbfc; }
+    .stats-table tbody tr:nth-child(even):hover { background: #f1f3f5; }
+    .stats-table td { padding: 0.55rem 0.8rem; }
+    .stats-table td.num { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+    .pct-bar { background: #e9ecef; border-radius: 4px; height: 20px; width: 100%; max-width: 160px; position: relative; overflow: hidden; }
+    .pct-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+    .pct-bar-text { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; font-weight: 700; color: #495057; }
+    .type-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .type-card { background: #fff; border: 1px solid #e9ecef; border-radius: 14px; padding: 1.2rem; }
+    .type-card h4 { font-size: 1rem; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.4rem; }
+    .type-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.2rem 1rem; font-size: 0.85rem; }
+    .type-detail-grid .label { color: var(--admin-text-muted); }
+    .type-detail-grid .val { text-align: right; font-weight: 700; }
+  </style>
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -89,9 +118,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.13.0"></script>
-  <script src="../js/activity-log.js?v=3.13.0"></script>
-  <script src="../js/auth.js?v=3.13.0"></script>
+  <script src="../js/supabase-config.js?v=3.16.0"></script>
+  <script src="../js/activity-log.js?v=3.16.0"></script>
+  <script src="../js/auth.js?v=3.16.0"></script>
   <script>
     initSupabase();
     let session, allTxns = [], allProfiles = [], allDepts = [];
@@ -101,6 +130,9 @@
       session = await initPage(60, '../login.html');
       renderRoleBadge('navUser', session, '../');
       applyPermNav(session.permissionRank || 0);
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('dateFrom').value = today;
+      document.getElementById('dateTo').value = today;
       await loadData();
       loadStats();
     })();
@@ -125,7 +157,7 @@
         const el = document.getElementById('view' + v);
         if (el) el.classList.toggle('active', v.toLowerCase() === view);
       });
-      document.getElementById('deptFilter').style.display = (view === 'dept' || view === 'class') ? '' : 'none';
+      document.getElementById('deptFilter').style.display = (view === 'dept' || view === 'class' || view === 'type') ? '' : 'none';
       loadStats();
     }
 
@@ -144,15 +176,10 @@
       if (dateFrom) txns = txns.filter(t => (t.created_at || '').slice(0, 10) >= dateFrom);
       if (dateTo) txns = txns.filter(t => (t.created_at || '').slice(0, 10) <= dateTo);
 
-      if (currentView === 'all') {
-        renderOverallStats(txns, profiles);
-      } else if (currentView === 'dept') {
-        renderDeptStats(txns, profiles);
-      } else if (currentView === 'class') {
-        renderClassStats(txns, profiles);
-      } else if (currentView === 'type') {
-        renderTypeStats(txns, profiles);
-      }
+      if (currentView === 'all') renderOverallStats(txns, profiles);
+      else if (currentView === 'dept') renderDeptStats(txns, profiles);
+      else if (currentView === 'class') renderClassStats(txns, profiles);
+      else if (currentView === 'type') renderTypeStats(txns, profiles);
     }
 
     function renderOverallStats(txns, profiles) {
@@ -162,6 +189,7 @@
       }
 
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
+      const uniqueUsers = new Set(txns.map(t => t.user_id)).size;
       const byItem = {};
       txns.forEach(t => {
         const key = t.description || '기타';
@@ -171,27 +199,20 @@
       });
       const sorted = Object.entries(byItem).sort((a, b) => b[1].amount - a[1].amount);
 
-      let html = `<div style="margin-bottom:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.8rem;">
-        <div style="background:#f8f9fa;border-radius:12px;padding:1rem;text-align:center;">
-          <div style="font-size:0.8rem;color:var(--admin-text-muted);">총 적립 달란트</div>
-          <div style="font-size:1.5rem;font-weight:800;color:#2b8a3e;">${fmtNum(total)}</div>
-        </div>
-        <div style="background:#f8f9fa;border-radius:12px;padding:1rem;text-align:center;">
-          <div style="font-size:0.8rem;color:var(--admin-text-muted);">총 거래 수</div>
-          <div style="font-size:1.5rem;font-weight:800;color:#1971c2;">${fmtNum(txns.length)}</div>
-        </div>
-        <div style="background:#f8f9fa;border-radius:12px;padding:1rem;text-align:center;">
-          <div style="font-size:0.8rem;color:var(--admin-text-muted);">항목 수</div>
-          <div style="font-size:1.5rem;font-weight:800;color:#e67700;">${sorted.length}</div>
-        </div>
+      let html = `<div class="stats-summary">
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">총 적립 달란트</div><div class="stat-value green">${fmtNum(total)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">총 거래 수</div><div class="stat-value blue">${fmtNum(txns.length)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-label">항목 수</div><div class="stat-value orange">${sorted.length}</div></div>
+        <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-label">활동 인원</div><div class="stat-value purple">${fmtNum(uniqueUsers)}명</div></div>
       </div>`;
 
-      html += `<div class="data-table-wrap"><div class="data-table-header"><div class="data-table-title">항목별 적립 통계</div></div>
-        <table class="data-table"><thead><tr><th>항목</th><th>총 달란트</th><th>거래 수</th><th>비율</th><th>그래프</th></tr></thead><tbody>`;
+      html += `<div style="background:#fff;border:1px solid #e9ecef;border-radius:14px;overflow:hidden;">
+        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">📊 항목별 적립 통계</div>
+        <table class="stats-table"><thead><tr><th>항목</th><th style="text-align:right;">총 달란트</th><th style="text-align:right;">거래 수</th><th style="text-align:right;">비율</th><th>그래프</th></tr></thead><tbody>`;
       sorted.forEach(([name, v]) => {
         const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
-        html += `<tr><td style="font-weight:600;">${name}</td><td>${fmtNum(v.amount)}</td><td>${fmtNum(v.count)}</td><td>${pct}%</td>
-          <td><div style="background:#e9ecef;border-radius:4px;height:18px;width:100%;max-width:200px;"><div style="background:#51cf66;height:100%;border-radius:4px;width:${pct}%;"></div></div></td></tr>`;
+        html += `<tr><td style="font-weight:600;">${name}</td><td class="num">${fmtNum(v.amount)}</td><td class="num">${fmtNum(v.count)}</td><td class="num">${pct}%</td>
+          <td><div class="pct-bar"><div class="pct-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#51cf66,#2b8a3e);"></div><div class="pct-bar-text">${pct}%</div></div></td></tr>`;
       });
       html += '</tbody></table></div>';
       document.getElementById('statsContent').innerHTML = html;
@@ -214,13 +235,23 @@
       });
       const sorted = Object.entries(byDept).sort((a, b) => b[1].amount - a[1].amount);
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
+      const totalUsers = new Set(txns.map(t => t.user_id)).size;
 
-      let html = `<div class="data-table-wrap"><div class="data-table-header"><div class="data-table-title">부서별 적립 통계</div></div>
-        <table class="data-table"><thead><tr><th>부서</th><th>총 달란트</th><th>거래 수</th><th>인원</th><th>1인 평균</th><th>비율</th></tr></thead><tbody>`;
+      let html = `<div class="stats-summary">
+        <div class="stat-card"><div class="stat-icon">🏢</div><div class="stat-label">총 부서 수</div><div class="stat-value blue">${sorted.length}</div></div>
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">총 적립 달란트</div><div class="stat-value green">${fmtNum(total)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">총 거래 수</div><div class="stat-value orange">${fmtNum(txns.length)}</div></div>
+        <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-label">활동 인원</div><div class="stat-value purple">${fmtNum(totalUsers)}명</div></div>
+      </div>`;
+
+      html += `<div style="background:#fff;border:1px solid #e9ecef;border-radius:14px;overflow:hidden;">
+        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">🏢 부서별 적립 통계</div>
+        <table class="stats-table"><thead><tr><th>부서</th><th style="text-align:right;">총 달란트</th><th style="text-align:right;">거래 수</th><th style="text-align:right;">인원</th><th style="text-align:right;">1인 평균</th><th style="text-align:right;">비율</th><th>그래프</th></tr></thead><tbody>`;
       sorted.forEach(([name, v]) => {
         const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
         const avg = v.users.size > 0 ? Math.round(v.amount / v.users.size) : 0;
-        html += `<tr><td style="font-weight:600;">${name}</td><td>${fmtNum(v.amount)}</td><td>${fmtNum(v.count)}</td><td>${v.users.size}</td><td>${fmtNum(avg)}</td><td>${pct}%</td></tr>`;
+        html += `<tr><td style="font-weight:600;">${name}</td><td class="num">${fmtNum(v.amount)}</td><td class="num">${fmtNum(v.count)}</td><td class="num">${v.users.size}명</td><td class="num">${fmtNum(avg)}</td><td class="num">${pct}%</td>
+          <td><div class="pct-bar"><div class="pct-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#339af0,#1971c2);"></div><div class="pct-bar-text">${pct}%</div></div></td></tr>`;
       });
       html += '</tbody></table></div>';
       document.getElementById('statsContent').innerHTML = html;
@@ -246,12 +277,23 @@
         byUser[key].items[desc] = (byUser[key].items[desc] || 0) + (t.amount || 0);
       });
       const sorted = Object.values(byUser).sort((a, b) => b.amount - a.amount);
+      const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
+      const avgPerPerson = sorted.length > 0 ? Math.round(total / sorted.length) : 0;
 
-      let html = `<div class="data-table-wrap"><div class="data-table-header"><div class="data-table-title">개인별 적립 통계 (${sorted.length}명)</div></div>
-        <table class="data-table"><thead><tr><th>부서</th><th>이름</th><th>총 달란트</th><th>거래 수</th><th>상위 항목</th></tr></thead><tbody>`;
-      sorted.forEach(u => {
+      let html = `<div class="stats-summary">
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">총 인원</div><div class="stat-value blue">${sorted.length}명</div></div>
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">총 적립 달란트</div><div class="stat-value green">${fmtNum(total)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">총 거래 수</div><div class="stat-value orange">${fmtNum(txns.length)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-label">1인 평균</div><div class="stat-value purple">${fmtNum(avgPerPerson)}</div></div>
+      </div>`;
+
+      html += `<div style="background:#fff;border:1px solid #e9ecef;border-radius:14px;overflow:hidden;">
+        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">👤 개인별 적립 통계 (${sorted.length}명)</div>
+        <table class="stats-table"><thead><tr><th>부서</th><th>이름</th><th style="text-align:right;">총 달란트</th><th style="text-align:right;">거래 수</th><th>상위 항목</th></tr></thead><tbody>`;
+      sorted.forEach((u, i) => {
         const topItems = Object.entries(u.items).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([n, v]) => `${n}(${fmtNum(v)})`).join(', ');
-        html += `<tr><td>${u.dept}</td><td style="font-weight:600;">${u.name}</td><td>${fmtNum(u.amount)}</td><td>${fmtNum(u.count)}</td><td style="font-size:0.8rem;">${topItems}</td></tr>`;
+        const medal = i === 0 ? '🥇 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : '';
+        html += `<tr><td>${u.dept}</td><td style="font-weight:600;">${medal}${u.name}</td><td class="num">${fmtNum(u.amount)}</td><td class="num">${fmtNum(u.count)}</td><td style="font-size:0.78rem;color:var(--admin-text-muted);">${topItems}</td></tr>`;
       });
       html += '</tbody></table></div>';
       document.getElementById('statsContent').innerHTML = html;
@@ -260,7 +302,10 @@
     function renderTypeStats(txns, profiles) {
       const profMap = {};
       profiles.forEach(p => { profMap[p.id] = p; });
-      const byType = { student: { label: '\ud559\uc0dd', amount: 0, count: 0, users: new Set() }, teacher: { label: '\uad50\uc0ac', amount: 0, count: 0, users: new Set() } };
+      const byType = {
+        student: { label: '학생', icon: '🎒', amount: 0, count: 0, users: new Set() },
+        teacher: { label: '교사', icon: '👨‍🏫', amount: 0, count: 0, users: new Set() }
+      };
       txns.forEach(t => {
         const prof = profMap[t.user_id];
         const type = (prof && prof.user_type === 'teacher') ? 'teacher' : 'student';
@@ -269,25 +314,35 @@
         byType[type].users.add(t.user_id);
       });
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
-      let html = `<div style="margin-bottom:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.8rem;">`;
+      const totalUsers = new Set(txns.map(t => t.user_id)).size;
+
+      let html = `<div class="stats-summary">
+        <div class="stat-card"><div class="stat-icon">🎒</div><div class="stat-label">학생 총 달란트</div><div class="stat-value green">${fmtNum(byType.student.amount)}</div></div>
+        <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-label">교사 총 달란트</div><div class="stat-value blue">${fmtNum(byType.teacher.amount)}</div></div>
+        <div class="stat-card"><div class="stat-icon">🎒</div><div class="stat-label">학생 인원</div><div class="stat-value orange">${byType.student.users.size}명</div></div>
+        <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-label">교사 인원</div><div class="stat-value purple">${byType.teacher.users.size}명</div></div>
+      </div>`;
+
+      html += `<div class="type-card-grid">`;
       Object.values(byType).forEach(v => {
         const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
         const avg = v.users.size > 0 ? Math.round(v.amount / v.users.size) : 0;
-        html += `<div style="background:#f8f9fa;border-radius:12px;padding:1rem;">
-          <div style="font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;">${v.label === '\ud559\uc0dd' ? '\uD83C\uDF92' : '\uD83D\uDC68\u200D\uD83C\uDFEB'} ${v.label}</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;font-size:0.82rem;">
-            <span>\uCD1D \uB2EC\uB780\uD2B8</span><span style="font-weight:700;text-align:right;">${fmtNum(v.amount)}</span>
-            <span>\uAC70\uB798 \uC218</span><span style="font-weight:700;text-align:right;">${fmtNum(v.count)}</span>
-            <span>\uC778\uC6D0</span><span style="font-weight:700;text-align:right;">${v.users.size}\uBA85</span>
-            <span>1\uC778 \uD3C9\uADE0</span><span style="font-weight:700;text-align:right;">${fmtNum(avg)}</span>
-            <span>\uBE44\uC728</span><span style="font-weight:700;text-align:right;">${pct}%</span>
+        html += `<div class="type-card">
+          <h4>${v.icon} ${v.label}</h4>
+          <div class="type-detail-grid">
+            <span class="label">총 달란트</span><span class="val">${fmtNum(v.amount)}</span>
+            <span class="label">거래 수</span><span class="val">${fmtNum(v.count)}</span>
+            <span class="label">인원</span><span class="val">${v.users.size}명</span>
+            <span class="label">1인 평균</span><span class="val">${fmtNum(avg)}</span>
+            <span class="label">비율</span><span class="val">${pct}%</span>
           </div>
+          <div style="margin-top:0.6rem;"><div class="pct-bar" style="max-width:100%;"><div class="pct-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,${v.label==='학생'?'#ffd43b,#fab005':'#74c0fc,#339af0'});"></div><div class="pct-bar-text">${pct}%</div></div></div>
         </div>`;
       });
       html += '</div>';
       document.getElementById('statsContent').innerHTML = html;
     }
   </script>
-  <script src="../js/version.js?v=3.13.0"></script>
+  <script src="../js/version.js?v=3.16.0"></script>
 </body>
 </html>
