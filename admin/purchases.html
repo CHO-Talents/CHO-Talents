@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.20.1" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.21.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -14,7 +14,7 @@
       <li>
         <button class="nav-dropdown-toggle">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">사용자 가이드</a></li>
+          <li><a href="../guide.html">학생 가이드</a></li>
           <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
           <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li>
           <li><a href="../earn-talents.html">달란트 적립</a></li>
@@ -117,10 +117,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.20.1"></script>
-  <script src="../js/activity-log.js?v=3.20.1"></script>
-  <script src="../js/auth.js?v=3.20.1"></script>
-  <script src="../js/user-mgmt.js?v=3.20.1"></script>
+  <script src="../js/supabase-config.js?v=3.21.0"></script>
+  <script src="../js/activity-log.js?v=3.21.0"></script>
+  <script src="../js/auth.js?v=3.21.0"></script>
+  <script src="../js/user-mgmt.js?v=3.21.0"></script>
   <script>
     initSupabase();
     let session;
@@ -465,6 +465,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.20.1"></script>
+  <script src="../js/version.js?v=3.21.0"></script>
 </body>
 </html>
