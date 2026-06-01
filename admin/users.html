@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.13.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.20.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -119,6 +119,7 @@
         <thead><tr><th>역할</th><th>권한</th><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th>등록일</th><th>마지막 로그인</th><th>관리</th></tr></thead>
         <tbody id="userList"><tr><td colspan="9" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
+      <div id="userPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.8rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -213,11 +214,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.13.0"></script>
-  <script src="../js/activity-log.js?v=3.13.0"></script>
-  <script src="../js/auth.js?v=3.13.0"></script>
-  <script src="../js/user-mgmt.js?v=3.13.0"></script>
-  <script src="../js/version.js?v=3.13.0"></script>
+  <script src="../js/supabase-config.js?v=3.20.0"></script>
+  <script src="../js/activity-log.js?v=3.20.0"></script>
+  <script src="../js/auth.js?v=3.20.0"></script>
+  <script src="../js/user-mgmt.js?v=3.20.0"></script>
+  <script src="../js/version.js?v=3.20.0"></script>
   <script>
     initSupabase();
     let session;
@@ -377,9 +378,12 @@
     }
 
     let currentDeptFilter = '';
+    let currentPage = 1;
+    function getPageSize() { return window.innerWidth <= 768 ? 10 : 25; }
 
     function setFilter(role, btn) {
       currentFilter = role;
+      currentPage = 1;
       document.querySelectorAll('.admin-table-header .filter-btn:not([style*="background:var(--admin-primary)"])').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderUsers();
@@ -387,6 +391,7 @@
 
     function onDeptFilterChange() {
       currentDeptFilter = document.getElementById('deptFilter').value;
+      currentPage = 1;
       renderUsers();
     }
 
@@ -415,13 +420,24 @@
       let list = currentFilter === 'all' ? allUsers : allUsers.filter(u => userMatchesFilter(u, currentFilter));
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter);
       const tbody = document.getElementById('userList');
-      document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
+      const totalCount = list.length;
+      const pageSize = getPageSize();
+      const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+      if (currentPage > totalPages) currentPage = totalPages;
+      document.getElementById('tableTitle').textContent = `사용자 목록 (${totalCount}명)`;
 
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="9" class="empty-state">등록된 사용자가 없습니다.</td></tr>'; return; }
+      if (totalCount === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty-state">등록된 사용자가 없습니다.</td></tr>';
+        document.getElementById('userPaging').innerHTML = '';
+        return;
+      }
+
+      const startIdx = (currentPage - 1) * pageSize;
+      const pageList = list.slice(startIdx, startIdx + pageSize);
 
       _nameMap = resolveDisplayNames(allUsers);
       const myRank = session.permissionRank || 0;
-      tbody.innerHTML = list.map(u => {
+      tbody.innerHTML = pageList.map(u => {
         const perm = u.permission_level;
         const typeLabel = TYPE_LABELS[u.user_type] || u.user_type;
         const typeEmoji = u.user_type === 'student' ? '🎒' : '👩‍🏫';
@@ -451,6 +467,35 @@
           </td>
         </tr>`;
       }).join('');
+
+      renderUserPaging(totalPages);
+    }
+
+    function renderUserPaging(totalPages) {
+      const wrap = document.getElementById('userPaging');
+      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+      let html = '';
+      html += `<button class="filter-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="goUserPage(${currentPage - 1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      const maxShow = 5;
+      let start = Math.max(1, currentPage - Math.floor(maxShow / 2));
+      let end = Math.min(totalPages, start + maxShow - 1);
+      if (end - start < maxShow - 1) start = Math.max(1, end - maxShow + 1);
+      if (start > 1) html += `<button class="filter-btn" onclick="goUserPage(1)" style="padding:0.3rem 0.6rem;font-size:0.8rem;">1</button>`;
+      if (start > 2) html += `<span style="font-size:0.8rem;color:#adb5bd;">…</span>`;
+      for (let i = start; i <= end; i++) {
+        html += `<button class="filter-btn${i === currentPage ? ' active' : ''}" onclick="goUserPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      if (end < totalPages - 1) html += `<span style="font-size:0.8rem;color:#adb5bd;">…</span>`;
+      if (end < totalPages) html += `<button class="filter-btn" onclick="goUserPage(${totalPages})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${totalPages}</button>`;
+      html += `<button class="filter-btn" ${currentPage >= totalPages ? 'disabled' : ''} onclick="goUserPage(${currentPage + 1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${currentPage}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+
+    function goUserPage(p) {
+      currentPage = p;
+      renderUsers();
+      document.querySelector('.admin-table-wrap:last-of-type')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     const MGMT_LEVELS = ['dept_teacher','chief','evangelist','admin'];

@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.19.1" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.20.0" />
   <style>
-    .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
     .qr-item-card.inactive { opacity: 0.5; }
     .qr-img-wrap { flex-shrink: 0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 8px; border: 1px solid #e9ecef; overflow: hidden; position: relative; }
@@ -22,24 +22,40 @@
     .qr-actions button.info { color: #1971c2; border-color: #1971c2; background: #e7f5ff; }
     .create-form { background: #f8f9fa; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; }
     .create-form h3 { margin-bottom: 1rem; font-size: 1rem; }
-    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; }
+    .form-section { background: #fff; border: 1px solid #e9ecef; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.8rem; }
+    .form-section:last-of-type { margin-bottom: 0; }
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: 0.6rem; }
     .form-grid label { font-size: 0.82rem; font-weight: 600; display: block; margin-bottom: 0.3rem; }
     .form-grid input, .form-grid select { width: 100%; padding: 0.5rem; border: 1px solid var(--admin-border); border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; }
     .period-row { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
-    .period-row input { flex: 1; min-width: 140px; }
+    .period-row input { flex: 1; min-width: 120px; }
     .radio-row { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.3rem; }
     .radio-row label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 400; cursor: pointer; }
     .radio-row label input[type="radio"] { margin: 0; }
-    .radio-row .inline-num { width: 90px; padding: 0.3rem 0.5rem; font-size: 0.85rem; display: inline-block; }
-    .radio-inline { flex-direction: row !important; gap: 1rem !important; }
+    .radio-row .inline-num { width: 80px; padding: 0.3rem 0.5rem; font-size: 0.85rem; display: inline-block; }
+    .radio-inline { flex-direction: row !important; gap: 0.8rem !important; flex-wrap: wrap !important; }
     .item-info-box { background: #e7f5ff; padding: 0.6rem 0.8rem; border-radius: 8px; font-size: 0.85rem; margin-top: 0.3rem; display: flex; align-items: center; gap: 0.5rem; }
-    .section-label { font-size: 0.82rem; font-weight: 600; display: block; margin-bottom: 0.3rem; }
+    .section-label { font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.4rem; color: #495057; }
     .location-results { max-height: 200px; overflow-y: auto; border: 1px solid var(--admin-border); border-radius: 8px; margin-bottom: 0.4rem; background: #fff; }
     .loc-result-item { padding: 0.5rem 0.8rem; border-bottom: 1px solid #eee; cursor: pointer; }
     .loc-result-item:hover { background: #f1f3f5; }
     .loc-result-item:last-child { border-bottom: none; }
     .loc-hint { font-size: 0.75rem; color: var(--admin-text-muted); margin-top: 0.3rem; }
     .btn-create-qr { padding: 0.6rem 1.5rem; font-size: 0.95rem; border-radius: 10px; font-weight: 700; letter-spacing: 0.5px; }
+    .day-checks { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
+    .day-checks label { display: flex; align-items: center; gap: 0.2rem; font-size: 0.82rem; font-weight: 400; cursor: pointer; background: #f1f3f5; padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid #dee2e6; transition: background 0.15s; }
+    .day-checks label:has(input:checked) { background: #d0bfff; border-color: #845ef7; }
+    .day-checks input[type="checkbox"] { margin: 0; width: 14px; height: 14px; }
+    .week-checks { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.3rem; }
+    .week-checks label { display: flex; align-items: center; gap: 0.2rem; font-size: 0.82rem; font-weight: 400; cursor: pointer; background: #f1f3f5; padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid #dee2e6; transition: background 0.15s; }
+    .week-checks label:has(input:checked) { background: #d0bfff; border-color: #845ef7; }
+    .week-checks input[type="checkbox"] { margin: 0; width: 14px; height: 14px; }
+    .repeat-sub { margin-top: 0.4rem; padding: 0.6rem; background: #f8f0ff; border-radius: 8px; border: 1px solid #e5dbff; }
+    .repeat-sub .section-label { font-size: 0.82rem; margin-bottom: 0.3rem; color: #7048e8; }
+    .filter-bar { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; margin-bottom: 0.8rem; }
+    .filter-bar input, .filter-bar select { padding: 0.4rem 0.6rem; border: 1px solid var(--admin-border); border-radius: 8px; font-size: 0.82rem; }
+    .filter-bar input[type="text"] { flex: 1; min-width: 140px; max-width: 250px; }
+    .filter-bar input[type="date"] { width: 140px; }
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; }
     .modal-overlay.show { display: flex; }
     .modal-box { background: #fff; border-radius: 16px; padding: 1.5rem; max-width: 520px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
@@ -53,6 +69,17 @@
     .scan-list-table tr:hover td { background: #f1f3f5; }
     .scan-empty { text-align: center; padding: 1.5rem; color: var(--admin-text-muted); font-size: 0.9rem; }
     .form-input { width: 100%; padding: 0.5rem; border: 1px solid var(--admin-border); border-radius: 8px; font-size: 0.85rem; box-sizing: border-box; }
+    @media (max-width: 480px) {
+      .create-form { padding: 0.8rem; }
+      .form-section { padding: 0.6rem 0.8rem; }
+      .section-label { font-size: 0.82rem; }
+      .radio-row label { font-size: 0.82rem; }
+      .qr-img-wrap { width: 72px; height: 72px; }
+      .qr-item-card { padding: 0.7rem; gap: 0.6rem; }
+      .qr-meta { font-size: 0.75rem; gap: 0.3rem; }
+      .filter-bar input[type="text"] { min-width: 100px; }
+      .filter-bar input[type="date"] { width: 120px; }
+    }
   </style>
 </head>
 <body class="admin-body">
@@ -120,39 +147,39 @@
 
     <div class="create-form" id="createForm">
       <h3>➕ 새 QR 코드 생성</h3>
-      <div class="form-grid">
-        <div style="grid-column:1/-1;">
-          <label class="section-label">지급 대상</label>
-          <div class="radio-row radio-inline">
-            <label><input type="radio" name="targetType" value="student" checked onchange="onTargetTypeChange()" /> 🎒 학생</label>
-            <label><input type="radio" name="targetType" value="teacher" onchange="onTargetTypeChange()" /> 👨‍🏫 교사</label>
-          </div>
+
+      <div class="form-section">
+        <label class="section-label">지급 대상</label>
+        <div class="radio-row radio-inline">
+          <label><input type="radio" name="targetType" value="student" checked onchange="onTargetTypeChange()" /> 🎒 학생</label>
+          <label><input type="radio" name="targetType" value="teacher" onchange="onTargetTypeChange()" /> 👨‍🏫 교사</label>
         </div>
-        <div style="grid-column:1/-1;">
-          <label class="section-label">달란트 항목</label>
-          <select id="qrItemSelect" class="form-input" onchange="onItemSelectChange()">
-            <option value="">-- 항목을 선택하세요 --</option>
-            <option value="manual">✏️ 직접 입력</option>
-          </select>
-          <div id="selectedItemInfo" class="item-info-box" style="display:none;">
-            📌 <strong id="selectedItemName"></strong> · <span id="selectedItemAmount"></span> 달란트
-          </div>
+      </div>
+
+      <div class="form-section">
+        <label class="section-label">달란트 항목</label>
+        <select id="qrItemSelect" class="form-input" onchange="onItemSelectChange()">
+          <option value="">-- 항목을 선택하세요 --</option>
+          <option value="manual">✏️ 직접 입력</option>
+        </select>
+        <div id="selectedItemInfo" class="item-info-box" style="display:none;">
+          📌 <strong id="selectedItemName"></strong> · <span id="selectedItemAmount"></span> 달란트
         </div>
-        <div id="manualFields" style="display:none;grid-column:1/-1;">
-          <div class="form-grid">
-            <div>
-              <label>항목 설명</label>
-              <input type="text" id="qrDesc" placeholder="예: 특별 활동 참여" />
+        <div id="manualFields" style="display:none;margin-top:0.5rem;">
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+            <div style="flex:2;min-width:140px;">
+              <label style="font-size:0.82rem;font-weight:600;">항목 설명</label>
+              <input type="text" id="qrDesc" class="form-input" placeholder="예: 특별 활동 참여" />
             </div>
-            <div>
-              <label>달란트 금액</label>
-              <input type="number" id="qrAmount" min="1" max="100" value="1" />
+            <div style="flex:1;min-width:80px;">
+              <label style="font-size:0.82rem;font-weight:600;">금액</label>
+              <input type="number" id="qrAmount" class="form-input" min="1" max="100" value="1" />
             </div>
           </div>
         </div>
       </div>
 
-      <div style="margin-top:0.8rem;">
+      <div class="form-section">
         <label class="section-label">지급 방식</label>
         <div class="radio-row">
           <label><input type="radio" name="maxUsesType" value="unlimited" checked onchange="onMaxUsesTypeChange()" /> 지급 제한 없음 (무제한)</label>
@@ -165,7 +192,47 @@
         </div>
       </div>
 
-      <div style="margin-top:0.8rem;">
+      <div class="form-section">
+        <label class="section-label">반복 수령 가능 여부</label>
+        <div class="radio-row radio-inline">
+          <label><input type="radio" name="repeatEnabled" value="no" checked onchange="onRepeatEnabledChange()" /> ❌ X</label>
+          <label><input type="radio" name="repeatEnabled" value="yes" onchange="onRepeatEnabledChange()" /> ⭕ O</label>
+        </div>
+        <div id="repeatOptions" style="display:none;">
+          <div class="repeat-sub">
+            <label class="section-label">반복 방식</label>
+            <div class="radio-row">
+              <label><input type="radio" name="repeatType" value="daily" checked onchange="onRepeatTypeChange()" /> 🔄 매일 (매일 00:00 초기화)</label>
+              <label><input type="radio" name="repeatType" value="weekday" onchange="onRepeatTypeChange()" /> 📅 요일 반복</label>
+              <label><input type="radio" name="repeatType" value="week_weekday" onchange="onRepeatTypeChange()" /> 🗓️ 주차 + 요일 반복</label>
+            </div>
+            <div id="repeatDaysWrap" style="display:none;margin-top:0.5rem;">
+              <label class="section-label">수령 가능 요일</label>
+              <div class="day-checks" id="repeatDaysChecks">
+                <label><input type="checkbox" name="repeatDay" value="0" /> 일</label>
+                <label><input type="checkbox" name="repeatDay" value="1" /> 월</label>
+                <label><input type="checkbox" name="repeatDay" value="2" /> 화</label>
+                <label><input type="checkbox" name="repeatDay" value="3" /> 수</label>
+                <label><input type="checkbox" name="repeatDay" value="4" /> 목</label>
+                <label><input type="checkbox" name="repeatDay" value="5" /> 금</label>
+                <label><input type="checkbox" name="repeatDay" value="6" /> 토</label>
+              </div>
+            </div>
+            <div id="repeatWeeksWrap" style="display:none;margin-top:0.5rem;">
+              <label class="section-label">수령 가능 주차</label>
+              <div class="week-checks" id="repeatWeeksChecks">
+                <label><input type="checkbox" name="repeatWeek" value="1" /> 1주</label>
+                <label><input type="checkbox" name="repeatWeek" value="2" /> 2주</label>
+                <label><input type="checkbox" name="repeatWeek" value="3" /> 3주</label>
+                <label><input type="checkbox" name="repeatWeek" value="4" /> 4주</label>
+                <label><input type="checkbox" name="repeatWeek" value="5" /> 5주</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
         <label class="section-label">유효 기간</label>
         <div class="radio-row radio-inline" style="margin-bottom:0.4rem;">
           <label><input type="radio" name="validityType" value="designated" checked onchange="onValidityTypeChange()" /> 📅 지정일</label>
@@ -183,7 +250,7 @@
         </div>
       </div>
 
-      <div style="margin-top:0.8rem;">
+      <div class="form-section">
         <label class="section-label">위치 제한</label>
         <div class="radio-row radio-inline" style="margin-bottom:0.4rem;">
           <label><input type="radio" name="locationType" value="none" checked onchange="onLocationTypeChange()" /> 🌐 제한 없음</label>
@@ -196,7 +263,7 @@
           </div>
           <div id="qrLocationResults" class="location-results" style="display:none;"></div>
           <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
-            <div style="flex:1;min-width:200px;">
+            <div style="flex:1;min-width:160px;">
               <input type="text" id="qrLocationName" class="form-input" placeholder="선택된 주소 (검색 후 선택하세요)" oninput="clearLocationCoordsFor('qr')" />
             </div>
             <div>
@@ -216,11 +283,11 @@
           </div>
           <input type="hidden" id="qrLocationLat" />
           <input type="hidden" id="qrLocationLng" />
-          <div class="loc-hint">💡 주소를 선택하면 위도/경도가 자동 저장됩니다. 주소명을 직접 수정하면 좌표가 초기화됩니다.</div>
+          <div class="loc-hint">💡 주소를 선택하면 위도/경도가 자동 저장됩니다.</div>
         </div>
       </div>
 
-      <div style="margin-top:1.2rem;">
+      <div style="margin-top:0.8rem;">
         <button class="admin-btn primary btn-create-qr" onclick="createQR()">🎫 QR 코드 생성</button>
       </div>
     </div>
@@ -229,6 +296,23 @@
       <button class="filter-btn active" id="tabActive" onclick="switchTab('active')">활성 코드</button>
       <button class="filter-btn" id="tabAll" onclick="switchTab('all')">전체</button>
       <span id="qrCount" style="margin-left:auto;font-size:0.82rem;color:var(--admin-text-muted);"></span>
+    </div>
+    <div class="filter-bar">
+      <input type="text" id="qrSearchInput" placeholder="🔍 검색 (설명, 코드)" oninput="renderQRList()" />
+      <select id="qrFilterTarget" onchange="renderQRList()">
+        <option value="">전체 대상</option>
+        <option value="student">🎒 학생</option>
+        <option value="teacher">👨‍🏫 교사</option>
+      </select>
+      <select id="qrFilterCondition" onchange="renderQRList()">
+        <option value="">전체 조건</option>
+        <option value="unlimited">무제한</option>
+        <option value="limited">선착순</option>
+        <option value="location">위치 제한</option>
+        <option value="repeat">반복 수령</option>
+      </select>
+      <input type="date" id="qrFilterDate" onchange="renderQRList()" title="생성일 필터" />
+      <button class="filter-btn" onclick="clearQRFilters()" style="font-size:0.78rem;">초기화</button>
     </div>
 
     <div id="qrList">
@@ -296,7 +380,46 @@
           </div>
         </div>
         <div style="grid-column:1/-1;">
-          <label>위치 제한</label>
+          <label style="font-weight:600;">반복 수령 가능 여부</label>
+          <div class="radio-row radio-inline">
+            <label><input type="radio" name="editRepeatEnabled" value="no" checked onchange="onEditRepeatEnabledChange()" /> ❌ X</label>
+            <label><input type="radio" name="editRepeatEnabled" value="yes" onchange="onEditRepeatEnabledChange()" /> ⭕ O</label>
+          </div>
+          <div id="editRepeatOptions" style="display:none;">
+            <div class="repeat-sub" style="margin-top:0.4rem;">
+              <label class="section-label">반복 방식</label>
+              <div class="radio-row">
+                <label><input type="radio" name="editRepeatType" value="daily" checked onchange="onEditRepeatTypeChange()" /> 매일</label>
+                <label><input type="radio" name="editRepeatType" value="weekday" onchange="onEditRepeatTypeChange()" /> 요일 반복</label>
+                <label><input type="radio" name="editRepeatType" value="week_weekday" onchange="onEditRepeatTypeChange()" /> 주차+요일</label>
+              </div>
+              <div id="editRepeatDaysWrap" style="display:none;margin-top:0.4rem;">
+                <label class="section-label">요일</label>
+                <div class="day-checks">
+                  <label><input type="checkbox" name="editRepeatDay" value="0" /> 일</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="1" /> 월</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="2" /> 화</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="3" /> 수</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="4" /> 목</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="5" /> 금</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="6" /> 토</label>
+                </div>
+              </div>
+              <div id="editRepeatWeeksWrap" style="display:none;margin-top:0.4rem;">
+                <label class="section-label">주차</label>
+                <div class="week-checks">
+                  <label><input type="checkbox" name="editRepeatWeek" value="1" /> 1주</label>
+                  <label><input type="checkbox" name="editRepeatWeek" value="2" /> 2주</label>
+                  <label><input type="checkbox" name="editRepeatWeek" value="3" /> 3주</label>
+                  <label><input type="checkbox" name="editRepeatWeek" value="4" /> 4주</label>
+                  <label><input type="checkbox" name="editRepeatWeek" value="5" /> 5주</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="grid-column:1/-1;">
+          <label style="font-weight:600;">위치 제한</label>
           <div class="radio-row radio-inline" style="margin-bottom:0.4rem;">
             <label><input type="radio" name="editLocationType" value="none" checked onchange="onEditLocationTypeChange()" /> 제한 없음</label>
             <label><input type="radio" name="editLocationType" value="specific" onchange="onEditLocationTypeChange()" /> 특정 위치</label>
@@ -348,10 +471,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../js/supabase-config.js?v=3.19.1"></script>
-  <script src="../js/activity-log.js?v=3.19.1"></script>
-  <script src="../js/auth.js?v=3.19.1"></script>
-  <script src="../js/talent.js?v=3.19.1"></script>
+  <script src="../js/supabase-config.js?v=3.20.0"></script>
+  <script src="../js/activity-log.js?v=3.20.0"></script>
+  <script src="../js/auth.js?v=3.20.0"></script>
+  <script src="../js/talent.js?v=3.20.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -511,6 +634,31 @@
       document.getElementById('editMaxUsesCount').disabled = !document.querySelector('input[name="editMaxUsesType"][value="limited"]').checked;
     }
 
+    /* ── Repeat ── */
+    function onRepeatEnabledChange() {
+      const yes = document.querySelector('input[name="repeatEnabled"][value="yes"]').checked;
+      document.getElementById('repeatOptions').style.display = yes ? '' : 'none';
+      if (yes) onRepeatTypeChange();
+    }
+    function onRepeatTypeChange() {
+      const t = document.querySelector('input[name="repeatType"]:checked').value;
+      document.getElementById('repeatDaysWrap').style.display = (t === 'weekday' || t === 'week_weekday') ? '' : 'none';
+      document.getElementById('repeatWeeksWrap').style.display = t === 'week_weekday' ? '' : 'none';
+    }
+    function onEditRepeatEnabledChange() {
+      const yes = document.querySelector('input[name="editRepeatEnabled"][value="yes"]').checked;
+      document.getElementById('editRepeatOptions').style.display = yes ? '' : 'none';
+      if (yes) onEditRepeatTypeChange();
+    }
+    function onEditRepeatTypeChange() {
+      const t = document.querySelector('input[name="editRepeatType"]:checked').value;
+      document.getElementById('editRepeatDaysWrap').style.display = (t === 'weekday' || t === 'week_weekday') ? '' : 'none';
+      document.getElementById('editRepeatWeeksWrap').style.display = t === 'week_weekday' ? '' : 'none';
+    }
+    function getCheckedValues(name) {
+      return [...document.querySelectorAll('input[name="' + name + '"]:checked')].map(c => parseInt(c.value));
+    }
+
     /* ── Validity Type ── */
     function onValidityTypeChange() {
       const type = document.querySelector('input[name="validityType"]:checked').value;
@@ -649,8 +797,26 @@
         locationRadius = parseInt(document.getElementById(locPrefix + 'LocationRadius').value) || 1000;
       }
 
+      let repeatType = 'none', repeatDays = null, repeatWeeks = null;
+      const repeatPrefix = isCreate ? '' : 'edit';
+      const repeatEnabled = isCreate
+        ? document.querySelector('input[name="repeatEnabled"]:checked')?.value === 'yes'
+        : document.querySelector('input[name="editRepeatEnabled"]:checked')?.value === 'yes';
+      if (repeatEnabled) {
+        repeatType = document.querySelector('input[name="' + (isCreate ? 'repeatType' : 'editRepeatType') + '"]:checked').value;
+        if (repeatType === 'weekday' || repeatType === 'week_weekday') {
+          repeatDays = getCheckedValues(isCreate ? 'repeatDay' : 'editRepeatDay');
+          if (repeatDays.length === 0) return { error: '반복 수령 요일을 선택하세요.' };
+        }
+        if (repeatType === 'week_weekday') {
+          repeatWeeks = getCheckedValues(isCreate ? 'repeatWeek' : 'editRepeatWeek');
+          if (repeatWeeks.length === 0) return { error: '반복 수령 주차를 선택하세요.' };
+        }
+      }
+
       return { targetType, desc, amount, talentItemId, maxUses, validFrom, validTo,
-               locationLat, locationLng, locationName, locationRadius };
+               locationLat, locationLng, locationName, locationRadius,
+               repeatType, repeatDays, repeatWeeks };
     }
 
     function buildRow(code, v) {
@@ -659,7 +825,10 @@
         max_uses: v.maxUses, talent_item_id: v.talentItemId,
         target_type: v.targetType,
         is_active: true, used_count: 0,
-        created_by: session.id, created_at: new Date().toISOString()
+        created_by: session.id, created_at: new Date().toISOString(),
+        repeat_type: v.repeatType || 'none',
+        repeat_days: v.repeatDays || null,
+        repeat_weeks: v.repeatWeeks || null
       };
       if (v.validFrom) row.valid_from = new Date(v.validFrom).toISOString();
       if (v.validTo) row.valid_until = new Date(v.validTo).toISOString();
@@ -697,7 +866,10 @@
         valid_from: v.validFrom ? new Date(v.validFrom).toISOString() : null,
         valid_until: v.validTo ? new Date(v.validTo).toISOString() : null,
         location_lat: v.locationLat, location_lng: v.locationLng,
-        location_name: v.locationName, location_radius: v.locationRadius
+        location_name: v.locationName, location_radius: v.locationRadius,
+        repeat_type: v.repeatType || 'none',
+        repeat_days: v.repeatDays || null,
+        repeat_weeks: v.repeatWeeks || null
       };
       const { error } = await _sb.from('talent_qr_codes').update(update).eq('id', id);
       if (error) { alert('수정 실패: ' + error.message); return; }
@@ -770,9 +942,56 @@
       return false;
     }
 
+    const DAY_NAMES = ['일','월','화','수','목','금','토'];
+
+    function getRepeatText(q) {
+      const rt = q.repeat_type || 'none';
+      if (rt === 'none') return '1회';
+      if (rt === 'daily') return '매일';
+      if (rt === 'weekday') {
+        const days = (q.repeat_days || []).map(d => DAY_NAMES[d]).join(',');
+        return '매주 ' + (days || '-');
+      }
+      if (rt === 'week_weekday') {
+        const weeks = (q.repeat_weeks || []).map(w => w + '주').join(',');
+        const days = (q.repeat_days || []).map(d => DAY_NAMES[d]).join(',');
+        return weeks + ' ' + (days || '-');
+      }
+      return '-';
+    }
+
+    function applyQRFilters(items) {
+      const search = (document.getElementById('qrSearchInput').value || '').trim().toLowerCase();
+      const targetF = document.getElementById('qrFilterTarget').value;
+      const condF = document.getElementById('qrFilterCondition').value;
+      const dateF = document.getElementById('qrFilterDate').value;
+      return items.filter(q => {
+        if (search && !(q.description || '').toLowerCase().includes(search) && !(q.code || '').toLowerCase().includes(search)) return false;
+        if (targetF && q.target_type !== targetF) return false;
+        if (condF === 'unlimited' && q.max_uses > 0) return false;
+        if (condF === 'limited' && (!q.max_uses || q.max_uses === 0)) return false;
+        if (condF === 'location' && !q.location_lat) return false;
+        if (condF === 'repeat' && (!q.repeat_type || q.repeat_type === 'none')) return false;
+        if (dateF && q.created_at) {
+          const cd = q.created_at.substring(0, 10);
+          if (cd !== dateF) return false;
+        }
+        return true;
+      });
+    }
+
+    function clearQRFilters() {
+      document.getElementById('qrSearchInput').value = '';
+      document.getElementById('qrFilterTarget').value = '';
+      document.getElementById('qrFilterCondition').value = '';
+      document.getElementById('qrFilterDate').value = '';
+      renderQRList();
+    }
+
     function renderQRList() {
       const list = document.getElementById('qrList');
       let items = currentTab === 'active' ? allQR.filter(q => q.is_active) : allQR;
+      items = applyQRFilters(items);
       document.getElementById('qrCount').textContent = items.length + '개';
       if (items.length === 0) {
         list.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">QR 코드가 없습니다.</div>';
@@ -783,6 +1002,7 @@
         const usedUp = q.max_uses > 0 && (q.used_count || 0) >= q.max_uses;
         const safeDesc = (q.description || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
         const usedText = q.max_uses > 0 ? (q.used_count || 0) + '/' + q.max_uses : String(q.used_count || 0);
+        const repeatText = getRepeatText(q);
         return '<div class="qr-item-card' + (q.is_active ? '' : ' inactive') + '">'
           + '<div class="qr-img-wrap" id="qr-img-' + idx + '"></div>'
           + '<div class="qr-info">'
@@ -793,13 +1013,13 @@
           + '<span>📅 ' + fmtDate(q.created_at) + '</span>'
           + '<span>👥 사용: ' + usedText + (usedUp ? ' (완료)' : '') + '</span>'
           + '<span>📊 ' + getMaxUsesText(q) + '</span>'
+          + '<span>🔁 ' + repeatText + '</span>'
           + '<span>⏰ ' + getPeriodText(q) + (expired ? ' (만료)' : '') + '</span>'
           + '<span>📍 ' + getLocationText(q) + '</span>'
           + '<span>' + (q.is_active ? '🟢 활성' : '🔴 비활성') + '</span>'
           + '</div></div>'
           + '<div class="qr-actions">'
           + '<button class="info" onclick="openScanListModal(\'' + q.id + '\',\'' + safeDesc + '\')">👥 수령자</button>'
-          + (isAdmin ? '<button onclick="copyCode(\'' + q.code + '\')">📋 복사</button>' : '')
           + '<button onclick="printQR(\'' + q.code + '\',\'' + safeDesc + '\',' + q.amount + ')">🖨️ 인쇄</button>'
           + '<button class="edit" onclick="openEditModal(\'' + q.id + '\')">✏️ 수정</button>'
           + '<button class="' + (q.is_active ? 'danger' : 'primary') + '" onclick="toggleActive(\'' + q.id + '\',' + q.is_active + ')">' + (q.is_active ? '비활성화' : '활성화') + '</button>'
@@ -929,6 +1149,31 @@
       }
       onEditValidityTypeChange();
 
+      const rt = q.repeat_type || 'none';
+      if (rt !== 'none') {
+        document.querySelector('input[name="editRepeatEnabled"][value="yes"]').checked = true;
+        onEditRepeatEnabledChange();
+        document.querySelector('input[name="editRepeatType"][value="' + rt + '"]').checked = true;
+        onEditRepeatTypeChange();
+        if (q.repeat_days) {
+          document.querySelectorAll('input[name="editRepeatDay"]').forEach(c => c.checked = false);
+          q.repeat_days.forEach(d => {
+            const c = document.querySelector('input[name="editRepeatDay"][value="' + d + '"]');
+            if (c) c.checked = true;
+          });
+        }
+        if (q.repeat_weeks) {
+          document.querySelectorAll('input[name="editRepeatWeek"]').forEach(c => c.checked = false);
+          q.repeat_weeks.forEach(w => {
+            const c = document.querySelector('input[name="editRepeatWeek"][value="' + w + '"]');
+            if (c) c.checked = true;
+          });
+        }
+      } else {
+        document.querySelector('input[name="editRepeatEnabled"][value="no"]').checked = true;
+        onEditRepeatEnabledChange();
+      }
+
       if (q.location_lat && q.location_lng) {
         document.querySelector('input[name="editLocationType"][value="specific"]').checked = true;
         document.getElementById('editLocationName').value = q.location_name || '';
@@ -954,6 +1199,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.19.1"></script>
+  <script src="../js/version.js?v=3.20.0"></script>
 </body>
 </html>

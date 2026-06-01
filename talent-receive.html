@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 수령 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.17.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.20.0" />
   <style>
     .qr-hero { text-align: center; margin-bottom: 1.5rem; }
     .qr-hero h1 { font-size: 1.6rem; color: var(--c-primary); }
@@ -140,9 +140,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-  <script src="js/supabase-config.js?v=3.17.0"></script>
-  <script src="js/activity-log.js?v=3.17.0"></script>
-  <script src="js/auth.js?v=3.17.0"></script>
+  <script src="js/supabase-config.js?v=3.20.0"></script>
+  <script src="js/activity-log.js?v=3.20.0"></script>
+  <script src="js/auth.js?v=3.20.0"></script>
   <script>
     initSupabase();
     let session;
@@ -196,6 +196,14 @@
           showResult('fail', '사용 횟수가 초과된 코드입니다.'); return;
         }
 
+        const { data: myProfile } = await _sb.from('profiles').select('user_type').eq('id', session.id).single();
+        const myType = myProfile?.user_type || 'student';
+        if (qr.target_type && qr.target_type !== myType) {
+          const targetLabel = qr.target_type === 'teacher' ? '교사' : '학생';
+          showResult('fail', '⚠️ 이 QR 코드는 ' + targetLabel + ' 전용입니다.\n현재 계정 유형이 일치하지 않아 수령할 수 없습니다.');
+          return;
+        }
+
         if (qr.location_lat && qr.location_lng && qr.location_radius) {
           try {
             const pos = await new Promise((resolve, reject) => {
@@ -205,19 +213,37 @@
             const dist = haversineDistance(pos.coords.latitude, pos.coords.longitude, qr.location_lat, qr.location_lng);
             if (dist > qr.location_radius) {
               const radiusText = qr.location_radius >= 1000 ? (qr.location_radius/1000) + 'km' : qr.location_radius + 'm';
-              showResult('fail', '📍 위치 제한 코드입니다.\n' + (qr.location_name || '지정 위치') + ' 반경 ' + radiusText + ' 이내에서만 수령 가능합니다.\n현재 거리: 약 ' + Math.round(dist) + 'm');
+              const locName = qr.location_name || '지정 위치';
+              showResult('fail', '📍 위치 제한 코드입니다.\n📌 ' + locName + '\n반경 ' + radiusText + ' 이내에서만 수령 가능합니다.\n현재 거리: 약 ' + Math.round(dist) + 'm');
               return;
             }
           } catch (geoErr) {
-            showResult('fail', '📍 위치 확인이 필요한 코드입니다.\n위치 권한을 허용해주세요.\n(' + (geoErr.message || geoErr) + ')');
+            const locName = qr.location_name ? ' (' + qr.location_name + ')' : '';
+            showResult('fail', '📍 위치 확인이 필요한 코드입니다.' + locName + '\n위치 권한을 허용해주세요.\n(' + (geoErr.message || geoErr) + ')');
             return;
           }
         }
 
-        const { data: existing } = await _sb.from('talent_qr_scans')
-          .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id);
-        if (existing && existing.length > 0) {
-          showResult('fail', '이미 수령한 코드입니다.'); return;
+        const repeatType = qr.repeat_type || 'none';
+        if (repeatType === 'none') {
+          const { data: existing } = await _sb.from('talent_qr_scans')
+            .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id);
+          if (existing && existing.length > 0) {
+            showResult('fail', '이미 수령한 코드입니다.'); return;
+          }
+        } else {
+          const canReceive = checkRepeatEligibility(qr);
+          if (!canReceive.ok) {
+            showResult('fail', canReceive.msg); return;
+          }
+          const todayStart = getTodayStartKST();
+          const todayEnd = getTodayEndKST();
+          const { data: todayScans } = await _sb.from('talent_qr_scans')
+            .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id)
+            .gte('scanned_at', todayStart).lte('scanned_at', todayEnd);
+          if (todayScans && todayScans.length > 0) {
+            showResult('fail', '오늘은 이미 수령한 코드입니다.\n(매일 00:00에 초기화됩니다)'); return;
+          }
         }
 
         await _sb.from('talent_qr_scans').insert({
@@ -259,6 +285,47 @@
         btn.textContent = '🔍 코드 확인';
         scanPaused = false;
       }
+    }
+
+    function getTodayStartKST() {
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
+    }
+    function getTodayEndKST() {
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
+    }
+    function getWeekOfMonth(d) {
+      const first = new Date(d.getFullYear(), d.getMonth(), 1);
+      return Math.ceil((d.getDate() + first.getDay()) / 7);
+    }
+    function checkRepeatEligibility(qr) {
+      const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+      const rt = qr.repeat_type;
+      if (rt === 'daily') return { ok: true };
+      const today = now.getDay();
+      if (rt === 'weekday') {
+        const days = qr.repeat_days || [];
+        if (!days.includes(today)) {
+          const DAY_N = ['일','월','화','수','목','금','토'];
+          return { ok: false, msg: '오늘은 수령 가능한 요일이 아닙니다.\n수령 가능: ' + days.map(d => DAY_N[d]).join(', ') };
+        }
+        return { ok: true };
+      }
+      if (rt === 'week_weekday') {
+        const days = qr.repeat_days || [];
+        const weeks = qr.repeat_weeks || [];
+        const weekNum = getWeekOfMonth(now);
+        if (!weeks.includes(weekNum)) {
+          return { ok: false, msg: '이번 주는 수령 가능한 주차가 아닙니다.\n수령 가능: ' + weeks.map(w => w + '주차').join(', ') };
+        }
+        if (!days.includes(today)) {
+          const DAY_N = ['일','월','화','수','목','금','토'];
+          return { ok: false, msg: '오늘은 수령 가능한 요일이 아닙니다.\n수령 가능: ' + days.map(d => DAY_N[d]).join(', ') };
+        }
+        return { ok: true };
+      }
+      return { ok: true };
     }
 
     function haversineDistance(lat1, lon1, lat2, lon2) {
@@ -377,6 +444,6 @@
       if (e.key === 'Enter') scanCode();
     });
   </script>
-  <script src="js/version.js?v=3.17.0"></script>
+  <script src="js/version.js?v=3.20.0"></script>
 </body>
 </html>
