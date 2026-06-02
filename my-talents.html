@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 달란트 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.22.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.23.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -77,9 +77,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.22.0"></script>
-  <script src="js/activity-log.js?v=3.22.0"></script>
-  <script src="js/auth.js?v=3.22.0"></script>
+  <script src="js/supabase-config.js?v=3.23.0"></script>
+  <script src="js/activity-log.js?v=3.23.0"></script>
+  <script src="js/auth.js?v=3.23.0"></script>
   <script src="js/talent.js"></script>
   <script>
     initSupabase();
@@ -120,7 +120,7 @@
       let deliveryCount = 0;
       try {
         const { data: delOrders } = await _sb.from('product_orders')
-          .select('id').eq('user_id', session.id).in('status', ['preparing', 'purchased']);
+          .select('id').eq('user_id', session.id).in('status', ['requested', 'preparing', 'purchased']);
         deliveryCount = (delOrders || []).length;
       } catch (e) {}
 
@@ -229,6 +229,6 @@
         }).join('') + `</div></div>`;
     }
   </script>
-  <script src="js/version.js?v=3.22.0"></script>
+  <script src="js/version.js?v=3.23.0"></script>
 </body>
 </html>

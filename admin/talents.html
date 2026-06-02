@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.23.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -86,9 +86,10 @@
         <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
       </div>
       <table class="admin-table">
-        <thead><tr><th>이름</th><th>부서</th><th>반</th><th>잔여 달란트</th><th>사용 달란트</th><th>누적 달란트</th><th>관리</th></tr></thead>
+        <thead><tr><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th class="hide-mobile">사용 달란트</th><th class="hide-mobile">누적 달란트</th><th>관리</th></tr></thead>
         <tbody id="userList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
+      <div id="talentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -182,11 +183,15 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.22.0"></script>
-  <script src="../js/activity-log.js?v=3.22.0"></script>
-  <script src="../js/auth.js?v=3.22.0"></script>
-  <script src="../js/user-mgmt.js?v=3.22.0"></script>
-  <script src="../js/talent.js?v=3.22.0"></script>
+  <script src="../js/supabase-config.js?v=3.23.0"></script>
+  <script src="../js/activity-log.js?v=3.23.0"></script>
+  <script src="../js/auth.js?v=3.23.0"></script>
+  <script src="../js/user-mgmt.js?v=3.23.0"></script>
+  <script src="../js/talent.js?v=3.23.0"></script>
+  <style>
+    .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
+    @media(max-width:768px){.hide-mobile{display:none!important;}}
+  </style>
   <script>
     initSupabase();
     let session;
@@ -199,6 +204,10 @@
     let talentSummaryMap = {};
     let currentDeptFilter = '';
     let _attendanceGivenToday = new Set();
+    let talentPage = 1;
+    let talentUserList = [];
+
+    function getTalentPageSize(){return window.innerWidth<=768?10:20;}
 
     (async () => {
       session = await initPage(40, '../login.html');
@@ -231,11 +240,13 @@
 
     function onDeptFilterChange() {
       currentDeptFilter = document.getElementById('deptFilter').value;
+      talentPage = 1;
       loadUsers();
     }
 
     function switchTab(tab) {
       currentTab = tab;
+      talentPage = 1;
       document.getElementById('tabStudent').classList.toggle('active', tab === 'student');
       document.getElementById('tabTeacher').classList.toggle('active', tab === 'teacher');
       loadUsers();
@@ -286,7 +297,9 @@
       document.getElementById('tableTitle').textContent = `${roleLabel} 목록 (${data.length}명)`;
 
       if (data.length === 0) {
+        talentUserList = [];
         tbody.innerHTML = `<tr><td colspan="7" class="empty-state">등록된 ${roleLabel}이(가) 없습니다.</td></tr>`;
+        document.getElementById('talentPaging').innerHTML = '';
         return;
       }
 
@@ -294,8 +307,24 @@
       await loadBatchSummary(userIds);
       await loadAttendanceToday(userIds);
 
-      const nameMap = resolveDisplayNames(data);
-      tbody.innerHTML = data.map(u => {
+      talentUserList = data;
+      renderTalentTable();
+    }
+
+    function renderTalentTable() {
+      const data = talentUserList;
+      const roleLabel = currentTab === 'student' ? '학생' : '교사';
+      const tbody = document.getElementById('userList');
+      document.getElementById('tableTitle').textContent = `${roleLabel} 목록 (${data.length}명)`;
+
+      const pageSize = getTalentPageSize();
+      const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
+      if (talentPage > totalPages) talentPage = totalPages;
+      const startIdx = (talentPage - 1) * pageSize;
+      const pageData = data.slice(startIdx, startIdx + pageSize);
+
+      const nameMap = resolveDisplayNames(pageData);
+      tbody.innerHTML = pageData.map(u => {
         const dn = nameMap[u.id] || u.display_name || '-';
         const isSelf = u.id === session.id;
         const classLabel = u.class_number ? u.class_number + '반' : '-';
@@ -309,16 +338,43 @@
         <td>${getDeptName(u.department_id)}</td>
         <td>${classLabel}</td>
         <td style="font-weight:700;color:#2b8a3e;">${fmtNum(u.talent_balance || 0)}</td>
-        <td style="color:#e03131;">${fmtNum(sm.used)}</td>
-        <td style="color:#1971c2;">${fmtNum(sm.earned)}</td>
+        <td class="hide-mobile" style="color:#e03131;">${fmtNum(sm.used)}</td>
+        <td class="hide-mobile" style="color:#1971c2;">${fmtNum(sm.earned)}</td>
         <td>
           ${attendBtn}
-          ${canGiveTalent(u) ? `<button class="filter-btn" onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">달란트 지급</button>` : ''}
-          <button class="filter-btn" onclick="openDetailModal('${u.id}','${dn.replace(/'/g,"\\'")}')">상세</button>
+          <div class="mgmt-dropdown">
+            <button class="filter-btn" onclick="toggleMgmt(event,this)">관리 ▾</button>
+            <div class="mgmt-menu">
+              ${canGiveTalent(u) ? `<a onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">💰 달란트 지급</a>` : ''}
+              <a onclick="openDetailModal('${u.id}','${dn.replace(/'/g,"\\'")}')">📋 상세</a>
+            </div>
+          </div>
         </td>
       </tr>`;
       }).join('');
+      renderTalentPaging(totalPages);
     }
+
+    function renderTalentPaging(totalPages) {
+      const wrap = document.getElementById('talentPaging');
+      const page = talentPage;
+      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goTalentPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="filter-btn${i===page?' active':''}" onclick="goTalentPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goTalentPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+
+    function goTalentPage(p) {
+      talentPage = p;
+      renderTalentTable();
+    }
+
+    function toggleMgmt(e,btn){e.stopPropagation();document.querySelectorAll('.mgmt-menu.show').forEach(m=>{if(m!==btn.nextElementSibling)m.classList.remove('show');});btn.nextElementSibling.classList.toggle('show');}
+    document.addEventListener('click',()=>document.querySelectorAll('.mgmt-menu.show').forEach(m=>m.classList.remove('show')));
 
     async function loadBatchSummary(userIds) {
       if (!_sb || userIds.length === 0) return;
@@ -627,6 +683,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.22.0"></script>
+  <script src="../js/version.js?v=3.23.0"></script>
 </body>
 </html>

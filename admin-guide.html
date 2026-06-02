@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.22.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.22.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.23.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.23.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -118,7 +118,7 @@
           <ul class="guide-list">
             <li>부서명을 등록하거나 설명, 반 개수를 수정합니다.</li>
             <li>반 개수가 0이면 반 구분 없이 운영합니다.</li>
-            <li>소속보기로 해당 부서의 교사와 학생을 확인합니다.</li>
+            <li>관리 드롭다운에서 소속보기, 수정, 삭제를 선택합니다.</li>
           </ul>
         </div>
         <div class="guide-card">
@@ -138,9 +138,9 @@
         <table class="guide-table">
           <thead><tr><th>기능</th><th>설명</th><th>권한 기준</th></tr></thead>
           <tbody>
-            <tr><td>달란트 지급</td><td>대상 사용자를 선택하고 항목 체크 후 지급 확정을 누릅니다.</td><td>일반 교사 이상, 담당 범위 기준</td></tr>
+            <tr><td>달란트 지급</td><td>관리 드롭다운에서 달란트 지급을 선택해 항목 체크 후 지급 확정합니다.</td><td>일반 교사 이상, 담당 범위 기준</td></tr>
             <tr><td>출석 빠른 지급</td><td>학생 행의 출석 버튼으로 출석 항목을 즉시 지급합니다.</td><td>담당 범위 기준</td></tr>
-            <tr><td>상세 내역</td><td>적립 내역, 지급자, 잔액을 확인합니다.</td><td>달란트 관리 접근 권한</td></tr>
+            <tr><td>상세 내역</td><td>관리 드롭다운에서 상세를 선택해 적립 내역, 지급자, 잔액을 확인합니다.</td><td>달란트 관리 접근 권한</td></tr>
             <tr><td>달란트 반환</td><td>잘못 지급된 달란트를 사유 입력 후 반환합니다.</td><td>부장 교사 이상</td></tr>
             <tr><td>수동 입력</td><td>항목에 없는 사유와 금액을 직접 입력해 지급합니다.</td><td>관리자</td></tr>
             <tr><td>달란트 항목 관리</td><td>학생용/교사용 지급 항목, 금액, 정렬 순서, 활성 상태를 관리합니다.</td><td>전도사님 이상</td></tr>
@@ -169,17 +169,17 @@
         <div class="guide-card">
           <h3>상품 관리</h3>
           <ul class="guide-list">
-            <li>학생용/교사용 상품을 따로 등록합니다.</li>
+            <li>교사용/학생용 그룹별로 상품이 분리 표시됩니다(모바일 10개/PC 20개 페이징).</li>
             <li>상품명, 카테고리, 가격, 설명, 이미지 또는 이모지를 입력합니다.</li>
-            <li>상품 삭제는 목록에서 숨기는 삭제 대기 처리입니다.</li>
+            <li>관리 드롭다운에서 수정 또는 삭제를 선택합니다.</li>
           </ul>
         </div>
         <div class="guide-card">
           <h3>구매 관리</h3>
           <ul class="guide-list">
-            <li>전체, 구매 신청, 상품 준비, 상품 구매, 상품 지급 탭으로 주문을 봅니다.</li>
+            <li>상태별 탭을 선택하면 상품별 합계와 일괄 처리 버튼이 표시됩니다.</li>
             <li>부서와 기간 필터로 필요한 주문만 조회합니다.</li>
-            <li>상품 준비, 구매 확정, 지급 완료 순서로 처리합니다.</li>
+            <li>관리 드롭다운에서 상태 변경이나 되돌리기를 선택합니다.</li>
             <li>구매 확정 단계에서 달란트가 실제 차감됩니다.</li>
           </ul>
         </div>
@@ -243,9 +243,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.22.0"></script>
-  <script src="js/activity-log.js?v=3.22.0"></script>
-  <script src="js/auth.js?v=3.22.0"></script>
+  <script src="js/supabase-config.js?v=3.23.0"></script>
+  <script src="js/activity-log.js?v=3.23.0"></script>
+  <script src="js/auth.js?v=3.23.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -263,6 +263,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.22.0"></script>
+  <script src="js/version.js?v=3.23.0"></script>
 </body>
 </html>

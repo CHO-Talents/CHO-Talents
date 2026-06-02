@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 상점 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.22.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.23.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -126,9 +126,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.22.0"></script>
-  <script src="js/activity-log.js?v=3.22.0"></script>
-  <script src="js/auth.js?v=3.22.0"></script>
+  <script src="js/supabase-config.js?v=3.23.0"></script>
+  <script src="js/activity-log.js?v=3.23.0"></script>
+  <script src="js/auth.js?v=3.23.0"></script>
   <script src="js/product.js"></script>
   <script>
     initSupabase();
@@ -283,6 +283,7 @@
     let _proxyUsers = [];
     let _proxyTarget = null;
     let _proxyTimer = null;
+    let _proxyDeptMap = {};
 
     function openProxyModal() {
       document.getElementById('proxyModal').style.display = 'flex';
@@ -316,6 +317,7 @@
         users = [];
       }
       _proxyUsers = users;
+      try { const { data: depts } = await _sb.from('departments').select('id,name'); (depts||[]).forEach(d => { _proxyDeptMap[d.id] = d.name; }); } catch(e){}
     }
 
     function onProxySearch() {
@@ -330,10 +332,15 @@
         if (matches.length === 0) {
           box.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">검색 결과가 없습니다.</div>';
         } else {
-          box.innerHTML = matches.map(u => `<div style="padding:0.5rem 0.8rem;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:0.88rem;" onmousedown="selectProxy('${u.id}')" onmouseover="this.style.background='#f3f0ff'" onmouseout="this.style.background='#fff'">
+          box.innerHTML = matches.map(u => {
+            const dName = _proxyDeptMap[u.department_id] || '';
+            const cls = u.class_number ? u.class_number + '반' : '';
+            const extra = [u.user_type === 'student' ? '학생' : '교사', dName, cls].filter(Boolean).join(' · ');
+            return `<div style="padding:0.5rem 0.8rem;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:0.88rem;" onmousedown="selectProxy('${u.id}')" onmouseover="this.style.background='#f3f0ff'" onmouseout="this.style.background='#fff'">
             <strong>${u.display_name || u.username}</strong>
-            <span style="margin-left:0.4rem;color:#868e96;font-size:0.78rem;">${u.user_type === 'student' ? '학생' : '교사'}</span>
-          </div>`).join('');
+            <span style="margin-left:0.4rem;color:#868e96;font-size:0.78rem;">${extra}</span>
+          </div>`;
+          }).join('');
         }
         box.style.display = 'block';
       }, 200);
@@ -407,6 +414,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.22.0"></script>
+  <script src="js/version.js?v=3.23.0"></script>
 </body>
 </html>

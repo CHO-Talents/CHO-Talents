@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.23.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -100,11 +100,15 @@
       </span>
     </div>
 
+    <div id="productSummary" style="display:none;margin-bottom:1rem;"></div>
+
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">전체 목록</div>
         <div id="bulkActions" style="display:none;">
-          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="padding:0.4rem 1rem;font-size:0.85rem;">✅ 선택 지급 완료</button>
+          <button class="btn-confirm" id="btnBulkPrepare" onclick="bulkPrepare()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">📦 일괄 상품 준비</button>
+          <button class="btn-confirm" id="btnBulkPurchase" onclick="bulkPurchase()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">💳 일괄 구매 확정</button>
+          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">✅ 선택 지급 완료</button>
         </div>
       </div>
       <table class="admin-table">
@@ -116,11 +120,15 @@
     </div>
   </div>
 
+  <style>
+    .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;min-width:140px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
+  </style>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.22.0"></script>
-  <script src="../js/activity-log.js?v=3.22.0"></script>
-  <script src="../js/auth.js?v=3.22.0"></script>
-  <script src="../js/user-mgmt.js?v=3.22.0"></script>
+  <script src="../js/supabase-config.js?v=3.23.0"></script>
+  <script src="../js/activity-log.js?v=3.23.0"></script>
+  <script src="../js/auth.js?v=3.23.0"></script>
+  <script src="../js/user-mgmt.js?v=3.23.0"></script>
   <script>
     initSupabase();
     let session;
@@ -248,6 +256,55 @@
       return `<div style="font-size:0.75rem;color:#636e72;">${label}: ${name}<br>${time}</div>`;
     }
 
+    function renderProductSummary(orders) {
+      const el = document.getElementById('productSummary');
+      if (currentPTab === 'all') {
+        el.style.display = 'none';
+        el.innerHTML = '';
+        return;
+      }
+      const map = {};
+      orders.forEach(o => {
+        const name = o.product_name || '-';
+        if (!map[name]) map[name] = { qty: 0, amount: 0 };
+        map[name].qty += (o.quantity || 1);
+        map[name].amount += (o.total_price || o.price || 0);
+      });
+      const rows = Object.entries(map).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+      if (rows.length === 0) {
+        el.style.display = 'none';
+        el.innerHTML = '';
+        return;
+      }
+      el.style.display = '';
+      el.innerHTML = `<div style="font-size:0.85rem;font-weight:600;margin-bottom:0.4rem;">상품별 합계</div>
+        <table class="admin-table" style="margin-bottom:0;font-size:0.82rem;">
+          <thead><tr><th>상품명</th><th>수량 합계</th><th>금액 합계</th></tr></thead>
+          <tbody>${rows.map(([name, v]) => `<tr><td>${name}</td><td>${v.qty}</td><td>${fmtNum(v.amount)}</td></tr>`).join('')}</tbody>
+        </table>`;
+    }
+
+    function buildMgmtMenu(o, canProc, isAllTab) {
+      const items = [];
+      if (isAllTab) items.push(`<a onclick="showOrderDetail('${o.id}')">📋 상세</a>`);
+      if (o.status === 'requested' && canProc) {
+        items.push(`<a onclick="updateStatus('${o.id}','preparing')">📦 상품 준비</a>`);
+      } else if (o.status === 'preparing' && canProc) {
+        items.push(`<a onclick="confirmPurchase('${o.id}')">💳 구매 확정</a>`);
+        items.push(`<a onclick="revertStatus('${o.id}','requested')">↩ 되돌리기</a>`);
+      } else if (o.status === 'purchased' && canProc) {
+        items.push(`<a onclick="updateStatus('${o.id}','delivered')">✅ 지급 완료</a>`);
+        items.push(`<a onclick="revertStatus('${o.id}','preparing')">↩ 되돌리기</a>`);
+      } else if (o.status === 'delivered' && canProc) {
+        items.push(`<a onclick="revertStatus('${o.id}','purchased')">↩ 되돌리기</a>`);
+      }
+      if (items.length === 0) return '-';
+      return `<div class="mgmt-dropdown">
+        <button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="toggleMgmt(event, this)">관리 ▾</button>
+        <div class="mgmt-menu">${items.join('')}</div>
+      </div>`;
+    }
+
     function renderOrders() {
       const orders = getVisibleOrders();
       const tbody = document.getElementById('orderList');
@@ -256,9 +313,22 @@
       const tabLabel = isAllTab ? '전체' : STATUS_LABEL[currentPTab];
       title.textContent = `${tabLabel} 목록 (${orders.length}건)`;
 
+      renderProductSummary(orders);
+
       const myRank = session.permissionRank || 0;
-      const showBulk = currentPTab === 'purchased' && myRank >= 60;
-      document.getElementById('bulkActions').style.display = showBulk ? '' : 'none';
+      const showBulk = !isAllTab && currentPTab !== 'delivered' && myRank >= 60;
+      const bulkEl = document.getElementById('bulkActions');
+      const btnPrepare = document.getElementById('btnBulkPrepare');
+      const btnPurchase = document.getElementById('btnBulkPurchase');
+      const btnDeliver = document.getElementById('btnBulkDeliver');
+      if (showBulk) {
+        bulkEl.style.display = '';
+        btnPrepare.style.display = currentPTab === 'requested' ? '' : 'none';
+        btnPurchase.style.display = currentPTab === 'preparing' ? '' : 'none';
+        btnDeliver.style.display = currentPTab === 'purchased' ? '' : 'none';
+      } else {
+        bulkEl.style.display = 'none';
+      }
 
       let headCols = '';
       if (showBulk) headCols += '<th style="width:30px;"><input type="checkbox" onchange="toggleAllOrders(this)"></th>';
@@ -280,31 +350,20 @@
 
       tbody.innerHTML = orders.map(o => {
         const canProc = canProcessOrder(o);
-        let actionBtn = '';
-        if (o.status === 'requested' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="updateStatus('${o.id}','preparing')">상품 준비</button>`;
-        } else if (o.status === 'preparing' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#1971c2;color:#fff;border-color:#1971c2;" onclick="confirmPurchase('${o.id}')">구매 확정</button>`;
-          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','requested')">↩ 되돌리기</button>`;
-        } else if (o.status === 'purchased' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#2b8a3e;color:#fff;border-color:#2b8a3e;" onclick="updateStatus('${o.id}','delivered')">지급 완료</button>`;
-          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','preparing')">↩ 되돌리기</button>`;
-        } else if (o.status === 'delivered' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','purchased')">↩ 되돌리기</button>`;
-        }
 
         let procInfo = '';
-        if (isAllTab) {
-          procInfo = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;" onclick="showOrderDetail('${o.id}')">상세</button>`;
-        } else if (currentPTab === 'preparing') {
+        if (currentPTab === 'preparing') {
           procInfo = '-';
         } else if (currentPTab === 'purchased') {
           procInfo = getProcessorInfo(o, 'preparing') || '-';
         } else if (currentPTab === 'delivered') {
           procInfo = getProcessorInfo(o, 'purchased') || '-';
+        } else if (isAllTab) {
+          procInfo = '-';
         }
 
-        const chkTd = showBulk && o.status === 'purchased' ? `<td><input type="checkbox" class="order-chk" value="${o.id}"></td>` : (showBulk ? '<td></td>' : '');
+        const mgmtMenu = buildMgmtMenu(o, canProc, isAllTab);
+        const chkTd = showBulk && o.status === currentPTab ? `<td><input type="checkbox" class="order-chk" value="${o.id}"></td>` : (showBulk ? '<td></td>' : '');
         const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.78rem;background:${STATUS_COLOR[o.status]}22;color:${STATUS_COLOR[o.status]};font-weight:600;">${STATUS_LABEL[o.status]}</span>`;
 
         let row = '<tr>';
@@ -317,7 +376,7 @@
         row += `<td>${o._deptName}</td>`;
         if (currentPTab !== 'requested') row += `<td>${procInfo}</td>`;
         else if (isAllTab) row += `<td>${procInfo}</td>`;
-        row += `<td>${actionBtn}</td>`;
+        row += `<td>${mgmtMenu}</td>`;
         row += '</tr>';
         return row;
       }).join('');
@@ -413,6 +472,56 @@
       document.querySelectorAll('.order-chk').forEach(c => c.checked = chk.checked);
     }
 
+    function toggleMgmt(e, btn) {
+      e.stopPropagation();
+      document.querySelectorAll('.mgmt-menu.show').forEach(m => { if (m !== btn.nextElementSibling) m.classList.remove('show'); });
+      btn.nextElementSibling.classList.toggle('show');
+    }
+    document.addEventListener('click', () => document.querySelectorAll('.mgmt-menu.show').forEach(m => m.classList.remove('show')));
+
+    async function bulkPrepare() {
+      const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
+      if (ids.length === 0) { alert('상품 준비 처리할 항목을 선택해주세요.'); return; }
+      if (!confirm(`${ids.length}건을 상품 준비 처리하시겠습니까?`)) return;
+
+      let failCount = 0;
+      for (const id of ids) {
+        const { error } = await _sb.from('product_orders').update({
+          status: 'preparing',
+          prepared_at: new Date().toISOString(),
+          prepared_by: session.id
+        }).eq('id', id);
+        if (error) { failCount++; await logError('ORDER_BULK_PREPARE_ITEM_FAIL', { orderId: id, error: error.message }); }
+      }
+      if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
+      await logInfo('ORDER_BULK_PREPARE', { count: ids.length, failCount });
+      await loadOrders();
+    }
+
+    async function bulkPurchase() {
+      const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
+      if (ids.length === 0) { alert('구매 확정할 항목을 선택해주세요.'); return; }
+      if (!confirm(`${ids.length}건을 구매 확정하시겠습니까?\n달란트가 실제 차감됩니다.`)) return;
+
+      let failCount = 0;
+      for (const id of ids) {
+        const { data, error } = await _sb.rpc('confirm_product_purchase', {
+          p_order_id: id,
+          p_admin_id: session.id
+        });
+        if (error) {
+          failCount++;
+          await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', { orderId: id, error: error.message });
+        } else if (data && data.success === false) {
+          failCount++;
+          await logWarn('ORDER_BULK_PURCHASE_DENIED', { orderId: id, reason: data.error });
+        }
+      }
+      if (failCount > 0) alert(`${failCount}건 처리 실패. 잔액 부족 등의 사유일 수 있습니다.`);
+      await logInfo('ORDER_BULK_PURCHASE', { count: ids.length, failCount });
+      await loadOrders();
+    }
+
     async function bulkDeliver() {
       const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
       if (ids.length === 0) { alert('지급 완료 처리할 항목을 선택해주세요.'); return; }
@@ -465,6 +574,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.22.0"></script>
+  <script src="../js/version.js?v=3.23.0"></script>
 </body>
 </html>
