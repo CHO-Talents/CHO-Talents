@@ -3,133 +3,133 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>상품 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.21.0" />
+  <title>?�품 관�?- CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">�?/span> ?��???마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">소개</button>
+        <button class="nav-dropdown-toggle">?�개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">학생 가이드</a></li>
-          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
-          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li>
-          <li><a href="../earn-talents.html">달란트 적립</a></li>
+          <li><a href="../guide.html">?�생 가?�드</a></li>
+          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가?�드</a></li>
+          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가?�드</a></li>
+          <li><a href="../earn-talents.html">?��????�립</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">달란트</button>
+        <button class="nav-dropdown-toggle">?��???/button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">내 달란트</a></li>
-          <li><a href="../talent-receive.html">달란트 수령</a></li>
-          <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">달란트 통계</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">달란트 QR 관리</a></li>
+          <li><a href="../my-talents.html">???��???/a></li>
+          <li><a href="../talent-receive.html">?��????�령</a></li>
+          <li data-min-perm="40"><a href="talents.html">?��???관�?/a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">?��????�계</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">?��???QR 관�?/a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">상품</button>
+        <button class="nav-dropdown-toggle active">?�품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">상품 구매</a></li>
-          <li><a href="../my-orders.html">내 구매 상품</a></li>
-          <li data-min-perm="60"><a href="shop.html" class="active">상품 관리</a></li>
-          <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">?�품 구매</a></li>
+          <li><a href="../my-orders.html">??구매 ?�품</a></li>
+          <li data-min-perm="60"><a href="shop.html" class="active">?�품 관�?/a></li>
+          <li data-min-perm="60"><a href="purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">관리</button>
+        <button class="nav-dropdown-toggle">관�?/button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">대시보드</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
-          <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="index.html">?�?�보??/a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">관리자 관�?/a></li>
+          <li data-min-perm="60"><a href="departments.html">부??관�?/a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">운영</button>
+        <button class="nav-dropdown-toggle">?�영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
-          <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
+          <li data-min-perm="100"><a href="page-access.html">?�이지 ?�근</a></li>
+          <li data-min-perm="100"><a href="page-features.html">?�이지 기능</a></li>
           <li data-min-perm="80"><a href="versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="reports.html">보고서</a></li>
-          <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
+          <li data-min-perm="80"><a href="reports.html">보고??/a></li>
+          <li data-min-perm="100"><a href="audit.html">?�업 ?�력</a></li>
           <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그?�웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">📦 상품 관리</h2>
+    <h2 style="margin-bottom:1rem;">?�� ?�품 관�?/h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">상품 목록</div>
+        <div class="admin-table-title" id="tableTitle">?�품 목록</div>
         <div class="filters">
-          <button class="filter-btn active" onclick="filterRole('all',this)">전체</button>
-          <button class="filter-btn" onclick="filterRole('student',this)">🎒 학생용</button>
-          <button class="filter-btn" onclick="filterRole('teacher',this)">👩‍🏫 교사용</button>
+          <button class="filter-btn active" onclick="filterRole('all',this)">?�체</button>
+          <button class="filter-btn" onclick="filterRole('student',this)">?�� ?�생??/button>
+          <button class="filter-btn" onclick="filterRole('teacher',this)">?��?��?교사??/button>
           <span style="margin-left:0.5rem;"></span>
-          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 상품 등록</button>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ ?�품 ?�록</button>
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th></th><th>상품명</th><th>대상</th><th>카테고리</th><th>가격</th><th>관리</th></tr></thead>
-        <tbody id="productList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th></th><th>?�품�?/th><th>?�??/th><th>카테고리</th><th>가�?/th><th>관�?/th></tr></thead>
+        <tbody id="productList"><tr><td colspan="7" class="empty-state">로딩 �?..</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="productModal">
     <div class="modal-box" style="max-width:480px;">
-      <h3 class="modal-title" id="modalTitle">상품 등록</h3>
+      <h3 class="modal-title" id="modalTitle">?�품 ?�록</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상품명</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�품�?/label>
         <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">대상</label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�??/label>
           <select id="mTarget" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-            <option value="student">학생</option>
+            <option value="student">?�생</option>
             <option value="teacher">교사</option>
           </select>
         </div>
         <div style="flex:1;">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">카테고리</label>
-          <input type="text" id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="예: 학용품" />
+          <input type="text" id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="?? ?�용?? />
         </div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">가격 (달란트)</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">가�?(?��???</label>
         <input type="number" id="mPrice" min="1" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이모지</label>
-        <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="🎁" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�모지</label>
+        <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="?��" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상품 이미지</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�품 ?��?지</label>
         <div id="dropZone" style="border:2px dashed var(--admin-border);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;">
           <div id="dropContent">
-            <div style="font-size:2rem;margin-bottom:0.3rem;">📷</div>
-            <div style="font-size:0.85rem;color:#636e72;">클릭하거나 이미지를 드래그해서 놓으세요</div>
-            <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">JPG, PNG, GIF, WebP (최대 5MB)</div>
+            <div style="font-size:2rem;margin-bottom:0.3rem;">?��</div>
+            <div style="font-size:0.85rem;color:#636e72;">?�릭?�거???��?지�??�래그해???�으?�요</div>
+            <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">JPG, PNG, GIF, WebP (최�? 5MB)</div>
           </div>
           <div id="imgPreview" style="display:none;"></div>
         </div>
         <input type="file" id="mImageFile" accept="image/*" style="display:none;" />
         <input type="hidden" id="mImageUrl" />
         <div style="margin-top:0.4rem;">
-          <button type="button" id="btnUrlToggle" onclick="toggleUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL 직접 입력</button>
+          <button type="button" id="btnUrlToggle" onclick="toggleUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL 직접 ?�력</button>
           <div id="urlInputWrap" style="display:none;margin-top:0.4rem;">
             <input type="text" id="mImageUrlText" style="width:100%;padding:0.5rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;" placeholder="https://example.com/image.jpg" />
           </div>
@@ -137,33 +137,33 @@
         <div id="uploadStatus" style="margin-top:0.3rem;font-size:0.8rem;text-align:center;"></div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">설명</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�명</label>
         <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:0.8rem;" id="activeWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상품 상태</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�품 ?�태</label>
         <div style="display:flex;align-items:center;gap:1rem;">
           <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
             <input type="radio" name="mIsActive" value="true" checked />
-            <span class="level-badge INFO">활성</span>
+            <span class="level-badge INFO">?�성</span>
           </label>
           <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
             <input type="radio" name="mIsActive" value="false" />
-            <span class="level-badge FATAL">비활성</span>
+            <span class="level-badge FATAL">비활??/span>
           </label>
         </div>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">취소</button>
-        <button class="btn-confirm" onclick="saveProduct()">저장</button>
+        <button class="btn-confirm" onclick="saveProduct()">?�??/button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.21.0"></script>
-  <script src="../js/activity-log.js?v=3.21.0"></script>
-  <script src="../js/auth.js?v=3.21.0"></script>
+  <script src="../js/supabase-config.js?v=3.22.0"></script>
+  <script src="../js/activity-log.js?v=3.22.0"></script>
+  <script src="../js/auth.js?v=3.22.0"></script>
   <script src="../js/product.js"></script>
   <script>
     initSupabase();
@@ -205,27 +205,27 @@
     function renderProducts() {
       const list = currentFilter === 'all' ? allProducts : allProducts.filter(p => p.target_role === currentFilter);
       const tbody = document.getElementById('productList');
-      document.getElementById('tableTitle').textContent = `상품 목록 (${list.length}건)`;
+      document.getElementById('tableTitle').textContent = `?�품 목록 (${list.length}�?`;
 
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 상품이 없습니다.</td></tr>'; return; }
+      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">?�록???�품???�습?�다.</td></tr>'; return; }
 
       const myRank = session.permissionRank || 0;
       tbody.innerHTML = list.map(p => `<tr>
-        <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '🎁'}</span>`}</td>
+        <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '?��'}</span>`}</td>
         <td><strong>${p.name}</strong><br><small style="color:var(--admin-text-muted);">${p.description || ''}</small></td>
-        <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '🎒 학생' : '👩‍🏫 교사'}</span></td>
+        <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '?�� ?�생' : '?��?��?교사'}</span></td>
         <td>${p.category || '-'}</td>
         <td style="font-weight:700;">${fmtNum(p.price)}</td>
         <td>
-          <button class="filter-btn" onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>수정</button>
-          ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${p.id}','${p.name}')">삭제 대기</button>` : ''}
+          <button class="filter-btn" onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>?�정</button>
+          ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${p.id}','${p.name}')">??��</button>` : ''}
         </td>
       </tr>`).join('');
     }
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = '상품 등록';
+      document.getElementById('modalTitle').textContent = '?�품 ?�록';
       ['mName','mCategory','mEmoji','mImageUrlText','mDesc'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('mTarget').value = 'student';
       document.getElementById('mPrice').value = '';
@@ -240,7 +240,7 @@
 
     function openEditModal(p) {
       editingId = p.id;
-      document.getElementById('modalTitle').textContent = '상품 수정';
+      document.getElementById('modalTitle').textContent = '?�품 ?�정';
       document.getElementById('mName').value = p.name;
       document.getElementById('mTarget').value = p.target_role;
       document.getElementById('mCategory').value = p.category || '';
@@ -263,16 +263,16 @@
       const errEl = document.getElementById('modalError');
       const name = document.getElementById('mName').value.trim();
       const price = parseInt(document.getElementById('mPrice').value);
-      if (!name) { errEl.textContent = '상품명을 입력해주세요.'; errEl.classList.add('show'); return; }
-      if (!price || price <= 0) { errEl.textContent = '유효한 가격을 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!name) { errEl.textContent = '?�품명을 ?�력?�주?�요.'; errEl.classList.add('show'); return; }
+      if (!price || price <= 0) { errEl.textContent = '?�효??가격을 ?�력?�주?�요.'; errEl.classList.add('show'); return; }
 
       const fileInput = document.getElementById('mImageFile');
       let imageUrl = document.getElementById('mImageUrl').value.trim() || null;
       if (fileInput.files.length > 0) {
         const statusEl = document.getElementById('uploadStatus');
-        statusEl.innerHTML = '<span style="color:var(--admin-primary);">⏳ 이미지 업로드 중...</span>';
+        statusEl.innerHTML = '<span style="color:var(--admin-primary);">???��?지 ?�로??�?..</span>';
         const { url, error: uploadErr } = await uploadProductImage(fileInput.files[0]);
-        if (uploadErr) { statusEl.innerHTML = `<span style="color:#ff6b6b;">업로드 실패: ${uploadErr}</span>`; return; }
+        if (uploadErr) { statusEl.innerHTML = `<span style="color:#ff6b6b;">?�로???�패: ${uploadErr}</span>`; return; }
         imageUrl = url; statusEl.innerHTML = '';
       }
       const urlText = document.getElementById('mImageUrlText').value.trim();
@@ -282,7 +282,7 @@
         name, target_role: document.getElementById('mTarget').value,
         category: document.getElementById('mCategory').value.trim() || null,
         price,
-        image_emoji: document.getElementById('mEmoji').value.trim() || '🎁',
+        image_emoji: document.getElementById('mEmoji').value.trim() || '?��',
         image_url: imageUrl, description: document.getElementById('mDesc').value.trim() || null
       };
 
@@ -303,14 +303,14 @@
     }
 
     async function confirmDelete(id, name) {
-      if (!confirm(`"${name}" 상품을 삭제 대기 상태로 변경하시겠습니까?\n(목록에서 숨겨지며 DB에는 유지됩니다)`)) return;
+      if (!confirm(`"${name}" ?�품????�� ?��??�태�?변경하?�겠?�니�?\n(목록?�서 ?�겨지�?DB?�는 ?��??�니??`)) return;
       const result = await deactivateProduct(id);
       if (result.error) {
-        alert('삭제 대기 처리 실패: ' + result.error);
+        alert('??�� ?��?처리 ?�패: ' + result.error);
         return;
       }
       await logInfo('PRODUCT_SOFT_DELETE', { id, name });
-      alert(`"${name}" 상품이 삭제 대기 상태로 변경되었습니다.`);
+      alert(`"${name}" ?�품????�� ?��??�태�?변경되?�습?�다.`);
       await loadProducts();
     }
 
@@ -319,7 +319,7 @@
       const preview = document.getElementById('imgPreview');
       preview.style.display = 'block';
       preview.innerHTML = `<img src="${src}" style="max-width:160px;max-height:120px;border-radius:8px;" onerror="resetImgPreview()" />
-        <div style="margin-top:0.3rem;"><button type="button" onclick="removeImage(event)" style="background:#ff6b6b;color:#fff;border:none;padding:0.2rem 0.8rem;border-radius:6px;cursor:pointer;font-size:0.8rem;">이미지 삭제</button></div>`;
+        <div style="margin-top:0.3rem;"><button type="button" onclick="removeImage(event)" style="background:#ff6b6b;color:#fff;border:none;padding:0.2rem 0.8rem;border-radius:6px;cursor:pointer;font-size:0.8rem;">?��?지 ??��</button></div>`;
     }
     function resetImgPreview() { document.getElementById('dropContent').style.display = 'block'; const p = document.getElementById('imgPreview'); p.style.display = 'none'; p.innerHTML = ''; }
     function removeImage(e) { e.stopPropagation(); document.getElementById('mImageUrl').value = ''; document.getElementById('mImageFile').value = ''; document.getElementById('mImageUrlText').value = ''; resetImgPreview(); }
@@ -333,14 +333,14 @@
     dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--admin-border)'; dropZone.style.background = '#fafafa'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) handleFileSelect(f); });
     fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFileSelect(fileInput.files[0]); });
     function handleFileSelect(file) {
-      if (file.size > 5*1024*1024) { document.getElementById('uploadStatus').innerHTML = '<span style="color:#ff6b6b;">5MB 이하 파일만 업로드 가능합니다</span>'; return; }
+      if (file.size > 5*1024*1024) { document.getElementById('uploadStatus').innerHTML = '<span style="color:#ff6b6b;">5MB ?�하 ?�일�??�로??가?�합?�다</span>'; return; }
       const dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files;
       const reader = new FileReader(); reader.onload = e => showImgPreview(e.target.result); reader.readAsDataURL(file);
-      document.getElementById('uploadStatus').innerHTML = `<span style="color:#636e72;">📎 ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;
+      document.getElementById('uploadStatus').innerHTML = `<span style="color:#636e72;">?�� ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;
     }
     document.getElementById('mImageUrlText').addEventListener('input', function() { const u = this.value.trim(); if (u) { document.getElementById('mImageFile').value = ''; showImgPreview(u); } else resetImgPreview(); });
     document.getElementById('productModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.21.0"></script>
+  <script src="../js/version.js?v=3.22.0"></script>
 </body>
 </html>

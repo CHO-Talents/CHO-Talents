@@ -3,116 +3,116 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>관리자 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.21.0" />
+  <title>관리자 관�?- CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">�?/span> ?��???마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">소개</button>
+        <button class="nav-dropdown-toggle">?�개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">학생 가이드</a></li>
-          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
-          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li>
-          <li><a href="../earn-talents.html">달란트 적립</a></li>
+          <li><a href="../guide.html">?�생 가?�드</a></li>
+          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가?�드</a></li>
+          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가?�드</a></li>
+          <li><a href="../earn-talents.html">?��????�립</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">달란트</button>
+        <button class="nav-dropdown-toggle">?��???/button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">내 달란트</a></li>
-          <li><a href="../talent-receive.html">달란트 수령</a></li>
-          <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">달란트 통계</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">달란트 QR 관리</a></li>
+          <li><a href="../my-talents.html">???��???/a></li>
+          <li><a href="../talent-receive.html">?��????�령</a></li>
+          <li data-min-perm="40"><a href="talents.html">?��???관�?/a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">?��????�계</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">?��???QR 관�?/a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">상품</button>
+        <button class="nav-dropdown-toggle">?�품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">상품 구매</a></li>
-          <li><a href="../my-orders.html">내 구매 상품</a></li>
-          <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
-          <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">?�품 구매</a></li>
+          <li><a href="../my-orders.html">??구매 ?�품</a></li>
+          <li data-min-perm="60"><a href="shop.html">?�품 관�?/a></li>
+          <li data-min-perm="60"><a href="purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle active">관리</button>
+        <button class="nav-dropdown-toggle active">관�?/button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">대시보드</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html" class="active">관리자 관리</a></li>
-          <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="index.html">?�?�보??/a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html" class="active">관리자 관�?/a></li>
+          <li data-min-perm="60"><a href="departments.html">부??관�?/a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">운영</button>
+        <button class="nav-dropdown-toggle">?�영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
-          <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
+          <li data-min-perm="100"><a href="page-access.html">?�이지 ?�근</a></li>
+          <li data-min-perm="100"><a href="page-features.html">?�이지 기능</a></li>
           <li data-min-perm="80"><a href="versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="reports.html">보고서</a></li>
-          <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
+          <li data-min-perm="80"><a href="reports.html">보고??/a></li>
+          <li data-min-perm="100"><a href="audit.html">?�업 ?�력</a></li>
           <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그?�웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">관리자 관리</h2>
+    <h2 style="margin-bottom:1rem;">관리자 관�?/h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">관리자 목록</div>
         <div class="filters" style="flex-wrap:wrap;gap:0.4rem;">
-          <button class="filter-btn active" onclick="setMgrFilter('all',this)">전체</button>
-          <button class="filter-btn" onclick="setMgrFilter('admin',this)">👑 관리자</button>
-          <button class="filter-btn" onclick="setMgrFilter('dept_manager',this)">📋 부서 담당 교사</button>
+          <button class="filter-btn active" onclick="setMgrFilter('all',this)">?�체</button>
+          <button class="filter-btn" onclick="setMgrFilter('admin',this)">?�� 관리자</button>
+          <button class="filter-btn" onclick="setMgrFilter('dept_manager',this)">?�� 부???�당 교사</button>
           <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
-            <option value="">전체 부서</option>
+            <option value="">?�체 부??/option>
           </select>
           <span style="margin-left:0.5rem;"></span>
-          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 관리자 등록</button>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 관리자 ?�록</button>
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>권한</th><th>이름</th><th>소속 부서</th><th>담당 부서</th><th>관리</th></tr></thead>
-        <tbody id="mgrList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>권한</th><th>?�름</th><th>?�속 부??/th><th>?�당 부??/th><th>관�?/th></tr></thead>
+        <tbody id="mgrList"><tr><td colspan="7" class="empty-state">로딩 �?..</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="mgrModal">
     <div class="modal-box">
-      <h3 class="modal-title" id="modalTitle">관리자 등록</h3>
+      <h3 class="modal-title" id="modalTitle">관리자 ?�록</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;" id="userSearchWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">사용자 검색</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�용??검??/label>
         <div style="position:relative;">
-          <input type="text" id="mSearchInput" placeholder="이름 또는 아이디로 검색..."
+          <input type="text" id="mSearchInput" placeholder="?�름 ?�는 ?�이?�로 검??.."
             style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;"
             autocomplete="off" oninput="onSearchInput()" />
           <div id="searchResults" style="display:none;position:absolute;top:100%;left:0;right:0;max-height:200px;overflow-y:auto;background:#fff;border:1px solid var(--admin-border);border-top:none;border-radius:0 0 8px 8px;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,0.1);"></div>
         </div>
         <div id="selectedUser" style="display:none;margin-top:0.5rem;padding:0.6rem;background:#f3f0ff;border-radius:8px;font-size:0.88rem;">
           <span id="selectedUserInfo"></span>
-          <button onclick="clearSelectedUser()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">✕</button>
+          <button onclick="clearSelectedUser()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">??/button>
         </div>
       </div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">아이디</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�이??/label>
         <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" disabled />
       </div>
       <div style="margin-bottom:0.8rem;" id="displayNameWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이름</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�름</label>
         <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" disabled />
       </div>
       <div style="margin-bottom:0.8rem;">
@@ -121,29 +121,29 @@
         </select>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">소속 부서</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�속 부??/label>
         <select id="mOwnDeptId" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="">-- 부서 선택 --</option>
+          <option value="">-- 부???�택 --</option>
         </select>
       </div>
       <div id="managedDeptWrap" style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">담당 관리 부서</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�당 관�?부??/label>
         <select id="mDeptId" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="">-- 부서 선택 --</option>
+          <option value="">-- 부???�택 --</option>
         </select>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">취소</button>
-        <button class="btn-confirm" onclick="saveManager()">저장</button>
+        <button class="btn-confirm" onclick="saveManager()">?�??/button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.21.0"></script>
-  <script src="../js/activity-log.js?v=3.21.0"></script>
-  <script src="../js/auth.js?v=3.21.0"></script>
-  <script src="../js/user-mgmt.js?v=3.21.0"></script>
+  <script src="../js/supabase-config.js?v=3.22.0"></script>
+  <script src="../js/activity-log.js?v=3.22.0"></script>
+  <script src="../js/auth.js?v=3.22.0"></script>
+  <script src="../js/user-mgmt.js?v=3.22.0"></script>
   <script>
     initSupabase();
     let session;
@@ -172,7 +172,7 @@
     async function loadData() {
       const { data: depts } = await fetchDepartments();
       deptList = depts || [];
-      const opts = '<option value="">-- 부서 선택 --</option>' +
+      const opts = '<option value="">-- 부???�택 --</option>' +
         deptList.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
       document.getElementById('mDeptId').innerHTML = opts;
       document.getElementById('mOwnDeptId').innerHTML = opts;
@@ -182,9 +182,9 @@
 
     const MGMT_LEVELS = ['dept_teacher','chief','evangelist','admin'];
     const PERM_LEVELS = [
-      { value: 'dept_teacher', label: '부서 담당 교사', rank: 60 },
-      { value: 'chief', label: '부장 교사', rank: 80 },
-      { value: 'evangelist', label: '전도사님', rank: 90 },
+      { value: 'dept_teacher', label: '부???�당 교사', rank: 60 },
+      { value: 'chief', label: '부??교사', rank: 80 },
+      { value: 'evangelist', label: '?�도?�님', rank: 90 },
       { value: 'admin', label: '관리자', rank: 100 }
     ];
     function buildMgrPermOptions(maxRank, selectedValue) {
@@ -217,7 +217,7 @@
     function populateDeptFilter() {
       const sel = document.getElementById('deptFilter');
       if (!sel) return;
-      sel.innerHTML = '<option value="">전체 부서</option>' + deptList.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      sel.innerHTML = '<option value="">?�체 부??/option>' + deptList.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
     const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
@@ -254,18 +254,18 @@
       let list = currentFilter === 'all' ? allManagers : allManagers.filter(u => managerMatchesFilter(u, currentFilter));
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter || u.managed_dept_id === currentDeptFilter);
       const tbody = document.getElementById('mgrList');
-      document.getElementById('tableTitle').textContent = `관리자 목록 (${list.length}명)`;
+      document.getElementById('tableTitle').textContent = `관리자 목록 (${list.length}�?`;
 
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">등록된 관리자가 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">?�록??관리자가 ?�습?�다.</td></tr>';
         return;
       }
 
       const ROLE_BADGE = {
-        admin: { emoji: '👑', label: '관리자', cls: 'ERROR' },
-        evangelist: { emoji: '✝️', label: '전도사님', cls: 'WARN' },
-        chief: { emoji: '📋', label: '부장 교사', cls: 'WARN' },
-        dept_teacher: { emoji: '👩‍🏫', label: '부서 담당', cls: 'INFO' }
+        admin: { emoji: '?��', label: '관리자', cls: 'ERROR' },
+        evangelist: { emoji: '?�️', label: '?�도?�님', cls: 'WARN' },
+        chief: { emoji: '?��', label: '부??교사', cls: 'WARN' },
+        dept_teacher: { emoji: '?��?��?, label: '부???�당', cls: 'INFO' }
       };
 
       const nameMap = resolveDisplayNames(allManagers);
@@ -286,7 +286,7 @@
           <td>${ownDept ? ownDept.name : '-'}</td>
           <td>${mgrDept ? mgrDept.name : '<span style="color:var(--admin-text-muted);">-</span>'}</td>
           <td>
-            ${canManage ? `<button class="filter-btn" onclick="openEditModal('${u.id}')">수정</button>` : ''}
+            ${canManage ? `<button class="filter-btn" onclick="openEditModal('${u.id}')">?�정</button>` : ''}
           </td>
         </tr>`;
       }).join('');
@@ -312,14 +312,14 @@
           ((u.display_name || '').toLowerCase().includes(q) || (u.username || '').toLowerCase().includes(q))
         ).slice(0, 10);
         if (matches.length === 0) {
-          box.innerHTML = '<div style="padding:0.6rem;color:var(--admin-text-muted);font-size:0.85rem;">검색 결과가 없습니다.</div>';
+          box.innerHTML = '<div style="padding:0.6rem;color:var(--admin-text-muted);font-size:0.85rem;">검??결과가 ?�습?�다.</div>';
         } else {
           box.innerHTML = matches.map(u => {
             const dept = deptList.find(d => d.id === u.department_id);
             const deptName = dept ? dept.name : '';
             return `<div style="padding:0.6rem 0.8rem;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:0.88rem;" onmousedown="selectUser('${u.id}')" onmouseover="this.style.background='#f3f0ff'" onmouseout="this.style.background='#fff'">
               <strong>${u.display_name || u.username}</strong>
-              <span style="margin-left:0.5rem;color:var(--admin-text-muted);font-size:0.78rem;">${u.user_type === 'student' ? '학생' : '교사'}${deptName ? ' / ' + deptName : ''}</span>
+              <span style="margin-left:0.5rem;color:var(--admin-text-muted);font-size:0.78rem;">${u.user_type === 'student' ? '?�생' : '교사'}${deptName ? ' / ' + deptName : ''}</span>
             </div>`;
           }).join('');
         }
@@ -335,7 +335,7 @@
       document.getElementById('mSearchInput').style.display = 'none';
       const dept = deptList.find(d => d.id === u.department_id);
       document.getElementById('selectedUserInfo').innerHTML =
-        `<strong>${u.display_name || u.username}</strong> - ${u.user_type === 'student' ? '학생' : '교사'}${dept ? ' / ' + dept.name : ''}`;
+        `<strong>${u.display_name || u.username}</strong> - ${u.user_type === 'student' ? '?�생' : '교사'}${dept ? ' / ' + dept.name : ''}`;
       document.getElementById('selectedUser').style.display = 'block';
       document.getElementById('mUsername').value = u.username;
       document.getElementById('mDisplayName').value = u.display_name || u.username;
@@ -354,7 +354,7 @@
     function openAddModal() {
       editingId = null;
       _selectedUserId = null;
-      document.getElementById('modalTitle').textContent = '관리자 등록';
+      document.getElementById('modalTitle').textContent = '관리자 ?�록';
       document.getElementById('userSearchWrap').style.display = 'block';
       document.getElementById('usernameWrap').style.display = 'none';
       document.getElementById('displayNameWrap').style.display = 'none';
@@ -379,7 +379,7 @@
       _selectedUserId = null;
       const user = allManagers.find(u => u.id === id);
       if (!user) return;
-      document.getElementById('modalTitle').textContent = '관리자 수정';
+      document.getElementById('modalTitle').textContent = '관리자 ?�정';
       document.getElementById('userSearchWrap').style.display = 'none';
       document.getElementById('usernameWrap').style.display = _isAdmin() ? 'block' : 'none';
       document.getElementById('displayNameWrap').style.display = 'block';
@@ -405,13 +405,13 @@
       const managedDeptId = document.getElementById('mDeptId').value || null;
 
       if (editingId) {
-        if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
+        if (!displayName) { errEl.textContent = '?�름???�력?�주?�요.'; errEl.classList.add('show'); return; }
         const updates = { displayName, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(editingId, updates);
         if (error) { await logError('MANAGER_UPDATE_FAIL', { id: editingId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
         await logInfo('MANAGER_UPDATE', { id: editingId, displayName, permLevel });
       } else {
-        if (!_selectedUserId) { errEl.textContent = '사용자를 검색하여 선택해주세요.'; errEl.classList.add('show'); return; }
+        if (!_selectedUserId) { errEl.textContent = '?�용?��? 검?�하???�택?�주?�요.'; errEl.classList.add('show'); return; }
         const updates = { displayName: displayName || undefined, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(_selectedUserId, updates);
         if (error) { await logError('MANAGER_PROMOTE_FAIL', { id: _selectedUserId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
@@ -422,19 +422,19 @@
     }
 
     async function resetPw(id, username) {
-      if (!confirm(`"${username}" 비밀번호를 1234로 초기화하시겠습니까?`)) return;
+      if (!confirm(`"${username}" 비�?번호�?1234�?초기?�하?�겠?�니�?`)) return;
       await resetUserPassword(id, username);
-      alert('비밀번호가 초기화되었습니다.');
+      alert('비�?번호가 초기?�되?�습?�다.');
     }
 
     async function confirmDelete(id, username) {
-      if (!confirm(`"${username}" 부서 담당 교사를 삭제하시겠습니까?`)) return;
+      if (!confirm(`"${username}" 부???�당 교사�???��?�시겠습?�까?`)) return;
       await deleteUser(id);
       await loadManagers();
     }
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.21.0"></script>
+  <script src="../js/version.js?v=3.22.0"></script>
 </body>
 </html>

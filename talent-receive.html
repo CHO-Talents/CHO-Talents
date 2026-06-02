@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>달란트 수령 - 달란트 마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.21.0" />
+  <title>?��????�령 - ?��???마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?��</text></svg>" />
+  <link rel="stylesheet" href="css/common.css?v=3.22.0" />
   <style>
     .qr-hero { text-align: center; margin-bottom: 1.5rem; }
     .qr-hero h1 { font-size: 1.6rem; color: var(--c-primary); }
@@ -41,76 +41,79 @@
 <body class="page-body">
   <nav class="top-nav">
     <a href="index.html" class="top-nav-brand">
-      <span class="brand-icon">⭐</span> 달란트 마을
+      <span class="brand-icon">�?/span> ?��???마을
     </a>
     <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="top-nav-links" id="navLinks">
       <li>
-        <button class="nav-dropdown-toggle">소개</button>
+        <button class="nav-dropdown-toggle">?�개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">학생 가이드</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가이드</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가이드</a></li>
-          <li><a href="earn-talents.html">달란트 적립</a></li>
+          <li><a href="guide.html">?�생 가?�드</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가?�드</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가?�드</a></li>
+          <li><a href="earn-talents.html">?��????�립</a></li>
           <li><a href="qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">달란트</button>
+        <button class="nav-dropdown-toggle active">?��???/button>
         <ul class="nav-dropdown-menu">
-          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html" class="active">달란트 수령</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">달란트 통계</a></li>
-          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">달란트 QR 관리</a></li>
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">???��???/a></li>
+          <li><a href="talent-receive.html" class="active">?��????�령</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">?��???관�?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">?��????�계</a></li>
+          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">?��???QR 관�?/a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">상품</button>
+        <button class="nav-dropdown-toggle">?�품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="shop.html">상품 구매</a></li>
-          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">내 구매 상품</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="shop.html">?�품 구매</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">??구매 ?�품</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">?�품 관�?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60" style="display:none;">
-        <button class="nav-dropdown-toggle">관리</button>
+        <button class="nav-dropdown-toggle">관�?/button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="admin/index.html">대시보드</a></li>
-          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
-          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="admin/index.html">?�?�보??/a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">관리자 관�?/a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">부??관�?/a></li>
         </ul>
       </li>
       <li data-min-perm="80" style="display:none;">
-        <button class="nav-dropdown-toggle">운영</button>
+        <button class="nav-dropdown-toggle">?�영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
-          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
+          <li data-min-perm="100"><a href="admin/page-access.html">?�이지 ?�근</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">?�이지 기능</a></li>
           <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
-          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">보고??/a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">?�업 ?�력</a></li>
           <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
-      <li id="navLoginArea"><a href="login.html">로그인</a></li>
+      <li id="navLoginArea"><a href="login.html">로그??/a></li>
       <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
-      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그?�웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="qr-container">
     <div class="qr-hero">
-      <h1>📱 달란트 수령</h1>
-      <p>QR 코드를 스캔하거나 코드를 입력하여 달란트를 수령하세요</p>
+      <h1>?�� ?��????�령</h1>
+      <p>QR 코드�??�캔?�거??코드�??�력?�여 ?��??��? ?�령?�세??/p>
     </div>
 
     <div class="qr-input-area" id="qrArea">
-      <div style="font-size:3rem;margin-bottom:0.5rem;">🎯</div>
-      <p style="margin-bottom:1rem;font-size:0.9rem;color:var(--c-text-muted);">QR 코드를 입력하세요</p>
-      <input type="text" class="qr-input" id="qrInput" placeholder="QR 코드 입력" maxlength="30" autocomplete="off" />
+      <div id="adminInputWrap" style="display:none;">
+        <input type="text" class="qr-input" id="qrInput" placeholder="QR 코드 ?�력" maxlength="30" autocomplete="off" />
+        <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-top:0.5rem;">
+          <button class="btn-scan" id="btnScan" onclick="scanCode()">?�� 코드 ?�인</button>
+        </div>
+      </div>
 
       <div id="cameraWrap">
         <video id="cameraVideo" playsinline muted></video>
@@ -118,31 +121,32 @@
         <div class="scan-overlay">
           <div class="scan-frame"></div>
         </div>
-        <div class="scan-status" id="scanStatus">QR 코드를 카메라에 비춰주세요</div>
+        <div class="scan-status" id="scanStatus">QR 코드�?카메?�에 비춰주세??/div>
       </div>
 
       <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
-        <button class="btn-scan" id="btnScan" onclick="scanCode()">🔍 코드 확인</button>
-        <button class="btn-scan" id="btnCamera" onclick="toggleCamera()" style="background:#868e96;">📷 카메라</button>
+        <button class="btn-scan" id="btnCamera" onclick="toggleCamera()" style="background:#868e96;">?�� 카메??/button>
       </div>
       <div class="qr-result" id="qrResult"></div>
     </div>
 
+    <div id="qrCodeListSection" style="margin-top:1.5rem;"></div>
+
     <div class="scan-history" id="historySection" style="display:none;">
-      <h3>📋 최근 수령 내역</h3>
+      <h3>?�� 최근 ?�령 ?�역</h3>
       <div id="historyList"></div>
     </div>
   </div>
 
   <footer class="page-footer">
-    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
+    <p>초등부 ?��???관�?&copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-  <script src="js/supabase-config.js?v=3.21.0"></script>
-  <script src="js/activity-log.js?v=3.21.0"></script>
-  <script src="js/auth.js?v=3.21.0"></script>
+  <script src="js/supabase-config.js?v=3.22.0"></script>
+  <script src="js/activity-log.js?v=3.22.0"></script>
+  <script src="js/auth.js?v=3.22.0"></script>
   <script>
     initSupabase();
     let session;
@@ -151,75 +155,75 @@
     let scanPaused = false;
 
     (async () => {
-      session = await initPage(40, 'login.html');
+      session = await initPage(20, 'login.html');
       if (!session) return;
-      const _isAdminQR = (session.permissionRank || 0) >= 100;
-      if (!_isAdminQR) {
-        const qi = document.getElementById('qrInput');
-        qi.type = 'password';
-        qi.style.webkitTextSecurity = 'disc';
+      const myRank = session.permissionRank || 0;
+      if (myRank >= 90) {
+        document.getElementById('adminInputWrap').style.display = '';
       }
       document.getElementById('navMyTalent').style.display = '';
-      document.getElementById('navMyOrders').style.display = '';
+      const mo = document.getElementById('navMyOrders');
+      if (mo) mo.style.display = '';
       document.getElementById('navLoginArea').style.display = 'none';
       document.getElementById('navAuthArea').style.display = '';
       document.getElementById('navLogoutArea').style.display = '';
-      applyPermNav(session.permissionRank || 0);
+      applyPermNav(myRank);
       renderRoleBadge('navUser', session, '');
       autoLogPageView();
       updateNavOrderBadge();
+      loadQRList();
       loadHistory();
     })();
 
     async function scanCode() {
       const code = document.getElementById('qrInput').value.trim();
-      if (!code) { showResult('fail', '코드를 입력해주세요.'); return; }
+      if (!code) { showResult('fail', '코드�??�력?�주?�요.'); return; }
       const btn = document.getElementById('btnScan');
       btn.disabled = true;
-      btn.textContent = '확인 중...';
+      btn.textContent = '?�인 �?..';
       try {
         const { data: qr, error } = await _sb.from('talent_qr_codes')
           .select('*').eq('code', code).eq('is_active', true).single();
-        if (error || !qr) { showResult('fail', '유효하지 않은 코드입니다.'); return; }
+        if (error || !qr) { showResult('fail', '?�효?��? ?��? 코드?�니??'); return; }
 
         const now = new Date();
         if (qr.valid_from && new Date(qr.valid_from) > now) {
-          showResult('fail', '아직 유효하지 않은 코드입니다.'); return;
+          showResult('fail', '?�직 ?�효?��? ?��? 코드?�니??'); return;
         }
         if (qr.valid_until && new Date(qr.valid_until) < now) {
-          showResult('fail', '만료된 코드입니다.'); return;
+          showResult('fail', '만료??코드?�니??'); return;
         }
         if (qr.expires_at && new Date(qr.expires_at) < now) {
-          showResult('fail', '만료된 코드입니다.'); return;
+          showResult('fail', '만료??코드?�니??'); return;
         }
         if (qr.max_uses > 0 && (qr.used_count || 0) >= qr.max_uses) {
-          showResult('fail', '사용 횟수가 초과된 코드입니다.'); return;
+          showResult('fail', '?�용 ?�수가 초과??코드?�니??'); return;
         }
 
         const { data: myProfile } = await _sb.from('profiles').select('user_type').eq('id', session.id).single();
         const myType = myProfile?.user_type || 'student';
         if (qr.target_type && qr.target_type !== myType) {
-          const targetLabel = qr.target_type === 'teacher' ? '교사' : '학생';
-          showResult('fail', '⚠️ 이 QR 코드는 ' + targetLabel + ' 전용입니다.\n현재 계정 유형이 일치하지 않아 수령할 수 없습니다.');
+          const targetLabel = qr.target_type === 'teacher' ? '교사' : '?�생';
+          showResult('fail', '?�️ ??QR 코드??' + targetLabel + ' ?�용?�니??\n?�재 계정 ?�형???�치?��? ?�아 ?�령?????�습?�다.');
           return;
         }
 
         if (qr.location_lat && qr.location_lng && qr.location_radius) {
           try {
             const pos = await new Promise((resolve, reject) => {
-              if (!navigator.geolocation) { reject(new Error('위치 서비스를 지원하지 않는 브라우저입니다.')); return; }
+              if (!navigator.geolocation) { reject(new Error('?�치 ?�비?��? 지?�하지 ?�는 브라?��??�니??')); return; }
               navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 });
             });
             const dist = haversineDistance(pos.coords.latitude, pos.coords.longitude, qr.location_lat, qr.location_lng);
             if (dist > qr.location_radius) {
               const radiusText = qr.location_radius >= 1000 ? (qr.location_radius/1000) + 'km' : qr.location_radius + 'm';
-              const locName = qr.location_name || '지정 위치';
-              showResult('fail', '📍 위치 제한 코드입니다.\n📌 ' + locName + '\n반경 ' + radiusText + ' 이내에서만 수령 가능합니다.\n현재 거리: 약 ' + Math.round(dist) + 'm');
+              const locName = qr.location_name || '지???�치';
+              showResult('fail', '?�� ?�치 ?�한 코드?�니??\n?�� ' + locName + '\n반경 ' + radiusText + ' ?�내?�서�??�령 가?�합?�다.\n?�재 거리: ??' + Math.round(dist) + 'm');
               return;
             }
           } catch (geoErr) {
             const locName = qr.location_name ? ' (' + qr.location_name + ')' : '';
-            showResult('fail', '📍 위치 확인이 필요한 코드입니다.' + locName + '\n위치 권한을 허용해주세요.\n(' + (geoErr.message || geoErr) + ')');
+            showResult('fail', '?�� ?�치 ?�인???�요??코드?�니??' + locName + '\n?�치 권한???�용?�주?�요.\n(' + (geoErr.message || geoErr) + ')');
             return;
           }
         }
@@ -229,7 +233,7 @@
           const { data: existing } = await _sb.from('talent_qr_scans')
             .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id);
           if (existing && existing.length > 0) {
-            showResult('fail', '이미 수령한 코드입니다.'); return;
+            showResult('fail', '?��? ?�령??코드?�니??'); return;
           }
         } else {
           const canReceive = checkRepeatEligibility(qr);
@@ -242,7 +246,7 @@
             .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id)
             .gte('scanned_at', todayStart).lte('scanned_at', todayEnd);
           if (todayScans && todayScans.length > 0) {
-            showResult('fail', '오늘은 이미 수령한 코드입니다.\n(매일 00:00에 초기화됩니다)'); return;
+            showResult('fail', '?�늘?� ?��? ?�령??코드?�니??\n(매일 00:00??초기?�됩?�다)'); return;
           }
         }
 
@@ -260,7 +264,7 @@
 
         await _sb.from('talent_transactions').insert({
           user_id: session.id, type: 'earn', amount: qr.amount,
-          description: qr.description || 'QR 달란트',
+          description: qr.description || 'QR ?��???,
           talent_item_id: qr.talent_item_id || null,
           balance_after: newBalance,
           created_by: session.id,
@@ -275,14 +279,14 @@
         setSession(session);
 
         await logInfo('qr_scan', { code: qr.code, amount: qr.amount, description: qr.description, balance_after: newBalance });
-        showResult('ok', `✅ ${qr.amount} 달란트를 수령했습니다! (${qr.description || 'QR 달란트'})`);
+        showResult('ok', `??${qr.amount} ?��??��? ?�령?�습?�다! (${qr.description || 'QR ?��???})`);
         document.getElementById('qrInput').value = '';
         loadHistory();
       } catch (e) {
-        showResult('fail', '오류가 발생했습니다: ' + (e.message || e));
+        showResult('fail', '?�류가 발생?�습?�다: ' + (e.message || e));
       } finally {
         btn.disabled = false;
-        btn.textContent = '🔍 코드 확인';
+        btn.textContent = '?�� 코드 ?�인';
         scanPaused = false;
       }
     }
@@ -307,8 +311,8 @@
       if (rt === 'weekday') {
         const days = qr.repeat_days || [];
         if (!days.includes(today)) {
-          const DAY_N = ['일','월','화','수','목','금','토'];
-          return { ok: false, msg: '오늘은 수령 가능한 요일이 아닙니다.\n수령 가능: ' + days.map(d => DAY_N[d]).join(', ') };
+          const DAY_N = ['??,'??,'??,'??,'�?,'�?,'??];
+          return { ok: false, msg: '?�늘?� ?�령 가?�한 ?�일???�닙?�다.\n?�령 가?? ' + days.map(d => DAY_N[d]).join(', ') };
         }
         return { ok: true };
       }
@@ -317,11 +321,11 @@
         const weeks = qr.repeat_weeks || [];
         const weekNum = getWeekOfMonth(now);
         if (!weeks.includes(weekNum)) {
-          return { ok: false, msg: '이번 주는 수령 가능한 주차가 아닙니다.\n수령 가능: ' + weeks.map(w => w + '주차').join(', ') };
+          return { ok: false, msg: '?�번 주는 ?�령 가?�한 주차가 ?�닙?�다.\n?�령 가?? ' + weeks.map(w => w + '주차').join(', ') };
         }
         if (!days.includes(today)) {
-          const DAY_N = ['일','월','화','수','목','금','토'];
-          return { ok: false, msg: '오늘은 수령 가능한 요일이 아닙니다.\n수령 가능: ' + days.map(d => DAY_N[d]).join(', ') };
+          const DAY_N = ['??,'??,'??,'??,'�?,'�?,'??];
+          return { ok: false, msg: '?�늘?� ?�령 가?�한 ?�일???�닙?�다.\n?�령 가?? ' + days.map(d => DAY_N[d]).join(', ') };
         }
         return { ok: true };
       }
@@ -361,7 +365,7 @@
           const qr = s.talent_qr_codes || {};
           const dt = new Date(s.scanned_at);
           const dateStr = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
-          return `<div class="scan-item"><span>${dateStr} - ${qr.description || qr.code || '-'}</span><span class="amt">+${qr.amount || 0} 달란트</span></div>`;
+          return `<div class="scan-item"><span>${dateStr} - ${qr.description || qr.code || '-'}</span><span class="amt">+${qr.amount || 0} ?��???/span></div>`;
         }).join('');
       } catch (e) { /* table may not exist yet */ }
     }
@@ -377,7 +381,7 @@
       }
 
       try {
-        btn.textContent = '카메라 시작 중...';
+        btn.textContent = '카메???�작 �?..';
         btn.disabled = true;
 
         cameraStream = await navigator.mediaDevices.getUserMedia({
@@ -391,17 +395,17 @@
         video.muted = true;
         await video.play();
 
-        btn.textContent = '📷 카메라 끄기';
+        btn.textContent = '?�� 카메???�기';
         btn.style.background = '#e03131';
         btn.disabled = false;
         startQRScan();
       } catch (e) {
         wrap.style.display = 'none';
-        btn.textContent = '📷 카메라';
+        btn.textContent = '?�� 카메??;
         btn.style.background = '#868e96';
         btn.disabled = false;
         if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
-        alert('카메라를 사용할 수 없습니다: ' + (e.message || e));
+        alert('카메?��? ?�용?????�습?�다: ' + (e.message || e));
       }
     }
 
@@ -412,7 +416,7 @@
       video.srcObject = null;
       document.getElementById('cameraWrap').style.display = 'none';
       const btn = document.getElementById('btnCamera');
-      btn.textContent = '📷 카메라';
+      btn.textContent = '?�� 카메??;
       btn.style.background = '#868e96';
     }
 
@@ -433,14 +437,14 @@
 
           if (qrResult && qrResult.data) {
             scanPaused = true;
-            statusEl.textContent = '✅ QR 코드 감지됨';
+            statusEl.textContent = '??QR 코드 감�???;
             document.getElementById('cameraWrap').classList.add('scan-detected');
             setTimeout(() => document.getElementById('cameraWrap').classList.remove('scan-detected'), 300);
 
             document.getElementById('qrInput').value = qrResult.data;
             scanCode();
           } else {
-            statusEl.textContent = 'QR 코드를 카메라에 비춰주세요';
+            statusEl.textContent = 'QR 코드�?카메?�에 비춰주세??;
           }
         }
         scanAnimFrame = requestAnimationFrame(tick);
@@ -448,10 +452,110 @@
       tick();
     }
 
-    document.getElementById('qrInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') scanCode();
-    });
+    const PAGE_SIZE = 5;
+    let allQRCodes = [];
+    let qrPages = { student: 1, teacher: 1 };
+
+    async function loadQRList() {
+      try {
+        const { data, error } = await _sb.from('talent_qr_codes')
+          .select('id,description,amount,target_type,valid_from,valid_until,is_active,max_uses,used_count')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false });
+        if (error) throw error;
+        allQRCodes = data || [];
+        renderQRList();
+      } catch (e) { /* ignore */ }
+    }
+
+    function renderQRList() {
+      const sec = document.getElementById('qrCodeListSection');
+      const now = new Date();
+      const studentCodes = allQRCodes.filter(q => (q.target_type || 'student') === 'student');
+      const teacherCodes = allQRCodes.filter(q => q.target_type === 'teacher');
+
+      function sortByExpiry(arr) {
+        return arr.sort((a, b) => {
+          const aExpired = isExpired(a, now);
+          const bExpired = isExpired(b, now);
+          if (aExpired !== bExpired) return aExpired ? 1 : -1;
+          return 0;
+        });
+      }
+
+      sortByExpiry(studentCodes);
+      sortByExpiry(teacherCodes);
+
+      let html = '';
+      html += renderGroup('?�� ?�생 ?�??, studentCodes, 'student', now);
+      html += renderGroup('?��?��?교사 ?�??, teacherCodes, 'teacher', now);
+      sec.innerHTML = html || '<p style="text-align:center;color:var(--c-text-muted);">?�재 ?�성?�된 QR 코드가 ?�습?�다.</p>';
+    }
+
+    function isExpired(qr, now) {
+      if (qr.valid_until && new Date(qr.valid_until) < now) return true;
+      if (qr.max_uses > 0 && (qr.used_count || 0) >= qr.max_uses) return true;
+      return false;
+    }
+
+    function renderGroup(title, codes, groupKey, now) {
+      if (codes.length === 0) return '';
+      const page = qrPages[groupKey] || 1;
+      const totalPages = Math.ceil(codes.length / PAGE_SIZE);
+      const start = (page - 1) * PAGE_SIZE;
+      const pageCodes = codes.slice(start, start + PAGE_SIZE);
+
+      let html = `<div style="margin-bottom:1.5rem;">
+        <h3 style="font-size:1rem;margin-bottom:0.6rem;padding-bottom:0.4rem;border-bottom:2px solid var(--c-border);">${title} <span style="font-size:0.8rem;color:var(--c-text-muted);">(${codes.length}�?</span></h3>`;
+
+      pageCodes.forEach(q => {
+        const expired = isExpired(q, now);
+        const badge = expired
+          ? '<span style="background:#ffe3e3;color:#e03131;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;">만료</span>'
+          : '<span style="background:#d3f9d8;color:#2b8a3e;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;">?�성</span>';
+        let validText = '무기??;
+        if (q.valid_from && q.valid_until) {
+          validText = q.valid_from.slice(0,10) + ' ~ ' + q.valid_until.slice(0,10);
+        } else if (q.valid_from) {
+          validText = q.valid_from.slice(0,10) + ' (?�일)';
+        }
+        html += `<div class="scan-item" style="opacity:${expired ? '0.5' : '1'};flex-direction:column;align-items:flex-start;gap:0.3rem;">
+          <div style="display:flex;justify-content:space-between;width:100%;align-items:center;">
+            <span style="font-weight:600;">${q.description || '?��???QR'}</span>
+            <span>${badge}</span>
+          </div>
+          <div style="display:flex;gap:1rem;font-size:0.78rem;color:var(--c-text-muted);">
+            <span>?�� ${q.amount} ?��???/span>
+            <span>?�� ${validText}</span>
+          </div>
+        </div>`;
+      });
+
+      if (totalPages > 1) {
+        html += `<div style="display:flex;justify-content:center;gap:0.3rem;margin-top:0.5rem;">`;
+        for (let i = 1; i <= totalPages; i++) {
+          const active = i === page ? 'background:var(--c-primary);color:#fff;' : 'background:#f1f3f5;';
+          html += `<button onclick="goQRPage('${groupKey}',${i})" style="border:none;padding:4px 10px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:600;${active}">${i}</button>`;
+        }
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+      return html;
+    }
+
+    function goQRPage(group, page) {
+      qrPages[group] = page;
+      renderQRList();
+    }
+
+    const qrInputEl = document.getElementById('qrInput');
+    if (qrInputEl) {
+      qrInputEl.addEventListener('keydown', e => {
+        if (e.key === 'Enter') scanCode();
+      });
+    }
   </script>
-  <script src="js/version.js?v=3.21.0"></script>
+  <script src="js/version.js?v=3.22.0"></script>
 </body>
 </html>

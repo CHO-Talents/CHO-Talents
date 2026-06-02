@@ -3,208 +3,209 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>학생 가이드 - 달란트 마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.21.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.21.0" />
+  <title>?�생 가?�드 - ?��???마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>�?/text></svg>" />
+  <link rel="stylesheet" href="css/common.css?v=3.22.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.22.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
-    <a href="index.html" class="top-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <a href="index.html" class="top-nav-brand"><span class="brand-icon">�?/span> ?��???마을</a>
     <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="top-nav-links" id="navLinks">
       <li>
-        <button class="nav-dropdown-toggle active">소개</button>
+        <button class="nav-dropdown-toggle active">?�개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html" class="active">학생 가이드</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가이드</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가이드</a></li>
-          <li><a href="earn-talents.html">달란트 적립</a></li>
+          <li><a href="guide.html" class="active">?�생 가?�드</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가?�드</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가?�드</a></li>
+          <li><a href="earn-talents.html">?��????�립</a></li>
           <li><a href="qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">달란트</button>
+        <button class="nav-dropdown-toggle">?��???/button>
         <ul class="nav-dropdown-menu">
-          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html">달란트 수령</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">달란트 통계</a></li>
-          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">달란트 QR 관리</a></li>
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">???��???/a></li>
+          <li><a href="talent-receive.html">?��????�령</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">?��???관�?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">?��????�계</a></li>
+          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">?��???QR 관�?/a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">상품</button>
+        <button class="nav-dropdown-toggle">?�품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="shop.html">상품 구매</a></li>
-          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">내 구매 상품</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="shop.html">?�품 구매</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">??구매 ?�품</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">?�품 관�?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60" style="display:none;">
-        <button class="nav-dropdown-toggle">관리</button>
+        <button class="nav-dropdown-toggle">관�?/button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="admin/index.html">대시보드</a></li>
-          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
-          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="admin/index.html">?�?�보??/a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">관리자 관�?/a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">부??관�?/a></li>
         </ul>
       </li>
       <li data-min-perm="80" style="display:none;">
-        <button class="nav-dropdown-toggle">운영</button>
+        <button class="nav-dropdown-toggle">?�영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
-          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
+          <li data-min-perm="100"><a href="admin/page-access.html">?�이지 ?�근</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">?�이지 기능</a></li>
           <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
-          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">보고??/a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">?�업 ?�력</a></li>
           <li data-min-perm="100"><a href="admin/logs.html">로그</a></li>
         </ul>
       </li>
-      <li id="navLoginArea"><a href="login.html">로그인</a></li>
+      <li id="navLoginArea"><a href="login.html">로그??/a></li>
       <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
-      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그?�웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <main class="guide-container">
     <section class="guide-hero">
-      <div class="guide-kicker">학생 · 비로그인 사용자</div>
-      <h1>학생 가이드</h1>
-      <p>달란트 마을을 처음 사용하는 학생을 위한 안내입니다. 계정 신청부터 달란트 확인, 상품 구매까지 순서대로 알려드립니다.</p>
+      <div class="guide-kicker">?�생 · 비로그인 ?�용??/div>
+      <h1>?�생 가?�드</h1>
+      <p>?��???마을??처음 ?�용?�는 ?�생???�한 ?�내?�니?? 계정 ?�청부???��????�인, ?�품 구매까�? ?�서?��??�려?�립?�다.</p>
     </section>
 
     <div class="guide-switcher">
-      <a href="guide.html" class="active">학생 가이드</a>
-      <a href="teacher-guide.html">교사 가이드</a>
-      <a href="admin-guide.html">관리자 가이드</a>
+      <a href="guide.html" class="active">?�생 가?�드</a>
+      <a href="teacher-guide.html">교사 가?�드</a>
+      <a href="admin-guide.html">관리자 가?�드</a>
     </div>
 
     <section class="guide-section">
-      <h2>🌟 달란트 마을에서 할 수 있는 일</h2>
+      <h2>?�� ?��???마을?�서 ?????�는 ??/h2>
       <div class="guide-grid">
         <div class="guide-mini-card">
-          <div class="icon">📝</div>
-          <h3>계정 신청</h3>
-          <p>계정이 없으면 로그인 화면에서 등록 신청을 할 수 있습니다. 신청 후 관리자가 승인해야 로그인할 수 있습니다.</p>
+          <div class="icon">?��</div>
+          <h3>계정 ?�청</h3>
+          <p>계정???�으�?로그???�면?�서 ?�록 ?�청???????�습?�다. ?�청 ??관리자가 ?�인?�야 로그?�할 ???�습?�다.</p>
         </div>
         <div class="guide-mini-card">
-          <div class="icon">💰</div>
-          <h3>내 달란트 확인</h3>
-          <p>로그인하면 받은 달란트, 사용한 달란트, 구매 신청으로 묶여 있는 달란트를 확인할 수 있습니다.</p>
+          <div class="icon">?��</div>
+          <h3>???��????�인</h3>
+          <p>로그?�하�?받�? ?��??? ?�용???��??? 구매 ?�청?�로 묶여 ?�는 ?��??��? ?�인?????�습?�다.</p>
         </div>
         <div class="guide-mini-card">
-          <div class="icon">🛒</div>
-          <h3>상품 구매 신청</h3>
-          <p>학생용 상품을 보고 구매 신청할 수 있습니다. 신청한 상품은 선생님이 순서대로 처리합니다.</p>
+          <div class="icon">?��</div>
+          <h3>?�품 구매 ?�청</h3>
+          <p>?�생???�품??보고 구매 ?�청?????�습?�다. ?�청???�품?� ?�생?�이 ?�서?��?처리?�니??</p>
         </div>
         <div class="guide-mini-card">
-          <div class="icon">💬</div>
-          <h3>질문하기</h3>
-          <p>Q &amp; A에서 자주 묻는 질문을 보고, 궁금한 내용을 질문으로 남길 수 있습니다.</p>
+          <div class="icon">?��</div>
+          <h3>질문?�기</h3>
+          <p>Q &amp; A?�서 ?�주 묻는 질문??보고, 궁금???�용??질문?�로 ?�길 ???�습?�다.</p>
         </div>
       </div>
     </section>
 
     <section class="guide-section">
-      <h2>🚀 처음 시작하기</h2>
+      <h2>?? 처음 ?�작?�기</h2>
       <ol class="guide-steps">
-        <li>메인 화면에서 <strong>로그인</strong>을 누릅니다.</li>
-        <li>계정이 없다면 로그인 화면의 <strong>계정 등록 신청</strong>을 누릅니다.</li>
-        <li>희망 아이디를 입력하고 <strong>중복확인</strong>을 합니다. 아이디는 영문, 숫자, 밑줄, 하이픈만 사용할 수 있습니다.</li>
-        <li>이름과 소속 부서를 선택하고 신청합니다.</li>
-        <li>승인이 끝나면 초기 비밀번호 <strong>1234</strong>로 로그인합니다.</li>
-        <li>첫 로그인 때 새 비밀번호로 바꾸면 사이트를 사용할 수 있습니다.</li>
+        <li>메인 ?�면?�서 <strong>로그??/strong>???�릅?�다.</li>
+        <li>계정???�다�?로그???�면??<strong>계정 ?�록 ?�청</strong>???�릅?�다.</li>
+        <li>?�망 ?�이?��? ?�력?�고 <strong>중복?�인</strong>???�니?? ?�이?�는 ?�문, ?�자, 밑줄, ?�이?�만 ?�용?????�습?�다.</li>
+        <li>?�름�??�속 부?��? ?�택?�고 ?�청?�니??</li>
+        <li>?�인???�나�?초기 비�?번호 <strong>1234</strong>�?로그?�합?�다.</li>
+        <li>�?로그??????비�?번호�?바꾸�??�이?��? ?�용?????�습?�다.</li>
       </ol>
-      <div class="guide-note">비밀번호는 8자 이상이어야 하고 영문과 숫자가 모두 들어가야 합니다. 초기 비밀번호 1234는 새 비밀번호로 사용할 수 없습니다.</div>
+      <div class="guide-note">비�?번호??8???�상?�어???�고 ?�문�??�자가 모두 ?�어가???�니?? 초기 비�?번호 1234????비�?번호�??�용?????�습?�다.</div>
     </section>
 
     <section class="guide-section">
-      <h2>📌 메뉴별 사용 방법</h2>
+      <h2>?�� 메뉴�??�용 방법</h2>
       <div class="guide-table-wrap">
         <table class="guide-table">
-          <thead><tr><th>메뉴</th><th>설명</th></tr></thead>
+          <thead><tr><th>메뉴</th><th>?�명</th></tr></thead>
           <tbody>
-            <tr><td>달란트 적립</td><td>달란트를 받을 수 있는 활동 목록을 확인합니다.</td></tr>
-            <tr><td>상품 구매</td><td>달란트로 살 수 있는 상품을 보고 구매를 신청합니다.</td></tr>
-            <tr><td>내 달란트</td><td>사용 가능 달란트, 적립/사용 내역, 구매 진행 상태를 확인합니다.</td></tr>
-            <tr><td>내 구매 상품</td><td>신청한 상품의 진행 단계를 확인하고, 신청 단계에서 취소할 수 있습니다.</td></tr>
-            <tr><td>Q &amp; A</td><td>자주 묻는 질문을 보거나, 궁금한 점을 질문합니다.</td></tr>
+            <tr><td>?��????�립</td><td>?��??��? 받을 ???�는 ?�동 목록???�인?�니??</td></tr>
+            <tr><td>?��????�령</td><td>QR 코드�?카메?�로 ?�캔?�여 ?��??��? ?�령?�니?? ?�성 QR 코드 목록???�인?????�습?�다.</td></tr>
+            <tr><td>?�품 구매</td><td>?��??�로 ?????�는 ?�품??보고 구매�??�청?�니??</td></tr>
+            <tr><td>???��???/td><td>?�용 가???��??? ?�령 ?��??�품?? ?�립/?�용 ?�역, 구매 진행 ?�태�??�인?�니??</td></tr>
+            <tr><td>??구매 ?�품</td><td>?�청???�품??진행 ?�계�??�인?�고, ?�청 ?�계?�서 취소?????�습?�다.</td></tr>
+            <tr><td>Q &amp; A</td><td>?�주 묻는 질문??보거?? 궁금???�을 질문?�니??</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
     <section class="guide-section">
-      <h2>🛒 상품 구매 흐름</h2>
+      <h2>?�� ?�품 구매 ?�름</h2>
       <ol class="guide-steps">
-        <li><strong>상품 구매</strong>에서 원하는 상품을 고릅니다.</li>
-        <li><strong>구매 신청</strong>을 누릅니다.</li>
-        <li>신청한 금액은 바로 차감되지 않고 <strong>사용 대기</strong>로 잡힙니다.</li>
-        <li>선생님이 실제 구매를 확정하면 달란트가 차감됩니다.</li>
-        <li>상품을 받으면 상태가 <strong>상품 지급</strong>으로 바뀝니다.</li>
+        <li><strong>?�품 구매</strong>?�서 ?�하???�품??고릅?�다.</li>
+        <li><strong>구매 ?�청</strong>???�릅?�다.</li>
+        <li>?�청??금액?� 바로 차감?��? ?�고 <strong>?�용 ?��?/strong>�??�힙?�다.</li>
+        <li>?�생?�이 ?�제 구매�??�정?�면 ?��??��? 차감?�니??</li>
+        <li>?�품??받으�??�태가 <strong>?�품 지�?/strong>?�로 바뀝니??</li>
       </ol>
       <div class="guide-card">
-        <h3>진행 단계</h3>
-        <p><span class="guide-badge badge-student">구매 신청</span> → <span class="guide-badge badge-teacher">상품 준비</span> → <span class="guide-badge badge-oper">상품 구매</span> → <span class="guide-badge badge-admin">상품 지급</span></p>
+        <h3>진행 ?�계</h3>
+        <p><span class="guide-badge badge-student">구매 ?�청</span> ??<span class="guide-badge badge-teacher">?�품 준�?/span> ??<span class="guide-badge badge-oper">?�품 구매</span> ??<span class="guide-badge badge-admin">?�품 지�?/span></p>
       </div>
     </section>
 
     <section class="guide-section">
-      <h2>📊 내 달란트 화면 보는 법</h2>
+      <h2>?�� ???��????�면 보는 �?/h2>
       <div class="guide-table-wrap">
         <table class="guide-table">
-          <thead><tr><th>항목</th><th>뜻</th></tr></thead>
+          <thead><tr><th>??��</th><th>??/th></tr></thead>
           <tbody>
-            <tr><td>사용 가능 달란트</td><td>지금 바로 상품 구매에 사용할 수 있는 달란트입니다.</td></tr>
-            <tr><td>상품 수령 예정</td><td>구매가 진행 중이고 아직 상품을 받지 않은 건수입니다.</td></tr>
-            <tr><td>사용 대기 달란트</td><td>구매 신청은 했지만 아직 달란트가 차감되지 않은 금액입니다.</td></tr>
-            <tr><td>사용 완료 달란트</td><td>상품 구매가 확정되어 실제로 차감된 달란트입니다.</td></tr>
-            <tr><td>누적 적립 달란트</td><td>지금까지 받은 달란트의 총 합계입니다.</td></tr>
+            <tr><td>?�용 가???��???/td><td>지�?바로 ?�품 구매???�용?????�는 ?��??�입?�다.</td></tr>
+            <tr><td>?�품 ?�령 ?�정</td><td>구매가 진행 중이�??�직 ?�품??받�? ?��? 건수?�니??</td></tr>
+            <tr><td>?�용 ?��??��???/td><td>구매 ?�청?� ?��?�??�직 ?��??��? 차감?��? ?��? 금액?�니??</td></tr>
+            <tr><td>?�용 ?�료 ?��???/td><td>?�품 구매가 ?�정?�어 ?�제�?차감???��??�입?�다.</td></tr>
+            <tr><td>?�적 ?�립 ?��???/td><td>지금까지 받�? ?��??�의 �??�계?�니??</td></tr>
           </tbody>
         </table>
       </div>
       <div class="guide-card">
-        <h3>상품 구매 진행 흐름</h3>
-        <p><span class="guide-badge badge-student">구매 신청</span> → <span class="guide-badge badge-teacher">상품 준비</span> → <span class="guide-badge badge-oper">상품 구매</span> → <span class="guide-badge badge-admin">상품 지급</span></p>
+        <h3>?�품 구매 진행 ?�름</h3>
+        <p><span class="guide-badge badge-student">구매 ?�청</span> ??<span class="guide-badge badge-teacher">?�품 준�?/span> ??<span class="guide-badge badge-oper">?�품 구매</span> ??<span class="guide-badge badge-admin">?�품 지�?/span></p>
         <ul class="guide-list" style="margin-top:0.5rem;font-size:0.85rem;">
-          <li><strong>구매 신청</strong> : 학생이 상품을 선택하고 신청합니다. 이 단계에서 취소할 수 있습니다.</li>
-          <li><strong>상품 준비</strong> : 선생님이 신청을 확인하고 상품을 준비합니다.</li>
-          <li><strong>상품 구매</strong> : 상품 구매가 확정되면 달란트가 차감됩니다.</li>
-          <li><strong>상품 지급</strong> : 상품을 실제로 전달받으면 완료됩니다.</li>
+          <li><strong>구매 ?�청</strong> : ?�생???�품???�택?�고 ?�청?�니?? ???�계?�서 취소?????�습?�다.</li>
+          <li><strong>?�품 준�?/strong> : ?�생?�이 ?�청???�인?�고 ?�품??준비합?�다.</li>
+          <li><strong>?�품 구매</strong> : ?�품 구매가 ?�정?�면 ?��??��? 차감?�니??</li>
+          <li><strong>?�품 지�?/strong> : ?�품???�제�??�달받으�??�료?�니??</li>
         </ul>
       </div>
     </section>
 
     <section class="guide-section">
-      <h2>❓ 자주 헷갈리는 상황</h2>
+      <h2>???�주 ?�갈리는 ?�황</h2>
       <div class="guide-grid">
         <div class="guide-card">
-          <h3>로그인이 안 돼요</h3>
-          <p>아이디와 비밀번호를 다시 확인하세요. 계정 신청이 승인 전이면 승인 대기 안내가 표시됩니다.</p>
+          <h3>로그?�이 ???�요</h3>
+          <p>?�이?��? 비�?번호�??�시 ?�인?�세?? 계정 ?�청???�인 ?�이�??�인 ?��??�내가 ?�시?�니??</p>
         </div>
         <div class="guide-card">
-          <h3>구매했는데 달란트가 그대로예요</h3>
-          <p>구매 신청만 한 상태라면 정상입니다. 선생님이 상품 구매를 확정하면 실제로 차감됩니다.</p>
+          <h3>구매?�는???��??��? 그�?로예??/h3>
+          <p>구매 ?�청�????�태?�면 ?�상?�니?? ?�생?�이 ?�품 구매�??�정?�면 ?�제�?차감?�니??</p>
         </div>
         <div class="guide-card">
-          <h3>비밀번호를 잊었어요</h3>
-          <p>담당 선생님이나 관리자에게 초기화를 요청하세요. 초기화 후 1234로 로그인하고 새 비밀번호로 바꾸면 됩니다.</p>
+          <h3>비�?번호�??�었?�요</h3>
+          <p>?�당 ?�생?�이??관리자?�게 초기?��? ?�청?�세?? 초기????1234�?로그?�하�???비�?번호�?바꾸�??�니??</p>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="page-footer">
-    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
+    <p>초등부 ?��???관�?&copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.21.0"></script>
-  <script src="js/activity-log.js?v=3.21.0"></script>
-  <script src="js/auth.js?v=3.21.0"></script>
+  <script src="js/supabase-config.js?v=3.22.0"></script>
+  <script src="js/activity-log.js?v=3.22.0"></script>
+  <script src="js/auth.js?v=3.22.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -222,6 +223,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.21.0"></script>
+  <script src="js/version.js?v=3.22.0"></script>
 </body>
 </html>
