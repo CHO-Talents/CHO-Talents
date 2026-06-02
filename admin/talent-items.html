@@ -1,130 +1,130 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ë‹¬ë€íŠ¸ í•­ëª© ê´€ë¦¬ - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.21.0" />
+  <title>´Ş¶õÆ® Ç×¸ñ °ü¸® - CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
+        <button class="nav-dropdown-toggle">¼Ò°³</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">í•™ìƒ ê°€ì´ë“œ</a></li>
-          <li data-min-perm="40"><a href="../teacher-guide.html">êµì‚¬ ê°€ì´ë“œ</a></li>
-          <li data-min-perm="60"><a href="../admin-guide.html">ê´€ë¦¬ì ê°€ì´ë“œ</a></li>
-          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
+          <li><a href="../guide.html">ÇĞ»ı °¡ÀÌµå</a></li>
+          <li data-min-perm="40"><a href="../teacher-guide.html">±³»ç °¡ÀÌµå</a></li>
+          <li data-min-perm="60"><a href="../admin-guide.html">°ü¸®ÀÚ °¡ÀÌµå</a></li>
+          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">ë‹¬ë€íŠ¸</button>
+        <button class="nav-dropdown-toggle active">´Ş¶õÆ®</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
-          <li><a href="../talent-receive.html">ë‹¬ë€íŠ¸ ìˆ˜ë ¹</a></li>
-          <li data-min-perm="40"><a href="talents.html" class="active">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">ë‹¬ë€íŠ¸ QR ê´€ë¦¬</a></li>
+          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
+          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
+          <li data-min-perm="40"><a href="talents.html" class="active">´Ş¶õÆ® °ü¸®</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
+        <button class="nav-dropdown-toggle">»óÇ°</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
-          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
-          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
+          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
+          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
+          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
+        <button class="nav-dropdown-toggle">°ü¸®</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
-          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="index.html">´ë½Ãº¸µå</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
+          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">ìš´ì˜</button>
+        <button class="nav-dropdown-toggle">¿î¿µ</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
-          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
-          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
-          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
-          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
+          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
+          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
+          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
+          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ğŸ¯ ë‹¬ë€íŠ¸ ì§€ê¸‰ í•­ëª© ê´€ë¦¬</h2>
-    <p style="color:var(--admin-text-muted);margin-bottom:1.5rem;">ë‹¬ë€íŠ¸ ì§€ê¸‰ ì‹œ ì„ íƒí•  ìˆ˜ ìˆëŠ” í•­ëª©ì„ ê´€ë¦¬í•©ë‹ˆë‹¤. í•™ìƒì€ í•­ëª©ë‹¹ ì£¼ 1íšŒë§Œ ì§€ê¸‰ ê°€ëŠ¥í•©ë‹ˆë‹¤.</p>
+    <h2 style="margin-bottom:1rem;">?? ´Ş¶õÆ® Áö±Ş Ç×¸ñ °ü¸®</h2>
+    <p style="color:var(--admin-text-muted);margin-bottom:1.5rem;">´Ş¶õÆ® Áö±Ş ½Ã ¼±ÅÃÇÒ ¼ö ÀÖ´Â Ç×¸ñÀ» °ü¸®ÇÕ´Ï´Ù. ÇĞ»ıÀº Ç×¸ñ´ç ÁÖ 1È¸¸¸ Áö±Ş °¡´ÉÇÕ´Ï´Ù.</p>
 
     <div class="filters" style="margin-bottom:1rem;">
-      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">ğŸ’ í•™ìƒìš©</button>
-      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">ğŸ‘©â€ğŸ« êµì‚¬ìš©</button>
+      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">?? ÇĞ»ı¿ë</button>
+      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">????? ±³»ç¿ë</button>
       <span style="margin-left:auto;"></span>
-      <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ í•­ëª© ì¶”ê°€</button>
+      <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ Ç×¸ñ Ãß°¡</button>
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">í•™ìƒìš© í•­ëª©</div>
+        <div class="admin-table-title" id="tableTitle">ÇĞ»ı¿ë Ç×¸ñ</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ìˆœì„œ</th><th>í•­ëª©ëª…</th><th>ì§€ê¸‰ ë‹¬ë€íŠ¸</th><th>ìƒíƒœ</th><th>ê´€ë¦¬</th></tr></thead>
-        <tbody id="itemList"><tr><td colspan="5" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <thead><tr><th>¼ø¼­</th><th>Ç×¸ñ¸í</th><th>Áö±Ş ´Ş¶õÆ®</th><th>»óÅÂ</th><th>°ü¸®</th></tr></thead>
+        <tbody id="itemList"><tr><td colspan="5" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="itemModal">
     <div class="modal-box" style="max-width:400px;">
-      <h3 class="modal-title" id="modalTitle">í•­ëª© ì¶”ê°€</h3>
+      <h3 class="modal-title" id="modalTitle">Ç×¸ñ Ãß°¡</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">í•­ëª©ëª…</label>
-        <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ì˜ˆ: ì¶œì„, ì„±ê²½ ì½ê¸°" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Ç×¸ñ¸í</label>
+        <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="¿¹: Ãâ¼®, ¼º°æ ÀĞ±â" />
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì§€ê¸‰ ë‹¬ë€íŠ¸</label>
-          <input type="number" id="mAmount" min="1" max="100" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ìµœëŒ€ 100" />
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Áö±Ş ´Ş¶õÆ®</label>
+          <input type="number" id="mAmount" min="1" max="100" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ÃÖ´ë 100" />
         </div>
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì •ë ¬ ìˆœì„œ</label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Á¤·Ä ¼ø¼­</label>
           <input type="number" id="mSort" min="0" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" value="0" />
         </div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ëŒ€ìƒ</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´ë»ó</label>
         <select id="mTarget" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="student">í•™ìƒ</option>
-          <option value="teacher">êµì‚¬</option>
+          <option value="student">ÇĞ»ı</option>
+          <option value="teacher">±³»ç</option>
         </select>
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">ì·¨ì†Œ</button>
-        <button class="btn-confirm" onclick="saveItem()">ì €ì¥</button>
+        <button class="btn-cancel" onclick="closeModal()">Ãë¼Ò</button>
+        <button class="btn-confirm" onclick="saveItem()">ÀúÀå</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.21.0"></script>
-  <script src="../js/activity-log.js?v=3.21.0"></script>
-  <script src="../js/auth.js?v=3.21.0"></script>
-  <script src="../js/talent.js?v=3.21.0"></script>
+  <script src="../js/supabase-config.js?v=3.22.0"></script>
+  <script src="../js/activity-log.js?v=3.22.0"></script>
+  <script src="../js/auth.js?v=3.22.0"></script>
+  <script src="../js/talent.js?v=3.22.0"></script>
   <script>
     initSupabase();
     let session;
@@ -158,12 +158,12 @@
 
     function renderItems() {
       const list = allItems.filter(i => i.target_type === currentTab);
-      const label = currentTab === 'student' ? 'í•™ìƒìš©' : 'êµì‚¬ìš©';
-      document.getElementById('tableTitle').textContent = `${label} í•­ëª© (${list.length}ê°œ)`;
+      const label = currentTab === 'student' ? 'ÇĞ»ı¿ë' : '±³»ç¿ë';
+      document.getElementById('tableTitle').textContent = `${label} Ç×¸ñ (${list.length}°³)`;
       const tbody = document.getElementById('itemList');
 
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">ë“±ë¡ëœ í•­ëª©ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">µî·ÏµÈ Ç×¸ñÀÌ ¾ø½À´Ï´Ù.</td></tr>`;
         return;
       }
 
@@ -171,17 +171,17 @@
         <td>${i.sort_order}</td>
         <td><strong>${i.name}</strong></td>
         <td style="font-weight:700;color:#2b8a3e;">+${i.talent_amount}</td>
-        <td>${i.is_active ? '<span class="level-badge INFO">í™œì„±</span>' : '<span class="level-badge FATAL">ë¹„í™œì„±</span>'}</td>
+        <td>${i.is_active ? '<span class="level-badge INFO">È°¼º</span>' : '<span class="level-badge FATAL">ºñÈ°¼º</span>'}</td>
         <td>
-          <button class="filter-btn" onclick='openEditModal(${JSON.stringify(i).replace(/'/g,"&#39;")})'>ìˆ˜ì •</button>
-          <button class="filter-btn" onclick="toggleActive('${i.id}', ${i.is_active})">${i.is_active ? 'ë¹„í™œì„±í™”' : 'í™œì„±í™”'}</button>
+          <button class="filter-btn" onclick='openEditModal(${JSON.stringify(i).replace(/'/g,"&#39;")})'>¼öÁ¤</button>
+          <button class="filter-btn" onclick="toggleActive('${i.id}', ${i.is_active})">${i.is_active ? 'ºñÈ°¼ºÈ­' : 'È°¼ºÈ­'}</button>
         </td>
       </tr>`).join('');
     }
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = 'í•­ëª© ì¶”ê°€';
+      document.getElementById('modalTitle').textContent = 'Ç×¸ñ Ãß°¡';
       document.getElementById('mName').value = '';
       document.getElementById('mAmount').value = '';
       document.getElementById('mSort').value = '0';
@@ -192,7 +192,7 @@
 
     function openEditModal(item) {
       editingId = item.id;
-      document.getElementById('modalTitle').textContent = 'í•­ëª© ìˆ˜ì •';
+      document.getElementById('modalTitle').textContent = 'Ç×¸ñ ¼öÁ¤';
       document.getElementById('mName').value = item.name;
       document.getElementById('mAmount').value = item.talent_amount;
       document.getElementById('mSort').value = item.sort_order;
@@ -210,9 +210,9 @@
       const sortOrder = parseInt(document.getElementById('mSort').value) || 0;
       const targetType = document.getElementById('mTarget').value;
 
-      if (!name) { errEl.textContent = 'í•­ëª©ëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
-      if (!amount || amount <= 0) { errEl.textContent = 'ìœ íš¨í•œ ë‹¬ë€íŠ¸ ìˆ˜ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
-      if (amount > 100) { errEl.textContent = 'ë‹¬ë€íŠ¸ëŠ” ìµœëŒ€ 100ê¹Œì§€ë§Œ ì„¤ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.'; errEl.classList.add('show'); return; }
+      if (!name) { errEl.textContent = 'Ç×¸ñ¸íÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!amount || amount <= 0) { errEl.textContent = 'À¯È¿ÇÑ ´Ş¶õÆ® ¼ö¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (amount > 100) { errEl.textContent = '´Ş¶õÆ®´Â ÃÖ´ë 100±îÁö¸¸ ¼³Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.'; errEl.classList.add('show'); return; }
 
       const row = { name, talent_amount: amount, sort_order: sortOrder, target_type: targetType };
 
@@ -231,14 +231,14 @@
     }
 
     async function toggleActive(id, currentActive) {
-      const action = currentActive ? 'ë¹„í™œì„±í™”' : 'í™œì„±í™”';
-      if (!confirm(`ì´ í•­ëª©ì„ ${action}í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      const action = currentActive ? 'ºñÈ°¼ºÈ­' : 'È°¼ºÈ­';
+      if (!confirm(`ÀÌ Ç×¸ñÀ» ${action}ÇÏ½Ã°Ú½À´Ï±î?`)) return;
       await _sb.from('talent_items').update({ is_active: !currentActive }).eq('id', id);
       await loadItems();
     }
 
     document.getElementById('itemModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.21.0"></script>
+  <script src="../js/version.js?v=3.22.0"></script>
 </body>
 </html>

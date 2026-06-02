@@ -3,93 +3,93 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>보고서 관리 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.21.0" />
+  <title>보고??관�?- CHO Talents</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">�?/span> ?��???마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">소개</button>
+        <button class="nav-dropdown-toggle">?�개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">학생 가이드</a></li>
-          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
-          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li>
-          <li><a href="../earn-talents.html">달란트 적립</a></li>
+          <li><a href="../guide.html">?�생 가?�드</a></li>
+          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가?�드</a></li>
+          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가?�드</a></li>
+          <li><a href="../earn-talents.html">?��????�립</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">달란트</button>
+        <button class="nav-dropdown-toggle">?��???/button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">내 달란트</a></li>
-          <li><a href="../talent-receive.html">달란트 수령</a></li>
-          <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">달란트 통계</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">달란트 QR 관리</a></li>
+          <li><a href="../my-talents.html">???��???/a></li>
+          <li><a href="../talent-receive.html">?��????�령</a></li>
+          <li data-min-perm="40"><a href="talents.html">?��???관�?/a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">?��????�계</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">?��???QR 관�?/a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">상품</button>
+        <button class="nav-dropdown-toggle">?�품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">상품 구매</a></li>
-          <li><a href="../my-orders.html">내 구매 상품</a></li>
-          <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
-          <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">?�품 구매</a></li>
+          <li><a href="../my-orders.html">??구매 ?�품</a></li>
+          <li data-min-perm="60"><a href="shop.html">?�품 관�?/a></li>
+          <li data-min-perm="60"><a href="purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">관리</button>
+        <button class="nav-dropdown-toggle">관�?/button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">대시보드</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
-          <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="index.html">?�?�보??/a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">관리자 관�?/a></li>
+          <li data-min-perm="60"><a href="departments.html">부??관�?/a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle active">운영</button>
+        <button class="nav-dropdown-toggle active">?�영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
-          <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
+          <li data-min-perm="100"><a href="page-access.html">?�이지 ?�근</a></li>
+          <li data-min-perm="100"><a href="page-features.html">?�이지 기능</a></li>
           <li data-min-perm="80"><a href="versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="reports.html" class="active">보고서</a></li>
-          <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
+          <li data-min-perm="80"><a href="reports.html" class="active">보고??/a></li>
+          <li data-min-perm="100"><a href="audit.html">?�업 ?�력</a></li>
           <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그?�웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">보고서 관리</h2>
+    <h2 style="margin-bottom:1rem;">보고??관�?/h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title">작업 보고서 목록</div>
+        <div class="admin-table-title">?�업 보고??목록</div>
         <div class="filters" style="display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
-          <button class="filter-btn active" data-type="all" onclick="filterReports('all', this)">전체</button>
-          <button class="filter-btn" data-type="plan" onclick="filterReports('plan', this)">계획서</button>
-          <button class="filter-btn" data-type="test_scenario" onclick="filterReports('test_scenario', this)">검증 시나리오</button>
-          <button class="filter-btn" data-type="test_result" onclick="filterReports('test_result', this)">테스트 결과</button>
-          <button class="filter-btn" data-type="security_report" onclick="filterReports('security_report', this)">보안 보고서</button>
-          <button class="filter-btn" data-type="change_report" onclick="filterReports('change_report', this)">수정 보고서</button>
-          <button class="btn-ack" style="margin-left:auto;" onclick="openAddReportModal()">+ 보고서 등록</button>
-          <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedReports()" id="btnDeleteReports" disabled>선택 삭제</button>
-          <button class="btn-ack" style="background:#6c5ce7;display:none;" id="btnSeedReports" onclick="seedAllReports()">전체 보고서 초기화</button>
+          <button class="filter-btn active" data-type="all" onclick="filterReports('all', this)">?�체</button>
+          <button class="filter-btn" data-type="plan" onclick="filterReports('plan', this)">계획??/button>
+          <button class="filter-btn" data-type="test_scenario" onclick="filterReports('test_scenario', this)">검�??�나리오</button>
+          <button class="filter-btn" data-type="test_result" onclick="filterReports('test_result', this)">?�스??결과</button>
+          <button class="filter-btn" data-type="security_report" onclick="filterReports('security_report', this)">보안 보고??/button>
+          <button class="filter-btn" data-type="change_report" onclick="filterReports('change_report', this)">?�정 보고??/button>
+          <button class="btn-ack" style="margin-left:auto;" onclick="openAddReportModal()">+ 보고???�록</button>
+          <button class="btn-ack" style="background:#d63031;" onclick="deleteSelectedReports()" id="btnDeleteReports" disabled>?�택 ??��</button>
+          <button class="btn-ack" style="background:#6c5ce7;display:none;" id="btnSeedReports" onclick="seedAllReports()">?�체 보고??초기??/button>
         </div>
       </div>
       <table class="admin-table">
         <thead>
-          <tr><th style="width:30px;"><input type="checkbox" id="chkAll" onchange="toggleAllReports(this)"></th><th>작업ID</th><th>제목</th><th>유형</th><th>작성자</th><th>작성일</th><th></th></tr>
+          <tr><th style="width:30px;"><input type="checkbox" id="chkAll" onchange="toggleAllReports(this)"></th><th>?�업ID</th><th>?�목</th><th>?�형</th><th>?�성??/th><th>?�성??/th><th></th></tr>
         </thead>
         <tbody id="reportsList">
-          <tr><td colspan="7" class="empty-state">로딩 중... <span id="loadStatus" style="font-size:0.75rem;color:#868e96;display:block;margin-top:0.3rem;"></span></td></tr>
+          <tr><td colspan="7" class="empty-state">로딩 �?.. <span id="loadStatus" style="font-size:0.75rem;color:#868e96;display:block;margin-top:0.3rem;"></span></td></tr>
         </tbody>
       </table>
     </div>
@@ -99,8 +99,8 @@
   <div class="modal-overlay hidden" id="reportModal">
     <div class="modal-box" style="max-width:700px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 class="modal-title" id="modalTitle">보고서 상세</h3>
-        <button class="btn-cancel" onclick="closeReportModal()">닫기</button>
+        <h3 class="modal-title" id="modalTitle">보고???�세</h3>
+        <button class="btn-cancel" onclick="closeReportModal()">?�기</button>
       </div>
       <div class="report-content" id="modalContent"></div>
     </div>
@@ -110,42 +110,42 @@
   <div class="modal-overlay hidden" id="addReportModal">
     <div class="modal-box" style="max-width:700px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 class="modal-title" id="addModalTitle">보고서 등록</h3>
-        <button class="btn-cancel" onclick="closeAddReportModal()">닫기</button>
+        <h3 class="modal-title" id="addModalTitle">보고???�록</h3>
+        <button class="btn-cancel" onclick="closeAddReportModal()">?�기</button>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">작업 ID</label>
-        <input type="text" id="rTaskId" placeholder="예: TASK-014" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�업 ID</label>
+        <input type="text" id="rTaskId" placeholder="?? TASK-014" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">제목</label>
-        <input type="text" id="rTaskTitle" placeholder="보고서 제목" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�목</label>
+        <input type="text" id="rTaskTitle" placeholder="보고???�목" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">유형</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�형</label>
         <select id="rReportType" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;">
-          <option value="plan">계획서</option>
-          <option value="test_scenario">검증 시나리오</option>
-          <option value="test_result">테스트 결과</option>
-          <option value="security_report">보안 보고서</option>
-          <option value="change_report">수정 보고서</option>
+          <option value="plan">계획??/option>
+          <option value="test_scenario">검�??�나리오</option>
+          <option value="test_result">?�스??결과</option>
+          <option value="security_report">보안 보고??/option>
+          <option value="change_report">?�정 보고??/option>
         </select>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">내용 (HTML 지원)</label>
-        <textarea id="rContent" rows="12" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;font-family:monospace;font-size:0.85rem;" placeholder="HTML 형식으로 작성하세요"></textarea>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�용 (HTML 지??</label>
+        <textarea id="rContent" rows="12" style="width:100%;padding:0.5rem;border:1px solid #dee2e6;border-radius:6px;font-family:monospace;font-size:0.85rem;" placeholder="HTML ?�식?�로 ?�성?�세??></textarea>
       </div>
       <div style="display:flex;justify-content:flex-end;gap:0.5rem;">
         <button class="btn-cancel" onclick="closeAddReportModal()">취소</button>
-        <button class="btn-ack" onclick="saveReport()" id="btnSaveReport">등록</button>
+        <button class="btn-ack" onclick="saveReport()" id="btnSaveReport">?�록</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.21.0"></script>
-  <script src="../js/activity-log.js?v=3.21.0"></script>
-  <script src="../js/auth.js?v=3.21.0"></script>
+  <script src="../js/supabase-config.js?v=3.22.0"></script>
+  <script src="../js/activity-log.js?v=3.22.0"></script>
+  <script src="../js/auth.js?v=3.22.0"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -156,18 +156,18 @@
     let _initDone = false;
     setTimeout(() => {
       if (!_initDone) {
-        _stepLog('TIMEOUT', '3초 타임아웃 - 강제 표시');
+        _stepLog('TIMEOUT', '3�??�?�아??- 강제 ?�시');
         document.body.classList.add('auth-ready');
       }
     }, 3000);
 
     initSupabase();
-    _stepLog('1', 'Supabase 초기화 완료 (_sb=' + (!!_sb) + ')');
+    _stepLog('1', 'Supabase 초기???�료 (_sb=' + (!!_sb) + ')');
 
     let session;
     (async () => {
       try {
-        _stepLog('2', 'initPage 호출 중...');
+        _stepLog('2', 'initPage ?�출 �?..');
         session = await initPage(80, '../login.html');
         _stepLog('3', 'initPage 결과: ' + (session ? 'OK (rank=' + session.permissionRank + ')' : 'null'));
         if (!session) return;
@@ -183,28 +183,28 @@
           const seedBtn = document.getElementById('btnSeedReports');
           if (seedBtn) seedBtn.style.display = '';
         }
-        _stepLog('4', 'loadReports 호출 중...');
+        _stepLog('4', 'loadReports ?�출 �?..');
         await loadReports();
-        _stepLog('6', 'loadReports 완료');
+        _stepLog('6', 'loadReports ?�료');
 
         updateBadge();
         _initDone = true;
-        _stepLog('7', '페이지 초기화 완료');
+        _stepLog('7', '?�이지 초기???�료');
       } catch (err) {
-        _stepLog('ERR', '초기화 오류: ' + err.message);
+        _stepLog('ERR', '초기???�류: ' + err.message);
         console.error('[REPORTS] init error:', err);
         document.body.classList.add('auth-ready');
         _initDone = true;
         document.getElementById('reportsList').innerHTML =
-          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">페이지 로드 오류: ${err.message}</p></td></tr>`;
+          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">?�이지 로드 ?�류: ${err.message}</p></td></tr>`;
       }
     })();
 
     let allReports = [];
     const REPORT_TYPE_LABELS = {
-      plan: '계획서', test_scenario: '검증 시나리오',
-      test_result: '테스트 결과', security_report: '보안 보고서',
-      change_report: '수정 보고서'
+      plan: '계획??, test_scenario: '검�??�나리오',
+      test_result: '?�스??결과', security_report: '보안 보고??,
+      change_report: '?�정 보고??
     };
 
     async function updateBadge() {
@@ -215,16 +215,16 @@
 
     async function loadReports() {
       try {
-        _stepLog('5a', 'reports 테이블 쿼리 중...');
+        _stepLog('5a', 'reports ?�이�?쿼리 �?..');
         const { data, error } = await _sb
           .from('reports').select('*').order('created_at', { ascending: false });
 
-        _stepLog('5b', '쿼리 결과: data=' + (data ? data.length + '건' : 'null') + ', error=' + (error ? error.message : 'none'));
+        _stepLog('5b', '쿼리 결과: data=' + (data ? data.length + '�? : 'null') + ', error=' + (error ? error.message : 'none'));
 
         if (error) {
           console.error('[REPORTS] query error:', error);
           document.getElementById('reportsList').innerHTML =
-            `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">보고서 조회 오류: ${error.message || JSON.stringify(error)}</p><p style="font-size:0.8rem;color:#868e96;margin-top:0.5rem;">reports 테이블 RLS 정책 또는 접근 권한을 확인해주세요.</p></td></tr>`;
+            `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">보고??조회 ?�류: ${error.message || JSON.stringify(error)}</p><p style="font-size:0.8rem;color:#868e96;margin-top:0.5rem;">reports ?�이�?RLS ?�책 ?�는 ?�근 권한???�인?�주?�요.</p></td></tr>`;
           return;
         }
         allReports = data || [];
@@ -235,7 +235,7 @@
           (r.content && r.content.includes('???'))
         );
         if (hasBroken) {
-          _stepLog('AUTO', '깨진 보고서 데이터 감지 - 자동 복구 시작');
+          _stepLog('AUTO', '깨진 보고???�이??감�? - ?�동 복구 ?�작');
           await autoFixReports();
           return;
         }
@@ -243,10 +243,10 @@
         await seedMissingReports();
         renderReports(allReports);
       } catch (err) {
-        _stepLog('5-ERR', '쿼리 예외: ' + err.message);
+        _stepLog('5-ERR', '쿼리 ?�외: ' + err.message);
         console.error('[REPORTS] exception:', err);
         document.getElementById('reportsList').innerHTML =
-          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">예외 발생: ${err.message}</p></td></tr>`;
+          `<tr><td colspan="7" class="empty-state"><p style="color:#d63031;">?�외 발생: ${err.message}</p></td></tr>`;
       }
     }
 
@@ -254,7 +254,7 @@
       const tbody = document.getElementById('reportsList');
       if (!list || list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
-          <div class="empty-state-icon">📄</div><p>보고서가 없습니다.</p></div></td></tr>`;
+          <div class="empty-state-icon">?��</div><p>보고?��? ?�습?�다.</p></div></td></tr>`;
         return;
       }
       tbody.innerHTML = list.map(r => `
@@ -265,7 +265,7 @@
           <td><span class="report-type-tag ${r.report_type}">${REPORT_TYPE_LABELS[r.report_type] || r.report_type}</span></td>
           <td>${r.created_by || '-'}</td>
           <td>${formatKSTShort(r.created_at)}</td>
-          <td><button class="filter-btn" onclick="viewReport('${r.id}')">보기</button> <button class="filter-btn" onclick="editReport('${r.id}')">수정</button></td>
+          <td><button class="filter-btn" onclick="viewReport('${r.id}')">보기</button> <button class="filter-btn" onclick="editReport('${r.id}')">?�정</button></td>
         </tr>
       `).join('');
     }
@@ -302,42 +302,42 @@
     });
 
     const REPORT_SEED_MAP = {
-      'TASK-029': { task_title:'v3.12.0 기능 수정 + 문서 정비', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비</h2><p><b>버전:</b> v3.12.0</p><ul><li>페이지 기능: role_page_features 테이블 생성 + 6열 그리드</li><li>메인 페이지: 로그인/로그아웃 버튼 이모지 수정</li><li>네비게이션 통합: admin nav 기준 public/admin 전체 일치화 + 달란트 적립 추가</li><li>달란트 관리: 달란트 항목 관리 버튼 추가</li><li>구매 관리: 전체 탭 기본 선택 + 순서 변경</li><li>로그: 카운트 형식 (X/Y) + 페이지네이션 번호 5개</li><li>작업 이력: roleKey/permissionKey 한글화 + 상세 JSON 키 한글 라벨</li><li>문서 4종 생성 + 보고서 등록 + 누락 문서 연결</li></ul>' },
-      'TASK-028': { task_title:'v3.11.0 반응형 페이지 + 네비게이션 통합', content:'<h2>TASK-028: v3.11.0 반응형/네비게이션 개편</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응형 브레이크포인트 통합: 480/640/768/1024px 4단계</li><li>모바일 햄버거 네비게이션: admin-nav 15개 파일 + top-nav 3개 파일</li><li>테이블 반응형: 1024px 스크롤 시작, min-width 단계별 축소</li><li>모달/폼: 모바일 flex-wrap + 전폭 확대</li><li>대시보드 quickLinks/detailSummary 모바일 그리드 전환</li><li>my-talents.html Template A 네비게이션 통합</li><li>index.html 로그인 후 내비게이션 링크 보강</li><li>applyPermNav() 양방향 show/hide 처리</li><li>admin nav: page-access/audit data-min-perm 80→100, page-features active 추가</li></ul>' },
-      'TASK-027': { task_title:'v3.10.0 권한 세분화 + 구매 관리 개편 + 재고 제거', content:'<h2>TASK-027: v3.10.0 대규모 권한/구매 개편</h2><p><b>버전:</b> v3.10.0</p><ul><li>달란트 관리 권한 세분화: rank 80 전체 조회/담당 부서 지급</li><li>give_talent RPC: managed_dept_id 스코핑 추가</li><li>가입 승인/부서 이동 권한 개편: rank 60 부서 이동 섹션 표시</li><li>부서 이동 버튼 명칭: rank &lt; 90 "부서 이동 신청"</li><li>로그인: 승인 대기/거부/비밀번호 오류 메시지 세분화</li><li>재고 시스템 제거: shop.html + admin/shop.html</li><li>구매 관리 개편: 처리자/일시 표시, 상태 컬럼 제거, 전체 탭 추가</li><li>구매 관리 권한: rank 60+ 담당 부서, rank 90+ 전체</li><li>구매 관리 네비게이션 배지: 처리 대기 건수 표시</li><li>페이지 접근/기능/작업 이력: initPage(100) 관리자 전용</li><li>전체 admin 네비게이션 data-min-perm 업데이트</li></ul>' },
-      'TASK-001': { task_title:'v1.0.0 초기 구축', content:'<h2>TASK-001: 초기 구축</h2><p><b>버전:</b> v1.0.0</p><ul><li>환영 메인 페이지 구현</li><li>관리자 로그인/패스워드 변경</li><li>관리자 대시보드 (보고서, 로그)</li><li>Supabase 연동 및 CRUD</li><li>활동 로그 시스템</li><li>GitHub Pages 배포</li></ul>' },
-      'TASK-002': { task_title:'v1.1.0 역할별 계정 시스템', content:'<h2>TASK-002: 역할별 계정 시스템</h2><p><b>버전:</b> v1.1.0</p><ul><li>4단계 역할 구분</li><li>역할별 전용 페이지 구현</li><li>달란트 상점 (학생/교사 분리)</li><li>부서 관리자 기능</li><li>RPC 함수</li><li>통합 로그인 페이지</li></ul>' },
-      'TASK-003': { task_title:'v1.2.0 상품 이미지 및 메인 화면 개선', content:'<h2>TASK-003: 상품 이미지 및 메인 화면</h2><p><b>버전:</b> v1.2.0</p><ul><li>상품 이미지 URL 지원</li><li>Supabase Storage 파일 업로드</li><li>메인 화면 카드 링크 연결</li><li>달란트 적립 방법 안내 페이지</li></ul>' },
-      'TASK-004': { task_title:'v1.3.0 버전 관리 시스템', content:'<h2>TASK-004: 버전 관리 시스템</h2><p><b>버전:</b> v1.3.0</p><ul><li>버전 관리 모듈 도입</li><li>모든 페이지 하단 버전 표시</li><li>관리자 버전 이력 조회</li></ul>' },
-      'TASK-005': { task_title:'v1.4.0 사용자 관리 및 역할 배지', content:'<h2>TASK-005: 사용자 관리 및 역할 배지</h2><p><b>버전:</b> v1.4.0</p><ul><li>관리자 사용자 관리 페이지</li><li>역할별 통계 대시보드</li><li>모든 페이지 역할 배지</li></ul>' },
-      'TASK-006': { task_title:'v1.5.0 계정 등록 신청', content:'<h2>TASK-006: 계정 등록 신청</h2><p><b>버전:</b> v1.5.0</p><ul><li>계정 등록 신청 페이지</li><li>아이디 중복/신청 중복 검증</li><li>관리자 승인/거부 기능</li></ul>' },
-      'TASK-007': { task_title:'v2.0.0 DB 보안 구조 전면 개선', content:'<h2>TASK-007: DB 보안 구조 전면 개선</h2><p><b>버전:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth 도입</li><li>profiles 테이블 신설</li><li>SECURITY DEFINER RPC</li><li>전체 RLS 정책 재설계</li><li>모바일 반응형 개선</li></ul>' },
-      'TASK-008': { task_title:'v2.1.0 관리자 페이지 접근 제어', content:'<h2>TASK-008: 관리자 페이지 접근 제어</h2><p><b>버전:</b> v2.1.0</p><ul><li>initPage() 역할 체크 리디렉트</li><li>CSS auth-ready 콘텐츠 플래시 방지</li><li>부서 관리 인원 분리 표시</li><li>admin 전용 상품 관리 페이지</li></ul>' },
-      'TASK-009': { task_title:'v2.2.0 레거시 관리자 로그인 제거', content:'<h2>TASK-009: 레거시 관리자 로그인 제거</h2><p><b>버전:</b> v2.2.0</p><ul><li>관리자 진입점 버튼 제거</li><li>admin/login.html 삭제</li><li>login.html 단일화</li></ul>' },
-      'TASK-010': { task_title:'v2.3.0 초기 비밀번호 변경 강제', content:'<h2>TASK-010: 초기 비밀번호 변경 강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()에 isFirstLogin 리디렉트</li><li>보호 페이지 전환</li><li>autoLogPageView() 인증 후 이동</li></ul>' },
-      'TASK-011': { task_title:'v2.4.0 관리자 대시보드 개선', content:'<h2>TASK-011: 관리자 대시보드 개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가입 대기자 수 카드 추가</li><li>바로가기 영역 5개 재구성</li><li>바로가기에 이모지 추가</li></ul>' },
-      'TASK-012': { task_title:'v2.5.0 관리자/부서관리자 메뉴 통합', content:'<h2>TASK-012: 메뉴 통합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ 디렉토리 삭제</li><li>admin/talents.html 생성</li><li>applyRoleNav() 함수</li></ul>' },
-      'TASK-013A': { task_title:'v3.0.0 슈퍼관리자 체계 + 네비게이션 개편', content:'<h2>TASK-013A: v3.0.0 슈퍼관리자 체계</h2><p>docs/TASK-013A_change_report.md 참조</p>' },
-      'TASK-013BCD': { task_title:'v3.0.0 변경 보고서 + SQL 스키마', content:'<h2>TASK-013BCD: v3.0.0 변경 보고서</h2><p>docs/TASK-013BCD_change_report.md 참조</p>' },
-      'TASK-013': { task_title:'v3.0.0~v3.6.0 유형/권한 6단계 체계', content:'<h2>TASK-013: 6단계 체계 전면 개편</h2><p><b>버전:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level 확장</li><li>get_permission_rank() 함수</li><li>RPC 12개 업데이트</li><li>달란트 지급 개편</li><li>반 시스템 추가</li></ul>' },
-      'TASK-014': { task_title:'v3.7.0 다중 기능 개선 및 UX 향상', content:'<h2>TASK-014: 다중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>아이디 한글 입력 제한</li><li>로그 범위 삭제, 이름(아이디) 표시, 상세 팝업</li><li>대시보드 이슈 로그 필터</li><li>네비게이션 변경</li><li>물품 활성화/비활성화</li><li>승인 대기 메시지</li></ul>' },
-      'TASK-015': { task_title:'v3.7.1~v3.7.2 보고서 버그 수정 + 로그 삭제 + 배지', content:'<h2>TASK-015: 보고서 버그 수정</h2><p><b>버전:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS 충돌 해결</li><li>로그 체크박스 + 선택 삭제</li><li>가입대기 배지</li></ul>' },
-      'TASK-016': { task_title:'v3.7.3 권한 기반 부서/사용자 관리 스코핑', content:'<h2>TASK-016: 권한 기반 스코핑</h2><p><b>버전:</b> v3.7.3</p><ul><li>교사 수 카운트 전체 포함</li><li>본인보다 낮은 권한만 관리</li><li>부장 이하 담당 부서만 표시</li></ul>' },
-      'TASK-017': { task_title:'v3.7.4 가입 신청 권한별 조회/처리', content:'<h2>TASK-017: 가입 신청 권한별</h2><p><b>버전:</b> v3.7.4</p><ul><li>관리자/전도사님: 전체 조회+처리</li><li>부장: 전체 조회, 담당만 처리</li><li>부서 담당 교사: 담당만 조회+처리</li><li>네비게이션 아이디 표시</li></ul>' },
-      'TASK-018': { task_title:'v3.7.5 타인 아이디 숨김 + 부서 이동 관리', content:'<h2>TASK-018: 아이디 숨김 + 부서 이동</h2><p><b>버전:</b> v3.7.5</p><ul><li>타인 아이디 숨김</li><li>부서 이동 즉시/요청 분기</li><li>부서 이동 신청 내역 + 승인</li></ul>' },
-      'TASK-019': { task_title:'v3.7.6 보고서 인코딩 수정 + 관리자 아이디 예외', content:'<h2>TASK-019: 보고서 인코딩 + 관리자 아이디</h2><p><b>버전:</b> v3.7.6</p><ul><li>전체 HTML BOM 제거</li><li>관리자 타인 아이디 표시 가능</li></ul>' },
-      'TASK-020': { task_title:'v3.7.7 수정 모달 부서 변경 제거', content:'<h2>TASK-020: 수정 모달 부서 변경 제거</h2><p><b>버전:</b> v3.7.7</p><ul><li>수정 모달 부서 비활성화</li><li>부서 변경은 부서이동으로만</li></ul>' },
-      'TASK-021': { task_title:'v3.8.0 슈퍼관리자 + 네비게이션 + 페이지 권한', content:'<h2>TASK-021: v3.8.0 전면 개선</h2><p><b>버전:</b> v3.8.0</p><ul><li>슈퍼관리자 rank 110</li><li>네비게이션 달란트 마을 통일</li><li>페이지 접근/기능 관리 신규</li><li>부서 그리드 간소화</li><li>부장 교사 명칭</li><li>관리자 관리 정리</li><li>달란트 관리 잔여/사용/누적 상세</li></ul>' },
-      'TASK-022': { task_title:'v3.8.1 슈퍼관리자 관리 수정 + UI/UX 개선', content:'<h2>TASK-022: v3.8.1 개선</h2><p><b>버전:</b> v3.8.1</p><ul><li>슈퍼관리자 관리자 관리 가능</li><li>네비게이션 한 줄 스크롤</li><li>모바일 그리드 여백 축소</li><li>페이지 기능 권한별 개편</li><li>보고서 JS 시더</li><li>로그 삭제 RLS 정책</li></ul>' },
-      'TASK-023': { task_title:'v3.8.2 페이지 접근 권한별 + 작업 이력 + DB 연동', content:'<h2>TASK-023: v3.8.2 개선</h2><p><b>버전:</b> v3.8.2</p><ul><li>페이지 접근 권한별 개편</li><li>작업 이력 관리 신규</li><li>initPage() DB 연동 적용</li><li>로그 삭제 디버그 강화</li><li>보고서 수정 버튼</li><li>별 이모지 회전 애니메이션</li></ul>' },
-      'TASK-024': { task_title:'v3.8.3 작업자 실명 + 보고서 자동복구', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장</li><li>audit.html 작업자 실명 + 관리자 아이디</li><li>보고서 자동복구</li></ul>' },
-      'TASK-025': { task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>is_deleted 소프트 삭제</li><li>삭제 대기 목록 + 복원</li><li>실제 삭제는 SQL로 직접</li></ul>' },
-      'TASK-026': { task_title:'v3.9.0 상품 구매 시스템 + 달란트 개편 + 명칭 통일', content:'<h2>TASK-026: v3.9.0 대규모 업데이트</h2><p><b>버전:</b> v3.9.0</p><ul><li>상품 구매 시스템 4단계 흐름 신규</li><li>admin/purchases.html 구매 관리 신규</li><li>shop.html 구매 신청 + 잔액 검증</li><li>my-talents.html 사용 대기/구매 내역</li><li>달란트: 체크박스 일괄 지급 + 반환 + 지급자 표시</li><li>명칭 통일: 물품→상품, 부장→부장 교사, 부서관리자→부서 담당 교사</li></ul>' },
-      'TASK-030': { task_title:'v3.12.2 UI/기능 개선: 네비 통일, 달란트 스코핑, 대리 구매', content:'<h2>TASK-030: v3.12.2 UI/기능 개선</h2><p><b>버전:</b> v3.12.2</p><ul><li>네비게이션 통일: 전체 페이지에 "내 구매 상품" 메뉴 추가</li><li>보고서 리디렉트: initPage minRank 통과 시 role_page_access 차단 무시</li><li>달란트 관리: 일반 교사(40) 반 미배정 시 빈 목록 + 항목관리 버튼 60+</li><li>로그인 후: 모든 권한 index.html 이동</li><li>my-orders.html 신규: 본인 구매 내역 조회</li><li>대리 구매: shop.html에서 rank 40+ 대리 구매 모달</li><li>사용자 관리: 반 수정 60+ + 부서 필터 80+</li><li>관리자 관리: 학생 검색 제외 + 부서 필터 80+</li></ul>' }
+      'TASK-029': { task_title:'v3.12.0 기능 ?�정 + 문서 ?�비', content:'<h2>TASK-029: v3.12.0 기능 ?�정 + 문서 ?�비</h2><p><b>버전:</b> v3.12.0</p><ul><li>?�이지 기능: role_page_features ?�이�??�성 + 6??그리??/li><li>메인 ?�이지: 로그??로그?�웃 버튼 ?�모지 ?�정</li><li>?�비게이???�합: admin nav 기�? public/admin ?�체 ?�치??+ ?��????�립 추�?</li><li>?��???관�? ?��?????�� 관�?버튼 추�?</li><li>구매 관�? ?�체 ??기본 ?�택 + ?�서 변�?/li><li>로그: 카운???�식 (X/Y) + ?�이지?�이??번호 5�?/li><li>?�업 ?�력: roleKey/permissionKey ?��???+ ?�세 JSON ???��? ?�벨</li><li>문서 4�??�성 + 보고???�록 + ?�락 문서 ?�결</li></ul>' },
+      'TASK-028': { task_title:'v3.11.0 반응???�이지 + ?�비게이???�합', content:'<h2>TASK-028: v3.11.0 반응???�비게이??개편</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응??브레?�크?�인???�합: 480/640/768/1024px 4?�계</li><li>모바???�버�??�비게이?? admin-nav 15�??�일 + top-nav 3�??�일</li><li>?�이�?반응?? 1024px ?�크�??�작, min-width ?�계�?축소</li><li>모달/?? 모바??flex-wrap + ?�폭 ?��?</li><li>?�?�보??quickLinks/detailSummary 모바??그리???�환</li><li>my-talents.html Template A ?�비게이???�합</li><li>index.html 로그?????�비게이??링크 보강</li><li>applyPermNav() ?�방??show/hide 처리</li><li>admin nav: page-access/audit data-min-perm 80??00, page-features active 추�?</li></ul>' },
+      'TASK-027': { task_title:'v3.10.0 권한 ?�분??+ 구매 관�?개편 + ?�고 ?�거', content:'<h2>TASK-027: v3.10.0 ?�규모 권한/구매 개편</h2><p><b>버전:</b> v3.10.0</p><ul><li>?��???관�?권한 ?�분?? rank 80 ?�체 조회/?�당 부??지�?/li><li>give_talent RPC: managed_dept_id ?�코??추�?</li><li>가???�인/부???�동 권한 개편: rank 60 부???�동 ?�션 ?�시</li><li>부???�동 버튼 명칭: rank &lt; 90 "부???�동 ?�청"</li><li>로그?? ?�인 ?��?거�?/비�?번호 ?�류 메시지 ?�분??/li><li>?�고 ?�스???�거: shop.html + admin/shop.html</li><li>구매 관�?개편: 처리???�시 ?�시, ?�태 컬럼 ?�거, ?�체 ??추�?</li><li>구매 관�?권한: rank 60+ ?�당 부?? rank 90+ ?�체</li><li>구매 관�??�비게이??배�?: 처리 ?��?건수 ?�시</li><li>?�이지 ?�근/기능/?�업 ?�력: initPage(100) 관리자 ?�용</li><li>?�체 admin ?�비게이??data-min-perm ?�데?�트</li></ul>' },
+      'TASK-001': { task_title:'v1.0.0 초기 구축', content:'<h2>TASK-001: 초기 구축</h2><p><b>버전:</b> v1.0.0</p><ul><li>?�영 메인 ?�이지 구현</li><li>관리자 로그???�스?�드 변�?/li><li>관리자 ?�?�보??(보고?? 로그)</li><li>Supabase ?�동 �?CRUD</li><li>?�동 로그 ?�스??/li><li>GitHub Pages 배포</li></ul>' },
+      'TASK-002': { task_title:'v1.1.0 ??���?계정 ?�스??, content:'<h2>TASK-002: ??���?계정 ?�스??/h2><p><b>버전:</b> v1.1.0</p><ul><li>4?�계 ??�� 구분</li><li>??���??�용 ?�이지 구현</li><li>?��????�점 (?�생/교사 분리)</li><li>부??관리자 기능</li><li>RPC ?�수</li><li>?�합 로그???�이지</li></ul>' },
+      'TASK-003': { task_title:'v1.2.0 ?�품 ?��?지 �?메인 ?�면 개선', content:'<h2>TASK-003: ?�품 ?��?지 �?메인 ?�면</h2><p><b>버전:</b> v1.2.0</p><ul><li>?�품 ?��?지 URL 지??/li><li>Supabase Storage ?�일 ?�로??/li><li>메인 ?�면 카드 링크 ?�결</li><li>?��????�립 방법 ?�내 ?�이지</li></ul>' },
+      'TASK-004': { task_title:'v1.3.0 버전 관�??�스??, content:'<h2>TASK-004: 버전 관�??�스??/h2><p><b>버전:</b> v1.3.0</p><ul><li>버전 관�?모듈 ?�입</li><li>모든 ?�이지 ?�단 버전 ?�시</li><li>관리자 버전 ?�력 조회</li></ul>' },
+      'TASK-005': { task_title:'v1.4.0 ?�용??관�?�???�� 배�?', content:'<h2>TASK-005: ?�용??관�?�???�� 배�?</h2><p><b>버전:</b> v1.4.0</p><ul><li>관리자 ?�용??관�??�이지</li><li>??���??�계 ?�?�보??/li><li>모든 ?�이지 ??�� 배�?</li></ul>' },
+      'TASK-006': { task_title:'v1.5.0 계정 ?�록 ?�청', content:'<h2>TASK-006: 계정 ?�록 ?�청</h2><p><b>버전:</b> v1.5.0</p><ul><li>계정 ?�록 ?�청 ?�이지</li><li>?�이??중복/?�청 중복 검�?/li><li>관리자 ?�인/거�? 기능</li></ul>' },
+      'TASK-007': { task_title:'v2.0.0 DB 보안 구조 ?�면 개선', content:'<h2>TASK-007: DB 보안 구조 ?�면 개선</h2><p><b>버전:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth ?�입</li><li>profiles ?�이�??�설</li><li>SECURITY DEFINER RPC</li><li>?�체 RLS ?�책 ?�설�?/li><li>모바??반응??개선</li></ul>' },
+      'TASK-008': { task_title:'v2.1.0 관리자 ?�이지 ?�근 ?�어', content:'<h2>TASK-008: 관리자 ?�이지 ?�근 ?�어</h2><p><b>버전:</b> v2.1.0</p><ul><li>initPage() ??�� 체크 리디?�트</li><li>CSS auth-ready 콘텐�??�래??방�?</li><li>부??관�??�원 분리 ?�시</li><li>admin ?�용 ?�품 관�??�이지</li></ul>' },
+      'TASK-009': { task_title:'v2.2.0 ?�거??관리자 로그???�거', content:'<h2>TASK-009: ?�거??관리자 로그???�거</h2><p><b>버전:</b> v2.2.0</p><ul><li>관리자 진입??버튼 ?�거</li><li>admin/login.html ??��</li><li>login.html ?�일??/li></ul>' },
+      'TASK-010': { task_title:'v2.3.0 초기 비�?번호 변�?강제', content:'<h2>TASK-010: 초기 비�?번호 변�?강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()??isFirstLogin 리디?�트</li><li>보호 ?�이지 ?�환</li><li>autoLogPageView() ?�증 ???�동</li></ul>' },
+      'TASK-011': { task_title:'v2.4.0 관리자 ?�?�보??개선', content:'<h2>TASK-011: 관리자 ?�?�보??개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가???�기자 ??카드 추�?</li><li>바로가�??�역 5�??�구??/li><li>바로가기에 ?�모지 추�?</li></ul>' },
+      'TASK-012': { task_title:'v2.5.0 관리자/부?��?리자 메뉴 ?�합', content:'<h2>TASK-012: 메뉴 ?�합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ ?�렉?�리 ??��</li><li>admin/talents.html ?�성</li><li>applyRoleNav() ?�수</li></ul>' },
+      'TASK-013A': { task_title:'v3.0.0 ?�퍼관리자 체계 + ?�비게이??개편', content:'<h2>TASK-013A: v3.0.0 ?�퍼관리자 체계</h2><p>docs/TASK-013A_change_report.md 참조</p>' },
+      'TASK-013BCD': { task_title:'v3.0.0 변�?보고??+ SQL ?�키�?, content:'<h2>TASK-013BCD: v3.0.0 변�?보고??/h2><p>docs/TASK-013BCD_change_report.md 참조</p>' },
+      'TASK-013': { task_title:'v3.0.0~v3.6.0 ?�형/권한 6?�계 체계', content:'<h2>TASK-013: 6?�계 체계 ?�면 개편</h2><p><b>버전:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level ?�장</li><li>get_permission_rank() ?�수</li><li>RPC 12�??�데?�트</li><li>?��???지�?개편</li><li>�??�스??추�?</li></ul>' },
+      'TASK-014': { task_title:'v3.7.0 ?�중 기능 개선 �?UX ?�상', content:'<h2>TASK-014: ?�중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>?�이???��? ?�력 ?�한</li><li>로그 범위 ??��, ?�름(?�이?? ?�시, ?�세 ?�업</li><li>?�?�보???�슈 로그 ?�터</li><li>?�비게이??변�?/li><li>물품 ?�성??비활?�화</li><li>?�인 ?��?메시지</li></ul>' },
+      'TASK-015': { task_title:'v3.7.1~v3.7.2 보고??버그 ?�정 + 로그 ??�� + 배�?', content:'<h2>TASK-015: 보고??버그 ?�정</h2><p><b>버전:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS 충돌 ?�결</li><li>로그 체크박스 + ?�택 ??��</li><li>가?��?�?배�?</li></ul>' },
+      'TASK-016': { task_title:'v3.7.3 권한 기반 부???�용??관�??�코??, content:'<h2>TASK-016: 권한 기반 ?�코??/h2><p><b>버전:</b> v3.7.3</p><ul><li>교사 ??카운???�체 ?�함</li><li>본인보다 ??? 권한�?관�?/li><li>부???�하 ?�당 부?�만 ?�시</li></ul>' },
+      'TASK-017': { task_title:'v3.7.4 가???�청 권한�?조회/처리', content:'<h2>TASK-017: 가???�청 권한�?/h2><p><b>버전:</b> v3.7.4</p><ul><li>관리자/?�도?�님: ?�체 조회+처리</li><li>부?? ?�체 조회, ?�당�?처리</li><li>부???�당 교사: ?�당�?조회+처리</li><li>?�비게이???�이???�시</li></ul>' },
+      'TASK-018': { task_title:'v3.7.5 ?�???�이???��? + 부???�동 관�?, content:'<h2>TASK-018: ?�이???��? + 부???�동</h2><p><b>버전:</b> v3.7.5</p><ul><li>?�???�이???��?</li><li>부???�동 즉시/?�청 분기</li><li>부???�동 ?�청 ?�역 + ?�인</li></ul>' },
+      'TASK-019': { task_title:'v3.7.6 보고???�코???�정 + 관리자 ?�이???�외', content:'<h2>TASK-019: 보고???�코??+ 관리자 ?�이??/h2><p><b>버전:</b> v3.7.6</p><ul><li>?�체 HTML BOM ?�거</li><li>관리자 ?�???�이???�시 가??/li></ul>' },
+      'TASK-020': { task_title:'v3.7.7 ?�정 모달 부??변�??�거', content:'<h2>TASK-020: ?�정 모달 부??변�??�거</h2><p><b>버전:</b> v3.7.7</p><ul><li>?�정 모달 부??비활?�화</li><li>부??변경�? 부?�이?�으로만</li></ul>' },
+      'TASK-021': { task_title:'v3.8.0 ?�퍼관리자 + ?�비게이??+ ?�이지 권한', content:'<h2>TASK-021: v3.8.0 ?�면 개선</h2><p><b>버전:</b> v3.8.0</p><ul><li>?�퍼관리자 rank 110</li><li>?�비게이???��???마을 ?�일</li><li>?�이지 ?�근/기능 관�??�규</li><li>부??그리??간소??/li><li>부??교사 명칭</li><li>관리자 관�??�리</li><li>?��???관�??�여/?�용/?�적 ?�세</li></ul>' },
+      'TASK-022': { task_title:'v3.8.1 ?�퍼관리자 관�??�정 + UI/UX 개선', content:'<h2>TASK-022: v3.8.1 개선</h2><p><b>버전:</b> v3.8.1</p><ul><li>?�퍼관리자 관리자 관�?가??/li><li>?�비게이????�??�크�?/li><li>모바??그리???�백 축소</li><li>?�이지 기능 권한�?개편</li><li>보고??JS ?�더</li><li>로그 ??�� RLS ?�책</li></ul>' },
+      'TASK-023': { task_title:'v3.8.2 ?�이지 ?�근 권한�?+ ?�업 ?�력 + DB ?�동', content:'<h2>TASK-023: v3.8.2 개선</h2><p><b>버전:</b> v3.8.2</p><ul><li>?�이지 ?�근 권한�?개편</li><li>?�업 ?�력 관�??�규</li><li>initPage() DB ?�동 ?�용</li><li>로그 ??�� ?�버�?강화</li><li>보고???�정 버튼</li><li>�??�모지 ?�전 ?�니메이??/li></ul>' },
+      'TASK-024': { task_title:'v3.8.3 ?�업???�명 + 보고???�동복구', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()??user_name ?�??/li><li>audit.html ?�업???�명 + 관리자 ?�이??/li><li>보고???�동복구</li></ul>' },
+      'TASK-025': { task_title:'v3.8.4 로그 ?�프????��(??�� ?��? ?�환', content:'<h2>TASK-025: v3.8.4 ?�프????��</h2><p><b>버전:</b> v3.8.4</p><ul><li>is_deleted ?�프????��</li><li>??�� ?��?목록 + 복원</li><li>?�제 ??��??SQL�?직접</li></ul>' },
+      'TASK-026': { task_title:'v3.9.0 ?�품 구매 ?�스??+ ?��???개편 + 명칭 ?�일', content:'<h2>TASK-026: v3.9.0 ?�규모 ?�데?�트</h2><p><b>버전:</b> v3.9.0</p><ul><li>?�품 구매 ?�스??4?�계 ?�름 ?�규</li><li>admin/purchases.html 구매 관�??�규</li><li>shop.html 구매 ?�청 + ?�액 검�?/li><li>my-talents.html ?�용 ?��?구매 ?�역</li><li>?��??? 체크박스 ?�괄 지�?+ 반환 + 지급자 ?�시</li><li>명칭 ?�일: 물품?�상?? 부?�→부??교사, 부?��?리자?��????�당 교사</li></ul>' },
+      'TASK-030': { task_title:'v3.12.2 UI/기능 개선: ?�비 ?�일, ?��????�코?? ?��?구매', content:'<h2>TASK-030: v3.12.2 UI/기능 개선</h2><p><b>버전:</b> v3.12.2</p><ul><li>?�비게이???�일: ?�체 ?�이지??"??구매 ?�품" 메뉴 추�?</li><li>보고??리디?�트: initPage minRank ?�과 ??role_page_access 차단 무시</li><li>?��???관�? ?�반 교사(40) �?미배????�?목록 + ??��관�?버튼 60+</li><li>로그???? 모든 권한 index.html ?�동</li><li>my-orders.html ?�규: 본인 구매 ?�역 조회</li><li>?��?구매: shop.html?�서 rank 40+ ?��?구매 모달</li><li>?�용??관�? �??�정 60+ + 부???�터 80+</li><li>관리자 관�? ?�생 검???�외 + 부???�터 80+</li></ul>' }
     };
 
     async function autoFixReports() {
-      _stepLog('FIX', '깨진 보고서 자동 복구 시작...');
+      _stepLog('FIX', '깨진 보고???�동 복구 ?�작...');
       let fixCount = 0;
       for (const r of allReports) {
         const seed = REPORT_SEED_MAP[r.task_id];
@@ -350,10 +350,10 @@
             content: seed.content
           }).eq('id', r.id);
           if (!error) fixCount++;
-          else _stepLog('FIX-ERR', r.task_id + ' 복구 실패: ' + error.message);
+          else _stepLog('FIX-ERR', r.task_id + ' 복구 ?�패: ' + error.message);
         }
       }
-      _stepLog('FIX', fixCount + '건 자동 복구 완료');
+      _stepLog('FIX', fixCount + '�??�동 복구 ?�료');
       if (fixCount > 0) {
         const { data } = await _sb.from('reports').select('*').order('created_at', { ascending: false });
         allReports = data || [];
@@ -367,7 +367,7 @@
       const SEED = getSeedData();
       const missing = SEED.filter(s => !existingKeys.has(s.task_id + '|' + s.report_type));
       if (missing.length === 0) return;
-      _stepLog('SEED', `누락 보고서 ${missing.length}건 자동 등록 중...`);
+      _stepLog('SEED', `?�락 보고??${missing.length}�??�동 ?�록 �?..`);
       const { data, error } = await _sb.from('reports').insert(missing).select();
       if (!error && data) {
         allReports = [...allReports, ...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -376,92 +376,92 @@
 
     function getSeedData() {
       return [
-        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'plan', content:'<h2>TASK-001: 초기 구축 - 작업 계획서</h2><p>docs/TASK-001_plan.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_scenario', content:'<h2>TASK-001: 초기 구축 - 테스트 시나리오</h2><p>docs/TASK-001_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_result', content:'<h2>TASK-001: 초기 구축 - 테스트 결과</h2><p>docs/TASK-001_test_result.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'change_report', content:'<h2>TASK-001: 초기 구축</h2><p><b>버전:</b> v1.0.0</p><ul><li>환영 메인 페이지 구현</li><li>관리자 로그인/패스워드 변경</li><li>관리자 대시보드</li><li>Supabase 연동 및 CRUD</li><li>활동 로그 시스템</li><li>GitHub Pages 배포</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 역할별 계정 시스템', report_type:'change_report', content:'<h2>TASK-002: 역할별 계정 시스템</h2><p><b>버전:</b> v1.1.0</p><ul><li>4단계 역할 구분</li><li>역할별 전용 페이지</li><li>달란트 상점</li><li>부서 관리자 기능</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-003', task_title:'v1.2.0 상품 이미지 및 메인 화면 개선', report_type:'change_report', content:'<h2>TASK-003: 상품 이미지 및 메인 화면</h2><p><b>버전:</b> v1.2.0</p><ul><li>상품 이미지 URL 지원</li><li>Supabase Storage 파일 업로드</li><li>메인 화면 카드 링크 연결</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-004', task_title:'v1.3.0 버전 관리 시스템', report_type:'change_report', content:'<h2>TASK-004: 버전 관리 시스템</h2><p><b>버전:</b> v1.3.0</p><ul><li>버전 관리 모듈 도입</li><li>모든 페이지 하단 버전 표시</li><li>관리자 버전 이력 조회</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-005', task_title:'v1.4.0 사용자 관리 및 역할 배지', report_type:'change_report', content:'<h2>TASK-005: 사용자 관리 및 역할 배지</h2><p><b>버전:</b> v1.4.0</p><ul><li>관리자 사용자 관리 페이지</li><li>역할별 통계 대시보드</li><li>모든 페이지 역할 배지</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-006', task_title:'v1.5.0 계정 등록 신청', report_type:'change_report', content:'<h2>TASK-006: 계정 등록 신청</h2><p><b>버전:</b> v1.5.0</p><ul><li>계정 등록 신청 페이지</li><li>아이디 중복 검증</li><li>관리자 승인/거부 기능</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 전면 개선', report_type:'change_report', content:'<h2>TASK-007: DB 보안 구조 전면 개선</h2><p><b>버전:</b> v2.0.0</p><ul><li>Supabase Auth 도입</li><li>profiles 테이블 신설</li><li>SECURITY DEFINER RPC</li><li>전체 RLS 정책 재설계</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-008', task_title:'v2.1.0 관리자 페이지 접근 제어', report_type:'change_report', content:'<h2>TASK-008: 관리자 페이지 접근 제어</h2><p><b>버전:</b> v2.1.0</p><ul><li>initPage() 역할 체크 리디렉트</li><li>CSS auth-ready 콘텐츠 플래시 방지</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-009', task_title:'v2.2.0 레거시 관리자 로그인 제거', report_type:'change_report', content:'<h2>TASK-009: 레거시 관리자 로그인 제거</h2><p><b>버전:</b> v2.2.0</p><ul><li>관리자 진입점 버튼 제거</li><li>admin/login.html 삭제</li><li>login.html 단일화</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-010', task_title:'v2.3.0 초기 비밀번호 변경 강제', report_type:'change_report', content:'<h2>TASK-010: 초기 비밀번호 변경 강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()에 isFirstLogin 리디렉트</li><li>autoLogPageView() 인증 후 이동</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-011', task_title:'v2.4.0 관리자 대시보드 개선', report_type:'change_report', content:'<h2>TASK-011: 관리자 대시보드 개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가입 대기자 수 카드 추가</li><li>바로가기 영역 5개 재구성</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-012', task_title:'v2.5.0 관리자/부서관리자 메뉴 통합', report_type:'change_report', content:'<h2>TASK-012: 메뉴 통합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ 디렉토리 삭제</li><li>admin/talents.html 생성</li><li>applyRoleNav() 함수</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 유형/권한 6단계 체계', report_type:'change_report', content:'<h2>TASK-013: 유형/권한 6단계 체계</h2><p><b>버전:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level 확장</li><li>get_permission_rank() 함수</li><li>RPC 12개 업데이트</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-014', task_title:'v3.7.0 다중 기능 개선 및 UX 향상', report_type:'change_report', content:'<h2>TASK-014: 다중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>아이디 한글 입력 제한</li><li>로그 범위 삭제</li><li>물품 활성화/비활성화</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 보고서 버그 수정', report_type:'change_report', content:'<h2>TASK-015: 보고서 버그 수정</h2><p><b>버전:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS 충돌 해결</li><li>로그 선택 삭제</li><li>가입대기 배지</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-016', task_title:'v3.7.3 권한 기반 스코핑', report_type:'change_report', content:'<h2>TASK-016: 권한 기반 스코핑</h2><p><b>버전:</b> v3.7.3</p><ul><li>본인보다 낮은 권한만 관리</li><li>부장 이하 담당 부서만 표시</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-027', task_title:'v3.10.0 권한 세분화 + 구매 관리 개편', report_type:'change_report', content:'<h2>TASK-027: v3.10.0</h2><p><b>버전:</b> v3.10.0</p><ul><li>달란트 관리 권한 세분화</li><li>가입 승인/부서 이동 권한 개편</li><li>재고 시스템 제거</li><li>구매 관리 개편</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-028', task_title:'v3.11.0 반응형 + 네비게이션 통합', report_type:'change_report', content:'<h2>TASK-028: v3.11.0</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응형 4단계</li><li>모바일 햄버거 네비게이션</li><li>테이블 반응형</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'change_report', content:'<h2>TASK-029: v3.12.0</h2><p><b>버전:</b> v3.12.0</p><ul><li>페이지 기능 관리 개편</li><li>네비게이션 통합</li><li>달란트 관리 항목 관리 추가</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-030', task_title:'v3.12.2 네비 통합 + 구매/관리 개선', report_type:'change_report', content:'<h2>TASK-030: v3.12.2</h2><p><b>버전:</b> v3.12.2</p><ul><li>네비게이션 통합</li><li>내 구매 상품 페이지</li><li>대리 구매 시스템</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-032', task_title:'v3.13.0 로그인 개선 + 5그룹 드롭다운 네비', report_type:'change_report', content:'<h2>TASK-032: v3.13.0</h2><p><b>버전:</b> v3.13.0</p><ul><li>승인 대기 메시지</li><li>비밀번호 복잡도</li><li>5그룹 드롭다운 네비게이션</li><li>학생 가이드 페이지</li><li>Q&A 페이지</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-035', task_title:'v3.13.3~v3.13.4 드롭다운/QnA/배지 수정', report_type:'change_report', content:'<h2>TASK-035: v3.13.3~v3.13.4</h2><p><b>버전:</b> v3.13.3~v3.13.4</p><ul><li>Safari 드롭다운 클리핑 수정 (position:fixed)</li><li>Q&A 삭제/일시/질문자 표시</li><li>메인 가이드 전환</li><li>배지 인라인 표시</li></ul>', created_by:'AI_Cursor' }
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'plan', content:'<h2>TASK-001: 초기 구축 - ?�업 계획??/h2><p>docs/TASK-001_plan.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_scenario', content:'<h2>TASK-001: 초기 구축 - ?�스???�나리오</h2><p>docs/TASK-001_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_result', content:'<h2>TASK-001: 초기 구축 - ?�스??결과</h2><p>docs/TASK-001_test_result.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'change_report', content:'<h2>TASK-001: 초기 구축</h2><p><b>버전:</b> v1.0.0</p><ul><li>?�영 메인 ?�이지 구현</li><li>관리자 로그???�스?�드 변�?/li><li>관리자 ?�?�보??/li><li>Supabase ?�동 �?CRUD</li><li>?�동 로그 ?�스??/li><li>GitHub Pages 배포</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ??���?계정 ?�스??, report_type:'change_report', content:'<h2>TASK-002: ??���?계정 ?�스??/h2><p><b>버전:</b> v1.1.0</p><ul><li>4?�계 ??�� 구분</li><li>??���??�용 ?�이지</li><li>?��????�점</li><li>부??관리자 기능</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-003', task_title:'v1.2.0 ?�품 ?��?지 �?메인 ?�면 개선', report_type:'change_report', content:'<h2>TASK-003: ?�품 ?��?지 �?메인 ?�면</h2><p><b>버전:</b> v1.2.0</p><ul><li>?�품 ?��?지 URL 지??/li><li>Supabase Storage ?�일 ?�로??/li><li>메인 ?�면 카드 링크 ?�결</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-004', task_title:'v1.3.0 버전 관�??�스??, report_type:'change_report', content:'<h2>TASK-004: 버전 관�??�스??/h2><p><b>버전:</b> v1.3.0</p><ul><li>버전 관�?모듈 ?�입</li><li>모든 ?�이지 ?�단 버전 ?�시</li><li>관리자 버전 ?�력 조회</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-005', task_title:'v1.4.0 ?�용??관�?�???�� 배�?', report_type:'change_report', content:'<h2>TASK-005: ?�용??관�?�???�� 배�?</h2><p><b>버전:</b> v1.4.0</p><ul><li>관리자 ?�용??관�??�이지</li><li>??���??�계 ?�?�보??/li><li>모든 ?�이지 ??�� 배�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-006', task_title:'v1.5.0 계정 ?�록 ?�청', report_type:'change_report', content:'<h2>TASK-006: 계정 ?�록 ?�청</h2><p><b>버전:</b> v1.5.0</p><ul><li>계정 ?�록 ?�청 ?�이지</li><li>?�이??중복 검�?/li><li>관리자 ?�인/거�? 기능</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 ?�면 개선', report_type:'change_report', content:'<h2>TASK-007: DB 보안 구조 ?�면 개선</h2><p><b>버전:</b> v2.0.0</p><ul><li>Supabase Auth ?�입</li><li>profiles ?�이�??�설</li><li>SECURITY DEFINER RPC</li><li>?�체 RLS ?�책 ?�설�?/li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-008', task_title:'v2.1.0 관리자 ?�이지 ?�근 ?�어', report_type:'change_report', content:'<h2>TASK-008: 관리자 ?�이지 ?�근 ?�어</h2><p><b>버전:</b> v2.1.0</p><ul><li>initPage() ??�� 체크 리디?�트</li><li>CSS auth-ready 콘텐�??�래??방�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-009', task_title:'v2.2.0 ?�거??관리자 로그???�거', report_type:'change_report', content:'<h2>TASK-009: ?�거??관리자 로그???�거</h2><p><b>버전:</b> v2.2.0</p><ul><li>관리자 진입??버튼 ?�거</li><li>admin/login.html ??��</li><li>login.html ?�일??/li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-010', task_title:'v2.3.0 초기 비�?번호 변�?강제', report_type:'change_report', content:'<h2>TASK-010: 초기 비�?번호 변�?강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()??isFirstLogin 리디?�트</li><li>autoLogPageView() ?�증 ???�동</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 관리자 ?�?�보??개선', report_type:'change_report', content:'<h2>TASK-011: 관리자 ?�?�보??개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가???�기자 ??카드 추�?</li><li>바로가�??�역 5�??�구??/li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-012', task_title:'v2.5.0 관리자/부?��?리자 메뉴 ?�합', report_type:'change_report', content:'<h2>TASK-012: 메뉴 ?�합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ ?�렉?�리 ??��</li><li>admin/talents.html ?�성</li><li>applyRoleNav() ?�수</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 ?�형/권한 6?�계 체계', report_type:'change_report', content:'<h2>TASK-013: ?�형/권한 6?�계 체계</h2><p><b>버전:</b> v3.0.0~v3.6.0</p><ul><li>user_type + permission_level ?�장</li><li>get_permission_rank() ?�수</li><li>RPC 12�??�데?�트</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-014', task_title:'v3.7.0 ?�중 기능 개선 �?UX ?�상', report_type:'change_report', content:'<h2>TASK-014: ?�중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>?�이???��? ?�력 ?�한</li><li>로그 범위 ??��</li><li>물품 ?�성??비활?�화</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 보고??버그 ?�정', report_type:'change_report', content:'<h2>TASK-015: 보고??버그 ?�정</h2><p><b>버전:</b> v3.7.1~v3.7.2</p><ul><li>TYPE_LABELS 충돌 ?�결</li><li>로그 ?�택 ??��</li><li>가?��?�?배�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-016', task_title:'v3.7.3 권한 기반 ?�코??, report_type:'change_report', content:'<h2>TASK-016: 권한 기반 ?�코??/h2><p><b>버전:</b> v3.7.3</p><ul><li>본인보다 ??? 권한�?관�?/li><li>부???�하 ?�당 부?�만 ?�시</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-027', task_title:'v3.10.0 권한 ?�분??+ 구매 관�?개편', report_type:'change_report', content:'<h2>TASK-027: v3.10.0</h2><p><b>버전:</b> v3.10.0</p><ul><li>?��???관�?권한 ?�분??/li><li>가???�인/부???�동 권한 개편</li><li>?�고 ?�스???�거</li><li>구매 관�?개편</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-028', task_title:'v3.11.0 반응??+ ?�비게이???�합', report_type:'change_report', content:'<h2>TASK-028: v3.11.0</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응??4?�계</li><li>모바???�버�??�비게이??/li><li>?�이�?반응??/li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 기능 ?�정 + 문서 ?�비', report_type:'change_report', content:'<h2>TASK-029: v3.12.0</h2><p><b>버전:</b> v3.12.0</p><ul><li>?�이지 기능 관�?개편</li><li>?�비게이???�합</li><li>?��???관�???�� 관�?추�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030', task_title:'v3.12.2 ?�비 ?�합 + 구매/관�?개선', report_type:'change_report', content:'<h2>TASK-030: v3.12.2</h2><p><b>버전:</b> v3.12.2</p><ul><li>?�비게이???�합</li><li>??구매 ?�품 ?�이지</li><li>?��?구매 ?�스??/li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-032', task_title:'v3.13.0 로그??개선 + 5그룹 ?�롭?�운 ?�비', report_type:'change_report', content:'<h2>TASK-032: v3.13.0</h2><p><b>버전:</b> v3.13.0</p><ul><li>?�인 ?��?메시지</li><li>비�?번호 복잡??/li><li>5그룹 ?�롭?�운 ?�비게이??/li><li>?�생 가?�드 ?�이지</li><li>Q&A ?�이지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-035', task_title:'v3.13.3~v3.13.4 ?�롭?�운/QnA/배�? ?�정', report_type:'change_report', content:'<h2>TASK-035: v3.13.3~v3.13.4</h2><p><b>버전:</b> v3.13.3~v3.13.4</p><ul><li>Safari ?�롭?�운 ?�리???�정 (position:fixed)</li><li>Q&A ??��/?�시/질문???�시</li><li>메인 가?�드 ?�환</li><li>배�? ?�라???�시</li></ul>', created_by:'AI_Cursor' }
       ];
     }
 
     async function seedAllReports() {
-      if (!confirm('기존 보고서를 모두 삭제하고 전체 작업 보고서를 새로 등록합니다.\n계속하시겠습니까?')) return;
+      if (!confirm('기존 보고?��? 모두 ??��?�고 ?�체 ?�업 보고?��? ?�로 ?�록?�니??\n계속?�시겠습?�까?')) return;
       const SEED = [
-        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'plan', content:'<h2>TASK-001: 초기 구축 - 작업 계획서</h2><p>docs/TASK-001_plan.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_scenario', content:'<h2>TASK-001: 초기 구축 - 테스트 시나리오</h2><p>docs/TASK-001_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_result', content:'<h2>TASK-001: 초기 구축 - 테스트 결과</h2><p>docs/TASK-001_test_result.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'change_report', content:'<h2>TASK-001: 초기 구축</h2><p><b>버전:</b> v1.0.0</p><ul><li>환영 메인 페이지 구현</li><li>관리자 로그인/패스워드 변경</li><li>관리자 대시보드 (보고서, 로그)</li><li>Supabase 연동 및 CRUD</li><li>활동 로그 시스템</li><li>GitHub Pages 배포</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 역할별 계정 시스템', report_type:'plan', content:'<h2>TASK-002: 역할별 계정 시스템 - 작업 계획서</h2><p>docs/TASK-002_plan.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 역할별 계정 시스템', report_type:'test_scenario', content:'<h2>TASK-002: 역할별 계정 시스템 - 테스트 시나리오</h2><p>docs/TASK-002_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 역할별 계정 시스템', report_type:'test_result', content:'<h2>TASK-002: 역할별 계정 시스템 - 테스트 결과</h2><p>docs/TASK-002_test_result.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-002', task_title:'v1.1.0 역할별 계정 시스템', report_type:'change_report', content:'<h2>TASK-002: 역할별 계정 시스템</h2><p><b>버전:</b> v1.1.0</p><ul><li>4단계 역할 구분</li><li>역할별 전용 페이지 구현</li><li>달란트 상점 (학생/교사 분리)</li><li>부서 관리자 기능</li><li>RPC 함수 (verify_user, give_talent, use_talent)</li><li>통합 로그인 페이지</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-003', task_title:'v1.2.0 상품 이미지 및 메인 화면 개선', report_type:'change_report', content:'<h2>TASK-003: 상품 이미지 및 메인 화면</h2><p><b>버전:</b> v1.2.0</p><ul><li>상품 이미지 URL 지원</li><li>Supabase Storage 파일 업로드</li><li>메인 화면 카드 링크 연결</li><li>달란트 적립 방법 안내 페이지</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-004', task_title:'v1.3.0 버전 관리 시스템', report_type:'change_report', content:'<h2>TASK-004: 버전 관리 시스템</h2><p><b>버전:</b> v1.3.0</p><ul><li>버전 관리 모듈 (version.js) 도입</li><li>모든 페이지 하단 버전 표시</li><li>관리자 버전 이력 조회</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-005', task_title:'v1.4.0 사용자 관리 및 역할 배지', report_type:'change_report', content:'<h2>TASK-005: 사용자 관리 및 역할 배지</h2><p><b>버전:</b> v1.4.0</p><ul><li>관리자 사용자 관리 페이지</li><li>역할별 통계 대시보드</li><li>모든 페이지 역할 배지</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-006', task_title:'v1.5.0 계정 등록 신청', report_type:'change_report', content:'<h2>TASK-006: 계정 등록 신청</h2><p><b>버전:</b> v1.5.0</p><ul><li>계정 등록 신청 페이지</li><li>아이디 중복/신청 중복 검증</li><li>관리자 승인/거부 기능</li><li>registration_requests 테이블</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 전면 개선', report_type:'security_report', content:'<h2>TASK-007: DB 보안 구조 전면 개선 - 보안 보고서</h2><p>docs/TASK-007_security_report.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 전면 개선', report_type:'plan', content:'<h2>TASK-007: DB 보안 구조 전면 개선 - 백업 체크리스트</h2><p>docs/TASK-007_backup_checklist.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 전면 개선', report_type:'change_report', content:'<h2>TASK-007: DB 보안 구조 전면 개선</h2><p><b>버전:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth 도입 (bcrypt)</li><li>profiles 테이블 신설</li><li>SECURITY DEFINER RPC 함수</li><li>전체 테이블 RLS 정책 재설계</li><li>모바일 반응형 대폭 개선</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-008', task_title:'v2.1.0 관리자 페이지 접근 제어', report_type:'change_report', content:'<h2>TASK-008: 관리자 페이지 접근 제어</h2><p><b>버전:</b> v2.1.0</p><ul><li>initPage() 역할 체크 리디렉트</li><li>CSS auth-ready 기반 콘텐츠 플래시 방지</li><li>부서 관리 역할별 인원 분리 표시</li><li>admin 전용 상품 관리 페이지</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-009', task_title:'v2.2.0 레거시 관리자 로그인 제거', report_type:'change_report', content:'<h2>TASK-009: 레거시 관리자 로그인 제거</h2><p><b>버전:</b> v2.2.0</p><ul><li>관리자 진입점 버튼 제거</li><li>admin/login.html 레거시 파일 삭제</li><li>로그인 진입점 login.html 단일화</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-010', task_title:'v2.3.0 초기 비밀번호 변경 강제', report_type:'security_report', content:'<h2>TASK-010: 초기 비밀번호 변경 강제 - 보안 보고서</h2><p>docs/TASK-010_security_report.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-010', task_title:'v2.3.0 초기 비밀번호 변경 강제', report_type:'change_report', content:'<h2>TASK-010: 초기 비밀번호 변경 강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()에 isFirstLogin 강제 리디렉트</li><li>student/shop.html 보호 페이지 전환</li><li>autoLogPageView() 인증 후 이동</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-011', task_title:'v2.4.0 관리자 대시보드 개선', report_type:'test_scenario', content:'<h2>TASK-011: 관리자 대시보드 개선 - 테스트 시나리오</h2><p>docs/TASK-011_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-011', task_title:'v2.4.0 관리자 대시보드 개선', report_type:'test_result', content:'<h2>TASK-011: 관리자 대시보드 개선 - 테스트 결과</h2><p>docs/TASK-011_test_report.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-011', task_title:'v2.4.0 관리자 대시보드 개선', report_type:'change_report', content:'<h2>TASK-011: 관리자 대시보드 개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가입 대기자 수 카드 추가</li><li>바로가기 영역 5개로 재구성</li><li>각 바로가기에 이모지 추가</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-012', task_title:'v2.5.0 관리자/부서관리자 메뉴 통합', report_type:'change_report', content:'<h2>TASK-012: 관리자/부서관리자 메뉴 통합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ 디렉토리 삭제 (admin/ 통합)</li><li>admin/talents.html 신규 생성</li><li>applyRoleNav() 함수 도입</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 유형/권한 6단계 체계', report_type:'change_report', content:'<h2>TASK-013: 유형/권한 6단계 체계 전면 개편</h2><p><b>버전:</b> v3.0.0 ~ v3.6.0</p><ul><li>profiles user_type + permission_level 확장</li><li>get_permission_rank() 헬퍼 함수</li><li>RPC 함수 12개 전면 업데이트</li><li>달란트 지급 방식 개편 (talent_items)</li><li>반 시스템 추가</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-013A', task_title:'v3.0.0 슈퍼관리자 체계 + 네비게이션 개편', report_type:'change_report', content:'<h2>TASK-013A: v3.0.0 슈퍼관리자 체계</h2><p>docs/TASK-013A_change_report.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-013BCD', task_title:'v3.0.0 변경 보고서 + SQL 스키마', report_type:'change_report', content:'<h2>TASK-013BCD: v3.0.0 변경 보고서</h2><p>docs/TASK-013BCD_change_report.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-014', task_title:'v3.7.0 다중 기능 개선 및 UX 향상', report_type:'change_report', content:'<h2>TASK-014: 다중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>아이디 한글 입력 제한</li><li>로그 범위 삭제, 사용자 이름(아이디) 표시, 상세 팝업</li><li>대시보드 이슈 로그 필터링</li><li>네비게이션 타이틀/링크 변경</li><li>물품 활성화/비활성화 토글</li><li>승인 대기 로그인 메시지 분기</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 보고서 버그 수정 + 로그 삭제 + 배지', report_type:'change_report', content:'<h2>TASK-015: 보고서 버그 수정</h2><p><b>버전:</b> v3.7.1 ~ v3.7.2</p><ul><li>reports.html TYPE_LABELS 충돌 해결</li><li>로그 체크박스 + 선택 삭제</li><li>사용자 관리 가입대기 배지</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-016', task_title:'v3.7.3 권한 기반 부서/사용자 관리 스코핑', report_type:'change_report', content:'<h2>TASK-016: 권한 기반 스코핑</h2><p><b>버전:</b> v3.7.3</p><ul><li>교사 수 카운트 전체 포함</li><li>본인 권한보다 낮은 사용자만 관리 가능</li><li>부장 이하 담당 부서만 표시</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-017', task_title:'v3.7.4 가입 신청 권한별 조회/처리', report_type:'change_report', content:'<h2>TASK-017: 가입 신청 권한별 조회/처리</h2><p><b>버전:</b> v3.7.4</p><ul><li>관리자/전도사님: 모든 부서 신청자 조회+처리</li><li>부장: 모든 부서 조회, 담당 부서만 처리</li><li>부서 담당 교사: 담당 부서만 조회+처리</li><li>네비게이션 아이디 표시 추가</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-018', task_title:'v3.7.5 타인 아이디 숨김 + 부서 이동 관리', report_type:'change_report', content:'<h2>TASK-018: 아이디 숨김 + 부서 이동</h2><p><b>버전:</b> v3.7.5</p><ul><li>타인 아이디 숨김 (자기만 표시)</li><li>부서 이동 버튼 + 즉시/요청 분기</li><li>부서 이동 신청 내역 + 승인/거부</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-019', task_title:'v3.7.6 보고서 인코딩 수정 + 관리자 아이디 예외', report_type:'change_report', content:'<h2>TASK-019: 보고서 인코딩 + 관리자 아이디</h2><p><b>버전:</b> v3.7.6</p><ul><li>전체 HTML BOM 제거</li><li>관리자 권한: 타인 아이디 표시 가능</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-020', task_title:'v3.7.7 수정 모달 부서 변경 제거', report_type:'change_report', content:'<h2>TASK-020: 수정 모달 부서 변경 제거</h2><p><b>버전:</b> v3.7.7</p><ul><li>사용자/관리자 수정 모달 부서 비활성화</li><li>부서 변경은 부서이동으로만</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-021', task_title:'v3.8.0 슈퍼관리자 + 네비게이션 + 페이지 권한', report_type:'change_report', content:'<h2>TASK-021: v3.8.0 전면 개선</h2><p><b>버전:</b> v3.8.0</p><ul><li>슈퍼관리자 rank 110 체계</li><li>네비게이션: 달란트 마을 통일 + 내달란트/상품구매 추가</li><li>페이지 접근 관리 + 페이지 기능 관리 신규</li><li>부서 관리 그리드 간소화</li><li>부장 교사 명칭 변경</li><li>관리자 관리 열/버튼 정리</li><li>달란트 관리 잔여/사용/누적 + 상세 통계</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-022', task_title:'v3.8.1 슈퍼관리자 관리 수정 + UI/UX 개선', report_type:'change_report', content:'<h2>TASK-022: v3.8.1 개선</h2><p><b>버전:</b> v3.8.1</p><ul><li>슈퍼관리자 관리자 관리 가능 수정</li><li>네비게이션 한 줄 스크롤 + 컴팩트</li><li>모바일 그리드 여백 축소</li><li>페이지 기능 관리 권한별 개편</li><li>보고서 JS 시더로 인코딩 문제 해결</li><li>로그 삭제 RLS 정책 추가</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-023', task_title:'v3.8.2 페이지 접근 권한별 + 작업 이력 + DB 연동', report_type:'change_report', content:'<h2>TASK-023: v3.8.2 개선</h2><p><b>버전:</b> v3.8.2</p><ul><li>페이지 접근 관리: 사용자별 → 유형/권한별 개편 (role_page_access)</li><li>작업 이력 관리 페이지 신규 (admin/audit.html)</li><li>initPage()에서 role_page_access DB 연동 → 페이지 차단/요소 숨김 적용</li><li>로그 삭제: 상세 디버그 로그 + RLS 미적용 시 안내 메시지</li><li>보고서: 수정 버튼 추가 (editReport)</li><li>네비게이션: 별 이모지 회전 애니메이션 전체 적용</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-024', task_title:'v3.8.3 작업자 실명 + 보고서 자동복구', report_type:'change_report', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()에 user_name 저장으로 작업자 실명 기록</li><li>audit.html 작업자 실명 표시 + 관리자 아이디 표시</li><li>보고서 깨짐(???) 자동 감지 + REPORT_SEED_MAP 자동 복구</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-025', task_title:'v3.8.4 로그 소프트 삭제(삭제 대기) 전환', report_type:'change_report', content:'<h2>TASK-025: v3.8.4 소프트 삭제</h2><p><b>버전:</b> v3.8.4</p><ul><li>로그 삭제: 실제 DELETE 대신 is_deleted=true 소프트 삭제</li><li>삭제 대기 목록 보기 + 복원 기능</li><li>실제 삭제는 관리자가 SQL로 직접 수행</li><li>fetchLogs: 삭제 대기 항목 자동 제외</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-026', task_title:'v3.9.0 상품 구매 시스템 + 달란트 개편 + 명칭 통일', report_type:'change_report', content:'<h2>TASK-026: v3.9.0 대규모 업데이트</h2><p><b>버전:</b> v3.9.0</p><ul><li>상품 구매 시스템 신규 구축: 4단계 구매 흐름</li><li>admin/purchases.html 구매 관리 페이지 신규</li><li>shop.html 구매 신청 버튼 + 잔액 검증</li><li>my-talents.html 사용 대기 달란트 표시 + 구매 내역</li><li>product_orders 테이블 + RPC (request_product_order, confirm_product_purchase)</li><li>달란트 관리: 체크박스 선택 + 일괄 지급 확정 방식</li><li>달란트 반환 기능 (부장 교사 80+ 사유 입력)</li><li>상세 모달 지급자 컬럼 추가</li><li>로그 페이지: 관리자 전용 버튼 + is_deleted 폴백</li><li>명칭 통일: 물품→상품, 부장→부장 교사, 부서관리자→부서 담당 교사</li><li>shop.html 교사 기본 필터 수정</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-027', task_title:'v3.10.0 권한 세분화 + 구매 관리 개편 + 재고 제거', report_type:'change_report', content:'<h2>TASK-027: v3.10.0 권한/구매 개편</h2><p><b>버전:</b> v3.10.0</p><ul><li>달란트 관리 권한 세분화: rank 80 전체 조회/담당 부서 지급, give_talent RPC managed_dept 스코핑</li><li>가입 승인: 기존 로직 검증 완료 (부장 전체조회/담당부서 처리)</li><li>부서 이동: rank 60 섹션 표시, rank 80 전체조회/담당부서 처리, 버튼 명칭 변경</li><li>로그인: 승인 대기/거부/비밀번호 오류 메시지 세분화</li><li>재고 시스템 제거: shop.html + admin/shop.html stock 관련 UI/로직 제거</li><li>구매 관리 전면 개편: 처리자/일시 표시, 상태 컬럼 제거, 전체 탭+필터, 권한 60+/90+</li><li>구매 관리 네비게이션 배지: 처리 대기 건수(getPendingOrderCount)</li><li>페이지 접근/기능: initPage(100) 관리자 전용화</li><li>작업 이력: initPage(100) 관리자 전용화</li><li>전체 admin 네비게이션: page-access/features/audit data-min-perm 100, 구매 관리 배지 추가</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-028', task_title:'v3.11.0 반응형 페이지 + 네비게이션 통합', report_type:'change_report', content:'<h2>TASK-028: v3.11.0 반응형/네비게이션 통합</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응형 브레이크포인트: 480/640/768/1024px 4단계 통합</li><li>모바일 햄버거 네비게이션: admin 15개 + public 3개 파일</li><li>테이블 반응형: 1024px 스크롤 시작, 단계별 축소</li><li>모달/폼 모바일: flex-wrap + 전폭</li><li>대시보드 quickLinks/detailSummary 모바일 전환</li><li>my-talents.html Template A 네비게이션 통합</li><li>index.html 로그인 후 링크 보강</li><li>applyPermNav() 양방향 show/hide</li><li>admin nav 불일치 수정 3건</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'plan', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비 - 작업 계획서</h2><p>docs/TASK-029_plan.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'test_scenario', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비 - 테스트 시나리오</h2><p>docs/TASK-029_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'test_result', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비 - 테스트 결과</h2><p>docs/TASK-029_test_result.md 참조</p>', created_by:'AI_Cursor' },
-        { task_id:'TASK-029', task_title:'v3.12.0 기능 수정 + 문서 정비', report_type:'change_report', content:'<h2>TASK-029: v3.12.0 기능 수정 + 문서 정비</h2><p><b>버전:</b> v3.12.0</p><ul><li>페이지 기능: role_page_features 테이블 생성 + 6열 그리드</li><li>메인 페이지: 로그인/로그아웃 버튼 이모지 수정</li><li>네비게이션 통합: admin nav 기준 전체 일치화</li><li>달란트 관리: 달란트 항목 관리 버튼</li><li>구매 관리: 전체 탭 기본 선택</li><li>로그: 카운트 (X/Y) + 페이지네이션 개선</li><li>작업 이력: 한글화</li><li>문서 4종 + 보고서 등록</li></ul>', created_by:'AI_Cursor' },
-        { task_id:'TASK-030', task_title:'v3.12.2 UI/기능 개선: 네비 통일, 달란트 스코핑, 대리 구매', report_type:'change_report', content:'<h2>TASK-030: v3.12.2 UI/기능 개선</h2><p><b>버전:</b> v3.12.2</p><ul><li>네비게이션 통일: 전체 페이지에 "내 구매 상품" 메뉴 추가</li><li>보고서 리디렉트 수정: initPage minRank 통과 시 role_page_access 차단 무시</li><li>달란트 관리: 일반 교사(40) 반 미배정 시 빈 목록 + 항목관리 버튼 60+</li><li>로그인 후 리디렉트: 모든 권한 index.html 통일</li><li>my-orders.html 신규: 본인 구매 내역 조회 (4단계 상태 배지)</li><li>대리 구매: shop.html에서 rank 40+ 대리 구매 모달 (스코핑 규칙)</li><li>사용자 관리: 반 수정 60+ 활성화, 부서 필터 80+</li><li>관리자 관리: 학생 검색 제외, 부서 필터 80+</li></ul>', created_by:'AI_Cursor' }
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'plan', content:'<h2>TASK-001: 초기 구축 - ?�업 계획??/h2><p>docs/TASK-001_plan.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_scenario', content:'<h2>TASK-001: 초기 구축 - ?�스???�나리오</h2><p>docs/TASK-001_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'test_result', content:'<h2>TASK-001: 초기 구축 - ?�스??결과</h2><p>docs/TASK-001_test_result.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-001', task_title:'v1.0.0 초기 구축', report_type:'change_report', content:'<h2>TASK-001: 초기 구축</h2><p><b>버전:</b> v1.0.0</p><ul><li>?�영 메인 ?�이지 구현</li><li>관리자 로그???�스?�드 변�?/li><li>관리자 ?�?�보??(보고?? 로그)</li><li>Supabase ?�동 �?CRUD</li><li>?�동 로그 ?�스??/li><li>GitHub Pages 배포</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ??���?계정 ?�스??, report_type:'plan', content:'<h2>TASK-002: ??���?계정 ?�스??- ?�업 계획??/h2><p>docs/TASK-002_plan.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ??���?계정 ?�스??, report_type:'test_scenario', content:'<h2>TASK-002: ??���?계정 ?�스??- ?�스???�나리오</h2><p>docs/TASK-002_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ??���?계정 ?�스??, report_type:'test_result', content:'<h2>TASK-002: ??���?계정 ?�스??- ?�스??결과</h2><p>docs/TASK-002_test_result.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-002', task_title:'v1.1.0 ??���?계정 ?�스??, report_type:'change_report', content:'<h2>TASK-002: ??���?계정 ?�스??/h2><p><b>버전:</b> v1.1.0</p><ul><li>4?�계 ??�� 구분</li><li>??���??�용 ?�이지 구현</li><li>?��????�점 (?�생/교사 분리)</li><li>부??관리자 기능</li><li>RPC ?�수 (verify_user, give_talent, use_talent)</li><li>?�합 로그???�이지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-003', task_title:'v1.2.0 ?�품 ?��?지 �?메인 ?�면 개선', report_type:'change_report', content:'<h2>TASK-003: ?�품 ?��?지 �?메인 ?�면</h2><p><b>버전:</b> v1.2.0</p><ul><li>?�품 ?��?지 URL 지??/li><li>Supabase Storage ?�일 ?�로??/li><li>메인 ?�면 카드 링크 ?�결</li><li>?��????�립 방법 ?�내 ?�이지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-004', task_title:'v1.3.0 버전 관�??�스??, report_type:'change_report', content:'<h2>TASK-004: 버전 관�??�스??/h2><p><b>버전:</b> v1.3.0</p><ul><li>버전 관�?모듈 (version.js) ?�입</li><li>모든 ?�이지 ?�단 버전 ?�시</li><li>관리자 버전 ?�력 조회</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-005', task_title:'v1.4.0 ?�용??관�?�???�� 배�?', report_type:'change_report', content:'<h2>TASK-005: ?�용??관�?�???�� 배�?</h2><p><b>버전:</b> v1.4.0</p><ul><li>관리자 ?�용??관�??�이지</li><li>??���??�계 ?�?�보??/li><li>모든 ?�이지 ??�� 배�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-006', task_title:'v1.5.0 계정 ?�록 ?�청', report_type:'change_report', content:'<h2>TASK-006: 계정 ?�록 ?�청</h2><p><b>버전:</b> v1.5.0</p><ul><li>계정 ?�록 ?�청 ?�이지</li><li>?�이??중복/?�청 중복 검�?/li><li>관리자 ?�인/거�? 기능</li><li>registration_requests ?�이�?/li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 ?�면 개선', report_type:'security_report', content:'<h2>TASK-007: DB 보안 구조 ?�면 개선 - 보안 보고??/h2><p>docs/TASK-007_security_report.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 ?�면 개선', report_type:'plan', content:'<h2>TASK-007: DB 보안 구조 ?�면 개선 - 백업 체크리스??/h2><p>docs/TASK-007_backup_checklist.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-007', task_title:'v2.0.0 DB 보안 구조 ?�면 개선', report_type:'change_report', content:'<h2>TASK-007: DB 보안 구조 ?�면 개선</h2><p><b>버전:</b> v1.6.0 ~ v2.0.0</p><ul><li>Supabase Auth ?�입 (bcrypt)</li><li>profiles ?�이�??�설</li><li>SECURITY DEFINER RPC ?�수</li><li>?�체 ?�이�?RLS ?�책 ?�설�?/li><li>모바??반응???�??개선</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-008', task_title:'v2.1.0 관리자 ?�이지 ?�근 ?�어', report_type:'change_report', content:'<h2>TASK-008: 관리자 ?�이지 ?�근 ?�어</h2><p><b>버전:</b> v2.1.0</p><ul><li>initPage() ??�� 체크 리디?�트</li><li>CSS auth-ready 기반 콘텐�??�래??방�?</li><li>부??관�???���??�원 분리 ?�시</li><li>admin ?�용 ?�품 관�??�이지</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-009', task_title:'v2.2.0 ?�거??관리자 로그???�거', report_type:'change_report', content:'<h2>TASK-009: ?�거??관리자 로그???�거</h2><p><b>버전:</b> v2.2.0</p><ul><li>관리자 진입??버튼 ?�거</li><li>admin/login.html ?�거???�일 ??��</li><li>로그??진입??login.html ?�일??/li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-010', task_title:'v2.3.0 초기 비�?번호 변�?강제', report_type:'security_report', content:'<h2>TASK-010: 초기 비�?번호 변�?강제 - 보안 보고??/h2><p>docs/TASK-010_security_report.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-010', task_title:'v2.3.0 초기 비�?번호 변�?강제', report_type:'change_report', content:'<h2>TASK-010: 초기 비�?번호 변�?강제</h2><p><b>버전:</b> v2.3.0</p><ul><li>initPage()??isFirstLogin 강제 리디?�트</li><li>student/shop.html 보호 ?�이지 ?�환</li><li>autoLogPageView() ?�증 ???�동</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 관리자 ?�?�보??개선', report_type:'test_scenario', content:'<h2>TASK-011: 관리자 ?�?�보??개선 - ?�스???�나리오</h2><p>docs/TASK-011_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 관리자 ?�?�보??개선', report_type:'test_result', content:'<h2>TASK-011: 관리자 ?�?�보??개선 - ?�스??결과</h2><p>docs/TASK-011_test_report.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-011', task_title:'v2.4.0 관리자 ?�?�보??개선', report_type:'change_report', content:'<h2>TASK-011: 관리자 ?�?�보??개선</h2><p><b>버전:</b> v2.4.0</p><ul><li>가???�기자 ??카드 추�?</li><li>바로가�??�역 5개로 ?�구??/li><li>�?바로가기에 ?�모지 추�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-012', task_title:'v2.5.0 관리자/부?��?리자 메뉴 ?�합', report_type:'change_report', content:'<h2>TASK-012: 관리자/부?��?리자 메뉴 ?�합</h2><p><b>버전:</b> v2.5.0</p><ul><li>manager/ ?�렉?�리 ??�� (admin/ ?�합)</li><li>admin/talents.html ?�규 ?�성</li><li>applyRoleNav() ?�수 ?�입</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013', task_title:'v3.0.0~v3.6.0 ?�형/권한 6?�계 체계', report_type:'change_report', content:'<h2>TASK-013: ?�형/권한 6?�계 체계 ?�면 개편</h2><p><b>버전:</b> v3.0.0 ~ v3.6.0</p><ul><li>profiles user_type + permission_level ?�장</li><li>get_permission_rank() ?�퍼 ?�수</li><li>RPC ?�수 12�??�면 ?�데?�트</li><li>?��???지�?방식 개편 (talent_items)</li><li>�??�스??추�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013A', task_title:'v3.0.0 ?�퍼관리자 체계 + ?�비게이??개편', report_type:'change_report', content:'<h2>TASK-013A: v3.0.0 ?�퍼관리자 체계</h2><p>docs/TASK-013A_change_report.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-013BCD', task_title:'v3.0.0 변�?보고??+ SQL ?�키�?, report_type:'change_report', content:'<h2>TASK-013BCD: v3.0.0 변�?보고??/h2><p>docs/TASK-013BCD_change_report.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-014', task_title:'v3.7.0 ?�중 기능 개선 �?UX ?�상', report_type:'change_report', content:'<h2>TASK-014: ?�중 기능 개선</h2><p><b>버전:</b> v3.7.0</p><ul><li>?�이???��? ?�력 ?�한</li><li>로그 범위 ??��, ?�용???�름(?�이?? ?�시, ?�세 ?�업</li><li>?�?�보???�슈 로그 ?�터�?/li><li>?�비게이???�?��?/링크 변�?/li><li>물품 ?�성??비활?�화 ?��?</li><li>?�인 ?��?로그??메시지 분기</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-015', task_title:'v3.7.1~v3.7.2 보고??버그 ?�정 + 로그 ??�� + 배�?', report_type:'change_report', content:'<h2>TASK-015: 보고??버그 ?�정</h2><p><b>버전:</b> v3.7.1 ~ v3.7.2</p><ul><li>reports.html TYPE_LABELS 충돌 ?�결</li><li>로그 체크박스 + ?�택 ??��</li><li>?�용??관�?가?��?�?배�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-016', task_title:'v3.7.3 권한 기반 부???�용??관�??�코??, report_type:'change_report', content:'<h2>TASK-016: 권한 기반 ?�코??/h2><p><b>버전:</b> v3.7.3</p><ul><li>교사 ??카운???�체 ?�함</li><li>본인 권한보다 ??? ?�용?�만 관�?가??/li><li>부???�하 ?�당 부?�만 ?�시</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-017', task_title:'v3.7.4 가???�청 권한�?조회/처리', report_type:'change_report', content:'<h2>TASK-017: 가???�청 권한�?조회/처리</h2><p><b>버전:</b> v3.7.4</p><ul><li>관리자/?�도?�님: 모든 부???�청??조회+처리</li><li>부?? 모든 부??조회, ?�당 부?�만 처리</li><li>부???�당 교사: ?�당 부?�만 조회+처리</li><li>?�비게이???�이???�시 추�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-018', task_title:'v3.7.5 ?�???�이???��? + 부???�동 관�?, report_type:'change_report', content:'<h2>TASK-018: ?�이???��? + 부???�동</h2><p><b>버전:</b> v3.7.5</p><ul><li>?�???�이???��? (?�기�??�시)</li><li>부???�동 버튼 + 즉시/?�청 분기</li><li>부???�동 ?�청 ?�역 + ?�인/거�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-019', task_title:'v3.7.6 보고???�코???�정 + 관리자 ?�이???�외', report_type:'change_report', content:'<h2>TASK-019: 보고???�코??+ 관리자 ?�이??/h2><p><b>버전:</b> v3.7.6</p><ul><li>?�체 HTML BOM ?�거</li><li>관리자 권한: ?�???�이???�시 가??/li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-020', task_title:'v3.7.7 ?�정 모달 부??변�??�거', report_type:'change_report', content:'<h2>TASK-020: ?�정 모달 부??변�??�거</h2><p><b>버전:</b> v3.7.7</p><ul><li>?�용??관리자 ?�정 모달 부??비활?�화</li><li>부??변경�? 부?�이?�으로만</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-021', task_title:'v3.8.0 ?�퍼관리자 + ?�비게이??+ ?�이지 권한', report_type:'change_report', content:'<h2>TASK-021: v3.8.0 ?�면 개선</h2><p><b>버전:</b> v3.8.0</p><ul><li>?�퍼관리자 rank 110 체계</li><li>?�비게이?? ?��???마을 ?�일 + ?�달?�???�품구매 추�?</li><li>?�이지 ?�근 관�?+ ?�이지 기능 관�??�규</li><li>부??관�?그리??간소??/li><li>부??교사 명칭 변�?/li><li>관리자 관�???버튼 ?�리</li><li>?��???관�??�여/?�용/?�적 + ?�세 ?�계</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-022', task_title:'v3.8.1 ?�퍼관리자 관�??�정 + UI/UX 개선', report_type:'change_report', content:'<h2>TASK-022: v3.8.1 개선</h2><p><b>버전:</b> v3.8.1</p><ul><li>?�퍼관리자 관리자 관�?가???�정</li><li>?�비게이????�??�크�?+ 컴팩??/li><li>모바??그리???�백 축소</li><li>?�이지 기능 관�?권한�?개편</li><li>보고??JS ?�더�??�코??문제 ?�결</li><li>로그 ??�� RLS ?�책 추�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-023', task_title:'v3.8.2 ?�이지 ?�근 권한�?+ ?�업 ?�력 + DB ?�동', report_type:'change_report', content:'<h2>TASK-023: v3.8.2 개선</h2><p><b>버전:</b> v3.8.2</p><ul><li>?�이지 ?�근 관�? ?�용?�별 ???�형/권한�?개편 (role_page_access)</li><li>?�업 ?�력 관�??�이지 ?�규 (admin/audit.html)</li><li>initPage()?�서 role_page_access DB ?�동 ???�이지 차단/?�소 ?��? ?�용</li><li>로그 ??��: ?�세 ?�버�?로그 + RLS 미적?????�내 메시지</li><li>보고?? ?�정 버튼 추�? (editReport)</li><li>?�비게이?? �??�모지 ?�전 ?�니메이???�체 ?�용</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-024', task_title:'v3.8.3 ?�업???�명 + 보고???�동복구', report_type:'change_report', content:'<h2>TASK-024: v3.8.3 개선</h2><p><b>버전:</b> v3.8.3</p><ul><li>writeLog()??user_name ?�?�으�??�업???�명 기록</li><li>audit.html ?�업???�명 ?�시 + 관리자 ?�이???�시</li><li>보고??깨짐(???) ?�동 감�? + REPORT_SEED_MAP ?�동 복구</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-025', task_title:'v3.8.4 로그 ?�프????��(??�� ?��? ?�환', report_type:'change_report', content:'<h2>TASK-025: v3.8.4 ?�프????��</h2><p><b>버전:</b> v3.8.4</p><ul><li>로그 ??��: ?�제 DELETE ?�??is_deleted=true ?�프????��</li><li>??�� ?��?목록 보기 + 복원 기능</li><li>?�제 ??��??관리자가 SQL�?직접 ?�행</li><li>fetchLogs: ??�� ?��???�� ?�동 ?�외</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-026', task_title:'v3.9.0 ?�품 구매 ?�스??+ ?��???개편 + 명칭 ?�일', report_type:'change_report', content:'<h2>TASK-026: v3.9.0 ?�규모 ?�데?�트</h2><p><b>버전:</b> v3.9.0</p><ul><li>?�품 구매 ?�스???�규 구축: 4?�계 구매 ?�름</li><li>admin/purchases.html 구매 관�??�이지 ?�규</li><li>shop.html 구매 ?�청 버튼 + ?�액 검�?/li><li>my-talents.html ?�용 ?��??��????�시 + 구매 ?�역</li><li>product_orders ?�이�?+ RPC (request_product_order, confirm_product_purchase)</li><li>?��???관�? 체크박스 ?�택 + ?�괄 지�??�정 방식</li><li>?��???반환 기능 (부??교사 80+ ?�유 ?�력)</li><li>?�세 모달 지급자 컬럼 추�?</li><li>로그 ?�이지: 관리자 ?�용 버튼 + is_deleted ?�백</li><li>명칭 ?�일: 물품?�상?? 부?�→부??교사, 부?��?리자?��????�당 교사</li><li>shop.html 교사 기본 ?�터 ?�정</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-027', task_title:'v3.10.0 권한 ?�분??+ 구매 관�?개편 + ?�고 ?�거', report_type:'change_report', content:'<h2>TASK-027: v3.10.0 권한/구매 개편</h2><p><b>버전:</b> v3.10.0</p><ul><li>?��???관�?권한 ?�분?? rank 80 ?�체 조회/?�당 부??지�? give_talent RPC managed_dept ?�코??/li><li>가???�인: 기존 로직 검�??�료 (부???�체조회/?�당부??처리)</li><li>부???�동: rank 60 ?�션 ?�시, rank 80 ?�체조회/?�당부??처리, 버튼 명칭 변�?/li><li>로그?? ?�인 ?��?거�?/비�?번호 ?�류 메시지 ?�분??/li><li>?�고 ?�스???�거: shop.html + admin/shop.html stock 관??UI/로직 ?�거</li><li>구매 관�??�면 개편: 처리???�시 ?�시, ?�태 컬럼 ?�거, ?�체 ???�터, 권한 60+/90+</li><li>구매 관�??�비게이??배�?: 처리 ?��?건수(getPendingOrderCount)</li><li>?�이지 ?�근/기능: initPage(100) 관리자 ?�용??/li><li>?�업 ?�력: initPage(100) 관리자 ?�용??/li><li>?�체 admin ?�비게이?? page-access/features/audit data-min-perm 100, 구매 관�?배�? 추�?</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-028', task_title:'v3.11.0 반응???�이지 + ?�비게이???�합', report_type:'change_report', content:'<h2>TASK-028: v3.11.0 반응???�비게이???�합</h2><p><b>버전:</b> v3.11.0</p><ul><li>CSS 반응??브레?�크?�인?? 480/640/768/1024px 4?�계 ?�합</li><li>모바???�버�??�비게이?? admin 15�?+ public 3�??�일</li><li>?�이�?반응?? 1024px ?�크�??�작, ?�계�?축소</li><li>모달/??모바?? flex-wrap + ?�폭</li><li>?�?�보??quickLinks/detailSummary 모바???�환</li><li>my-talents.html Template A ?�비게이???�합</li><li>index.html 로그????링크 보강</li><li>applyPermNav() ?�방??show/hide</li><li>admin nav 불일�??�정 3�?/li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 기능 ?�정 + 문서 ?�비', report_type:'plan', content:'<h2>TASK-029: v3.12.0 기능 ?�정 + 문서 ?�비 - ?�업 계획??/h2><p>docs/TASK-029_plan.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 기능 ?�정 + 문서 ?�비', report_type:'test_scenario', content:'<h2>TASK-029: v3.12.0 기능 ?�정 + 문서 ?�비 - ?�스???�나리오</h2><p>docs/TASK-029_test_scenario.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 기능 ?�정 + 문서 ?�비', report_type:'test_result', content:'<h2>TASK-029: v3.12.0 기능 ?�정 + 문서 ?�비 - ?�스??결과</h2><p>docs/TASK-029_test_result.md 참조</p>', created_by:'AI_Cursor' },
+        { task_id:'TASK-029', task_title:'v3.12.0 기능 ?�정 + 문서 ?�비', report_type:'change_report', content:'<h2>TASK-029: v3.12.0 기능 ?�정 + 문서 ?�비</h2><p><b>버전:</b> v3.12.0</p><ul><li>?�이지 기능: role_page_features ?�이�??�성 + 6??그리??/li><li>메인 ?�이지: 로그??로그?�웃 버튼 ?�모지 ?�정</li><li>?�비게이???�합: admin nav 기�? ?�체 ?�치??/li><li>?��???관�? ?��?????�� 관�?버튼</li><li>구매 관�? ?�체 ??기본 ?�택</li><li>로그: 카운??(X/Y) + ?�이지?�이??개선</li><li>?�업 ?�력: ?��???/li><li>문서 4�?+ 보고???�록</li></ul>', created_by:'AI_Cursor' },
+        { task_id:'TASK-030', task_title:'v3.12.2 UI/기능 개선: ?�비 ?�일, ?��????�코?? ?��?구매', report_type:'change_report', content:'<h2>TASK-030: v3.12.2 UI/기능 개선</h2><p><b>버전:</b> v3.12.2</p><ul><li>?�비게이???�일: ?�체 ?�이지??"??구매 ?�품" 메뉴 추�?</li><li>보고??리디?�트 ?�정: initPage minRank ?�과 ??role_page_access 차단 무시</li><li>?��???관�? ?�반 교사(40) �?미배????�?목록 + ??��관�?버튼 60+</li><li>로그????리디?�트: 모든 권한 index.html ?�일</li><li>my-orders.html ?�규: 본인 구매 ?�역 조회 (4?�계 ?�태 배�?)</li><li>?��?구매: shop.html?�서 rank 40+ ?��?구매 모달 (?�코??규칙)</li><li>?�용??관�? �??�정 60+ ?�성?? 부???�터 80+</li><li>관리자 관�? ?�생 검???�외, 부???�터 80+</li></ul>', created_by:'AI_Cursor' }
       ];
       try {
         await _sb.from('reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
         const { error } = await _sb.from('reports').insert(SEED);
-        if (error) { await logError('REPORT_SEED_FAIL', { error: error.message }); alert('등록 실패: ' + tErr(error.message)); return; }
+        if (error) { await logError('REPORT_SEED_FAIL', { error: error.message }); alert('?�록 ?�패: ' + tErr(error.message)); return; }
         await logInfo('REPORT_SEED', { count: SEED.length });
-        alert(SEED.length + '건의 보고서가 등록되었습니다.');
+        alert(SEED.length + '건의 보고?��? ?�록?�었?�니??');
         await loadReports();
-      } catch (err) { await logError('REPORT_SEED_ERROR', { error: String(err) }); alert('오류: ' + tErr(err.message)); }
+      } catch (err) { await logError('REPORT_SEED_ERROR', { error: String(err) }); alert('?�류: ' + tErr(err.message)); }
     }
 
     let editingReportId = null;
@@ -470,23 +470,23 @@
       const report = allReports.find(r => r.id === id);
       if (!report) return;
       editingReportId = id;
-      document.getElementById('addModalTitle').textContent = '보고서 수정';
+      document.getElementById('addModalTitle').textContent = '보고???�정';
       document.getElementById('rTaskId').value = report.task_id || '';
       document.getElementById('rTaskTitle').value = report.task_title || '';
       document.getElementById('rReportType').value = report.report_type || 'change_report';
       document.getElementById('rContent').value = report.content || '';
-      document.getElementById('btnSaveReport').textContent = '수정';
+      document.getElementById('btnSaveReport').textContent = '?�정';
       document.getElementById('addReportModal').classList.remove('hidden');
     }
 
     function openAddReportModal() {
       editingReportId = null;
-      document.getElementById('addModalTitle').textContent = '보고서 등록';
+      document.getElementById('addModalTitle').textContent = '보고???�록';
       document.getElementById('rTaskId').value = '';
       document.getElementById('rTaskTitle').value = '';
       document.getElementById('rReportType').value = 'plan';
       document.getElementById('rContent').value = '';
-      document.getElementById('btnSaveReport').textContent = '등록';
+      document.getElementById('btnSaveReport').textContent = '?�록';
       document.getElementById('addReportModal').classList.remove('hidden');
     }
 
@@ -501,13 +501,13 @@
       const content = document.getElementById('rContent').value.trim();
 
       if (!taskId || !taskTitle || !content) {
-        alert('작업 ID, 제목, 내용을 모두 입력해주세요.');
+        alert('?�업 ID, ?�목, ?�용??모두 ?�력?�주?�요.');
         return;
       }
 
       const btn = document.getElementById('btnSaveReport');
       btn.disabled = true;
-      btn.textContent = '저장 중...';
+      btn.textContent = '?�??�?..';
 
       try {
         const row = {
@@ -527,7 +527,7 @@
 
         if (result.error) {
           await logError('REPORT_SAVE_FAIL', { taskId, reportType, error: result.error.message });
-          alert('저장 실패: ' + tErr(result.error.message));
+          alert('?�???�패: ' + tErr(result.error.message));
         } else {
           closeAddReportModal();
           await loadReports();
@@ -535,10 +535,10 @@
         }
       } catch (err) {
         await logError('REPORT_SAVE_ERROR', { taskId, error: String(err) });
-        alert('오류: ' + tErr(err.message));
+        alert('?�류: ' + tErr(err.message));
       } finally {
         btn.disabled = false;
-        btn.textContent = editingReportId ? '수정' : '등록';
+        btn.textContent = editingReportId ? '?�정' : '?�록';
       }
     }
 
@@ -555,13 +555,13 @@
     async function deleteSelectedReports() {
       const ids = Array.from(document.querySelectorAll('.rpt-chk:checked')).map(c => c.value);
       if (ids.length === 0) return;
-      if (!confirm(ids.length + '개의 보고서를 삭제하시겠습니까?')) return;
+      if (!confirm(ids.length + '개의 보고?��? ??��?�시겠습?�까?')) return;
 
       try {
         const { error } = await _sb.from('reports').delete().in('id', ids);
         if (error) {
           await logError('REPORT_DELETE_FAIL', { count: ids.length, error: error.message });
-          alert('삭제 실패: ' + tErr(error.message));
+          alert('??�� ?�패: ' + tErr(error.message));
         } else {
           document.getElementById('chkAll').checked = false;
           await loadReports();
@@ -569,10 +569,10 @@
         }
       } catch (err) {
         await logError('REPORT_DELETE_ERROR', { error: String(err) });
-        alert('오류: ' + tErr(err.message));
+        alert('?�류: ' + tErr(err.message));
       }
     }
   </script>
-  <script src="../js/version.js?v=3.21.0"></script>
+  <script src="../js/version.js?v=3.22.0"></script>
 </body>
 </html>

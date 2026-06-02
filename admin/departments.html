@@ -3,113 +3,113 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>부서 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.21.0" />
+  <title>부??관�?- CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">�?/span> ?��???마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">소개</button>
+        <button class="nav-dropdown-toggle">?�개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">학생 가이드</a></li>
-          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
-          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li>
-          <li><a href="../earn-talents.html">달란트 적립</a></li>
+          <li><a href="../guide.html">?�생 가?�드</a></li>
+          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가?�드</a></li>
+          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가?�드</a></li>
+          <li><a href="../earn-talents.html">?��????�립</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">달란트</button>
+        <button class="nav-dropdown-toggle">?��???/button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">내 달란트</a></li>
-          <li><a href="../talent-receive.html">달란트 수령</a></li>
-          <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">달란트 통계</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">달란트 QR 관리</a></li>
+          <li><a href="../my-talents.html">???��???/a></li>
+          <li><a href="../talent-receive.html">?��????�령</a></li>
+          <li data-min-perm="40"><a href="talents.html">?��???관�?/a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">?��????�계</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">?��???QR 관�?/a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">상품</button>
+        <button class="nav-dropdown-toggle">?�품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">상품 구매</a></li>
-          <li><a href="../my-orders.html">내 구매 상품</a></li>
-          <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
-          <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">?�품 구매</a></li>
+          <li><a href="../my-orders.html">??구매 ?�품</a></li>
+          <li data-min-perm="60"><a href="shop.html">?�품 관�?/a></li>
+          <li data-min-perm="60"><a href="purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle active">관리</button>
+        <button class="nav-dropdown-toggle active">관�?/button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">대시보드</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
-          <li data-min-perm="60"><a href="departments.html" class="active">부서 관리</a></li>
+          <li data-min-perm="60"><a href="index.html">?�?�보??/a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">관리자 관�?/a></li>
+          <li data-min-perm="60"><a href="departments.html" class="active">부??관�?/a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">운영</button>
+        <button class="nav-dropdown-toggle">?�영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
-          <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
+          <li data-min-perm="100"><a href="page-access.html">?�이지 ?�근</a></li>
+          <li data-min-perm="100"><a href="page-features.html">?�이지 기능</a></li>
           <li data-min-perm="80"><a href="versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="reports.html">보고서</a></li>
-          <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
+          <li data-min-perm="80"><a href="reports.html">보고??/a></li>
+          <li data-min-perm="100"><a href="audit.html">?�업 ?�력</a></li>
           <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그?�웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">부서 관리</h2>
+    <h2 style="margin-bottom:1rem;">부??관�?/h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">부서 목록</div>
-        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 부서 등록</button>
+        <div class="admin-table-title" id="tableTitle">부??목록</div>
+        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 부???�록</button>
       </div>
       <table class="admin-table">
-        <thead><tr><th>부서명</th><th>설명</th><th>반</th><th>전체</th><th>교사</th><th>학생</th><th>담당 관리자</th><th>관리</th></tr></thead>
-        <tbody id="deptList"><tr><td colspan="9" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>부?�명</th><th>?�명</th><th>�?/th><th>?�체</th><th>교사</th><th>?�생</th><th>?�당 관리자</th><th>관�?/th></tr></thead>
+        <tbody id="deptList"><tr><td colspan="9" class="empty-state">로딩 �?..</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="deptModal">
     <div class="modal-box">
-      <h3 class="modal-title" id="modalTitle">부서 등록</h3>
+      <h3 class="modal-title" id="modalTitle">부???�록</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">부서명</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">부?�명</label>
         <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">설명</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�명</label>
         <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">반 개수</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">�?개수</label>
         <input type="number" id="mClassCount" min="0" max="20" value="0" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
-        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">0 = 반 구분 없음</div>
+        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">0 = �?구분 ?�음</div>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">취소</button>
-        <button class="btn-confirm" onclick="saveDept()">저장</button>
+        <button class="btn-confirm" onclick="saveDept()">?�??/button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.21.0"></script>
-  <script src="../js/activity-log.js?v=3.21.0"></script>
-  <script src="../js/auth.js?v=3.21.0"></script>
-  <script src="../js/user-mgmt.js?v=3.21.0"></script>
+  <script src="../js/supabase-config.js?v=3.22.0"></script>
+  <script src="../js/activity-log.js?v=3.22.0"></script>
+  <script src="../js/auth.js?v=3.22.0"></script>
+  <script src="../js/user-mgmt.js?v=3.22.0"></script>
   <script>
     initSupabase();
     let session;
@@ -155,10 +155,10 @@
       }
 
       const tbody = document.getElementById('deptList');
-      document.getElementById('tableTitle').textContent = `부서 목록 (${filteredDepts.length}개)`;
+      document.getElementById('tableTitle').textContent = `부??목록 (${filteredDepts.length}�?`;
 
       if (filteredDepts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="empty-state">등록된 부서가 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="empty-state">?�록??부?��? ?�습?�다.</td></tr>';
         allDeptData = [];
         return;
       }
@@ -170,23 +170,23 @@
         const students = deptUsers.filter(u => u.user_type === 'student');
         const managers = (users||[]).filter(u => u.managed_dept_id === d.id && ['admin', 'evangelist', 'chief', 'dept_teacher'].includes(u.permission_level));
         const managerNames = managers.map(m => {
-          const e = PERMISSION_EMOJI[m.permission_level] || '📋';
+          const e = PERMISSION_EMOJI[m.permission_level] || '?��';
           return `${e}${m.display_name || '-'}`;
         }).join(', ') || '-';
-        const classLabel = d.class_count > 0 ? d.class_count + '개' : '없음';
+        const classLabel = d.class_count > 0 ? d.class_count + '�? : '?�음';
 
         return `<tr>
           <td><strong>${d.name}</strong></td>
           <td>${d.description || '-'}</td>
           <td>${classLabel}</td>
-          <td style="font-weight:700;">${deptUsers.length}명</td>
-          <td>${teachers.length}명</td>
-          <td>${students.length}명</td>
+          <td style="font-weight:700;">${deptUsers.length}�?/td>
+          <td>${teachers.length}�?/td>
+          <td>${students.length}�?/td>
           <td style="font-size:0.8rem;">${managerNames}</td>
           <td>
-            ${(myRank >= 90 || d.id === myManagedDept) ? `<button class="filter-btn" onclick="openEditModal('${d.id}')">수정</button>` : ''}
-            ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${d.id}','${d.name}')">삭제</button>` : ''}
-            <button class="filter-btn" onclick="showMembers('${d.name}', '${d.id}')">소속보기</button>
+            ${(myRank >= 90 || d.id === myManagedDept) ? `<button class="filter-btn" onclick="openEditModal('${d.id}')">?�정</button>` : ''}
+            ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${d.id}','${d.name}')">??��</button>` : ''}
+            <button class="filter-btn" onclick="showMembers('${d.name}', '${d.id}')">?�속보기</button>
           </td>
         </tr>`;
       }).join('');
@@ -194,7 +194,7 @@
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = '부서 등록';
+      document.getElementById('modalTitle').textContent = '부???�록';
       document.getElementById('mName').value = '';
       document.getElementById('mDesc').value = '';
       document.getElementById('mClassCount').value = '0';
@@ -205,7 +205,7 @@
     function openEditModal(id) {
       editingId = id;
       const dept = allDeptData.find(d => d.id === id);
-      document.getElementById('modalTitle').textContent = '부서 수정';
+      document.getElementById('modalTitle').textContent = '부???�정';
       document.getElementById('mName').value = dept ? dept.name : '';
       document.getElementById('mDesc').value = dept ? (dept.description || '') : '';
       document.getElementById('mClassCount').value = dept ? (dept.class_count || 0) : 0;
@@ -220,7 +220,7 @@
       const name = document.getElementById('mName').value.trim();
       const desc = document.getElementById('mDesc').value.trim();
       const classCount = parseInt(document.getElementById('mClassCount').value) || 0;
-      if (!name) { errEl.textContent = '부서명을 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!name) { errEl.textContent = '부?�명???�력?�주?�요.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
         const { error } = await updateDepartment(editingId, { name, description: desc || null, class_count: classCount });
@@ -236,7 +236,7 @@
     }
 
     async function confirmDelete(id, name) {
-      if (!confirm(`"${name}" 부서를 비활성화하시겠습니까?`)) return;
+      if (!confirm(`"${name}" 부?��? 비활?�화?�시겠습?�까?`)) return;
       await deleteDepartment(id);
       await logInfo('DEPT_DEACTIVATE', { id, name });
       await loadDepts();
@@ -248,23 +248,23 @@
       const hasClasses = dept && dept.class_count > 0;
 
       const nameMap = resolveDisplayNames(members);
-      let html = `<strong>${deptName}</strong> 소속 인원 (${members.length}명)<br/><br/>`;
+      let html = `<strong>${deptName}</strong> ?�속 ?�원 (${members.length}�?<br/><br/>`;
       if (members.length === 0) {
-        html += '<div style="color:#636e72;">소속 인원이 없습니다.</div>';
+        html += '<div style="color:#636e72;">?�속 ?�원???�습?�다.</div>';
       } else {
-        html += `<table class="admin-table" style="font-size:0.85rem;"><thead><tr><th>역할</th><th>권한</th><th>이름</th>${hasClasses ? '<th>반</th>' : ''}</tr></thead><tbody>`;
+        html += `<table class="admin-table" style="font-size:0.85rem;"><thead><tr><th>??��</th><th>권한</th><th>?�름</th>${hasClasses ? '<th>�?/th>' : ''}</tr></thead><tbody>`;
         html += members.map(u => {
-          const typeLabel = u.user_type === 'student' ? '🎒 학생' : '👩‍🏫 교사';
+          const typeLabel = u.user_type === 'student' ? '?�� ?�생' : '?��?��?교사';
           const permLabel = (PERMISSION_EMOJI[u.permission_level]||'') + ' ' + (PERMISSION_LABELS[u.permission_level]||u.permission_level);
           const dn = nameMap[u.id] || u.display_name || '-';
           const isSelf = u.id === session.id;
-          const classNum = u.class_number ? u.class_number + '반' : '-';
+          const classNum = u.class_number ? u.class_number + '�? : '-';
           return `<tr><td>${typeLabel}</td><td>${permLabel}</td><td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>${hasClasses ? '<td>' + classNum + '</td>' : ''}</tr>`;
         }).join('');
         html += '</tbody></table>';
       }
 
-      document.getElementById('modalTitle').textContent = '부서 소속 인원';
+      document.getElementById('modalTitle').textContent = '부???�속 ?�원';
       document.getElementById('mName').parentElement.style.display = 'none';
       document.getElementById('mDesc').parentElement.style.display = 'none';
       document.getElementById('mClassCount').parentElement.style.display = 'none';
@@ -292,6 +292,6 @@
 
     document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.21.0"></script>
+  <script src="../js/version.js?v=3.22.0"></script>
 </body>
 </html>

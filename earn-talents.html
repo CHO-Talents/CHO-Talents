@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>달란트 적립 방법 - 달란트 마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.21.0" />
+  <title>?��????�립 방법 - ?��???마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?��</text></svg>" />
+  <link rel="stylesheet" href="css/common.css?v=3.22.0" />
   <style>
     .earn-hero { text-align: center; margin-bottom: 2rem; }
     .earn-hero-icon { font-size: 4rem; margin-bottom: 0.5rem; }
@@ -68,135 +68,135 @@
 <body class="page-body">
   <nav class="top-nav">
     <a href="index.html" class="top-nav-brand">
-      <span class="brand-icon">⭐</span> 달란트 마을
+      <span class="brand-icon">�?/span> ?��???마을
     </a>
     <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="top-nav-links" id="navLinks">
       <li>
-        <button class="nav-dropdown-toggle active">소개</button>
+        <button class="nav-dropdown-toggle active">?�개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">학생 가이드</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가이드</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가이드</a></li>
-          <li><a href="earn-talents.html" class="active">달란트 적립</a></li>
+          <li><a href="guide.html">?�생 가?�드</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가?�드</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가?�드</a></li>
+          <li><a href="earn-talents.html" class="active">?��????�립</a></li>
           <li><a href="qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">달란트</button>
+        <button class="nav-dropdown-toggle">?��???/button>
         <ul class="nav-dropdown-menu">
-          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="talent-receive.html">달란트 수령</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">달란트 통계</a></li>
-          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">달란트 QR 관리</a></li>
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">???��???/a></li>
+          <li><a href="talent-receive.html">?��????�령</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">?��???관�?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">?��????�계</a></li>
+          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">?��???QR 관�?/a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">상품</button>
+        <button class="nav-dropdown-toggle">?�품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="shop.html">상품 구매</a></li>
-          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">내 구매 상품</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="shop.html">?�품 구매</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">??구매 ?�품</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">?�품 관�?/a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60" style="display:none;">
-        <button class="nav-dropdown-toggle">관리</button>
+        <button class="nav-dropdown-toggle">관�?/button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="admin/index.html">대시보드</a></li>
-          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
-          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="admin/index.html">?�?�보??/a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">관리자 관�?/a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">부??관�?/a></li>
         </ul>
       </li>
       <li data-min-perm="80" style="display:none;">
-        <button class="nav-dropdown-toggle">운영</button>
+        <button class="nav-dropdown-toggle">?�영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
-          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
+          <li data-min-perm="100"><a href="admin/page-access.html">?�이지 ?�근</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">?�이지 기능</a></li>
           <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
-          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">보고??/a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">?�업 ?�력</a></li>
           <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
-      <li id="navLoginArea"><a href="login.html">로그인</a></li>
+      <li id="navLoginArea"><a href="login.html">로그??/a></li>
       <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
-      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그?�웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="page-container">
     <div class="earn-hero">
-      <div class="earn-hero-icon">💰</div>
-      <h1>달란트 적립 방법</h1>
-      <p>다양한 활동으로 달란트를 모아 보세요!</p>
+      <div class="earn-hero-icon">?��</div>
+      <h1>?��????�립 방법</h1>
+      <p>?�양???�동?�로 ?��??��? 모아 보세??</p>
     </div>
 
     <div class="method-grid">
       <div class="method-card">
-        <span class="m-icon">📖</span>
-        <h3>성경 읽기</h3>
-        <span class="m-talent">선생님 확인 후 지급</span>
-        <p>매일 성경 한 장을 읽고<br/>선생님께 확인받으면<br/>달란트를 받을 수 있어요!</p>
+        <span class="m-icon">?��</span>
+        <h3>?�경 ?�기</h3>
+        <span class="m-talent">?�생???�인 ??지�?/span>
+        <p>매일 ?�경 ???�을 ?�고<br/>?�생?�께 ?�인받으�?br/>?��??��? 받을 ???�어??</p>
       </div>
 
       <div class="method-card">
-        <span class="m-icon">✍️</span>
-        <h3>말씀 암송</h3>
-        <span class="m-talent">항목별 금액 적용</span>
-        <p>주간 말씀을 외우고<br/>선생님 앞에서 암송하면<br/>달란트를 받아요!</p>
+        <span class="m-icon">?�️</span>
+        <h3>말�? ?�송</h3>
+        <span class="m-talent">??���?금액 ?�용</span>
+        <p>주간 말�????�우�?br/>?�생???�에???�송?�면<br/>?��??��? 받아??</p>
       </div>
 
       <div class="method-card">
-        <span class="m-icon">🙋</span>
+        <span class="m-icon">?��</span>
         <h3>출석 체크</h3>
-        <span class="m-talent">출석 버튼으로 지급</span>
-        <p>주일에 빠지지 않고<br/>꾸준히 출석하면<br/>매주 달란트를 받아요!</p>
+        <span class="m-talent">출석 버튼?�로 지�?/span>
+        <p>주일??빠�?지 ?�고<br/>꾸�???출석?�면<br/>매주 ?��??��? 받아??</p>
       </div>
 
       <div class="method-card">
-        <span class="m-icon">🤝</span>
-        <h3>친구 초대</h3>
-        <span class="m-talent">특별 항목</span>
-        <p>교회에 처음 오는 친구를<br/>데려오면 큰 달란트를<br/>받을 수 있어요!</p>
+        <span class="m-icon">?��</span>
+        <h3>친구 초�?</h3>
+        <span class="m-talent">?�별 ??��</span>
+        <p>교회??처음 ?�는 친구�?br/>?�려?�면 ???��??��?<br/>받을 ???�어??</p>
       </div>
 
       <div class="method-card">
-        <span class="m-icon">🎨</span>
-        <h3>특별 활동 참여</h3>
-        <span class="m-talent">활동별 다름</span>
-        <p>찬양, 그림 대회 등<br/>특별 활동에 참여하면<br/>활동마다 달란트를 받아요!</p>
+        <span class="m-icon">?��</span>
+        <h3>?�별 ?�동 참여</h3>
+        <span class="m-talent">?�동�??�름</span>
+        <p>찬양, 그림 ?�????br/>?�별 ?�동??참여?�면<br/>?�동마다 ?��??��? 받아??</p>
       </div>
 
       <div class="method-card">
-        <span class="m-icon">🌟</span>
-        <h3>선행 포인트</h3>
-        <span class="m-talent">선생님 재량</span>
-        <p>다른 친구를 도와주거나<br/>좋은 행동을 하면<br/>선생님이 달란트를 줘요!</p>
+        <span class="m-icon">?��</span>
+        <h3>?�행 ?�인??/h3>
+        <span class="m-talent">?�생???�량</span>
+        <p>?�른 친구�??��?주거??br/>좋�? ?�동???�면<br/>?�생?�이 ?��??��? 줘요!</p>
       </div>
     </div>
 
     <div class="tip-box">
-      <h3>💡 달란트 적립 TIP!</h3>
+      <h3>?�� ?��????�립 TIP!</h3>
       <p>
-        달란트 항목과 금액은 선생님이 정한 설정에 따라 달라질 수 있어요.<br/>
-        열심히 활동하고 선생님께 확인받으면 내 달란트에 쌓여요!<br/>
-        모은 달란트는 <strong>달란트 상점</strong>에서 원하는 상품과 교환할 수 있어요! 🎁
+        ?��?????���?금액?� ?�생?�이 ?�한 ?�정???�라 ?�라�????�어??<br/>
+        ?�심???�동?�고 ?�생?�께 ?�인받으�????��??�에 ?�여??<br/>
+        모�? ?��??�는 <strong>?��????�점</strong>?�서 ?�하???�품�?교환?????�어?? ?��
       </p>
     </div>
   </div>
 
   <footer class="page-footer">
-    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
+    <p>초등부 ?��???관�?&copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.21.0"></script>
-  <script src="js/activity-log.js?v=3.21.0"></script>
-  <script src="js/auth.js?v=3.21.0"></script>
+  <script src="js/supabase-config.js?v=3.22.0"></script>
+  <script src="js/activity-log.js?v=3.22.0"></script>
+  <script src="js/auth.js?v=3.22.0"></script>
   <script>
     initSupabase();
     autoLogPageView();
@@ -216,6 +216,6 @@
       }
     })();
   </script>
-  <script src="js/version.js?v=3.21.0"></script>
+  <script src="js/version.js?v=3.22.0"></script>
 </body>
 </html>

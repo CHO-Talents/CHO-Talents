@@ -3,101 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>작업 이력 - 달란트 마을</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.21.0" />
+  <title>?�업 ?�력 - ?��???마을</title>
+  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">�?/span> ?��???마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">소개</button>
+        <button class="nav-dropdown-toggle">?�개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">학생 가이드</a></li>
-          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
-          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li>
-          <li><a href="../earn-talents.html">달란트 적립</a></li>
+          <li><a href="../guide.html">?�생 가?�드</a></li>
+          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가?�드</a></li>
+          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가?�드</a></li>
+          <li><a href="../earn-talents.html">?��????�립</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">달란트</button>
+        <button class="nav-dropdown-toggle">?��???/button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">내 달란트</a></li>
-          <li><a href="../talent-receive.html">달란트 수령</a></li>
-          <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">달란트 통계</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">달란트 QR 관리</a></li>
+          <li><a href="../my-talents.html">???��???/a></li>
+          <li><a href="../talent-receive.html">?��????�령</a></li>
+          <li data-min-perm="40"><a href="talents.html">?��???관�?/a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">?��????�계</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">?��???QR 관�?/a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">상품</button>
+        <button class="nav-dropdown-toggle">?�품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">상품 구매</a></li>
-          <li><a href="../my-orders.html">내 구매 상품</a></li>
-          <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
-          <li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">?�품 구매</a></li>
+          <li><a href="../my-orders.html">??구매 ?�품</a></li>
+          <li data-min-perm="60"><a href="shop.html">?�품 관�?/a></li>
+          <li data-min-perm="60"><a href="purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">관리</button>
+        <button class="nav-dropdown-toggle">관�?/button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="80"><a href="index.html">대시보드</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
-          <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
+          <li data-min-perm="60"><a href="index.html">?�?�보??/a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">관리자 관�?/a></li>
+          <li data-min-perm="60"><a href="departments.html">부??관�?/a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle active">운영</button>
+        <button class="nav-dropdown-toggle active">?�영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
-          <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
+          <li data-min-perm="100"><a href="page-access.html">?�이지 ?�근</a></li>
+          <li data-min-perm="100"><a href="page-features.html">?�이지 기능</a></li>
           <li data-min-perm="80"><a href="versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="reports.html">보고서</a></li>
-          <li data-min-perm="100"><a href="audit.html" class="active">작업 이력</a></li>
+          <li data-min-perm="80"><a href="reports.html">보고??/a></li>
+          <li data-min-perm="100"><a href="audit.html" class="active">?�업 ?�력</a></li>
           <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그?�웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">📝 작업 이력 관리</h2>
-    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">관리자 작업(사용자 수정, 권한 변경, 부서 이동, 비밀번호 초기화 등)의 이력을 조회합니다.</p>
+    <h2 style="margin-bottom:1rem;">?�� ?�업 ?�력 관�?/h2>
+    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">관리자 ?�업(?�용???�정, 권한 변�? 부???�동, 비�?번호 초기???????�력??조회?�니??</p>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
-      <button class="filter-btn active" onclick="setFilter('all',this)">전체</button>
-      <button class="filter-btn" onclick="setFilter('USER',this)">사용자</button>
-      <button class="filter-btn" onclick="setFilter('DEPT',this)">부서</button>
-      <button class="filter-btn" onclick="setFilter('TALENT',this)">달란트</button>
-      <button class="filter-btn" onclick="setFilter('PRODUCT',this)">상품</button>
-      <button class="filter-btn" onclick="setFilter('PERM',this)">권한/설정</button>
+      <button class="filter-btn active" onclick="setFilter('all',this)">?�체</button>
+      <button class="filter-btn" onclick="setFilter('USER',this)">?�용??/button>
+      <button class="filter-btn" onclick="setFilter('DEPT',this)">부??/button>
+      <button class="filter-btn" onclick="setFilter('TALENT',this)">?��???/button>
+      <button class="filter-btn" onclick="setFilter('PRODUCT',this)">?�품</button>
+      <button class="filter-btn" onclick="setFilter('PERM',this)">권한/?�정</button>
       <span style="margin-left:0.5rem;color:#adb5bd;">|</span>
       <input type="date" class="filter-input" id="auditDateFrom" />
       <span style="font-size:0.8rem;color:#adb5bd;">~</span>
       <input type="date" class="filter-input" id="auditDateTo" />
       <span style="display:inline-flex;gap:0.2rem;">
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('today')">오늘</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('week')">1주</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('month')">1달</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('year')">1년</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('today')">?�늘</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('week')">1�?/button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('month')">1??/button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('year')">1??/button>
       </span>
       <button class="filter-btn" onclick="loadAuditLogs()">조회</button>
-      <input type="text" id="auditSearch" placeholder="작업자/대상 검색..." class="filter-input" style="flex:1;min-width:120px;" oninput="renderAudit()" />
+      <input type="text" id="auditSearch" placeholder="?�업???�??검??.." class="filter-input" style="flex:1;min-width:120px;" oninput="renderAudit()" />
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="auditTitle">작업 이력 (0건)</div>
+        <div class="admin-table-title" id="auditTitle">?�업 ?�력 (0�?</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>시간</th><th>작업자</th><th>작업 유형</th><th>대상</th><th>상세</th></tr></thead>
-        <tbody id="auditList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>?�간</th><th>?�업??/th><th>?�업 ?�형</th><th>?�??/th><th>?�세</th></tr></thead>
+        <tbody id="auditList"><tr><td colspan="5" class="empty-state">로딩 �?..</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -105,71 +105,71 @@
   <div class="modal-overlay hidden" id="auditDetailModal">
     <div class="modal-box" style="max-width:650px;max-height:80vh;overflow-y:auto;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 class="modal-title">작업 상세 정보</h3>
-        <button class="btn-cancel" onclick="closeDetailModal()">닫기</button>
+        <h3 class="modal-title">?�업 ?�세 ?�보</h3>
+        <button class="btn-cancel" onclick="closeDetailModal()">?�기</button>
       </div>
       <div id="auditDetailBody" style="font-size:0.85rem;"></div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.21.0"></script>
-  <script src="../js/activity-log.js?v=3.21.0"></script>
-  <script src="../js/auth.js?v=3.21.0"></script>
-  <script src="../js/user-mgmt.js?v=3.21.0"></script>
+  <script src="../js/supabase-config.js?v=3.22.0"></script>
+  <script src="../js/activity-log.js?v=3.22.0"></script>
+  <script src="../js/auth.js?v=3.22.0"></script>
+  <script src="../js/user-mgmt.js?v=3.22.0"></script>
   <script>
     initSupabase();
     let session, allAuditLogs = [], currentFilter = 'all';
 
     const AUDIT_ACTIONS = {
-      USER_CREATE: { label: '사용자 등록', category: 'USER', emoji: '➕' },
-      USER_UPDATE: { label: '사용자 수정', category: 'USER', emoji: '✏️' },
-      USER_DELETE: { label: '사용자 삭제', category: 'USER', emoji: '🗑️' },
-      USER_PW_RESET: { label: '비밀번호 초기화', category: 'USER', emoji: '🔑' },
-      REQUEST_APPROVE: { label: '가입 승인', category: 'USER', emoji: '✅' },
-      REQUEST_REJECT: { label: '가입 거부', category: 'USER', emoji: '❌' },
-      DEPT_CREATE: { label: '부서 등록', category: 'DEPT', emoji: '🏢' },
-      DEPT_UPDATE: { label: '부서 수정', category: 'DEPT', emoji: '✏️' },
-      DEPT_DELETE: { label: '부서 삭제', category: 'DEPT', emoji: '🗑️' },
-      DEPT_TRANSFER: { label: '부서 이동', category: 'DEPT', emoji: '🔄' },
-      DEPT_TRANSFER_APPROVE: { label: '부서 이동 승인', category: 'DEPT', emoji: '✅' },
-      DEPT_TRANSFER_REJECT: { label: '부서 이동 거부', category: 'DEPT', emoji: '❌' },
-      TALENT_GIVE: { label: '달란트 지급', category: 'TALENT', emoji: '💰' },
-      TALENT_USE: { label: '달란트 사용', category: 'TALENT', emoji: '🛒' },
-      PRODUCT_CREATE: { label: '상품 등록', category: 'PRODUCT', emoji: '📦' },
-      PRODUCT_UPDATE: { label: '상품 수정', category: 'PRODUCT', emoji: '✏️' },
-      PRODUCT_DELETE: { label: '상품 삭제', category: 'PRODUCT', emoji: '🗑️' },
-      MGR_REGISTER: { label: '관리자 등록', category: 'PERM', emoji: '👑' },
-      MGR_UPDATE: { label: '관리자 수정', category: 'PERM', emoji: '✏️' },
-      PAGE_ACCESS_UPDATE: { label: '페이지 접근 설정', category: 'PERM', emoji: '🔐' },
-      ROLE_ACCESS_UPDATE: { label: '권한별 접근 설정', category: 'PERM', emoji: '🔐' },
-      PAGE_FEATURE_UPDATE: { label: '페이지 기능 설정', category: 'PERM', emoji: '⚙️' },
-      ROLE_FEATURE_UPDATE: { label: '권한별 기능 설정', category: 'PERM', emoji: '⚙️' },
-      REPORT_SAVE: { label: '보고서 저장', category: 'PERM', emoji: '📄' },
-      REPORT_DELETE: { label: '보고서 삭제', category: 'PERM', emoji: '🗑️' },
-      LOG_SELECT_DELETE: { label: '로그 선택 삭제', category: 'PERM', emoji: '🗑️' },
-      LOG_RANGE_DELETE: { label: '로그 범위 삭제', category: 'PERM', emoji: '🗑️' }
+      USER_CREATE: { label: '?�용???�록', category: 'USER', emoji: '?? },
+      USER_UPDATE: { label: '?�용???�정', category: 'USER', emoji: '?�️' },
+      USER_DELETE: { label: '?�용????��', category: 'USER', emoji: '?���? },
+      USER_PW_RESET: { label: '비�?번호 초기??, category: 'USER', emoji: '?��' },
+      REQUEST_APPROVE: { label: '가???�인', category: 'USER', emoji: '?? },
+      REQUEST_REJECT: { label: '가??거�?', category: 'USER', emoji: '?? },
+      DEPT_CREATE: { label: '부???�록', category: 'DEPT', emoji: '?��' },
+      DEPT_UPDATE: { label: '부???�정', category: 'DEPT', emoji: '?�️' },
+      DEPT_DELETE: { label: '부????��', category: 'DEPT', emoji: '?���? },
+      DEPT_TRANSFER: { label: '부???�동', category: 'DEPT', emoji: '?��' },
+      DEPT_TRANSFER_APPROVE: { label: '부???�동 ?�인', category: 'DEPT', emoji: '?? },
+      DEPT_TRANSFER_REJECT: { label: '부???�동 거�?', category: 'DEPT', emoji: '?? },
+      TALENT_GIVE: { label: '?��???지�?, category: 'TALENT', emoji: '?��' },
+      TALENT_USE: { label: '?��????�용', category: 'TALENT', emoji: '?��' },
+      PRODUCT_CREATE: { label: '?�품 ?�록', category: 'PRODUCT', emoji: '?��' },
+      PRODUCT_UPDATE: { label: '?�품 ?�정', category: 'PRODUCT', emoji: '?�️' },
+      PRODUCT_DELETE: { label: '?�품 ??��', category: 'PRODUCT', emoji: '?���? },
+      MGR_REGISTER: { label: '관리자 ?�록', category: 'PERM', emoji: '?��' },
+      MGR_UPDATE: { label: '관리자 ?�정', category: 'PERM', emoji: '?�️' },
+      PAGE_ACCESS_UPDATE: { label: '?�이지 ?�근 ?�정', category: 'PERM', emoji: '?��' },
+      ROLE_ACCESS_UPDATE: { label: '권한�??�근 ?�정', category: 'PERM', emoji: '?��' },
+      PAGE_FEATURE_UPDATE: { label: '?�이지 기능 ?�정', category: 'PERM', emoji: '?�️' },
+      ROLE_FEATURE_UPDATE: { label: '권한�?기능 ?�정', category: 'PERM', emoji: '?�️' },
+      REPORT_SAVE: { label: '보고???�??, category: 'PERM', emoji: '?��' },
+      REPORT_DELETE: { label: '보고????��', category: 'PERM', emoji: '?���? },
+      LOG_SELECT_DELETE: { label: '로그 ?�택 ??��', category: 'PERM', emoji: '?���? },
+      LOG_RANGE_DELETE: { label: '로그 범위 ??��', category: 'PERM', emoji: '?���? }
     };
 
     const AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
     const PERM_KEY_LABELS = {
-      super_admin: '최고 관리자', admin: '관리자', evangelist: '전도사님',
-      chief: '부장 교사', dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
+      super_admin: '최고 관리자', admin: '관리자', evangelist: '?�도?�님',
+      chief: '부??교사', dept_teacher: '부???�당 교사', teacher: '?�반 교사', student: '?�생'
     };
     const DETAIL_KEY_LABELS = {
-      targetName: '대상', displayName: '표시 이름', name: '이름', username: '아이디',
-      userId: '사용자 ID', roleKey: '역할', permissionKey: '권한', permissionLevel: '권한 등급',
-      rank: '순위', department: '부서', departmentId: '부서 ID', departmentName: '부서명',
-      fromDept: '이전 부서', toDept: '이동 부서', amount: '수량', balance: '잔액',
-      reason: '사유', taskId: '작업 ID', taskTitle: '작업 제목', pageId: '페이지 ID',
-      action: '작업', error: '오류', _userName: '작업자 이름', _client: '클라이언트 정보',
-      user_type: '유형', class_number: '반', old: '이전 값', new: '변경 값',
-      approval_scope: '승인 범위', transfer_type: '이동 유형', status: '상태',
-      product_name: '상품명', product_id: '상품 ID', price: '가격',
-      talent_balance: '달란트 잔액', pending_talent: '보류 달란트',
-      features: '기능 설정', description: '설명', email: '이메일',
-      fromDeptName: '이전 부서명', toDeptName: '이동 부서명',
-      is_super_admin: '슈퍼 관리자', is_active: '활성 상태'
+      targetName: '?�??, displayName: '?�시 ?�름', name: '?�름', username: '?�이??,
+      userId: '?�용??ID', roleKey: '??��', permissionKey: '권한', permissionLevel: '권한 ?�급',
+      rank: '?�위', department: '부??, departmentId: '부??ID', departmentName: '부?�명',
+      fromDept: '?�전 부??, toDept: '?�동 부??, amount: '?�량', balance: '?�액',
+      reason: '?�유', taskId: '?�업 ID', taskTitle: '?�업 ?�목', pageId: '?�이지 ID',
+      action: '?�업', error: '?�류', _userName: '?�업???�름', _client: '?�라?�언???�보',
+      user_type: '?�형', class_number: '�?, old: '?�전 �?, new: '변�?�?,
+      approval_scope: '?�인 범위', transfer_type: '?�동 ?�형', status: '?�태',
+      product_name: '?�품�?, product_id: '?�품 ID', price: '가�?,
+      talent_balance: '?��????�액', pending_talent: '보류 ?��???,
+      features: '기능 ?�정', description: '?�명', email: '?�메??,
+      fromDeptName: '?�전 부?�명', toDeptName: '?�동 부?�명',
+      is_super_admin: '?�퍼 관리자', is_active: '?�성 ?�태'
     };
 
     (async () => {
@@ -180,7 +180,7 @@
       autoLogPageView();
       updatePendingBadge();
       updateNavOrderBadge();
-      setAuditPeriod('today');
+      setAuditPeriod('week');
       await loadAuditLogs();
     })();
 
@@ -242,7 +242,7 @@
       }
       if (error) {
         console.error('[AUDIT] load error:', error);
-        document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 오류: ${tErr(error.message)}</td></tr>`;
+        document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 ?�류: ${tErr(error.message)}</td></tr>`;
         return;
       }
       allAuditLogs = data || [];
@@ -267,17 +267,17 @@
         });
       }
 
-      document.getElementById('auditTitle').textContent = `작업 이력 (${list.length}건)`;
+      document.getElementById('auditTitle').textContent = `?�업 ?�력 (${list.length}�?`;
       const tbody = document.getElementById('auditList');
 
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">조회된 작업 이력이 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">조회???�업 ?�력???�습?�다.</td></tr>';
         return;
       }
 
       const isAdmin = session.permissionRank >= 100;
       tbody.innerHTML = list.map(l => {
-        const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '📋', category: '' };
+        const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '?��', category: '' };
         const dt = l.created_at ? formatKSTShort(l.created_at) : '-';
         const actorName = l.user_name || (l.details && l.details._userName) || null;
         const actorId = l.username || null;
@@ -287,7 +287,7 @@
         } else if (actorId) {
           actor = actorId;
         } else {
-          actor = '시스템';
+          actor = '?�스??;
         }
         const target = extractTarget(l);
         return `<tr>
@@ -295,7 +295,7 @@
           <td>${actor}</td>
           <td><span class="level-badge INFO">${info.emoji} ${info.label}</span></td>
           <td>${target}</td>
-          <td><button class="filter-btn" onclick='showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>상세</button></td>
+          <td><button class="filter-btn" onclick='showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>?�세</button></td>
         </tr>`;
       }).join('');
     }
@@ -314,19 +314,19 @@
     }
 
     function showDetail(log) {
-      const info = AUDIT_ACTIONS[log.action] || { label: log.action, emoji: '📋' };
+      const info = AUDIT_ACTIONS[log.action] || { label: log.action, emoji: '?��' };
       const dt = log.created_at ? new Date(log.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }) : '-';
       const details = log.details || {};
 
       let html = `
         <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
-          <tr><td style="padding:0.4rem;font-weight:700;width:100px;">시간</td><td style="padding:0.4rem;">${dt}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">작업자</td><td style="padding:0.4rem;">${log.user_name || '-'}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">작업</td><td style="padding:0.4rem;">${info.emoji} ${info.label}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">페이지</td><td style="padding:0.4rem;">${log.page || '-'}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;width:100px;">?�간</td><td style="padding:0.4rem;">${dt}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">?�업??/td><td style="padding:0.4rem;">${log.user_name || '-'}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">?�업</td><td style="padding:0.4rem;">${info.emoji} ${info.label}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">?�이지</td><td style="padding:0.4rem;">${log.page || '-'}</td></tr>
         </table>
         <div style="margin-top:0.8rem;border-top:1px solid var(--admin-border);padding-top:0.6rem;">
-          <div style="font-weight:700;margin-bottom:0.4rem;">상세 데이터</div>
+          <div style="font-weight:700;margin-bottom:0.4rem;">?�세 ?�이??/div>
           <pre style="background:#f8f9fa;padding:0.6rem;border-radius:6px;font-size:0.78rem;overflow-x:auto;max-height:300px;">${localizeDetailJson(details)}</pre>
         </div>`;
 
@@ -340,7 +340,7 @@
           return PERM_KEY_LABELS[val] || val;
         }
         if (key === 'user_type') {
-          return val === 'teacher' ? '교사' : val === 'student' ? '학생' : val;
+          return val === 'teacher' ? '교사' : val === 'student' ? '?�생' : val;
         }
         return val;
       }
@@ -366,6 +366,6 @@
       if (e.target.classList.contains('modal-overlay')) closeDetailModal();
     });
   </script>
-  <script src="../js/version.js?v=3.21.0"></script>
+  <script src="../js/version.js?v=3.22.0"></script>
 </body>
 </html>
