@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>상품 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.23.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -73,17 +73,23 @@
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">상품 목록</div>
         <div class="filters">
-          <button class="filter-btn active" onclick="filterRole('all',this)">전체</button>
-          <button class="filter-btn" onclick="filterRole('student',this)">🎒 학생용</button>
-          <button class="filter-btn" onclick="filterRole('teacher',this)">👩‍🏫 교사용</button>
-          <span style="margin-left:0.5rem;"></span>
           <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 상품 등록</button>
         </div>
       </div>
+
+      <h3 style="margin:1rem 0 0.5rem;font-size:0.95rem;border-bottom:2px solid #fab005;padding-bottom:0.3rem;" id="teacherTitle">👩‍🏫 교사용 상품 (0건)</h3>
       <table class="admin-table">
-        <thead><tr><th></th><th>상품명</th><th>대상</th><th>카테고리</th><th>가격</th><th>관리</th></tr></thead>
-        <tbody id="productList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>카테고리</th><th></th><th>상품명</th><th>가격</th><th>관리</th></tr></thead>
+        <tbody id="teacherProducts"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
+      <div id="teacherPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
+
+      <h3 style="margin:1.5rem 0 0.5rem;font-size:0.95rem;border-bottom:2px solid #51cf66;padding-bottom:0.3rem;" id="studentTitle">🎒 학생용 상품 (0건)</h3>
+      <table class="admin-table">
+        <thead><tr><th>카테고리</th><th></th><th>상품명</th><th>가격</th><th>관리</th></tr></thead>
+        <tbody id="studentProducts"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
+      </table>
+      <div id="studentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -161,16 +167,21 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.22.0"></script>
-  <script src="../js/activity-log.js?v=3.22.0"></script>
-  <script src="../js/auth.js?v=3.22.0"></script>
+  <script src="../js/supabase-config.js?v=3.23.0"></script>
+  <script src="../js/activity-log.js?v=3.23.0"></script>
+  <script src="../js/auth.js?v=3.23.0"></script>
   <script src="../js/product.js"></script>
+  <style>
+    .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
+  </style>
   <script>
     initSupabase();
     let session;
     let allProducts = [];
     let editingId = null;
-    let currentFilter = 'all';
+    let shopPages = { teacher: 1, student: 1 };
+
+    function getShopPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
 
     (async () => {
       session = await initPage(60, '../login.html');
@@ -195,33 +206,73 @@
       renderProducts();
     }
 
-    function filterRole(role, btn) {
-      currentFilter = role;
-      document.querySelectorAll('.admin-table-header .filter-btn:not([style*="background:var(--admin-primary)"])').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+    function renderProducts() {
+      const teachers = allProducts.filter(p => p.target_role === 'teacher');
+      const students = allProducts.filter(p => p.target_role === 'student');
+      document.getElementById('tableTitle').textContent = `상품 목록 (${allProducts.length}건)`;
+      renderShopGroup(teachers, 'teacher', 'teacherProducts', 'teacherPaging', 'teacherTitle', '👩‍🏫 교사용 상품');
+      renderShopGroup(students, 'student', 'studentProducts', 'studentPaging', 'studentTitle', '🎒 학생용 상품');
+    }
+
+    function renderShopGroup(list, groupKey, tbodyId, pagingId, titleId, titleLabel) {
+      const pageSize = getShopPageSize();
+      const page = shopPages[groupKey] || 1;
+      const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
+      if (page > totalPages) shopPages[groupKey] = totalPages;
+      const currentPage = shopPages[groupKey] || 1;
+      document.getElementById(titleId).textContent = `${titleLabel} (${list.length}건)`;
+      const tbody = document.getElementById(tbodyId);
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">등록된 상품이 없습니다.</td></tr>';
+        document.getElementById(pagingId).innerHTML = '';
+        return;
+      }
+      const startIdx = (currentPage - 1) * pageSize;
+      const pageList = list.slice(startIdx, startIdx + pageSize);
+      const myRank = session.permissionRank || 0;
+      tbody.innerHTML = pageList.map(p => {
+        const items = [`<a onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>✏️ 수정</a>`];
+        if (myRank >= 90) items.push(`<a onclick="confirmDelete('${p.id}','${p.name.replace(/'/g,"\\'")}')">🗑️ 삭제</a>`);
+        return `<tr>
+        <td>${p.category || '-'}</td>
+        <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '🎁'}</span>`}</td>
+        <td><strong>${p.name}</strong><br><small style="color:var(--admin-text-muted);">${p.description || ''}</small></td>
+        <td style="font-weight:700;">${fmtNum(p.price)}</td>
+        <td>
+          <div class="mgmt-dropdown">
+            <button class="filter-btn" onclick="toggleMgmt(event,this)">관리 ▾</button>
+            <div class="mgmt-menu">${items.join('')}</div>
+          </div>
+        </td>
+      </tr>`;
+      }).join('');
+      renderShopPaging(groupKey, totalPages, pagingId);
+    }
+
+    function renderShopPaging(groupKey, totalPages, pagingId) {
+      const wrap = document.getElementById(pagingId);
+      const page = shopPages[groupKey] || 1;
+      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goShopPage('${groupKey}',${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="filter-btn${i===page?' active':''}" onclick="goShopPage('${groupKey}',${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goShopPage('${groupKey}',${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+
+    function goShopPage(groupKey, p) {
+      shopPages[groupKey] = p;
       renderProducts();
     }
 
-    function renderProducts() {
-      const list = currentFilter === 'all' ? allProducts : allProducts.filter(p => p.target_role === currentFilter);
-      const tbody = document.getElementById('productList');
-      document.getElementById('tableTitle').textContent = `상품 목록 (${list.length}건)`;
-
-      if (list.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 상품이 없습니다.</td></tr>'; return; }
-
-      const myRank = session.permissionRank || 0;
-      tbody.innerHTML = list.map(p => `<tr>
-        <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '🎁'}</span>`}</td>
-        <td><strong>${p.name}</strong><br><small style="color:var(--admin-text-muted);">${p.description || ''}</small></td>
-        <td><span class="level-badge ${p.target_role === 'student' ? 'INFO' : 'WARN'}">${p.target_role === 'student' ? '🎒 학생' : '👩‍🏫 교사'}</span></td>
-        <td>${p.category || '-'}</td>
-        <td style="font-weight:700;">${fmtNum(p.price)}</td>
-        <td>
-          <button class="filter-btn" onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>수정</button>
-          ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${p.id}','${p.name}')">삭제</button>` : ''}
-        </td>
-      </tr>`).join('');
+    function toggleMgmt(e, btn) {
+      e.stopPropagation();
+      document.querySelectorAll('.mgmt-menu.show').forEach(m => { if (m !== btn.nextElementSibling) m.classList.remove('show'); });
+      btn.nextElementSibling.classList.toggle('show');
     }
+    document.addEventListener('click', () => document.querySelectorAll('.mgmt-menu.show').forEach(m => m.classList.remove('show')));
 
     function openAddModal() {
       editingId = null;
@@ -341,6 +392,6 @@
     document.getElementById('mImageUrlText').addEventListener('input', function() { const u = this.value.trim(); if (u) { document.getElementById('mImageFile').value = ''; showImgPreview(u); } else resetImgPreview(); });
     document.getElementById('productModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.22.0"></script>
+  <script src="../js/version.js?v=3.23.0"></script>
 </body>
 </html>

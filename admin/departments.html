@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>부서 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.23.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -105,11 +105,14 @@
     </div>
   </div>
 
+  <style>
+    .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
+  </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.22.0"></script>
-  <script src="../js/activity-log.js?v=3.22.0"></script>
-  <script src="../js/auth.js?v=3.22.0"></script>
-  <script src="../js/user-mgmt.js?v=3.22.0"></script>
+  <script src="../js/supabase-config.js?v=3.23.0"></script>
+  <script src="../js/activity-log.js?v=3.23.0"></script>
+  <script src="../js/auth.js?v=3.23.0"></script>
+  <script src="../js/user-mgmt.js?v=3.23.0"></script>
   <script>
     initSupabase();
     let session;
@@ -184,13 +187,21 @@
           <td>${students.length}명</td>
           <td style="font-size:0.8rem;">${managerNames}</td>
           <td>
-            ${(myRank >= 90 || d.id === myManagedDept) ? `<button class="filter-btn" onclick="openEditModal('${d.id}')">수정</button>` : ''}
-            ${myRank >= 90 ? `<button class="btn-ack" onclick="confirmDelete('${d.id}','${d.name}')">삭제</button>` : ''}
-            <button class="filter-btn" onclick="showMembers('${d.name}', '${d.id}')">소속보기</button>
+            <div class="mgmt-dropdown">
+              <button class="filter-btn" onclick="toggleMgmt(event,this)">관리 ▾</button>
+              <div class="mgmt-menu">
+                <a onclick="showMembers('${d.name}','${d.id}')">👥 소속보기</a>
+                ${(myRank >= 90 || d.id === myManagedDept) ? `<a onclick="openEditModal('${d.id}')">✏️ 수정</a>` : ''}
+                ${myRank >= 90 ? `<a onclick="confirmDelete('${d.id}','${d.name}')">🗑️ 삭제</a>` : ''}
+              </div>
+            </div>
           </td>
         </tr>`;
       }).join('');
     }
+
+    function toggleMgmt(e,btn){e.stopPropagation();document.querySelectorAll('.mgmt-menu.show').forEach(m=>{if(m!==btn.nextElementSibling)m.classList.remove('show');});btn.nextElementSibling.classList.toggle('show');}
+    document.addEventListener('click',()=>document.querySelectorAll('.mgmt-menu.show').forEach(m=>m.classList.remove('show')));
 
     function openAddModal() {
       editingId = null;
@@ -292,6 +303,6 @@
 
     document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.22.0"></script>
+  <script src="../js/version.js?v=3.23.0"></script>
 </body>
 </html>

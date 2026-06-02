@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.23.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -69,13 +69,14 @@
   <div class="admin-container">
     <h2 style="margin-bottom:1rem;">👥 사용자 관리</h2>
 
-    <div class="cards-grid" style="margin-bottom:1.5rem;">
+    <div class="cards-grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(5,1fr);">
       <div class="stat-card"><div class="stat-card-label">전체</div><div class="stat-card-value" id="cntAll">-</div></div>
       <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
-      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">📋 부서 담당 교사</div><div class="stat-card-value" id="cntMgr">-</div></div>
+      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">📋 부서 담당</div><div class="stat-card-value" id="cntMgr">-</div></div>
       <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">👩‍🏫 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
       <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">🎒 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
     </div>
+    <style>.cards-grid{display:grid;gap:0.6rem;}@media(max-width:768px){.cards-grid{grid-template-columns:repeat(3,1fr)!important;}.cards-grid .stat-card{padding:0.7rem 0.5rem;}.cards-grid .stat-card-value{font-size:1.3rem;}}</style>
 
     <!-- 가입 신청 내역 -->
     <div class="admin-table-wrap" id="reqSection" style="margin-bottom:1.5rem;">
@@ -119,8 +120,8 @@
 
       <h3 style="margin:1.5rem 0 0.5rem;font-size:0.95rem;border-bottom:2px solid #51cf66;padding-bottom:0.3rem;">🎒 학생 <span id="studentCount" style="font-size:0.8rem;color:var(--admin-text-muted);"></span></h3>
       <table class="admin-table">
-        <thead><tr><th>권한</th><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th>관리</th></tr></thead>
-        <tbody id="studentList"><tr><td colspan="6" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th>관리</th></tr></thead>
+        <tbody id="studentList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="studentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
@@ -236,11 +237,11 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.22.0"></script>
-  <script src="../js/activity-log.js?v=3.22.0"></script>
-  <script src="../js/auth.js?v=3.22.0"></script>
-  <script src="../js/user-mgmt.js?v=3.22.0"></script>
-  <script src="../js/version.js?v=3.22.0"></script>
+  <script src="../js/supabase-config.js?v=3.23.0"></script>
+  <script src="../js/activity-log.js?v=3.23.0"></script>
+  <script src="../js/auth.js?v=3.23.0"></script>
+  <script src="../js/user-mgmt.js?v=3.23.0"></script>
+  <script src="../js/version.js?v=3.23.0"></script>
   <script>
     initSupabase();
     let session;
@@ -448,8 +449,9 @@
       if (page > totalPages) groupPages[groupKey] = totalPages;
       document.getElementById(countId).textContent = `(${list.length}명)`;
       const tbody = document.getElementById(tbodyId);
+      const colSpan = groupKey === 'student' ? 5 : 6;
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">등록된 사용자가 없습니다.</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state">등록된 사용자가 없습니다.</td></tr>`;
         document.getElementById(pagingId).innerHTML = '';
         return;
       }
@@ -473,8 +475,9 @@
           items.push(`<a onclick="resetPw('${u.id}','${(dn).replace(/'/g,"\\'")}')">🔑 비밀번호 초기화</a>`);
           items.push(`<a onclick="confirmDelete('${u.id}','${(dn).replace(/'/g,"\\'")}')">🗑️ 삭제</a>`);
         }
+        const permCol = groupKey !== 'student' ? `<td><span class="level-badge ${rb.cls}">${permEmoji} ${permLabel}</span></td>` : '';
         return `<tr>
-          <td><span class="level-badge ${rb.cls}">${permEmoji} ${permLabel}</span></td>
+          ${permCol}
           <td>${dn}${(isSelf || _isAdmin()) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
           <td>${getDeptName(u.department_id)}</td>
           <td>${getClassLabel(u.class_number)}</td>
