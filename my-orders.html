@@ -3,79 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>??구매 ?�품 - ?��???마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?��</text></svg>" />
+  <title>내 구매 상품 - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
   <link rel="stylesheet" href="css/common.css?v=3.22.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
     <a href="index.html" class="top-nav-brand">
-      <span class="brand-icon">�?/span> ?��???마을
+      <span class="brand-icon">⭐</span> 달란트 마을
     </a>
     <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="top-nav-links" id="navLinks">
       <li>
-        <button class="nav-dropdown-toggle">?�개</button>
+        <button class="nav-dropdown-toggle">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">?�생 가?�드</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가?�드</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가?�드</a></li>
-          <li><a href="earn-talents.html">?��????�립</a></li>
+          <li><a href="guide.html">학생 가이드</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가이드</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가이드</a></li>
+          <li><a href="earn-talents.html">달란트 적립</a></li>
           <li><a href="qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">?��???/button>
+        <button class="nav-dropdown-toggle">달란트</button>
         <ul class="nav-dropdown-menu">
-          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">???��???/a></li>
-          <li><a href="talent-receive.html">?��????�령</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">?��???관�?/a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">?��????�계</a></li>
-          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">?��???QR 관�?/a></li>
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
+          <li><a href="talent-receive.html">달란트 수령</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">달란트 통계</a></li>
+          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">달란트 QR 관리</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">?�품</button>
+        <button class="nav-dropdown-toggle active">상품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="shop.html">?�품 구매</a></li>
-          <li id="navMyOrders" style="display:none;"><a href="my-orders.html" class="active">??구매 ?�품</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">?�품 관�?/a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="shop.html">상품 구매</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html" class="active">내 구매 상품</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60" style="display:none;">
-        <button class="nav-dropdown-toggle">관�?/button>
+        <button class="nav-dropdown-toggle">관리</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="60"><a href="admin/index.html">?�?�보??/a></li>
-          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="admin/managers.html">관리자 관�?/a></li>
-          <li data-min-perm="60"><a href="admin/departments.html">부??관�?/a></li>
+          <li data-min-perm="60"><a href="admin/index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
         </ul>
       </li>
       <li data-min-perm="80" style="display:none;">
-        <button class="nav-dropdown-toggle">?�영</button>
+        <button class="nav-dropdown-toggle">운영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="admin/page-access.html">?�이지 ?�근</a></li>
-          <li data-min-perm="100"><a href="admin/page-features.html">?�이지 기능</a></li>
+          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
           <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="admin/reports.html">보고??/a></li>
-          <li data-min-perm="100"><a href="admin/audit.html">?�업 ?�력</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
           <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
-      <li id="navLoginArea"><a href="login.html">로그??/a></li>
+      <li id="navLoginArea"><a href="login.html">로그인</a></li>
       <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
-      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그?�웃</button></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="page-container" id="mainContent">
-    <div class="empty-state"><div class="empty-state-icon">??/div><p>로딩 �?..</p></div>
+    <div class="empty-state"><div class="empty-state-icon">⏳</div><p>로딩 중...</p></div>
   </div>
 
   <footer class="page-footer">
-    <p>초등부 ?��???관�?&copy; 2026 CHO-Talents</p>
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -116,24 +116,24 @@
         else { orders = data || []; }
       } catch (e) { /* table may not exist */ }
 
-      const statusMap = { requested:'구매 ?�청', preparing:'?�품 준�?, purchased:'?�품 구매', delivered:'?�품 지�? };
+      const statusMap = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
       const statusColor = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
-      const statusEmoji = { requested:'?��', preparing:'?��', purchased:'?��', delivered:'?? };
+      const statusEmoji = { requested:'🛒', preparing:'📦', purchased:'💳', delivered:'✅' };
 
-      let html = `<h1 class="page-title">?�� ??구매 ?�품</h1>
-        <p class="page-sub">${session.displayName || session.username}?�의 구매 ?�역?�니??/p>`;
+      let html = `<h1 class="page-title">🛒 내 구매 상품</h1>
+        <p class="page-sub">${session.displayName || session.username}님의 구매 내역입니다</p>`;
 
       if (orders.length === 0) {
-        html += '<div class="empty-state"><div class="empty-state-icon">?��</div><p>구매 ?�역???�습?�다.</p></div>';
+        html += '<div class="empty-state"><div class="empty-state-icon">📦</div><p>구매 내역이 없습니다.</p></div>';
       } else {
         html += `<div class="data-table-wrap">
-          <div class="data-table-header"><div class="data-table-title">구매 ?�역 (${orders.length}�?</div></div>
+          <div class="data-table-header"><div class="data-table-title">구매 내역 (${orders.length}건)</div></div>
           <table class="data-table">
-            <thead><tr><th>?�짜</th><th>?�품�?/th><th>가�?/th><th>?�재 ?�태</th></tr></thead>
+            <thead><tr><th>날짜</th><th>상품명</th><th>가격</th><th>현재 상태</th></tr></thead>
             <tbody>` + orders.map(o => `<tr>
               <td>${formatKSTShort(o.requested_at || o.created_at)}</td>
               <td>${o.product_name || '-'}</td>
-              <td style="font-weight:700;">${fmtNum(o.price)} ?��???/td>
+              <td style="font-weight:700;">${fmtNum(o.price)} 달란트</td>
               <td>
                 <span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.6rem;border-radius:6px;font-size:0.82rem;font-weight:600;background:${statusColor[o.status]||'#868e96'}15;color:${statusColor[o.status]||'#868e96'};">${statusEmoji[o.status]||''} ${statusMap[o.status]||o.status}</span>
                 ${o.status === 'requested' ? `<button onclick="cancelOrder('${o.id}','${(o.product_name||'').replace(/'/g,"\\'")}',${o.price})" style="margin-left:0.4rem;padding:0.15rem 0.5rem;font-size:0.75rem;border:1px solid #e03131;color:#e03131;background:#fff;border-radius:4px;cursor:pointer;">\ucde8\uc18c</button>` : ''}
