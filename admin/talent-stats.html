@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>?��????�계 - CHO Talents Admin</title>
+  <title>달란트 통계 - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
   <style>
     .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; margin-bottom: 1.5rem; }
@@ -42,36 +42,36 @@
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">�?/span> ?��???마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
-      <li><button class="nav-dropdown-toggle">?�개</button><ul class="nav-dropdown-menu"><li><a href="../guide.html">?�생 가?�드</a></li>
-          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가?�드</a></li>
-          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가?�드</a></li><li><a href="../earn-talents.html">?��????�립</a></li><li><a href="../qna.html">Q &amp; A</a></li></ul></li>
-      <li><button class="nav-dropdown-toggle active">?��???/button><ul class="nav-dropdown-menu"><li><a href="../my-talents.html">???��???/a></li><li><a href="../talent-receive.html">?��????�령</a></li><li data-min-perm="40"><a href="talents.html">?��???관�?/a></li><li data-min-perm="60"><a href="talent-stats.html" class="active">?��????�계</a></li><li data-min-perm="90"><a href="talent-qr.html">?��???QR 관�?/a></li></ul></li>
-      <li><button class="nav-dropdown-toggle">?�품</button><ul class="nav-dropdown-menu"><li><a href="../shop.html">?�품 구매</a></li><li><a href="../my-orders.html">??구매 ?�품</a></li><li data-min-perm="60"><a href="shop.html">?�품 관�?/a></li><li data-min-perm="60"><a href="purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li></ul></li>
-      <li data-min-perm="60"><button class="nav-dropdown-toggle">관�?/button><ul class="nav-dropdown-menu"><li data-min-perm="60"><a href="index.html">?�?�보??/a></li><li data-min-perm="60"><a href="users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li><li data-min-perm="80"><a href="managers.html">관리자 관�?/a></li><li data-min-perm="60"><a href="departments.html">부??관�?/a></li></ul></li>
-      <li data-min-perm="80"><button class="nav-dropdown-toggle">?�영</button><ul class="nav-dropdown-menu"><li data-min-perm="100"><a href="page-access.html">?�이지 ?�근</a></li><li data-min-perm="100"><a href="page-features.html">?�이지 기능</a></li><li data-min-perm="80"><a href="versions.html">버전</a></li><li data-min-perm="80"><a href="reports.html">보고??/a></li><li data-min-perm="100"><a href="audit.html">?�업 ?�력</a></li><li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li></ul></li>
+      <li><button class="nav-dropdown-toggle">소개</button><ul class="nav-dropdown-menu"><li><a href="../guide.html">학생 가이드</a></li>
+          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
+          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li><li><a href="../earn-talents.html">달란트 적립</a></li><li><a href="../qna.html">Q &amp; A</a></li></ul></li>
+      <li><button class="nav-dropdown-toggle active">달란트</button><ul class="nav-dropdown-menu"><li><a href="../my-talents.html">내 달란트</a></li><li><a href="../talent-receive.html">달란트 수령</a></li><li data-min-perm="40"><a href="talents.html">달란트 관리</a></li><li data-min-perm="60"><a href="talent-stats.html" class="active">달란트 통계</a></li><li data-min-perm="90"><a href="talent-qr.html">달란트 QR 관리</a></li></ul></li>
+      <li><button class="nav-dropdown-toggle">상품</button><ul class="nav-dropdown-menu"><li><a href="../shop.html">상품 구매</a></li><li><a href="../my-orders.html">내 구매 상품</a></li><li data-min-perm="60"><a href="shop.html">상품 관리</a></li><li data-min-perm="60"><a href="purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li></ul></li>
+      <li data-min-perm="60"><button class="nav-dropdown-toggle">관리</button><ul class="nav-dropdown-menu"><li data-min-perm="60"><a href="index.html">대시보드</a></li><li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li><li data-min-perm="80"><a href="managers.html">관리자 관리</a></li><li data-min-perm="60"><a href="departments.html">부서 관리</a></li></ul></li>
+      <li data-min-perm="80"><button class="nav-dropdown-toggle">운영</button><ul class="nav-dropdown-menu"><li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li><li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li><li data-min-perm="80"><a href="versions.html">버전</a></li><li data-min-perm="80"><a href="reports.html">보고서</a></li><li data-min-perm="100"><a href="audit.html">작업 이력</a></li><li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li></ul></li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">로그?�웃</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container" style="max-width:100%;padding:0 1rem;">
-    <h2>?�� ?��????�적 ?�립 ?�계</h2>
+    <h2>📊 달란트 누적 적립 통계</h2>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="viewAll" onclick="switchView('all')">?�체</button>
-      <button class="filter-btn" id="viewDept" onclick="switchView('dept')">부?�별</button>
-      <button class="filter-btn" id="viewClass" onclick="switchView('class')">?�용?�별</button>
-      <button class="filter-btn" id="viewType" onclick="switchView('type')">?�형�?/button>
+      <button class="filter-btn active" id="viewAll" onclick="switchView('all')">전체</button>
+      <button class="filter-btn" id="viewDept" onclick="switchView('dept')">부서별</button>
+      <button class="filter-btn" id="viewClass" onclick="switchView('class')">사용자별</button>
+      <button class="filter-btn" id="viewType" onclick="switchView('type')">유형별</button>
       <select id="deptFilter" onchange="loadStats()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
-        <option value="">?�체 부??/option>
+        <option value="">전체 부서</option>
       </select>
       <span class="radio-inline" id="userTypeRadio">
-        <label><input type="radio" name="userType" value="" checked onchange="loadStats()" /> ?�체</label>
-        <label><input type="radio" name="userType" value="student" onchange="loadStats()" /> ?�생</label>
+        <label><input type="radio" name="userType" value="" checked onchange="loadStats()" /> 전체</label>
+        <label><input type="radio" name="userType" value="student" onchange="loadStats()" /> 학생</label>
         <label><input type="radio" name="userType" value="teacher" onchange="loadStats()" /> 교사</label>
       </span>
       <span style="margin-left:auto;display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
@@ -80,16 +80,16 @@
         <span style="font-size:0.82rem;">~</span>
         <input type="date" id="dateTo" onchange="loadStats()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
         <span class="period-presets">
-          <button onclick="setPeriod('today')">?�늘</button>
-          <button onclick="setPeriod('week')">1�?/button>
-          <button onclick="setPeriod('month')">1??/button>
-          <button onclick="setPeriod('year')">1??/button>
+          <button onclick="setPeriod('today')">오늘</button>
+          <button onclick="setPeriod('week')">1주</button>
+          <button onclick="setPeriod('month')">1달</button>
+          <button onclick="setPeriod('year')">1년</button>
         </span>
       </span>
     </div>
 
     <div id="statsContent" style="margin-top:1rem;">
-      <div style="text-align:center;color:var(--admin-text-muted);">불러?�는 �?..</div>
+      <div style="text-align:center;color:var(--admin-text-muted);">불러오는 중...</div>
     </div>
   </div>
 
@@ -138,7 +138,7 @@
       allProfiles = profRes.data || [];
       allDepts = deptRes.data || [];
       const sel = document.getElementById('deptFilter');
-      sel.innerHTML = '<option value="">?�체 부??/option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      sel.innerHTML = '<option value="">전체 부서</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
     function switchView(view) {
@@ -180,24 +180,24 @@
 
     function renderOverallStats(txns, profiles) {
       if (txns.length === 0) {
-        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">?��</div><p>?�립 ?�이?��? ?�습?�다.</p></div>';
+        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">📊</div><p>적립 데이터가 없습니다.</p></div>';
         return;
       }
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
       const uniqueUsers = new Set(txns.map(t => t.user_id)).size;
       const byItem = {};
-      txns.forEach(t => { const k = t.description || '기�?'; if (!byItem[k]) byItem[k] = { amount: 0, count: 0 }; byItem[k].amount += t.amount || 0; byItem[k].count++; });
+      txns.forEach(t => { const k = t.description || '기타'; if (!byItem[k]) byItem[k] = { amount: 0, count: 0 }; byItem[k].amount += t.amount || 0; byItem[k].count++; });
       const sorted = Object.entries(byItem).sort((a, b) => b[1].amount - a[1].amount);
 
       let html = `<div class="stats-summary">
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">�??�립 ?��???/div><div class="stat-value green">${fmtNum(total)}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">�?거래 ??/div><div class="stat-value blue">${fmtNum(txns.length)}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">??�� ??/div><div class="stat-value orange">${sorted.length}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">?�동 ?�원</div><div class="stat-value purple">${fmtNum(uniqueUsers)}�?/div></div>
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">총 적립 달란트</div><div class="stat-value green">${fmtNum(total)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">총 거래 수</div><div class="stat-value blue">${fmtNum(txns.length)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-label">항목 수</div><div class="stat-value orange">${sorted.length}</div></div>
+        <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-label">활동 인원</div><div class="stat-value purple">${fmtNum(uniqueUsers)}명</div></div>
       </div>`;
       html += `<div style="background:#fff;border:1px solid #e9ecef;border-radius:14px;overflow:hidden;">
-        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">?�� ??���??�립 ?�계</div>
-        <table class="stats-table"><thead><tr><th>??��</th><th style="text-align:right;">�??��???/th><th style="text-align:right;">거래 ??/th><th style="text-align:right;">비율</th><th>그래??/th></tr></thead><tbody>`;
+        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">📊 항목별 적립 통계</div>
+        <table class="stats-table"><thead><tr><th>항목</th><th style="text-align:right;">총 달란트</th><th style="text-align:right;">거래 수</th><th style="text-align:right;">비율</th><th>그래프</th></tr></thead><tbody>`;
       sorted.forEach(([name, v]) => {
         const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
         html += `<tr><td style="font-weight:600;">${name}</td><td class="num">${fmtNum(v.amount)}</td><td class="num">${fmtNum(v.count)}</td><td class="num">${pct}%</td>
@@ -213,7 +213,7 @@
       const byDept = {};
       txns.forEach(t => {
         const prof = profMap[t.user_id];
-        const dName = prof && prof.department_id ? (deptMap[prof.department_id] || '미배??) : '미배??;
+        const dName = prof && prof.department_id ? (deptMap[prof.department_id] || '미배정') : '미배정';
         if (!byDept[dName]) byDept[dName] = { amount: 0, count: 0, users: new Set() };
         byDept[dName].amount += t.amount || 0; byDept[dName].count++; byDept[dName].users.add(t.user_id);
       });
@@ -222,18 +222,18 @@
       const totalUsers = new Set(txns.map(t => t.user_id)).size;
 
       let html = `<div class="stats-summary">
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">�?부????/div><div class="stat-value blue">${sorted.length}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">�??�립 ?��???/div><div class="stat-value green">${fmtNum(total)}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">�?거래 ??/div><div class="stat-value orange">${fmtNum(txns.length)}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">?�동 ?�원</div><div class="stat-value purple">${fmtNum(totalUsers)}�?/div></div>
+        <div class="stat-card"><div class="stat-icon">🏢</div><div class="stat-label">총 부서 수</div><div class="stat-value blue">${sorted.length}</div></div>
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">총 적립 달란트</div><div class="stat-value green">${fmtNum(total)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">총 거래 수</div><div class="stat-value orange">${fmtNum(txns.length)}</div></div>
+        <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-label">활동 인원</div><div class="stat-value purple">${fmtNum(totalUsers)}명</div></div>
       </div>`;
       html += `<div style="background:#fff;border:1px solid #e9ecef;border-radius:14px;overflow:hidden;">
-        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">?�� 부?�별 ?�립 ?�계</div>
-        <table class="stats-table"><thead><tr><th>부??/th><th style="text-align:right;">�??��???/th><th style="text-align:right;">거래 ??/th><th style="text-align:right;">?�원</th><th style="text-align:right;">1???�균</th><th style="text-align:right;">비율</th><th>그래??/th></tr></thead><tbody>`;
+        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">🏢 부서별 적립 통계</div>
+        <table class="stats-table"><thead><tr><th>부서</th><th style="text-align:right;">총 달란트</th><th style="text-align:right;">거래 수</th><th style="text-align:right;">인원</th><th style="text-align:right;">1인 평균</th><th style="text-align:right;">비율</th><th>그래프</th></tr></thead><tbody>`;
       sorted.forEach(([name, v]) => {
         const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
         const avg = v.users.size > 0 ? Math.round(v.amount / v.users.size) : 0;
-        html += `<tr><td style="font-weight:600;">${name}</td><td class="num">${fmtNum(v.amount)}</td><td class="num">${fmtNum(v.count)}</td><td class="num">${v.users.size}�?/td><td class="num">${fmtNum(avg)}</td><td class="num">${pct}%</td>
+        html += `<tr><td style="font-weight:600;">${name}</td><td class="num">${fmtNum(v.amount)}</td><td class="num">${fmtNum(v.count)}</td><td class="num">${v.users.size}명</td><td class="num">${fmtNum(avg)}</td><td class="num">${pct}%</td>
           <td><div class="pct-bar"><div class="pct-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#339af0,#1971c2);"></div><div class="pct-bar-text">${pct}%</div></div></td></tr>`;
       });
       html += '</tbody></table></div>';
@@ -246,12 +246,12 @@
       const byUser = {};
       txns.forEach(t => {
         const prof = profMap[t.user_id]; if (!prof) return;
-        const dName = prof.department_id ? (deptMap[prof.department_id] || '미배??) : '미배??;
+        const dName = prof.department_id ? (deptMap[prof.department_id] || '미배정') : '미배정';
         const uName = prof.display_name || prof.username || '-';
         const key = `${dName}|${uName}|${prof.id}`;
         if (!byUser[key]) byUser[key] = { dept: dName, name: uName, type: prof.user_type, amount: 0, count: 0, items: {} };
         byUser[key].amount += t.amount || 0; byUser[key].count++;
-        const desc = t.description || '기�?';
+        const desc = t.description || '기타';
         byUser[key].items[desc] = (byUser[key].items[desc] || 0) + (t.amount || 0);
       });
       const sorted = Object.values(byUser).sort((a, b) => b.amount - a.amount);
@@ -259,18 +259,18 @@
       const avgPP = sorted.length > 0 ? Math.round(total / sorted.length) : 0;
 
       let html = `<div class="stats-summary">
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">�??�원</div><div class="stat-value blue">${sorted.length}�?/div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">�??�립 ?��???/div><div class="stat-value green">${fmtNum(total)}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">�?거래 ??/div><div class="stat-value orange">${fmtNum(txns.length)}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">1???�균</div><div class="stat-value purple">${fmtNum(avgPP)}</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-label">총 인원</div><div class="stat-value blue">${sorted.length}명</div></div>
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">총 적립 달란트</div><div class="stat-value green">${fmtNum(total)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">총 거래 수</div><div class="stat-value orange">${fmtNum(txns.length)}</div></div>
+        <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-label">1인 평균</div><div class="stat-value purple">${fmtNum(avgPP)}</div></div>
       </div>`;
       html += `<div style="background:#fff;border:1px solid #e9ecef;border-radius:14px;overflow:hidden;">
-        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">?�� ?�용?�별 ?�립 ?�계 (${sorted.length}�?</div>
-        <table class="stats-table"><thead><tr><th>부??/th><th>?�름</th><th>?�형</th><th style="text-align:right;">�??��???/th><th style="text-align:right;">거래 ??/th><th>?�위 ??��</th></tr></thead><tbody>`;
+        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">👤 사용자별 적립 통계 (${sorted.length}명)</div>
+        <table class="stats-table"><thead><tr><th>부서</th><th>이름</th><th>유형</th><th style="text-align:right;">총 달란트</th><th style="text-align:right;">거래 수</th><th>상위 항목</th></tr></thead><tbody>`;
       sorted.forEach((u, i) => {
         const topItems = Object.entries(u.items).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([n, v]) => `${n}(${fmtNum(v)})`).join(', ');
-        const medal = i === 0 ? '?�� ' : i === 1 ? '?�� ' : i === 2 ? '?�� ' : '';
-        const typeLabel = u.type === 'teacher' ? '?��?��? : '?��';
+        const medal = i === 0 ? '🥇 ' : i === 1 ? '🥈 ' : i === 2 ? '🥉 ' : '';
+        const typeLabel = u.type === 'teacher' ? '👨‍🏫' : '🎒';
         html += `<tr><td>${u.dept}</td><td style="font-weight:600;">${medal}${u.name}</td><td>${typeLabel}</td><td class="num">${fmtNum(u.amount)}</td><td class="num">${fmtNum(u.count)}</td><td style="font-size:0.78rem;color:var(--admin-text-muted);">${topItems}</td></tr>`;
       });
       html += '</tbody></table></div>';
@@ -279,7 +279,7 @@
 
     function renderTypeStats(txns, profiles) {
       const profMap = {}; profiles.forEach(p => { profMap[p.id] = p; });
-      const types = { student: { label: '?�생', icon: '?��', txns: [], color: '#ffd43b,#fab005' }, teacher: { label: '교사', icon: '?��?��?, txns: [], color: '#74c0fc,#339af0' } };
+      const types = { student: { label: '학생', icon: '🎒', txns: [], color: '#ffd43b,#fab005' }, teacher: { label: '교사', icon: '👨‍🏫', txns: [], color: '#74c0fc,#339af0' } };
       txns.forEach(t => {
         const prof = profMap[t.user_id];
         const type = (prof && prof.user_type === 'teacher') ? 'teacher' : 'student';
@@ -288,10 +288,10 @@
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
 
       let html = `<div class="stats-summary">
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">?�생 �??��???/div><div class="stat-value green">${fmtNum(types.student.txns.reduce((s, t) => s + (t.amount || 0), 0))}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��?��?/div><div class="stat-label">교사 �??��???/div><div class="stat-value blue">${fmtNum(types.teacher.txns.reduce((s, t) => s + (t.amount || 0), 0))}</div></div>
-        <div class="stat-card"><div class="stat-icon">?��</div><div class="stat-label">?�생 ?�원</div><div class="stat-value orange">${new Set(types.student.txns.map(t => t.user_id)).size}�?/div></div>
-        <div class="stat-card"><div class="stat-icon">?��?��?/div><div class="stat-label">교사 ?�원</div><div class="stat-value purple">${new Set(types.teacher.txns.map(t => t.user_id)).size}�?/div></div>
+        <div class="stat-card"><div class="stat-icon">🎒</div><div class="stat-label">학생 총 달란트</div><div class="stat-value green">${fmtNum(types.student.txns.reduce((s, t) => s + (t.amount || 0), 0))}</div></div>
+        <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-label">교사 총 달란트</div><div class="stat-value blue">${fmtNum(types.teacher.txns.reduce((s, t) => s + (t.amount || 0), 0))}</div></div>
+        <div class="stat-card"><div class="stat-icon">🎒</div><div class="stat-label">학생 인원</div><div class="stat-value orange">${new Set(types.student.txns.map(t => t.user_id)).size}명</div></div>
+        <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-label">교사 인원</div><div class="stat-value purple">${new Set(types.teacher.txns.map(t => t.user_id)).size}명</div></div>
       </div>`;
 
       ['student', 'teacher'].forEach(typeKey => {
@@ -303,20 +303,20 @@
         const typeAvg = typeUsers > 0 ? Math.round(typeTotal / typeUsers) : 0;
 
         const byItem = {};
-        typeTxns.forEach(t => { const k = t.description || '기�?'; if (!byItem[k]) byItem[k] = { amount: 0, count: 0 }; byItem[k].amount += t.amount || 0; byItem[k].count++; });
+        typeTxns.forEach(t => { const k = t.description || '기타'; if (!byItem[k]) byItem[k] = { amount: 0, count: 0 }; byItem[k].amount += t.amount || 0; byItem[k].count++; });
         const sorted = Object.entries(byItem).sort((a, b) => b[1].amount - a[1].amount);
 
         html += `<div class="type-section">
-          <div class="type-section-header">${info.icon} ${info.label} ??���??�립 ?�계</div>
+          <div class="type-section-header">${info.icon} ${info.label} 항목별 적립 통계</div>
           <div class="type-detail-inline">
-            <span>�??��??? <span class="val">${fmtNum(typeTotal)}</span></span>
-            <span>거래 ?? <span class="val">${fmtNum(typeCount)}</span></span>
-            <span>?�원: <span class="val">${typeUsers}�?/span></span>
-            <span>1???�균: <span class="val">${fmtNum(typeAvg)}</span></span>
+            <span>총 달란트: <span class="val">${fmtNum(typeTotal)}</span></span>
+            <span>거래 수: <span class="val">${fmtNum(typeCount)}</span></span>
+            <span>인원: <span class="val">${typeUsers}명</span></span>
+            <span>1인 평균: <span class="val">${fmtNum(typeAvg)}</span></span>
           </div>
-          <table class="stats-table"><thead><tr><th>??��</th><th style="text-align:right;">?��???/th><th style="text-align:right;">거래 ??/th><th style="text-align:right;">비율</th><th>그래??/th></tr></thead><tbody>`;
+          <table class="stats-table"><thead><tr><th>항목</th><th style="text-align:right;">달란트</th><th style="text-align:right;">거래 수</th><th style="text-align:right;">비율</th><th>그래프</th></tr></thead><tbody>`;
         if (sorted.length === 0) {
-          html += '<tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">?�이???�음</td></tr>';
+          html += '<tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">데이터 없음</td></tr>';
         } else {
           sorted.forEach(([name, v]) => {
             const pct = typeTotal > 0 ? ((v.amount / typeTotal) * 100).toFixed(1) : 0;

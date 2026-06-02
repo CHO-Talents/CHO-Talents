@@ -1,149 +1,149 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>´Ş¶õÆ® °ü¸® - CHO Talents Admin</title>
+  <title>ë‹¬ë€íŠ¸ ê´€ë¦¬ - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">?</span> ´Ş¶õÆ® ¸¶À»</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">â­</span> ë‹¬ë€íŠ¸ ë§ˆì„</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">¼Ò°³</button>
+        <button class="nav-dropdown-toggle">ì†Œê°œ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">ÇĞ»ı °¡ÀÌµå</a></li>
-          <li data-min-perm="40"><a href="../teacher-guide.html">±³»ç °¡ÀÌµå</a></li>
-          <li data-min-perm="60"><a href="../admin-guide.html">°ü¸®ÀÚ °¡ÀÌµå</a></li>
-          <li><a href="../earn-talents.html">´Ş¶õÆ® Àû¸³</a></li>
+          <li><a href="../guide.html">í•™ìƒ ê°€ì´ë“œ</a></li>
+          <li data-min-perm="40"><a href="../teacher-guide.html">êµì‚¬ ê°€ì´ë“œ</a></li>
+          <li data-min-perm="60"><a href="../admin-guide.html">ê´€ë¦¬ì ê°€ì´ë“œ</a></li>
+          <li><a href="../earn-talents.html">ë‹¬ë€íŠ¸ ì ë¦½</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">´Ş¶õÆ®</button>
+        <button class="nav-dropdown-toggle active">ë‹¬ë€íŠ¸</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">³» ´Ş¶õÆ®</a></li>
-          <li><a href="../talent-receive.html">´Ş¶õÆ® ¼ö·É</a></li>
-          <li data-min-perm="40"><a href="talents.html" class="active">´Ş¶õÆ® °ü¸®</a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">´Ş¶õÆ® Åë°è</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">´Ş¶õÆ® QR °ü¸®</a></li>
+          <li><a href="../my-talents.html">ë‚´ ë‹¬ë€íŠ¸</a></li>
+          <li><a href="../talent-receive.html">ë‹¬ë€íŠ¸ ìˆ˜ë ¹</a></li>
+          <li data-min-perm="40"><a href="talents.html" class="active">ë‹¬ë€íŠ¸ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">ë‹¬ë€íŠ¸ í†µê³„</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">ë‹¬ë€íŠ¸ QR ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">»óÇ°</button>
+        <button class="nav-dropdown-toggle">ìƒí’ˆ</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">»óÇ° ±¸¸Å</a></li>
-          <li><a href="../my-orders.html">³» ±¸¸Å »óÇ°</a></li>
-          <li data-min-perm="60"><a href="shop.html">»óÇ° °ü¸®</a></li>
-          <li data-min-perm="60"><a href="purchases.html">±¸¸Å °ü¸® <span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">ìƒí’ˆ êµ¬ë§¤</a></li>
+          <li><a href="../my-orders.html">ë‚´ êµ¬ë§¤ ìƒí’ˆ</a></li>
+          <li data-min-perm="60"><a href="shop.html">ìƒí’ˆ ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="purchases.html">êµ¬ë§¤ ê´€ë¦¬ <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">°ü¸®</button>
+        <button class="nav-dropdown-toggle">ê´€ë¦¬</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="60"><a href="index.html">´ë½Ãº¸µå</a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">»ç¿ëÀÚ °ü¸® <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">°ü¸®ÀÚ °ü¸®</a></li>
-          <li data-min-perm="60"><a href="departments.html">ºÎ¼­ °ü¸®</a></li>
+          <li data-min-perm="60"><a href="index.html">ëŒ€ì‹œë³´ë“œ</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">ì‚¬ìš©ì ê´€ë¦¬ <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">ê´€ë¦¬ì ê´€ë¦¬</a></li>
+          <li data-min-perm="60"><a href="departments.html">ë¶€ì„œ ê´€ë¦¬</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">¿î¿µ</button>
+        <button class="nav-dropdown-toggle">ìš´ì˜</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">ÆäÀÌÁö Á¢±Ù</a></li>
-          <li data-min-perm="100"><a href="page-features.html">ÆäÀÌÁö ±â´É</a></li>
-          <li data-min-perm="80"><a href="versions.html">¹öÀü</a></li>
-          <li data-min-perm="80"><a href="reports.html">º¸°í¼­</a></li>
-          <li data-min-perm="100"><a href="audit.html">ÀÛ¾÷ ÀÌ·Â</a></li>
-          <li data-min-perm="100"><a href="logs.html" id="navLogs">·Î±× <span class="badge hidden" id="navLogBadge">0</span></a></li>
+          <li data-min-perm="100"><a href="page-access.html">í˜ì´ì§€ ì ‘ê·¼</a></li>
+          <li data-min-perm="100"><a href="page-features.html">í˜ì´ì§€ ê¸°ëŠ¥</a></li>
+          <li data-min-perm="80"><a href="versions.html">ë²„ì „</a></li>
+          <li data-min-perm="80"><a href="reports.html">ë³´ê³ ì„œ</a></li>
+          <li data-min-perm="100"><a href="audit.html">ì‘ì—… ì´ë ¥</a></li>
+          <li data-min-perm="100"><a href="logs.html" id="navLogs">ë¡œê·¸ <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">·Î±×¾Æ¿ô</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">ë¡œê·¸ì•„ì›ƒ</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
-      <h2>?? ´Ş¶õÆ® °ü¸®</h2>
-      <a href="talent-items.html" class="filter-btn" data-min-perm="60" style="text-decoration:none;">?? ´Ş¶õÆ® Ç×¸ñ °ü¸®</a>
+      <h2>ğŸ’° ë‹¬ë€íŠ¸ ê´€ë¦¬</h2>
+      <a href="talent-items.html" class="filter-btn" data-min-perm="60" style="text-decoration:none;">ğŸ“‹ ë‹¬ë€íŠ¸ í•­ëª© ê´€ë¦¬</a>
     </div>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">?? ÇĞ»ı</button>
-      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">????? ±³»ç</button>
+      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">ğŸ’ í•™ìƒ</button>
+      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">ğŸ‘©â€ğŸ« êµì‚¬</button>
       <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
-        <option value="">ÀüÃ¼ ºÎ¼­</option>
+        <option value="">ì „ì²´ ë¶€ì„œ</option>
       </select>
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">ÇĞ»ı ¸ñ·Ï</div>
-        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ »ç¿ëÀÚ µî·Ï</button>
+        <div class="admin-table-title" id="tableTitle">í•™ìƒ ëª©ë¡</div>
+        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ ì‚¬ìš©ì ë“±ë¡</button>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ÀÌ¸§</th><th>ºÎ¼­</th><th>¹İ</th><th>ÀÜ¿© ´Ş¶õÆ®</th><th>»ç¿ë ´Ş¶õÆ®</th><th>´©Àû ´Ş¶õÆ®</th><th>°ü¸®</th></tr></thead>
-        <tbody id="userList"><tr><td colspan="7" class="empty-state">·Îµù Áß...</td></tr></tbody>
+        <thead><tr><th>ì´ë¦„</th><th>ë¶€ì„œ</th><th>ë°˜</th><th>ì”ì—¬ ë‹¬ë€íŠ¸</th><th>ì‚¬ìš© ë‹¬ë€íŠ¸</th><th>ëˆ„ì  ë‹¬ë€íŠ¸</th><th>ê´€ë¦¬</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="7" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="userModal">
     <div class="modal-box">
-      <h3 class="modal-title" id="modalTitle">»ç¿ëÀÚ µî·Ï</h3>
+      <h3 class="modal-title" id="modalTitle">ì‚¬ìš©ì ë“±ë¡</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¾ÆÀÌµğ</label>
-        <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="¿µ¹®/¼ıÀÚ" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì•„ì´ë””</label>
+        <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ì˜ë¬¸/ìˆ«ì" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÀÌ¸§</label>
-        <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="Ç¥½Ã ÀÌ¸§" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì´ë¦„</label>
+        <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="í‘œì‹œ ì´ë¦„" />
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">Ãë¼Ò</button>
-        <button class="btn-confirm" onclick="saveUser()">ÀúÀå</button>
+        <button class="btn-cancel" onclick="closeModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" onclick="saveUser()">ì €ì¥</button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="talentModal">
     <div class="modal-box" style="max-width:500px;">
-      <h3 class="modal-title" id="talentTitle">´Ş¶õÆ® °ü¸®</h3>
+      <h3 class="modal-title" id="talentTitle">ë‹¬ë€íŠ¸ ê´€ë¦¬</h3>
       <div style="text-align:center;margin-bottom:1rem;">
-        <div style="font-size:0.85rem;color:var(--admin-text-muted);">ÇöÀç ÀÜ¾×</div>
+        <div style="font-size:0.85rem;color:var(--admin-text-muted);">í˜„ì¬ ì”ì•¡</div>
         <div style="font-size:2rem;font-weight:800;" id="talentBalance">0</div>
       </div>
       <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;" id="talentTypeArea">
-        <button class="filter-btn" id="btnEarn" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">Àû¸³</button>
+        <button class="filter-btn" id="btnEarn" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">ì ë¦½</button>
       </div>
 
       <div id="earnSection">
-        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">Ç×¸ñ ¼±ÅÃ (Ã¼Å© ÈÄ Áö±Ş È®Á¤)</div>
+        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">í•­ëª© ì„ íƒ (ì²´í¬ í›„ ì§€ê¸‰ í™•ì •)</div>
         <div id="talentItemBtns" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;"></div>
-        <button class="btn-confirm" id="btnConfirmGive" onclick="confirmGiveItems()" style="width:100%;padding:0.6rem;margin-bottom:0.8rem;display:none;">? Áö±Ş È®Á¤</button>
+        <button class="btn-confirm" id="btnConfirmGive" onclick="confirmGiveItems()" style="width:100%;padding:0.6rem;margin-bottom:0.8rem;display:none;">âœ… ì§€ê¸‰ í™•ì •</button>
         <details id="manualGiveSection" style="margin-bottom:0.8rem;display:none;">
-          <summary style="cursor:pointer;font-size:0.85rem;color:var(--admin-primary);">¼öµ¿ ÀÔ·Â (Ç×¸ñ¿¡ ¾ø´Â °æ¿ì)</summary>
+          <summary style="cursor:pointer;font-size:0.85rem;color:var(--admin-primary);">ìˆ˜ë™ ì…ë ¥ (í•­ëª©ì— ì—†ëŠ” ê²½ìš°)</summary>
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-            <input type="number" id="talentAmount" min="1" max="100" style="flex:1;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="±İ¾× (ÃÖ´ë 100)" />
-            <input type="text" id="talentDesc" style="flex:2;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="»çÀ¯" />
+            <input type="number" id="talentAmount" min="1" max="100" style="flex:1;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ê¸ˆì•¡ (ìµœëŒ€ 100)" />
+            <input type="text" id="talentDesc" style="flex:2;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ì‚¬ìœ " />
           </div>
           <div style="margin-top:0.5rem;">
-            <button class="btn-confirm" onclick="submitManualTalent()" style="width:100%;padding:0.5rem;">¼öµ¿ Àû¸³</button>
+            <button class="btn-confirm" onclick="submitManualTalent()" style="width:100%;padding:0.5rem;">ìˆ˜ë™ ì ë¦½</button>
           </div>
         </details>
       </div>
 
       <div class="form-error" id="talentError"></div>
       <div class="modal-actions" style="margin-top:0.8rem;">
-        <button class="btn-cancel" onclick="closeTalentModal()">´İ±â</button>
+        <button class="btn-cancel" onclick="closeTalentModal()">ë‹«ê¸°</button>
       </div>
       <div style="margin-top:1rem;border-top:1px solid var(--admin-border);padding-top:0.8rem;">
-        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">ÃÖ±Ù ³»¿ª</div>
+        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">ìµœê·¼ ë‚´ì—­</div>
         <div id="talentHistory" style="max-height:200px;overflow-y:auto;font-size:0.82rem;"></div>
       </div>
     </div>
@@ -151,32 +151,32 @@
 
   <div class="modal-overlay hidden" id="detailModal">
     <div class="modal-box" style="max-width:600px;">
-      <h3 class="modal-title" id="detailTitle">´Ş¶õÆ® »ó¼¼</h3>
+      <h3 class="modal-title" id="detailTitle">ë‹¬ë€íŠ¸ ìƒì„¸</h3>
       <div id="detailSummary" style="display:flex;gap:0.8rem;margin-bottom:1rem;"></div>
       <div class="admin-table-wrap" style="max-height:400px;overflow-y:auto;">
         <table class="admin-table" style="font-size:0.85rem;">
-          <thead><tr><th>³¯Â¥</th><th>À¯Çü</th><th>±İ¾×</th><th>¼³¸í</th><th>Áö±ŞÀÚ</th><th>ÀÜ¾×</th><th></th></tr></thead>
+          <thead><tr><th>ë‚ ì§œ</th><th>ìœ í˜•</th><th>ê¸ˆì•¡</th><th>ì„¤ëª…</th><th>ì§€ê¸‰ì</th><th>ì”ì•¡</th><th></th></tr></thead>
           <tbody id="detailHistory"></tbody>
         </table>
       </div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="closeDetailModal()">´İ±â</button>
+        <button class="btn-cancel" onclick="closeDetailModal()">ë‹«ê¸°</button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="returnModal">
     <div class="modal-box" style="max-width:400px;">
-      <h3 class="modal-title">´Ş¶õÆ® ¹İÈ¯</h3>
+      <h3 class="modal-title">ë‹¬ë€íŠ¸ ë°˜í™˜</h3>
       <div style="margin-bottom:0.8rem;">
         <div style="font-size:0.85rem;color:#868e96;margin-bottom:0.3rem;" id="returnInfo"></div>
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¹İÈ¯ »çÀ¯ (ÇÊ¼ö)</label>
-        <input type="text" id="returnReason" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="¹İÈ¯ »çÀ¯¸¦ ÀÔ·ÂÇÏ¼¼¿ä" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë°˜í™˜ ì‚¬ìœ  (í•„ìˆ˜)</label>
+        <input type="text" id="returnReason" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ë°˜í™˜ ì‚¬ìœ ë¥¼ ì…ë ¥í•˜ì„¸ìš”" />
       </div>
       <div class="form-error" id="returnError"></div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeReturnModal()">Ãë¼Ò</button>
-        <button class="btn-confirm" style="background:#e03131;border-color:#e03131;" onclick="submitReturn()">¹İÈ¯ Ã³¸®</button>
+        <button class="btn-cancel" onclick="closeReturnModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" style="background:#e03131;border-color:#e03131;" onclick="submitReturn()">ë°˜í™˜ ì²˜ë¦¬</button>
       </div>
     </div>
   </div>
@@ -226,7 +226,7 @@
     function populateDeptFilter() {
       const sel = document.getElementById('deptFilter');
       if (!sel) return;
-      sel.innerHTML = '<option value="">ÀüÃ¼ ºÎ¼­</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      sel.innerHTML = '<option value="">ì „ì²´ ë¶€ì„œ</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
     function onDeptFilterChange() {
@@ -256,7 +256,7 @@
 
     async function loadUsers() {
       const myRank = session.permissionRank || 0;
-      const roleLabel = currentTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
+      const roleLabel = currentTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
       const opts = { userType: currentTab };
 
       if (myRank < 90) {
@@ -283,10 +283,10 @@
       }
 
       const tbody = document.getElementById('userList');
-      document.getElementById('tableTitle').textContent = `${roleLabel} ¸ñ·Ï (${data.length}¸í)`;
+      document.getElementById('tableTitle').textContent = `${roleLabel} ëª©ë¡ (${data.length}ëª…)`;
 
       if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">µî·ÏµÈ ${roleLabel}ÀÌ(°¡) ¾ø½À´Ï´Ù.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">ë“±ë¡ëœ ${roleLabel}ì´(ê°€) ì—†ìŠµë‹ˆë‹¤.</td></tr>`;
         return;
       }
 
@@ -298,11 +298,11 @@
       tbody.innerHTML = data.map(u => {
         const dn = nameMap[u.id] || u.display_name || '-';
         const isSelf = u.id === session.id;
-        const classLabel = u.class_number ? u.class_number + '¹İ' : '-';
+        const classLabel = u.class_number ? u.class_number + 'ë°˜' : '-';
         const sm = talentSummaryMap[u.id] || { earned: 0, used: 0 };
         const attendDone = _attendanceGivenToday.has(u.id);
         const attendBtn = canGiveTalent(u)
-          ? `<button class="filter-btn" style="background:${attendDone?'#adb5bd':'#51cf66'};color:#fff;border-color:${attendDone?'#adb5bd':'#51cf66'};" onclick="giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')" ${attendDone?'disabled':''}>${attendDone?'?Ãâ¼®':'Ãâ¼®'}</button>`
+          ? `<button class="filter-btn" style="background:${attendDone?'#adb5bd':'#51cf66'};color:#fff;border-color:${attendDone?'#adb5bd':'#51cf66'};" onclick="giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')" ${attendDone?'disabled':''}>${attendDone?'âœ“ì¶œì„':'ì¶œì„'}</button>`
           : '';
         return `<tr>
         <td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
@@ -313,8 +313,8 @@
         <td style="color:#1971c2;">${fmtNum(sm.earned)}</td>
         <td>
           ${attendBtn}
-          ${canGiveTalent(u) ? `<button class="filter-btn" onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">´Ş¶õÆ® Áö±Ş</button>` : ''}
-          <button class="filter-btn" onclick="openDetailModal('${u.id}','${dn.replace(/'/g,"\\'")}')">»ó¼¼</button>
+          ${canGiveTalent(u) ? `<button class="filter-btn" onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">ë‹¬ë€íŠ¸ ì§€ê¸‰</button>` : ''}
+          <button class="filter-btn" onclick="openDetailModal('${u.id}','${dn.replace(/'/g,"\\'")}')">ìƒì„¸</button>
         </td>
       </tr>`;
       }).join('');
@@ -334,7 +334,7 @@
     async function loadAttendanceToday(userIds) {
       _attendanceGivenToday = new Set();
       if (!_sb || userIds.length === 0) return;
-      const attendItem = talentItems.find(i => i.name === 'Ãâ¼®' && i.target_type === currentTab && i.is_active);
+      const attendItem = talentItems.find(i => i.name === 'ì¶œì„' && i.target_type === currentTab && i.is_active);
       if (!attendItem) return;
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
@@ -348,12 +348,12 @@
     }
 
     async function giveAttendance(userId, userName) {
-      const attendItem = talentItems.find(i => i.name === 'Ãâ¼®' && i.target_type === currentTab && i.is_active);
-      if (!attendItem) { alert('Ãâ¼® ´Ş¶õÆ® Ç×¸ñÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù.'); return; }
-      if (_attendanceGivenToday.has(userId)) { alert('ÀÌ¹Ì ¿À´Ã Ãâ¼® ´Ş¶õÆ®°¡ Áö±ŞµÇ¾ú½À´Ï´Ù.'); return; }
+      const attendItem = talentItems.find(i => i.name === 'ì¶œì„' && i.target_type === currentTab && i.is_active);
+      if (!attendItem) { alert('ì¶œì„ ë‹¬ë€íŠ¸ í•­ëª©ì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.'); return; }
+      if (_attendanceGivenToday.has(userId)) { alert('ì´ë¯¸ ì˜¤ëŠ˜ ì¶œì„ ë‹¬ë€íŠ¸ê°€ ì§€ê¸‰ë˜ì—ˆìŠµë‹ˆë‹¤.'); return; }
       const result = await giveTalentByItem(userId, attendItem.id, session.id);
       if (result && result.success === false) {
-        alert(tErr(result.error || 'Ãâ¼® Áö±Ş ½ÇÆĞ'));
+        alert(tErr(result.error || 'ì¶œì„ ì§€ê¸‰ ì‹¤íŒ¨'));
         return;
       }
       _attendanceGivenToday.add(userId);
@@ -362,26 +362,26 @@
     }
 
     async function openDetailModal(userId, name) {
-      document.getElementById('detailTitle').textContent = `${name} - ´Ş¶õÆ® »ó¼¼`;
+      document.getElementById('detailTitle').textContent = `${name} - ë‹¬ë€íŠ¸ ìƒì„¸`;
       document.getElementById('detailModal').classList.remove('hidden');
       const summary = await fetchTalentSummary(userId);
       document.getElementById('detailSummary').innerHTML = `
         <div style="flex:1;text-align:center;padding:0.8rem;background:#e6fcf5;border-radius:8px;">
-          <div style="font-size:0.8rem;color:#868e96;">´©Àû Àû¸³</div>
+          <div style="font-size:0.8rem;color:#868e96;">ëˆ„ì  ì ë¦½</div>
           <div style="font-size:1.5rem;font-weight:800;color:#2b8a3e;">+${summary.earned}</div>
         </div>
         <div style="flex:1;text-align:center;padding:0.8rem;background:#fff5f5;border-radius:8px;">
-          <div style="font-size:0.8rem;color:#868e96;">ÃÑ »ç¿ë</div>
+          <div style="font-size:0.8rem;color:#868e96;">ì´ ì‚¬ìš©</div>
           <div style="font-size:1.5rem;font-weight:800;color:#e03131;">-${summary.used}</div>
         </div>
         <div style="flex:1;text-align:center;padding:0.8rem;background:#e7f5ff;border-radius:8px;">
-          <div style="font-size:0.8rem;color:#868e96;">ÀÜ¿©</div>
+          <div style="font-size:0.8rem;color:#868e96;">ì”ì—¬</div>
           <div style="font-size:1.5rem;font-weight:800;color:#1971c2;">${summary.balance}</div>
         </div>`;
       const { data: history } = await fetchTalentHistory(userId, { limit: 100 });
       const tbody = document.getElementById('detailHistory');
       if (!history || history.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">³»¿ªÀÌ ¾ø½À´Ï´Ù.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
       } else {
         const creatorIds = [...new Set(history.map(t => t.created_by).filter(Boolean))];
         let creatorMap = {};
@@ -392,13 +392,13 @@
         const canReturn = (session.permissionRank || 0) >= 80;
         tbody.innerHTML = history.map(t => {
           const creatorName = t.created_by ? (creatorMap[t.created_by] || '-') : '-';
-          const isReturn = t.description && t.description.startsWith('¹İÈ¯:');
+          const isReturn = t.description && t.description.startsWith('ë°˜í™˜:');
           const returnBtn = (canReturn && t.type === 'earn' && !isReturn)
-            ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="openReturnModal('${userId}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">¹İÈ¯</button>`
+            ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="openReturnModal('${userId}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">ë°˜í™˜</button>`
             : '';
           return `<tr>
           <td>${formatKSTShort(t.created_at)}</td>
-          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?(isReturn?'¹İÈ¯':'Àû¸³'):'»ç¿ë'}</span></td>
+          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?(isReturn?'ë°˜í™˜':'ì ë¦½'):'ì‚¬ìš©'}</span></td>
           <td style="font-weight:700;color:${t.type==='earn'?'#2b8a3e':'#e03131'}">${t.type==='earn'?'+':'-'}${t.amount}</td>
           <td>${t.description || '-'}</td>
           <td style="font-size:0.78rem;">${creatorName}</td>
@@ -413,8 +413,8 @@
 
     function openAddModal() {
       editingId = null;
-      const label = currentTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
-      document.getElementById('modalTitle').textContent = `${label} µî·Ï`;
+      const label = currentTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
+      document.getElementById('modalTitle').textContent = `${label} ë“±ë¡`;
       document.getElementById('usernameWrap').style.display = isAdminLevel(session) ? 'block' : 'none';
       document.getElementById('mUsername').value = '';
       document.getElementById('mUsername').disabled = false;
@@ -425,8 +425,8 @@
 
     function openEditModal(id, username, displayName) {
       editingId = id;
-      const label = currentTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
-      document.getElementById('modalTitle').textContent = `${label} ¼öÁ¤`;
+      const label = currentTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
+      document.getElementById('modalTitle').textContent = `${label} ìˆ˜ì •`;
       document.getElementById('usernameWrap').style.display = isAdminLevel(session) ? 'block' : 'none';
       document.getElementById('mUsername').value = username;
       document.getElementById('mUsername').disabled = true;
@@ -441,7 +441,7 @@
       const errEl = document.getElementById('modalError');
       let username = document.getElementById('mUsername').value.trim();
       const displayName = document.getElementById('mDisplayName').value.trim();
-      if (!displayName) { errEl.textContent = 'ÀÌ¸§À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!displayName) { errEl.textContent = 'ì´ë¦„ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
       if (!editingId && !username) username = 'u_' + Date.now().toString(36);
 
       if (editingId) {
@@ -460,8 +460,8 @@
     }
 
     async function confirmDelete(id, username) {
-      const label = currentTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
-      if (!confirm(`"${username}" ${label}À»(¸¦) »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?`)) return;
+      const label = currentTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
+      if (!confirm(`"${username}" ${label}ì„(ë¥¼) ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
       await deleteUser(id);
       await loadUsers();
     }
@@ -469,7 +469,7 @@
     async function openTalentModal(userId, name, balance) {
       talentUserId = userId;
       talentType = 'earn';
-      document.getElementById('talentTitle').textContent = `${name} - ´Ş¶õÆ® °ü¸®`;
+      document.getElementById('talentTitle').textContent = `${name} - ë‹¬ë€íŠ¸ ê´€ë¦¬`;
       document.getElementById('talentBalance').textContent = fmtNum(balance);
       document.getElementById('talentError').classList.remove('show');
       setTalentType('earn');
@@ -493,7 +493,7 @@
       const container = document.getElementById('talentItemBtns');
       const confirmBtn = document.getElementById('btnConfirmGive');
       if (items.length === 0) {
-        container.innerHTML = '<div style="color:var(--admin-text-muted);font-size:0.85rem;">µî·ÏµÈ Ç×¸ñÀÌ ¾ø½À´Ï´Ù.</div>';
+        container.innerHTML = '<div style="color:var(--admin-text-muted);font-size:0.85rem;">ë“±ë¡ëœ í•­ëª©ì´ ì—†ìŠµë‹ˆë‹¤.</div>';
         confirmBtn.style.display = 'none';
         return;
       }
@@ -512,7 +512,7 @@
         return `<label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1px solid ${done?'#51cf66':'#dee2e6'};border-radius:8px;cursor:${done?'default':'pointer'};background:${done?'#e6fcf5':'#fff'};opacity:${done?'0.7':'1'};font-size:0.88rem;">
           <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${i.talent_amount}" ${done?'checked disabled':''} onchange="updateConfirmBtn()" />
           ${i.name} <strong style="color:${done?'#868e96':'#2b8a3e'};">+${i.talent_amount}</strong>
-          ${done?'<span style="font-size:0.7rem;color:#51cf66;">?¿Ï·á</span>':''}
+          ${done?'<span style="font-size:0.7rem;color:#51cf66;">âœ“ì™„ë£Œ</span>':''}
         </label>`;
       }).join('');
       updateConfirmBtn();
@@ -522,14 +522,14 @@
       const chks = document.querySelectorAll('.talent-item-chk:not(:disabled):checked');
       const btn = document.getElementById('btnConfirmGive');
       btn.style.display = chks.length > 0 ? 'block' : 'none';
-      btn.textContent = `? Áö±Ş È®Á¤ (${chks.length}°Ç)`;
+      btn.textContent = `âœ… ì§€ê¸‰ í™•ì • (${chks.length}ê±´)`;
     }
 
     async function confirmGiveItems() {
       const chks = [...document.querySelectorAll('.talent-item-chk:not(:disabled):checked')];
       if (chks.length === 0) return;
       const names = chks.map(c => c.dataset.name).join(', ');
-      if (!confirm(`${chks.length}°ÇÀÇ ´Ş¶õÆ®¸¦ Áö±ŞÇÏ½Ã°Ú½À´Ï±î?\nÇ×¸ñ: ${names}`)) return;
+      if (!confirm(`${chks.length}ê±´ì˜ ë‹¬ë€íŠ¸ë¥¼ ì§€ê¸‰í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\ní•­ëª©: ${names}`)) return;
       const errEl = document.getElementById('talentError');
       errEl.classList.remove('show');
       let lastBalance = 0;
@@ -538,14 +538,14 @@
           const result = await giveTalentByItem(talentUserId, chk.value, session.id);
           if (result.success === false) {
             await logError('TALENT_GIVE_ITEM_FAIL', { userId: talentUserId, itemId: chk.value, itemName: chk.dataset.name, error: result.error });
-            errEl.textContent = `"${chk.dataset.name}" Áö±Ş ½ÇÆĞ: ${tErr(result.error)}`;
+            errEl.textContent = `"${chk.dataset.name}" ì§€ê¸‰ ì‹¤íŒ¨: ${tErr(result.error)}`;
             errEl.classList.add('show');
             break;
           }
           lastBalance = result.balance;
         } catch (err) {
           await logError('TALENT_GIVE_ITEM_ERROR', { userId: talentUserId, itemId: chk.value, error: String(err) });
-          errEl.textContent = `¿À·ù ¹ß»ı: ${tErr(err.message)}`; errEl.classList.add('show'); break;
+          errEl.textContent = `ì˜¤ë¥˜ ë°œìƒ: ${tErr(err.message)}`; errEl.classList.add('show'); break;
         }
       }
       await logInfo('TALENT_GIVE_ITEMS', { userId: talentUserId, items: names, count: chks.length });
@@ -559,14 +559,14 @@
       const errEl = document.getElementById('talentError');
       const amount = parseInt(document.getElementById('talentAmount').value);
       const desc = document.getElementById('talentDesc').value.trim();
-      if (!amount || amount <= 0) { errEl.textContent = 'À¯È¿ÇÑ ±İ¾×À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
-      if (amount > 100) { errEl.textContent = '´Ş¶õÆ®´Â ÃÖ´ë 100±îÁö¸¸ Áö±ŞÇÒ ¼ö ÀÖ½À´Ï´Ù.'; errEl.classList.add('show'); return; }
-      if (!desc) { errEl.textContent = '»çÀ¯¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!amount || amount <= 0) { errEl.textContent = 'ìœ íš¨í•œ ê¸ˆì•¡ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+      if (amount > 100) { errEl.textContent = 'ë‹¬ë€íŠ¸ëŠ” ìµœëŒ€ 100ê¹Œì§€ë§Œ ì§€ê¸‰í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.'; errEl.classList.add('show'); return; }
+      if (!desc) { errEl.textContent = 'ì‚¬ìœ ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
       try {
         const result = await giveTalent(talentUserId, amount, desc, session.id);
         if (result.success === false) {
           await logError('TALENT_MANUAL_GIVE_FAIL', { userId: talentUserId, amount, desc, error: result.error });
-          errEl.textContent = tErr(result.error) || 'Ã³¸® ½ÇÆĞ'; errEl.classList.add('show'); return;
+          errEl.textContent = tErr(result.error) || 'ì²˜ë¦¬ ì‹¤íŒ¨'; errEl.classList.add('show'); return;
         }
         await logInfo('TALENT_MANUAL_GIVE', { userId: talentUserId, amount, desc });
         document.getElementById('talentBalance').textContent = fmtNum(result.balance);
@@ -577,14 +577,14 @@
         await loadUsers();
       } catch (err) {
         await logError('TALENT_MANUAL_GIVE_ERROR', { userId: talentUserId, amount, error: String(err) });
-        errEl.textContent = '¿À·ù: ' + tErr(err.message); errEl.classList.add('show');
+        errEl.textContent = 'ì˜¤ë¥˜: ' + tErr(err.message); errEl.classList.add('show');
       }
     }
 
     async function loadTalentHistory(userId) {
       const { data } = await fetchTalentHistory(userId, { limit: 10 });
       const el = document.getElementById('talentHistory');
-      if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--admin-text-muted);text-align:center;">³»¿ª ¾øÀ½</div>'; return; }
+      if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--admin-text-muted);text-align:center;">ë‚´ì—­ ì—†ìŒ</div>'; return; }
       el.innerHTML = data.map(t => `
         <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f0f0f0;">
           <span>${formatKSTShort(t.created_at)}</span>
@@ -596,7 +596,7 @@
     let returnCtx = {};
     function openReturnModal(userId, amount, desc) {
       returnCtx = { userId, amount: parseInt(amount) };
-      document.getElementById('returnInfo').textContent = `Ç×¸ñ: ${desc} / ±İ¾×: ${amount} ´Ş¶õÆ®`;
+      document.getElementById('returnInfo').textContent = `í•­ëª©: ${desc} / ê¸ˆì•¡: ${amount} ë‹¬ë€íŠ¸`;
       document.getElementById('returnReason').value = '';
       document.getElementById('returnError').classList.remove('show');
       document.getElementById('returnModal').classList.remove('hidden');
@@ -605,7 +605,7 @@
     async function submitReturn() {
       const reason = document.getElementById('returnReason').value.trim();
       const errEl = document.getElementById('returnError');
-      if (!reason) { errEl.textContent = '¹İÈ¯ »çÀ¯¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!reason) { errEl.textContent = 'ë°˜í™˜ ì‚¬ìœ ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
       try {
         const result = await returnTalent(returnCtx.userId, returnCtx.amount, reason, session.id);
         if (result.success === false) {
@@ -614,11 +614,11 @@
         }
         await logInfo('TALENT_RETURN', { userId: returnCtx.userId, amount: returnCtx.amount, reason });
         closeReturnModal();
-        await openDetailModal(returnCtx.userId, document.getElementById('detailTitle').textContent.replace(' - ´Ş¶õÆ® »ó¼¼',''));
+        await openDetailModal(returnCtx.userId, document.getElementById('detailTitle').textContent.replace(' - ë‹¬ë€íŠ¸ ìƒì„¸',''));
         await loadUsers();
       } catch (err) {
         await logError('TALENT_RETURN_ERROR', { userId: returnCtx.userId, amount: returnCtx.amount, error: String(err) });
-        errEl.textContent = '¿À·ù: ' + tErr(err.message); errEl.classList.add('show');
+        errEl.textContent = 'ì˜¤ë¥˜: ' + tErr(err.message); errEl.classList.add('show');
       }
     }
 

@@ -3,115 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>구매 관�?- CHO Talents Admin</title>
+  <title>구매 관리 - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/admin.css?v=3.22.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
-    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">�?/span> ?��???마을</a>
+    <a href="../index.html" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="nav-hamburger" onclick="document.querySelector('.admin-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="admin-nav-links">
       <li>
-        <button class="nav-dropdown-toggle">?�개</button>
+        <button class="nav-dropdown-toggle">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../guide.html">?�생 가?�드</a></li>
-          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가?�드</a></li>
-          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가?�드</a></li>
-          <li><a href="../earn-talents.html">?��????�립</a></li>
+          <li><a href="../guide.html">학생 가이드</a></li>
+          <li data-min-perm="40"><a href="../teacher-guide.html">교사 가이드</a></li>
+          <li data-min-perm="60"><a href="../admin-guide.html">관리자 가이드</a></li>
+          <li><a href="../earn-talents.html">달란트 적립</a></li>
           <li><a href="../qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">?��???/button>
+        <button class="nav-dropdown-toggle">달란트</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../my-talents.html">???��???/a></li>
-          <li><a href="../talent-receive.html">?��????�령</a></li>
-          <li data-min-perm="40"><a href="talents.html">?��???관�?/a></li>
-          <li data-min-perm="60"><a href="talent-stats.html">?��????�계</a></li>
-          <li data-min-perm="90"><a href="talent-qr.html">?��???QR 관�?/a></li>
+          <li><a href="../my-talents.html">내 달란트</a></li>
+          <li><a href="../talent-receive.html">달란트 수령</a></li>
+          <li data-min-perm="40"><a href="talents.html">달란트 관리</a></li>
+          <li data-min-perm="60"><a href="talent-stats.html">달란트 통계</a></li>
+          <li data-min-perm="90"><a href="talent-qr.html">달란트 QR 관리</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle active">?�품</button>
+        <button class="nav-dropdown-toggle active">상품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="../shop.html">?�품 구매</a></li>
-          <li><a href="../my-orders.html">??구매 ?�품</a></li>
-          <li data-min-perm="60"><a href="shop.html">?�품 관�?/a></li>
-          <li data-min-perm="60"><a href="purchases.html" class="active">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="../shop.html">상품 구매</a></li>
+          <li><a href="../my-orders.html">내 구매 상품</a></li>
+          <li data-min-perm="60"><a href="shop.html">상품 관리</a></li>
+          <li data-min-perm="60"><a href="purchases.html" class="active">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60">
-        <button class="nav-dropdown-toggle">관�?/button>
+        <button class="nav-dropdown-toggle">관리</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="60"><a href="index.html">?�?�보??/a></li>
-          <li data-min-perm="60"><a href="users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="managers.html">관리자 관�?/a></li>
-          <li data-min-perm="60"><a href="departments.html">부??관�?/a></li>
+          <li data-min-perm="60"><a href="index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="departments.html">부서 관리</a></li>
         </ul>
       </li>
       <li data-min-perm="80">
-        <button class="nav-dropdown-toggle">?�영</button>
+        <button class="nav-dropdown-toggle">운영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="page-access.html">?�이지 ?�근</a></li>
-          <li data-min-perm="100"><a href="page-features.html">?�이지 기능</a></li>
+          <li data-min-perm="100"><a href="page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="page-features.html">페이지 기능</a></li>
           <li data-min-perm="80"><a href="versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="reports.html">보고??/a></li>
-          <li data-min-perm="100"><a href="audit.html">?�업 ?�력</a></li>
+          <li data-min-perm="80"><a href="reports.html">보고서</a></li>
+          <li data-min-perm="100"><a href="audit.html">작업 이력</a></li>
           <li data-min-perm="100"><a href="logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
         </ul>
       </li>
       <li><span class="nav-user" id="navUser"></span></li>
-      <li><button class="btn-logout" onclick="logout('../login.html')">로그?�웃</button></li>
+      <li><button class="btn-logout" onclick="logout('../login.html')">로그아웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?�� 구매 관�?/h2>
+    <h2 style="margin-bottom:1rem;">🛒 구매 관리</h2>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="tabAll" onclick="switchPurchaseTab('all')">?�� ?�체</button>
-      <button class="filter-btn" id="tabRequested" onclick="switchPurchaseTab('requested')">?�� 구매 ?�청</button>
-      <button class="filter-btn" id="tabPreparing" onclick="switchPurchaseTab('preparing')">?�� ?�품 준�?/button>
-      <button class="filter-btn" id="tabPurchased" onclick="switchPurchaseTab('purchased')">?�� ?�품 구매</button>
-      <button class="filter-btn" id="tabDelivered" onclick="switchPurchaseTab('delivered')">???�품 지�?/button>
+      <button class="filter-btn active" id="tabAll" onclick="switchPurchaseTab('all')">📊 전체</button>
+      <button class="filter-btn" id="tabRequested" onclick="switchPurchaseTab('requested')">📋 구매 신청</button>
+      <button class="filter-btn" id="tabPreparing" onclick="switchPurchaseTab('preparing')">📦 상품 준비</button>
+      <button class="filter-btn" id="tabPurchased" onclick="switchPurchaseTab('purchased')">💳 상품 구매</button>
+      <button class="filter-btn" id="tabDelivered" onclick="switchPurchaseTab('delivered')">✅ 상품 지급</button>
     </div>
 
     <div id="statusFilterWrap" style="margin-bottom:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
       <select id="statusFilter" onchange="renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
-        <option value="">?�체 ?�태</option>
-        <option value="requested">?�� 구매 ?�청</option>
-        <option value="preparing">?�� ?�품 준�?/option>
-        <option value="purchased">?�� ?�품 구매</option>
-        <option value="delivered">???�품 지�?/option>
+        <option value="">전체 상태</option>
+        <option value="requested">📋 구매 신청</option>
+        <option value="preparing">📦 상품 준비</option>
+        <option value="purchased">💳 상품 구매</option>
+        <option value="delivered">✅ 상품 지급</option>
       </select>
       <select id="deptFilter" onchange="renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
-        <option value="">?�체 부??/option>
+        <option value="">전체 부서</option>
       </select>
       <span style="margin-left:0.3rem;font-size:0.82rem;color:var(--admin-text-muted);">기간:</span>
       <input type="date" id="dateFrom" onchange="renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="font-size:0.82rem;">~</span>
       <input type="date" id="dateTo" onchange="renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="display:inline-flex;gap:0.2rem;">
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">?�늘</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1�?/button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('month')">1??/button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('year')">1??/button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">오늘</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1주</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('month')">1달</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('year')">1년</button>
       </span>
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">?�체 목록</div>
+        <div class="admin-table-title" id="tableTitle">전체 목록</div>
         <div id="bulkActions" style="display:none;">
-          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="padding:0.4rem 1rem;font-size:0.85rem;">???�택 지�??�료</button>
+          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="padding:0.4rem 1rem;font-size:0.85rem;">✅ 선택 지급 완료</button>
         </div>
       </div>
       <table class="admin-table">
         <thead>
           <tr id="tableHead"></tr>
         </thead>
-        <tbody id="orderList"><tr><td colspan="7" class="empty-state">로딩 �?..</td></tr></tbody>
+        <tbody id="orderList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -129,7 +129,7 @@
     let profileMap = {};
     let processorMap = {};
 
-    const STATUS_LABEL = { requested:'구매 ?�청', preparing:'?�품 준�?, purchased:'?�품 구매', delivered:'?�품 지�? };
+    const STATUS_LABEL = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
     const STATUS_COLOR = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
     const TAB_IDS = ['all','requested','preparing','purchased','delivered'];
 
@@ -171,7 +171,7 @@
       const { data, error } = await _sb.from('product_orders').select('*').order('created_at', { ascending: false });
       if (error) {
         logError('PURCHASE_LOAD_FAIL', { error: error.message });
-        document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">?�이??조회 ?�패</td></tr>';
+        document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">데이터 조회 실패</td></tr>';
         return;
       }
       allOrders = data || [];
@@ -202,7 +202,7 @@
 
       const deptSel = document.getElementById('deptFilter');
       const deptNames = [...new Set(allOrders.map(o => o._deptName).filter(d => d && d !== '-'))].sort();
-      deptSel.innerHTML = '<option value="">?�체 부??/option>' + deptNames.map(d => `<option value="${d}">${d}</option>`).join('');
+      deptSel.innerHTML = '<option value="">전체 부서</option>' + deptNames.map(d => `<option value="${d}">${d}</option>`).join('');
 
       renderOrders();
       updateOrderBadge();
@@ -236,11 +236,11 @@
     function getProcessorInfo(order, stage) {
       let byField, atField, label;
       if (stage === 'preparing') {
-        byField = order.prepared_by; atField = order.prepared_at; label = '준�?;
+        byField = order.prepared_by; atField = order.prepared_at; label = '준비';
       } else if (stage === 'purchased') {
         byField = order.purchased_by; atField = order.purchased_at; label = '구매';
       } else if (stage === 'delivered') {
-        byField = order.delivered_by; atField = order.delivered_at; label = '지�?;
+        byField = order.delivered_by; atField = order.delivered_at; label = '지급';
       }
       if (!byField) return '';
       const name = processorMap[byField] || '-';
@@ -253,8 +253,8 @@
       const tbody = document.getElementById('orderList');
       const title = document.getElementById('tableTitle');
       const isAllTab = currentPTab === 'all';
-      const tabLabel = isAllTab ? '?�체' : STATUS_LABEL[currentPTab];
-      title.textContent = `${tabLabel} 목록 (${orders.length}�?`;
+      const tabLabel = isAllTab ? '전체' : STATUS_LABEL[currentPTab];
+      title.textContent = `${tabLabel} 목록 (${orders.length}건)`;
 
       const myRank = session.permissionRank || 0;
       const showBulk = currentPTab === 'purchased' && myRank >= 60;
@@ -262,19 +262,19 @@
 
       let headCols = '';
       if (showBulk) headCols += '<th style="width:30px;"><input type="checkbox" onchange="toggleAllOrders(this)"></th>';
-      if (isAllTab) headCols += '<th>?�태</th>';
-      headCols += '<th>?�청??/th><th>?�품�?/th><th>가�?/th><th>?�청??/th><th>부??/th>';
+      if (isAllTab) headCols += '<th>상태</th>';
+      headCols += '<th>신청일</th><th>상품명</th><th>가격</th><th>신청자</th><th>부서</th>';
 
-      if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>?�전 처리</th>';
-      else if (currentPTab === 'purchased') headCols += '<th>준�?처리</th>';
+      if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>이전 처리</th>';
+      else if (currentPTab === 'purchased') headCols += '<th>준비 처리</th>';
       else if (currentPTab === 'delivered') headCols += '<th>구매 처리</th>';
 
-      headCols += '<th>관�?/th>';
+      headCols += '<th>관리</th>';
       document.getElementById('tableHead').innerHTML = headCols;
 
       const colCount = document.getElementById('tableHead').children.length;
       if (orders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">?�당 ?�태??주문???�습?�다.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">해당 상태의 주문이 없습니다.</td></tr>`;
         return;
       }
 
@@ -282,20 +282,20 @@
         const canProc = canProcessOrder(o);
         let actionBtn = '';
         if (o.status === 'requested' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="updateStatus('${o.id}','preparing')">?�품 준�?/button>`;
+          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="updateStatus('${o.id}','preparing')">상품 준비</button>`;
         } else if (o.status === 'preparing' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#1971c2;color:#fff;border-color:#1971c2;" onclick="confirmPurchase('${o.id}')">구매 ?�정</button>`;
-          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','requested')">???�돌리기</button>`;
+          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#1971c2;color:#fff;border-color:#1971c2;" onclick="confirmPurchase('${o.id}')">구매 확정</button>`;
+          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','requested')">↩ 되돌리기</button>`;
         } else if (o.status === 'purchased' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#2b8a3e;color:#fff;border-color:#2b8a3e;" onclick="updateStatus('${o.id}','delivered')">지�??�료</button>`;
-          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','preparing')">???�돌리기</button>`;
+          actionBtn = `<button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;background:#2b8a3e;color:#fff;border-color:#2b8a3e;" onclick="updateStatus('${o.id}','delivered')">지급 완료</button>`;
+          actionBtn += ` <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','preparing')">↩ 되돌리기</button>`;
         } else if (o.status === 'delivered' && canProc) {
-          actionBtn = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','purchased')">???�돌리기</button>`;
+          actionBtn = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.4rem;background:#ff922b;color:#fff;border-color:#ff922b;" onclick="revertStatus('${o.id}','purchased')">↩ 되돌리기</button>`;
         }
 
         let procInfo = '';
         if (isAllTab) {
-          procInfo = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;" onclick="showOrderDetail('${o.id}')">?�세</button>`;
+          procInfo = `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;" onclick="showOrderDetail('${o.id}')">상세</button>`;
         } else if (currentPTab === 'preparing') {
           procInfo = '-';
         } else if (currentPTab === 'purchased') {
@@ -332,20 +332,20 @@
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
           await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, newStatus, error: error.message });
-          alert('?�태 변�??�패: ' + tErr(error.message));
+          alert('상태 변경 실패: ' + tErr(error.message));
           return;
         }
         await logInfo('ORDER_STATUS_CHANGE', { orderId, newStatus });
         await loadOrders();
       } catch (err) {
         await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, newStatus, error: String(err) });
-        alert('?�태 변�?�??�류: ' + tErr(err.message));
+        alert('상태 변경 중 오류: ' + tErr(err.message));
       }
     }
 
     async function revertStatus(orderId, prevStatus) {
-      const PREV_LABELS = { requested: '구매 ?�청', preparing: '?�품 준�?, purchased: '?�품 구매' };
-      if (!confirm(`"${PREV_LABELS[prevStatus]}" ?�계�??�돌리시겠습?�까?`)) return;
+      const PREV_LABELS = { requested: '구매 신청', preparing: '상품 준비', purchased: '상품 구매' };
+      if (!confirm(`"${PREV_LABELS[prevStatus]}" 단계로 되돌리시겠습니까?`)) return;
       try {
         const updateFields = { status: prevStatus };
         if (prevStatus === 'requested') { updateFields.prepared_at = null; updateFields.prepared_by = null; }
@@ -354,14 +354,14 @@
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
           await logError('ORDER_REVERT_FAIL', { orderId, prevStatus, error: error.message });
-          alert('?�돌리기 ?�패: ' + tErr(error.message));
+          alert('되돌리기 실패: ' + tErr(error.message));
           return;
         }
         await logInfo('ORDER_REVERT', { orderId, prevStatus });
         await loadOrders();
       } catch (err) {
         await logError('ORDER_REVERT_ERROR', { orderId, prevStatus, error: String(err) });
-        alert('?�돌리기 �??�류: ' + tErr(err.message));
+        alert('되돌리기 중 오류: ' + tErr(err.message));
       }
     }
 
@@ -372,20 +372,20 @@
       const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.82rem;background:${STATUS_COLOR[o.status]}22;color:${STATUS_COLOR[o.status]};font-weight:600;">${STATUS_LABEL[o.status]}</span>`;
       const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="this.remove()">
         <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
-          <h3 style="margin:0 0 0.8rem;">?�� 주문 ?�세</h3>
-          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} ?��???/div>
-          <div style="font-size:0.85rem;margin-bottom:0.5rem;">?�청?? ${o._userName} | 부?? ${o._deptName}</div>
-          <div style="font-size:0.85rem;margin-bottom:0.8rem;">?�태: ${statusBadge}</div>
-          <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">처리 ?�력</div>
-          <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">처리 ?�력 ?�음</span>'}</div>
-          <div style="text-align:right;margin-top:1rem;"><button onclick="this.closest('[style*=fixed]').remove()" style="padding:0.4rem 1rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;">?�기</button></div>
+          <h3 style="margin:0 0 0.8rem;">📋 주문 상세</h3>
+          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} 달란트</div>
+          <div style="font-size:0.85rem;margin-bottom:0.5rem;">신청자: ${o._userName} | 부서: ${o._deptName}</div>
+          <div style="font-size:0.85rem;margin-bottom:0.8rem;">상태: ${statusBadge}</div>
+          <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">처리 이력</div>
+          <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">처리 이력 없음</span>'}</div>
+          <div style="text-align:right;margin-top:1rem;"><button onclick="this.closest('[style*=fixed]').remove()" style="padding:0.4rem 1rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;">닫기</button></div>
         </div>
       </div>`;
       document.body.insertAdjacentHTML('beforeend', html);
     }
 
     async function confirmPurchase(orderId) {
-      if (!confirm('?�품 구매�??�정?�시겠습?�까?\n?��??��? ?�제 차감?�니??')) return;
+      if (!confirm('상품 구매를 확정하시겠습니까?\n달란트가 실제 차감됩니다.')) return;
       try {
         const { data, error } = await _sb.rpc('confirm_product_purchase', {
           p_order_id: orderId,
@@ -393,7 +393,7 @@
         });
         if (error) {
           await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, error: error.message });
-          alert('구매 ?�정 ?�패: ' + tErr(error.message));
+          alert('구매 확정 실패: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
@@ -405,7 +405,7 @@
         await loadOrders();
       } catch (err) {
         await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, error: String(err) });
-        alert('구매 ?�정 �??�류: ' + tErr(err.message));
+        alert('구매 확정 중 오류: ' + tErr(err.message));
       }
     }
 
@@ -415,8 +415,8 @@
 
     async function bulkDeliver() {
       const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
-      if (ids.length === 0) { alert('지�??�료 처리????��???�택?�주?�요.'); return; }
-      if (!confirm(`${ids.length}건을 지�??�료 처리?�시겠습?�까?`)) return;
+      if (ids.length === 0) { alert('지급 완료 처리할 항목을 선택해주세요.'); return; }
+      if (!confirm(`${ids.length}건을 지급 완료 처리하시겠습니까?`)) return;
 
       let failCount = 0;
       for (const id of ids) {
@@ -427,7 +427,7 @@
         }).eq('id', id);
         if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, error: error.message }); }
       }
-      if (failCount > 0) alert(`${failCount}�?처리 ?�패. 로그�??�인?�주?�요.`);
+      if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
       await logInfo('ORDER_BULK_DELIVER', { count: ids.length, failCount });
       await loadOrders();
     }

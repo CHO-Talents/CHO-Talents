@@ -3,183 +3,179 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>교사 가?�드 - ?��???마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>�?/text></svg>" />
+  <title>교사 가이드 - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
   <link rel="stylesheet" href="css/common.css?v=3.22.0" />
   <link rel="stylesheet" href="css/guide.css?v=3.22.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
-    <a href="index.html" class="top-nav-brand"><span class="brand-icon">�?/span> ?��???마을</a>
+    <a href="index.html" class="top-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>
     <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
     <ul class="top-nav-links" id="navLinks">
       <li>
-        <button class="nav-dropdown-toggle active">?�개</button>
+        <button class="nav-dropdown-toggle active">소개</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">?�생 가?�드</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html" class="active">교사 가?�드</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가?�드</a></li>
-          <li><a href="earn-talents.html">?��????�립</a></li>
+          <li><a href="guide.html">학생 가이드</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html" class="active">교사 가이드</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가이드</a></li>
+          <li><a href="earn-talents.html">달란트 적립</a></li>
           <li><a href="qna.html">Q &amp; A</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">?��???/button>
+        <button class="nav-dropdown-toggle">달란트</button>
         <ul class="nav-dropdown-menu">
-          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">???��???/a></li>
-          <li><a href="talent-receive.html">?��????�령</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">?��???관�?/a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">?��????�계</a></li>
-          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">?��???QR 관�?/a></li>
+          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
+          <li><a href="talent-receive.html">달란트 수령</a></li>
+          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">달란트 통계</a></li>
+          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">달란트 QR 관리</a></li>
         </ul>
       </li>
       <li>
-        <button class="nav-dropdown-toggle">?�품</button>
+        <button class="nav-dropdown-toggle">상품</button>
         <ul class="nav-dropdown-menu">
-          <li><a href="shop.html">?�품 구매</a></li>
-          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">??구매 ?�품</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">?�품 관�?/a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관�?<span class="badge hidden" id="navOrderBadge">0</span></a></li>
+          <li><a href="shop.html">상품 구매</a></li>
+          <li id="navMyOrders" style="display:none;"><a href="my-orders.html">내 구매 상품</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
+          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
         </ul>
       </li>
       <li data-min-perm="60" style="display:none;">
-        <button class="nav-dropdown-toggle">관�?/button>
+        <button class="nav-dropdown-toggle">관리</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="60"><a href="admin/index.html">?�?�보??/a></li>
-          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">?�용??관�?<span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="admin/managers.html">관리자 관�?/a></li>
-          <li data-min-perm="60"><a href="admin/departments.html">부??관�?/a></li>
+          <li data-min-perm="60"><a href="admin/index.html">대시보드</a></li>
+          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
+          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
+          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
         </ul>
       </li>
       <li data-min-perm="80" style="display:none;">
-        <button class="nav-dropdown-toggle">?�영</button>
+        <button class="nav-dropdown-toggle">운영</button>
         <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="admin/page-access.html">?�이지 ?�근</a></li>
-          <li data-min-perm="100"><a href="admin/page-features.html">?�이지 기능</a></li>
+          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
+          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
           <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="admin/reports.html">보고??/a></li>
-          <li data-min-perm="100"><a href="admin/audit.html">?�업 ?�력</a></li>
+          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
+          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
           <li data-min-perm="100"><a href="admin/logs.html">로그</a></li>
         </ul>
       </li>
-      <li id="navLoginArea"><a href="login.html">로그??/a></li>
+      <li id="navLoginArea"><a href="login.html">로그인</a></li>
       <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
-      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그?�웃</button></li>
+      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
     </ul>
     <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
   </nav>
 
   <main class="guide-container">
     <section class="guide-hero">
-      <div class="guide-kicker">?�반 교사 · 부???�당 교사</div>
-      <h1>교사 가?�드</h1>
-      <p>교사 계정?�로 ?�생 ?��???지�? QR ?��????�령, ?��?구매 ?�청???�는 방법???�내?�니?? 보이??메뉴??권한�??�당 부???�정???�라 ?�라집니??</p>
+      <div class="guide-kicker">일반 교사 · 부서 담당 교사</div>
+      <h1>교사 가이드</h1>
+      <p>교사 계정으로 학생 달란트 지급, QR 달란트 수령, 대리 구매 신청을 하는 방법을 안내합니다. 보이는 메뉴는 권한과 담당 부서 설정에 따라 달라집니다.</p>
     </section>
 
     <div class="guide-switcher">
-      <a href="guide.html">?�생 가?�드</a>
-      <a href="teacher-guide.html" class="active">교사 가?�드</a>
-      <a href="admin-guide.html">관리자 가?�드</a>
+      <a href="guide.html">학생 가이드</a>
+      <a href="teacher-guide.html" class="active">교사 가이드</a>
+      <a href="admin-guide.html">관리자 가이드</a>
     </div>
 
     <section class="guide-section">
-      <h2>?�� 처음 로그?�할 ??/h2>
+      <h2>🔑 처음 로그인할 때</h2>
       <ol class="guide-steps">
-        <li>관리자?�게 계정??받�? ??로그?�합?�다. 초기 비�?번호??보통 <strong>1234</strong>?�니??</li>
-        <li>�?로그???�면?�서 ??비�?번호�??�력?�니??</li>
-        <li>비�?번호??8???�상, ?�문�??�자�??�함?�야 ?�니??</li>
-        <li>메인 ?�면?�로 ?�동?�면 ?�단 메뉴?�서 ??권한??맞는 메뉴가 보입?�다.</li>
+        <li>관리자에게 계정을 받은 뒤 로그인합니다. 초기 비밀번호는 보통 <strong>1234</strong>입니다.</li>
+        <li>첫 로그인 화면에서 새 비밀번호를 입력합니다.</li>
+        <li>비밀번호는 8자 이상, 영문과 숫자를 포함해야 합니다.</li>
+        <li>메인 화면으로 이동하면 상단 메뉴에서 내 권한에 맞는 메뉴가 보입니다.</li>
       </ol>
     </section>
 
     <section class="guide-section">
-      <h2>?�� 교사가 주로 ?�는 메뉴</h2>
+      <h2>📌 교사가 주로 쓰는 메뉴</h2>
       <div class="guide-table-wrap">
         <table class="guide-table">
-          <thead><tr><th>메뉴</th><th>?�명</th></tr></thead>
+          <thead><tr><th>메뉴</th><th>설명</th></tr></thead>
           <tbody>
-            <tr><td>?��???관�?/td><td>?�당 ?�생?�게 ?��?????��???�택?�여 지급합?�다. 출석 버튼?�로 빠르�?지급할 ???�습?�다.</td></tr>
-            <tr><td>?��????�령</td><td>QR 코드 ?�캔 ?�는 코드 ?�력?�로 ?��??��? ?�령?�니??</td></tr>
-            <tr><td>?�품 구매</td><td>교사???�품??구매?�거???�생???�품???�인?�니?? 교사???�생 ?�품??직접 구매?????�습?�다.</td></tr>
-            <tr><td>?��?구매</td><td>?�생???�택?�여 ?�생 명의�??�품 구매 ?�청???�니??</td></tr>
-            <tr><td>???��???/td><td>?�용 가???��??? ?�립/?�용 ?�역, ?�품 ?�령 ?�정 ?�황???�인?�니??</td></tr>
+            <tr><td>달란트 관리</td><td>담당 학생에게 달란트 항목을 선택하여 지급합니다. 출석 버튼으로 빠르게 지급할 수 있습니다.</td></tr>
+            <tr><td>달란트 수령</td><td>QR 코드 스캔 또는 코드 입력으로 달란트를 수령합니다.</td></tr>
+            <tr><td>상품 구매</td><td>교사용 상품을 구매하거나 학생용 상품을 확인합니다. 교사는 학생 상품을 직접 구매할 수 없습니다.</td></tr>
+            <tr><td>대리 구매</td><td>학생을 선택하여 학생 명의로 상품 구매 신청을 합니다.</td></tr>
+            <tr><td>내 달란트</td><td>사용 가능 달란트, 적립/사용 내역, 상품 수령 예정 현황을 확인합니다.</td></tr>
+            <tr><td>대시보드</td><td>부서 담당 교사(60+) 이상 권한이면 관리 대시보드에 접근할 수 있습니다. 전체 현황과 바로가기를 확인합니다.</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
     <section class="guide-section">
-      <h2>?�� ?�생?�게 ?��???지급하�?/h2>
+      <h2>💰 학생에게 달란트 지급하기</h2>
       <ol class="guide-steps">
-        <li>?�단 메뉴?�서 <strong>?��???&gt; ?��???관�?/strong>�??�동?�니??</li>
-        <li><strong>?�생</strong> ??��???�당 ?�생??찾습?�다.</li>
-        <li>출석 ??��?� ?�생 ?�의 <strong>출석</strong> 버튼?�로 빠르�?지급할 ???�습?�다.</li>
-        <li>?�른 ??��?� <strong>?��???지�?/strong>???�르�?지급할 ??��??체크?�니??</li>
-        <li><strong>지�??�정</strong>???�르�??�택????��????번에 반영?�니??</li>
-        <li><strong>?�세</strong>�??�르�??�당 ?�생???�립 ?�역�??�액???�인?????�습?�다.</li>
+        <li>상단 메뉴에서 <strong>달란트 &gt; 달란트 관리</strong>로 이동합니다.</li>
+        <li><strong>학생</strong> 탭에서 담당 학생을 찾습니다.</li>
+        <li>출석 항목은 학생 행의 <strong>출석</strong> 버튼으로 빠르게 지급할 수 있습니다.</li>
+        <li>다른 항목은 <strong>달란트 지급</strong>을 누르고 지급할 항목을 체크합니다.</li>
+        <li><strong>지급 확정</strong>을 누르면 선택한 항목이 한 번에 반영됩니다.</li>
+        <li><strong>상세</strong>를 누르면 해당 학생의 적립 내역과 잔액을 확인할 수 있습니다.</li>
       </ol>
-      <div class="guide-note">?��? ?�늘 지급된 ??��?� ?�료 ?�시가 ?�올 ???�습?�다. 같�? ??��??중복 지급하지 ?�도�??�면???�료 ?�시�??�인?�세??</div>
+      <div class="guide-note">이미 오늘 지급된 항목은 완료 표시가 나올 수 있습니다. 같은 항목을 중복 지급하지 않도록 화면의 완료 표시를 확인하세요.</div>
     </section>
 
     <section class="guide-section">
-      <h2>?�� QR ?��????�령?�기</h2>
+      <h2>📱 QR 달란트 수령하기</h2>
       <div class="guide-grid">
         <div class="guide-mini-card">
-          <div class="icon">?�️</div>
-          <h3>코드 ?�력</h3>
-          <p>QR 코드 ?�래???�힌 코드�??�력?�고 코드 ?�인???�릅?�다. 관리자 ?�에???�력값이 가?�져 보입?�다.</p>
+          <div class="icon">⌨️</div>
+          <h3>코드 입력</h3>
+          <p>QR 코드 아래에 적힌 코드를 입력하고 코드 확인을 누릅니다. 관리자 외에는 입력값이 가려져 보입니다.</p>
         </div>
         <div class="guide-mini-card">
-          <div class="icon">?��</div>
-          <h3>카메???�캔</h3>
-          <p>카메??버튼???�르�?QR 코드�?비추�?코드가 ?�동?�로 ?�력?�고 ?�인?�니??</p>
+          <div class="icon">📷</div>
+          <h3>카메라 스캔</h3>
+          <p>카메라 버튼을 누르고 QR 코드를 비추면 코드가 자동으로 입력되고 확인됩니다.</p>
         </div>
         <div class="guide-mini-card">
-          <div class="icon">?��</div>
-          <h3>?�치 ?�한</h3>
-          <p>?�치 ?�한 QR?� 브라?��? ?�치 권한???�용?�야 ?�니?? 지??반경 밖이�??�령?????�습?�다.</p>
+          <div class="icon">📍</div>
+          <h3>위치 제한</h3>
+          <p>위치 제한 QR은 브라우저 위치 권한을 허용해야 합니다. 지정 반경 밖이면 수령할 수 없습니다.</p>
         </div>
       </div>
     </section>
 
     <section class="guide-section">
-      <h2>?�� ?�생 ?�???�품 구매 ?�청?�기</h2>
+      <h2>🛒 학생 대신 상품 구매 신청하기</h2>
       <ol class="guide-steps">
-        <li><strong>?�품 구매</strong> ?�면?�로 ?�동?�니??</li>
-        <li><strong>?��?구매</strong> 버튼???�릅?�다.</li>
-        <li>?�생 ?�름?�나 ?�이?�로 ?�?�을 검?�하�??�택?�니??</li>
-        <li>?�택???�생??구매?????�는 ?�품??고릅?�다.</li>
-        <li>?�인 창에???�용???�인?�고 구매 ?�청???�료?�니??</li>
+        <li><strong>상품 구매</strong> 화면으로 이동합니다.</li>
+        <li><strong>대리 구매</strong> 버튼을 누릅니다.</li>
+        <li>학생 이름이나 아이디로 대상을 검색하고 선택합니다.</li>
+        <li>선택한 학생이 구매할 수 있는 상품을 고릅니다.</li>
+        <li>확인 창에서 내용을 확인하고 구매 신청을 완료합니다.</li>
       </ol>
-      <div class="guide-note">?��?구매???�생 ?�???�청�??�는 기능?�니?? ?�제 ?�품 준�? 구매 ?�정, 지�?처리??구매 관�?권한???�는 계정?�서 진행?�니??</div>
+      <div class="guide-note">대리 구매는 학생 대신 신청만 넣는 기능입니다. 실제 상품 준비, 구매 확정, 지급 처리는 구매 관리 권한이 있는 계정에서 진행합니다.</div>
     </section>
 
     <section class="guide-section">
-      <h2>?�� 부???�당 교사 ?�상: ?�?�보??/h2>
-      <p>부???�당 교사(60?�급) ?�상?� <strong>관�?&gt; ?�?�보??/strong>???�근?????�습?�다. ?�체 ?�용???�황, 가???�기자 ?? 최근 ?�슈 로그�??�인?????�습?�다.</p>
-    </section>
-
-    <section class="guide-section">
-      <h2>?�� Q &amp; A ?�용</h2>
+      <h2>💬 Q &amp; A 사용</h2>
       <div class="guide-card">
-        <h3>?�반 교사 계정?�서 가?�한 ??/h3>
+        <h3>일반 교사 계정에서 가능한 일</h3>
         <ul class="guide-list">
-          <li>?�주 묻는 질문�?질문 게시?�을 ?�인?????�습?�다.</li>
-          <li>궁금???�용??직접 질문?�로 ?�록?????�습?�다.</li>
-          <li>질문 ?��?, FAQ ?�록, 질문 ??��??부???�당 교사 ?�상 권한?�서 ?�용?????�습?�다.</li>
+          <li>자주 묻는 질문과 질문 게시판을 확인할 수 있습니다.</li>
+          <li>궁금한 내용을 직접 질문으로 등록할 수 있습니다.</li>
+          <li>질문 답변, FAQ 등록, 질문 삭제는 부서 담당 교사 이상 권한에서 사용할 수 있습니다.</li>
         </ul>
       </div>
     </section>
 
     <section class="guide-section">
-      <h2>?�� ?�면???�르�?보일 ??/h2>
+      <h2>🧭 화면이 다르게 보일 때</h2>
       <div class="guide-table-wrap">
         <table class="guide-table">
-          <thead><tr><th>?�황</th><th>?�유</th><th>?�인??�?/th></tr></thead>
+          <thead><tr><th>상황</th><th>이유</th><th>확인할 곳</th></tr></thead>
           <tbody>
-            <tr><td>?�생 목록??비어 ?�음</td><td>?�당 부?�나 �??�보가 계정???�을 ???�습?�다.</td><td>관리자?�게 계정???�속 부?��? �??�정???�청?�세??</td></tr>
-            <tr><td>관�?메뉴가 ??보임</td><td>?�반 교사보다 ?��? 권한???�요??메뉴?�니??</td><td>부???�당 교사 ?�상 권한???�요?��? ?�인?�세??</td></tr>
-            <tr><td>?��?구매 ?�?�이 ???�옴</td><td>???�당 범위 밖의 ?�용?�는 검?�되지 ?�을 ???�습?�다.</td><td>?�생??부?��? 반이 맞는지 ?�인?�세??</td></tr>
+            <tr><td>학생 목록이 비어 있음</td><td>담당 부서나 반 정보가 계정에 없을 수 있습니다.</td><td>관리자에게 계정의 소속 부서와 반 설정을 요청하세요.</td></tr>
+            <tr><td>관리 메뉴가 안 보임</td><td>일반 교사보다 높은 권한이 필요한 메뉴입니다.</td><td>부서 담당 교사 이상 권한이 필요한지 확인하세요.</td></tr>
+            <tr><td>대리 구매 대상이 안 나옴</td><td>내 담당 범위 밖의 사용자는 검색되지 않을 수 있습니다.</td><td>학생의 부서와 반이 맞는지 확인하세요.</td></tr>
           </tbody>
         </table>
       </div>
@@ -187,7 +183,7 @@
   </main>
 
   <footer class="page-footer">
-    <p>초등부 ?��???관�?&copy; 2026 CHO-Talents</p>
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
