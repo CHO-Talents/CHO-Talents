@@ -250,7 +250,7 @@ body.admin-body {
 /* ===== Cards Grid ===== */
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
@@ -386,7 +386,7 @@ body.admin-body {
   background: var(--admin-card);
   border-radius: var(--admin-radius);
   box-shadow: var(--admin-shadow);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .admin-table-header {
@@ -760,7 +760,7 @@ table.admin-table tr:hover { background: #fafbfc; }
   .nav-user { font-size: 0.78rem; }
 
   .admin-container { padding: 0.8rem 0.5rem; }
-  .cards-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
+  .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
   .stat-card { padding: 0.8rem; }
   .stat-card-value { font-size: 1.4rem; }
   .stat-card-label { font-size: 0.7rem; }
@@ -792,17 +792,17 @@ table.admin-table tr:hover { background: #fafbfc; }
 }
 
 @media (max-width: 640px) {
-  #quickLinks { grid-template-columns: repeat(2, 1fr) !important; }
+  #quickLinks { grid-template-columns: repeat(3, 1fr) !important; }
   #detailSummary { grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 480px) {
-  .cards-grid { grid-template-columns: 1fr; gap: 0.4rem; }
+  .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
   .stat-card-value { font-size: 1.2rem; }
   .admin-nav-brand { font-size: 0.88rem; }
   .filter-btn { font-size: 0.68rem; padding: 0.2rem 0.4rem; }
   .modal-title { font-size: 0.95rem; }
-  #quickLinks { grid-template-columns: 1fr !important; }
+  #quickLinks { grid-template-columns: repeat(3, 1fr) !important; }
   table.admin-table th, table.admin-table td { font-size: 0.7rem; padding: 0.25rem 0.2rem; }
 }
 

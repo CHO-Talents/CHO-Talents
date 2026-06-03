@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 구매 상품 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.23.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.25.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -79,9 +79,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.23.0"></script>
-  <script src="js/activity-log.js?v=3.23.0"></script>
-  <script src="js/auth.js?v=3.23.0"></script>
+  <script src="js/supabase-config.js?v=3.25.0"></script>
+  <script src="js/activity-log.js?v=3.25.0"></script>
+  <script src="js/auth.js?v=3.25.0"></script>
   <script>
     initSupabase();
     let session;
@@ -145,21 +145,21 @@
     }
 
     async function cancelOrder(orderId, productName, price) {
-      if (!confirm(`"${productName}" \uad6c\ub9e4\ub97c \ucde8\uc18c\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?\n${price} \ub2ec\ub780\ud2b8\uac00 \ubcf5\uc6d0\ub429\ub2c8\ub2e4.`)) return;
+      if (!confirm(`"${productName}" 구매를 취소하시겠습니까?\n${price} 달란트가 복원됩니다.`)) return;
       try {
         const { error: delErr } = await _sb.from('product_orders').delete().eq('id', orderId).eq('user_id', session.id).eq('status', 'requested');
         if (delErr) throw delErr;
-        const { data: u } = await _sb.from('users').select('pending_talent').eq('id', session.id).single();
-        const newPending = Math.max(0, (u?.pending_talent || 0) - price);
-        await _sb.from('users').update({ pending_talent: newPending }).eq('id', session.id);
+        const { data: prof } = await _sb.from('profiles').select('pending_talent').eq('id', session.id).single();
+        const newPending = Math.max(0, ((prof && prof.pending_talent) || 0) - price);
+        await _sb.from('profiles').update({ pending_talent: newPending }).eq('id', session.id);
         await logInfo('order_cancel', { product_name: productName, refunded: price, order_id: orderId });
-        alert('\uad6c\ub9e4\uac00 \ucde8\uc18c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.');
+        alert('구매가 취소되었습니다.');
         await loadOrders();
       } catch (e) {
-        alert('\ucde8\uc18c \uc2e4\ud328: ' + (e.message || e));
+        alert('취소 실패: ' + (e.message || e));
       }
     }
   </script>
-  <script src="js/version.js?v=3.23.0"></script>
+  <script src="js/version.js?v=3.25.0"></script>
 </body>
 </html>

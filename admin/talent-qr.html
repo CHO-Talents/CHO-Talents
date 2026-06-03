@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.23.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.25.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
@@ -330,10 +330,17 @@
 
   <!-- Edit Modal -->
   <div class="modal-overlay" id="editModal">
-    <div class="modal-box" style="max-width:560px;">
+    <div class="modal-box" style="max-width:600px;max-height:85vh;overflow-y:auto;">
       <h3>✏️ QR 코드 수정</h3>
       <input type="hidden" id="editId" />
-      <div class="form-grid">
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;">저장 방식</label>
+        <div class="radio-row radio-inline" style="margin-top:0.3rem;">
+          <label><input type="radio" name="editSaveMode" value="keep" checked /> 📌 기존 QR 유지</label>
+          <label><input type="radio" name="editSaveMode" value="new" /> 🔄 새 QR 생성</label>
+        </div>
+      </div>
+      <div class="form-grid" style="gap:0.8rem;">
         <div>
           <label>지급 대상</label>
           <div class="radio-row radio-inline">
@@ -479,10 +486,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../js/supabase-config.js?v=3.23.0"></script>
-  <script src="../js/activity-log.js?v=3.23.0"></script>
-  <script src="../js/auth.js?v=3.23.0"></script>
-  <script src="../js/talent.js?v=3.23.0"></script>
+  <script src="../js/supabase-config.js?v=3.25.0"></script>
+  <script src="../js/activity-log.js?v=3.25.0"></script>
+  <script src="../js/auth.js?v=3.25.0"></script>
+  <script src="../js/talent.js?v=3.25.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -835,11 +842,13 @@
         max_uses: v.maxUses, talent_item_id: v.talentItemId,
         target_type: v.targetType,
         is_active: true, used_count: 0,
-        created_by: session.id, created_at: new Date().toISOString(),
-        repeat_type: v.repeatType || 'none',
-        repeat_days: v.repeatDays || null,
-        repeat_weeks: v.repeatWeeks || null
+        created_by: session.id, created_at: new Date().toISOString()
       };
+      if (v.repeatType && v.repeatType !== 'none') {
+        row.repeat_type = v.repeatType;
+        if (v.repeatDays) row.repeat_days = v.repeatDays;
+        if (v.repeatWeeks) row.repeat_weeks = v.repeatWeeks;
+      }
       if (v.validFrom) row.valid_from = new Date(v.validFrom).toISOString();
       if (v.validTo) row.valid_until = new Date(v.validTo).toISOString();
       if (v.locationLat) {
@@ -919,24 +928,29 @@
       const id = document.getElementById('editId').value;
       const v = getFormValues('edit');
       if (v.error) { alert(v.error); return; }
-      const newCode = generateCode();
+      const saveMode = document.querySelector('input[name="editSaveMode"]:checked').value;
       const update = {
-        code: newCode, description: v.desc, amount: v.amount,
+        description: v.desc, amount: v.amount,
         talent_item_id: v.talentItemId, max_uses: v.maxUses,
         target_type: v.targetType,
         valid_from: v.validFrom ? new Date(v.validFrom).toISOString() : null,
         valid_until: v.validTo ? new Date(v.validTo).toISOString() : null,
         location_lat: v.locationLat, location_lng: v.locationLng,
-        location_name: v.locationName, location_radius: v.locationRadius,
-        repeat_type: v.repeatType || 'none',
-        repeat_days: v.repeatDays || null,
-        repeat_weeks: v.repeatWeeks || null
+        location_name: v.locationName, location_radius: v.locationRadius
       };
+      if (v.repeatType && v.repeatType !== 'none') {
+        update.repeat_type = v.repeatType;
+        if (v.repeatDays) update.repeat_days = v.repeatDays;
+        if (v.repeatWeeks) update.repeat_weeks = v.repeatWeeks;
+      }
+      if (saveMode === 'new') {
+        update.code = generateCode();
+      }
       const { error } = await _sb.from('talent_qr_codes').update(update).eq('id', id);
-      if (error) { alert('수정 실패: ' + error.message); return; }
-      await logInfo('qr_edit', { qr_id: id, new_code: newCode, amount: v.amount, description: v.desc });
+      if (error) { alert('수정 실패: ' + tErr(error.message)); return; }
+      await logInfo('qr_edit', { qr_id: id, mode: saveMode, amount: v.amount, description: v.desc });
       closeEditModal();
-      alert('수정 완료. 새 QR 코드가 생성되었습니다.');
+      alert(saveMode === 'new' ? '수정 완료. 새 QR 코드가 생성되었습니다.' : '수정 완료. 기존 QR 코드가 유지됩니다.');
       await loadQRList();
     }
 
@@ -1163,13 +1177,14 @@
           const { data: depts } = await _sb.from('departments').select('id, name').in('id', deptIds);
           (depts || []).forEach(d => { deptMap[d.id] = d.name; });
         }
-        let html = '<table class="scan-list-table"><thead><tr><th>#</th><th>이름</th><th>아이디</th><th>부서</th><th>수령 시간</th></tr></thead><tbody>';
+        const isAdmin = (session.permissionRank || 0) >= 100;
+        let html = '<table class="scan-list-table"><thead><tr><th>#</th><th>이름</th>' + (isAdmin ? '<th>아이디</th>' : '') + '<th>부서</th><th>수령 시간</th></tr></thead><tbody>';
         scans.forEach((s, i) => {
           const p = profileMap[s.user_id] || {};
           const dt = new Date(s.scanned_at);
           const ts = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0')
             + ' ' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
-          html += '<tr><td>' + (i+1) + '</td><td>' + (p.display_name||'-') + '</td><td>' + (p.username||'-') + '</td><td>' + (deptMap[p.department_id]||'-') + '</td><td>' + ts + '</td></tr>';
+          html += '<tr><td>' + (i+1) + '</td><td>' + (p.display_name||'-') + '</td>' + (isAdmin ? '<td>' + (p.username||'-') + '</td>' : '') + '<td>' + (deptMap[p.department_id]||'-') + '</td><td>' + ts + '</td></tr>';
         });
         html += '</tbody></table>';
         html += '<div style="margin-top:0.5rem;font-size:0.82rem;color:var(--admin-text-muted);">총 ' + scans.length + '명 수령</div>';
@@ -1278,6 +1293,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.24.0"></script>
+  <script src="../js/version.js?v=3.25.0"></script>
 </body>
 </html>

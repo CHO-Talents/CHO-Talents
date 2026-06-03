@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.23.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.23.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.25.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.25.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -243,26 +243,28 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.23.0"></script>
-  <script src="js/activity-log.js?v=3.23.0"></script>
-  <script src="js/auth.js?v=3.23.0"></script>
+  <script src="js/supabase-config.js?v=3.25.0"></script>
+  <script src="js/activity-log.js?v=3.25.0"></script>
+  <script src="js/auth.js?v=3.25.0"></script>
   <script>
     initSupabase();
     (async () => {
       const session = await loadAuthSession();
-      if (session) {
-        document.getElementById('navMyTalent').style.display = '';
-        document.getElementById('navMyOrders').style.display = '';
-        document.getElementById('navLoginArea').style.display = 'none';
-        document.getElementById('navAuthArea').style.display = '';
-        document.getElementById('navLogoutArea').style.display = '';
-        renderRoleBadge('navUser', session, '');
-        applyPermNav(session.permissionRank || 0);
-        updateNavOrderBadge();
+      if (!session || (session.permissionRank || 0) < 60) {
+        location.href = session && (session.permissionRank || 0) >= 40 ? 'teacher-guide.html' : 'guide.html';
+        return;
       }
+      document.getElementById('navMyTalent').style.display = '';
+      document.getElementById('navMyOrders').style.display = '';
+      document.getElementById('navLoginArea').style.display = 'none';
+      document.getElementById('navAuthArea').style.display = '';
+      document.getElementById('navLogoutArea').style.display = '';
+      renderRoleBadge('navUser', session, '');
+      applyPermNav(session.permissionRank || 0);
+      updateNavOrderBadge();
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.23.0"></script>
+  <script src="js/version.js?v=3.25.0"></script>
 </body>
 </html>

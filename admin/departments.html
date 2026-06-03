@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>부서 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.23.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.25.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -75,8 +75,8 @@
         <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 부서 등록</button>
       </div>
       <table class="admin-table">
-        <thead><tr><th>부서명</th><th>설명</th><th>반</th><th>전체</th><th>교사</th><th>학생</th><th>담당 관리자</th><th>관리</th></tr></thead>
-        <tbody id="deptList"><tr><td colspan="9" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>부서명</th><th>설명</th><th>반</th><th>전체</th><th>교사</th><th>학생</th><th>관리</th></tr></thead>
+        <tbody id="deptList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -109,10 +109,10 @@
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.23.0"></script>
-  <script src="../js/activity-log.js?v=3.23.0"></script>
-  <script src="../js/auth.js?v=3.23.0"></script>
-  <script src="../js/user-mgmt.js?v=3.23.0"></script>
+  <script src="../js/supabase-config.js?v=3.25.0"></script>
+  <script src="../js/activity-log.js?v=3.25.0"></script>
+  <script src="../js/auth.js?v=3.25.0"></script>
+  <script src="../js/user-mgmt.js?v=3.25.0"></script>
   <script>
     initSupabase();
     let session;
@@ -161,7 +161,7 @@
       document.getElementById('tableTitle').textContent = `부서 목록 (${filteredDepts.length}개)`;
 
       if (filteredDepts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="empty-state">등록된 부서가 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 부서가 없습니다.</td></tr>';
         allDeptData = [];
         return;
       }
@@ -171,11 +171,6 @@
         const deptUsers = (users||[]).filter(u => u.department_id === d.id);
         const teachers = deptUsers.filter(u => u.user_type === 'teacher');
         const students = deptUsers.filter(u => u.user_type === 'student');
-        const managers = (users||[]).filter(u => u.managed_dept_id === d.id && ['admin', 'evangelist', 'chief', 'dept_teacher'].includes(u.permission_level));
-        const managerNames = managers.map(m => {
-          const e = PERMISSION_EMOJI[m.permission_level] || '📋';
-          return `${e}${m.display_name || '-'}`;
-        }).join(', ') || '-';
         const classLabel = d.class_count > 0 ? d.class_count + '개' : '없음';
 
         return `<tr>
@@ -185,7 +180,6 @@
           <td style="font-weight:700;">${deptUsers.length}명</td>
           <td>${teachers.length}명</td>
           <td>${students.length}명</td>
-          <td style="font-size:0.8rem;">${managerNames}</td>
           <td>
             <div class="mgmt-dropdown">
               <button class="filter-btn" onclick="toggleMgmt(event,this)">관리 ▾</button>
@@ -253,8 +247,10 @@
       await loadDepts();
     }
 
+    const PERM_RANK_MAP = { admin:100, evangelist:90, chief:80, dept_teacher:60, teacher:40, student:20 };
     function showMembers(deptName, deptId) {
-      const members = allUsers.filter(u => u.department_id === deptId);
+      const members = allUsers.filter(u => u.department_id === deptId)
+        .sort((a, b) => (PERM_RANK_MAP[b.permission_level] || 0) - (PERM_RANK_MAP[a.permission_level] || 0));
       const dept = allDeptData.find(d => d.id === deptId);
       const hasClasses = dept && dept.class_count > 0;
 
@@ -303,6 +299,6 @@
 
     document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.23.0"></script>
+  <script src="../js/version.js?v=3.25.0"></script>
 </body>
 </html>
