@@ -2,9 +2,20 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.26.0',
+  current: '3.26.1',
   date: '2026-06-03',
   history: [
+    {
+      version: '3.26.1',
+      date: '2026-06-03',
+      title: '구매 취소 DB 제약조건 + QR 모달 디자인 + 중복 항목 허용',
+      changes: [
+        '구매 취소: product_orders_status_check에 cancelled 추가 SQL 제공',
+        'QR관리: 수정 모달 라디오/체크박스 width:auto 적용으로 텍스트 세로 표시 해결',
+        'QR관리: 중복 항목 QR 생성 실패 시 안내 메시지 및 UNIQUE 제약 제거 SQL 제공',
+        'QR관리: 퀵버튼 is_quick_button 컬럼 추가 SQL 통합 제공 (TASK-040_fixes.sql)'
+      ]
+    },
     {
       version: '3.26.0',
       date: '2026-06-03',
