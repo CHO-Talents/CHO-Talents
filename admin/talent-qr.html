@@ -288,7 +288,8 @@
       </div>
 
       <div style="margin-top:0.8rem;">
-        <button class="admin-btn primary btn-create-qr" onclick="createQR()">🎫 QR 코드 생성</button>
+        <button class="admin-btn primary btn-create-qr" id="btnCreateQR" onclick="createQR()">🎫 QR 코드 생성</button>
+        <div id="qrFormStatus" style="display:none;margin-top:0.6rem;padding:0.55rem 0.7rem;border-radius:8px;font-size:0.84rem;"></div>
       </div>
     </div>
 
@@ -492,6 +493,7 @@
 
     (async () => {
       session = await initPage(90, '../login.html');
+      if (!session) return;
       renderRoleBadge('navUser', session, '../');
       applyPermNav(session.permissionRank || 0);
       autoLogPageView();
@@ -849,18 +851,69 @@
       return row;
     }
 
+    function showQRFormStatus(message, type) {
+      const el = document.getElementById('qrFormStatus');
+      if (!el) return;
+      if (!message) {
+        el.style.display = 'none';
+        el.textContent = '';
+        return;
+      }
+      const color = type === 'success' ? '#2b8a3e' : type === 'warn' ? '#e67700' : '#e03131';
+      const bg = type === 'success' ? '#d3f9d8' : type === 'warn' ? '#fff3bf' : '#ffe3e3';
+      el.style.display = 'block';
+      el.style.color = color;
+      el.style.background = bg;
+      el.textContent = message;
+    }
+
     /* ── Create / Edit / Toggle ── */
     async function createQR() {
+      const btn = document.getElementById('btnCreateQR');
+      showQRFormStatus('', '');
       const v = getFormValues('');
-      if (v.error) { alert(v.error); return; }
-      const code = generateCode();
-      const row = buildRow(code, v);
-      const { error } = await _sb.from('talent_qr_codes').insert(row);
-      if (error) { alert('생성 실패: ' + error.message); return; }
-      await logInfo('qr_create', { code, amount: v.amount, description: v.desc, target_type: v.targetType, max_uses: v.maxUses });
-      alert('QR 코드 생성 완료');
-      await loadQRList();
+      if (v.error) {
+        showQRFormStatus(v.error, 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = '생성 중...';
+      try {
+        const code = generateCode();
+        const row = buildRow(code, v);
+        const { data, error } = await _sb.from('talent_qr_codes').insert(row).select('id,code,description').single();
+        if (error) {
+          await logError('QR_CREATE_FAIL', { description: v.desc, error: error.message });
+          showQRFormStatus('생성 실패: ' + tErr(error.message), 'error');
+          return;
+        }
+        if (!data || !data.id) {
+          await logWarn('QR_CREATE_NO_RESULT', { description: v.desc, code });
+          showQRFormStatus('생성 결과를 확인하지 못했습니다. 새로고침 후 목록을 확인해주세요.', 'warn');
+          return;
+        }
+
+        await logInfo('qr_create', { code, amount: v.amount, description: v.desc, target_type: v.targetType, max_uses: v.maxUses, qrId: data.id });
+        currentTab = 'active';
+        document.getElementById('tabActive').classList.add('active');
+        document.getElementById('tabAll').classList.remove('active');
+        document.getElementById('qrSearchInput').value = '';
+        document.getElementById('qrFilterTarget').value = '';
+        document.getElementById('qrFilterCondition').value = '';
+        setQRDatePreset('week');
+        await loadQRList();
+        showQRFormStatus('QR 코드가 생성되었습니다: ' + data.code, 'success');
+      } catch (err) {
+        await logError('QR_CREATE_ERROR', { description: v.desc, error: String(err) });
+        showQRFormStatus('생성 중 오류가 발생했습니다: ' + tErr(err.message || String(err)), 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = originalText;
+      }
     }
+    window.createQR = createQR;
 
     async function saveEdit() {
       const id = document.getElementById('editId').value;
@@ -1225,6 +1278,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.23.0"></script>
+  <script src="../js/version.js?v=3.24.0"></script>
 </body>
 </html>
