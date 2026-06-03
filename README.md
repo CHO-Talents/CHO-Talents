@@ -12,12 +12,17 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.26.0` (`js/version.js` 기준, 2026-06-03) |
+| 현재 버전 | `v3.26.1` (`js/version.js` 기준, 2026-06-03) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.26.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.26.1`로 갱신되어 있습니다.
+- **v3.26.1 주요 변경 사항**:
+  - 구매 취소: product_orders_status_check에 cancelled 추가 SQL 제공
+  - QR관리: 수정 모달 라디오/체크박스 디자인 깨짐 수정
+  - QR관리: 중복 항목 QR 생성 허용을 위한 UNIQUE 제약 제거 SQL 제공
+
 - **v3.26.0 주요 변경 사항**:
   - 달란트 항목 관리: 퀵버튼 저장 오류 수정 (DB 컬럼 누락 시 안내 메시지 표시)
   - 달란트 통계: 부서별 상세 비율을 수령 항목 수 기준으로 계산 변경
