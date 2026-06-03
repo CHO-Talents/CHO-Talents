@@ -184,15 +184,42 @@
       }
       allOrders = data || [];
 
+      const myRank = session.permissionRank || 0;
+      const scopedDeptId = myRank >= 60 && myRank < 80 ? (session.managedDeptId || session.departmentId) : null;
+      let scopedUsers = null;
+      if (scopedDeptId) {
+        const { data: users, error: userErr } = await fetchUsers({ departmentId: scopedDeptId });
+        if (userErr) {
+          await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopedDeptId, error: userErr });
+          allOrders = [];
+        } else {
+          scopedUsers = users || [];
+          const scopedIds = new Set(scopedUsers.map(u => u.id));
+          allOrders = allOrders.filter(o => scopedIds.has(o.user_id));
+        }
+      }
+
       const userIds = [...new Set(allOrders.map(o => o.user_id))];
       const procIds = [...new Set(allOrders.flatMap(o => [o.prepared_by, o.purchased_by, o.delivered_by].filter(Boolean)))];
       const allIds = [...new Set([...userIds, ...procIds])];
 
       if (allIds.length > 0) {
-        const { data: profiles } = await _sb.from('profiles').select('id,display_name,username,department_id').in('id', allIds);
+        let profiles = [];
+        if (scopedUsers) {
+          const scopedMap = new Map(scopedUsers.map(u => [u.id, u]));
+          profiles = userIds.map(id => scopedMap.get(id)).filter(Boolean);
+          const missingProcIds = procIds.filter(id => !scopedMap.has(id));
+          if (missingProcIds.length > 0) {
+            const { data: processors } = await _sb.from('profiles').select('id,display_name,username,department_id').in('id', missingProcIds);
+            profiles = profiles.concat(processors || []);
+          }
+        } else {
+          const { data: profileRows } = await _sb.from('profiles').select('id,display_name,username,department_id').in('id', allIds);
+          profiles = profileRows || [];
+        }
         profileMap = {};
         processorMap = {};
-        (profiles || []).forEach(p => {
+        profiles.forEach(p => {
           profileMap[p.id] = p;
           processorMap[p.id] = p.display_name || p.username || '-';
         });
@@ -574,6 +601,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.23.0"></script>
+  <script src="../js/version.js?v=3.24.0"></script>
 </body>
 </html>

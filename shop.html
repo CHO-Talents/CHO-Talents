@@ -130,6 +130,7 @@
   <script src="js/activity-log.js?v=3.23.0"></script>
   <script src="js/auth.js?v=3.23.0"></script>
   <script src="js/product.js"></script>
+  <script src="js/user-mgmt.js?v=3.23.0"></script>
   <script>
     initSupabase();
     let currentShopTab = 'student';
@@ -301,23 +302,66 @@
 
     async function loadProxyUsers() {
       const rank = _shopSession.permissionRank || 0;
-      let query = _sb.from('profiles').select('id,username,display_name,user_type,department_id,class_number,talent_balance,pending_talent');
-      const { data } = await query;
-      let users = (data || []).filter(u => u.id !== _shopSession.id);
+      const resultsBox = document.getElementById('proxyResults');
+      resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">대상자를 불러오는 중...</div>';
+      resultsBox.style.display = 'block';
 
-      if (rank >= 90) {
-        // all users
-      } else if (rank >= 60) {
-        const deptId = _shopSession.managedDeptId || _shopSession.departmentId;
-        if (deptId) users = users.filter(u => u.department_id === deptId);
-        else users = [];
-      } else if (rank === 40) {
-        users = users.filter(u => u.department_id === _shopSession.departmentId && u.class_number === _shopSession.classNumber && u.user_type === 'student');
-      } else {
-        users = [];
+      let users = [];
+      try {
+        const opts = {};
+        if (rank >= 90) {
+          // all users
+        } else if (rank >= 60) {
+          const deptId = _shopSession.managedDeptId || _shopSession.departmentId;
+          if (!deptId) {
+            _proxyUsers = [];
+            resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">담당 부서가 설정되지 않았습니다.</div>';
+            return;
+          }
+          opts.departmentId = deptId;
+        } else if (rank === 40) {
+          if (!_shopSession.departmentId || !_shopSession.classNumber) {
+            _proxyUsers = [];
+            resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">담당 부서/반이 설정되지 않았습니다.</div>';
+            return;
+          }
+          opts.userType = 'student';
+          opts.departmentId = _shopSession.departmentId;
+        } else {
+          _proxyUsers = [];
+          resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">대리 구매 권한이 없습니다.</div>';
+          return;
+        }
+
+        const { data, error } = await fetchUsers(opts);
+        if (error) {
+          await logWarn('PROXY_USER_LOAD_FAIL', { error });
+          resultsBox.innerHTML = '<div style="padding:0.6rem;color:#e03131;font-size:0.85rem;">대상자를 불러오지 못했습니다.</div>';
+          _proxyUsers = [];
+          return;
+        }
+        users = data || [];
+      } catch (err) {
+        await logError('PROXY_USER_LOAD_ERROR', { error: String(err) });
+        resultsBox.innerHTML = '<div style="padding:0.6rem;color:#e03131;font-size:0.85rem;">대상자를 불러오지 못했습니다.</div>';
+        _proxyUsers = [];
+        return;
+      }
+
+      users = users.filter(u => u.id !== _shopSession.id);
+      if (rank === 40) {
+        users = users.filter(u =>
+          u.user_type === 'student' &&
+          u.department_id === _shopSession.departmentId &&
+          u.class_number === _shopSession.classNumber
+        );
       }
       _proxyUsers = users;
       try { const { data: depts } = await _sb.from('departments').select('id,name'); (depts||[]).forEach(d => { _proxyDeptMap[d.id] = d.name; }); } catch(e){}
+
+      resultsBox.style.display = 'none';
+      const q = document.getElementById('proxySearch').value.trim();
+      if (q) onProxySearch();
     }
 
     function onProxySearch() {
@@ -414,6 +458,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.23.0"></script>
+  <script src="js/version.js?v=3.24.0"></script>
 </body>
 </html>
