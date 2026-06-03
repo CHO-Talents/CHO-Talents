@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 통계 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.25.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.26.0" />
   <style>
     .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; margin-bottom: 1.5rem; }
     .stat-card { background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border: 1px solid #e9ecef; border-radius: 14px; padding: 1rem 1.2rem; text-align: center; transition: transform 0.15s, box-shadow 0.15s; }
@@ -127,9 +127,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.25.0"></script>
-  <script src="../js/activity-log.js?v=3.25.0"></script>
-  <script src="../js/auth.js?v=3.25.0"></script>
+  <script src="../js/supabase-config.js?v=3.26.0"></script>
+  <script src="../js/activity-log.js?v=3.26.0"></script>
+  <script src="../js/auth.js?v=3.26.0"></script>
   <script>
     initSupabase();
     let session, allTxns = [], allProfiles = [], allDepts = [];
@@ -447,8 +447,9 @@
         <div class="stat-card" style="padding:0.6rem;"><div class="stat-label">수령 달란트 항목 수</div><div class="stat-value blue" style="font-size:1.2rem;">${itemSet.size}개</div></div>
         <div class="stat-card" style="padding:0.6rem;"><div class="stat-label">수령 횟수</div><div class="stat-value orange" style="font-size:1.2rem;">${fmtNum(txnCount)}</div></div>`;
       document.getElementById('deptDetailOverallAvg').textContent = fmtNum(overallAvg);
+      const totalCount = deptTxns.length;
       document.getElementById('deptDetailItems').innerHTML = sorted.map(([name, v]) => {
-        const pct = allTotal > 0 ? ((v.amount / allTotal) * 100).toFixed(1) : 0;
+        const pct = totalCount > 0 ? ((v.count / totalCount) * 100).toFixed(1) : 0;
         const avgPerPerson = users.size > 0 ? Math.round(v.amount / users.size) : 0;
         return `<tr><td style="font-weight:600;">${name}</td><td class="num">${fmtNum(v.count)}</td><td class="num"><div class="pct-bar" style="display:inline-block;max-width:80px;vertical-align:middle;"><div class="pct-bar-fill" style="width:${pct}%;background:linear-gradient(135deg,#ffd43b,#fab005);"></div><span class="pct-bar-text">${pct}%</span></div></td><td class="num">${fmtNum(avgPerPerson)}</td></tr>`;
       }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">데이터 없음</td></tr>';
@@ -490,6 +491,6 @@
     document.getElementById('deptDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDeptDetailModal(); });
     document.getElementById('userDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeUserDetailModal(); });
   </script>
-  <script src="../js/version.js?v=3.25.0"></script>
+  <script src="../js/version.js?v=3.26.0"></script>
 </body>
 </html>

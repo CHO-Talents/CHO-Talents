@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.25.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.26.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
@@ -58,11 +58,16 @@
     .filter-bar input[type="date"] { width: 140px; }
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; align-items: center; justify-content: center; }
     .modal-overlay.show { display: flex; }
-    .modal-box { background: #fff; border-radius: 16px; padding: 1.5rem; max-width: 520px; width: 90%; max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
+    .modal-box { background: #fff; border-radius: 16px; padding: 1.5rem; max-width: 520px; width: 92%; max-height: 85vh; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,0.15); }
     .modal-box.wide { max-width: 600px; }
     .modal-box h3 { margin-bottom: 1rem; }
     .modal-box .form-grid { grid-template-columns: 1fr; }
+    .modal-box .form-grid > div { grid-column: auto !important; }
     .modal-actions { display: flex; gap: 0.5rem; margin-top: 1rem; justify-content: flex-end; }
+    @media (max-width: 640px) {
+      .modal-box { padding: 1rem 0.8rem; width: 96%; }
+      .modal-box h3 { font-size: 0.95rem; }
+    }
     .scan-list-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
     .scan-list-table th, .scan-list-table td { padding: 0.5rem 0.6rem; text-align: left; border-bottom: 1px solid #e9ecef; }
     .scan-list-table th { background: #f8f9fa; font-weight: 600; font-size: 0.8rem; color: var(--admin-text-muted); }
@@ -465,10 +470,9 @@
           </div>
         </div>
       </div>
-      <p style="font-size:0.78rem;color:var(--admin-text-muted);margin-top:0.6rem;">⚠ 저장 시 새 QR 코드가 생성됩니다.</p>
-      <div class="modal-actions">
+      <div class="modal-actions" style="margin-top:0.8rem;">
         <button class="admin-btn" onclick="closeEditModal()">취소</button>
-        <button class="admin-btn primary" onclick="saveEdit()">💾 저장 (새 QR 생성)</button>
+        <button class="admin-btn primary" onclick="saveEdit()">💾 저장</button>
       </div>
     </div>
   </div>
@@ -486,10 +490,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../js/supabase-config.js?v=3.25.0"></script>
-  <script src="../js/activity-log.js?v=3.25.0"></script>
-  <script src="../js/auth.js?v=3.25.0"></script>
-  <script src="../js/talent.js?v=3.25.0"></script>
+  <script src="../js/supabase-config.js?v=3.26.0"></script>
+  <script src="../js/activity-log.js?v=3.26.0"></script>
+  <script src="../js/auth.js?v=3.26.0"></script>
+  <script src="../js/talent.js?v=3.26.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -1293,6 +1297,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.25.0"></script>
+  <script src="../js/version.js?v=3.26.0"></script>
 </body>
 </html>
