@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Q & A - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.23.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.25.0" />
   <style>
     .qna-container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
     .qna-hero { text-align: center; margin-bottom: 2rem; }
@@ -142,9 +142,9 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabase-config.js?v=3.23.0"></script>
-  <script src="js/activity-log.js?v=3.23.0"></script>
-  <script src="js/auth.js?v=3.23.0"></script>
+  <script src="js/supabase-config.js?v=3.25.0"></script>
+  <script src="js/activity-log.js?v=3.25.0"></script>
+  <script src="js/auth.js?v=3.25.0"></script>
   <script>
     initSupabase();
     let _session = null;
@@ -239,11 +239,12 @@
       const adminBtns = [];
       if (_isAdmin && hasComments) adminBtns.push(`<button class="faq-btn" onclick="markAsFaq('${q.id}')">FAQ 등록</button>`);
       if (_canDelete) adminBtns.push(`<button style="background:#ff6b6b;color:#fff;border-color:#ff6b6b;" onclick="deleteQuestion('${q.id}')">삭제</button>`);
+      const canComment = !!_session;
       return `<div class="qna-card">
         <div class="q-text"><span class="qna-status ${statusClass}">${statusText}</span> ${escHtml(q.question)}</div>
         <div class="meta">${askerDisplay} · 질문 ${dateStr}</div>
         <div style="margin-top:0.6rem;">${threadHtml}</div>
-        ${_isAdmin ? renderCommentForm(q.id) : ''}
+        ${canComment ? renderCommentForm(q.id) : ''}
         ${adminBtns.length ? `<div class="btn-row" style="margin-top:0.5rem;">${adminBtns.join('')}</div>` : ''}
       </div>`;
     }
@@ -284,7 +285,7 @@
         <textarea id="cmt_${id}" placeholder="답변(댓글)을 입력하세요..."></textarea>
         <div class="btn-row">
           <button class="primary" onclick="submitComment('${id}')">답변 등록</button>
-          <button class="faq-btn" onclick="submitComment('${id}', true)">답변 + FAQ 등록</button>
+          ${_isAdmin ? `<button class="faq-btn" onclick="submitComment('${id}', true)">답변 + FAQ 등록</button>` : ''}
         </div>
       </div>`;
     }
@@ -402,6 +403,6 @@
       return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     }
   </script>
-  <script src="js/version.js?v=3.23.0"></script>
+  <script src="js/version.js?v=3.25.0"></script>
 </body>
 </html>

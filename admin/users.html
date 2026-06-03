@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.23.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.25.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -237,11 +237,11 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.23.0"></script>
-  <script src="../js/activity-log.js?v=3.23.0"></script>
-  <script src="../js/auth.js?v=3.23.0"></script>
-  <script src="../js/user-mgmt.js?v=3.23.0"></script>
-  <script src="../js/version.js?v=3.23.0"></script>
+  <script src="../js/supabase-config.js?v=3.25.0"></script>
+  <script src="../js/activity-log.js?v=3.25.0"></script>
+  <script src="../js/auth.js?v=3.25.0"></script>
+  <script src="../js/user-mgmt.js?v=3.25.0"></script>
+  <script src="../js/version.js?v=3.25.0"></script>
   <script>
     initSupabase();
     let session;
@@ -534,10 +534,11 @@
         const { data: req } = await _sb.from('registration_requests').select('*').eq('username', u.username).order('created_at', { ascending: false }).limit(1);
         if (req && req.length > 0) {
           const r = req[0];
+          const reviewerDisplay = myRank >= 100 ? (r.reviewed_by || '-') : (r.reviewed_by ? '승인 완료' : '-');
           regInfo = `<tr><td style="font-weight:600;width:35%;">계정 신청일</td><td>${formatKSTShort(r.created_at)}</td></tr>
             <tr><td style="font-weight:600;">신청 사유</td><td>${r.reason || '-'}</td></tr>
             <tr><td style="font-weight:600;">승인일</td><td>${r.reviewed_at ? formatKSTShort(r.reviewed_at) : '-'}</td></tr>
-            <tr><td style="font-weight:600;">승인자</td><td>${r.reviewed_by || '-'}</td></tr>`;
+            <tr><td style="font-weight:600;">승인자</td><td>${reviewerDisplay}</td></tr>`;
         }
       } catch (e) {}
 
@@ -567,7 +568,7 @@
       } catch (e) { orderHtml = ''; }
 
       let html = '<table style="width:100%;border-collapse:collapse;">';
-      if (myRank >= 90) html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;width:35%;border-bottom:1px solid #e9ecef;">아이디</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${u.username}</td></tr>`;
+      if (myRank >= 100) html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;width:35%;border-bottom:1px solid #e9ecef;">아이디</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${u.username}</td></tr>`;
       html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">이름</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${dn}</td></tr>`;
       html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">역할</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${typeLabel}</td></tr>`;
       html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">권한</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${permEmoji} ${permLabel}</td></tr>`;

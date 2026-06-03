@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.23.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.25.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -183,11 +183,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.23.0"></script>
-  <script src="../js/activity-log.js?v=3.23.0"></script>
-  <script src="../js/auth.js?v=3.23.0"></script>
-  <script src="../js/user-mgmt.js?v=3.23.0"></script>
-  <script src="../js/talent.js?v=3.23.0"></script>
+  <script src="../js/supabase-config.js?v=3.25.0"></script>
+  <script src="../js/activity-log.js?v=3.25.0"></script>
+  <script src="../js/auth.js?v=3.25.0"></script>
+  <script src="../js/user-mgmt.js?v=3.25.0"></script>
+  <script src="../js/talent.js?v=3.25.0"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:100;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
     @media(max-width:768px){.hide-mobile{display:none!important;}}
@@ -390,7 +390,8 @@
     async function loadAttendanceToday(userIds) {
       _attendanceGivenToday = new Set();
       if (!_sb || userIds.length === 0) return;
-      const attendItem = talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
+      const attendItem = talentItems.find(i => i.is_quick_button === true && i.target_type === currentTab && i.is_active)
+        || talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
       if (!attendItem) return;
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
@@ -404,8 +405,9 @@
     }
 
     async function giveAttendance(userId, userName) {
-      const attendItem = talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
-      if (!attendItem) { alert('출석 달란트 항목이 설정되지 않았습니다.'); return; }
+      const attendItem = talentItems.find(i => i.is_quick_button === true && i.target_type === currentTab && i.is_active)
+        || talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
+      if (!attendItem) { alert('출석 퀵버튼 항목이 설정되지 않았습니다.\n달란트 항목 관리에서 ⚡퀵 버튼을 지정해주세요.'); return; }
       if (_attendanceGivenToday.has(userId)) { alert('이미 오늘 출석 달란트가 지급되었습니다.'); return; }
       const result = await giveTalentByItem(userId, attendItem.id, session.id);
       if (result && result.success === false) {
@@ -683,6 +685,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.23.0"></script>
+  <script src="../js/version.js?v=3.25.0"></script>
 </body>
 </html>
