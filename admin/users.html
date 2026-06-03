@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.25.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.26.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -230,18 +230,18 @@
 
   <style>
     .mgmt-dropdown { position: relative; display: inline-block; }
-    .mgmt-menu { display: none; position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid var(--admin-border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 100; min-width: 140px; padding: 0.3rem 0; }
+    .mgmt-menu { display: none; position: absolute; right: 0; top: 100%; background: #fff; border: 1px solid var(--admin-border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 9999; min-width: 140px; padding: 0.3rem 0; }
     .mgmt-menu.show { display: block; }
     .mgmt-menu a { display: block; padding: 0.45rem 0.8rem; font-size: 0.82rem; color: #333; text-decoration: none; cursor: pointer; white-space: nowrap; }
     .mgmt-menu a:hover { background: #f1f3f5; }
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.25.0"></script>
-  <script src="../js/activity-log.js?v=3.25.0"></script>
-  <script src="../js/auth.js?v=3.25.0"></script>
-  <script src="../js/user-mgmt.js?v=3.25.0"></script>
-  <script src="../js/version.js?v=3.25.0"></script>
+  <script src="../js/supabase-config.js?v=3.26.0"></script>
+  <script src="../js/activity-log.js?v=3.26.0"></script>
+  <script src="../js/auth.js?v=3.26.0"></script>
+  <script src="../js/user-mgmt.js?v=3.26.0"></script>
+  <script src="../js/version.js?v=3.26.0"></script>
   <script>
     initSupabase();
     let session;
@@ -534,7 +534,27 @@
         const { data: req } = await _sb.from('registration_requests').select('*').eq('username', u.username).order('created_at', { ascending: false }).limit(1);
         if (req && req.length > 0) {
           const r = req[0];
-          const reviewerDisplay = myRank >= 100 ? (r.reviewed_by || '-') : (r.reviewed_by ? '승인 완료' : '-');
+          let reviewerDisplay = '-';
+          if (r.reviewed_by) {
+            const isUUID = /^[0-9a-f]{8}-/.test(r.reviewed_by);
+            if (isUUID) {
+              const { data: rp } = await _sb.from('profiles').select('display_name, username').eq('id', r.reviewed_by).single();
+              if (rp) {
+                reviewerDisplay = rp.display_name || rp.username || r.reviewed_by;
+                if (myRank >= 100 && rp.username) reviewerDisplay += ` (${rp.username})`;
+              } else {
+                reviewerDisplay = myRank >= 100 ? r.reviewed_by : '승인 완료';
+              }
+            } else {
+              const { data: rps } = await _sb.from('profiles').select('display_name, username').eq('username', r.reviewed_by).limit(1);
+              if (rps && rps.length > 0) {
+                reviewerDisplay = rps[0].display_name || r.reviewed_by;
+                if (myRank >= 100) reviewerDisplay += ` (${r.reviewed_by})`;
+              } else {
+                reviewerDisplay = myRank >= 100 ? r.reviewed_by : '승인 완료';
+              }
+            }
+          }
           regInfo = `<tr><td style="font-weight:600;width:35%;">계정 신청일</td><td>${formatKSTShort(r.created_at)}</td></tr>
             <tr><td style="font-weight:600;">신청 사유</td><td>${r.reason || '-'}</td></tr>
             <tr><td style="font-weight:600;">승인일</td><td>${r.reviewed_at ? formatKSTShort(r.reviewed_at) : '-'}</td></tr>

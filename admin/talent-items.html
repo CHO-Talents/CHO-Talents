@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 항목 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.25.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.26.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -121,10 +121,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../js/supabase-config.js?v=3.25.0"></script>
-  <script src="../js/activity-log.js?v=3.25.0"></script>
-  <script src="../js/auth.js?v=3.25.0"></script>
-  <script src="../js/talent.js?v=3.25.0"></script>
+  <script src="../js/supabase-config.js?v=3.26.0"></script>
+  <script src="../js/activity-log.js?v=3.26.0"></script>
+  <script src="../js/auth.js?v=3.26.0"></script>
+  <script src="../js/talent.js?v=3.26.0"></script>
   <script>
     initSupabase();
     let session;
@@ -245,17 +245,29 @@
       const item = allItems.find(i => i.id === id);
       if (!item) return;
       const isQuick = item.is_quick_button === true;
-      if (isQuick) {
-        await _sb.from('talent_items').update({ is_quick_button: false }).eq('id', id);
-      } else {
-        await _sb.from('talent_items').update({ is_quick_button: false }).eq('target_type', item.target_type);
-        await _sb.from('talent_items').update({ is_quick_button: true }).eq('id', id);
+      try {
+        if (isQuick) {
+          const { error } = await _sb.from('talent_items').update({ is_quick_button: false }).eq('id', id);
+          if (error) throw error;
+        } else {
+          const { error: e1 } = await _sb.from('talent_items').update({ is_quick_button: false }).eq('target_type', item.target_type);
+          if (e1) throw e1;
+          const { error: e2 } = await _sb.from('talent_items').update({ is_quick_button: true }).eq('id', id);
+          if (e2) throw e2;
+        }
+        await loadItems();
+      } catch (err) {
+        const msg = (err && err.message) || String(err);
+        if (/column.*does not exist|schema cache/i.test(msg)) {
+          alert('⚡ 퀵 버튼 기능을 사용하려면 DB에 is_quick_button 컬럼을 추가해야 합니다.\n\ndocs/TASK-039_quick_button.sql 파일의 SQL을 실행해주세요.');
+        } else {
+          alert('퀵 버튼 설정 실패: ' + tErr(msg));
+        }
       }
-      await loadItems();
     }
 
     document.getElementById('itemModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.25.0"></script>
+  <script src="../js/version.js?v=3.26.0"></script>
 </body>
 </html>

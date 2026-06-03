@@ -258,19 +258,23 @@ body.admin-body {
 .stat-card {
   background: var(--admin-card);
   border-radius: var(--admin-radius);
-  padding: 1.3rem;
+  padding: 1rem 0.8rem;
   box-shadow: var(--admin-shadow);
   border-left: 4px solid var(--admin-primary);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .stat-card.error-card { border-left-color: var(--level-error); }
 
 .stat-card-label {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--admin-text-muted);
   font-weight: 600;
-  text-transform: uppercase;
   letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-card-value {
@@ -679,7 +683,7 @@ table.admin-table tr:hover { background: #fafbfc; }
 /* ===== Responsive ===== */
 
 @media (max-width: 1024px) {
-  .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .admin-table-wrap { overflow: visible; }
   table.admin-table { min-width: auto; }
   .admin-nav-links a { font-size: 0.75rem; padding: 0.3rem 0.45rem; }
   .btn-logout { font-size: 0.75rem; padding: 0.25rem 0.5rem; }
@@ -764,7 +768,7 @@ table.admin-table tr:hover { background: #fafbfc; }
   .stat-card { padding: 0.8rem; }
   .stat-card-value { font-size: 1.4rem; }
   .stat-card-label { font-size: 0.7rem; }
-  .admin-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .admin-table-wrap { overflow: visible; }
   table.admin-table { min-width: auto; font-size: 0.78rem; width: 100%; }
   table.admin-table th { padding: 0.35rem 0.3rem; font-size: 0.7rem; white-space: nowrap; }
   table.admin-table td { padding: 0.35rem 0.3rem; }
