@@ -1,10 +1,11 @@
 /**
  * Supabase Configuration & Global Utilities
  */
-const SUPABASE_URL = 'https://blitrrcdkkkszvgylnus.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6';
-const AUTH_EMAIL_DOMAIN = '@cho-talents.app';
-const KAKAO_MAP_KEY = '0ef8925b28135eeac474bc411c456170';
+const CHO_TALENTS_CONFIG = window.CHO_TALENTS_CONFIG || {};
+const SUPABASE_URL = CHO_TALENTS_CONFIG.supabase?.url || 'https://blitrrcdkkkszvgylnus.supabase.co';
+const SUPABASE_ANON_KEY = CHO_TALENTS_CONFIG.supabase?.anonKey || 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6';
+const AUTH_EMAIL_DOMAIN = CHO_TALENTS_CONFIG.supabase?.authEmailDomain || '@cho-talents.app';
+const KAKAO_MAP_KEY = CHO_TALENTS_CONFIG.kakao?.mapKey || '0ef8925b28135eeac474bc411c456170';
 
 var _sb = null;
 
