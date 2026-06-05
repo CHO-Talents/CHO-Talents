@@ -2,9 +2,20 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.26.1',
-  date: '2026-06-03',
+  current: '3.26.2',
+  date: '2026-06-05',
   history: [
+    {
+      version: '3.26.2',
+      date: '2026-06-05',
+      title: '런타임 설정 관리 분리 + app_config 공개 설정 RPC',
+      changes: [
+        'config/public-config.js: 브라우저 공개 부트스트랩 설정과 환경 이름 관리',
+        'supabase-config.js: get_public_app_config RPC 기반 원격 공개 설정 로더 추가',
+        'DB: app_config 테이블, RLS, get_public_app_config SECURITY DEFINER RPC, 초기 설정 데이터 추가',
+        '문서: 공개 설정/비밀 설정 저장 위치와 운영 원칙 정리'
+      ]
+    },
     {
       version: '3.26.1',
       date: '2026-06-03',

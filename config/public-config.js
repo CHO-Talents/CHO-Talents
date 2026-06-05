@@ -5,6 +5,7 @@
  * Supabase access tokens, service-role keys, or database passwords here.
  */
 window.CHO_TALENTS_CONFIG = Object.freeze({
+  env: 'production',
   supabase: {
     url: 'https://blitrrcdkkkszvgylnus.supabase.co',
     anonKey: 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6',
