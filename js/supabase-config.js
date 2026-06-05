@@ -1,15 +1,45 @@
 /**
  * Supabase Configuration & Global Utilities
  */
+const DEFAULT_PUBLIC_CONFIG = Object.freeze({
+  supabase: {
+    url: 'https://blitrrcdkkkszvgylnus.supabase.co',
+    anonKey: 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6',
+    authEmailDomain: '@cho-talents.app'
+  },
+  kakao: {
+    mapKey: '0ef8925b28135eeac474bc411c456170'
+  },
+  github: {
+    owner: 'CHO-Talents',
+    repo: 'CHO-Talents',
+    defaultBranch: 'develop'
+  }
+});
+
 const CHO_TALENTS_CONFIG = window.CHO_TALENTS_CONFIG || {};
-const SUPABASE_URL = CHO_TALENTS_CONFIG.supabase?.url || 'https://blitrrcdkkkszvgylnus.supabase.co';
-const SUPABASE_ANON_KEY = CHO_TALENTS_CONFIG.supabase?.anonKey || 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6';
-const AUTH_EMAIL_DOMAIN = CHO_TALENTS_CONFIG.supabase?.authEmailDomain || '@cho-talents.app';
-const KAKAO_MAP_KEY = CHO_TALENTS_CONFIG.kakao?.mapKey || '0ef8925b28135eeac474bc411c456170';
+const APP_CONFIG_ENV = CHO_TALENTS_CONFIG.env || 'production';
+
+function getNestedConfigValue(source, path, fallback) {
+  let value = source;
+  for (const key of path) {
+    if (!value || typeof value !== 'object') return fallback;
+    value = value[key];
+  }
+  return value ?? fallback;
+}
+
+let SUPABASE_URL = getNestedConfigValue(CHO_TALENTS_CONFIG, ['supabase', 'url'], DEFAULT_PUBLIC_CONFIG.supabase.url);
+let SUPABASE_ANON_KEY = getNestedConfigValue(CHO_TALENTS_CONFIG, ['supabase', 'anonKey'], DEFAULT_PUBLIC_CONFIG.supabase.anonKey);
+let AUTH_EMAIL_DOMAIN = getNestedConfigValue(CHO_TALENTS_CONFIG, ['supabase', 'authEmailDomain'], DEFAULT_PUBLIC_CONFIG.supabase.authEmailDomain);
+let KAKAO_MAP_KEY = getNestedConfigValue(CHO_TALENTS_CONFIG, ['kakao', 'mapKey'], DEFAULT_PUBLIC_CONFIG.kakao.mapKey);
 
 var _sb = null;
+var _remotePublicConfigPromise = null;
 
 function initSupabase() {
+  if (_sb) return _sb;
+
   if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
     console.warn('[Supabase] API 키가 설정되지 않았습니다.');
     return null;
@@ -22,11 +52,75 @@ function initSupabase() {
         detectSessionInUrl: false
       }
     });
+    loadRemotePublicConfig().catch(() => {});
     return _sb;
   } catch (err) {
     console.error('[Supabase] 초기화 실패:', err);
     return null;
   }
+}
+
+function normalizePublicAppConfig(rows) {
+  const config = {};
+  for (const row of rows || []) {
+    if (!row || !row.key_name) continue;
+    config[row.key_name] = row.key_value;
+  }
+  return config;
+}
+
+function applyRemotePublicConfig(rows) {
+  const remoteConfig = normalizePublicAppConfig(rows);
+  window.CHO_TALENTS_REMOTE_CONFIG = Object.freeze(remoteConfig);
+
+  if (remoteConfig.SUPABASE_AUTH_EMAIL_DOMAIN) {
+    AUTH_EMAIL_DOMAIN = remoteConfig.SUPABASE_AUTH_EMAIL_DOMAIN;
+  }
+  if (remoteConfig.KAKAO_MAP_KEY) {
+    KAKAO_MAP_KEY = remoteConfig.KAKAO_MAP_KEY;
+  }
+
+  return remoteConfig;
+}
+
+async function loadRemotePublicConfig(env = APP_CONFIG_ENV) {
+  if (_remotePublicConfigPromise) return _remotePublicConfigPromise;
+
+  const client = _sb || initSupabase();
+  if (_remotePublicConfigPromise) return _remotePublicConfigPromise;
+  if (!client) return {};
+
+  _remotePublicConfigPromise = client
+    .rpc('get_public_app_config', { p_env: env })
+    .then(({ data, error }) => {
+      if (error) throw error;
+      return applyRemotePublicConfig(data);
+    })
+    .catch(err => {
+      console.warn('[Config] 원격 공개 설정 로드 실패:', err?.message || err);
+      return {};
+    });
+
+  return _remotePublicConfigPromise;
+}
+
+function getPublicConfigValue(keyName, fallback = null) {
+  const remoteConfig = window.CHO_TALENTS_REMOTE_CONFIG || {};
+  if (Object.prototype.hasOwnProperty.call(remoteConfig, keyName)) {
+    return remoteConfig[keyName];
+  }
+
+  const bootstrapConfig = {
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY,
+    SUPABASE_AUTH_EMAIL_DOMAIN: AUTH_EMAIL_DOMAIN,
+    KAKAO_MAP_KEY,
+    GITHUB_OWNER: getNestedConfigValue(CHO_TALENTS_CONFIG, ['github', 'owner'], DEFAULT_PUBLIC_CONFIG.github.owner),
+    GITHUB_REPO: getNestedConfigValue(CHO_TALENTS_CONFIG, ['github', 'repo'], DEFAULT_PUBLIC_CONFIG.github.repo),
+    GITHUB_BRANCH: getNestedConfigValue(CHO_TALENTS_CONFIG, ['github', 'defaultBranch'], DEFAULT_PUBLIC_CONFIG.github.defaultBranch)
+  };
+
+  return Object.prototype.hasOwnProperty.call(bootstrapConfig, keyName) ? bootstrapConfig[keyName] : fallback;
 }
 
 /* ===== KST Time Utilities ===== */

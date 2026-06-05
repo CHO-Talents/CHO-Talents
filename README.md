@@ -12,12 +12,18 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.26.1` (`js/version.js` 기준, 2026-06-03) |
+| 현재 버전 | `v3.26.2` (`js/version.js` 기준, 2026-06-05) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.26.1`로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.26.2`로 갱신되어 있습니다.
+- **v3.26.2 주요 변경 사항**:
+  - 공개 설정/비밀 설정 관리 위치 분리
+  - `config/public-config.js`로 브라우저 공개 부트스트랩 설정 관리
+  - Supabase `app_config` 테이블과 `get_public_app_config()` RPC 추가
+  - 비밀 토큰은 DB 평문 저장 대신 `.env.local`, CI secret, Edge Function 환경변수/Vault 참조로 관리
+
 - **v3.26.1 주요 변경 사항**:
   - 구매 취소: product_orders_status_check에 cancelled 추가 SQL 제공
   - QR관리: 수정 모달 라디오/체크박스 디자인 깨짐 수정
