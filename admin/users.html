@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.26.2" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.27.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -238,12 +238,12 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.26.2"></script>
-  <script src="../js/supabase-config.js?v=3.26.2"></script>
-  <script src="../js/activity-log.js?v=3.26.2"></script>
-  <script src="../js/auth.js?v=3.26.2"></script>
-  <script src="../js/user-mgmt.js?v=3.26.2"></script>
-  <script src="../js/version.js?v=3.26.2"></script>
+  <script src="../config/public-config.js?v=3.27.0"></script>
+  <script src="../js/supabase-config.js?v=3.27.0"></script>
+  <script src="../js/activity-log.js?v=3.27.0"></script>
+  <script src="../js/auth.js?v=3.27.0"></script>
+  <script src="../js/user-mgmt.js?v=3.27.0"></script>
+  <script src="../js/version.js?v=3.27.0"></script>
   <script>
     initSupabase();
     let session;
@@ -579,11 +579,12 @@
 
       let orderHtml = '';
       try {
-        const { data: orders } = await _sb.from('product_orders').select('product_name, quantity, total_price, status, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(10);
+        const { data: orders } = await _sb.from('product_orders').select('product_name, price, status, created_at').eq('user_id', userId).neq('status', 'cancelled').order('created_at', { ascending: false }).limit(10);
         if (orders && orders.length > 0) {
-          orderHtml = '<table style="width:100%;font-size:0.8rem;border-collapse:collapse;margin-top:0.3rem;"><thead><tr style="background:#f1f3f5;"><th style="padding:0.3rem;">상품</th><th>수량</th><th>금액</th><th>상태</th><th>날짜</th></tr></thead><tbody>';
+          const sMap = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
+          orderHtml = '<table style="width:100%;font-size:0.8rem;border-collapse:collapse;margin-top:0.3rem;"><thead><tr style="background:#f1f3f5;"><th style="padding:0.3rem;">상품</th><th>금액</th><th>상태</th><th>날짜</th></tr></thead><tbody>';
           orders.forEach(o => {
-            orderHtml += `<tr style="border-bottom:1px solid #e9ecef;"><td style="padding:0.3rem;">${o.product_name||'-'}</td><td>${o.quantity||1}</td><td>${fmtNum(o.total_price||0)}</td><td>${o.status||'-'}</td><td>${formatKSTShort(o.created_at)}</td></tr>`;
+            orderHtml += `<tr style="border-bottom:1px solid #e9ecef;"><td style="padding:0.3rem;">${o.product_name||'-'}</td><td>${fmtNum(o.price||0)}</td><td>${sMap[o.status]||o.status||'-'}</td><td>${formatKSTShort(o.created_at)}</td></tr>`;
           });
           orderHtml += '</tbody></table>';
         } else { orderHtml = '<p style="color:#adb5bd;font-size:0.82rem;">구매 내역이 없습니다.</p>'; }

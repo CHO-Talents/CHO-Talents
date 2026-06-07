@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 적립 방법 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.26.2" />
+  <link rel="stylesheet" href="css/common.css?v=3.27.0" />
   <style>
     .earn-hero { text-align: center; margin-bottom: 2rem; }
     .earn-hero-icon { font-size: 4rem; margin-bottom: 0.5rem; }
@@ -144,47 +144,86 @@
       <p>다양한 활동으로 달란트를 모아 보세요!</p>
     </div>
 
-    <div class="method-grid">
-      <div class="method-card">
-        <span class="m-icon">📖</span>
-        <h3>성경 읽기</h3>
-        <span class="m-talent">선생님 확인 후 지급</span>
-        <p>매일 성경 한 장을 읽고<br/>선생님께 확인받으면<br/>달란트를 받을 수 있어요!</p>
-      </div>
+    <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;justify-content:center;">
+      <button class="filter-btn active" id="earnTabStudent" onclick="switchEarnTab('student')" style="padding:0.5rem 1.2rem;font-size:0.95rem;">🎒 학생</button>
+      <button class="filter-btn" id="earnTabTeacher" onclick="switchEarnTab('teacher')" style="padding:0.5rem 1.2rem;font-size:0.95rem;">👩‍🏫 교사</button>
+    </div>
 
+    <div class="method-grid" id="earnStudentGrid">
+      <div class="method-card">
+        <span class="m-icon">⛪</span>
+        <h3>주일 어린이예배</h3>
+        <span class="m-talent">매주 출석 시 지급</span>
+        <p>주일 어린이예배에<br/>참석하면 달란트를<br/>받을 수 있어요!</p>
+      </div>
+      <div class="method-card">
+        <span class="m-icon">📚</span>
+        <h3>토요일 센터<br/>(SGS기간)</h3>
+        <span class="m-talent">센터 출석 시 지급</span>
+        <p>SGS 기간 중<br/>토요일 센터에 참석하면<br/>달란트를 받아요!</p>
+      </div>
       <div class="method-card">
         <span class="m-icon">✍️</span>
-        <h3>말씀 암송</h3>
-        <span class="m-talent">항목별 금액 적용</span>
-        <p>주간 말씀을 외우고<br/>선생님 앞에서 암송하면<br/>달란트를 받아요!</p>
+        <h3>매주 말씀암송</h3>
+        <span class="m-talent">선생님 확인 후 지급</span>
+        <p>매주 정해진 말씀을<br/>암송하고 확인받으면<br/>달란트를 받아요!</p>
       </div>
-
       <div class="method-card">
-        <span class="m-icon">🙋</span>
-        <h3>출석 체크</h3>
-        <span class="m-talent">출석 버튼으로 지급</span>
-        <p>주일에 빠지지 않고<br/>꾸준히 출석하면<br/>매주 달란트를 받아요!</p>
+        <span class="m-icon">🏆</span>
+        <h3>미션북 시상</h3>
+        <span class="m-talent">미션 완료 시 지급</span>
+        <p>미션북의 과제를<br/>완료하고 시상을 받으면<br/>달란트가 지급돼요!</p>
       </div>
-
+      <div class="method-card">
+        <span class="m-icon">🙏</span>
+        <h3>예배 태도</h3>
+        <span class="m-talent">선생님 평가 후 지급</span>
+        <p>예배 중 바른 태도로<br/>참여하면 선생님이<br/>달란트를 줘요!</p>
+      </div>
       <div class="method-card">
         <span class="m-icon">🤝</span>
-        <h3>친구 초대</h3>
+        <h3>전도/새신자</h3>
         <span class="m-talent">특별 항목</span>
-        <p>교회에 처음 오는 친구를<br/>데려오면 큰 달란트를<br/>받을 수 있어요!</p>
+        <p>친구를 교회에 초대하거나<br/>새신자를 데려오면<br/>큰 달란트를 받아요!</p>
       </div>
+    </div>
 
+    <div class="method-grid" id="earnTeacherGrid" style="display:none;">
       <div class="method-card">
-        <span class="m-icon">🎨</span>
-        <h3>특별 활동 참여</h3>
-        <span class="m-talent">활동별 다름</span>
-        <p>찬양, 그림 대회 등<br/>특별 활동에 참여하면<br/>활동마다 달란트를 받아요!</p>
+        <span class="m-icon">⛪</span>
+        <h3>주일 어린이예배</h3>
+        <span class="m-talent">예배 참석 시 지급</span>
+        <p>주일 어린이예배에<br/>교사로 참석하면<br/>달란트를 받아요!</p>
       </div>
-
       <div class="method-card">
-        <span class="m-icon">🌟</span>
-        <h3>선행 포인트</h3>
-        <span class="m-talent">선생님 재량</span>
-        <p>다른 친구를 도와주거나<br/>좋은 행동을 하면<br/>선생님이 달란트를 줘요!</p>
+        <span class="m-icon">🌅</span>
+        <h3>주일 아침기도회</h3>
+        <span class="m-talent">기도회 참석 시 지급</span>
+        <p>주일 아침기도회에<br/>참석하면 달란트를<br/>받을 수 있어요!</p>
+      </div>
+      <div class="method-card">
+        <span class="m-icon">🔥</span>
+        <h3>WAY MAKER<br/>기도회</h3>
+        <span class="m-talent">기도회 참석 시 지급</span>
+        <p>WAY MAKER 기도회에<br/>참석하면 달란트를<br/>받아요!</p>
+      </div>
+      <div class="method-card">
+        <span class="m-icon">🙏</span>
+        <h3>초등부 기도회</h3>
+        <span class="m-talent">기도회 참석 시 지급</span>
+        <p>초등부 기도회에<br/>참석하면 달란트를<br/>받을 수 있어요!</p>
+      </div>
+      <div class="method-card">
+        <span class="m-icon">🎉</span>
+        <h3>교회행사</h3>
+        <span class="m-talent">행사 참여 시 지급</span>
+        <p>교회에서 진행하는<br/>각종 행사에 참여하면<br/>달란트를 받아요!</p>
+      </div>
+      <div class="method-card">
+        <span class="m-icon">📋</span>
+        <h3>월례회</h3>
+        <span class="m-talent">월례회 참석 시 지급</span>
+        <p>매월 진행되는<br/>월례회에 참석하면<br/>달란트를 받아요!</p>
       </div>
     </div>
 
@@ -198,15 +237,24 @@
     </div>
   </div>
 
+  <script>
+    function switchEarnTab(tab) {
+      document.getElementById('earnTabStudent').classList.toggle('active', tab === 'student');
+      document.getElementById('earnTabTeacher').classList.toggle('active', tab === 'teacher');
+      document.getElementById('earnStudentGrid').style.display = tab === 'student' ? '' : 'none';
+      document.getElementById('earnTeacherGrid').style.display = tab === 'teacher' ? '' : 'none';
+    }
+  </script>
+
   <footer class="page-footer">
     <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.26.2"></script>
-  <script src="js/supabase-config.js?v=3.26.2"></script>
-  <script src="js/activity-log.js?v=3.26.2"></script>
-  <script src="js/auth.js?v=3.26.2"></script>
+  <script src="config/public-config.js?v=3.27.0"></script>
+  <script src="js/supabase-config.js?v=3.27.0"></script>
+  <script src="js/activity-log.js?v=3.27.0"></script>
+  <script src="js/auth.js?v=3.27.0"></script>
   <script>
     initSupabase();
     autoLogPageView();
@@ -226,6 +274,6 @@
       }
     })();
   </script>
-  <script src="js/version.js?v=3.26.2"></script>
+  <script src="js/version.js?v=3.27.0"></script>
 </body>
 </html>
