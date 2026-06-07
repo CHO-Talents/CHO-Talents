@@ -7,8 +7,10 @@
 window.CHO_TALENTS_CONFIG = Object.freeze({
   env: 'production',
   supabase: {
-    url: 'https://blitrrcdkkkszvgylnus.supabase.co',
-    anonKey: 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6',
+//    url: 'https://blitrrcdkkkszvgylnus.supabase.co',
+//    anonKey: 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6',
+    url: 'https://rabakjtjtkelpskptnvi.supabase.co',
+    anonKey: 'sb_publishable_X_5jRmNvnhIbwrkC2Dv0uQ_VoO3RtKo',
     authEmailDomain: '@cho-talents.app'
   },
   kakao: {
