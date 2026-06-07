@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.26.2" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.27.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -184,12 +184,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.26.2"></script>
-  <script src="../js/supabase-config.js?v=3.26.2"></script>
-  <script src="../js/activity-log.js?v=3.26.2"></script>
-  <script src="../js/auth.js?v=3.26.2"></script>
-  <script src="../js/user-mgmt.js?v=3.26.2"></script>
-  <script src="../js/talent.js?v=3.26.2"></script>
+  <script src="../config/public-config.js?v=3.27.0"></script>
+  <script src="../js/supabase-config.js?v=3.27.0"></script>
+  <script src="../js/activity-log.js?v=3.27.0"></script>
+  <script src="../js/auth.js?v=3.27.0"></script>
+  <script src="../js/user-mgmt.js?v=3.27.0"></script>
+  <script src="../js/talent.js?v=3.27.0"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
     @media(max-width:768px){.hide-mobile{display:none!important;}}
@@ -205,9 +205,20 @@
     let talentItems = [];
     let talentSummaryMap = {};
     let currentDeptFilter = '';
-    let _attendanceGivenToday = new Set();
+    let _attendanceGivenThisWeek = new Set();
+    let _attendanceTxnMap = {};
     let talentPage = 1;
     let talentUserList = [];
+
+    function getWeekStartKST() {
+      const now = new Date();
+      const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+      const day = kst.getUTCDay();
+      const diff = day === 0 ? 6 : day - 1;
+      kst.setUTCDate(kst.getUTCDate() - diff);
+      kst.setUTCHours(0, 0, 0, 0);
+      return new Date(kst.getTime() - 9 * 60 * 60 * 1000);
+    }
 
     function getTalentPageSize(){return window.innerWidth<=768?10:20;}
 
@@ -226,6 +237,9 @@
       allDepts = deptRes.data || [];
       talentItems = itemRes.data || [];
       populateDeptFilter();
+      if ((session.permissionRank || 0) < 60) {
+        document.getElementById('tabTeacher').style.display = 'none';
+      }
       loadUsers();
     })();
 
@@ -255,6 +269,7 @@
     }
 
     function canGiveTalent(user) {
+      if (user.id === session.id) return false;
       const myRank = session.permissionRank || 0;
       if (myRank >= 90) return true;
       if (myRank >= 60 && session.managedDeptId) return user.department_id === session.managedDeptId;
@@ -307,7 +322,7 @@
 
       const userIds = data.map(u => u.id);
       await loadBatchSummary(userIds);
-      await loadAttendanceToday(userIds);
+      await loadAttendanceThisWeek(userIds);
 
       talentUserList = data;
       renderTalentTable();
@@ -331,9 +346,9 @@
         const isSelf = u.id === session.id;
         const classLabel = u.class_number ? u.class_number + '반' : '-';
         const sm = talentSummaryMap[u.id] || { earned: 0, used: 0 };
-        const attendDone = _attendanceGivenToday.has(u.id);
+        const attendDone = _attendanceGivenThisWeek.has(u.id);
         const attendBtn = canGiveTalent(u)
-          ? `<button class="filter-btn" style="background:${attendDone?'#adb5bd':'#51cf66'};color:#fff;border-color:${attendDone?'#adb5bd':'#51cf66'};" onclick="giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')" ${attendDone?'disabled':''}>${attendDone?'✓출석':'출석'}</button>`
+          ? `<button class="filter-btn" style="background:${attendDone?'#e03131':'#51cf66'};color:#fff;border-color:${attendDone?'#e03131':'#51cf66'};" onclick="${attendDone ? `cancelAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')` : `giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')` }">${attendDone?'✓출석 취소':'출석'}</button>`
           : '';
         return `<tr>
         <td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
@@ -389,36 +404,57 @@
       });
     }
 
-    async function loadAttendanceToday(userIds) {
-      _attendanceGivenToday = new Set();
+    async function loadAttendanceThisWeek(userIds) {
+      _attendanceGivenThisWeek = new Set();
+      _attendanceTxnMap = {};
       if (!_sb || userIds.length === 0) return;
       const attendItem = talentItems.find(i => i.is_quick_button === true && i.target_type === currentTab && i.is_active)
         || talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
       if (!attendItem) return;
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
+      const weekStart = getWeekStartKST();
       const { data: txns } = await _sb.from('talent_transactions')
-        .select('user_id')
+        .select('id, user_id, amount, description')
         .in('user_id', userIds)
         .eq('talent_item_id', attendItem.id)
         .eq('type', 'earn')
-        .gte('created_at', todayStart.toISOString());
-      (txns || []).forEach(t => _attendanceGivenToday.add(t.user_id));
+        .gte('created_at', weekStart.toISOString());
+      (txns || []).forEach(t => {
+        if (!t.description || !t.description.startsWith('반환:')) {
+          _attendanceGivenThisWeek.add(t.user_id);
+          _attendanceTxnMap[t.user_id] = { id: t.id, amount: t.amount, description: t.description };
+        }
+      });
     }
 
     async function giveAttendance(userId, userName) {
       const attendItem = talentItems.find(i => i.is_quick_button === true && i.target_type === currentTab && i.is_active)
         || talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
       if (!attendItem) { alert('출석 퀵버튼 항목이 설정되지 않았습니다.\n달란트 항목 관리에서 ⚡퀵 버튼을 지정해주세요.'); return; }
-      if (_attendanceGivenToday.has(userId)) { alert('이미 오늘 출석 달란트가 지급되었습니다.'); return; }
+      if (_attendanceGivenThisWeek.has(userId)) { alert('이번 주에 이미 출석 달란트가 지급되었습니다.'); return; }
       const result = await giveTalentByItem(userId, attendItem.id, session.id);
       if (result && result.success === false) {
         alert(tErr(result.error || '출석 지급 실패'));
         return;
       }
-      _attendanceGivenToday.add(userId);
       await logInfo('ATTENDANCE_GIVE', { targetUser: userId, targetName: userName, amount: attendItem.talent_amount });
       loadUsers();
+    }
+
+    async function cancelAttendance(userId, userName) {
+      const txn = _attendanceTxnMap[userId];
+      if (!txn) { alert('취소할 출석 내역을 찾을 수 없습니다.'); return; }
+      if (!confirm(`${userName}님의 출석 달란트(${txn.amount})를 취소하시겠습니까?`)) return;
+      try {
+        const result = await returnTalent(userId, txn.amount, txn.description || '출석', session.id);
+        if (result && result.success === false) {
+          alert('취소 실패: ' + tErr(result.error));
+          return;
+        }
+        await logInfo('ATTENDANCE_CANCEL', { targetUser: userId, targetName: userName, amount: txn.amount });
+        loadUsers();
+      } catch (e) {
+        alert('취소 오류: ' + (e.message || e));
+      }
     }
 
     async function openDetailModal(userId, name) {
@@ -548,6 +584,8 @@
       document.getElementById('earnSection').style.display = 'block';
     }
 
+    let _weeklyGivenMap = {};
+
     async function renderTalentItemButtons() {
       const items = talentItems.filter(i => i.target_type === currentTab && i.is_active);
       const container = document.getElementById('talentItemBtns');
@@ -557,25 +595,54 @@
         confirmBtn.style.display = 'none';
         return;
       }
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-      const { data: todayTxns } = await _sb.from('talent_transactions')
-        .select('talent_item_id')
+      const weekStart = getWeekStartKST();
+      const { data: weekTxns } = await _sb.from('talent_transactions')
+        .select('id, talent_item_id, amount, description')
         .eq('user_id', talentUserId)
         .eq('type', 'earn')
-        .gte('created_at', todayStart.toISOString())
+        .gte('created_at', weekStart.toISOString())
         .not('talent_item_id', 'is', null);
-      const givenIds = new Set((todayTxns || []).map(t => t.talent_item_id));
+      _weeklyGivenMap = {};
+      (weekTxns || []).forEach(t => {
+        if (!t.description || !t.description.startsWith('반환:')) {
+          _weeklyGivenMap[t.talent_item_id] = { id: t.id, amount: t.amount, description: t.description };
+        }
+      });
 
       container.innerHTML = items.map(i => {
-        const done = givenIds.has(i.id);
-        return `<label style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1px solid ${done?'#51cf66':'#dee2e6'};border-radius:8px;cursor:${done?'default':'pointer'};background:${done?'#e6fcf5':'#fff'};opacity:${done?'0.7':'1'};font-size:0.88rem;">
-          <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${i.talent_amount}" ${done?'checked disabled':''} onchange="updateConfirmBtn()" />
-          ${i.name} <strong style="color:${done?'#868e96':'#2b8a3e'};">+${i.talent_amount}</strong>
-          ${done?'<span style="font-size:0.7rem;color:#51cf66;">✓완료</span>':''}
-        </label>`;
+        const done = !!_weeklyGivenMap[i.id];
+        return `<div style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1px solid ${done?'#51cf66':'#dee2e6'};border-radius:8px;background:${done?'#e6fcf5':'#fff'};font-size:0.88rem;">
+          ${done
+            ? `<span style="flex:1;">${i.name} <strong style="color:#868e96;">+${i.talent_amount}</strong> <span style="font-size:0.7rem;color:#51cf66;">✓완료</span></span>
+               <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="cancelTalentItem('${i.id}','${i.name}',${i.talent_amount})">취소</button>`
+            : `<label style="flex:1;display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
+                 <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${i.talent_amount}" onchange="updateConfirmBtn()" />
+                 ${i.name} <strong style="color:#2b8a3e;">+${i.talent_amount}</strong>
+               </label>`
+          }
+        </div>`;
       }).join('');
       updateConfirmBtn();
+    }
+
+    async function cancelTalentItem(itemId, itemName, amount) {
+      const txn = _weeklyGivenMap[itemId];
+      if (!txn) return;
+      if (!confirm(`"${itemName}" 지급을 취소하시겠습니까? (${amount} 달란트 반환)`)) return;
+      try {
+        const result = await returnTalent(talentUserId, txn.amount, txn.description || itemName, session.id);
+        if (result && result.success === false) {
+          alert('취소 실패: ' + tErr(result.error));
+          return;
+        }
+        await logInfo('TALENT_ITEM_CANCEL', { userId: talentUserId, itemId, itemName, amount: txn.amount });
+        const bal = await fetchTalentBalance(talentUserId);
+        document.getElementById('talentBalance').textContent = fmtNum(bal);
+        await renderTalentItemButtons();
+        await loadTalentHistory(talentUserId);
+      } catch (e) {
+        alert('취소 오류: ' + (e.message || e));
+      }
     }
 
     function updateConfirmBtn() {
@@ -687,6 +754,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.26.2"></script>
+  <script src="../js/version.js?v=3.27.0"></script>
 </body>
 </html>

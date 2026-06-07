@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 항목 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.26.2" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.27.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -122,11 +122,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.26.2"></script>
-  <script src="../js/supabase-config.js?v=3.26.2"></script>
-  <script src="../js/activity-log.js?v=3.26.2"></script>
-  <script src="../js/auth.js?v=3.26.2"></script>
-  <script src="../js/talent.js?v=3.26.2"></script>
+  <script src="../config/public-config.js?v=3.27.0"></script>
+  <script src="../js/supabase-config.js?v=3.27.0"></script>
+  <script src="../js/activity-log.js?v=3.27.0"></script>
+  <script src="../js/auth.js?v=3.27.0"></script>
+  <script src="../js/talent.js?v=3.27.0"></script>
   <script>
     initSupabase();
     let session;
@@ -135,7 +135,7 @@
     let currentTab = 'student';
 
     (async () => {
-      session = await initPage(90, '../login.html');
+      session = await initPage(60, '../login.html');
       if (!session) return;
       applyPermNav(session.permissionRank || 0);
       renderRoleBadge('navUser', session, '../');
@@ -179,7 +179,7 @@
         <td>
           <button class="filter-btn" onclick='openEditModal(${JSON.stringify(i).replace(/'/g,"&#39;")})'>수정</button>
           <button class="filter-btn" onclick="toggleActive('${i.id}', ${i.is_active})">${i.is_active ? '비활성화' : '활성화'}</button>
-          ${i.is_active ? `<button class="filter-btn" style="${isQuick ? 'background:#1971c2;color:#fff;' : ''}" onclick="setQuickButton('${i.id}')">${isQuick ? '⚡퀵 해제' : '⚡퀵 지정'}</button>` : ''}
+          ${i.is_active && (session.permissionRank || 0) >= 80 ? `<button class="filter-btn" style="${isQuick ? 'background:#1971c2;color:#fff;' : ''}" onclick="setQuickButton('${i.id}')">${isQuick ? '⚡퀵 해제' : '⚡퀵 지정'}</button>` : ''}
         </td>
       </tr>`;
       }).join('');
@@ -270,6 +270,6 @@
 
     document.getElementById('itemModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.26.2"></script>
+  <script src="../js/version.js?v=3.27.0"></script>
 </body>
 </html>
