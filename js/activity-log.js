@@ -306,14 +306,22 @@ async function getPendingOrderCount() {
     const myRank = session.permissionRank || 0;
     const { data, error } = await _sb.from('product_orders').select('user_id').neq('status', 'delivered');
     if (error || !data) return 0;
-    if (myRank >= 90) return data.length;
+    let orders = data;
+    if (!session.isSuperAdmin) {
+      const { data: saRows } = await _sb.from('profiles').select('id').eq('is_super_admin', true);
+      if (saRows && saRows.length) {
+        const saIds = new Set(saRows.map(r => r.id));
+        orders = orders.filter(o => !saIds.has(o.user_id));
+      }
+    }
+    if (myRank >= 90) return orders.length;
     if (!session.managedDeptId) return 0;
-    const userIds = [...new Set(data.map(o => o.user_id))];
+    const userIds = [...new Set(orders.map(o => o.user_id))];
     if (userIds.length === 0) return 0;
     const { data: profiles } = await _sb.from('profiles').select('id,department_id').in('id', userIds);
     if (!profiles) return 0;
     const deptUsers = new Set(profiles.filter(p => p.department_id === session.managedDeptId).map(p => p.id));
-    return data.filter(o => deptUsers.has(o.user_id)).length;
+    return orders.filter(o => deptUsers.has(o.user_id)).length;
   } catch (e) { return 0; }
 }
 

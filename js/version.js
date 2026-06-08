@@ -8,14 +8,15 @@ const APP_VERSION = {
     {
       version: '3.31.0',
       date: '2026-06-08',
-      title: '달란트 중복 지급 방지 강화 + 적립 교사 탭 권한 제어',
+      title: '달란트 반환 매칭 ID 기반 전면 재설계 + 네비 배지 super_admin 제외',
       changes: [
-        '달란트 관리: 반환 매칭을 Set→카운트 맵으로 변경 (반환 1건이 모든 지급을 상쇄하던 버그 수정)',
-        '달란트 관리: 출석/달란트 지급 취소 후 재지급 시 정상적으로 지급됨/취소 버튼 표시',
-        '달란트 관리: 출석/달란트 지급 시 즉시 상태 업데이트로 중복 지급 방지 (race condition 해결)',
-        '달란트 관리: 출석 지급/취소 동시 클릭 방어 가드 추가 (_attendBusy)',
+        '달란트 관리: 반환 매칭을 트랜잭션 ID 기반 1:1 매칭으로 전면 재설계',
+        '달란트 관리: 취소 시 반환 description에 원본 지급 트랜잭션 ID 포함 (반환: [txn_id] 설명)',
+        '달란트 관리: loadAttendanceThisWeek/renderTalentItemButtons ID 기반 매칭 + 레거시 카운트 맵 하위호환',
+        '달란트 관리: 출석/달란트 지급 시 즉시 상태 업데이트 + 동시 클릭 방어 가드 (_attendBusy)',
         '달란트 관리: confirmGiveItems 에서 이미 지급된 항목 자동 스킵 및 즉시 _weeklyGivenMap 갱신',
-        '달란트 적립: 비로그인/학생 계정에서 교사 적립 탭 숨김 (permissionRank >= 40 일 때만 표시)'
+        '달란트 적립: 비로그인/학생 계정에서 교사 적립 탭 숨김 (permissionRank >= 40 일 때만 표시)',
+        '네비게이션: 구매 배지(navOrderBadge) super_admin 사용자 주문 수 제외'
       ]
     },
     {

@@ -430,19 +430,22 @@
         .eq('type', 'use')
         .like('description', '반환:%')
         .gte('created_at', weekStart.toISOString());
-      const retCount = {};
+      const cancelledById = new Set();
+      const legacyRetCount = {};
       (returns || []).forEach(r => {
-        const k = r.user_id + '|' + r.amount + '|' + r.description.replace('반환: ','').replace('반환:','');
-        retCount[k] = (retCount[k] || 0) + 1;
+        const m = r.description.match(/반환:\s*\[([^\]]+)\]/);
+        if (m) { cancelledById.add(m[1]); }
+        else {
+          const k = r.user_id + '|' + r.amount + '|' + r.description.replace('반환: ','').replace('반환:','');
+          legacyRetCount[k] = (legacyRetCount[k] || 0) + 1;
+        }
       });
       (earns || []).forEach(t => {
+        if (cancelledById.has(t.id)) return;
         const k = t.user_id + '|' + t.amount + '|' + (t.description || '');
-        if (retCount[k] > 0) {
-          retCount[k]--;
-        } else {
-          _attendanceGivenThisWeek.add(t.user_id);
-          _attendanceTxnMap[t.user_id] = { id: t.id, amount: t.amount, description: t.description };
-        }
+        if (legacyRetCount[k] > 0) { legacyRetCount[k]--; return; }
+        _attendanceGivenThisWeek.add(t.user_id);
+        _attendanceTxnMap[t.user_id] = { id: t.id, amount: t.amount, description: t.description };
       });
     }
 
@@ -475,7 +478,8 @@
       if (!confirm(`${userName}님의 출석 달란트(${txn.amount})를 취소하시겠습니까?`)) return;
       _attendBusy = true;
       try {
-        const result = await returnTalent(userId, txn.amount, txn.description || '출석', session.id);
+        const desc = '[' + txn.id + '] ' + (txn.description || '출석');
+        const result = await returnTalent(userId, txn.amount, desc, session.id);
         if (result && result.success === false) {
           alert('취소 실패: ' + tErr(result.error));
           return;
@@ -483,7 +487,7 @@
         _attendanceGivenThisWeek.delete(userId);
         delete _attendanceTxnMap[userId];
         renderTalentTable();
-        await logInfo('ATTENDANCE_CANCEL', { targetUser: userId, targetName: userName, amount: txn.amount });
+        await logInfo('ATTENDANCE_CANCEL', { targetUser: userId, targetName: userName, amount: txn.amount, txnId: txn.id });
         await loadUsers();
       } catch (e) {
         alert('취소 오류: ' + (e.message || e));
@@ -642,19 +646,22 @@
         .eq('type', 'use')
         .like('description', '반환:%')
         .gte('created_at', weekStart.toISOString());
-      const retCount = {};
+      const cancelledById = new Set();
+      const legacyRetCount = {};
       (weekReturns || []).forEach(r => {
-        const k = r.amount + '|' + r.description.replace('반환: ','').replace('반환:','');
-        retCount[k] = (retCount[k] || 0) + 1;
+        const m = r.description.match(/반환:\s*\[([^\]]+)\]/);
+        if (m) { cancelledById.add(m[1]); }
+        else {
+          const k = r.amount + '|' + r.description.replace('반환: ','').replace('반환:','');
+          legacyRetCount[k] = (legacyRetCount[k] || 0) + 1;
+        }
       });
       _weeklyGivenMap = {};
       (weekEarns || []).forEach(t => {
+        if (cancelledById.has(t.id)) return;
         const matchKey = t.amount + '|' + (t.description || '');
-        if (retCount[matchKey] > 0) {
-          retCount[matchKey]--;
-        } else {
-          _weeklyGivenMap[t.talent_item_id] = { id: t.id, amount: t.amount, description: t.description };
-        }
+        if (legacyRetCount[matchKey] > 0) { legacyRetCount[matchKey]--; return; }
+        _weeklyGivenMap[t.talent_item_id] = { id: t.id, amount: t.amount, description: t.description };
       });
 
       container.innerHTML = items.map(i => {
@@ -678,12 +685,13 @@
       if (!txn) return;
       if (!confirm(`"${itemName}" 지급을 취소하시겠습니까? (${amount} 달란트 반환)`)) return;
       try {
-        const result = await returnTalent(talentUserId, txn.amount, txn.description || itemName, session.id);
+        const desc = '[' + txn.id + '] ' + (txn.description || itemName);
+        const result = await returnTalent(talentUserId, txn.amount, desc, session.id);
         if (result && result.success === false) {
           alert('취소 실패: ' + tErr(result.error));
           return;
         }
-        await logInfo('TALENT_ITEM_CANCEL', { userId: talentUserId, itemId, itemName, amount: txn.amount });
+        await logInfo('TALENT_ITEM_CANCEL', { userId: talentUserId, itemId, itemName, amount: txn.amount, txnId: txn.id });
         const bal = await fetchTalentBalance(talentUserId);
         document.getElementById('talentBalance').textContent = fmtNum(bal);
         await renderTalentItemButtons();
