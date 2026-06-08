@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 마을 - CHO Talents</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.33.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.33.0" />
-  <link rel="stylesheet" href="css/style.css?v=3.33.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.35.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.35.0" />
+  <link rel="stylesheet" href="css/style.css?v=3.35.0" />
 </head>
 <body>
   <div class="falling-stars" id="fallingStars"></div>
@@ -85,13 +85,13 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.33.0"></script>
-  <script src="js/supabase-config.js?v=3.33.0"></script>
-  <script src="js/activity-log.js?v=3.33.0"></script>
-  <script src="js/auth.js?v=3.33.0"></script>
-  <script src="js/theme.js?v=3.33.0"></script>
-  <script src="js/nav.js?v=3.33.0"></script>
-  <script src="js/app.js?v=3.33.0"></script>
+  <script src="config/public-config.js?v=3.35.0"></script>
+  <script src="js/supabase-config.js?v=3.35.0"></script>
+  <script src="js/activity-log.js?v=3.35.0"></script>
+  <script src="js/auth.js?v=3.35.0"></script>
+  <script src="js/theme.js?v=3.35.0"></script>
+  <script src="js/nav.js?v=3.35.0"></script>
+  <script src="js/app.js?v=3.35.0"></script>
   <script>
     const ALL_SHORTCUTS = [
       { id:'earn-talents',  href:'earn-talents.html',        icon:'💰', title:'달란트 적립',   desc:'열심히 활동하고 달란트를 모아요!',           color:'var(--accent)',  minRank:0 },
@@ -109,11 +109,11 @@
       { id:'admin-users',   href:'admin/users.html',         icon:'👥', title:'사용자 관리',   desc:'사용자를 관리해요!',                          color:'#74b9ff',       minRank:60 },
       { id:'admin-purch',   href:'admin/purchases.html',     icon:'💳', title:'구매 관리',     desc:'구매 요청을 처리해요!',                       color:'#ffeaa7',       minRank:60 },
       { id:'admin-depts',   href:'admin/departments.html',   icon:'🏢', title:'부서 관리',     desc:'부서를 관리해요!',                            color:'#81ecec',       minRank:60 },
-      { id:'admin-qr',      href:'admin/talent-qr.html',     icon:'📷', title:'QR 관리',      desc:'달란트 QR 코드를 관리해요!',                  color:'#fab1a0',       minRank:60 },
-      { id:'admin-shop',    href:'admin/shop.html',          icon:'🏪', title:'상품 관리',     desc:'상품을 등록하고 관리해요!',                   color:'#dfe6e9',       minRank:80 },
+      { id:'admin-qr',      href:'admin/talent-qr.html',     icon:'📷', title:'QR 관리',      desc:'달란트 QR 코드를 관리해요!',                  color:'#fab1a0',       minRank:90 },
+      { id:'admin-shop',    href:'admin/shop.html',          icon:'🏪', title:'상품 관리',     desc:'상품을 등록하고 관리해요!',                   color:'#dfe6e9',       minRank:60 },
     ];
     const DEFAULT_FAV_IDS = ['earn-talents','shop','my-talents'];
-    const MAX_FAV_MOBILE = 9;
+    const MAX_FAV_MOBILE = 10;
     const MAX_FAV_PC = 10;
 
     let _favSession = null, _favRank = 0;
@@ -121,21 +121,53 @@
     function _favKey() { return _favSession ? 'cho_fav_' + _favSession.id : ''; }
     function _getMaxFav() { return window.innerWidth <= 768 ? MAX_FAV_MOBILE : MAX_FAV_PC; }
 
+    function _normalizeFavIds(ids) {
+      if (!Array.isArray(ids)) return [];
+      return Array.from(new Set(ids.filter(Boolean)));
+    }
+
+    function _getNavItemRule(href) {
+      if (typeof NAV_MENU === 'undefined' || !Array.isArray(NAV_MENU)) return null;
+      const allItems = NAV_MENU.flatMap(group => group.items || []);
+      return allItems.find(item => item.href === href) || null;
+    }
+
+    function _isShortcutVisible(shortcut) {
+      const navRule = _getNavItemRule(shortcut.href);
+      const minRank = navRule && typeof navRule.minPerm === 'number' ? navRule.minPerm : (shortcut.minRank || 0);
+      const authOnly = !!(navRule && navRule.authOnly);
+      if (authOnly && !_favSession) return false;
+      return _favRank >= minRank;
+    }
+
     async function loadFavIds() {
       if (_favSession && _sb) {
         try {
           const { data } = await _sb.from('user_preferences').select('favorite_shortcuts').eq('user_id', _favSession.id).single();
-          if (data && data.favorite_shortcuts) return data.favorite_shortcuts;
+          if (data && data.favorite_shortcuts) return _normalizeFavIds(data.favorite_shortcuts);
         } catch(e) {}
       }
-      try { const k = _favKey(); if (k) { const r = localStorage.getItem(k); if (r) return JSON.parse(r); } } catch(e) {}
+      try {
+        const k = _favKey();
+        if (k) {
+          const r = localStorage.getItem(k);
+          if (r) return _normalizeFavIds(JSON.parse(r));
+        }
+      } catch(e) {}
       return null;
     }
 
-    function getAvailable() { return ALL_SHORTCUTS.filter(s => _favRank >= s.minRank); }
+    function getAvailable() {
+      return ALL_SHORTCUTS.filter(_isShortcutVisible);
+    }
+
+    function getSanitizedFavIds(ids) {
+      const availableIds = new Set(getAvailable().map(s => s.id));
+      return _normalizeFavIds(ids).filter(id => availableIds.has(id)).slice(0, _getMaxFav());
+    }
 
     async function renderFavCards() {
-      const ids = await loadFavIds() || DEFAULT_FAV_IDS;
+      const ids = getSanitizedFavIds(await loadFavIds() || DEFAULT_FAV_IDS);
       const avail = getAvailable();
       const cards = ids.map(id => avail.find(s => s.id === id)).filter(Boolean);
       if (!cards.length) DEFAULT_FAV_IDS.forEach(id => { const f = avail.find(s => s.id === id); if (f) cards.push(f); });
@@ -152,7 +184,7 @@
     }
 
     async function openFavModal() {
-      const ids = await loadFavIds() || DEFAULT_FAV_IDS;
+      const ids = getSanitizedFavIds(await loadFavIds() || DEFAULT_FAV_IDS);
       const avail = getAvailable();
       const maxFav = _getMaxFav();
       document.getElementById('favModalDesc').textContent =
@@ -173,7 +205,7 @@
 
     async function saveFavorites() {
       const checked = document.querySelectorAll('#favList .fav-check:checked');
-      const ids = Array.from(checked).map(c => c.value);
+      const ids = getSanitizedFavIds(Array.from(checked).map(c => c.value));
       const maxFav = _getMaxFav();
       if (!ids.length) { alert('최소 1개 이상의 바로가기를 선택해주세요.'); return; }
       if (ids.length > maxFav) { alert(`최대 ${maxFav}개까지 선택할 수 있습니다.`); return; }
@@ -227,6 +259,6 @@
       await initTheme();
     })();
   </script>
-  <script src="js/version.js?v=3.33.0"></script>
+  <script src="js/version.js?v=3.35.0"></script>
 </body>
 </html>

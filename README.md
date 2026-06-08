@@ -12,23 +12,29 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.33.0` (`js/version.js` 기준, 2026-06-08) |
+| 현재 버전 | `v3.35.0` (`js/version.js` 기준, 2026-06-09) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.33.0`으로 갱신되어 있습니다.
-- **v3.33.0 주요 변경 사항**:
-  - 테마 시스템: 6가지 테마 지원 (일반/다크/봄/여름/가을/겨울), 계정별 설정 저장
-  - 테마: 모든 페이지 헤더에 테마 선택 아이콘 배치, DB + localStorage 동기화
-  - 네비게이션: 33개 페이지 인라인 nav HTML → js/nav.js 중앙 관리로 전환
-  - 네비게이션: 드롭다운 뷰포트 벗어남 방지, 모바일 햄버거 메뉴 지원
-  - 메인 페이지: 마을 컨셉 레이아웃 재설계 (양쪽 바로가기 + 중앙 즐겨찾기)
-  - 즐겨찾기: 3개 고정 제한 해제 (모바일 최대 9개, PC 최대 10개)
-  - 신규 페이지: 로그 작성 룰 (admin/log-rules.html) - 7레벨 체계 문서화
-  - 신규 페이지: 작업 이력 작성 룰 (admin/audit-rules.html) - 10카테고리 문서화
-  - DB: user_preferences에 theme 컬럼 추가 (마이그레이션 SQL 포함)
-  - CSS: themes.css 신규 생성, common.css/admin.css/style.css 테마 변수 연동
+- `APP_VERSION.current`는 `3.35.0`으로 갱신되어 있습니다.
+- **v3.35.0 주요 변경 사항**:
+  - 다크 모드: 가이드, Q&A, 달란트 적립/수령, QR 관리, 권한/로그/작업이력 룰, 버전 이력의 잔여 흰 배경과 저대비 텍스트 보정
+  - 달란트 적립: 안내 카드별로 `talent_items` 활성 항목의 지급 수량을 조회해 `+N 달란트` 배지 표시
+  - 로그: `writeLog()`가 Supabase insert 반환 `error`를 실제 실패로 감지하고 콘솔 오류로 노출
+  - 로그: 운영 DB가 구버전 스키마여도 `user_name`/`is_acknowledged` 선택 컬럼 제거 후 재시도하는 호환 적재 경로 추가
+  - 작업 이력: `activity_logs` 적재 복구를 통해 `AUDIT_ACTIONS`에 등록된 관리 작업이 작업 이력에 표시되도록 공통 로그 경로 보강
+  - 문서/가이드: 다크 모드 보정, 달란트 적립 금액 표시, 로그/작업 이력 검증 기준 갱신
+
+- **v3.34.0 주요 변경 사항**:
+  - 테마: 봄/여름/가을/겨울 제거, 일반/다크 2종만 유지
+  - 테마: 네비게이션 우측 UI를 드롭다운에서 스위치 버튼으로 변경
+  - 다크 모드: 네비게이션 드롭다운, 관리 드롭다운, 필터, 모달 등 주요 흰 배경 영역을 어두운 표면색으로 정리
+  - 즐겨찾기: 모바일/PC 모두 최소 1개, 최대 10개까지 선택 가능
+  - 즐겨찾기: 사용자 권한과 실제 네비게이션 노출 규칙에 맞는 항목만 설정/표시
+  - 로그: 조회 기간 기본값을 1년으로 확대하고 라벨을 조회 기간 기준으로 정리
+  - 작업 이력: `is_deleted`가 `NULL`인 기존 로그도 함께 표시되도록 조회 조건 보정
+  - 문서/가이드: README, 사용자 안내서, 구성도, 학생/교사/관리자 가이드 최신 동작 기준으로 갱신
 
 - **v3.32.0 주요 변경 사항**:
   - 작업 이력(admin/audit.html): AUDIT_ACTIONS 키 불일치 수정 및 70개 이상 액션 타입으로 확대
@@ -329,7 +335,7 @@ flowchart TD
 | `register.html` | 로그인 | 영문/숫자/`_`/`-` 아이디 중복확인 후 가입 신청. 실패 시 에러 로깅 |
 | `guide.html` | 메인, Q&A, 상점, 내 달란트 | 사이트 이용 방법을 카드/스텝 형태로 안내 |
 | `qna.html` | 메인, 학생 가이드 | FAQ 공개 조회, 로그인 사용자 질문 등록, 60등급 이상 답변/FAQ 등록 |
-| `earn-talents.html` | 메인, 상점, 내 달란트 | 달란트 적립 방법 안내. 로그인 상태면 권한별 메뉴 추가 표시 |
+| `earn-talents.html` | 메인, 상점, 내 달란트 | 달란트 적립 방법 안내. `talent_items` 활성 항목의 지급 수량을 카드별 `+N 달란트` 배지로 표시 |
 | `shop.html` | 메인, 적립 안내, 내 달란트, 내 구매 상품 | 학생용 상품 공개 조회. 교사/60등급 이상은 교사용 탭. 로그인 시 구매 신청, 40등급 이상은 대리 구매 가능 |
 | `my-talents.html` | 로그인 필요 | 누적 적립/사용 완료/사용 대기/사용 가능 잔액, 달란트 내역, 구매 내역 조회 |
 | `my-orders.html` | 로그인 필요 | 본인 구매 신청 내역과 4단계 진행 상태 조회 |
@@ -348,11 +354,11 @@ flowchart TD
 | `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
 | `admin/purchases.html` | 60 | 구매 관리: 4단계 처리, 모든 상태 탭에 부서/기간 필터(기본 오늘) + 기간 프리셋, 구매 확정 시 달란트 차감 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록/수정, 선택 삭제 |
-| `admin/logs.html` | 100 | 활동 로그 필터링(기본 오늘) + 기간 프리셋, 상세 보기, 한글 액션 라벨 표시, 오류 로그 확인 처리, 소프트 삭제(삭제 대기) |
+| `admin/logs.html` | 100 | 활동 로그 필터링(기본 1년) + 기간 프리셋, 상세 보기, 한글 액션 라벨 표시, 오류 로그 확인 처리, 소프트 삭제(삭제 대기) |
 | `admin/versions.html` | 80 | 배포 버전과 변경 이력 확인 |
 | `admin/page-access.html` | 100 | 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100 | 권한별 페이지 기능(수정/삭제/승인 등) 설정값 관리 |
-| `admin/audit.html` | 100 | 관리 작업 이력 조회 (70+ 액션 타입, 10개 카테고리 필터, 한글 상세 내역). 기간 필터 기본값 오늘 + 기간 프리셋, 자동 조회 |
+| `admin/audit.html` | 100 | 관리 작업 이력 조회 (70+ 액션 타입, 10개 카테고리 필터, 한글 상세 내역). 기간 필터 기본값 1년 + 기간 프리셋, 자동 조회 |
 | `admin/page-permissions.html` | 100 | 페이지별 조회/관리 권한 매트릭스 설정 (레거시) |
 | `admin/change-password.html` | 로그인 | 최초 로그인 또는 비밀번호 변경 처리 |
 
@@ -464,6 +470,7 @@ flowchart TD
 
 - `activity-log.js`가 페이지 방문, 로그인, 관리 작업, 에러를 `activity_logs`에 기록합니다.
 - 모든 기능의 성공/실패/거부가 `logInfo`/`logWarn`/`logError`로 기록됩니다.
+- `writeLog()`는 Supabase insert의 반환 `error`를 확인하고, 구버전 DB 스키마의 선택 컬럼 오류는 제거 후 재시도합니다.
 - `ERROR`, `FATAL`, `CRITICAL` 로그는 미확인 상태로 남고, `admin/logs.html`에서 확인 처리합니다.
 - 로그 삭제는 소프트 삭제(`is_deleted=true`)이며, 실제 삭제는 SQL Editor에서 수행합니다.
 - `admin/reports.html`은 `reports` 테이블의 작업 보고서를 유형별로 조회하고, 등록/수정/삭제를 제공합니다.
@@ -538,6 +545,7 @@ flowchart TD
 | `docs/TASK-032_fixes.sql` | `check_registration_status` RPC, `qna` 테이블/RLS, 초기 FAQ 데이터 |
 | `docs/TASK-033_fixes.sql` | `qna` 테이블/RLS 재생성 (IF NOT EXISTS), 초기 FAQ 데이터 안전 재삽입 |
 | `docs/TASK-039_user_preferences.sql` | `user_preferences` 테이블 (즐겨찾기 DB 저장), RLS 정책 |
+| `docs/TASK-047_activity_logs_grants.sql` | 운영 DB의 `activity_logs` INSERT 권한/정책 복구. 로그/작업 이력 DB 적재가 401로 거부될 때 적용 |
 
 ## 관련 문서
 
