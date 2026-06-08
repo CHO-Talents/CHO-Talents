@@ -53,7 +53,8 @@ async function giveTalent(userId, amount, description, createdBy) {
       p_user_id: userId,
       p_amount: amount,
       p_description: description,
-      p_created_by: createdBy
+      p_created_by: createdBy,
+      p_talent_item_id: null
     });
     if (error) {
       await logError('TALENT_GIVE_FAIL', { userId, amount, description, error: error.message });
@@ -76,8 +77,10 @@ async function giveTalentByItem(userId, talentItemId, createdBy) {
   try {
     const { data, error } = await _sb.rpc('give_talent', {
       p_user_id: userId,
+      p_amount: 0,
+      p_description: '',
+      p_created_by: createdBy,
       p_talent_item_id: talentItemId,
-      p_created_by: createdBy
     });
     if (error) {
       await logError('TALENT_GIVE_ITEM_FAIL', { userId, talentItemId, error: error.message });

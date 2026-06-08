@@ -743,6 +743,9 @@ BEGIN
 END;
 $$;
 
+DROP FUNCTION IF EXISTS public.give_talent(uuid, uuid, uuid);
+DROP FUNCTION IF EXISTS public.give_talent(uuid, integer, text, uuid);
+
 CREATE OR REPLACE FUNCTION public.give_talent(
   p_user_id uuid,
   p_amount integer DEFAULT 0,
@@ -811,21 +814,26 @@ BEGIN
       RETURN json_build_object('success', false, 'error', 'Invalid or inactive talent item');
     END IF;
 
+    IF v_item.target_type IS NOT NULL AND v_item.target_type <> v_target_type THEN
+      RETURN json_build_object(
+        'success', false,
+        'error', 'Item target type mismatch: ' || v_item.target_type || ' vs ' || v_target_type
+      );
+    END IF;
+
     v_actual_amount := v_item.talent_amount;
     v_actual_desc := v_item.name;
 
-    IF v_target_type = 'student' THEN
-      SELECT count(*) INTO v_week_count
-      FROM public.talent_transactions
-      WHERE user_id = p_user_id
-        AND talent_item_id = p_talent_item_id
-        AND type = 'earn'
-        AND created_at >= date_trunc('week', now() AT TIME ZONE 'Asia/Seoul')
-        AND created_at < date_trunc('week', now() AT TIME ZONE 'Asia/Seoul') + interval '7 days';
+    SELECT count(*) INTO v_week_count
+    FROM public.talent_transactions
+    WHERE user_id = p_user_id
+      AND talent_item_id = p_talent_item_id
+      AND type = 'earn'
+      AND created_at >= date_trunc('week', now() AT TIME ZONE 'Asia/Seoul')
+      AND created_at < date_trunc('week', now() AT TIME ZONE 'Asia/Seoul') + interval '7 days';
 
-      IF v_week_count > 0 THEN
-        RETURN json_build_object('success', false, 'error', 'Already given this item this week for student: ' || v_item.name);
-      END IF;
+    IF v_week_count > 0 THEN
+      RETURN json_build_object('success', false, 'error', 'Already given this item this week: ' || v_item.name);
     END IF;
   ELSE
     IF p_amount <= 0 THEN
@@ -1281,6 +1289,8 @@ GRANT EXECUTE ON FUNCTION public.admin_create_user(text, text, text, uuid, uuid,
 GRANT EXECUTE ON FUNCTION public.admin_update_user(uuid, text, uuid, uuid, text, text, integer) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.admin_delete_user(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.admin_reset_password(uuid, text) TO authenticated;
+REVOKE EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid) FROM anon;
 GRANT EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.use_talent(uuid, integer, text, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.request_product_order(uuid, uuid, text, integer) TO authenticated;

@@ -1,8 +1,6 @@
--- TASK-041: Fix give_talent RPC weekly item limit without creating overloads.
--- Root cause:
---   A previous migration created public.give_talent(uuid, uuid, uuid).
---   The app also uses public.give_talent(uuid, integer, text, uuid, uuid).
---   PostgREST can become ambiguous when both signatures exist.
+-- TASK-042: Resolve PostgREST give_talent RPC candidate ambiguity.
+-- Execute this once on the Supabase database when older give_talent overloads
+-- may remain in the schema cache or database.
 
 BEGIN;
 
