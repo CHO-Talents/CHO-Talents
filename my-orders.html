@@ -1,75 +1,16 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 구매 상품 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.32.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.33.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.33.0" />
 </head>
 <body class="page-body">
-  <nav class="top-nav">
-    <a href="index.html" class="top-nav-brand">
-      <span class="brand-icon">⭐</span> 달란트 마을
-    </a>
-    <button class="top-nav-hamburger" onclick="document.querySelector('.top-nav-links').classList.toggle('nav-open')" aria-label="Menu">&#9776;</button>
-    <ul class="top-nav-links" id="navLinks">
-      <li>
-        <button class="nav-dropdown-toggle">소개</button>
-        <ul class="nav-dropdown-menu">
-          <li><a href="guide.html">학생 가이드</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="teacher-guide.html">교사 가이드</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin-guide.html">관리자 가이드</a></li>
-          <li><a href="earn-talents.html">달란트 적립</a></li>
-          <li><a href="qna.html">Q &amp; A</a></li>
-        </ul>
-      </li>
-      <li>
-        <button class="nav-dropdown-toggle">달란트</button>
-        <ul class="nav-dropdown-menu">
-          <li id="navMyTalent" style="display:none;"><a href="my-talents.html">내 달란트</a></li>
-          <li><a href="talent-receive.html">달란트 수령</a></li>
-          <li data-min-perm="40" style="display:none;"><a href="admin/talents.html">달란트 관리</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/talent-stats.html">달란트 통계</a></li>
-          <li data-min-perm="90" style="display:none;"><a href="admin/talent-qr.html">달란트 QR 관리</a></li>
-        </ul>
-      </li>
-      <li>
-        <button class="nav-dropdown-toggle active">상품</button>
-        <ul class="nav-dropdown-menu">
-          <li><a href="shop.html">상품 구매</a></li>
-          <li id="navMyOrders" style="display:none;"><a href="my-orders.html" class="active">내 구매 상품</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/shop.html">상품 관리</a></li>
-          <li data-min-perm="60" style="display:none;"><a href="admin/purchases.html">구매 관리 <span class="badge hidden" id="navOrderBadge">0</span></a></li>
-        </ul>
-      </li>
-      <li data-min-perm="60" style="display:none;">
-        <button class="nav-dropdown-toggle">관리</button>
-        <ul class="nav-dropdown-menu">
-          <li data-min-perm="60"><a href="admin/index.html">대시보드</a></li>
-          <li data-min-perm="60"><a href="admin/users.html" id="navUsers">사용자 관리 <span class="badge hidden" id="navUserBadge">0</span></a></li>
-          <li data-min-perm="80"><a href="admin/managers.html">관리자 관리</a></li>
-          <li data-min-perm="60"><a href="admin/departments.html">부서 관리</a></li>
-        </ul>
-      </li>
-      <li data-min-perm="80" style="display:none;">
-        <button class="nav-dropdown-toggle">운영</button>
-        <ul class="nav-dropdown-menu">
-          <li data-min-perm="100"><a href="admin/page-access.html">페이지 접근</a></li>
-          <li data-min-perm="100"><a href="admin/page-features.html">페이지 기능</a></li>
-          <li data-min-perm="100"><a href="docs/page-permission-rules.html">페이지 권한 룰</a></li>
-          <li data-min-perm="80"><a href="admin/versions.html">버전</a></li>
-          <li data-min-perm="80"><a href="admin/reports.html">보고서</a></li>
-          <li data-min-perm="100"><a href="admin/audit.html">작업 이력</a></li>
-          <li data-min-perm="100"><a href="admin/logs.html" id="navLogs">로그 <span class="badge hidden" id="navLogBadge">0</span></a></li>
-        </ul>
-      </li>
-      <li id="navLoginArea"><a href="login.html">로그인</a></li>
-      <li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>
-      <li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" onclick="logout('login.html')">로그아웃</button></li>
-    </ul>
-    <script>document.querySelectorAll('.nav-dropdown-toggle').forEach(b=>{b.addEventListener('click',e=>{e.stopPropagation();const li=b.parentElement;const w=li.classList.contains('dropdown-open');document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open'));if(!w){li.classList.add('dropdown-open','mobile-open');}})});document.addEventListener('click',()=>document.querySelectorAll('.dropdown-open,.mobile-open').forEach(el=>el.classList.remove('dropdown-open','mobile-open')))</script>
-  </nav>
+  <div id="nav-container"></div>
+
 
   <div class="page-container" id="mainContent">
     <div class="empty-state"><div class="empty-state-icon">⏳</div><p>로딩 중...</p></div>
@@ -80,10 +21,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.32.0"></script>
-  <script src="js/supabase-config.js?v=3.32.0"></script>
-  <script src="js/activity-log.js?v=3.32.0"></script>
-  <script src="js/auth.js?v=3.32.0"></script>
+  <script src="config/public-config.js?v=3.33.0"></script>
+  <script src="js/supabase-config.js?v=3.33.0"></script>
+  <script src="js/activity-log.js?v=3.33.0"></script>
+  <script src="js/auth.js?v=3.33.0"></script>
+  <script src="js/theme.js?v=3.33.0"></script>
+  <script src="js/nav.js?v=3.33.0"></script>
   <script>
     initSupabase();
     let session;
@@ -95,15 +38,10 @@
     }
 
     (async () => {
+      await navInit();
       session = await initPage(20, 'login.html');
       if (!session) return;
-      document.getElementById('navMyTalent').style.display = '';
-      document.getElementById('navMyOrders').style.display = '';
-      document.getElementById('navLoginArea').style.display = 'none';
-      document.getElementById('navAuthArea').style.display = '';
-      document.getElementById('navLogoutArea').style.display = '';
-      applyPermNav(session.permissionRank || 0);
-      renderRoleBadge('navUser', session, '');
+      navUpdateAuth(session);
       autoLogPageView();
       updateNavOrderBadge();
       await loadOrders();
@@ -163,6 +101,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.32.0"></script>
+  <script src="js/version.js?v=3.33.0"></script>
 </body>
 </html>

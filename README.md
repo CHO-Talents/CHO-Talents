@@ -12,12 +12,24 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.32.0` (`js/version.js` 기준, 2026-06-08) |
+| 현재 버전 | `v3.33.0` (`js/version.js` 기준, 2026-06-08) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.32.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.33.0`으로 갱신되어 있습니다.
+- **v3.33.0 주요 변경 사항**:
+  - 테마 시스템: 6가지 테마 지원 (일반/다크/봄/여름/가을/겨울), 계정별 설정 저장
+  - 테마: 모든 페이지 헤더에 테마 선택 아이콘 배치, DB + localStorage 동기화
+  - 네비게이션: 33개 페이지 인라인 nav HTML → js/nav.js 중앙 관리로 전환
+  - 네비게이션: 드롭다운 뷰포트 벗어남 방지, 모바일 햄버거 메뉴 지원
+  - 메인 페이지: 마을 컨셉 레이아웃 재설계 (양쪽 바로가기 + 중앙 즐겨찾기)
+  - 즐겨찾기: 3개 고정 제한 해제 (모바일 최대 9개, PC 최대 10개)
+  - 신규 페이지: 로그 작성 룰 (admin/log-rules.html) - 7레벨 체계 문서화
+  - 신규 페이지: 작업 이력 작성 룰 (admin/audit-rules.html) - 10카테고리 문서화
+  - DB: user_preferences에 theme 컬럼 추가 (마이그레이션 SQL 포함)
+  - CSS: themes.css 신규 생성, common.css/admin.css/style.css 테마 변수 연동
+
 - **v3.32.0 주요 변경 사항**:
   - 작업 이력(admin/audit.html): AUDIT_ACTIONS 키 불일치 수정 및 70개 이상 액션 타입으로 확대
   - 작업 이력: 필터 그룹 6개 → 10개 확대 (사용자/등록/부서/달란트/상품·주문/Q&A/인증/로그관리/권한·설정)

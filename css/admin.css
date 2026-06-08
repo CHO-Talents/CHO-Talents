@@ -6,15 +6,15 @@
 
 /* ===== Admin Base ===== */
 :root {
-  --admin-primary: #6c5ce7;
-  --admin-primary-light: #a29bfe;
-  --admin-bg: #f0f2f5;
-  --admin-card: #ffffff;
-  --admin-border: #e1e4e8;
-  --admin-text: #24292e;
-  --admin-text-muted: #6a737d;
+  --admin-primary: var(--t-primary, #6c5ce7);
+  --admin-primary-light: var(--t-primary-light, #a29bfe);
+  --admin-bg: var(--t-bg-secondary, #f0f2f5);
+  --admin-card: var(--t-card, #ffffff);
+  --admin-border: var(--t-border, #e1e4e8);
+  --admin-text: var(--t-text, #24292e);
+  --admin-text-muted: var(--t-text-muted, #6a737d);
   --admin-radius: 12px;
-  --admin-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+  --admin-shadow: var(--t-card-shadow, 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04));
   --level-trace: #adb5bd;
   --level-debug: #868e96;
   --level-info: #4dabf7;
@@ -36,8 +36,8 @@ body.admin-body {
 
 /* ===== Admin Nav ===== */
 .admin-nav {
-  background: var(--admin-card);
-  border-bottom: 1px solid var(--admin-border);
+  background: var(--t-nav-bg, var(--admin-card));
+  border-bottom: 1px solid var(--t-nav-border, var(--admin-border));
   padding: 0 1.5rem;
   display: flex;
   align-items: center;

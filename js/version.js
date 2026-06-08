@@ -2,9 +2,26 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.32.0',
+  current: '3.33.0',
   date: '2026-06-08',
   history: [
+    {
+      version: '3.33.0',
+      date: '2026-06-08',
+      title: '테마 시스템 + 네비게이션 중앙 관리 + 로그/작업이력 룰 페이지',
+      changes: [
+        '테마 시스템: 6가지 테마 지원 (일반/다크/봄/여름/가을/겨울), 계정별 저장',
+        '테마: 모든 페이지 헤더에 테마 선택 아이콘 배치, DB + localStorage 동기화',
+        '네비게이션: 33개 페이지 인라인 nav → js/nav.js 중앙 관리 전환',
+        '네비게이션: 드롭다운 뷰포트 벗어남 방지, 모바일 햄버거 지원',
+        '메인 페이지: 마을 컨셉 레이아웃 재설계 (양쪽 바로가기 + 중앙 즐겨찾기)',
+        '즐겨찾기: 3개 고정 제한 해제 (모바일 최대 9개, PC 최대 10개)',
+        '신규: 로그 작성 룰 페이지 (admin/log-rules.html) - 7레벨 체계 문서화',
+        '신규: 작업 이력 작성 룰 페이지 (admin/audit-rules.html) - 10카테고리 문서화',
+        'DB: user_preferences에 theme 컬럼 추가 (마이그레이션 SQL 포함)',
+        'CSS: themes.css 신규, common.css/admin.css/style.css 테마 변수 연동'
+      ]
+    },
     {
       version: '3.32.0',
       date: '2026-06-08',

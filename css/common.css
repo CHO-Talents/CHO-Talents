@@ -1,18 +1,18 @@
 /* ===== Common Styles for Student/Teacher Pages ===== */
 :root {
-  --c-primary: #6c5ce7;
-  --c-primary-light: #a29bfe;
-  --c-accent: #fdcb6e;
-  --c-pink: #fd79a8;
-  --c-mint: #55efc4;
-  --c-sky: #74b9ff;
-  --c-bg: #f8f5ff;
-  --c-card: #ffffff;
-  --c-border: #e1e4e8;
-  --c-text: #2d3436;
-  --c-text-muted: #636e72;
+  --c-primary: var(--t-primary, #6c5ce7);
+  --c-primary-light: var(--t-primary-light, #a29bfe);
+  --c-accent: var(--t-accent, #fdcb6e);
+  --c-pink: var(--t-pink, #fd79a8);
+  --c-mint: var(--t-mint, #55efc4);
+  --c-sky: var(--t-sky, #74b9ff);
+  --c-bg: var(--t-bg, #f8f5ff);
+  --c-card: var(--t-card, #ffffff);
+  --c-border: var(--t-border, #e1e4e8);
+  --c-text: var(--t-text, #2d3436);
+  --c-text-muted: var(--t-text-muted, #636e72);
   --c-radius: 16px;
-  --c-shadow: 0 4px 20px rgba(108, 92, 231, 0.10);
+  --c-shadow: var(--t-card-shadow, 0 4px 20px rgba(108, 92, 231, 0.10));
   --c-font: 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
 }
 
@@ -31,10 +31,10 @@ body.page-body {
 
 /* ===== Top Nav ===== */
 .top-nav {
-  background: rgba(255,255,255,0.95);
+  background: var(--t-nav-bg, rgba(255,255,255,0.95));
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 2px solid var(--c-primary-light);
+  border-bottom: 2px solid var(--t-nav-border, var(--c-primary-light));
   padding: 0 1.5rem;
   display: flex;
   align-items: center;
@@ -233,6 +233,8 @@ body.page-body {
   border-color: #ff6b6b;
   color: #ff6b6b;
 }
+
+#navThemeArea { display: flex; align-items: center; margin-left: 0.3rem; }
 
 .top-nav-links #navLoginArea a {
   display: inline-block;
