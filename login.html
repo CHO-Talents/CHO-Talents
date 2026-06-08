@@ -14,6 +14,9 @@
     .login-role-info { text-align: center; font-size: 0.78rem; color: var(--admin-text-muted); margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--admin-border); }
     .back-home { display: block; text-align: center; margin-top: 1rem; font-size: 0.85rem; color: var(--admin-primary); text-decoration: none; }
     .back-home:hover { text-decoration: underline; }
+    .remember-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; margin: -0.2rem 0 1rem; }
+    .remember-label { display: inline-flex; align-items: center; gap: 0.45rem; font-size: 0.84rem; font-weight: 600; color: var(--admin-text-muted); cursor: pointer; user-select: none; }
+    .remember-label input { width: 16px; height: 16px; accent-color: var(--admin-primary); cursor: pointer; }
   </style>
 </head>
 <body class="admin-body">
@@ -34,6 +37,12 @@
           <label for="password">비밀번호</label>
           <input type="password" id="password" placeholder="비밀번호 입력" autocomplete="current-password" required />
         </div>
+        <div class="remember-row">
+          <label class="remember-label" for="rememberUsername">
+            <input type="checkbox" id="rememberUsername" />
+            <span>아이디 저장</span>
+          </label>
+        </div>
         <button type="submit" class="btn-primary" id="btnLogin">로그인</button>
       </form>
 
@@ -52,9 +61,21 @@
   <script src="js/auth.js?v=3.33.0"></script>
   <script src="js/theme.js?v=3.33.0"></script>
   <script>
+    const SAVED_USERNAME_KEY = 'cho_saved_username';
+
     initSupabase();
 
     (async () => {
+      const savedUsername = localStorage.getItem(SAVED_USERNAME_KEY) || '';
+      const usernameInput = document.getElementById('username');
+      const rememberInput = document.getElementById('rememberUsername');
+      const passwordInput = document.getElementById('password');
+      if (savedUsername) {
+        usernameInput.value = savedUsername;
+        rememberInput.checked = true;
+        passwordInput.focus();
+      }
+
       const session = await loadAuthSession();
       if (session) {
         if (session.isFirstLogin) {
@@ -74,9 +95,17 @@
 
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
+        if (!rememberInput.checked) {
+          localStorage.removeItem(SAVED_USERNAME_KEY);
+        }
         const result = await login(username, password);
 
         if (result.success) {
+          if (rememberInput.checked) {
+            localStorage.setItem(SAVED_USERNAME_KEY, username);
+          } else {
+            localStorage.removeItem(SAVED_USERNAME_KEY);
+          }
           logInfo('LOGIN_SUCCESS', { username });
           if (result.data.is_first_login) {
             window.location.href = 'admin/change-password.html';

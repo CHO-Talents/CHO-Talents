@@ -132,9 +132,8 @@ body {
 /* ===== Village Layout ===== */
 .village-layout {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   justify-content: center;
-  gap: 1.5rem;
   margin-bottom: 2.5rem;
 }
 
@@ -177,7 +176,7 @@ body {
 
 .village-center {
   flex: 1;
-  max-width: 700px;
+  max-width: 900px;
 }
 
 /* ===== Mascots ===== */
@@ -534,8 +533,7 @@ body {
   .hero { padding: 1.5rem 1rem 2rem; }
   .hero-title { font-size: 2.4rem; }
   .hero-sub { font-size: 1rem; }
-  .village-layout { flex-direction: column; gap: 1rem; align-items: center; }
-  .village-side-btn { flex-direction: row; width: 100%; max-width: 300px; padding: 1rem; }
+  .village-layout { flex-direction: column; align-items: center; }
   .village-center { max-width: 100%; }
   .feature-cards { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.8rem; }
   .fav-modal { padding: 1.3rem; border-radius: 16px; }
