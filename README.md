@@ -509,7 +509,15 @@ flowchart TD
 
 ## DB 스키마 초기 설정
 
-아래 SQL 파일들은 Supabase SQL Editor에서 실행이 필요합니다:
+새 Supabase Database를 처음 구성할 때는 단일 설치 문서를 먼저 사용합니다.
+
+| 파일 | 용도 |
+|---|---|
+| `docs/INITIAL_DATABASE_SETUP.sql` | 현재 테이블, RPC, RLS, Storage 버킷, 기본 데이터를 새 DB에 설치 |
+| `docs/INITIAL_DATABASE_SETUP.md` | SQL Editor 방식과 PowerShell/psql 자동 설치 방법 |
+| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트 |
+
+아래 SQL 파일들은 과거 작업별 변경 이력이며, 빈 새 DB에는 위 단일 설치 SQL을 우선 사용합니다:
 
 | 파일 | 용도 |
 |---|---|
