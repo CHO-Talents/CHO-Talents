@@ -133,7 +133,7 @@ body.page-body {
   left: 50%;
   transform: translateX(-50%);
   min-width: 160px;
-  background: #fff;
+  background: var(--c-card);
   border: 1px solid var(--c-border);
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.12);
@@ -164,7 +164,7 @@ body.page-body {
 
 .top-nav-links .nav-dropdown-menu li a:hover,
 .admin-nav-links .nav-dropdown-menu li a:hover {
-  background: #f3f0ff;
+  background: var(--t-hover-bg, #f3f0ff);
   color: var(--c-primary);
 }
 
@@ -191,7 +191,7 @@ body.page-body {
 .top-nav-links a.active,
 .admin-nav-links a:hover,
 .admin-nav-links a.active {
-  background: #f3f0ff;
+  background: var(--t-hover-bg, #f3f0ff);
   color: var(--c-primary);
 }
 
@@ -514,7 +514,7 @@ table.data-table tr:hover { background: #fafbfc; }
   padding: 0.3rem 0.7rem;
   border: 1px solid var(--c-border);
   border-radius: 6px;
-  background: #fff;
+  background: var(--c-card);
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;

@@ -330,11 +330,21 @@ async function fetchLogs(options = {}) {
 
 async function getUnacknowledgedCount() {
   if (!_sb) return 0;
-  const { count, error } = await _sb
+  let query = _sb
     .from('activity_logs')
     .select('*', { count: 'exact', head: true })
     .eq('is_acknowledged', false)
     .in('level', ERROR_LEVELS);
+  try {
+    const { error: deletedColError } = await _sb.from('activity_logs')
+      .select('id', { count: 'exact', head: true })
+      .or('is_deleted.is.null,is_deleted.eq.false')
+      .limit(1);
+    if (!deletedColError) {
+      query = query.or('is_deleted.is.null,is_deleted.eq.false');
+    }
+  } catch (e) {}
+  const { count, error } = await query;
   return error ? 0 : (count || 0);
 }
 

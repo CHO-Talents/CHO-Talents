@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로그 관리 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.33.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.33.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.34.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.34.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -32,7 +32,7 @@
           <button class="filter-btn" data-level="FATAL" onclick="toggleLevel('FATAL', this)">FATAL</button>
           <button class="filter-btn" data-level="CRITICAL" onclick="toggleLevel('CRITICAL', this)">CRITICAL</button>
           <span style="margin-left:0.5rem;color:#adb5bd;">|</span>
-          <span style="font-size:0.78rem;font-weight:600;color:#495057;margin-right:0.2rem;">삭제 기간</span>
+          <span style="font-size:0.78rem;font-weight:600;color:#495057;margin-right:0.2rem;">조회 기간</span>
           <input type="date" class="filter-input" id="dateFrom" onchange="applyFilters()" />
           <span style="font-size:0.8rem;color:#adb5bd;">~</span>
           <input type="date" class="filter-input" id="dateTo" onchange="applyFilters()" />
@@ -102,12 +102,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.33.0"></script>
-  <script src="../js/supabase-config.js?v=3.33.0"></script>
-  <script src="../js/activity-log.js?v=3.33.0"></script>
-  <script src="../js/auth.js?v=3.33.0"></script>
-  <script src="../js/theme.js?v=3.33.0"></script>
-  <script src="../js/nav.js?v=3.33.0"></script>
+  <script src="../config/public-config.js?v=3.34.0"></script>
+  <script src="../js/supabase-config.js?v=3.34.0"></script>
+  <script src="../js/activity-log.js?v=3.34.0"></script>
+  <script src="../js/auth.js?v=3.34.0"></script>
+  <script src="../js/theme.js?v=3.34.0"></script>
+  <script src="../js/nav.js?v=3.34.0"></script>
   <script>
     initSupabase();
     let session;
@@ -145,7 +145,7 @@
       if ((session.permissionRank || 0) >= 100) {
         document.querySelectorAll('.admin-only-btn').forEach(b => b.style.display = '');
       }
-      setLogPeriod('week');
+      setLogPeriod('year');
       loadAll();
     })();
 
@@ -564,6 +564,6 @@
       toggleDeletedView();
     }
   </script>
-  <script src="../js/version.js?v=3.33.0"></script>
+  <script src="../js/version.js?v=3.34.0"></script>
 </body>
 </html>

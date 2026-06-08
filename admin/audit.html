@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>작업 이력 - 달란트 마을</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.33.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.33.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.34.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.34.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -62,13 +62,13 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.33.0"></script>
-  <script src="../js/supabase-config.js?v=3.33.0"></script>
-  <script src="../js/activity-log.js?v=3.33.0"></script>
-  <script src="../js/auth.js?v=3.33.0"></script>
-  <script src="../js/theme.js?v=3.33.0"></script>
-  <script src="../js/nav.js?v=3.33.0"></script>
-  <script src="../js/user-mgmt.js?v=3.33.0"></script>
+  <script src="../config/public-config.js?v=3.34.0"></script>
+  <script src="../js/supabase-config.js?v=3.34.0"></script>
+  <script src="../js/activity-log.js?v=3.34.0"></script>
+  <script src="../js/auth.js?v=3.34.0"></script>
+  <script src="../js/theme.js?v=3.34.0"></script>
+  <script src="../js/nav.js?v=3.34.0"></script>
+  <script src="../js/user-mgmt.js?v=3.34.0"></script>
   <script>
     initSupabase();
     let session, allAuditLogs = [], currentFilter = 'all';
@@ -186,7 +186,7 @@
       updatePendingBadge();
       updateNavOrderBadge();
       updateLogBadge();
-      setAuditPeriod('week');
+      setAuditPeriod('year');
       await loadAuditLogs();
     })();
 
@@ -219,36 +219,23 @@
       let query = _sb.from('activity_logs')
         .select('*')
         .in('action', AUDIT_ACTION_KEYS)
-        .eq('is_deleted', false)
         .order('created_at', { ascending: false })
         .limit(500);
+
+      try {
+        const { error: deletedColError } = await _sb.from('activity_logs')
+          .select('id', { count: 'exact', head: true })
+          .or('is_deleted.is.null,is_deleted.eq.false')
+          .limit(1);
+        if (!deletedColError) {
+          query = query.or('is_deleted.is.null,is_deleted.eq.false');
+        }
+      } catch (e) {}
 
       if (fromDate) query = query.gte('created_at', fromDate + 'T00:00:00+09:00');
       if (toDate) query = query.lte('created_at', toDate + 'T23:59:59+09:00');
 
-      let { data, error } = await query;
-
-      if ((!data || data.length === 0) && !fromDate && !toDate) {
-        const restore = await _sb.from('activity_logs')
-          .select('*')
-          .in('action', AUDIT_ACTION_KEYS)
-          .eq('is_deleted', true)
-          .limit(1);
-        if (restore.data && restore.data.length > 0) {
-          await _sb.from('activity_logs')
-            .update({ is_deleted: false })
-            .in('action', AUDIT_ACTION_KEYS)
-            .eq('is_deleted', true);
-          const retry = await _sb.from('activity_logs')
-            .select('*')
-            .in('action', AUDIT_ACTION_KEYS)
-            .eq('is_deleted', false)
-            .order('created_at', { ascending: false })
-            .limit(500);
-          data = retry.data;
-          error = retry.error;
-        }
-      }
+      const { data, error } = await query;
       if (error) {
         console.error('[AUDIT] load error:', error);
         document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 오류: ${tErr(error.message)}</td></tr>`;
@@ -386,6 +373,6 @@
       if (e.target.classList.contains('modal-overlay')) closeDetailModal();
     });
   </script>
-  <script src="../js/version.js?v=3.33.0"></script>
+  <script src="../js/version.js?v=3.34.0"></script>
 </body>
 </html>

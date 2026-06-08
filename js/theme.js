@@ -1,15 +1,11 @@
 /**
  * Theme Module - 테마 로드/저장/적용
- * Themes: default, dark, spring, summer, autumn, winter
+ * Supported themes: default, dark
  */
 
 const THEMES = [
-  { id: 'default', icon: '🎨', label: '일반 모드' },
-  { id: 'dark',    icon: '🌙', label: '다크 모드' },
-  { id: 'spring',  icon: '🌸', label: '봄 모드' },
-  { id: 'summer',  icon: '🌊', label: '여름 모드' },
-  { id: 'autumn',  icon: '🍂', label: '가을 모드' },
-  { id: 'winter',  icon: '❄️', label: '겨울 모드' }
+  { id: 'default', icon: '☀️', label: '일반' },
+  { id: 'dark', icon: '🌙', label: '다크' }
 ];
 
 const THEME_STORAGE_KEY = 'cho_theme';
@@ -18,20 +14,21 @@ function getCurrentTheme() {
   return document.documentElement.getAttribute('data-theme') || 'default';
 }
 
+function normalizeThemeId(themeId) {
+  return THEMES.find(t => t.id === themeId) ? themeId : 'default';
+}
+
 function applyTheme(themeId) {
-  if (!THEMES.find(t => t.id === themeId)) themeId = 'default';
+  themeId = normalizeThemeId(themeId);
   document.documentElement.setAttribute('data-theme', themeId);
   localStorage.setItem(THEME_STORAGE_KEY, themeId);
   updateThemePickerUI(themeId);
 }
 
 function loadThemeFromLocal() {
-  const saved = localStorage.getItem(THEME_STORAGE_KEY);
-  if (saved && THEMES.find(t => t.id === saved)) {
-    document.documentElement.setAttribute('data-theme', saved);
-    return saved;
-  }
-  return 'default';
+  const saved = normalizeThemeId(localStorage.getItem(THEME_STORAGE_KEY));
+  document.documentElement.setAttribute('data-theme', saved);
+  return saved;
 }
 
 async function loadThemeFromDB() {
@@ -43,8 +40,8 @@ async function loadThemeFromDB() {
       .select('theme')
       .eq('user_id', session.id)
       .single();
-    if (data && data.theme && THEMES.find(t => t.id === data.theme)) {
-      return data.theme;
+    if (data && data.theme) {
+      return normalizeThemeId(data.theme);
     }
   } catch(e) {}
   return null;
@@ -54,6 +51,7 @@ async function saveThemeToDB(themeId) {
   if (typeof _sb === 'undefined' || !_sb) return;
   const session = typeof getSession === 'function' ? getSession() : null;
   if (!session) return;
+  themeId = normalizeThemeId(themeId);
   try {
     await _sb.from('user_preferences').upsert({
       user_id: session.id,
@@ -68,6 +66,9 @@ async function initTheme() {
   const dbTheme = await loadThemeFromDB();
   if (dbTheme && dbTheme !== theme) {
     theme = dbTheme;
+    applyTheme(theme);
+  }
+  if (theme !== getCurrentTheme()) {
     applyTheme(theme);
   }
   return theme;
@@ -118,62 +119,41 @@ function renderThemePicker(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
   const current = getCurrentTheme();
-  const info = THEMES.find(t => t.id === current) || THEMES[0];
+  const isDark = current === 'dark';
 
   container.innerHTML = `
-    <div class="theme-picker-wrap">
-      <button class="theme-picker-btn" id="themePickerBtn" title="테마 변경" aria-label="테마 변경">
-        ${info.icon}
+    <div class="theme-switch-wrap">
+      <span class="theme-switch-text">일반</span>
+      <button
+        class="theme-switch${isDark ? ' dark' : ''}"
+        id="themeSwitchBtn"
+        title="다크 모드 전환"
+        aria-label="다크 모드 전환"
+        aria-pressed="${isDark ? 'true' : 'false'}"
+      >
+        <span class="theme-switch-track">
+          <span class="theme-switch-thumb">${isDark ? '🌙' : '☀️'}</span>
+        </span>
       </button>
-      <div class="theme-picker-dropdown" id="themePickerDropdown">
-        ${THEMES.map(t => `
-          <button class="theme-option${t.id === current ? ' active' : ''}" data-theme-id="${t.id}">
-            <span class="theme-option-icon">${t.icon}</span>
-            <span class="theme-option-label">${t.label}</span>
-          </button>
-        `).join('')}
-      </div>
+      <span class="theme-switch-text">다크</span>
     </div>
   `;
 
-  const btn = document.getElementById('themePickerBtn');
-  const dropdown = document.getElementById('themePickerDropdown');
-
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    dropdown.classList.toggle('open');
-    if (dropdown.classList.contains('open')) {
-      requestAnimationFrame(() => positionThemeDropdown(dropdown, btn));
-    }
+  const btn = document.getElementById('themeSwitchBtn');
+  btn.addEventListener('click', () => {
+    const nextTheme = getCurrentTheme() === 'dark' ? 'default' : 'dark';
+    setTheme(nextTheme);
   });
-
-  dropdown.querySelectorAll('.theme-option').forEach(opt => {
-    opt.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const id = opt.getAttribute('data-theme-id');
-      setTheme(id);
-      dropdown.classList.remove('open');
-    });
-  });
-
-  document.addEventListener('click', () => {
-    dropdown.classList.remove('open');
-  });
-
-  const reposition = () => positionThemeDropdown(dropdown, btn);
-  window.addEventListener('resize', reposition);
-  window.addEventListener('scroll', reposition, true);
 }
 
 function updateThemePickerUI(themeId) {
-  const btn = document.getElementById('themePickerBtn');
-  const dropdown = document.getElementById('themePickerDropdown');
-  if (!btn || !dropdown) return;
-  const info = THEMES.find(t => t.id === themeId) || THEMES[0];
-  btn.textContent = info.icon;
-  dropdown.querySelectorAll('.theme-option').forEach(opt => {
-    opt.classList.toggle('active', opt.getAttribute('data-theme-id') === themeId);
-  });
+  const btn = document.getElementById('themeSwitchBtn');
+  if (!btn) return;
+  const isDark = normalizeThemeId(themeId) === 'dark';
+  btn.classList.toggle('dark', isDark);
+  btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+  const thumb = btn.querySelector('.theme-switch-thumb');
+  if (thumb) thumb.textContent = isDark ? '🌙' : '☀️';
 }
 
 // Apply theme immediately on script load (prevents flash)

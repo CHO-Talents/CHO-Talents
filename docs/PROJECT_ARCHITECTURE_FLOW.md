@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-08 KST 현재 코드 기준 (v3.33.0)
+작성 기준: 2026-06-09 KST 현재 코드 기준 (v3.34.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -64,7 +64,7 @@ flowchart LR
 
 | 경로 | 역할 |
 |---|---|
-| `index.html` | 메인 진입 화면. 학생 가이드, Q&A, 상점, 로그인, 적립 안내, 내 달란트로 이동. 동적 로그인/로그아웃 버튼. 로그인 사용자는 `⭐ 즐겨찾기 설정`으로 바로가기 카드 커스터마이징 (`user_preferences` DB 저장, 비로그인은 localStorage 폴백) |
+| `index.html` | 메인 진입 화면. 학생 가이드, Q&A, 상점, 로그인, 적립 안내, 내 달란트로 이동. 동적 로그인/로그아웃 버튼. 로그인 사용자는 `⭐ 즐겨찾기 설정`으로 바로가기 카드 커스터마이징 (`user_preferences` DB 저장, 비로그인은 localStorage 폴백). 모바일/PC 모두 최대 10개, 권한에 맞는 메뉴만 표시 |
 | `login.html` | 통합 로그인. 성공/실패 로그 기록. 승인 대기/거부 계정 구분 안내 |
 | `register.html` | 계정 등록 신청. 영문/숫자/`_`/`-` 아이디 중복확인 후 승인 대기 등록 |
 | `guide.html` | 학생 가이드. 사이트 이용 흐름을 카드/스텝 중심으로 안내 |
@@ -86,11 +86,11 @@ flowchart LR
 | `admin/shop.html` | 60등급 이상 상품 관리. 교사/학생 그룹별 분리+페이징(모바일 10/PC 20). 카테고리 열 맨 왼쪽, 대상 열 삭제. 관리 드롭다운(수정/삭제). 삭제는 소프트 삭제 |
 | `admin/purchases.html` | 60등급 이상 구매 관리. 상태별 상품 합계+일괄 처리 버튼(일괄 준비/구매 확정). 관리 드롭다운. 부서/기간 필터(기본 오늘) + 기간 프리셋, 4단계 구매 흐름 + 되돌리기(↩) |
 | `admin/reports.html` | 80등급 이상 보고서 조회/등록/수정/삭제 |
-| `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리. action 열 한글 라벨 표시(`getActionLabel`). 기간 프리셋(오늘/1주/1달/1년) |
+| `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리. action 열 한글 라벨 표시(`getActionLabel`). 기본 조회 범위 1년 + 기간 프리셋(오늘/1주/1달/1년) |
 | `admin/versions.html` | 80등급 이상 버전 이력 확인 |
 | `admin/page-access.html` | 100등급 이상 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100등급 이상 권한별 페이지 기능 설정값 관리 |
-| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기간 프리셋(오늘/1주/1달/1년), 자동 조회, 10개 카테고리 필터, 한글 작업 유형 라벨) |
+| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기본 조회 범위 1년 + 기간 프리셋(오늘/1주/1달/1년), 자동 조회, 10개 카테고리 필터, 한글 작업 유형 라벨) |
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
@@ -215,6 +215,7 @@ flowchart TD
 - 로그인 사용자: `user_preferences` 테이블에서 즐겨찾기 로드/저장 (RLS 적용)
 - 비로그인: `localStorage`만 사용 (폴백)
 - 최초 로그인 시: DB에 설정이 없고 `localStorage`에 기존 데이터가 있으면 자동 마이그레이션
+- 즐겨찾기 후보와 실제 렌더링은 네비게이션 권한 규칙과 동일하게 필터링되며, 권한 밖 항목은 자동 제외된다
 
 ## 7. 신규 계정 신청 흐름
 
@@ -395,6 +396,7 @@ flowchart TD
 - `ERROR`, `FATAL`, `CRITICAL`은 기본적으로 미확인 상태로 저장
 - 운영자가 확인 내용을 남기면 확인 처리
 - 로그 삭제는 소프트 삭제(`is_deleted=true`) 방식
+- 로그/작업 이력 조회 시 `is_deleted`가 `NULL`인 기존 데이터도 함께 표시하도록 하위호환 처리
 - 실제 삭제는 관리자가 SQL Editor에서 직접 실행: `DELETE FROM activity_logs WHERE is_deleted = true;`
 - 전체 기능의 성공/실패/거부가 `logInfo`/`logWarn`/`logError`로 기록됨
 
