@@ -183,6 +183,19 @@ async function updatePendingBadge() {
   if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
 }
 
+/* ===== Log Badge (nav "운영" group) ===== */
+
+async function updateLogBadge() {
+  const badge = document.getElementById('navLogBadge');
+  if (!badge) return;
+  try {
+    const cnt = await getUnacknowledgedCount();
+    if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+  } catch (e) {}
+  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+}
+
 /* ===== Session Helpers (Supabase Auth 연동) ===== */
 
 function getSession() {
