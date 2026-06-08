@@ -4,17 +4,69 @@
 
 실행 SQL: `docs/INITIAL_DATABASE_SETUP.sql`
 
+자동 실행 스크립트: `scripts/install-supabase-database.ps1`
+
 ## 실행 순서
 
 1. 새 Supabase 프로젝트를 만든다.
-2. Supabase SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql` 전체를 실행한다.
-3. Storage에 `Talents_Items` 버킷이 생성되었는지 확인한다.
-4. 사이트 설정 파일의 Supabase URL/anon key를 새 프로젝트 값으로 바꾼다.
+2. 새 프로젝트의 `Project URL`, `publishable/anon key`, DB connection string을 확인한다.
+3. 아래 수동 또는 자동 방식 중 하나로 DB 설치를 실행한다.
+4. Storage에 `Talents_Items` 버킷이 생성되었는지 확인한다.
+5. 사이트 설정 파일의 Supabase URL/anon key를 새 프로젝트 값으로 바꾼다.
    - `config/public-config.js`
    - 필요 시 `.env.local`
-5. `admin_user / 1234`로 로그인한다.
-6. 최초 로그인 후 비밀번호를 변경한다.
-7. 부서, 사용자, 상품을 실제 운영 기준으로 새로 등록한다.
+6. `admin_user / 1234`로 로그인한다.
+7. 최초 로그인 후 비밀번호를 변경한다.
+8. 부서, 사용자, 상품을 실제 운영 기준으로 새로 등록한다.
+
+## 실행 방법 A: SQL Editor
+
+Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql` 전체를 실행한다.
+
+실행 후 새 프로젝트 값으로 공개 설정을 갱신한다.
+
+```sql
+UPDATE public.app_config
+SET key_value = 'https://YOUR_PROJECT_REF.supabase.co',
+    updated_at = now()
+WHERE env = 'production'
+  AND key_name = 'SUPABASE_URL';
+
+UPDATE public.app_config
+SET key_value = 'YOUR_PUBLISHABLE_OR_ANON_KEY',
+    updated_at = now()
+WHERE env = 'production'
+  AND key_name = 'SUPABASE_ANON_KEY';
+
+NOTIFY pgrst, 'reload schema';
+```
+
+## 실행 방법 B: PowerShell/psql
+
+`.env.local`에 새 프로젝트 값을 채운 뒤 실행한다.
+
+```powershell
+. .\scripts\load-env.ps1
+.\scripts\install-supabase-database.ps1
+```
+
+필요한 값은 아래와 같다.
+
+```text
+SUPABASE_DB_CONNECTION_STRING=postgresql://postgres:...
+SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
+SUPABASE_ANON_KEY=YOUR_PUBLISHABLE_OR_ANON_KEY
+```
+
+SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
+
+```powershell
+.\scripts\install-supabase-database.ps1 `
+  -GenerateOnly `
+  -OutputSqlPath .\docs\INITIAL_DATABASE_SETUP.generated.sql `
+  -SupabaseUrl "https://YOUR_PROJECT_REF.supabase.co" `
+  -SupabaseAnonKey "YOUR_PUBLISHABLE_OR_ANON_KEY"
+```
 
 ## 필수 테이블
 
@@ -36,6 +88,7 @@
 | `page_permissions` | 권한별 페이지 매트릭스 | 기본 권한표 |
 | `role_page_access` | 역할별 페이지 접근/요소 숨김 설정 | 비움, 기본 허용 |
 | `role_page_features` | 역할별 페이지 기능 설정 | 비움, 기본 허용 |
+| `user_preferences` | 사용자별 즐겨찾기 바로가기 설정 | 비움 |
 | `talent_qr_codes` | 달란트 QR 코드 | 비움 |
 | `talent_qr_scans` | QR 수령 이력 | 비움 |
 | `app_config` | 공개 설정/비밀 참조 설정 | 공개 설정 7개, 비밀 참조 4개 |
@@ -68,6 +121,7 @@
 | 로그 | 100+ | 모두 | 100+ | 100+ |
 | 페이지 권한 | 모두 | 100+ | 100+ | 100+ |
 | 역할별 접근/기능 | 인증 사용자 | 90+ | 90+ | 90+ |
+| 사용자 설정 | 본인 | 본인 | 본인 | 본인 |
 | QR 코드 | 인증 사용자 | 90+ | 90+ | 90+ |
 | QR 스캔 | 인증 사용자 | 인증 사용자 | 직접 수정 없음 | 직접 삭제 없음 |
 | app_config | 직접 조회 차단 | 서버/SQL | 서버/SQL | 서버/SQL |
@@ -102,6 +156,7 @@ FAQ
 - 달란트 거래 이력
 - 상품 목록과 주문 이력
 - QR 코드와 스캔 이력
+- 사용자별 즐겨찾기 설정
 - 활동 로그
 - 보고서 데이터
 - 부서 이동 요청

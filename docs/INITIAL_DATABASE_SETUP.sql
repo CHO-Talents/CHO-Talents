@@ -239,11 +239,17 @@ CREATE TABLE IF NOT EXISTS public.role_page_features (
   UNIQUE(permission_key, page_id)
 );
 
+CREATE TABLE IF NOT EXISTS public.user_preferences (
+  user_id uuid PRIMARY KEY REFERENCES public.profiles(id) ON DELETE CASCADE,
+  favorite_shortcuts jsonb DEFAULT '["earn-talents","shop","my-talents"]'::jsonb,
+  updated_at timestamptz DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS public.talent_qr_codes (
   id uuid PRIMARY KEY DEFAULT extensions.gen_random_uuid(),
   talent_item_id uuid REFERENCES public.talent_items(id) ON DELETE CASCADE,
   qr_key text UNIQUE,
-  code text,
+  code text NOT NULL UNIQUE,
   description text,
   amount integer NOT NULL DEFAULT 1,
   target_type text DEFAULT 'student',
@@ -258,6 +264,9 @@ CREATE TABLE IF NOT EXISTS public.talent_qr_codes (
   location_lng double precision,
   location_radius integer DEFAULT 1000,
   location_radius_km numeric,
+  repeat_type text DEFAULT 'none',
+  repeat_days integer[] DEFAULT NULL,
+  repeat_weeks integer[] DEFAULT NULL,
   is_active boolean DEFAULT true,
   created_by uuid REFERENCES public.profiles(id),
   created_at timestamptz DEFAULT now()
@@ -309,9 +318,12 @@ CREATE INDEX IF NOT EXISTS idx_qna_status ON public.qna(status, is_faq, is_delet
 CREATE INDEX IF NOT EXISTS idx_qna_comments_qna_id ON public.qna_comments(qna_id);
 CREATE INDEX IF NOT EXISTS idx_activity_logs_created ON public.activity_logs(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_activity_logs_level_ack ON public.activity_logs(level, is_acknowledged);
-CREATE INDEX IF NOT EXISTS idx_qr_codes_code ON public.talent_qr_codes(code);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_qr_codes_code_unique
+  ON public.talent_qr_codes(code)
+  WHERE code IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_qr_scans_qr_code ON public.talent_qr_scans(qr_code_id);
 CREATE INDEX IF NOT EXISTS idx_qr_scans_user ON public.talent_qr_scans(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON public.user_preferences(user_id);
 CREATE INDEX IF NOT EXISTS idx_app_config_public ON public.app_config(env, key_name)
   WHERE is_secret = false AND use_yn = true;
 
@@ -1080,6 +1092,7 @@ ALTER TABLE public.activity_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.page_permissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.role_page_access ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.role_page_features ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_preferences ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.talent_qr_codes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.talent_qr_scans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.app_config ENABLE ROW LEVEL SECURITY;
@@ -1250,6 +1263,21 @@ CREATE POLICY role_page_features_update ON public.role_page_features FOR UPDATE
 DROP POLICY IF EXISTS role_page_features_delete ON public.role_page_features;
 CREATE POLICY role_page_features_delete ON public.role_page_features FOR DELETE
   USING (public.get_permission_rank(public.get_my_role()) >= 90);
+
+-- user preferences
+DROP POLICY IF EXISTS user_preferences_select_own ON public.user_preferences;
+CREATE POLICY user_preferences_select_own ON public.user_preferences FOR SELECT TO authenticated
+  USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS user_preferences_insert_own ON public.user_preferences;
+CREATE POLICY user_preferences_insert_own ON public.user_preferences FOR INSERT TO authenticated
+  WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS user_preferences_update_own ON public.user_preferences;
+CREATE POLICY user_preferences_update_own ON public.user_preferences FOR UPDATE TO authenticated
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+DROP POLICY IF EXISTS user_preferences_delete_own ON public.user_preferences;
+CREATE POLICY user_preferences_delete_own ON public.user_preferences FOR DELETE TO authenticated
+  USING (auth.uid() = user_id);
 
 -- QR
 DROP POLICY IF EXISTS qr_codes_select ON public.talent_qr_codes;
