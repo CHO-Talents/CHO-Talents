@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-08 KST 현재 코드 기준 (v3.32.0)
+작성 기준: 2026-06-08 KST 현재 코드 기준 (v3.33.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -93,8 +93,8 @@ flowchart LR
 | `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기간 프리셋(오늘/1주/1달/1년), 자동 조회, 10개 카테고리 필터, 한글 작업 유형 라벨) |
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
-| `css/` | 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
-| `js/` | Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
+| `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
+| `js/` | 테마(`theme.js`), 네비게이션(`nav.js`), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
 | `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서 |
 
 ## 4. 권한 구조
