@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 통계 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.29.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.30.0" />
   <style>
     .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; margin-bottom: 1.5rem; }
     .stat-card { background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%); border: 1px solid #e9ecef; border-radius: 14px; padding: 1rem 1.2rem; text-align: center; transition: transform 0.15s, box-shadow 0.15s; }
@@ -128,10 +128,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.29.0"></script>
-  <script src="../js/supabase-config.js?v=3.29.0"></script>
-  <script src="../js/activity-log.js?v=3.29.0"></script>
-  <script src="../js/auth.js?v=3.29.0"></script>
+  <script src="../config/public-config.js?v=3.30.0"></script>
+  <script src="../js/supabase-config.js?v=3.30.0"></script>
+  <script src="../js/activity-log.js?v=3.30.0"></script>
+  <script src="../js/auth.js?v=3.30.0"></script>
   <script>
     initSupabase();
     let session, allTxns = [], allProfiles = [], allDepts = [];
@@ -179,11 +179,16 @@
     async function loadData() {
       const [txnRes, profRes, deptRes] = await Promise.all([
         _sb.from('talent_transactions').select('user_id, amount, description, talent_item_id, created_at').eq('type', 'earn'),
-        _sb.from('profiles').select('id, display_name, username, user_type, department_id, class_number'),
+        _sb.from('profiles').select('id, display_name, username, user_type, department_id, class_number, is_super_admin'),
         _sb.from('departments').select('id, name')
       ]);
       allTxns = txnRes.data || [];
       allProfiles = profRes.data || [];
+      if (!session.isSuperAdmin) {
+        const saIds = new Set(allProfiles.filter(p => p.is_super_admin).map(p => p.id));
+        allProfiles = allProfiles.filter(p => !p.is_super_admin);
+        if (saIds.size) allTxns = allTxns.filter(t => !saIds.has(t.user_id));
+      }
       allDepts = deptRes.data || [];
       const sel = document.getElementById('deptFilter');
       const myRank = session.permissionRank || 0;
@@ -503,6 +508,6 @@
     document.getElementById('deptDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDeptDetailModal(); });
     document.getElementById('userDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeUserDetailModal(); });
   </script>
-  <script src="../js/version.js?v=3.29.0"></script>
+  <script src="../js/version.js?v=3.30.0"></script>
 </body>
 </html>

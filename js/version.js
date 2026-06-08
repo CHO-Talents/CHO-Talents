@@ -2,9 +2,22 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.29.0',
+  current: '3.30.0',
   date: '2026-06-08',
   history: [
+    {
+      version: '3.30.0',
+      date: '2026-06-08',
+      title: '관리 페이지 전체 super_admin 사용자 숨김 확대 적용',
+      changes: [
+        '달란트 관리: is_super_admin 사용자 목록 및 인원수에서 숨김 처리',
+        '달란트 통계: is_super_admin 사용자 프로필/트랜잭션 및 통계에서 숨김 처리',
+        '구매 관리: is_super_admin 사용자 주문 목록에서 숨김 처리',
+        '관리자 관리: is_super_admin 사용자 관리자 목록 및 검색에서 숨김 처리',
+        '부서 관리: is_super_admin 사용자 부서 인원수에서 숨김 처리',
+        '대시보드: is_super_admin 사용자 전체/학생/교사/관리자 인원수 카운트에서 제외'
+      ]
+    },
     {
       version: '3.29.0',
       date: '2026-06-08',
