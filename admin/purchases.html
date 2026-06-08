@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.29.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.30.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -128,11 +128,11 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.29.0"></script>
-  <script src="../js/supabase-config.js?v=3.29.0"></script>
-  <script src="../js/activity-log.js?v=3.29.0"></script>
-  <script src="../js/auth.js?v=3.29.0"></script>
-  <script src="../js/user-mgmt.js?v=3.29.0"></script>
+  <script src="../config/public-config.js?v=3.30.0"></script>
+  <script src="../js/supabase-config.js?v=3.30.0"></script>
+  <script src="../js/activity-log.js?v=3.30.0"></script>
+  <script src="../js/auth.js?v=3.30.0"></script>
+  <script src="../js/user-mgmt.js?v=3.30.0"></script>
   <script>
     initSupabase();
     let session;
@@ -188,6 +188,14 @@
         return;
       }
       allOrders = data || [];
+
+      if (!session.isSuperAdmin) {
+        const { data: saRows } = await _sb.from('profiles').select('id').eq('is_super_admin', true);
+        if (saRows && saRows.length) {
+          const saIds = new Set(saRows.map(r => r.id));
+          allOrders = allOrders.filter(o => !saIds.has(o.user_id));
+        }
+      }
 
       const myRank = session.permissionRank || 0;
       const scopedDeptId = myRank >= 60 && myRank < 80 ? (session.managedDeptId || session.departmentId) : null;
@@ -606,6 +614,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.29.0"></script>
+  <script src="../js/version.js?v=3.30.0"></script>
 </body>
 </html>
