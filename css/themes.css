@@ -412,6 +412,7 @@
   top: calc(100% + 8px);
   right: 0;
   min-width: 180px;
+  max-width: calc(100vw - 16px);
   background: var(--t-card);
   border: 1px solid var(--t-border);
   border-radius: 12px;
@@ -419,6 +420,7 @@
   padding: 0.5rem;
   z-index: 1000;
   animation: themeDropFadeIn 0.15s ease;
+  overflow-x: hidden;
 }
 
 .theme-picker-dropdown.open {

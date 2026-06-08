@@ -78,6 +78,42 @@ async function setTheme(themeId) {
   await saveThemeToDB(themeId);
 }
 
+function positionThemeDropdown(dropdown, btn) {
+  if (!dropdown || !btn || !dropdown.classList.contains('open')) return;
+
+  const margin = 8;
+  const btnRect = btn.getBoundingClientRect();
+  const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+  const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+  const maxWidth = Math.max(160, viewportWidth - margin * 2);
+  const maxHeight = Math.max(160, viewportHeight - margin * 2);
+
+  dropdown.style.position = 'fixed';
+  dropdown.style.right = 'auto';
+  dropdown.style.left = '0px';
+  dropdown.style.top = '0px';
+  dropdown.style.maxWidth = `${maxWidth}px`;
+  dropdown.style.maxHeight = `${maxHeight}px`;
+  dropdown.style.overflowY = 'auto';
+
+  const width = Math.min(Math.max(dropdown.offsetWidth || 180, 180), maxWidth);
+  dropdown.style.width = `${width}px`;
+
+  const height = Math.min(dropdown.offsetHeight || 0, maxHeight);
+  const left = Math.min(
+    Math.max(btnRect.right - width, margin),
+    Math.max(margin, viewportWidth - width - margin)
+  );
+  let top = btnRect.bottom + margin;
+  if (top + height > viewportHeight - margin) {
+    top = btnRect.top - height - margin;
+  }
+  top = Math.min(Math.max(top, margin), Math.max(margin, viewportHeight - height - margin));
+
+  dropdown.style.left = `${left}px`;
+  dropdown.style.top = `${top}px`;
+}
+
 function renderThemePicker(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -106,6 +142,9 @@ function renderThemePicker(containerId) {
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     dropdown.classList.toggle('open');
+    if (dropdown.classList.contains('open')) {
+      requestAnimationFrame(() => positionThemeDropdown(dropdown, btn));
+    }
   });
 
   dropdown.querySelectorAll('.theme-option').forEach(opt => {
@@ -120,6 +159,10 @@ function renderThemePicker(containerId) {
   document.addEventListener('click', () => {
     dropdown.classList.remove('open');
   });
+
+  const reposition = () => positionThemeDropdown(dropdown, btn);
+  window.addEventListener('resize', reposition);
+  window.addEventListener('scroll', reposition, true);
 }
 
 function updateThemePickerUI(themeId) {

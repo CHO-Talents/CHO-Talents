@@ -287,10 +287,14 @@ function detectCurrentPageId() {
   if (path.includes('admin/purchases.html')) return 'admin-purchases';
   if (path.includes('admin/reports.html')) return 'admin-reports';
   if (path.includes('admin/logs.html')) return 'admin-logs';
+  if (path.includes('admin/log-rules.html')) return 'admin-log-rules';
   if (path.includes('admin/versions.html')) return 'admin-versions';
   if (path.includes('admin/talent-items.html')) return 'admin-talent-items';
   if (path.includes('admin/page-access.html')) return 'admin-page-access';
   if (path.includes('admin/page-features.html')) return 'admin-page-features';
+  if (path.includes('admin/page-permissions.html')) return 'admin-page-perms';
+  if (path.includes('docs/page-permission-rules.html')) return 'docs-page-permission-rules';
+  if (path.includes('admin/audit-rules.html')) return 'admin-audit-rules';
   if (path.includes('admin/audit.html')) return 'admin-audit';
   if (path.includes('talent-receive.html')) return 'talent-receive';
   if (path.includes('my-talents.html')) return 'my-talents';
