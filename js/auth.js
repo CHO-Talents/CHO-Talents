@@ -114,7 +114,7 @@ async function login(username, password) {
     const { data: authData, error: authError } = await _sb.auth.signInWithPassword({ email, password });
 
     if (authError) {
-      await logWarn('LOGIN_FAIL', { username, reason: authError.message });
+      await logWarn('LOGIN_FAIL', { 대상: username, 사유: authError.message });
       return { success: false, error: '아이디 또는 비밀번호가 일치하지 않습니다.' };
     }
 
@@ -142,10 +142,10 @@ async function login(username, password) {
       classNumber: profile.class_number
     });
 
-    await logInfo('LOGIN_SUCCESS', { username, permissionLevel: perm });
+    await logInfo('LOGIN_SUCCESS', { 대상: username, permissionLevel: perm });
     return { success: true, data: profile };
   } catch (err) {
-    await logError('LOGIN_ERROR', { username, error: String(err) });
+    await logError('LOGIN_ERROR', { 대상: username, 오류: String(err) });
     return { success: false, error: '로그인 처리 중 오류가 발생했습니다.' };
   }
 }
@@ -166,7 +166,7 @@ function getRoleRedirectUrl(role, basePath) {
 async function logout(loginPath) {
   const session = getSession();
   if (session) {
-    await logInfo('LOGOUT', { username: session.username });
+    await logInfo('LOGOUT', { 대상: session.username });
   }
   if (_sb) {
     await _sb.auth.signOut();
@@ -312,7 +312,7 @@ async function changePassword(username, newPassword) {
     const { data, error } = await _sb.rpc('change_my_password', { p_new_password: newPassword });
 
     if (error) {
-      await logError('PASSWORD_CHANGE_FAIL', { username, reason: error.message });
+      await logError('PASSWORD_CHANGE_FAIL', { 대상: username, 사유: error.message });
       return { success: false, error: '비밀번호 변경 중 오류가 발생했습니다.' };
     }
     if (data && !data.success) {
@@ -325,10 +325,10 @@ async function changePassword(username, newPassword) {
       setSession(session);
     }
 
-    await logInfo('PASSWORD_CHANGE', { username });
+    await logInfo('PASSWORD_CHANGE', { 대상: username });
     return { success: true };
   } catch (err) {
-    await logError('PASSWORD_CHANGE_ERROR', { username, error: String(err) });
+    await logError('PASSWORD_CHANGE_ERROR', { 대상: username, 오류: String(err) });
     return { success: false, error: '비밀번호 변경 중 오류가 발생했습니다.' };
   }
 }

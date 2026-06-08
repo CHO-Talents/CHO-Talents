@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>페이지 접근 관리 - 달란트 마을</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.29.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -95,11 +95,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.29.0"></script>
-  <script src="../js/supabase-config.js?v=3.29.0"></script>
-  <script src="../js/activity-log.js?v=3.29.0"></script>
-  <script src="../js/auth.js?v=3.29.0"></script>
-  <script src="../js/user-mgmt.js?v=3.29.0"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
+  <script src="../js/user-mgmt.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let session;
@@ -233,18 +233,18 @@
       await _sb.from('role_page_access').delete().eq('role_key', editingKey);
       const { error } = await _sb.from('role_page_access').insert(rows);
       if (error) {
-        await logError('ROLE_ACCESS_UPDATE_FAIL', { roleKey: editingKey, error: error.message });
+        await logError('ROLE_ACCESS_UPDATE_FAIL', { 권한: editingKey, 오류: error.message });
         errEl.textContent = '저장 실패: ' + tErr(error.message);
         errEl.classList.add('show');
         return;
       }
-      await logInfo('ROLE_ACCESS_UPDATE', { roleKey: editingKey });
+      await logInfo('ROLE_ACCESS_UPDATE', { 권한: editingKey });
       closeAccessModal();
       alert('저장되었습니다.');
     }
 
     document.getElementById('accessModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeAccessModal(); });
   </script>
-  <script src="../js/version.js?v=3.29.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
 </body>
 </html>

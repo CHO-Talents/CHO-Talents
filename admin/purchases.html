@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.30.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -128,11 +128,11 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.30.0"></script>
-  <script src="../js/supabase-config.js?v=3.30.0"></script>
-  <script src="../js/activity-log.js?v=3.30.0"></script>
-  <script src="../js/auth.js?v=3.30.0"></script>
-  <script src="../js/user-mgmt.js?v=3.30.0"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
+  <script src="../js/user-mgmt.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let session;
@@ -183,7 +183,7 @@
     async function loadOrders() {
       const { data, error } = await _sb.from('product_orders').select('*').order('created_at', { ascending: false });
       if (error) {
-        logError('PURCHASE_LOAD_FAIL', { error: error.message });
+        logError('PURCHASE_LOAD_FAIL', { 오류: error.message });
         document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">데이터 조회 실패</td></tr>';
         return;
       }
@@ -203,7 +203,7 @@
       if (scopedDeptId) {
         const { data: users, error: userErr } = await fetchUsers({ departmentId: scopedDeptId });
         if (userErr) {
-          await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopedDeptId, error: userErr });
+          await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopedDeptId, 오류: userErr });
           allOrders = [];
         } else {
           scopedUsers = users || [];
@@ -430,14 +430,14 @@
 
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
-          await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, newStatus, error: error.message });
+          await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, 변경상태: newStatus, 오류: error.message });
           alert('상태 변경 실패: ' + tErr(error.message));
           return;
         }
-        await logInfo('ORDER_STATUS_CHANGE', { orderId, newStatus });
+        await logInfo('ORDER_STATUS_CHANGE', { orderId, 변경상태: newStatus });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, newStatus, error: String(err) });
+        await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, 변경상태: newStatus, 오류: String(err) });
         alert('상태 변경 중 오류: ' + tErr(err.message));
       }
     }
@@ -452,14 +452,14 @@
         if (prevStatus === 'purchased') { updateFields.delivered_at = null; updateFields.delivered_by = null; }
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
-          await logError('ORDER_REVERT_FAIL', { orderId, prevStatus, error: error.message });
+          await logError('ORDER_REVERT_FAIL', { orderId, 변경상태: prevStatus, 오류: error.message });
           alert('되돌리기 실패: ' + tErr(error.message));
           return;
         }
-        await logInfo('ORDER_REVERT', { orderId, prevStatus });
+        await logInfo('ORDER_REVERT', { orderId, 변경상태: prevStatus });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_REVERT_ERROR', { orderId, prevStatus, error: String(err) });
+        await logError('ORDER_REVERT_ERROR', { orderId, 변경상태: prevStatus, 오류: String(err) });
         alert('되돌리기 중 오류: ' + tErr(err.message));
       }
     }
@@ -491,19 +491,19 @@
           p_admin_id: session.id
         });
         if (error) {
-          await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, error: error.message });
+          await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, 오류: error.message });
           alert('구매 확정 실패: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('ORDER_PURCHASE_CONFIRM_DENIED', { orderId, reason: data.error });
+          await logWarn('ORDER_PURCHASE_CONFIRM_DENIED', { orderId, 사유: data.error });
           alert(tErr(data.error));
           return;
         }
         await logInfo('ORDER_PURCHASE_CONFIRM', { orderId });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, error: String(err) });
+        await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, 오류: String(err) });
         alert('구매 확정 중 오류: ' + tErr(err.message));
       }
     }
@@ -531,10 +531,10 @@
           prepared_at: new Date().toISOString(),
           prepared_by: session.id
         }).eq('id', id);
-        if (error) { failCount++; await logError('ORDER_BULK_PREPARE_ITEM_FAIL', { orderId: id, error: error.message }); }
+        if (error) { failCount++; await logError('ORDER_BULK_PREPARE_ITEM_FAIL', { orderId: id, 오류: error.message }); }
       }
       if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
-      await logInfo('ORDER_BULK_PREPARE', { count: ids.length, failCount });
+      await logInfo('ORDER_BULK_PREPARE', { 건수: ids.length, 실패건수: failCount });
       await loadOrders();
     }
 
@@ -551,14 +551,14 @@
         });
         if (error) {
           failCount++;
-          await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', { orderId: id, error: error.message });
+          await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', { orderId: id, 오류: error.message });
         } else if (data && data.success === false) {
           failCount++;
-          await logWarn('ORDER_BULK_PURCHASE_DENIED', { orderId: id, reason: data.error });
+          await logWarn('ORDER_BULK_PURCHASE_DENIED', { orderId: id, 사유: data.error });
         }
       }
       if (failCount > 0) alert(`${failCount}건 처리 실패. 잔액 부족 등의 사유일 수 있습니다.`);
-      await logInfo('ORDER_BULK_PURCHASE', { count: ids.length, failCount });
+      await logInfo('ORDER_BULK_PURCHASE', { 건수: ids.length, 실패건수: failCount });
       await loadOrders();
     }
 
@@ -574,10 +574,10 @@
           delivered_at: new Date().toISOString(),
           delivered_by: session.id
         }).eq('id', id);
-        if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, error: error.message }); }
+        if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, 오류: error.message }); }
       }
       if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
-      await logInfo('ORDER_BULK_DELIVER', { count: ids.length, failCount });
+      await logInfo('ORDER_BULK_DELIVER', { 건수: ids.length, 실패건수: failCount });
       await loadOrders();
     }
 
@@ -614,6 +614,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.30.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
 </body>
 </html>

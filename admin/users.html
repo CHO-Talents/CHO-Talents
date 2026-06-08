@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.29.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -238,12 +238,12 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.29.0"></script>
-  <script src="../js/supabase-config.js?v=3.29.0"></script>
-  <script src="../js/activity-log.js?v=3.29.0"></script>
-  <script src="../js/auth.js?v=3.27.2"></script>
-  <script src="../js/user-mgmt.js?v=3.29.0"></script>
-  <script src="../js/version.js?v=3.29.0"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
+  <script src="../js/user-mgmt.js?v=3.32.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let session;
@@ -753,13 +753,20 @@
           return;
         }
         const { error } = await updateUser(editingId, { displayName, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null, classNumber });
-        if (error) { await logError('USER_UPDATE_FAIL', { id: editingId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('USER_UPDATE', { id: editingId, displayName, userType, permLevel });
+        if (error) { await logError('USER_UPDATE_FAIL', { userId: editingId, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        const 변경Parts = [];
+        if ((target.display_name || '') !== displayName) 변경Parts.push(`이름: ${target.display_name || '-'} → ${displayName}`);
+        if ((target.user_type || 'student') !== userType) 변경Parts.push(`유형: ${target.user_type || 'student'} → ${userType}`);
+        if ((target.permission_level || 'student') !== permLevel) 변경Parts.push(`권한: ${PERMISSION_LABELS[target.permission_level] || target.permission_level} → ${PERMISSION_LABELS[permLevel] || permLevel}`);
+        const newManaged = needsManagedDept ? managedDeptId : null;
+        if ((target.managed_dept_id || null) !== (newManaged || null)) 변경Parts.push(`담당부서: ${target.managed_dept_id ? getDeptName(target.managed_dept_id) : '-'} → ${newManaged ? getDeptName(newManaged) : '-'}`);
+        if ((target.class_number ?? null) !== classNumber) 변경Parts.push(`반: ${target.class_number ?? '-'} → ${classNumber ?? '-'}`);
+        await logInfo('USER_UPDATE', { userId: editingId, 대상: displayName, 변경내역: 변경Parts.length ? 변경Parts.join(', ') : `이름: ${displayName}` });
       } else {
         const pw = document.getElementById('mPassword').value || '1234';
         const { error } = await createUser({ username, password: pw, displayName: displayName || username, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null, classNumber });
-        if (error) { await logError('USER_CREATE_FAIL', { username, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('USER_CREATE', { username, userType, permLevel });
+        if (error) { await logError('USER_CREATE_FAIL', { 아이디: username, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('USER_CREATE', { 아이디: username, 대상: displayName || username, 권한: PERMISSION_LABELS[permLevel] || permLevel, 부서: getDeptName(deptId), ...(classNumber != null ? { 반: classNumber } : {}), 변경내역: `사용자 등록: ${displayName || username}` });
       }
       closeModal();
       await loadData();
@@ -768,15 +775,15 @@
     async function resetPw(id, username) {
       if (!confirm(`"${username}" 비밀번호를 초기화(1234)하시겠습니까?`)) return;
       const { error } = await resetUserPassword(id, username);
-      if (error) { await logError('USER_PW_RESET_FAIL', { id, username, error }); alert('초기화 실패: ' + tErr(error)); }
-      else { await logInfo('USER_PW_RESET', { id, username }); alert('비밀번호가 1234로 초기화되었습니다.'); }
+      if (error) { await logError('USER_PW_RESET_FAIL', { userId: id, 아이디: username, 오류: error }); alert('초기화 실패: ' + tErr(error)); }
+      else { await logInfo('USER_PW_RESET', { userId: id, 아이디: username, 대상: username, 변경내역: `${username} 비밀번호 초기화` }); alert('비밀번호가 1234로 초기화되었습니다.'); }
     }
 
     async function confirmDelete(id, username) {
       if (!confirm(`"${username}" 사용자를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
       const { error } = await deleteUser(id);
-      if (error) { await logError('USER_DELETE_FAIL', { id, username, error }); alert('삭제 실패: ' + tErr(error)); }
-      else { await logInfo('USER_DELETE', { id, username }); await loadData(); }
+      if (error) { await logError('USER_DELETE_FAIL', { userId: id, 아이디: username, 오류: error }); alert('삭제 실패: ' + tErr(error)); }
+      else { await logInfo('USER_DELETE', { userId: id, 아이디: username, 대상: username, 변경내역: `사용자 삭제: ${username}` }); await loadData(); }
     }
 
     function renderRequests() {
@@ -836,11 +843,11 @@
       const permLabel = PERMISSION_LABELS[permLevel] || permLevel;
       if (!confirm(`"${username}" (${displayName})을(를) [${permLabel}] 역할로 승인하시겠습니까?`)) return;
       const { error } = await createUser({ username, password: '1234', displayName, userType, permissionLevel: permLevel, departmentId: deptId || null, managedDeptId });
-      if (error) { await logError('REGISTER_APPROVE_FAIL', { username, error }); alert('계정 생성 실패: ' + tErr(error)); return; }
+      if (error) { await logError('REGISTER_APPROVE_FAIL', { 아이디: username, 오류: error }); alert('계정 생성 실패: ' + tErr(error)); return; }
       await _sb.from('registration_requests').update({
         status: 'approved', reviewed_by: session.username, review_note: '승인됨', reviewed_at: new Date().toISOString()
       }).eq('id', reqId);
-      await logInfo('REGISTER_APPROVE', { username, permissionLevel: permLevel });
+      await logInfo('REGISTER_APPROVE', { 아이디: username, 대상: displayName, 권한: PERMISSION_LABELS[permLevel] || permLevel, 부서: getDeptName(deptId), 변경내역: `가입 승인: ${displayName} (${PERMISSION_LABELS[permLevel] || permLevel})` });
       await loadData();
     }
 
@@ -850,7 +857,7 @@
       await _sb.from('registration_requests').update({
         status: 'rejected', reviewed_by: session.username, review_note: note || '거부됨', reviewed_at: new Date().toISOString()
       }).eq('id', reqId);
-      await logInfo('REGISTER_REJECT', { username, reason: note });
+      await logInfo('REGISTER_REJECT', { 아이디: username, 사유: note || '거부됨', 변경내역: `가입 거부: ${username}` });
       await loadData();
     }
 
@@ -907,8 +914,8 @@
           managedDeptId: user.managed_dept_id,
           classNumber: null
         });
-        if (error) { await logError('DEPT_TRANSFER_IMMEDIATE_FAIL', { userId: _transferUserId, error }); errEl.textContent = '이동 실패: ' + tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('DEPT_TRANSFER_IMMEDIATE', { userId: _transferUserId, username: user.username, from: getDeptName(_transferFromDeptId), to: toDeptName, reason });
+        if (error) { await logError('DEPT_TRANSFER_IMMEDIATE_FAIL', { userId: _transferUserId, 오류: error }); errEl.textContent = '이동 실패: ' + tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('DEPT_TRANSFER_IMMEDIATE', { userId: _transferUserId, 아이디: user.username, 대상: userName, 이전값: getDeptName(_transferFromDeptId), 변경값: toDeptName, 사유: reason || null, 변경내역: `부서: ${getDeptName(_transferFromDeptId) || '-'} → ${toDeptName}` });
         alert(`"${userName}"이(가) "${toDeptName}" 부서로 이동되었습니다.`);
       } else {
         if (!confirm(`"${userName}"의 "${toDeptName}" 부서 이동 요청을 생성하시겠습니까?\n해당 부서 부장 교사 또는 관리자 승인이 필요합니다.`)) return;
@@ -921,8 +928,8 @@
           requested_by: session.username,
           request_reason: reason || null
         });
-        if (error) { await logError('DEPT_TRANSFER_REQUEST_FAIL', { userId: _transferUserId, error: error.message }); errEl.textContent = '요청 실패: ' + tErr(error.message); errEl.classList.add('show'); return; }
-        await logInfo('DEPT_TRANSFER_REQUEST', { userId: _transferUserId, username: user.username, from: getDeptName(_transferFromDeptId), to: toDeptName, reason });
+        if (error) { await logError('DEPT_TRANSFER_REQUEST_FAIL', { userId: _transferUserId, 오류: error.message }); errEl.textContent = '요청 실패: ' + tErr(error.message); errEl.classList.add('show'); return; }
+        await logInfo('DEPT_TRANSFER_REQUEST', { userId: _transferUserId, 아이디: user.username, 대상: userName, 이전값: getDeptName(_transferFromDeptId), 변경값: toDeptName, 사유: reason || null, 변경내역: `부서 이동 요청: ${getDeptName(_transferFromDeptId) || '-'} → ${toDeptName}` });
         alert(`부서 이동 요청이 생성되었습니다.\n"${toDeptName}" 부서 담당 교사의 승인을 기다립니다.`);
       }
       closeTransferModal();
@@ -978,7 +985,7 @@
       await _sb.from('department_transfer_requests').update({
         status: 'approved', reviewed_by: session.username, review_note: '승인됨', reviewed_at: new Date().toISOString()
       }).eq('id', trfId);
-      await logInfo('DEPT_TRANSFER_APPROVE', { userId, displayName, toDept: toDeptName });
+      await logInfo('DEPT_TRANSFER_APPROVE', { userId, 대상: displayName, 부서: toDeptName, 변경내역: `부서 이동 승인: ${toDeptName}` });
       alert(`"${displayName}"이(가) "${toDeptName}" 부서로 이동되었습니다.`);
       await loadData();
     }
@@ -989,7 +996,7 @@
       await _sb.from('department_transfer_requests').update({
         status: 'rejected', reviewed_by: session.username, review_note: note || '거부됨', reviewed_at: new Date().toISOString()
       }).eq('id', trfId);
-      await logInfo('DEPT_TRANSFER_REJECT', { displayName, reason: note });
+      await logInfo('DEPT_TRANSFER_REJECT', { 대상: displayName, 사유: note || '거부됨', 변경내역: `부서 이동 거부: ${displayName}` });
       await loadData();
     }
   </script>

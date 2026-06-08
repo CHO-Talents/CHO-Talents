@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로그 관리 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.29.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -159,10 +159,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.29.0"></script>
-  <script src="../js/supabase-config.js?v=3.29.0"></script>
-  <script src="../js/activity-log.js?v=3.29.0"></script>
-  <script src="../js/auth.js?v=3.29.0"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let session;
@@ -181,6 +181,12 @@
     function getUserDisplay(username) {
       if (!username) return '-';
       return userProfileMap[username] ? userProfileMap[username] + ' (' + username + ')' : username;
+    }
+
+    function formatActionCell(action) {
+      const key = action || '-';
+      const label = typeof getActionLabel === 'function' ? getActionLabel(action) : key;
+      return `<span style="font-weight:600;">${label}</span><br/><span style="font-size:0.7rem;color:#868e96;">${key}</span>`;
     }
 
     (async () => {
@@ -241,7 +247,7 @@
         <tr style="background:#fff5f5;">
           <td>${formatKSTShort(l.created_at)}</td>
           <td><span class="level-badge ${l.level}">${l.level}</span></td>
-          <td>${l.action}</td>
+          <td>${formatActionCell(l.action)}</td>
           <td>${l.page || '-'}</td>
           <td>${getUserDisplay(l.username)}</td>
           <td><span class="ack-badge pending">미확인</span></td>
@@ -328,7 +334,7 @@
           ${isAdminUser ? `<td><input type="checkbox" class="log-chk" value="${l.id}" onchange="updateLogDeleteBtn()"></td>` : ''}
           <td>${formatKST(l.created_at)}</td>
           <td><span class="level-badge ${l.level}">${l.level}</span></td>
-          <td>${l.action}</td>
+          <td>${formatActionCell(l.action)}</td>
           <td>${l.page || '-'}</td>
           <td>${getUserDisplay(l.username)}</td>
           <td>${clientHtml}</td>
@@ -431,7 +437,7 @@
         await acknowledgeLog(log.id, session.username, note.trim());
         done++;
       }
-      await logInfo('LOG_BULK_ACK', { count: done, note: note.trim() });
+      await logInfo('LOG_BULK_ACK', { 건수: done, 사유: note.trim() });
       alert(`${done}건의 로그가 완료 처리되었습니다.`);
       await loadAll();
     }
@@ -457,16 +463,16 @@
         if (!confirm(dateFrom + ' ~ ' + dateTo + ' 기간의 로그 ' + count + '건을 삭제 대기 상태로 변경하시겠습니까?')) return;
         const result = await deleteLogsByDateRange(fromStr, toStr);
         if (result.error) {
-          await logError('LOG_RANGE_DELETE_FAIL', { dateFrom, dateTo, error: result.error });
+          await logError('LOG_RANGE_DELETE_FAIL', { dateFrom, dateTo, 오류: result.error });
           alert('실패:\n\n' + tErr(result.error));
           return;
         }
         const deleted = result.count || count;
-        await logInfo('LOG_RANGE_DELETE', { dateFrom, dateTo, count: deleted });
+        await logInfo('LOG_RANGE_DELETE', { dateFrom, dateTo, 건수: deleted });
         alert(deleted + '건의 로그가 삭제 대기 상태로 변경되었습니다.\n\n실제 삭제는 관리자가 SQL로 직접 수행합니다.');
         await loadAll();
       } catch (err) {
-        await logError('LOG_RANGE_DELETE_ERROR', { dateFrom, dateTo, error: String(err) });
+        await logError('LOG_RANGE_DELETE_ERROR', { dateFrom, dateTo, 오류: String(err) });
         alert('오류: ' + tErr(err.message));
       }
     }
@@ -533,16 +539,16 @@
       try {
         const { error, count } = await deleteLogsByIds(ids);
         if (error) {
-          await logError('LOG_SELECT_DELETE_FAIL', { count: ids.length, error });
+          await logError('LOG_SELECT_DELETE_FAIL', { 건수: ids.length, 오류: error });
           alert('실패:\n\n' + tErr(error));
           return;
         }
-        await logInfo('LOG_SELECT_DELETE', { count: count || ids.length });
+        await logInfo('LOG_SELECT_DELETE', { 건수: count || ids.length });
         document.getElementById('logChkAll').checked = false;
         alert((count || ids.length) + '건의 로그가 삭제 대기 상태로 변경되었습니다.\n\n실제 삭제는 관리자가 SQL로 직접 수행합니다.');
         await loadAll();
       } catch (err) {
-        await logError('LOG_SELECT_DELETE_ERROR', { error: String(err) });
+        await logError('LOG_SELECT_DELETE_ERROR', { 오류: String(err) });
         alert('오류: ' + tErr(err.message));
       }
     }
@@ -587,7 +593,7 @@
           <td><input type="checkbox" class="log-chk" value="${l.id}" onchange="updateRestoreBtn()"></td>
           <td>${formatKST(l.created_at)}</td>
           <td><span class="level-badge ${l.level}">${l.level}</span></td>
-          <td>${l.action}</td>
+          <td>${formatActionCell(l.action)}</td>
           <td>${l.page || '-'}</td>
           <td>${getUserDisplay(l.username)}</td>
           <td><span style="font-size:0.72rem;color:#d63031;">삭제 대기<br/>${deletedAt}</span></td>
@@ -606,7 +612,7 @@
         .eq('id', id);
       if (error) {
         if (/column|schema cache/i.test(error.message)) { alert('DB에 삭제 관리 컬럼이 없습니다.\nSupabase SQL Editor에서 docs/TASK-023_fixes.sql 을 실행해주세요.'); return; }
-        await logError('LOG_RESTORE_FAIL', { logId: id, error: error.message }); alert('복원 실패: ' + tErr(error.message)); return;
+        await logError('LOG_RESTORE_FAIL', { logId: id, 오류: error.message }); alert('복원 실패: ' + tErr(error.message)); return;
       }
       await logInfo('LOG_RESTORE', { logId: id });
       alert('복원되었습니다.');
@@ -615,6 +621,6 @@
       toggleDeletedView();
     }
   </script>
-  <script src="../js/version.js?v=3.29.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
 </body>
 </html>

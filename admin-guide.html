@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.29.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.29.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.32.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.32.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -207,12 +207,23 @@
       <h2>🔐 관리자 전용 설정</h2>
       <div class="guide-grid">
         <div class="guide-card">
-          <h3>로그</h3>
-          <p>오류와 주요 활동 기록을 확인합니다. 미확인 ERROR 이상 로그는 확인 완료 처리를 남겨야 합니다. 삭제는 삭제 대기 방식으로 처리됩니다.</p>
+          <h3>📊 활동 로그 (한글화)</h3>
+          <p>모든 활동 로그의 액션 이름이 한글로 표시됩니다.</p>
+          <div class="guide-steps">
+            <div class="step"><span class="step-num">1</span> <strong>운영 → 로그</strong>에서 활동 로그를 확인합니다.</div>
+            <div class="step"><span class="step-num">2</span> 액션 열에 한글 라벨이 표시되며, 영문 키는 작은 글씨로 병기됩니다.</div>
+            <div class="step"><span class="step-num">3</span> 상세 내역의 키도 한글로 표시됩니다 (대상, 변경내역, 오류 등).</div>
+          </div>
+          <p style="margin-top:0.75rem;font-size:0.85rem;">미확인 ERROR 이상 로그는 확인 완료 처리를 남겨야 합니다. 삭제는 삭제 대기 방식으로 처리됩니다.</p>
         </div>
         <div class="guide-card">
-          <h3>작업 이력</h3>
-          <p>사용자 수정, 부서 이동, 비밀번호 초기화, 권한 변경 같은 운영 작업 이력을 조회합니다.</p>
+          <h3>📋 작업 이력 (개편)</h3>
+          <p>모든 관리 작업이 한글 상세 내역으로 기록됩니다.</p>
+          <div class="guide-steps">
+            <div class="step"><span class="step-num">1</span> <strong>운영 → 작업 이력</strong>에서 10개 카테고리 필터로 조회합니다.</div>
+            <div class="step"><span class="step-num">2</span> 필터: 사용자/등록/부서/달란트/상품·주문/Q&amp;A/인증/로그관리/권한·설정</div>
+            <div class="step"><span class="step-num">3</span> 각 작업의 <strong>변경내역</strong>이 한글로 상세히 기록됩니다 (예: "이름: 홍길동, 부서: 1부서 → 2부서").</div>
+          </div>
         </div>
         <div class="guide-card">
           <h3>페이지 접근</h3>
@@ -221,6 +232,19 @@
         <div class="guide-card">
           <h3>페이지 기능</h3>
           <p>권한별 기능 사용 설정값을 관리합니다. 실제 적용 범위는 각 화면의 권한 로직과 함께 동작합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>⭐ 메인 페이지 바로가기</h2>
+      <div class="guide-card">
+        <h3>⭐ 즐겨찾기 설정</h3>
+        <p>메인 페이지의 바로가기 카드를 내가 원하는 메뉴로 설정할 수 있습니다.</p>
+        <div class="guide-steps">
+          <div class="step"><span class="step-num">1</span> 메인 페이지에서 <strong>⭐ 즐겨찾기 설정</strong> 버튼을 누릅니다.</div>
+          <div class="step"><span class="step-num">2</span> 표시할 바로가기를 선택하고 <strong>저장</strong>을 누릅니다.</div>
+          <div class="step"><span class="step-num">3</span> 설정은 계정에 저장되어 다른 기기에서도 동일하게 표시됩니다.</div>
         </div>
       </div>
     </section>
@@ -244,10 +268,10 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.29.0"></script>
-  <script src="js/supabase-config.js?v=3.29.0"></script>
-  <script src="js/activity-log.js?v=3.29.0"></script>
-  <script src="js/auth.js?v=3.29.0"></script>
+  <script src="config/public-config.js?v=3.32.0"></script>
+  <script src="js/supabase-config.js?v=3.32.0"></script>
+  <script src="js/activity-log.js?v=3.32.0"></script>
+  <script src="js/auth.js?v=3.32.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -267,6 +291,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.29.0"></script>
+  <script src="js/version.js?v=3.32.0"></script>
 </body>
 </html>

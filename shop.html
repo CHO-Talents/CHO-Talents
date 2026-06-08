@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 상점 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.29.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.32.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -127,12 +127,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.29.0"></script>
-  <script src="js/supabase-config.js?v=3.29.0"></script>
-  <script src="js/activity-log.js?v=3.29.0"></script>
-  <script src="js/auth.js?v=3.29.0"></script>
+  <script src="config/public-config.js?v=3.32.0"></script>
+  <script src="js/supabase-config.js?v=3.32.0"></script>
+  <script src="js/activity-log.js?v=3.32.0"></script>
+  <script src="js/auth.js?v=3.32.0"></script>
   <script src="js/product.js"></script>
-  <script src="js/user-mgmt.js?v=3.29.0"></script>
+  <script src="js/user-mgmt.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let currentShopTab = 'student';
@@ -165,7 +165,7 @@
           const { data: p2 } = await _sb.from('profiles').select('talent_balance').eq('id', session.id).single();
           prof = p2;
           if (prof) { _userBalance = prof.talent_balance || 0; _userPending = 0; }
-          logWarn('SHOP_PROFILE_FALLBACK', { error: e1.message });
+          logWarn('SHOP_PROFILE_FALLBACK', { 오류: e1.message });
         } else {
           prof = p1;
           if (prof) { _userBalance = prof.talent_balance || 0; _userPending = prof.pending_talent || 0; }
@@ -251,7 +251,7 @@
       if (!_shopSession) { alert('로그인이 필요합니다.'); return; }
       const available = _userBalance - _userPending;
       if (available < price) {
-        logWarn('ORDER_INSUFFICIENT_BALANCE', { productName, price, balance: _userBalance, pending: _userPending, available });
+        logWarn('ORDER_INSUFFICIENT_BALANCE', { 상품명: productName, 금액: price, balance: _userBalance, pending: _userPending, available });
         alert(`사용 가능한 달란트가 부족합니다.\n잔여: ${fmtNum(_userBalance)} / 사용 대기: ${fmtNum(_userPending)} / 사용 가능: ${fmtNum(available)}`);
         return;
       }
@@ -265,21 +265,21 @@
           p_price: price
         });
         if (error) {
-          await logError('ORDER_REQUEST_FAIL', { productId, productName, price, error: error.message });
+          await logError('ORDER_REQUEST_FAIL', { productId, 상품명: productName, 금액: price, 오류: error.message });
           alert('구매 신청 실패: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('ORDER_REQUEST_DENIED', { productName, price, reason: data.error });
+          await logWarn('ORDER_REQUEST_DENIED', { 상품명: productName, 금액: price, 사유: data.error });
           alert(tErr(data.error));
           return;
         }
         _userPending += price;
-        await logInfo('ORDER_REQUEST_SUCCESS', { productName, price, orderId: data?.order_id });
+        await logInfo('ORDER_REQUEST_SUCCESS', { 상품명: productName, 금액: price, orderId: data?.order_id });
         alert('✅ 구매 신청이 완료되었습니다!');
         renderShopProducts();
       } catch (err) {
-        await logError('ORDER_REQUEST_ERROR', { productName, price, error: String(err) });
+        await logError('ORDER_REQUEST_ERROR', { 상품명: productName, 금액: price, 오류: String(err) });
         alert('구매 신청 중 오류가 발생했습니다: ' + tErr(err.message));
       }
     }
@@ -337,14 +337,14 @@
 
         const { data, error } = await fetchUsers(opts);
         if (error) {
-          await logWarn('PROXY_USER_LOAD_FAIL', { error });
+          await logWarn('PROXY_USER_LOAD_FAIL', { 오류: error });
           resultsBox.innerHTML = '<div style="padding:0.6rem;color:#e03131;font-size:0.85rem;">대상자를 불러오지 못했습니다.</div>';
           _proxyUsers = [];
           return;
         }
         users = data || [];
       } catch (err) {
-        await logError('PROXY_USER_LOAD_ERROR', { error: String(err) });
+        await logError('PROXY_USER_LOAD_ERROR', { 오류: String(err) });
         resultsBox.innerHTML = '<div style="padding:0.6rem;color:#e03131;font-size:0.85rem;">대상자를 불러오지 못했습니다.</div>';
         _proxyUsers = [];
         return;
@@ -442,24 +442,24 @@
           p_price: price
         });
         if (error) {
-          await logError('PROXY_ORDER_FAIL', { targetUser: _proxyTarget.id, productName: product.name, error: error.message });
+          await logError('PROXY_ORDER_FAIL', { targetUser: _proxyTarget.id, 상품명: product.name, 오류: error.message });
           alert('대리 구매 실패: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('PROXY_ORDER_DENIED', { targetUser: _proxyTarget.id, productName: product.name, reason: data.error });
+          await logWarn('PROXY_ORDER_DENIED', { targetUser: _proxyTarget.id, 상품명: product.name, 사유: data.error });
           alert(tErr(data.error));
           return;
         }
-        await logInfo('PROXY_ORDER_SUCCESS', { targetUser: _proxyTarget.id, targetName: _proxyTarget.display_name, productName: product.name, price });
+        await logInfo('PROXY_ORDER_SUCCESS', { targetUser: _proxyTarget.id, 대상: _proxyTarget.display_name, 상품명: product.name, 금액: price });
         alert(`✅ ${_proxyTarget.display_name || _proxyTarget.username}님 명의로 대리 구매 신청 완료!`);
         closeProxyModal();
       } catch (err) {
-        await logError('PROXY_ORDER_ERROR', { error: String(err) });
+        await logError('PROXY_ORDER_ERROR', { 오류: String(err) });
         alert('대리 구매 중 오류: ' + tErr(err.message));
       }
     }
   </script>
-  <script src="js/version.js?v=3.29.0"></script>
+  <script src="js/version.js?v=3.32.0"></script>
 </body>
 </html>

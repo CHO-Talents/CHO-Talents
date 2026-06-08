@@ -20,13 +20,13 @@ async function createProduct(productData) {
   try {
     const { data, error } = await _sb.from('products').insert(productData).select();
     if (error) {
-      await logError('PRODUCT_CREATE_FAIL', { error: error.message });
+      await logError('PRODUCT_CREATE_FAIL', { 오류: error.message });
       return { data: null, error: error.message };
     }
-    await logInfo('PRODUCT_CREATE', { name: productData.name });
+    await logInfo('PRODUCT_CREATE', { 상품명: productData.name });
     return { data: data[0], error: null };
   } catch (err) {
-    await logError('PRODUCT_CREATE_ERROR', { error: String(err) });
+    await logError('PRODUCT_CREATE_ERROR', { 오류: String(err) });
     return { data: null, error: String(err) };
   }
 }
@@ -36,13 +36,13 @@ async function updateProduct(id, updates) {
   try {
     const { data, error } = await _sb.from('products').update(updates).eq('id', id).select();
     if (error) {
-      await logError('PRODUCT_UPDATE_FAIL', { id, error: error.message });
+      await logError('PRODUCT_UPDATE_FAIL', { id, 오류: error.message });
       return { data: null, error: error.message };
     }
-    await logInfo('PRODUCT_UPDATE', { id, name: updates.name });
+    await logInfo('PRODUCT_UPDATE', { id, 상품명: updates.name });
     return { data: data[0], error: null };
   } catch (err) {
-    await logError('PRODUCT_UPDATE_ERROR', { id, error: String(err) });
+    await logError('PRODUCT_UPDATE_ERROR', { id, 오류: String(err) });
     return { data: null, error: String(err) };
   }
 }
@@ -57,14 +57,14 @@ async function uploadProductImage(file) {
       upsert: false
     });
     if (error) {
-      await logError('IMAGE_UPLOAD_FAIL', { error: error.message });
+      await logError('IMAGE_UPLOAD_FAIL', { 오류: error.message });
       return { url: null, error: error.message };
     }
     const { data: urlData } = _sb.storage.from('Talents_Items').getPublicUrl(data.path);
     await logInfo('IMAGE_UPLOAD', { path: data.path });
     return { url: urlData.publicUrl, error: null };
   } catch (err) {
-    await logError('IMAGE_UPLOAD_ERROR', { error: String(err) });
+    await logError('IMAGE_UPLOAD_ERROR', { 오류: String(err) });
     return { url: null, error: String(err) };
   }
 }
@@ -75,7 +75,7 @@ async function deleteProductImage(imageUrl) {
     const path = imageUrl.split('/Talents_Items/').pop();
     if (path) await _sb.storage.from('Talents_Items').remove([path]);
   } catch (err) {
-    logWarn('IMAGE_DELETE_FAIL', { imageUrl, error: String(err) });
+    logWarn('IMAGE_DELETE_FAIL', { imageUrl, 오류: String(err) });
   }
 }
 
@@ -87,13 +87,13 @@ async function deleteProduct(id) {
       if (/foreign key|violates|referenced/i.test(error.message)) {
         return { error: error.message, fkConflict: true };
       }
-      await logError('PRODUCT_DELETE_FAIL', { id, error: error.message });
+      await logError('PRODUCT_DELETE_FAIL', { id, 오류: error.message });
       return { error: error.message };
     }
     await logInfo('PRODUCT_DELETE', { id });
     return { error: null };
   } catch (err) {
-    await logError('PRODUCT_DELETE_ERROR', { id, error: String(err) });
+    await logError('PRODUCT_DELETE_ERROR', { id, 오류: String(err) });
     return { error: String(err) };
   }
 }
@@ -103,13 +103,13 @@ async function deactivateProduct(id) {
   try {
     const { error } = await _sb.from('products').update({ is_active: false }).eq('id', id);
     if (error) {
-      await logError('PRODUCT_DEACTIVATE_FAIL', { id, error: error.message });
+      await logError('PRODUCT_DEACTIVATE_FAIL', { id, 오류: error.message });
       return { error: error.message };
     }
     await logInfo('PRODUCT_DEACTIVATE', { id });
     return { error: null };
   } catch (err) {
-    await logError('PRODUCT_DEACTIVATE_ERROR', { id, error: String(err) });
+    await logError('PRODUCT_DEACTIVATE_ERROR', { id, 오류: String(err) });
     return { error: String(err) };
   }
 }

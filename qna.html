@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Q & A - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.29.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.32.0" />
   <style>
     .qna-container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
     .qna-hero { text-align: center; margin-bottom: 2rem; }
@@ -143,10 +143,10 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.29.0"></script>
-  <script src="js/supabase-config.js?v=3.29.0"></script>
-  <script src="js/activity-log.js?v=3.29.0"></script>
-  <script src="js/auth.js?v=3.29.0"></script>
+  <script src="config/public-config.js?v=3.32.0"></script>
+  <script src="js/supabase-config.js?v=3.32.0"></script>
+  <script src="js/activity-log.js?v=3.32.0"></script>
+  <script src="js/auth.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let _session = null;
@@ -311,6 +311,7 @@
         const { error } = await _sb.rpc('submit_anonymous_question', { p_question: text, p_name: name });
         if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
       }
+      await logInfo('QNA_CREATE', { 제목: text });
       document.getElementById('askQuestion').value = '';
       await loadQuestions();
     }
@@ -330,6 +331,7 @@
         commented_by_name: commenterName
       });
       if (cErr) { alert(tErr(cErr)); return; }
+      await logInfo('QNA_COMMENT', { 질문ID: questionId });
 
       const updates = {
         status: 'answered',
@@ -344,6 +346,8 @@
       }
       const { error: uErr } = await _sb.from('qna').update(updates).eq('id', questionId);
       if (uErr) { alert(tErr(uErr)); return; }
+      await logInfo('QNA_ANSWER', { 질문ID: questionId, 답변자: commenterName });
+      if (asFaq) await logInfo('QNA_FAQ_SET', { 질문ID: questionId, FAQ여부: true });
 
       if (asFaq) await loadFAQ();
       await loadQuestions();
@@ -371,6 +375,7 @@
         answered_at: new Date().toISOString()
       });
       if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+      await logInfo('QNA_CREATE', { 제목: question });
 
       document.getElementById('faqQuestion').value = '';
       document.getElementById('faqAnswer').value = '';
@@ -386,6 +391,7 @@
       if (latest && latest.content) updates.answer = latest.content;
       const { error } = await _sb.from('qna').update(updates).eq('id', id);
       if (error) { alert(tErr(error)); return; }
+      await logInfo('QNA_FAQ_SET', { 질문ID: id, FAQ여부: true });
       await loadFAQ();
       await loadQuestions();
     }
@@ -393,8 +399,10 @@
     async function deleteQuestion(id) {
       if (!_canDelete) return;
       if (!confirm('이 질문을 삭제하시겠습니까?')) return;
+      const { data: qRow } = await _sb.from('qna').select('question').eq('id', id).single();
       const { error } = await _sb.rpc('admin_soft_delete_qna', { p_qna_id: id });
       if (error) { alert('삭제 실패: ' + tErr(error.message)); return; }
+      await logInfo('QNA_DELETE', { 질문ID: id, 제목: qRow?.question || '' });
       await loadQuestions();
     }
 
@@ -405,6 +413,6 @@
       return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     }
   </script>
-  <script src="js/version.js?v=3.29.0"></script>
+  <script src="js/version.js?v=3.32.0"></script>
 </body>
 </html>

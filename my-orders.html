@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 구매 상품 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.29.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.32.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -80,10 +80,10 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.29.0"></script>
-  <script src="js/supabase-config.js?v=3.29.0"></script>
-  <script src="js/activity-log.js?v=3.29.0"></script>
-  <script src="js/auth.js?v=3.29.0"></script>
+  <script src="config/public-config.js?v=3.32.0"></script>
+  <script src="js/supabase-config.js?v=3.32.0"></script>
+  <script src="js/activity-log.js?v=3.32.0"></script>
+  <script src="js/auth.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let session;
@@ -114,7 +114,7 @@
       let orders = [];
       try {
         const { data, error } = await _sb.from('product_orders').select('*').eq('user_id', session.id).order('created_at', { ascending: false });
-        if (error) { logWarn('MY_ORDERS_FETCH', { error: error.message }); }
+        if (error) { logWarn('MY_ORDERS_FETCH', { 오류: error.message }); }
         else { orders = data || []; }
       } catch (e) { /* table may not exist */ }
 
@@ -155,7 +155,7 @@
         const { data: prof } = await _sb.from('profiles').select('pending_talent').eq('id', session.id).single();
         const newPending = Math.max(0, ((prof && prof.pending_talent) || 0) - price);
         await _sb.from('profiles').update({ pending_talent: newPending }).eq('id', session.id);
-        await logInfo('order_cancel', { product_name: productName, refunded: price, order_id: orderId });
+        await logInfo('ORDER_CANCEL', { orderId, 상품명: productName, 금액: price });
         alert('구매가 취소되었습니다.');
         await loadOrders();
       } catch (e) {
@@ -163,6 +163,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.29.0"></script>
+  <script src="js/version.js?v=3.32.0"></script>
 </body>
 </html>

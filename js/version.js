@@ -2,9 +2,25 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.31.0',
+  current: '3.32.0',
   date: '2026-06-08',
   history: [
+    {
+      version: '3.32.0',
+      date: '2026-06-08',
+      title: '감사이력/로그 한글화 전면 개편 + 즐겨찾기 DB 마이그레이션',
+      changes: [
+        '작업 이력: AUDIT_ACTIONS 키 불일치 수정 및 70개 이상 액션 타입으로 확대 (10개 카테고리 필터)',
+        '작업 이력: 필터 그룹 6개 → 10개 (사용자/등록/부서/달란트/상품·주문/Q&A/인증/로그관리/권한·설정)',
+        '로그 시스템: ACTION_LABELS 한글 매핑 150개+ 추가, writeLog() 자동 한글 라벨 적용',
+        '로그 뷰어: action 열에 한글 라벨 표시 (영문 키 병기)',
+        '전체 20개+ 페이지/JS: logInfo/logWarn/logError details 키 한글화 (대상/변경내역/오류/금액 등)',
+        '누락 로그 추가: qna.html(QNA_CREATE/ANSWER/COMMENT/DELETE/FAQ_SET), talent-items.html(TOGGLE/QUICKBTN), page-permissions.html(PAGE_PERM_UPDATE)',
+        '즐겨찾기 DB 마이그레이션: user_preferences 테이블 신설, localStorage → Supabase DB 저장 전환',
+        '즐겨찾기: 최초 로그인 시 기존 localStorage 데이터 자동 DB 마이그레이션',
+        '문서/가이드: README.md, SITE_USER_GUIDE.md, PROJECT_ARCHITECTURE_FLOW.md, 3개 가이드 페이지 최신화'
+      ]
+    },
     {
       version: '3.31.0',
       date: '2026-06-08',
