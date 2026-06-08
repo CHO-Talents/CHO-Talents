@@ -418,21 +418,28 @@
       if (!attendItem) return;
       const weekStart = getWeekStartKST();
       const { data: earns } = await _sb.from('talent_transactions')
-        .select('id, user_id, amount, description')
+        .select('id, user_id, amount, description, created_at')
         .in('user_id', userIds)
         .eq('talent_item_id', attendItem.id)
         .eq('type', 'earn')
-        .gte('created_at', weekStart.toISOString());
+        .gte('created_at', weekStart.toISOString())
+        .order('created_at', { ascending: true });
       const { data: returns } = await _sb.from('talent_transactions')
         .select('user_id, amount, description')
         .in('user_id', userIds)
         .eq('type', 'use')
         .like('description', '반환:%')
         .gte('created_at', weekStart.toISOString());
-      const returnSet = new Set((returns || []).map(r => r.user_id + '|' + r.amount + '|반환:' + (r.description.replace('반환: ','').replace('반환:',''))));
+      const retCount = {};
+      (returns || []).forEach(r => {
+        const k = r.user_id + '|' + r.amount + '|' + r.description.replace('반환: ','').replace('반환:','');
+        retCount[k] = (retCount[k] || 0) + 1;
+      });
       (earns || []).forEach(t => {
-        const key = t.user_id + '|' + t.amount + '|반환:' + (t.description || '');
-        if (!returnSet.has(key)) {
+        const k = t.user_id + '|' + t.amount + '|' + (t.description || '');
+        if (retCount[k] > 0) {
+          retCount[k]--;
+        } else {
           _attendanceGivenThisWeek.add(t.user_id);
           _attendanceTxnMap[t.user_id] = { id: t.id, amount: t.amount, description: t.description };
         }
@@ -623,22 +630,29 @@
       }
       const weekStart = getWeekStartKST();
       const { data: weekEarns } = await _sb.from('talent_transactions')
-        .select('id, talent_item_id, amount, description')
+        .select('id, talent_item_id, amount, description, created_at')
         .eq('user_id', talentUserId)
         .eq('type', 'earn')
         .gte('created_at', weekStart.toISOString())
-        .not('talent_item_id', 'is', null);
+        .not('talent_item_id', 'is', null)
+        .order('created_at', { ascending: true });
       const { data: weekReturns } = await _sb.from('talent_transactions')
         .select('amount, description')
         .eq('user_id', talentUserId)
         .eq('type', 'use')
         .like('description', '반환:%')
         .gte('created_at', weekStart.toISOString());
-      const retDescs = new Set((weekReturns || []).map(r => r.amount + '|' + r.description.replace('반환: ','').replace('반환:','')));
+      const retCount = {};
+      (weekReturns || []).forEach(r => {
+        const k = r.amount + '|' + r.description.replace('반환: ','').replace('반환:','');
+        retCount[k] = (retCount[k] || 0) + 1;
+      });
       _weeklyGivenMap = {};
       (weekEarns || []).forEach(t => {
         const matchKey = t.amount + '|' + (t.description || '');
-        if (!retDescs.has(matchKey)) {
+        if (retCount[matchKey] > 0) {
+          retCount[matchKey]--;
+        } else {
           _weeklyGivenMap[t.talent_item_id] = { id: t.id, amount: t.amount, description: t.description };
         }
       });
