@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.34.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.34.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.34.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.35.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.35.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.35.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -155,7 +155,7 @@
           <div class="guide-steps">
             <div class="step"><span class="step-num">1</span> <strong>운영 → 로그</strong>에서 활동 로그를 확인합니다.</div>
             <div class="step"><span class="step-num">2</span> 액션 열에 한글 라벨이 표시되며, 영문 키는 작은 글씨로 병기됩니다.</div>
-            <div class="step"><span class="step-num">3</span> 상세 내역의 키도 한글로 표시됩니다 (대상, 변경내역, 오류 등).</div>
+            <div class="step"><span class="step-num">3</span> 상세 내역의 키도 한글로 표시됩니다 (대상, 변경내역, 오류 등). 적재 실패는 브라우저 콘솔 오류로 확인할 수 있습니다.</div>
           </div>
           <p style="margin-top:0.75rem;font-size:0.85rem;">미확인 ERROR 이상 로그는 확인 완료 처리를 남겨야 합니다. 삭제는 삭제 대기 방식으로 처리됩니다.</p>
         </div>
@@ -165,7 +165,7 @@
           <div class="guide-steps">
             <div class="step"><span class="step-num">1</span> <strong>운영 → 작업 이력</strong>에서 10개 카테고리 필터로 조회합니다.</div>
             <div class="step"><span class="step-num">2</span> 필터: 사용자/등록/부서/달란트/상품·주문/Q&amp;A/인증/로그관리/권한·설정</div>
-            <div class="step"><span class="step-num">3</span> 각 작업의 <strong>변경내역</strong>이 한글로 상세히 기록됩니다 (예: "이름: 홍길동, 부서: 1부서 → 2부서").</div>
+            <div class="step"><span class="step-num">3</span> 작업 이력은 활동 로그 중 관리 작업만 필터링하며, 각 작업의 <strong>변경내역</strong>이 한글로 상세히 기록됩니다.</div>
           </div>
         </div>
         <div class="guide-card">
@@ -200,6 +200,7 @@
           <li>구매 신청은 바로 차감이 아니며, 구매 확정 시점에 달란트가 차감됩니다.</li>
           <li>권한이 낮은 계정은 일부 버튼이 보이지 않거나, 보이더라도 처리 권한이 제한될 수 있습니다.</li>
           <li>삭제 대기 처리된 로그나 상품은 일반 목록에서 숨겨지지만 기록은 남습니다.</li>
+          <li>작업 이력은 별도 저장소가 아니라 활동 로그 중 관리 작업만 필터링해서 보여줍니다.</li>
           <li>QR 위치 제한을 쓰려면 사용자가 수령할 때 브라우저 위치 권한을 허용해야 합니다.</li>
         </ul>
       </div>
@@ -211,12 +212,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.34.0"></script>
-  <script src="js/supabase-config.js?v=3.34.0"></script>
-  <script src="js/activity-log.js?v=3.34.0"></script>
-  <script src="js/auth.js?v=3.34.0"></script>
-  <script src="js/theme.js?v=3.34.0"></script>
-  <script src="js/nav.js?v=3.34.0"></script>
+  <script src="config/public-config.js?v=3.35.0"></script>
+  <script src="js/supabase-config.js?v=3.35.0"></script>
+  <script src="js/activity-log.js?v=3.35.0"></script>
+  <script src="js/auth.js?v=3.35.0"></script>
+  <script src="js/theme.js?v=3.35.0"></script>
+  <script src="js/nav.js?v=3.35.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -231,6 +232,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.34.0"></script>
+  <script src="js/version.js?v=3.35.0"></script>
 </body>
 </html>

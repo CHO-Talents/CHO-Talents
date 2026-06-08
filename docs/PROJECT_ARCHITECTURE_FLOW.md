@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-09 KST 현재 코드 기준 (v3.34.0)
+작성 기준: 2026-06-09 KST 현재 코드 기준 (v3.35.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -71,7 +71,7 @@ flowchart LR
 | `teacher-guide.html` | 교사 가이드. 일반 교사(40+) 이상만 접근 가능, 미만 시 학생 가이드로 리다이렉트 |
 | `admin-guide.html` | 관리자 가이드. 부서 담당 교사(60+) 이상만 접근 가능, 미만 시 교사/학생 가이드로 리다이렉트 |
 | `qna.html` | Q&A/FAQ. 공개 FAQ 조회, 관리자 FAQ 직접 등록, 로그인 사용자 질문/답변 등록, 60등급 이상 답변+FAQ 등록, 90등급 이상 삭제 |
-| `earn-talents.html` | 달란트 적립 방법 안내. 항목 카드 그리드(모바일 3열, PC 5열) |
+| `earn-talents.html` | 달란트 적립 방법 안내. 항목 카드 그리드(모바일 3열, PC 5열)와 `talent_items` 활성 항목 지급 수량 배지 표시 |
 | `shop.html` | 상점 조회 + 구매 신청 + 대리 구매. 비로그인은 학생용, 교사는 교사용 기본 필터 |
 | `my-talents.html` | 로그인 사용자 본인의 사용 가능 달란트/상품 수령 예정/사용 대기/사용 완료/누적 적립 달란트, 달란트 내역, 구매 내역 |
 | `my-orders.html` | 로그인 사용자 본인의 구매 신청 내역과 4단계 상태 조회 |
@@ -374,7 +374,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  Event["페이지 방문/로그인/오류/관리 작업"] --> WriteLog["writeLog() → activity_logs INSERT<br/>logInfo/logWarn/logError"]
+  Event["페이지 방문/로그인/오류/관리 작업"] --> WriteLog["writeLog() → activity_logs INSERT<br/>반환 error 감지 + 호환 재시도"]
   WriteLog --> ActionLabel["ACTION_LABELS 한글 매핑 (~150개)<br/>details._actionLabel 자동 저장"]
   ActionLabel --> Logs["admin/logs.html (100등급+)"]
   Logs --> Filter["레벨/기간 필터"]
@@ -392,6 +392,7 @@ flowchart TD
 
 - `activity-log.js`의 `ACTION_LABELS`에 약 150개 action 키의 한글 라벨이 정의되어 있다
 - `writeLog()`는 기록 시 `ACTION_LABELS[action]`이 있으면 `details._actionLabel`에 한글 라벨을 자동 저장한다
+- `writeLog()`는 Supabase insert 결과의 `error`를 확인하고, 구버전 DB 스키마에서 `user_name`/`is_acknowledged` 컬럼 오류가 나면 해당 선택 컬럼을 제거해 재시도한다
 - `admin/logs.html`은 `getActionLabel()`로 action 열에 한글 라벨을 표시한다 (영문 키 병기)
 - `ERROR`, `FATAL`, `CRITICAL`은 기본적으로 미확인 상태로 저장
 - 운영자가 확인 내용을 남기면 확인 처리
@@ -413,6 +414,7 @@ flowchart TD
 
 - `AUDIT_ACTIONS`에 70개 이상 관리 작업 action 키와 한글 라벨/카테고리가 정의되어 있다
 - 작업 이력 화면은 10개 카테고리 필터(전체 + 9개 그룹)로 조회 범위를 좁힌다
+- 작업 이력은 별도 테이블이 아니라 `activity_logs`에서 `AUDIT_ACTIONS` 키에 해당하는 로그만 필터링한다
 - 상세 내역은 `writeLog()`가 저장한 `details._actionLabel` 및 한글화된 details 키를 표시한다
 
 ## 13. 에러 처리 흐름
@@ -447,7 +449,7 @@ flowchart TD
 | `reports` | 작업 보고서 |
 | `talent_qr_codes` | QR 코드 생성/관리. `target_type`(학생/교사), `valid_from`/`valid_until` 기간, `max_uses` (0=무제한, N=선착순), `location_*` 위치 제한, `repeat_type`(none/daily/weekday/week_weekday), `repeat_days` INT[], `repeat_weeks` INT[] |
 | `talent_qr_scans` | QR 코드 스캔 이력. 반복 수령 시 오늘 기준 중복 체크 |
-| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록, `details._actionLabel` 한글 라벨 |
+| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록, `details._actionLabel` 한글 라벨. 작업 이력도 이 테이블을 필터링해 표시 |
 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
 | `role_page_features` | 권한 등급별 페이지 기능 설정값 |
 | `page_permissions` | 페이지 권한 설정 (레거시) |
@@ -493,7 +495,7 @@ flowchart TD
 18. `qna.html`에서 공개 FAQ, 로그인 질문 등록, 60등급 이상 댓글(답변)/FAQ 등록/직접 FAQ 추가, 90등급 이상 삭제가 동작하는지 확인한다.
 19. 아이디가 관리자에게만 표시되고 일반 사용자는 본인 것만 보이는지 확인한다.
 20. 에러 메시지가 한글로 변환되어 표시되는지 확인한다.
-21. 주요 기능의 성공/실패/거부가 활동 로그에 기록되는지 확인한다.
+21. 주요 기능의 성공/실패/거부가 활동 로그에 기록되는지 확인하고, DB insert 실패가 콘솔 오류로 노출되는지 확인한다.
 
 ## 17. 다음 작업자가 먼저 볼 파일
 
@@ -511,3 +513,4 @@ flowchart TD
 | 10 | `docs/TASK-032_fixes.sql` | Q&A 테이블/RLS와 미승인 로그인 안내 RPC |
 | 11 | `docs/TASK-035_qna_comments.sql` | Q&A 댓글 테이블/RLS 및 삭제 권한 수정 |
 | 12 | `docs/TASK-039_user_preferences.sql` | `user_preferences` 테이블 (즐겨찾기 DB 저장), RLS 정책 |
+| 13 | `docs/TASK-047_activity_logs_grants.sql` | 운영 DB `activity_logs` INSERT 권한/정책 복구 SQL |

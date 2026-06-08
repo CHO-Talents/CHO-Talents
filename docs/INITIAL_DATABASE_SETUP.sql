@@ -1225,14 +1225,16 @@ CREATE POLICY report_events_insert_perm ON public.report_events FOR INSERT
   WITH CHECK (auth.uid() = user_id OR public.get_permission_rank(public.get_my_role()) >= 80);
 
 -- logs
+GRANT INSERT ON public.activity_logs TO anon, authenticated;
+GRANT SELECT, UPDATE, DELETE ON public.activity_logs TO authenticated;
 DROP POLICY IF EXISTS logs_insert_public ON public.activity_logs;
-CREATE POLICY logs_insert_public ON public.activity_logs FOR INSERT WITH CHECK (true);
+CREATE POLICY logs_insert_public ON public.activity_logs FOR INSERT TO anon, authenticated WITH CHECK (true);
 DROP POLICY IF EXISTS logs_select_perm ON public.activity_logs;
-CREATE POLICY logs_select_perm ON public.activity_logs FOR SELECT USING (public.get_permission_rank(public.get_my_role()) >= 100);
+CREATE POLICY logs_select_perm ON public.activity_logs FOR SELECT TO authenticated USING (public.get_permission_rank(public.get_my_role()) >= 100);
 DROP POLICY IF EXISTS logs_update_perm ON public.activity_logs;
-CREATE POLICY logs_update_perm ON public.activity_logs FOR UPDATE USING (public.get_permission_rank(public.get_my_role()) >= 100);
+CREATE POLICY logs_update_perm ON public.activity_logs FOR UPDATE TO authenticated USING (public.get_permission_rank(public.get_my_role()) >= 100) WITH CHECK (public.get_permission_rank(public.get_my_role()) >= 100);
 DROP POLICY IF EXISTS activity_logs_delete ON public.activity_logs;
-CREATE POLICY activity_logs_delete ON public.activity_logs FOR DELETE USING (public.get_permission_rank(public.get_my_role()) >= 100);
+CREATE POLICY activity_logs_delete ON public.activity_logs FOR DELETE TO authenticated USING (public.get_permission_rank(public.get_my_role()) >= 100);
 
 -- page permission management
 DROP POLICY IF EXISTS pp_select ON public.page_permissions;

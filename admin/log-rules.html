@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로그 작성 룰 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
-  <link rel="stylesheet" href="../css/themes.css?v=3.34.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.34.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.35.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.35.0" />
   <style>
     .rule-section { background: var(--admin-card); border-radius: var(--admin-radius); box-shadow: var(--admin-shadow); padding: 1.5rem; margin-bottom: 1.5rem; }
     .rule-section h2 { font-size: 1.1rem; font-weight: 700; color: var(--admin-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -277,6 +277,9 @@
         <strong>저장소:</strong> 모든 로그는 Supabase <code>activity_logs</code> 테이블에 저장됩니다.
       </div>
       <div class="note-box">
+        <strong>DB 권한:</strong> 로그가 DB에 쌓이지 않으면 <code>docs/TASK-047_activity_logs_grants.sql</code>로 <code>activity_logs</code> INSERT 권한과 RLS 정책을 복구합니다.
+      </div>
+      <div class="note-box">
         <strong>소프트 삭제:</strong> 로그는 물리적으로 삭제되지 않고 <code>is_deleted=true</code>로 표시됩니다.
       </div>
       <div class="note-box">
@@ -289,12 +292,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.34.0"></script>
-  <script src="../js/supabase-config.js?v=3.34.0"></script>
-  <script src="../js/activity-log.js?v=3.34.0"></script>
-  <script src="../js/auth.js?v=3.34.0"></script>
-  <script src="../js/theme.js?v=3.34.0"></script>
-  <script src="../js/nav.js?v=3.34.0"></script>
+  <script src="../config/public-config.js?v=3.35.0"></script>
+  <script src="../js/supabase-config.js?v=3.35.0"></script>
+  <script src="../js/activity-log.js?v=3.35.0"></script>
+  <script src="../js/auth.js?v=3.35.0"></script>
+  <script src="../js/theme.js?v=3.35.0"></script>
+  <script src="../js/nav.js?v=3.35.0"></script>
   <script>
     initSupabase();
     (async () => {

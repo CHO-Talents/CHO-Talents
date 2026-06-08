@@ -197,6 +197,65 @@ function getActionLabel(action) {
   return ACTION_LABELS[action] || action;
 }
 
+function _getLogErrorMessage(error) {
+  if (!error) return '';
+  return [
+    error.message,
+    error.details,
+    error.hint,
+    error.code,
+    typeof error === 'string' ? error : ''
+  ].filter(Boolean).join(' ');
+}
+
+function _getMissingOptionalLogColumn(error, row) {
+  const msg = _getLogErrorMessage(error).toLowerCase();
+  if (!msg || !/could not find|column|schema cache|does not exist/i.test(msg)) return null;
+  return ['user_name', 'is_acknowledged'].find(col =>
+    Object.prototype.hasOwnProperty.call(row, col) && msg.includes(col.toLowerCase())
+  ) || null;
+}
+
+async function _insertActivityLogRow(row) {
+  let currentRow = { ...row };
+  const removedColumns = [];
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const result = await _sb.from('activity_logs').insert(currentRow);
+      if (!result.error) {
+        if (removedColumns.length) {
+          console.warn('[Log] Inserted with compatibility fallback. Removed columns:', removedColumns.join(', '));
+        }
+        return result;
+      }
+
+      const missingColumn = _getMissingOptionalLogColumn(result.error, currentRow);
+      if (missingColumn) {
+        delete currentRow[missingColumn];
+        removedColumns.push(missingColumn);
+        continue;
+      }
+
+      console.error('[Log] Failed to write log:', result.error);
+      return result;
+    } catch (err) {
+      const missingColumn = _getMissingOptionalLogColumn(err, currentRow);
+      if (missingColumn) {
+        delete currentRow[missingColumn];
+        removedColumns.push(missingColumn);
+        continue;
+      }
+      console.error('[Log] Failed to write log:', err);
+      return { data: null, error: err };
+    }
+  }
+
+  const error = new Error('activity_logs insert failed after compatibility fallbacks');
+  console.error('[Log] Failed to write log:', error);
+  return { data: null, error };
+}
+
 function _parseUA() {
   const ua = navigator.userAgent || '';
   let browser = 'Unknown', os = 'Unknown', deviceType = 'desktop';
@@ -250,7 +309,7 @@ _fetchIp();
 async function writeLog(level, action, page, details) {
   if (!_sb) {
     console.warn('[Log] Supabase not initialized, log skipped:', level, action);
-    return;
+    return { data: null, error: 'Supabase not initialized' };
   }
   const session = getSession();
   const ci = getClientInfo();
@@ -269,16 +328,7 @@ async function writeLog(level, action, page, details) {
     user_name: userName,
     is_acknowledged: !ERROR_LEVELS.includes(level)
   };
-  try {
-    await _sb.from('activity_logs').insert(row);
-  } catch (err) {
-    if (err && err.message && err.message.includes('user_name')) {
-      delete row.user_name;
-      try { await _sb.from('activity_logs').insert(row); } catch (e2) { console.error('[Log] Fallback insert failed:', e2); }
-    } else {
-      console.error('[Log] Failed to write log:', err);
-    }
-  }
+  return await _insertActivityLogRow(row);
 }
 
 function logTrace(action, details) { return writeLog('TRACE', action, null, details); }
