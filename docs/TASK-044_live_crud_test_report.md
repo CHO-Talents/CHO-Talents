@@ -1,11 +1,11 @@
 # TASK-044 실데이터 CRUD 기능 검증 보고서
 
 - 검증일: 2026-06-08
-- 검증 계정: `lsyby`
+- 검증 계정: `****`
 - 검증자: AI_Codex
 - 테스트 표식: `AI_Codex_CRUD_20260608_151856`
-- 검증 방식: 실제 사이트 로그인 화면 확인 + `lsyby` 인증 세션 기반 Supabase CRUD 호출
-- 검증 결과: PASS 51건, FAIL 1건
+- 검증 방식: 실제 사이트 로그인 화면 확인 + 마스킹된 관리자 인증 세션 기반 Supabase CRUD 호출
+- 검증 결과: PASS 54건, FAIL 0건
 
 ## 1. 요약
 
@@ -13,7 +13,7 @@
 
 부서, 사용자, 관리자 권한, 가입 신청, 달란트 항목, 달란트 지급/반환, 상품, 구매 신청/상태 변경/취소, QR, Q&A, 페이지 권한, 페이지 접근/기능, 로그, 보고서 CRUD는 정상 처리되었다.
 
-실패는 `department_transfer_requests` REST 엔드포인트 404 1건이다. 테이블 또는 PostgREST 스키마 캐시가 현재 운영 API에 노출되지 않은 상태로 보이며, DB에는 초기 세팅 SQL이 있으므로 실제 테이블 생성/스키마 캐시 반영 여부를 확인해야 한다.
+이전 점검에서 실패했던 `department_transfer_requests` REST 엔드포인트 404는 테이블/RLS/권한 정책 재적용과 PostgREST 스키마 캐시 재적재 후 재검증에서 해소되었다.
 
 ## 2. 화면 확인
 
@@ -36,13 +36,13 @@
 | `admin/page-features.html` | 페이지 기능 화면 로딩 및 데이터 CRUD | PASS | 앱 미사용 임시 page_id로 검증 후 삭제 |
 | `admin/logs.html` | 로그 화면 로딩, 확인/삭제 대기 처리 | PASS | 테스트 ERROR 로그 생성 후 확인/소프트 삭제 |
 | `admin/audit.html` | 작업 이력 화면 로딩 | PASS | 작업 로그 기반 이력 화면 접근 정상 |
-| `admin/reports.html` | 보고서 DB 등록 | PARTIAL | DB에는 TASK-044 등록 성공. 화면 첫 목록에는 캐시/시더 영향으로 즉시 노출되지 않음 |
+| `admin/reports.html` | 보고서 DB 등록 및 목록 노출 | PASS | TASK-044 등록, 누락 시드 보강 후 재조회, 최신 row 노출 흐름 확인 |
 
 ## 3. CRUD 검증 상세
 
 | 구분 | 페이지 | 작업 | 결과 | 비고 |
 |---|---|---|---|---|
-| 로그인 | `login.html` | 계정 인증 토큰 발급 | PASS | `lsyby` 인증 성공 |
+| 로그인 | `login.html` | 계정 인증 토큰 발급 | PASS | 마스킹된 관리자 계정 인증 성공 |
 | 로그인 | `index.html` | 프로필 조회 | PASS | `permission_level=admin`, `is_super_admin=true` |
 | 부서 관리 | `admin/departments.html` | 부서 등록 | PASS | 임시 부서 생성 |
 | 부서 관리 | `admin/departments.html` | 부서 수정 | PASS | 이름/설명/반 수 수정 |
@@ -58,7 +58,9 @@
 | 가입 신청 | `admin/users.html` | 가입 신청 등록 | PASS | 임시 신청 row 생성 |
 | 가입 신청 | `admin/users.html` | 가입 신청 수정/반려 | PASS | `status=rejected` |
 | 가입 신청 | `admin/users.html` | 가입 신청 삭제 | PASS | 임시 신청 row 삭제 |
-| 부서 이동 신청 | `admin/users.html` | 이동 신청 등록 | FAIL | REST 404 |
+| 부서 이동 신청 | `admin/users.html` | 이동 신청 등록 | PASS | 테이블/RLS/스키마 캐시 재적용 후 REST insert 검증 |
+| 부서 이동 신청 | `admin/users.html` | 이동 신청 수정 | PASS | REST update로 `status=rejected` 검증 |
+| 부서 이동 신청 | `admin/users.html` | 이동 신청 삭제 | PASS | 임시 이동 신청 row 삭제 |
 | 달란트 항목 | `admin/talent-items.html` | 항목 등록 | PASS | 임시 항목 생성 |
 | 달란트 항목 | `admin/talent-items.html` | 항목 수정 | PASS | 이름/금액/정렬 수정 |
 | 달란트 항목 | `admin/talent-items.html` | 항목 삭제(비활성화) | PASS | `is_active=false` |
@@ -95,13 +97,13 @@
 | 보고서 | `admin/reports.html` | 임시 보고서 삭제 | PASS | 임시 보고서 삭제 |
 | 보고서 | `admin/reports.html` | 최종 보고서 등록 | PASS | `TASK-044` DB row 등록 |
 
-## 4. 실패 및 개선 방법
+## 4. 개선 완료 항목
 
 | 항목 | 문제점 | 영향 | 개선 방법 |
 |---|---|---|---|
-| 부서 이동 신청 등록 | `department_transfer_requests` REST 엔드포인트가 404를 반환 | 부서 이동 신청 기능이 실제 API에서 동작하지 않을 수 있음 | Supabase에서 `public.department_transfer_requests` 테이블 존재 여부 확인, RLS/권한 정책 재적용, `NOTIFY pgrst, 'reload schema';` 실행 |
-| 보고서 화면 목록 | `reports` 테이블에는 `TASK-044`가 정상 등록됐지만 화면 첫 목록에서 즉시 노출되지 않음 | 운영자가 새 보고서 등록 직후 화면에서 확인하기 어려움 | `reports.html` 로딩 시 실제 조회 결과 count/최신 row 로그 추가, 자동복구 후 재조회 강제, 시드 데이터에 TASK-044 포함 |
-| 사용자 등록 화면 자동화 | 브라우저 자동화에서 HTML select 값 변경이 제한되어 첫 UI 저장 시 부서 필수 검증에 걸림 | 실제 사용자 조작 결함은 아니며, 자동화 한계 | 테스트 자동화를 위해 select에 명시적 `id`/테스트 속성 유지, E2E에서는 Playwright 정식 `selectOption` 환경 사용 |
+| 부서 이동 신청 등록 | `department_transfer_requests` REST 엔드포인트가 404를 반환 | 부서 이동 신청 기능이 실제 API에서 동작하지 않을 수 있음 | `docs/TASK-045_department_transfer_reports_fix.sql`을 작성하고 운영 DB에 적용했다. 테이블/RLS/권한/스키마 캐시 재적재 후 insert/update/delete 재검증 PASS |
+| 보고서 화면 목록 | `reports` 테이블에는 `TASK-044`가 정상 등록됐지만 화면 첫 목록에서 즉시 노출되지 않음 | 운영자가 새 보고서 등록 직후 화면에서 확인하기 어려움 | `reports.html`에서 조회 count/최신 row 로그를 추가하고, 누락 시드 보강 및 자동복구 후 DB 재조회가 강제되도록 수정 |
+| 사용자 등록 화면 자동화 | 브라우저 자동화에서 HTML select 값 변경이 제한되어 첫 UI 저장 시 부서 필수 검증에 걸림 | 실제 사용자 조작 결함은 아니며, 자동화 한계 | 사용자 등록/수정 및 부서 이동 폼에 안정적인 `data-testid`를 추가했다. E2E에서는 Playwright `selectOption` 대상으로 사용 가능 |
 
 ## 5. 데이터 정리 상태
 
@@ -110,6 +112,7 @@
 | 임시 부서 | `is_active=false` | PASS |
 | 임시 학생/교사 | `admin_delete_user` RPC | PASS |
 | 임시 가입 신청 | DELETE | PASS |
+| 임시 부서 이동 신청 | DELETE | PASS |
 | 임시 달란트 항목 | `is_active=false` | PASS |
 | 임시 달란트 지급 | 반환 트랜잭션 생성 | PASS |
 | 임시 상품 | `is_active=false` | PASS |
@@ -123,6 +126,6 @@
 
 ## 6. 결론
 
-현재 `lsyby` 최고관리자 계정으로 수행 가능한 대부분의 등록/수정/삭제 또는 상태 전환 작업은 정상 처리된다. 달란트 지급 RPC 후보 함수 충돌 문제도 이번 지급 검증에서 재발하지 않았다.
+현재 마스킹된 최고관리자 계정으로 수행 가능한 등록/수정/삭제 또는 상태 전환 작업은 정상 처리된다. 달란트 지급 RPC 후보 함수 충돌 문제도 이번 지급 검증에서 재발하지 않았다.
 
-즉시 개선이 필요한 항목은 부서 이동 신청 API 404와 보고서 화면의 최신 보고서 노출 문제다. 두 항목은 데이터 자체보다 API 스키마 노출/화면 렌더링 경로의 문제로 보이며, DB 스키마 캐시 재적재와 `reports.html` 조회/자동복구 흐름 보강이 필요하다.
+부서 이동 신청 API 404와 보고서 화면의 최신 보고서 노출 문제는 이번 조치에서 개선 완료했다. 이후 같은 문제가 반복될 때는 `docs/TASK-045_department_transfer_reports_fix.sql`을 재실행하고 보고서 화면의 `loadStatus` 단계 로그를 확인하면 된다.
