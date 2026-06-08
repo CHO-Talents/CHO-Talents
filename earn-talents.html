@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 적립 방법 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.29.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.31.0" />
   <style>
     .earn-hero { text-align: center; margin-bottom: 2rem; }
     .earn-hero-icon { font-size: 4rem; margin-bottom: 0.5rem; }
@@ -144,9 +144,9 @@
       <p>다양한 활동으로 달란트를 모아 보세요!</p>
     </div>
 
-    <div style="display:flex;gap:0.5rem;margin-bottom:1.2rem;justify-content:center;">
+    <div id="earnTabBar" style="display:flex;gap:0.5rem;margin-bottom:1.2rem;justify-content:center;">
       <button class="filter-btn active" id="earnTabStudent" onclick="switchEarnTab('student')" style="padding:0.5rem 1.2rem;font-size:0.95rem;">🎒 학생</button>
-      <button class="filter-btn" id="earnTabTeacher" onclick="switchEarnTab('teacher')" style="padding:0.5rem 1.2rem;font-size:0.95rem;">👩‍🏫 교사</button>
+      <button class="filter-btn" id="earnTabTeacher" onclick="switchEarnTab('teacher')" style="padding:0.5rem 1.2rem;font-size:0.95rem;display:none;">👩‍🏫 교사</button>
     </div>
 
     <div class="method-grid" id="earnStudentGrid">
@@ -251,10 +251,10 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.29.0"></script>
-  <script src="js/supabase-config.js?v=3.29.0"></script>
-  <script src="js/activity-log.js?v=3.29.0"></script>
-  <script src="js/auth.js?v=3.29.0"></script>
+  <script src="config/public-config.js?v=3.31.0"></script>
+  <script src="js/supabase-config.js?v=3.31.0"></script>
+  <script src="js/activity-log.js?v=3.31.0"></script>
+  <script src="js/auth.js?v=3.31.0"></script>
   <script>
     initSupabase();
     autoLogPageView();
@@ -271,9 +271,12 @@
         const mo = document.getElementById('navMyOrders');
         if (mo) mo.style.display = '';
         updateNavOrderBadge();
+        if (session.permissionRank >= 40) {
+          document.getElementById('earnTabTeacher').style.display = '';
+        }
       }
     })();
   </script>
-  <script src="js/version.js?v=3.29.0"></script>
+  <script src="js/version.js?v=3.31.0"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.30.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.31.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -184,11 +184,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.30.0"></script>
-  <script src="../js/supabase-config.js?v=3.30.0"></script>
-  <script src="../js/activity-log.js?v=3.30.0"></script>
-  <script src="../js/auth.js?v=3.30.0"></script>
-  <script src="../js/user-mgmt.js?v=3.30.0"></script>
+  <script src="../config/public-config.js?v=3.31.0"></script>
+  <script src="../js/supabase-config.js?v=3.31.0"></script>
+  <script src="../js/activity-log.js?v=3.31.0"></script>
+  <script src="../js/auth.js?v=3.31.0"></script>
+  <script src="../js/user-mgmt.js?v=3.31.0"></script>
   <script src="../js/talent.js?v=3.27.1"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
@@ -418,56 +418,76 @@
       if (!attendItem) return;
       const weekStart = getWeekStartKST();
       const { data: earns } = await _sb.from('talent_transactions')
-        .select('id, user_id, amount, description')
+        .select('id, user_id, amount, description, created_at')
         .in('user_id', userIds)
         .eq('talent_item_id', attendItem.id)
         .eq('type', 'earn')
-        .gte('created_at', weekStart.toISOString());
+        .gte('created_at', weekStart.toISOString())
+        .order('created_at', { ascending: true });
       const { data: returns } = await _sb.from('talent_transactions')
         .select('user_id, amount, description')
         .in('user_id', userIds)
         .eq('type', 'use')
         .like('description', '반환:%')
         .gte('created_at', weekStart.toISOString());
-      const returnSet = new Set((returns || []).map(r => r.user_id + '|' + r.amount + '|반환:' + (r.description.replace('반환: ','').replace('반환:',''))));
+      const retCount = {};
+      (returns || []).forEach(r => {
+        const k = r.user_id + '|' + r.amount + '|' + r.description.replace('반환: ','').replace('반환:','');
+        retCount[k] = (retCount[k] || 0) + 1;
+      });
       (earns || []).forEach(t => {
-        const key = t.user_id + '|' + t.amount + '|반환:' + (t.description || '');
-        if (!returnSet.has(key)) {
+        const k = t.user_id + '|' + t.amount + '|' + (t.description || '');
+        if (retCount[k] > 0) {
+          retCount[k]--;
+        } else {
           _attendanceGivenThisWeek.add(t.user_id);
           _attendanceTxnMap[t.user_id] = { id: t.id, amount: t.amount, description: t.description };
         }
       });
     }
 
+    let _attendBusy = false;
     async function giveAttendance(userId, userName) {
+      if (_attendBusy) return;
       const attendItem = talentItems.find(i => i.is_quick_button === true && i.target_type === currentTab && i.is_active)
         || talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
       if (!attendItem) { alert('출석 퀵버튼 항목이 설정되지 않았습니다.\n달란트 항목 관리에서 ⚡퀵 버튼을 지정해주세요.'); return; }
       if (_attendanceGivenThisWeek.has(userId)) { alert('이번 주에 이미 출석 달란트가 지급되었습니다.'); return; }
-      const result = await giveTalentByItem(userId, attendItem.id, session.id);
-      if (result && result.success === false) {
-        alert(tErr(result.error || '출석 지급 실패'));
-        return;
-      }
-      await logInfo('ATTENDANCE_GIVE', { targetUser: userId, targetName: userName, amount: attendItem.talent_amount });
-      loadUsers();
+      _attendBusy = true;
+      try {
+        const result = await giveTalentByItem(userId, attendItem.id, session.id);
+        if (result && result.success === false) {
+          alert(tErr(result.error || '출석 지급 실패'));
+          return;
+        }
+        _attendanceGivenThisWeek.add(userId);
+        _attendanceTxnMap[userId] = { id: result?.id || '', amount: result?.amount || attendItem.talent_amount, description: result?.description || attendItem.name };
+        renderTalentTable();
+        await logInfo('ATTENDANCE_GIVE', { targetUser: userId, targetName: userName, amount: attendItem.talent_amount });
+        await loadUsers();
+      } finally { _attendBusy = false; }
     }
 
     async function cancelAttendance(userId, userName) {
+      if (_attendBusy) return;
       const txn = _attendanceTxnMap[userId];
       if (!txn) { alert('취소할 출석 내역을 찾을 수 없습니다.'); return; }
       if (!confirm(`${userName}님의 출석 달란트(${txn.amount})를 취소하시겠습니까?`)) return;
+      _attendBusy = true;
       try {
         const result = await returnTalent(userId, txn.amount, txn.description || '출석', session.id);
         if (result && result.success === false) {
           alert('취소 실패: ' + tErr(result.error));
           return;
         }
+        _attendanceGivenThisWeek.delete(userId);
+        delete _attendanceTxnMap[userId];
+        renderTalentTable();
         await logInfo('ATTENDANCE_CANCEL', { targetUser: userId, targetName: userName, amount: txn.amount });
-        loadUsers();
+        await loadUsers();
       } catch (e) {
         alert('취소 오류: ' + (e.message || e));
-      }
+      } finally { _attendBusy = false; }
     }
 
     async function openDetailModal(userId, name) {
@@ -610,22 +630,29 @@
       }
       const weekStart = getWeekStartKST();
       const { data: weekEarns } = await _sb.from('talent_transactions')
-        .select('id, talent_item_id, amount, description')
+        .select('id, talent_item_id, amount, description, created_at')
         .eq('user_id', talentUserId)
         .eq('type', 'earn')
         .gte('created_at', weekStart.toISOString())
-        .not('talent_item_id', 'is', null);
+        .not('talent_item_id', 'is', null)
+        .order('created_at', { ascending: true });
       const { data: weekReturns } = await _sb.from('talent_transactions')
         .select('amount, description')
         .eq('user_id', talentUserId)
         .eq('type', 'use')
         .like('description', '반환:%')
         .gte('created_at', weekStart.toISOString());
-      const retDescs = new Set((weekReturns || []).map(r => r.amount + '|' + r.description.replace('반환: ','').replace('반환:','')));
+      const retCount = {};
+      (weekReturns || []).forEach(r => {
+        const k = r.amount + '|' + r.description.replace('반환: ','').replace('반환:','');
+        retCount[k] = (retCount[k] || 0) + 1;
+      });
       _weeklyGivenMap = {};
       (weekEarns || []).forEach(t => {
         const matchKey = t.amount + '|' + (t.description || '');
-        if (!retDescs.has(matchKey)) {
+        if (retCount[matchKey] > 0) {
+          retCount[matchKey]--;
+        } else {
           _weeklyGivenMap[t.talent_item_id] = { id: t.id, amount: t.amount, description: t.description };
         }
       });
@@ -682,6 +709,7 @@
       errEl.classList.remove('show');
       let lastBalance = 0;
       for (const chk of chks) {
+        if (_weeklyGivenMap[chk.value]) continue;
         try {
           const result = await giveTalentByItem(talentUserId, chk.value, session.id);
           if (result.success === false) {
@@ -690,6 +718,7 @@
             errEl.classList.add('show');
             break;
           }
+          _weeklyGivenMap[chk.value] = { id: result?.id || '', amount: result?.amount || Number(chk.dataset.amount), description: result?.description || chk.dataset.name };
           lastBalance = result.balance;
         } catch (err) {
           await logError('TALENT_GIVE_ITEM_ERROR', { userId: talentUserId, itemId: chk.value, error: String(err) });
@@ -775,6 +804,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.30.0"></script>
+  <script src="../js/version.js?v=3.31.0"></script>
 </body>
 </html>
