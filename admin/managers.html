@@ -186,7 +186,7 @@
       { value: 'admin', label: '관리자', rank: 100 }
     ];
     function buildMgrPermOptions(maxRank, selectedValue) {
-      return PERM_LEVELS.filter(l => l.rank < maxRank)
+      return PERM_LEVELS.filter(l => l.rank < maxRank || l.value === selectedValue)
         .map(l => `<option value="${l.value}" ${l.value === selectedValue ? 'selected' : ''}>${PERMISSION_EMOJI[l.value]||''} ${l.label}</option>`)
         .join('');
     }
