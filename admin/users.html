@@ -108,7 +108,7 @@
           <select id="deptFilter" style="padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
             <option value="">전체 부서</option>
           </select>
-          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()" data-testid="user-add-button">+ 사용자 등록</button>
         </div>
       </div>
 
@@ -135,54 +135,54 @@
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">아이디</label>
-        <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <input type="text" id="mUsername" data-testid="user-form-username" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이름 (표시명)</label>
-        <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <input type="text" id="mDisplayName" data-testid="user-form-display-name" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">역할</label>
-          <select id="mUserType" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onUserTypeChange()">
+          <select id="mUserType" data-testid="user-form-type" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onUserTypeChange()">
             <option value="student">🎒 학생</option>
             <option value="teacher">👩‍🏫 교사</option>
           </select>
         </div>
         <div style="flex:1;" id="permLevelWrap">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">권한</label>
-          <select id="mPermLevel" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onPermLevelChange()">
+          <select id="mPermLevel" data-testid="user-form-permission" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onPermLevelChange()">
           </select>
         </div>
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">소속 부서 <span style="color:#e03131;">*</span></label>
-          <select id="mDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onDeptChange()">
+          <select id="mDept" data-testid="user-form-department" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onDeptChange()">
             <option value="">없음</option>
           </select>
         </div>
         <div style="flex:1;" id="classWrap">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">반</label>
-          <select id="mClassNumber" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
+          <select id="mClassNumber" data-testid="user-form-class-number" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
             <option value="">없음</option>
           </select>
         </div>
       </div>
       <div id="managedDeptWrap" style="margin-bottom:0.8rem;display:none;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">담당 관리 부서 <span style="color:#e03131;">*필수</span></label>
-        <select id="mManagedDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
+        <select id="mManagedDept" data-testid="user-form-managed-department" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
           <option value="">없음</option>
         </select>
       </div>
       <div id="passwordWrap" style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">초기 비밀번호</label>
-        <input type="text" id="mPassword" value="1234" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <input type="text" id="mPassword" data-testid="user-form-password" value="1234" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
         <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">첫 로그인 시 변경 필수</div>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">취소</button>
-        <button class="btn-confirm" onclick="saveUser()">저장</button>
+        <button class="btn-confirm" onclick="saveUser()" data-testid="user-form-save">저장</button>
       </div>
     </div>
   </div>
@@ -202,18 +202,18 @@
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이동할 부서 <span style="color:#e03131;">*</span></label>
-        <select id="transferToDept" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
+        <select id="transferToDept" data-testid="transfer-to-department" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
           <option value="">-- 부서 선택 --</option>
         </select>
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">사유</label>
-        <input type="text" id="transferReason" placeholder="이동 사유 입력" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <input type="text" id="transferReason" data-testid="transfer-reason" placeholder="이동 사유 입력" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div id="transferNote" style="font-size:0.78rem;color:#868e96;margin-bottom:0.8rem;"></div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeTransferModal()">취소</button>
-        <button class="btn-confirm" onclick="submitTransfer()">확인</button>
+        <button class="btn-confirm" onclick="submitTransfer()" data-testid="transfer-submit">확인</button>
       </div>
     </div>
   </div>
