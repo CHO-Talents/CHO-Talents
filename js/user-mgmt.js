@@ -54,17 +54,17 @@ async function createUser(userData) {
       p_class_number: userData.classNumber != null ? userData.classNumber : null
     });
     if (error) {
-      await logError('USER_CREATE_FAIL', { username: userData.username, error: error.message });
+      await logError('USER_CREATE_FAIL', { 대상: userData.username, 오류: error.message });
       return { data: null, error: error.message };
     }
     if (!data.success) {
-      await logWarn('USER_CREATE_DENIED', { username: userData.username, reason: data.error });
+      await logWarn('USER_CREATE_DENIED', { 대상: userData.username, 사유: data.error });
       return { data: null, error: data.error };
     }
-    await logInfo('USER_CREATE', { username: userData.username, userType: userData.userType });
+    await logInfo('USER_CREATE', { 대상: userData.username, userType: userData.userType });
     return { data, error: null };
   } catch (err) {
-    await logError('USER_CREATE_ERROR', { error: String(err) });
+    await logError('USER_CREATE_ERROR', { 오류: String(err) });
     return { data: null, error: String(err) };
   }
 }
@@ -82,17 +82,17 @@ async function updateUser(id, updates) {
       p_class_number: updates.classNumber != null ? updates.classNumber : null
     });
     if (error) {
-      await logError('USER_UPDATE_FAIL', { id, error: error.message });
+      await logError('USER_UPDATE_FAIL', { id, 오류: error.message });
       return { data: null, error: error.message };
     }
     if (!data.success) {
-      await logWarn('USER_UPDATE_DENIED', { id, reason: data.error });
+      await logWarn('USER_UPDATE_DENIED', { id, 사유: data.error });
       return { data: null, error: data.error };
     }
     await logInfo('USER_UPDATE', { id });
     return { data, error: null };
   } catch (err) {
-    await logError('USER_UPDATE_ERROR', { id, error: String(err) });
+    await logError('USER_UPDATE_ERROR', { id, 오류: String(err) });
     return { data: null, error: String(err) };
   }
 }
@@ -102,17 +102,17 @@ async function deleteUser(id) {
   try {
     const { data, error } = await _sb.rpc('admin_delete_user', { p_user_id: id });
     if (error) {
-      await logError('USER_DELETE_FAIL', { id, error: error.message });
+      await logError('USER_DELETE_FAIL', { id, 오류: error.message });
       return { error: error.message };
     }
     if (!data.success) {
-      await logWarn('USER_DELETE_DENIED', { id, reason: data.error });
+      await logWarn('USER_DELETE_DENIED', { id, 사유: data.error });
       return { error: data.error };
     }
     await logInfo('USER_DELETE', { id });
     return { error: null };
   } catch (err) {
-    await logError('USER_DELETE_ERROR', { id, error: String(err) });
+    await logError('USER_DELETE_ERROR', { id, 오류: String(err) });
     return { error: String(err) };
   }
 }
@@ -125,17 +125,17 @@ async function resetUserPassword(id, username) {
       p_new_password: '1234'
     });
     if (error) {
-      await logError('PASSWORD_RESET_FAIL', { id, error: error.message });
+      await logError('PASSWORD_RESET_FAIL', { id, 오류: error.message });
       return { error: error.message };
     }
     if (!data.success) {
-      await logWarn('PASSWORD_RESET_DENIED', { id, username, reason: data.error });
+      await logWarn('PASSWORD_RESET_DENIED', { id, 대상: username, 사유: data.error });
       return { error: data.error };
     }
-    await logInfo('PASSWORD_RESET', { id, username });
+    await logInfo('PASSWORD_RESET', { id, 대상: username });
     return { error: null };
   } catch (err) {
-    await logError('PASSWORD_RESET_ERROR', { id, error: String(err) });
+    await logError('PASSWORD_RESET_ERROR', { id, 오류: String(err) });
     return { error: String(err) };
   }
 }
@@ -152,13 +152,13 @@ async function createDepartment(name, description, classCount) {
     if (classCount != null) row.class_count = classCount;
     const { data, error } = await _sb.from('departments').insert(row).select();
     if (error) {
-      await logError('DEPT_CREATE_FAIL', { name, error: error.message });
+      await logError('DEPT_CREATE_FAIL', { 대상: name, 오류: error.message });
       return { data: null, error: error.message };
     }
-    await logInfo('DEPT_CREATE', { name });
+    await logInfo('DEPT_CREATE', { 대상: name });
     return { data: data[0], error: null };
   } catch (err) {
-    await logError('DEPT_CREATE_ERROR', { error: String(err) });
+    await logError('DEPT_CREATE_ERROR', { 오류: String(err) });
     return { data: null, error: String(err) };
   }
 }
@@ -168,13 +168,13 @@ async function updateDepartment(id, updates) {
   try {
     const { data, error } = await _sb.from('departments').update(updates).eq('id', id).select();
     if (error) {
-      await logError('DEPT_UPDATE_FAIL', { id, error: error.message });
+      await logError('DEPT_UPDATE_FAIL', { id, 오류: error.message });
       return { data: null, error: error.message };
     }
-    await logInfo('DEPT_UPDATE', { id, name: updates.name });
+    await logInfo('DEPT_UPDATE', { id, 대상: updates.name });
     return { data: data[0], error: null };
   } catch (err) {
-    await logError('DEPT_UPDATE_ERROR', { id, error: String(err) });
+    await logError('DEPT_UPDATE_ERROR', { id, 오류: String(err) });
     return { data: null, error: String(err) };
   }
 }
@@ -184,13 +184,13 @@ async function deleteDepartment(id) {
   try {
     const { error } = await _sb.from('departments').update({ is_active: false }).eq('id', id);
     if (error) {
-      await logError('DEPT_DELETE_FAIL', { id, error: error.message });
+      await logError('DEPT_DELETE_FAIL', { id, 오류: error.message });
       return { error: error.message };
     }
     await logInfo('DEPT_DELETE', { id });
     return { error: null };
   } catch (err) {
-    await logError('DEPT_DELETE_ERROR', { id, error: String(err) });
+    await logError('DEPT_DELETE_ERROR', { id, 오류: String(err) });
     return { error: String(err) };
   }
 }

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.29.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
@@ -491,11 +491,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../config/public-config.js?v=3.29.0"></script>
-  <script src="../js/supabase-config.js?v=3.29.0"></script>
-  <script src="../js/activity-log.js?v=3.29.0"></script>
-  <script src="../js/auth.js?v=3.29.0"></script>
-  <script src="../js/talent.js?v=3.29.0"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
+  <script src="../js/talent.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -901,7 +901,7 @@
         const row = buildRow(code, v);
         const { data, error } = await _sb.from('talent_qr_codes').insert(row).select('id,code,description').single();
         if (error) {
-          await logError('QR_CREATE_FAIL', { description: v.desc, error: error.message });
+          await logError('QR_CREATE_FAIL', { 설명: v.desc, 오류: error.message });
           const isDup = /duplicate key|unique/i.test(error.message);
           showQRFormStatus(isDup
             ? '생성 실패: 동일 항목의 QR이 이미 존재합니다. 중복 허용을 위해 docs/TASK-040_fixes.sql을 실행해주세요.'
@@ -909,12 +909,12 @@
           return;
         }
         if (!data || !data.id) {
-          await logWarn('QR_CREATE_NO_RESULT', { description: v.desc, code });
+          await logWarn('QR_CREATE_NO_RESULT', { 설명: v.desc, code });
           showQRFormStatus('생성 결과를 확인하지 못했습니다. 새로고침 후 목록을 확인해주세요.', 'warn');
           return;
         }
 
-        await logInfo('qr_create', { code, amount: v.amount, description: v.desc, target_type: v.targetType, max_uses: v.maxUses, qrId: data.id });
+        await logInfo('qr_create', { code, 금액: v.amount, 설명: v.desc, 유형: v.targetType, max_uses: v.maxUses, qrId: data.id });
         currentTab = 'active';
         document.getElementById('tabActive').classList.add('active');
         document.getElementById('tabAll').classList.remove('active');
@@ -925,7 +925,7 @@
         await loadQRList();
         showQRFormStatus('QR 코드가 생성되었습니다: ' + data.code, 'success');
       } catch (err) {
-        await logError('QR_CREATE_ERROR', { description: v.desc, error: String(err) });
+        await logError('QR_CREATE_ERROR', { 설명: v.desc, 오류: String(err) });
         showQRFormStatus('생성 중 오류가 발생했습니다: ' + tErr(err.message || String(err)), 'error');
       } finally {
         btn.disabled = false;
@@ -958,7 +958,7 @@
       }
       const { error } = await _sb.from('talent_qr_codes').update(update).eq('id', id);
       if (error) { alert('수정 실패: ' + tErr(error.message)); return; }
-      await logInfo('qr_edit', { qr_id: id, mode: saveMode, amount: v.amount, description: v.desc });
+      await logInfo('qr_edit', { qr_id: id, mode: saveMode, 금액: v.amount, 설명: v.desc });
       closeEditModal();
       alert(saveMode === 'new' ? '수정 완료. 새 QR 코드가 생성되었습니다.' : '수정 완료. 기존 QR 코드가 유지됩니다.');
       await loadQRList();
@@ -1303,6 +1303,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.29.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
 </body>
 </html>

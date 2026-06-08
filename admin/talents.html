@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.31.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -184,12 +184,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.31.0"></script>
-  <script src="../js/supabase-config.js?v=3.31.0"></script>
-  <script src="../js/activity-log.js?v=3.31.0"></script>
-  <script src="../js/auth.js?v=3.31.0"></script>
-  <script src="../js/user-mgmt.js?v=3.31.0"></script>
-  <script src="../js/talent.js?v=3.27.1"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
+  <script src="../js/user-mgmt.js?v=3.32.0"></script>
+  <script src="../js/talent.js?v=3.32.0"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
     @media(max-width:768px){.hide-mobile{display:none!important;}}
@@ -466,7 +466,7 @@
         _attendanceGivenThisWeek.add(userId);
         _attendanceTxnMap[userId] = { id: result?.id || '', amount: result?.amount || attendItem.talent_amount, description: result?.description || attendItem.name };
         renderTalentTable();
-        await logInfo('ATTENDANCE_GIVE', { targetUser: userId, targetName: userName, amount: attendItem.talent_amount });
+        await logInfo('ATTENDANCE_GIVE', { targetUser: userId, 대상: userName, 금액: attendItem.talent_amount });
         await loadUsers();
       } finally { _attendBusy = false; }
     }
@@ -487,7 +487,7 @@
         _attendanceGivenThisWeek.delete(userId);
         delete _attendanceTxnMap[userId];
         renderTalentTable();
-        await logInfo('ATTENDANCE_CANCEL', { targetUser: userId, targetName: userName, amount: txn.amount, txnId: txn.id });
+        await logInfo('ATTENDANCE_CANCEL', { targetUser: userId, 대상: userName, 금액: txn.amount, txnId: txn.id });
         await loadUsers();
       } catch (e) {
         alert('취소 오류: ' + (e.message || e));
@@ -691,7 +691,7 @@
           alert('취소 실패: ' + tErr(result.error));
           return;
         }
-        await logInfo('TALENT_ITEM_CANCEL', { userId: talentUserId, itemId, itemName, amount: txn.amount, txnId: txn.id });
+        await logInfo('TALENT_ITEM_CANCEL', { userId: talentUserId, itemId, 항목명: itemName, 금액: txn.amount, txnId: txn.id });
         const bal = await fetchTalentBalance(talentUserId);
         document.getElementById('talentBalance').textContent = fmtNum(bal);
         await renderTalentItemButtons();
@@ -721,7 +721,7 @@
         try {
           const result = await giveTalentByItem(talentUserId, chk.value, session.id);
           if (result.success === false) {
-            await logError('TALENT_GIVE_ITEM_FAIL', { userId: talentUserId, itemId: chk.value, itemName: chk.dataset.name, error: result.error });
+            await logError('TALENT_GIVE_ITEM_FAIL', { userId: talentUserId, itemId: chk.value, 항목명: chk.dataset.name, 오류: result.error });
             errEl.textContent = `"${chk.dataset.name}" 지급 실패: ${tErr(result.error)}`;
             errEl.classList.add('show');
             break;
@@ -729,11 +729,11 @@
           _weeklyGivenMap[chk.value] = { id: result?.id || '', amount: result?.amount || Number(chk.dataset.amount), description: result?.description || chk.dataset.name };
           lastBalance = result.balance;
         } catch (err) {
-          await logError('TALENT_GIVE_ITEM_ERROR', { userId: talentUserId, itemId: chk.value, error: String(err) });
+          await logError('TALENT_GIVE_ITEM_ERROR', { userId: talentUserId, itemId: chk.value, 오류: String(err) });
           errEl.textContent = `오류 발생: ${tErr(err.message)}`; errEl.classList.add('show'); break;
         }
       }
-      await logInfo('TALENT_GIVE_ITEMS', { userId: talentUserId, items: names, count: chks.length });
+      await logInfo('TALENT_GIVE_ITEMS', { userId: talentUserId, items: names, 건수: chks.length });
       document.getElementById('talentBalance').textContent = fmtNum(lastBalance);
       await renderTalentItemButtons();
       await loadTalentHistory(talentUserId);
@@ -750,10 +750,10 @@
       try {
         const result = await giveTalent(talentUserId, amount, desc, session.id);
         if (result.success === false) {
-          await logError('TALENT_MANUAL_GIVE_FAIL', { userId: talentUserId, amount, desc, error: result.error });
+          await logError('TALENT_MANUAL_GIVE_FAIL', { userId: talentUserId, 금액: amount, 설명: desc, 오류: result.error });
           errEl.textContent = tErr(result.error) || '처리 실패'; errEl.classList.add('show'); return;
         }
-        await logInfo('TALENT_MANUAL_GIVE', { userId: talentUserId, amount, desc });
+        await logInfo('TALENT_MANUAL_GIVE', { userId: talentUserId, 금액: amount, 설명: desc });
         document.getElementById('talentBalance').textContent = fmtNum(result.balance);
         document.getElementById('talentAmount').value = '';
         document.getElementById('talentDesc').value = '';
@@ -761,7 +761,7 @@
         await loadTalentHistory(talentUserId);
         await loadUsers();
       } catch (err) {
-        await logError('TALENT_MANUAL_GIVE_ERROR', { userId: talentUserId, amount, error: String(err) });
+        await logError('TALENT_MANUAL_GIVE_ERROR', { userId: talentUserId, 금액: amount, 오류: String(err) });
         errEl.textContent = '오류: ' + tErr(err.message); errEl.classList.add('show');
       }
     }
@@ -794,15 +794,15 @@
       try {
         const result = await returnTalent(returnCtx.userId, returnCtx.amount, reason, session.id);
         if (result.success === false) {
-          await logError('TALENT_RETURN_FAIL', { userId: returnCtx.userId, amount: returnCtx.amount, reason, error: result.error });
+          await logError('TALENT_RETURN_FAIL', { userId: returnCtx.userId, 금액: returnCtx.amount, 사유: reason, 오류: result.error });
           errEl.textContent = tErr(result.error); errEl.classList.add('show'); return;
         }
-        await logInfo('TALENT_RETURN', { userId: returnCtx.userId, amount: returnCtx.amount, reason });
+        await logInfo('TALENT_RETURN', { userId: returnCtx.userId, 금액: returnCtx.amount, 사유: reason });
         closeReturnModal();
         await openDetailModal(returnCtx.userId, document.getElementById('detailTitle').textContent.replace(' - 달란트 상세',''));
         await loadUsers();
       } catch (err) {
-        await logError('TALENT_RETURN_ERROR', { userId: returnCtx.userId, amount: returnCtx.amount, error: String(err) });
+        await logError('TALENT_RETURN_ERROR', { userId: returnCtx.userId, 금액: returnCtx.amount, 오류: String(err) });
         errEl.textContent = '오류: ' + tErr(err.message); errEl.classList.add('show');
       }
     }
@@ -812,6 +812,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.31.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
 </body>
 </html>

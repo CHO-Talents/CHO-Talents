@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-08 KST 현재 코드 기준 (v3.27.0)
+작성 기준: 2026-06-08 KST 현재 코드 기준 (v3.32.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -26,7 +26,7 @@ flowchart LR
   User["사용자 브라우저"] --> Pages["GitHub Pages 정적 화면<br/>HTML/CSS/Vanilla JS"]
 
   Pages --> AuthJS["js/auth.js<br/>로그인/세션/권한/tErr()/fmtNum()"]
-  Pages --> LogJS["js/activity-log.js<br/>로그/세션 캐시/소프트 삭제"]
+  Pages --> LogJS["js/activity-log.js<br/>로그/ACTION_LABELS/세션 캐시/소프트 삭제"]
   Pages --> UserMgmt["js/user-mgmt.js<br/>사용자/부서 관리"]
   Pages --> TalentJS["js/talent.js<br/>달란트 조회/지급/사용/반환"]
   Pages --> ProductJS["js/product.js<br/>상품 조회/관리"]
@@ -57,13 +57,14 @@ flowchart LR
   DB --> QnAComments["qna_comments"]
   DB --> RoleFeatures["role_page_features"]
   DB --> PagePerms["page_permissions"]
+  DB --> UserPrefs["user_preferences"]
 ```
 
 ## 3. 폴더 및 파일 구성
 
 | 경로 | 역할 |
 |---|---|
-| `index.html` | 메인 진입 화면. 학생 가이드, Q&A, 상점, 로그인, 적립 안내, 내 달란트로 이동. 동적 로그인/로그아웃 버튼 |
+| `index.html` | 메인 진입 화면. 학생 가이드, Q&A, 상점, 로그인, 적립 안내, 내 달란트로 이동. 동적 로그인/로그아웃 버튼. 로그인 사용자는 `⭐ 즐겨찾기 설정`으로 바로가기 카드 커스터마이징 (`user_preferences` DB 저장, 비로그인은 localStorage 폴백) |
 | `login.html` | 통합 로그인. 성공/실패 로그 기록. 승인 대기/거부 계정 구분 안내 |
 | `register.html` | 계정 등록 신청. 영문/숫자/`_`/`-` 아이디 중복확인 후 승인 대기 등록 |
 | `guide.html` | 학생 가이드. 사이트 이용 흐름을 카드/스텝 중심으로 안내 |
@@ -85,11 +86,11 @@ flowchart LR
 | `admin/shop.html` | 60등급 이상 상품 관리. 교사/학생 그룹별 분리+페이징(모바일 10/PC 20). 카테고리 열 맨 왼쪽, 대상 열 삭제. 관리 드롭다운(수정/삭제). 삭제는 소프트 삭제 |
 | `admin/purchases.html` | 60등급 이상 구매 관리. 상태별 상품 합계+일괄 처리 버튼(일괄 준비/구매 확정). 관리 드롭다운. 부서/기간 필터(기본 오늘) + 기간 프리셋, 4단계 구매 흐름 + 되돌리기(↩) |
 | `admin/reports.html` | 80등급 이상 보고서 조회/등록/수정/삭제 |
-| `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리. 기간 프리셋(오늘/1주/1달/1년) |
+| `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리. action 열 한글 라벨 표시(`getActionLabel`). 기간 프리셋(오늘/1주/1달/1년) |
 | `admin/versions.html` | 80등급 이상 버전 이력 확인 |
 | `admin/page-access.html` | 100등급 이상 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100등급 이상 권한별 페이지 기능 설정값 관리 |
-| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기간 프리셋(오늘/1주/1달/1년), 자동 조회, 카테고리별 필터) |
+| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기간 프리셋(오늘/1주/1달/1년), 자동 조회, 10개 카테고리 필터, 한글 작업 유형 라벨) |
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
@@ -188,6 +189,32 @@ flowchart TD
 4. 최소 권한 미달이면 `index.html`로 이동
 5. `role_page_access` 확인: 페이지 최소 등급 통과 후 보조 접근/요소 숨김 설정 적용
 6. 통과 시 `auth-ready` 적용, 역할 배지/메뉴/페이지 데이터 로드
+
+### 메인 페이지 즐겨찾기 흐름
+
+```mermaid
+flowchart TD
+  Home["index.html"] --> FavLoad["loadFavIds()"]
+  FavLoad --> LoggedIn{"로그인?"}
+  LoggedIn -->|예| DBLoad["user_preferences.favorite_shortcuts 조회"]
+  LoggedIn -->|아니오| LSLoad["localStorage cho_fav_* 조회"]
+  DBLoad -->|없음| LSFallback["localStorage 폴백"]
+  DBLoad --> Render["바로가기 카드 렌더"]
+  LSLoad --> Render
+  LSFallback --> Render
+
+  LoginFirst["최초 로그인 세션 로드"] --> Migrate{"DB에 설정 없음 + localStorage 있음?"}
+  Migrate -->|예| AutoMigrate["localStorage → user_preferences INSERT"]
+  Migrate -->|아니오| Skip["기존 DB 설정 사용"]
+  AutoMigrate --> Render
+
+  FavSave["⭐ 즐겨찾기 저장"] --> DBUpsert["user_preferences UPSERT"]
+  FavSave --> LSSync["localStorage 동기 저장"]
+```
+
+- 로그인 사용자: `user_preferences` 테이블에서 즐겨찾기 로드/저장 (RLS 적용)
+- 비로그인: `localStorage`만 사용 (폴백)
+- 최초 로그인 시: DB에 설정이 없고 `localStorage`에 기존 데이터가 있으면 자동 마이그레이션
 
 ## 7. 신규 계정 신청 흐름
 
@@ -346,9 +373,11 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  Event["페이지 방문/로그인/오류/관리 작업"] --> WriteLog["activity_logs INSERT<br/>logInfo/logWarn/logError"]
-  WriteLog --> Logs["admin/logs.html (100등급+)"]
+  Event["페이지 방문/로그인/오류/관리 작업"] --> WriteLog["writeLog() → activity_logs INSERT<br/>logInfo/logWarn/logError"]
+  WriteLog --> ActionLabel["ACTION_LABELS 한글 매핑 (~150개)<br/>details._actionLabel 자동 저장"]
+  ActionLabel --> Logs["admin/logs.html (100등급+)"]
   Logs --> Filter["레벨/기간 필터"]
+  Logs --> KoLabel["action 열 한글 라벨 표시<br/>(getActionLabel, 영문 키 병기)"]
   Logs --> Ack["ERROR 이상 로그 확인 처리"]
   Logs --> SoftDel["소프트 삭제 (is_deleted = true)<br/>관리자(100+)만"]
   SoftDel --> DelView["삭제 대기 목록 보기 / 복원"]
@@ -360,6 +389,9 @@ flowchart TD
 
 로그 레벨: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`, `CRITICAL`
 
+- `activity-log.js`의 `ACTION_LABELS`에 약 150개 action 키의 한글 라벨이 정의되어 있다
+- `writeLog()`는 기록 시 `ACTION_LABELS[action]`이 있으면 `details._actionLabel`에 한글 라벨을 자동 저장한다
+- `admin/logs.html`은 `getActionLabel()`로 action 열에 한글 라벨을 표시한다 (영문 키 병기)
 - `ERROR`, `FATAL`, `CRITICAL`은 기본적으로 미확인 상태로 저장
 - 운영자가 확인 내용을 남기면 확인 처리
 - 로그 삭제는 소프트 삭제(`is_deleted=true`) 방식
@@ -370,11 +402,16 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  AdminAction["관리 작업 수행"] --> AuditLog["activity_logs에 작업 유형별 기록"]
+  AdminAction["관리 작업 수행"] --> AuditLog["writeLog() → activity_logs<br/>details._actionLabel 한글 라벨"]
   AuditLog --> AuditPage["admin/audit.html (100등급+)"]
-  AuditPage --> CategoryFilter["카테고리 필터<br/>사용자/부서/달란트/상품/권한"]
+  AuditPage --> CategoryFilter["10개 카테고리 필터<br/>사용자/등록/부서/달란트/상품·주문/Q&A/인증/로그관리/권한·설정"]
+  AuditPage --> KoType["작업 유형 한글 라벨 표시<br/>(AUDIT_ACTIONS + ACTION_LABELS)"]
   AuditPage --> ActorInfo["작업자 이름(ID) 표시<br/>관리자는 ID도 표시"]
 ```
+
+- `AUDIT_ACTIONS`에 70개 이상 관리 작업 action 키와 한글 라벨/카테고리가 정의되어 있다
+- 작업 이력 화면은 10개 카테고리 필터(전체 + 9개 그룹)로 조회 범위를 좁힌다
+- 상세 내역은 `writeLog()`가 저장한 `details._actionLabel` 및 한글화된 details 키를 표시한다
 
 ## 13. 에러 처리 흐름
 
@@ -395,6 +432,7 @@ flowchart TD
 | 리소스 | 용도 |
 |---|---|
 | `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`) |
+| `user_preferences` | 사용자별 즐겨찾기 바로가기 설정 (JSONB), RLS 적용 |
 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | `registration_requests` | 가입 신청/승인/거부 |
 | `department_transfer_requests` | 부서 이동 요청/승인/거부 |
@@ -407,7 +445,7 @@ flowchart TD
 | `reports` | 작업 보고서 |
 | `talent_qr_codes` | QR 코드 생성/관리. `target_type`(학생/교사), `valid_from`/`valid_until` 기간, `max_uses` (0=무제한, N=선착순), `location_*` 위치 제한, `repeat_type`(none/daily/weekday/week_weekday), `repeat_days` INT[], `repeat_weeks` INT[] |
 | `talent_qr_scans` | QR 코드 스캔 이력. 반복 수령 시 오늘 기준 중복 체크 |
-| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록 |
+| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록, `details._actionLabel` 한글 라벨 |
 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
 | `role_page_features` | 권한 등급별 페이지 기능 설정값 |
 | `page_permissions` | 페이지 권한 설정 (레거시) |
@@ -462,7 +500,7 @@ flowchart TD
 | 1 | `README.md` | 현재 구조, 페이지 연결, 권한, 운영 흐름 요약 |
 | 2 | `docs/PROJECT_ARCHITECTURE_FLOW.md` | 상세 구성도와 프로세스 흐름 |
 | 3 | `js/auth.js` | 권한 등급, 리디렉트, 세션, tErr() 에러 번역 |
-| 4 | `js/activity-log.js` | 로그 기록, 세션 캐시, 소프트 삭제 |
+| 4 | `js/activity-log.js` | 로그 기록, ACTION_LABELS 한글 매핑, writeLog() 자동 라벨, 세션 캐시, 소프트 삭제 |
 | 5 | `js/user-mgmt.js` | 사용자/부서 관리 RPC |
 | 6 | `js/talent.js` | 달란트 지급/사용/반환 |
 | 7 | `js/product.js` | 상품 조회/관리 |
@@ -470,3 +508,4 @@ flowchart TD
 | 9 | `docs/TASK-026_schema.sql` | 구매 시스템 DB 스키마 및 RPC |
 | 10 | `docs/TASK-032_fixes.sql` | Q&A 테이블/RLS와 미승인 로그인 안내 RPC |
 | 11 | `docs/TASK-035_qna_comments.sql` | Q&A 댓글 테이블/RLS 및 삭제 권한 수정 |
+| 12 | `docs/TASK-039_user_preferences.sql` | `user_preferences` 테이블 (즐겨찾기 DB 저장), RLS 정책 |

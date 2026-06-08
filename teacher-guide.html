@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>교사 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/common.css?v=3.29.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.29.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.32.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.32.0" />
 </head>
 <body class="page-body">
   <nav class="top-nav">
@@ -121,6 +121,15 @@
         <li><strong>상세</strong>를 누르면 해당 학생의 적립 내역과 잔액을 확인할 수 있습니다.</li>
       </ol>
       <div class="guide-note">이미 오늘 지급된 항목은 완료 표시가 나올 수 있습니다. 같은 항목을 중복 지급하지 않도록 화면의 완료 표시를 확인하세요.</div>
+      <div class="guide-card">
+        <h3>📋 작업 이력 확인</h3>
+        <p>달란트 지급/취소 등 관리 작업 내역을 작업 이력에서 확인할 수 있습니다.</p>
+        <div class="guide-steps">
+          <div class="step"><span class="step-num">1</span> <strong>운영 → 작업 이력</strong> 메뉴로 이동합니다 (관리자 전용).</div>
+          <div class="step"><span class="step-num">2</span> 10개 카테고리 필터로 원하는 작업 유형만 조회할 수 있습니다.</div>
+          <div class="step"><span class="step-num">3</span> 모든 작업 내역이 한글로 표시됩니다.</div>
+        </div>
+      </div>
     </section>
 
     <section class="guide-section">
@@ -169,6 +178,19 @@
     </section>
 
     <section class="guide-section">
+      <h2>⭐ 메인 페이지 바로가기</h2>
+      <div class="guide-card">
+        <h3>⭐ 즐겨찾기 설정</h3>
+        <p>메인 페이지의 바로가기 카드를 내가 원하는 메뉴로 설정할 수 있습니다.</p>
+        <div class="guide-steps">
+          <div class="step"><span class="step-num">1</span> 메인 페이지에서 <strong>⭐ 즐겨찾기 설정</strong> 버튼을 누릅니다.</div>
+          <div class="step"><span class="step-num">2</span> 표시할 바로가기를 선택하고 <strong>저장</strong>을 누릅니다.</div>
+          <div class="step"><span class="step-num">3</span> 설정은 계정에 저장되어 다른 기기에서도 동일하게 표시됩니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="guide-section">
       <h2>🧭 화면이 다르게 보일 때</h2>
       <div class="guide-table-wrap">
         <table class="guide-table">
@@ -188,10 +210,10 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.29.0"></script>
-  <script src="js/supabase-config.js?v=3.29.0"></script>
-  <script src="js/activity-log.js?v=3.29.0"></script>
-  <script src="js/auth.js?v=3.29.0"></script>
+  <script src="config/public-config.js?v=3.32.0"></script>
+  <script src="js/supabase-config.js?v=3.32.0"></script>
+  <script src="js/activity-log.js?v=3.32.0"></script>
+  <script src="js/auth.js?v=3.32.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -216,6 +238,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.29.0"></script>
+  <script src="js/version.js?v=3.32.0"></script>
 </body>
 </html>

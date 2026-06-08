@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.30.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -141,11 +141,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.30.0"></script>
-  <script src="../js/supabase-config.js?v=3.30.0"></script>
-  <script src="../js/activity-log.js?v=3.30.0"></script>
-  <script src="../js/auth.js?v=3.30.0"></script>
-  <script src="../js/user-mgmt.js?v=3.30.0"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
+  <script src="../js/user-mgmt.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let session;
@@ -410,16 +410,27 @@
 
       if (editingId) {
         if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
+        const target = allManagers.find(u => u.id === editingId);
         const updates = { displayName, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(editingId, updates);
-        if (error) { await logError('MANAGER_UPDATE_FAIL', { id: editingId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('MANAGER_UPDATE', { id: editingId, displayName, permLevel });
+        if (error) { await logError('MANAGER_UPDATE_FAIL', { id: editingId, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        const deptName = id => (deptList.find(d => d.id === id) || {}).name || '-';
+        const 변경Parts = [];
+        if (target) {
+          if ((target.display_name || '') !== displayName) 변경Parts.push(`이름: ${target.display_name || '-'} → ${displayName}`);
+          if ((target.permission_level || '') !== permLevel) 변경Parts.push(`권한: ${PERMISSION_LABELS[target.permission_level] || target.permission_level} → ${PERMISSION_LABELS[permLevel] || permLevel}`);
+          if ((target.managed_dept_id || null) !== (managedDeptId || null)) 변경Parts.push(`담당부서: ${deptName(target.managed_dept_id)} → ${deptName(managedDeptId)}`);
+        }
+        await logInfo('MANAGER_UPDATE', { id: editingId, 대상: displayName, 권한: PERMISSION_LABELS[permLevel] || permLevel, 변경내역: 변경Parts.length ? 변경Parts.join(', ') : `이름: ${displayName}` });
       } else {
         if (!_selectedUserId) { errEl.textContent = '사용자를 검색하여 선택해주세요.'; errEl.classList.add('show'); return; }
+        const selectedUser = _allUsers.find(u => u.id === _selectedUserId);
         const updates = { displayName: displayName || undefined, userType: 'teacher', permissionLevel: permLevel, departmentId: ownDeptId, managedDeptId };
         const { error } = await updateUser(_selectedUserId, updates);
-        if (error) { await logError('MANAGER_PROMOTE_FAIL', { id: _selectedUserId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('MANAGER_PROMOTE', { id: _selectedUserId, permLevel });
+        if (error) { await logError('MANAGER_PROMOTE_FAIL', { id: _selectedUserId, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        const userName = selectedUser ? (selectedUser.display_name || selectedUser.username) : _selectedUserId;
+        const deptName = id => (deptList.find(d => d.id === id) || {}).name || '-';
+        await logInfo('MANAGER_PROMOTE', { id: _selectedUserId, 대상: userName, 권한: PERMISSION_LABELS[permLevel] || permLevel, 변경내역: `관리자 승격: ${userName}, 권한: ${PERMISSION_LABELS[permLevel] || permLevel}${managedDeptId ? ', 담당부서: ' + deptName(managedDeptId) : ''}` });
       }
       closeModal();
       await loadManagers();
@@ -439,6 +450,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.30.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
 </body>
 </html>

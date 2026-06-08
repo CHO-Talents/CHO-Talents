@@ -57,17 +57,17 @@ async function giveTalent(userId, amount, description, createdBy) {
       p_talent_item_id: null
     });
     if (error) {
-      await logError('TALENT_GIVE_FAIL', { userId, amount, description, error: error.message });
+      await logError('TALENT_GIVE_FAIL', { userId, 금액: amount, description, 오류: error.message });
       return { success: false, error: error.message };
     }
     if (data && data.success === false) {
-      await logWarn('TALENT_GIVE_DENIED', { userId, amount, description, reason: data.error });
+      await logWarn('TALENT_GIVE_DENIED', { userId, 금액: amount, description, 사유: data.error });
       return data;
     }
-    await logInfo('TALENT_GIVE', { userId, amount, description });
+    await logInfo('TALENT_GIVE', { userId, 금액: amount, description });
     return data;
   } catch (err) {
-    await logError('TALENT_GIVE_ERROR', { userId, amount, error: String(err) });
+    await logError('TALENT_GIVE_ERROR', { userId, 금액: amount, 오류: String(err) });
     return { success: false, error: String(err) };
   }
 }
@@ -83,17 +83,17 @@ async function giveTalentByItem(userId, talentItemId, createdBy) {
       p_talent_item_id: talentItemId,
     });
     if (error) {
-      await logError('TALENT_GIVE_ITEM_FAIL', { userId, talentItemId, error: error.message });
+      await logError('TALENT_GIVE_ITEM_FAIL', { userId, talentItemId, 오류: error.message });
       return { success: false, error: error.message };
     }
     if (data && data.success === false) {
-      await logWarn('TALENT_GIVE_ITEM_DENIED', { userId, talentItemId, reason: data.error });
+      await logWarn('TALENT_GIVE_ITEM_DENIED', { userId, talentItemId, 사유: data.error });
       return data;
     }
-    await logInfo('TALENT_GIVE_ITEM', { userId, talentItemId, amount: data?.amount });
+    await logInfo('TALENT_GIVE_ITEM', { userId, talentItemId, 금액: data?.amount });
     return data;
   } catch (err) {
-    await logError('TALENT_GIVE_ITEM_ERROR', { userId, talentItemId, error: String(err) });
+    await logError('TALENT_GIVE_ITEM_ERROR', { userId, talentItemId, 오류: String(err) });
     return { success: false, error: String(err) };
   }
 }
@@ -115,7 +115,7 @@ async function returnTalent(userId, amount, description, createdBy) {
   try {
     const bal = await fetchTalentBalance(userId);
     if (bal < amount) {
-      await logWarn('TALENT_RETURN_DENIED', { userId, amount, balance: bal, reason: '잔여 달란트 부족' });
+      await logWarn('TALENT_RETURN_DENIED', { userId, 금액: amount, balance: bal, 사유: '잔여 달란트 부족' });
       return { success: false, error: `잔여 달란트(${bal})가 부족합니다. 반환 불가` };
     }
     const { data, error } = await _sb.rpc('use_talent', {
@@ -125,17 +125,17 @@ async function returnTalent(userId, amount, description, createdBy) {
       p_created_by: createdBy
     });
     if (error) {
-      await logError('TALENT_RETURN_FAIL', { userId, amount, error: error.message });
+      await logError('TALENT_RETURN_FAIL', { userId, 금액: amount, 오류: error.message });
       return { success: false, error: error.message };
     }
     if (data && data.success === false) {
-      await logWarn('TALENT_RETURN_DENIED', { userId, amount, reason: data.error });
+      await logWarn('TALENT_RETURN_DENIED', { userId, 금액: amount, 사유: data.error });
       return data;
     }
-    await logInfo('TALENT_RETURN', { userId, amount, description });
+    await logInfo('TALENT_RETURN', { userId, 금액: amount, description });
     return data;
   } catch (err) {
-    await logError('TALENT_RETURN_ERROR', { userId, amount, error: String(err) });
+    await logError('TALENT_RETURN_ERROR', { userId, 금액: amount, 오류: String(err) });
     return { success: false, error: String(err) };
   }
 }
@@ -150,17 +150,17 @@ async function useTalent(userId, amount, description, createdBy) {
       p_created_by: createdBy
     });
     if (error) {
-      await logError('TALENT_USE_FAIL', { userId, amount, description, error: error.message });
+      await logError('TALENT_USE_FAIL', { userId, 금액: amount, description, 오류: error.message });
       return { success: false, error: error.message };
     }
     if (data && data.success === false) {
-      await logWarn('TALENT_USE_DENIED', { userId, amount, description, reason: data.error });
+      await logWarn('TALENT_USE_DENIED', { userId, 금액: amount, description, 사유: data.error });
       return data;
     }
-    await logInfo('TALENT_USE', { userId, amount, description });
+    await logInfo('TALENT_USE', { userId, 금액: amount, description });
     return data;
   } catch (err) {
-    await logError('TALENT_USE_ERROR', { userId, amount, error: String(err) });
+    await logError('TALENT_USE_ERROR', { userId, 금액: amount, 오류: String(err) });
     return { success: false, error: String(err) };
   }
 }

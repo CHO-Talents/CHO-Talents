@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>보고서 관리 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.29.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -144,10 +144,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.29.0"></script>
-  <script src="../js/supabase-config.js?v=3.29.0"></script>
-  <script src="../js/activity-log.js?v=3.29.0"></script>
-  <script src="../js/auth.js?v=3.29.0"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -457,11 +457,11 @@
       try {
         await _sb.from('reports').delete().neq('id', '00000000-0000-0000-0000-000000000000');
         const { error } = await _sb.from('reports').insert(SEED);
-        if (error) { await logError('REPORT_SEED_FAIL', { error: error.message }); alert('등록 실패: ' + tErr(error.message)); return; }
-        await logInfo('REPORT_SEED', { count: SEED.length });
+        if (error) { await logError('REPORT_SEED_FAIL', { 오류: error.message }); alert('등록 실패: ' + tErr(error.message)); return; }
+        await logInfo('REPORT_SEED', { 건수: SEED.length });
         alert(SEED.length + '건의 보고서가 등록되었습니다.');
         await loadReports();
-      } catch (err) { await logError('REPORT_SEED_ERROR', { error: String(err) }); alert('오류: ' + tErr(err.message)); }
+      } catch (err) { await logError('REPORT_SEED_ERROR', { 오류: String(err) }); alert('오류: ' + tErr(err.message)); }
     }
 
     let editingReportId = null;
@@ -526,15 +526,15 @@
         }
 
         if (result.error) {
-          await logError('REPORT_SAVE_FAIL', { taskId, reportType, error: result.error.message });
+          await logError('REPORT_SAVE_FAIL', { taskId, 유형: reportType, 오류: result.error.message });
           alert('저장 실패: ' + tErr(result.error.message));
         } else {
           closeAddReportModal();
           await loadReports();
-          await logInfo('REPORT_SAVE', { taskId, reportType, action: editingReportId ? 'update' : 'insert' });
+          await logInfo('REPORT_SAVE', { taskId, 유형: reportType, action: editingReportId ? 'update' : 'insert' });
         }
       } catch (err) {
-        await logError('REPORT_SAVE_ERROR', { taskId, error: String(err) });
+        await logError('REPORT_SAVE_ERROR', { taskId, 오류: String(err) });
         alert('오류: ' + tErr(err.message));
       } finally {
         btn.disabled = false;
@@ -560,19 +560,19 @@
       try {
         const { error } = await _sb.from('reports').delete().in('id', ids);
         if (error) {
-          await logError('REPORT_DELETE_FAIL', { count: ids.length, error: error.message });
+          await logError('REPORT_DELETE_FAIL', { 건수: ids.length, 오류: error.message });
           alert('삭제 실패: ' + tErr(error.message));
         } else {
           document.getElementById('chkAll').checked = false;
           await loadReports();
-          await logInfo('REPORT_DELETE', { count: ids.length, ids });
+          await logInfo('REPORT_DELETE', { 건수: ids.length, ids });
         }
       } catch (err) {
-        await logError('REPORT_DELETE_ERROR', { error: String(err) });
+        await logError('REPORT_DELETE_ERROR', { 오류: String(err) });
         alert('오류: ' + tErr(err.message));
       }
     }
   </script>
-  <script src="../js/version.js?v=3.29.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
 </body>
 </html>

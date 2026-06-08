@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>부서 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.30.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -110,11 +110,11 @@
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.30.0"></script>
-  <script src="../js/supabase-config.js?v=3.30.0"></script>
-  <script src="../js/activity-log.js?v=3.30.0"></script>
-  <script src="../js/auth.js?v=3.30.0"></script>
-  <script src="../js/user-mgmt.js?v=3.30.0"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
+  <script src="../js/user-mgmt.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let session;
@@ -229,13 +229,20 @@
       if (!name) { errEl.textContent = '부서명을 입력해주세요.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
+        const dept = allDeptData.find(d => d.id === editingId);
         const { error } = await updateDepartment(editingId, { name, description: desc || null, class_count: classCount });
-        if (error) { await logError('DEPT_UPDATE_FAIL', { id: editingId, name, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('DEPT_UPDATE', { id: editingId, name });
+        if (error) { await logError('DEPT_UPDATE_FAIL', { id: editingId, 대상: name, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        const 변경Parts = [];
+        if (dept) {
+          if (dept.name !== name) 변경Parts.push(`부서명: ${dept.name} → ${name}`);
+          if ((dept.description || '') !== desc) 변경Parts.push(`설명: ${dept.description || '-'} → ${desc || '-'}`);
+          if ((dept.class_count || 0) !== classCount) 변경Parts.push(`반 수: ${dept.class_count || 0} → ${classCount}`);
+        }
+        await logInfo('DEPT_UPDATE', { id: editingId, 대상: name, 변경내역: 변경Parts.length ? 변경Parts.join(', ') : `부서명: ${name}` });
       } else {
         const { error } = await createDepartment(name, desc || null, classCount);
-        if (error) { await logError('DEPT_CREATE_FAIL', { name, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('DEPT_CREATE', { name });
+        if (error) { await logError('DEPT_CREATE_FAIL', { 대상: name, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('DEPT_CREATE', { 대상: name, 변경내역: `부서 등록: ${name}, 반 수: ${classCount}` });
       }
       closeModal();
       await loadDepts();
@@ -244,7 +251,7 @@
     async function confirmDelete(id, name) {
       if (!confirm(`"${name}" 부서를 비활성화하시겠습니까?`)) return;
       await deleteDepartment(id);
-      await logInfo('DEPT_DEACTIVATE', { id, name });
+      await logInfo('DEPT_DEACTIVATE', { id, 대상: name, 변경내역: `부서 비활성화: ${name}` });
       await loadDepts();
     }
 
@@ -300,6 +307,6 @@
 
     document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.30.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
 </body>
 </html>

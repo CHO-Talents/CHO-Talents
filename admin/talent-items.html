@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 항목 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.29.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.32.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -122,11 +122,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.29.0"></script>
-  <script src="../js/supabase-config.js?v=3.29.0"></script>
-  <script src="../js/activity-log.js?v=3.29.0"></script>
-  <script src="../js/auth.js?v=3.29.0"></script>
-  <script src="../js/talent.js?v=3.29.0"></script>
+  <script src="../config/public-config.js?v=3.32.0"></script>
+  <script src="../js/supabase-config.js?v=3.32.0"></script>
+  <script src="../js/activity-log.js?v=3.32.0"></script>
+  <script src="../js/auth.js?v=3.32.0"></script>
+  <script src="../js/talent.js?v=3.32.0"></script>
   <script>
     initSupabase();
     let session;
@@ -224,14 +224,22 @@
       const row = { name, talent_amount: amount, sort_order: sortOrder, target_type: targetType };
 
       if (editingId) {
+        const oldItem = allItems.find(i => i.id === editingId);
+        const changes = [];
+        if (oldItem) {
+          if (oldItem.name !== name) changes.push(`항목명: ${oldItem.name} → ${name}`);
+          if (oldItem.talent_amount !== amount) changes.push(`달란트: ${oldItem.talent_amount} → ${amount}`);
+          if (oldItem.sort_order !== sortOrder) changes.push(`순서: ${oldItem.sort_order} → ${sortOrder}`);
+          if (oldItem.target_type !== targetType) changes.push(`대상: ${oldItem.target_type} → ${targetType}`);
+        }
         const { error } = await _sb.from('talent_items').update(row).eq('id', editingId);
-        if (error) { await logError('TALENT_ITEM_UPDATE_FAIL', { id: editingId, error: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
-        await logInfo('TALENT_ITEM_UPDATE', { id: editingId, name: row.name });
+        if (error) { await logError('TALENT_ITEM_UPDATE_FAIL', { 항목ID: editingId, 오류: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
+        await logInfo('TALENT_ITEM_UPDATE', { 항목명: name, 변경내역: changes.join(', ') || '변경 없음' });
       } else {
         row.created_by = session.id;
         const { error } = await _sb.from('talent_items').insert(row);
-        if (error) { await logError('TALENT_ITEM_CREATE_FAIL', { name: row.name, error: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
-        await logInfo('TALENT_ITEM_CREATE', { name: row.name });
+        if (error) { await logError('TALENT_ITEM_CREATE_FAIL', { 항목명: name, 오류: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
+        await logInfo('TALENT_ITEM_CREATE', { 항목명: name, 금액: amount });
       }
       closeModal();
       await loadItems();
@@ -240,7 +248,9 @@
     async function toggleActive(id, currentActive) {
       const action = currentActive ? '비활성화' : '활성화';
       if (!confirm(`이 항목을 ${action}하시겠습니까?`)) return;
+      const item = allItems.find(i => i.id === id);
       await _sb.from('talent_items').update({ is_active: !currentActive }).eq('id', id);
+      await logInfo('TALENT_ITEM_TOGGLE', { 항목명: item?.name || id, 활성여부: !currentActive });
       await loadItems();
     }
 
@@ -258,6 +268,7 @@
           const { error: e2 } = await _sb.from('talent_items').update({ is_quick_button: true }).eq('id', id);
           if (e2) throw e2;
         }
+        await logInfo('TALENT_ITEM_QUICKBTN', { 항목명: item.name });
         await loadItems();
       } catch (err) {
         const msg = (err && err.message) || String(err);
@@ -271,6 +282,6 @@
 
     document.getElementById('itemModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.29.0"></script>
+  <script src="../js/version.js?v=3.32.0"></script>
 </body>
 </html>
