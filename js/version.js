@@ -2,9 +2,22 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.28.0',
+  current: '3.29.0',
   date: '2026-06-08',
   history: [
+    {
+      version: '3.29.0',
+      date: '2026-06-08',
+      title: '달란트 취소 재지급 + super_admin 숨김 + 로그 배지 + 가이드 탭 + 권한 문서 nav',
+      changes: [
+        '달란트 관리: 출석/달란트 지급 취소 후 재지급 가능하도록 반환 트랜잭션 매칭 로직 수정',
+        '사용자 관리: is_super_admin=true 사용자가 non-super_admin에게 목록에서 숨김 처리',
+        '페이지 권한 룰 문서(docs/page-permission-rules.html)에 상단 네비게이션 바 추가',
+        '운영 메뉴: 로그 배지(navLogBadge) 업데이트 시 updateNavGroupBadges() 호출하여 운영 드롭다운에도 배지 반영',
+        '운영 메뉴: 전체 admin 페이지 16개에 updateLogBadge() 공용 함수 적용',
+        '가이드 페이지: 권한별 탭 표시 (비로그인/학생→학생만, 교사→학생+교사, 부서담당+→전체)'
+      ]
+    },
     {
       version: '3.28.0',
       date: '2026-06-08',

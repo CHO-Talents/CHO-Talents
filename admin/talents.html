@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/admin.css?v=3.27.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.29.0" />
 </head>
 <body class="admin-body">
   <nav class="admin-nav">
@@ -184,11 +184,11 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.27.0"></script>
-  <script src="../js/supabase-config.js?v=3.27.0"></script>
-  <script src="../js/activity-log.js?v=3.27.0"></script>
-  <script src="../js/auth.js?v=3.27.0"></script>
-  <script src="../js/user-mgmt.js?v=3.27.0"></script>
+  <script src="../config/public-config.js?v=3.29.0"></script>
+  <script src="../js/supabase-config.js?v=3.29.0"></script>
+  <script src="../js/activity-log.js?v=3.29.0"></script>
+  <script src="../js/auth.js?v=3.29.0"></script>
+  <script src="../js/user-mgmt.js?v=3.29.0"></script>
   <script src="../js/talent.js?v=3.27.1"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
@@ -230,6 +230,7 @@
       autoLogPageView();
       updatePendingBadge();
       updateNavOrderBadge();
+      updateLogBadge();
       const [deptRes, itemRes] = await Promise.all([
         fetchDepartments(),
         fetchAllTalentItems()
@@ -412,14 +413,22 @@
         || talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
       if (!attendItem) return;
       const weekStart = getWeekStartKST();
-      const { data: txns } = await _sb.from('talent_transactions')
+      const { data: earns } = await _sb.from('talent_transactions')
         .select('id, user_id, amount, description')
         .in('user_id', userIds)
         .eq('talent_item_id', attendItem.id)
         .eq('type', 'earn')
         .gte('created_at', weekStart.toISOString());
-      (txns || []).forEach(t => {
-        if (!t.description || !t.description.startsWith('반환:')) {
+      const { data: returns } = await _sb.from('talent_transactions')
+        .select('user_id, amount, description')
+        .in('user_id', userIds)
+        .eq('type', 'use')
+        .like('description', '반환:%')
+        .gte('created_at', weekStart.toISOString());
+      const returnSet = new Set((returns || []).map(r => r.user_id + '|' + r.amount + '|반환:' + (r.description.replace('반환: ','').replace('반환:',''))));
+      (earns || []).forEach(t => {
+        const key = t.user_id + '|' + t.amount + '|반환:' + (t.description || '');
+        if (!returnSet.has(key)) {
           _attendanceGivenThisWeek.add(t.user_id);
           _attendanceTxnMap[t.user_id] = { id: t.id, amount: t.amount, description: t.description };
         }
@@ -596,15 +605,23 @@
         return;
       }
       const weekStart = getWeekStartKST();
-      const { data: weekTxns } = await _sb.from('talent_transactions')
+      const { data: weekEarns } = await _sb.from('talent_transactions')
         .select('id, talent_item_id, amount, description')
         .eq('user_id', talentUserId)
         .eq('type', 'earn')
         .gte('created_at', weekStart.toISOString())
         .not('talent_item_id', 'is', null);
+      const { data: weekReturns } = await _sb.from('talent_transactions')
+        .select('amount, description')
+        .eq('user_id', talentUserId)
+        .eq('type', 'use')
+        .like('description', '반환:%')
+        .gte('created_at', weekStart.toISOString());
+      const retDescs = new Set((weekReturns || []).map(r => r.amount + '|' + r.description.replace('반환: ','').replace('반환:','')));
       _weeklyGivenMap = {};
-      (weekTxns || []).forEach(t => {
-        if (!t.description || !t.description.startsWith('반환:')) {
+      (weekEarns || []).forEach(t => {
+        const matchKey = t.amount + '|' + (t.description || '');
+        if (!retDescs.has(matchKey)) {
           _weeklyGivenMap[t.talent_item_id] = { id: t.id, amount: t.amount, description: t.description };
         }
       });
@@ -754,6 +771,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.27.0"></script>
+  <script src="../js/version.js?v=3.29.0"></script>
 </body>
 </html>
