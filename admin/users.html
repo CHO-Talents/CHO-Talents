@@ -241,7 +241,7 @@
   <script src="../config/public-config.js?v=3.27.0"></script>
   <script src="../js/supabase-config.js?v=3.27.0"></script>
   <script src="../js/activity-log.js?v=3.27.0"></script>
-  <script src="../js/auth.js?v=3.27.0"></script>
+  <script src="../js/auth.js?v=3.27.2"></script>
   <script src="../js/user-mgmt.js?v=3.27.0"></script>
   <script src="../js/version.js?v=3.27.0"></script>
   <script>
@@ -466,12 +466,11 @@
         const permEmoji = PERMISSION_EMOJI[perm] || '';
         const rb = ROLE_BADGES[badgeKeyForUser(u)] || ROLE_BADGES.student;
         const dn = _nameMap[u.id] || u.display_name || '-';
-        const isSuperAdmin = u.is_super_admin || false;
-        const targetRank = getPermRank(perm, isSuperAdmin);
-        const canManage = u.id === session.id || (myRank > targetRank);
+        const canManage = canManageUser(u);
         const isSelf = u.id === session.id;
         let items = [`<a onclick="openDetailModal('${u.id}')">📋 상세 정보</a>`];
         if (canManage) items.push(`<a onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>✏️ 수정</a>`);
+        else if (isProtectedSuperAdminUser(u)) items.push('<a style="color:#868e96;cursor:default;">🔒 최고관리자는 본인만 수정 가능</a>');
         if (canManage && !isSelf) {
           items.push(`<a onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">${myRank >= 90 ? '🔄 부서 이동' : '🔄 부서 이동 신청'}</a>`);
           items.push(`<a onclick="resetPw('${u.id}','${(dn).replace(/'/g,"\\'")}')">🔑 비밀번호 초기화</a>`);
@@ -511,6 +510,48 @@
     function goGroupPage(groupKey, p) {
       groupPages[groupKey] = p;
       renderUsers();
+    }
+
+    function hasOwnFlag(obj, key) {
+      return Object.prototype.hasOwnProperty.call(obj || {}, key);
+    }
+
+    function isProtectedSuperAdminUser(user) {
+      return !!(user && user.is_super_admin === true);
+    }
+
+    function canManageUser(user) {
+      if (!user) return false;
+      if (user.id === session.id) return true;
+      if (isProtectedSuperAdminUser(user)) return false;
+      return (session.permissionRank || 0) > getPermRank(user.permission_level, false);
+    }
+
+    async function refreshUserProtection(user) {
+      if (!user || hasOwnFlag(user, 'is_super_admin')) return user;
+      try {
+        const { data } = await _sb
+          .from('profiles')
+          .select('is_super_admin')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (data && hasOwnFlag(data, 'is_super_admin')) {
+          user.is_super_admin = data.is_super_admin === true;
+        }
+      } catch (e) {}
+      return user;
+    }
+
+    function showProtectedUserMessage(target, errEl) {
+      const message = isProtectedSuperAdminUser(target)
+        ? '최고관리자 계정은 본인만 수정할 수 있습니다.'
+        : '이 사용자를 수정할 권한이 없습니다.';
+      if (errEl) {
+        errEl.textContent = message;
+        errEl.classList.add('show');
+      } else {
+        alert(message);
+      }
     }
 
     function toggleMgmtMenu(e, btn) {
@@ -651,7 +692,12 @@
       document.getElementById('userModal').classList.remove('hidden');
     }
 
-    function openEditModal(u) {
+    async function openEditModal(u) {
+      await refreshUserProtection(u);
+      if (!canManageUser(u)) {
+        showProtectedUserMessage(u);
+        return;
+      }
       editingId = u.id;
       document.getElementById('modalTitle').textContent = '사용자 수정';
       document.getElementById('usernameWrap').style.display = _isAdmin() ? 'block' : 'none';
@@ -699,6 +745,12 @@
       if (needsManagedDept && !managedDeptId) { errEl.textContent = '담당 관리 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
+        const target = allUsers.find(u => u.id === editingId);
+        await refreshUserProtection(target);
+        if (!canManageUser(target)) {
+          showProtectedUserMessage(target, errEl);
+          return;
+        }
         const { error } = await updateUser(editingId, { displayName, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null, classNumber });
         if (error) { await logError('USER_UPDATE_FAIL', { id: editingId, error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
         await logInfo('USER_UPDATE', { id: editingId, displayName, userType, permLevel });
