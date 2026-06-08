@@ -207,7 +207,8 @@ body.admin-body {
   font-weight: 500;
 }
 
-.btn-logout {
+.btn-logout,
+.btn-nav-logout {
   background: none;
   border: 1.5px solid var(--admin-border);
   border-radius: 8px;
@@ -218,7 +219,8 @@ body.admin-body {
   transition: all 0.2s;
 }
 
-.btn-logout:hover {
+.btn-logout:hover,
+.btn-nav-logout:hover {
   border-color: var(--level-error);
   color: var(--level-error);
 }
@@ -358,6 +360,12 @@ body.admin-body {
 
 .btn-primary:hover { background: #5a4bd1; }
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+#navThemeArea {
+  display: flex;
+  align-items: center;
+  margin-left: 0.3rem;
+}
 
 .form-error {
   background: #fff5f5;
@@ -686,7 +694,8 @@ table.admin-table tr:hover { background: #fafbfc; }
   .admin-table-wrap { overflow: visible; }
   table.admin-table { min-width: auto; }
   .admin-nav-links a { font-size: 0.75rem; padding: 0.3rem 0.45rem; }
-  .btn-logout { font-size: 0.75rem; padding: 0.25rem 0.5rem; }
+  .btn-logout,
+  .btn-nav-logout { font-size: 0.75rem; padding: 0.25rem 0.5rem; }
   .nav-user { font-size: 0.75rem; }
 }
 
@@ -754,7 +763,8 @@ table.admin-table tr:hover { background: #fafbfc; }
     height: 16px;
     font-size: 0.62rem;
   }
-  .btn-logout {
+  .btn-logout,
+  .btn-nav-logout {
     width: 100%;
     text-align: center;
     margin-top: 0.2rem;

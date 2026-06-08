@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-theme="default">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CHO-Talents 페이지별 권한 설정 정리</title>
+<link rel="stylesheet" href="../css/themes.css?v=3.33.0">
+<link rel="stylesheet" href="../css/admin.css?v=3.33.0">
 <style>
   :root {
     --bg: #f8f9fa; --surface: #fff; --text: #212529; --text2: #495057; --text3: #868e96;
@@ -17,7 +19,9 @@
     --gray-bg: #f1f3f5;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: 'Pretendard','Apple SD Gothic Neo','Noto Sans KR',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; }
+  body.permission-rules-body { font-family: 'Pretendard','Apple SD Gothic Neo','Noto Sans KR',system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; padding-top:54px; }
+  .permission-rules-body:not(.auth-ready) .container { visibility:hidden; }
+  .permission-rules-body.auth-ready .container { visibility:visible; }
 
   .container { max-width:960px; margin:0 auto; padding:2rem 1.5rem 4rem; }
 
@@ -104,17 +108,14 @@
     table { font-size:0.75rem; }
     th, td { padding:0.35rem 0.5rem; }
   }
+
+  @media (max-width:768px) {
+    body.permission-rules-body { padding-top:0; }
+  }
 </style>
 </head>
-<body>
-<nav style="position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:2px solid #4263eb;padding:0.6rem 1.2rem;display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;">
-  <a href="../index.html" style="text-decoration:none;font-size:1.1rem;font-weight:800;color:#4263eb;display:flex;align-items:center;gap:0.3rem;">⭐ 달란트 마을</a>
-  <span style="color:#dee2e6;">|</span>
-  <a href="../guide.html" style="text-decoration:none;font-size:0.82rem;font-weight:600;color:#495057;padding:0.25rem 0.7rem;border-radius:50px;transition:all 0.2s;">📖 학생 가이드</a>
-  <a href="../shop.html" style="text-decoration:none;font-size:0.82rem;font-weight:600;color:#495057;padding:0.25rem 0.7rem;border-radius:50px;transition:all 0.2s;">🛒 상품 구매</a>
-  <a href="../admin/index.html" style="text-decoration:none;font-size:0.82rem;font-weight:600;color:#495057;padding:0.25rem 0.7rem;border-radius:50px;transition:all 0.2s;">⚙️ 관리</a>
-  <span style="margin-left:auto;font-size:0.72rem;color:#868e96;background:#f1f3f5;padding:0.2rem 0.6rem;border-radius:50px;">📋 권한 문서</span>
-</nav>
+<body class="admin-body permission-rules-body">
+<div id="nav-container"></div>
 <div class="container">
 
   <h1>CHO-Talents 페이지별 권한 설정 정리</h1>
@@ -924,7 +925,23 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config/public-config.js?v=3.33.0"></script>
+<script src="../js/supabase-config.js?v=3.33.0"></script>
+<script src="../js/activity-log.js?v=3.33.0"></script>
+<script src="../js/auth.js?v=3.33.0"></script>
+<script src="../js/theme.js?v=3.33.0"></script>
+<script src="../js/nav.js?v=3.33.0"></script>
 <script>
+initSupabase();
+(async () => {
+  await navInit();
+  const session = await initPage(100, '../login.html');
+  if (!session) return;
+  navUpdateAuth(session);
+  autoLogPageView();
+})();
+
 function toggleCard(header) {
   header.closest('.page-card').classList.toggle('open');
 }

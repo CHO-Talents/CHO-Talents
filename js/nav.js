@@ -68,7 +68,8 @@ const NAV_MENU = [
 
 function _navBasePath() {
   const path = window.location.pathname;
-  if (path.includes('/admin/') || path.includes('/docs/')) return '../';
+  if (path.includes('/admin/') || path.endsWith('/admin') ||
+      path.includes('/docs/') || path.endsWith('/docs')) return '../';
   return '';
 }
 
@@ -77,33 +78,53 @@ function _navResolveHref(href) {
   return base + href;
 }
 
+function _navCurrentPath() {
+  const pathname = window.location.pathname;
+  const trimmed = pathname.replace(/\/+$/, '');
+  const parts = trimmed.split('/').filter(Boolean);
+
+  if (!trimmed || pathname.endsWith('/')) {
+    if (parts[parts.length - 1] === 'admin') return 'admin/index.html';
+    return 'index.html';
+  }
+
+  const adminIdx = parts.indexOf('admin');
+  if (adminIdx >= 0) return parts.slice(adminIdx).join('/');
+
+  const docsIdx = parts.indexOf('docs');
+  if (docsIdx >= 0) return parts.slice(docsIdx).join('/');
+
+  return parts[parts.length - 1] || 'index.html';
+}
+
+function _navTargetPath(href) {
+  return href.replace(/^\.\//, '').replace(/^\.\.\//, '');
+}
+
 function _navIsActive(href) {
-  const current = window.location.pathname;
-  const resolved = href.replace(/^\.\.\//, '');
-  if (current.endsWith(resolved)) return true;
-  if (current.includes(resolved.replace('.html', ''))) return true;
-  return false;
+  return _navCurrentPath() === _navTargetPath(href);
 }
 
 function _navGroupIsActive(items) {
   return items.some(item => _navIsActive(item.href));
 }
 
+function _navItemAttrs(item) {
+  const attrs = [];
+  if (item.minPerm) attrs.push(`data-min-perm="${item.minPerm}"`);
+  if (item.id) attrs.push(`id="${item.id}"`);
+  if (item.minPerm || item.authOnly) attrs.push('style="display:none;"');
+  return attrs.length ? ' ' + attrs.join(' ') : '';
+}
+
 function renderNav(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  const isMain = window.location.pathname.endsWith('index.html') &&
-                 !window.location.pathname.includes('admin/');
-  const navClass = window.location.pathname.includes('/admin/') ? 'admin-nav' : 'top-nav';
-  const brandClass = navClass === 'admin-nav' ? 'admin-nav-brand' : 'top-nav-brand';
-  const linksClass = navClass === 'admin-nav' ? 'admin-nav-links' : 'top-nav-links';
-  const hamburgerClass = navClass === 'admin-nav' ? 'nav-hamburger' : 'top-nav-hamburger';
-
-  let html = `<nav class="${navClass}" id="mainNavBar">`;
-  html += `<a href="${_navResolveHref('index.html')}" class="${brandClass}"><span class="brand-icon">⭐</span> 달란트 마을</a>`;
-  html += `<button class="${hamburgerClass}" id="navHamburger" aria-label="Menu">&#9776;</button>`;
-  html += `<ul class="${linksClass}" id="navLinks">`;
+  let html = `<nav class="admin-nav" id="mainNavBar">`;
+  html += `<a href="${_navResolveHref('index.html')}" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>`;
+  html += `<button class="nav-hamburger" id="navHamburger" aria-label="메뉴 열기">&#9776;</button>`;
+  html += `<ul class="admin-nav-links" id="navLinks">`;
 
   NAV_MENU.forEach(group => {
     const groupActive = _navGroupIsActive(group.items);
@@ -113,11 +134,7 @@ function renderNav(containerId) {
     html += `<ul class="nav-dropdown-menu">`;
     group.items.forEach(item => {
       const active = _navIsActive(item.href);
-      let liAttr = '';
-      if (item.minPerm) liAttr += ` data-min-perm="${item.minPerm}" style="display:none;"`;
-      if (item.authOnly) liAttr += ' style="display:none;"';
-      const idAttr = item.id ? ` id="${item.id}"` : '';
-      html += `<li${liAttr}${idAttr}>`;
+      html += `<li${_navItemAttrs(item)}>`;
       html += `<a href="${_navResolveHref(item.href)}"${active ? ' class="active"' : ''}>`;
       html += item.label;
       if (item.badgeId) html += ` <span class="badge hidden" id="${item.badgeId}">0</span>`;
