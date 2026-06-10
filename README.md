@@ -565,3 +565,19 @@ flowchart TD
 - [일반 사용자 사이트 안내서](docs/SITE_USER_GUIDE.md)
 - `docs/TASK-*.md`: 작업별 계획, 변경 보고서, 테스트 결과
 - `docs/*.sql`: Supabase 테이블/RPC/RLS 구성 기록
+
+## 개발 시 주의사항
+
+### 파일 인코딩 (UTF-8)
+
+이 프로젝트의 모든 소스 파일은 **UTF-8 (BOM 없음)** 인코딩입니다.
+
+- **금지**: PowerShell의 `Set-Content`, `Out-File`, `>` 리다이렉션 — 시스템 기본 인코딩(CP949/UTF-16)으로 저장되어 한글이 깨짐
+- **허용**: `[System.IO.File]::ReadAllBytes` / `WriteAllBytes` 조합으로 바이트 단위 처리
+- **권장**: Cursor의 `StrReplace` 도구 또는 IDE 내장 편집기 사용
+- 상세 룰: `.cursor/rules/utf8-encoding.mdc` 참조
+
+### Git 머지 충돌
+
+- 머지 충돌 마커(`<<<<<<<`, `=======`, `>>>>>>>`)가 남은 채 커밋하면 HTML 파싱 실패로 전체 사이트 동작 불가
+- 충돌 해결 후 반드시 모든 마커가 제거되었는지 확인 필수

@@ -2,9 +2,22 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.36.0',
+  current: '3.36.1',
   date: '2026-06-10',
   history: [
+    {
+      version: '3.36.1',
+      date: '2026-06-10',
+      title: '구매 담당 교사 등록 폼 반영 + UTF-8 인코딩 보존 룰 + 문서 보완',
+      changes: [
+        '사용자 관리: PERM_LEVELS에 구매 담당 교사(70) 항목 추가 — 등록/수정 폼에서 선택 가능',
+        '관리자 관리: PERM_LEVELS·MGMT_LEVELS에 구매 담당 교사 추가 — 등록/수정 시 담당 부서 할당 가능',
+        'UTF-8 인코딩 보존 룰(.cursor/rules/utf8-encoding.mdc) 생성 — PowerShell Set-Content 사용 금지 명시',
+        'README.md: 개발 시 주의사항(인코딩, 머지 충돌) 섹션 추가',
+        'PROJECT_ARCHITECTURE_FLOW.md: 개발 주의사항 섹션 + TASK-048 참조 추가',
+        'page-permission-rules.html: 구매 담당 교사 등급(70) 추가, 부장 교사 조회 전용 명시, 구매 관리 스코핑 업데이트'
+      ]
+    },
     {
       version: '3.36.0',
       date: '2026-06-10',

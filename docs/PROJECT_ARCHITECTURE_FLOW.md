@@ -516,3 +516,14 @@ flowchart TD
 | 11 | `docs/TASK-035_qna_comments.sql` | Q&A 댓글 테이블/RLS 및 삭제 권한 수정 |
 | 12 | `docs/TASK-039_user_preferences.sql` | `user_preferences` 테이블 (즐겨찾기 DB 저장), RLS 정책 |
 | 13 | `docs/TASK-047_activity_logs_grants.sql` | 운영 DB `activity_logs` INSERT 권한/정책 복구 SQL |
+| 14 | `docs/TASK-048_schema.sql` | v3.36.0: talent_items 컬럼, purchase_teacher CHECK 제약 |
+
+## 18. 개발 주의사항
+
+### 파일 인코딩
+
+모든 소스 파일은 **UTF-8 (BOM 없음)**. PowerShell의 `Set-Content`, `Out-File`, `>` 리다이렉션은 인코딩을 변환하므로 **사용 금지**. 대량 치환은 `[System.IO.File]::ReadAllBytes` / `WriteAllBytes` 조합만 허용.
+
+### Git 머지 충돌
+
+충돌 마커(`<<<<<<<`, `=======`, `>>>>>>>`)가 남으면 HTML 파싱 실패 → 사이트 전체 동작 불가. 머지 후 반드시 전 파일 마커 검색 필수.

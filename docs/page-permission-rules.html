@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CHO-Talents 페이지별 권한 설정 정리</title>
-<link rel="stylesheet" href="../css/themes.css?v=3.36.0">
-<link rel="stylesheet" href="../css/admin.css?v=3.36.0">
+<link rel="stylesheet" href="../css/themes.css?v=3.36.1">
+<link rel="stylesheet" href="../css/admin.css?v=3.36.1">
 <style>
   :root {
     --bg: #f8f9fa; --surface: #fff; --text: #212529; --text2: #495057; --text3: #868e96;
@@ -130,6 +130,7 @@
     <span class="rank-chip rc-20"><span class="num">20</span> 학생</span>
     <span class="rank-chip rc-40"><span class="num">40</span> 일반 교사</span>
     <span class="rank-chip rc-60"><span class="num">60</span> 부서 담당 교사</span>
+    <span class="rank-chip rc-70"><span class="num">70</span> 구매 담당 교사</span>
     <span class="rank-chip rc-80"><span class="num">80</span> 부장 교사</span>
     <span class="rank-chip rc-90"><span class="num">90</span> 전도사님</span>
     <span class="rank-chip rc-100"><span class="num">100</span> 관리자</span>
@@ -514,11 +515,12 @@
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>사용자 수정/삭제/비번초기화</td><td>canManage = 본인이거나 myRank &gt; targetRank</td></tr>
+            <tr><td>사용자 수정/삭제/비번초기화</td><td>canManage = myRank &gt; 80 && myRank &gt; targetRank<br><strong>부장 교사(80)는 조회만 가능, 관리 기능 불가</strong></td></tr>
             <tr><td>부서 이동 즉시 처리</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
             <tr><td>부서 이동 요청 생성</td><td>rank &lt; 90</td></tr>
             <tr><td>가입 신청 승인/거부</td><td>90+ 전체 / 60~89 담당 부서만</td></tr>
             <tr><td>권한 부여</td><td>본인 rank 미만의 권한만 선택 가능</td></tr>
+            <tr><td>소속 부서 선택</td><td>90+: 모든 부서 / 80이하: 본인 담당 부서만</td></tr>
           </tbody>
         </table>
         <h3>데이터 범위 (스코핑)</h3>
@@ -574,7 +576,7 @@
           <tbody>
             <tr><td>부서 필터</td><td><span class="badge b-80">data-min-perm=80</span></td></tr>
             <tr><td>아이디 표시</td><td>본인 또는 <span class="badge b-100">isAdminLevel</span></td></tr>
-            <tr><td>수정 버튼</td><td>canManage (본인이거나 myRank &gt; targetRank)</td></tr>
+            <tr><td>수정 버튼</td><td>canManage (myRank &gt; 80 && myRank &gt; targetRank)<br><strong>부장 교사(80)는 조회만 가능, 수정 불가</strong></td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
@@ -731,7 +733,7 @@
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>주문 상태 변경</td><td>canProcessOrder: 90+ 전체 / 60~89 담당 부서만</td></tr>
+            <tr><td>주문 상태 변경</td><td>canProcessOrder: 90+ 전체 / <strong>구매 담당 교사(70) 전체</strong> / 60~89 담당 부서만</td></tr>
             <tr><td>일괄 상품 준비</td><td>구매 신청 탭 + rank &gt;= 60</td></tr>
             <tr><td>일괄 구매 확정</td><td>상품 준비 탭 + rank &gt;= 60</td></tr>
             <tr><td>일괄 지급 완료</td><td>상품 구매 탭 + rank &gt;= 60</td></tr>
@@ -742,7 +744,8 @@
           <thead><tr><th>권한 범위</th><th>조회 범위</th></tr></thead>
           <tbody>
             <tr><td>90+</td><td>전체 주문</td></tr>
-            <tr><td>60~89</td><td>담당 부서 사용자의 주문만</td></tr>
+            <tr><td>구매 담당 교사(70)</td><td><strong>전체 부서 주문</strong> (부서 제한 없음)</td></tr>
+            <tr><td>60~89 (구매 담당 제외)</td><td>담당 부서 사용자의 주문만</td></tr>
           </tbody>
         </table>
       </div>
@@ -926,12 +929,12 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../config/public-config.js?v=3.36.0"></script>
-<script src="../js/supabase-config.js?v=3.36.0"></script>
-<script src="../js/activity-log.js?v=3.36.0"></script>
-<script src="../js/auth.js?v=3.36.0"></script>
-<script src="../js/theme.js?v=3.36.0"></script>
-<script src="../js/nav.js?v=3.36.0"></script>
+<script src="../config/public-config.js?v=3.36.1"></script>
+<script src="../js/supabase-config.js?v=3.36.1"></script>
+<script src="../js/activity-log.js?v=3.36.1"></script>
+<script src="../js/auth.js?v=3.36.1"></script>
+<script src="../js/theme.js?v=3.36.1"></script>
+<script src="../js/nav.js?v=3.36.1"></script>
 <script>
 initSupabase();
 (async () => {
