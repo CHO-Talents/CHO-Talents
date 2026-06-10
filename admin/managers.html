@@ -174,7 +174,7 @@
         u.permission_level === 'admin' || DEPT_MGR_LEVELS.includes(u.permission_level)
       );
 
-      if (myRank < 90) {
+      if (myRank < 80) {
         const myManagedDept = session.managedDeptId || session.departmentId;
         if (myManagedDept) {
           managers = managers.filter(u => u.department_id === myManagedDept || u.managed_dept_id === myManagedDept);

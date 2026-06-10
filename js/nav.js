@@ -55,7 +55,7 @@ const NAV_MENU = [
     items: [
       { href: 'admin/page-access.html', label: '페이지 접근', minPerm: 100 },
       { href: 'admin/page-features.html', label: '페이지 기능', minPerm: 100 },
-      { href: 'docs/page-permission-rules.html', label: '페이지 권한 룰', minPerm: 100 },
+      { href: 'docs/page-permission-rules.html', label: '페이지 권한 룰', minPerm: 80 },
       { href: 'admin/log-rules.html', label: '로그 작성 룰', minPerm: 80 },
       { href: 'admin/audit-rules.html', label: '작업 이력 작성 룰', minPerm: 80 },
       { href: 'admin/versions.html', label: '버전', minPerm: 80 },

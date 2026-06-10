@@ -253,7 +253,7 @@
         users = users.filter(u => !u.is_super_admin);
       }
 
-      if (myRank < 90) {
+      if (myRank < 80) {
         if (myManagedDept) {
           users = users.filter(u => u.department_id === myManagedDept);
         } else {

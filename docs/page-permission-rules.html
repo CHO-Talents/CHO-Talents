@@ -939,7 +939,7 @@
 initSupabase();
 (async () => {
   await navInit();
-  const session = await initPage(100, '../login.html');
+  const session = await initPage(80, '../login.html');
   if (!session) return;
   navUpdateAuth(session);
   autoLogPageView();
