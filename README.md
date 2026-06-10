@@ -12,12 +12,21 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.35.0` (`js/version.js` 기준, 2026-06-09) |
+| 현재 버전 | `v3.36.0` (`js/version.js` 기준, 2026-06-10) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.35.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.36.0`으로 갱신되어 있습니다.
+- **v3.36.0 주요 변경 사항**:
+  - 다크 모드: 달란트 통계 카드/라디오, 부서 필터 등 잔여 흰 배경을 CSS 변수 기반 어두운 표면색으로 보정
+  - 테마: 로그아웃 시 기본(일반) 테마로 리셋, 로그인 시 DB에 저장된 계정 테마 우선 적용
+  - 부장 교사(80): 사용자/관리자 관리에서 전체 부서 조회만 가능, 수정/삭제/비밀번호 초기화 버튼 숨김
+  - 달란트 통계: 부서 필터 순서를 전체 → 1부~5부 → 예배부로 고정, 80+ 이상만 필터 표시
+  - 달란트 항목 관리: `giving_rule`, `giving_description` 필드 추가 및 달란트 적립 페이지 동적 반영
+  - 신규 권한: 구매 담당 교사(`purchase_teacher`, 70) — 구매 관리에서 모든 부서 주문 처리 가능
+  - 사용자 등록: 전도사님(90+)만 모든 부서 선택, 그 이하는 담당 부서로 고정
+  - DB: `docs/TASK-048_schema.sql` (talent_items 컬럼, purchase_teacher CHECK 제약)
 - **v3.35.0 주요 변경 사항**:
   - 다크 모드: 가이드, Q&A, 달란트 적립/수령, QR 관리, 권한/로그/작업이력 룰, 버전 이력의 잔여 흰 배경과 저대비 텍스트 보정
   - 달란트 적립: 안내 카드별로 `talent_items` 활성 항목의 지급 수량을 조회해 `+N 달란트` 배지 표시
@@ -279,7 +288,8 @@ CHO-Talents/
 | 최고 관리자 | `admin` + `is_super_admin` | 110 | `index.html` | 관리자 포함 전체 사용자 관리, 보고서 초기화, 페이지 접근/기능/감사/로그 관리 |
 | 관리자 | `admin` | 100 | `index.html` | 전체 관리, 페이지 접근/기능/감사/로그 관리, 로그 삭제 대기 처리 |
 | 전도사님 | `evangelist` | 90 | `index.html` | 달란트 항목 관리, 상품 삭제, 부서 즉시 이동, 전체 구매 처리 |
-| 부장 교사 | `chief` | 80 | `index.html` | 대시보드, 부서/관리자/보고서/버전, 달란트 반환 처리 |
+| 부장 교사 | `chief` | 80 | `index.html` | 대시보드, 부서/관리자/보고서/버전, 달란트 반환 처리 (사용자/관리자 관리는 조회 전용) |
+| 구매 담당 교사 | `purchase_teacher` | 70 | `index.html` | 부서 담당 교사와 동일 접근, 구매 관리에서 전체 부서 주문 처리 |
 | 부서 담당 교사 | `dept_teacher` | 60 | `index.html` | 담당 부서 중심 사용자/부서/달란트/상품/구매/Q&A 답변 관리 |
 | 일반 교사 | `teacher` | 40 | `index.html` | 담당 부서/반 학생 달란트 처리, 대리 구매, 내 달란트, 교사용/학생용 상점 |
 | 학생 | `student` | 20 | `index.html` | 내 달란트/구매 내역 확인, 학생용 상점 구매 신청, Q&A 질문 |
@@ -463,6 +473,7 @@ flowchart TD
 | 권한 | 조회 | 처리 |
 |---|---|---|
 | 부서 담당 교사 | 담당 부서 신청 | 담당 부서 신청의 준비/구매 확정/지급 처리 |
+| 구매 담당 교사 | 전체 신청 | 전체 처리 가능 |
 | 부장 교사 | 전체 신청 | 담당 관리 부서 신청 처리 |
 | 전도사님 이상 | 전체 신청 | 전체 처리 가능 |
 
@@ -546,6 +557,7 @@ flowchart TD
 | `docs/TASK-033_fixes.sql` | `qna` 테이블/RLS 재생성 (IF NOT EXISTS), 초기 FAQ 데이터 안전 재삽입 |
 | `docs/TASK-039_user_preferences.sql` | `user_preferences` 테이블 (즐겨찾기 DB 저장), RLS 정책 |
 | `docs/TASK-047_activity_logs_grants.sql` | 운영 DB의 `activity_logs` INSERT 권한/정책 복구. 로그/작업 이력 DB 적재가 401로 거부될 때 적용 |
+| `docs/TASK-048_schema.sql` | v3.36.0: `talent_items` giving_rule/giving_description 컬럼, `purchase_teacher` 권한 CHECK 제약, `get_permission_rank` 갱신 |
 
 ## 관련 문서
 

@@ -133,7 +133,10 @@
 [data-theme="dark"] .form-group input,
 [data-theme="dark"] .filter-input,
 [data-theme="dark"] textarea,
-[data-theme="dark"] select {
+[data-theme="dark"] select,
+[data-theme="dark"] .modal-box input,
+[data-theme="dark"] .modal-box select,
+[data-theme="dark"] .modal-box textarea {
   background: var(--t-input-bg);
   border-color: var(--t-input-border);
   color: var(--t-text);

@@ -64,11 +64,10 @@ async function saveThemeToDB(themeId) {
 async function initTheme() {
   let theme = loadThemeFromLocal();
   const dbTheme = await loadThemeFromDB();
-  if (dbTheme && dbTheme !== theme) {
+  if (dbTheme) {
     theme = dbTheme;
     applyTheme(theme);
-  }
-  if (theme !== getCurrentTheme()) {
+  } else if (theme !== getCurrentTheme()) {
     applyTheme(theme);
   }
   return theme;

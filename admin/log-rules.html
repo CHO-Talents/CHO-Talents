@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로그 작성 룰 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
-  <link rel="stylesheet" href="../css/themes.css?v=3.35.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.35.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.36.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.36.0" />
   <style>
-    .rule-section { background: var(--admin-card); border-radius: var(--admin-radius); box-shadow: var(--admin-shadow); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .rule-section { background: var(--admin-card); border-radius: var(--admin-radius); box-shadow: var(--admin-shadow); padding: 1.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
     .rule-section h2 { font-size: 1.1rem; font-weight: 700; color: var(--admin-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
     .rule-section h3 { font-size: 0.95rem; font-weight: 700; margin: 1rem 0 0.5rem; color: var(--admin-text); }
-    .rule-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0.5rem 0; }
+    .rule-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin: 0.5rem 0; table-layout: fixed; word-break: break-word; }
     .rule-table th { text-align: left; padding: 0.5rem 0.7rem; background: #fafbfc; border: 1px solid var(--admin-border); font-weight: 600; font-size: 0.78rem; }
     .rule-table td { padding: 0.5rem 0.7rem; border: 1px solid var(--admin-border); vertical-align: top; }
     .rule-table tr:hover { background: #f8f9fa; }
@@ -292,12 +292,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.35.0"></script>
-  <script src="../js/supabase-config.js?v=3.35.0"></script>
-  <script src="../js/activity-log.js?v=3.35.0"></script>
-  <script src="../js/auth.js?v=3.35.0"></script>
-  <script src="../js/theme.js?v=3.35.0"></script>
-  <script src="../js/nav.js?v=3.35.0"></script>
+  <script src="../config/public-config.js?v=3.36.0"></script>
+  <script src="../js/supabase-config.js?v=3.36.0"></script>
+  <script src="../js/activity-log.js?v=3.36.0"></script>
+  <script src="../js/auth.js?v=3.36.0"></script>
+  <script src="../js/theme.js?v=3.36.0"></script>
+  <script src="../js/nav.js?v=3.36.0"></script>
   <script>
     initSupabase();
     (async () => {
