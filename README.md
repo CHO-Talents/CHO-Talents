@@ -12,7 +12,7 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.36.0` (`js/version.js` 기준, 2026-06-10) |
+| 현재 버전 | `v3.36.1` (`js/version.js` 기준, 2026-06-10) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
