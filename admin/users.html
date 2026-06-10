@@ -474,12 +474,43 @@
     }
 
     function canManageUser(user) {
+      //if (!user) return false;
+      //const myRank = session.permissionRank || 0;
+      //if (myRank <= 80) return false;
+      //if (user.id === session.id) return true;
+      //if (isProtectedSuperAdminUser(user)) return false;
+      //return myRank > getPermRank(user.permission_level, false);
+
+
       if (!user) return false;
+
       const myRank = session.permissionRank || 0;
-      if (myRank <= 80) return false;
+      const myManagedDept = session.managedDeptId || session.departmentId;
+
+      // 사용자 관리 접근 권한 미만은 관리 불가
+      if (myRank < 80) return false;
+
+      // 최고관리자 보호
+      if (user.id !== session.id && isProtectedSuperAdminUser(user)) return false;
+
+      // 본인 수정 허용
       if (user.id === session.id) return true;
-      if (isProtectedSuperAdminUser(user)) return false;
-      return myRank > getPermRank(user.permission_level, false);
+
+      const targetRank = getPermRank(user.permission_level, false);
+
+      // 자기와 같거나 높은 권한은 수정 불가
+      if (myRank <= targetRank) return false;
+
+      // 부장 교사(rank 80)는 담당 부서 범위 안에서만 수정 가능
+      if (myRank === 80) {
+        return !!myManagedDept && (
+          user.department_id === myManagedDept ||
+          user.managed_dept_id === myManagedDept
+        );
+      }
+
+      // 전도사님 이상(rank 90+)은 자기보다 낮은 권한 수정 가능
+      return true;
     }
 
     async function refreshUserProtection(user) {

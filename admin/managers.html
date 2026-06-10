@@ -20,7 +20,7 @@
           <button class="filter-btn active" onclick="setMgrFilter('all',this)">전체</button>
           <button class="filter-btn" onclick="setMgrFilter('admin',this)">👑 관리자</button>
           <button class="filter-btn" onclick="setMgrFilter('dept_manager',this)">📋 부서 담당 교사</button>
-          <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
+          <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:var(--t-input-bg, #fff);" onchange="onDeptFilterChange()">
             <option value="">전체 부서</option>
           </select>
           <span style="margin-left:0.5rem;"></span>
