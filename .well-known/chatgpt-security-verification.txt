@@ -1,0 +1,5 @@
+CHO-Talents security test authorization
+owner: CHO-Talents
+target: https://cho-talents.github.io/CHO-Talents/
+verification-code: CHO-SEC-2026-06-11-7F3A91
+authorized-by: 이성영
