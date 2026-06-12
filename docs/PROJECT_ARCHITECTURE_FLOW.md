@@ -541,3 +541,26 @@ flowchart TD
 ### Git 머지 충돌
 
 충돌 마커(`<<<<<<<`, `=======`, `>>>>>>>`)가 남으면 HTML 파싱 실패 → 사이트 전체 동작 불가. 머지 후 반드시 전 파일 마커 검색 필수.
+
+### 신규 Admin 페이지 생성 시 필수 스크립트
+
+`admin/*.html` 신규 페이지를 만들 때 아래 순서를 반드시 지킨다. **순서가 틀리거나 누락되면 세션 인식 실패 → 로그인 리다이렉트 무한 루프 발생.**
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config/public-config.js?v=VERSION"></script>
+<script src="../js/supabase-config.js?v=VERSION"></script>
+<script src="../js/activity-log.js?v=VERSION"></script>   <!-- auth.js보다 먼저! -->
+<script src="../js/auth.js?v=VERSION"></script>
+<script src="../js/theme.js?v=VERSION"></script>
+<script src="../js/nav.js?v=VERSION"></script>
+```
+
+인라인 `<script>` 첫 줄에 `initSupabase();` 호출 필수. 누락 시 `_sb=null` → `loadAuthSession()` 즉시 null 반환.
+
+| 체크 항목 | 누락 시 증상 |
+|-----------|-------------|
+| Supabase CDN | `window.supabase` 미정의 → initSupabase 실패 |
+| public-config.js | Supabase URL/Key 로드 불가 |
+| activity-log.js 순서 | loadAuthSession 미정의 → initPage 에러 |
+| initSupabase() | _sb=null → 세션 인식 불가 → 리다이렉트 |
