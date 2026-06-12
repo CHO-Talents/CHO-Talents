@@ -413,19 +413,65 @@ async function acknowledgeLog(logId, username, note) {
 async function getPendingRegistrationCount() {
   if (!_sb) return 0;
   try {
-    const { count, error } = await _sb
-      .from('registration_requests')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'pending');
-    if (error) return 0;
-    return count || 0;
+    const session = getSession();
+    if (!session || (session.permissionRank || 0) < 60) return 0;
+    const myRank = session.permissionRank || 0;
+
+    if (myRank >= 90) {
+      const { count, error } = await _sb
+        .from('registration_requests')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
+      if (error) return 0;
+      return count || 0;
+    }
+
+    const myManagedDept = session.managedDeptId || session.departmentId;
+    if (!myManagedDept) return 0;
+
+    const [regRes, trfRes] = await Promise.all([
+      _sb.from('registration_requests').select('id,department_id').eq('status', 'pending'),
+      _sb.from('department_transfer_requests').select('id,to_department_id').eq('status', 'pending')
+    ]);
+
+    const regs = (regRes.data || []).filter(r => r.department_id === myManagedDept);
+    const trfs = (trfRes.data || []).filter(t => t.to_department_id === myManagedDept);
+    return regs.length + trfs.length;
+  } catch { return 0; }
+}
+
+async function getProcessableRequestCount() {
+  if (!_sb) return 0;
+  try {
+    const session = getSession();
+    if (!session || (session.permissionRank || 0) < 60) return 0;
+    const myRank = session.permissionRank || 0;
+
+    const [regRes, trfRes] = await Promise.all([
+      _sb.from('registration_requests').select('id,department_id').eq('status', 'pending'),
+      _sb.from('department_transfer_requests').select('id,to_department_id').eq('status', 'pending')
+    ]);
+
+    let regs = regRes.data || [];
+    let trfs = trfRes.data || [];
+
+    if (myRank >= 90) {
+      return regs.length + trfs.length;
+    }
+
+    const myManagedDept = session.managedDeptId || session.departmentId;
+    if (!myManagedDept) return 0;
+
+    const processableRegs = regs.filter(r => r.department_id === myManagedDept);
+    const processableTrfs = trfs.filter(t => t.to_department_id === myManagedDept);
+    return processableRegs.length + processableTrfs.length;
   } catch { return 0; }
 }
 
 async function updatePendingBadge() {
   const badge = document.getElementById('navUserBadge');
   if (!badge) return;
-  const count = await getPendingRegistrationCount();
+  const count = await getProcessableRequestCount();
   if (count > 0) {
     badge.textContent = count;
     badge.classList.remove('hidden');
@@ -556,7 +602,8 @@ async function getPendingOrderCount() {
     const session = getSession();
     if (!session || (session.permissionRank || 0) < 60) return 0;
     const myRank = session.permissionRank || 0;
-    const { data, error } = await _sb.from('product_orders').select('user_id').neq('status', 'delivered');
+    const isPurchaseTeacher = session.permissionLevel === 'purchase_teacher';
+    const { data, error } = await _sb.from('product_orders').select('user_id').neq('status', 'delivered').neq('status', 'cancelled');
     if (error || !data) return 0;
     let orders = data;
     if (!session.isSuperAdmin) {
@@ -566,7 +613,7 @@ async function getPendingOrderCount() {
         orders = orders.filter(o => !saIds.has(o.user_id));
       }
     }
-    if (myRank >= 90) return orders.length;
+    if (myRank >= 90 || isPurchaseTeacher) return orders.length;
     if (!session.managedDeptId) return 0;
     const userIds = [...new Set(orders.map(o => o.user_id))];
     if (userIds.length === 0) return 0;
