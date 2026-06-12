@@ -230,7 +230,7 @@
   - 구매 신청 → 상품 준비 → 상품 구매 → 상품 지급 4단계 흐름
   - `shop.html`에서 구매/대리 구매, `my-orders.html`에서 내 구매 확인, `my-talents.html`에서 사용 대기 확인, `admin/purchases.html`에서 관리
   - 구매 신청 시 달란트는 `pending_talent`(사용 대기)로 관리
-- **달란트 관리**: 체크박스 선택 + 일괄 지급, 부장 교사(80+) 반환 처리, 일반 교사(40) 반 스코핑, 출석 버튼 (당일 중복 방지)
+- **달란트 관리**: 체크박스 선택 + 일괄 지급, 부장 교사(80+) 반환 처리, 일반 교사(40) 반 스코핑, 출석 버튼 (주간 중복 방지)
 - **에러 처리**: `tErr()` 한글 번역, 전체 페이지 에러 로깅
 - **로그 관리**: 소프트 삭제(`is_deleted=true`), 관리자(100+)만 삭제 가능
 
@@ -332,12 +332,12 @@ flowchart TD
   FirstLogin -->|예| ChangePassword["admin/change-password.html"]
   FirstLogin -->|아니오| Home
 
-  Home --> AdminDash["admin/index.html<br/>80+"]
+  Home --> AdminDash["admin/index.html<br/>60+"]
   Home --> Users["admin/users.html<br/>60+"]
   Home --> Departments["admin/departments.html<br/>60+"]
   Home --> Managers["admin/managers.html<br/>80+"]
   Home --> Talents["admin/talents.html<br/>40+"]
-  Home --> TalentItems["admin/talent-items.html<br/>90+"]
+  Home --> TalentItems["admin/talent-items.html<br/>60+"]
   Home --> AdminShop["admin/shop.html<br/>60+"]
   Home --> Purchases["admin/purchases.html<br/>60+"]
   Home --> Reports["admin/reports.html<br/>80+"]
@@ -367,12 +367,12 @@ flowchart TD
 
 | 페이지 | 최소 등급 | 주요 기능 |
 |---|---:|---|
-| `admin/index.html` | 80 | 사용자/부서/보고서 요약, 가입 대기자 수. 미확인 ERROR+ 카드/알림/최근 이슈 로그는 100등급 이상(클릭 시 로그 이동). 바로가기에 달란트 통계/QR 관리 포함 |
+| `admin/index.html` | 60 | 사용자/부서/보고서 요약, 가입 대기자 수. 미확인 ERROR+ 카드/알림/최근 이슈 로그는 100등급 이상(클릭 시 로그 이동). 바로가기에 달란트 통계/QR 관리 포함 |
 | `admin/users.html` | 60 | 사용자 목록, 권한 범위 내 수정/삭제/비밀번호 초기화, 가입 신청 처리, 부서 이동 요청/승인 |
 | `admin/departments.html` | 60 | 부서 등록/수정/비활성화, 반 개수 관리, 부서별 인원/담당자 확인 |
 | `admin/managers.html` | 80 | 기존 사용자를 관리자 계열 권한으로 승격/수정, 담당 부서 지정 |
 | `admin/talents.html` | 40 | 학생/교사 탭별 달란트 체크박스 선택+일괄 지급, 수동 적립/사용, 반환(80+). 일반 교사는 담당 부서/반 제한 |
-| `admin/talent-items.html` | 90 | 달란트 지급 항목 등록/수정/활성화. 학생 항목은 주 1회 지급 규칙과 연동 |
+| `admin/talent-items.html` | 60 | 달란트 지급 항목 등록/수정/활성화, 지급 규칙/설명 관리. 학생 항목은 주 1회 지급 규칙과 연동, 퀵 버튼 설정은 80등급 이상 |
 | `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), 수정(새 코드 재생성), 비활성화. 기간(from~to datetime) 설정 |
 | `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
 | `admin/purchases.html` | 60 | 구매 관리: 4단계 처리, 모든 상태 탭에 부서/기간 필터(기본 오늘) + 기간 프리셋, 구매 확정 시 달란트 차감 |
@@ -503,13 +503,13 @@ flowchart TD
 
 | 구분 | 리소스 | 용도 |
 |---|---|---|
-| 사용자 | `profiles` | 사용자 정보, 유형, 권한, 부서, 반, 잔액, 사용 대기 달란트 |
-| 사용자 설정 | `user_preferences` | 사용자별 즐겨찾기 바로가기 설정 (JSONB) |
+| 사용자 | `profiles` | 사용자 정보, 유형, 권한, 부서, 반, 잔액, 사용 대기 달란트, 마지막 로그인(`last_login_at`) |
+| 사용자 설정 | `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB), 테마(`theme`) |
 | 부서 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | 가입 신청 | `registration_requests` | 계정 신청과 승인/거부 상태 |
 | 부서 이동 | `department_transfer_requests` | 부서 이동 요청, 승인/거부, 처리 기록 |
 | 달란트 | `talent_transactions` | 적립/사용 거래 내역 |
-| 달란트 항목 | `talent_items` | 지급 항목과 달란트 금액 |
+| 달란트 항목 | `talent_items` | 지급 항목, 달란트 금액, 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
 | 상품 | `products` | 상점 상품, 가격, 대상, 이미지, 활성 상태 |
 | 상품 주문 | `product_orders` | 구매 신청, 4단계 상태 관리, 담당자 기록 |
 | Q&A | `qna` | FAQ, 사용자 질문, 답변, 공개 여부 |
@@ -525,6 +525,7 @@ flowchart TD
 | RPC | 목적 | 주요 호출 |
 |---|---|---|
 | `get_my_profile` | 로그인 사용자 프로필/권한 조회 | `auth.js`, `activity-log.js` |
+| `update_last_login` | 로그인 성공 시 `profiles.last_login_at` 갱신 | `auth.js` |
 | `check_username_available` | 가입 신청 아이디 중복확인 | `register.html` |
 | `check_registration_status` | 미승인/거부 계정 로그인 안내 조회 | `login.html` |
 | `admin_list_users` | 사용자 목록 조회 | `user-mgmt.js` |
