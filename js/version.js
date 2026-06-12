@@ -2,9 +2,28 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.36.1',
-  date: '2026-06-10',
+  current: '3.37.0',
+  date: '2026-06-12',
   history: [
+    {
+      version: '3.37.0',
+      date: '2026-06-12',
+      title: '네비게이션 배지 + 구매 담당 교사 통합 + 로그 필터 삭제 + 마지막 로그인',
+      changes: [
+        '네비게이션: 달란트 통계, QR 관리, 로그 규칙, 감사 규칙, 비밀번호 변경 페이지에 배지 갱신 호출 추가',
+        '대시보드: 관리자 카드(admin+evangelist) 추가, 부서 담당 카드에 purchase_teacher 포함',
+        '사용자 관리: 관리자 카드 = admin+evangelist, 부서 담당 = chief+purchase_teacher+dept_teacher',
+        '관리자 관리: DEPT_MGR_LEVELS에 purchase_teacher 추가, 구매 담당 필터 버튼 추가',
+        '부서 관리: PERM_RANK_MAP에 purchase_teacher(70) 추가 — 소속보기 정렬 정상화',
+        '페이지 접근: ROLE_LIST에 purchase_teacher 추가',
+        '페이지 기능: PERM_LIST에 purchase_teacher 추가',
+        '사용자 상세: last_login_at 컬럼 기반 마지막 로그인 표시 (로그 삭제와 무관)',
+        '로그인: update_last_login RPC 호출로 profiles.last_login_at 갱신',
+        '로그: 버튼명 변경 (범위 삭제 대기→범위 삭제, 선택 삭제 대기→선택 삭제)',
+        '로그: 범위 삭제 시 현재 필터 레벨만 대상, ERROR+ 미확인 로그 제외',
+        'DB: docs/TASK-049_schema.sql (profiles.last_login_at, update_last_login RPC)'
+      ]
+    },
     {
       version: '3.36.1',
       date: '2026-06-10',

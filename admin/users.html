@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.36.1" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.36.1" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.37.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.37.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -181,14 +181,14 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.36.1"></script>
-  <script src="../js/supabase-config.js?v=3.36.1"></script>
-  <script src="../js/activity-log.js?v=3.36.1"></script>
-  <script src="../js/auth.js?v=3.36.1"></script>
-  <script src="../js/theme.js?v=3.36.1"></script>
-  <script src="../js/nav.js?v=3.36.1"></script>
-  <script src="../js/user-mgmt.js?v=3.36.1"></script>
-  <script src="../js/version.js?v=3.36.1"></script>
+  <script src="../config/public-config.js?v=3.37.0"></script>
+  <script src="../js/supabase-config.js?v=3.37.0"></script>
+  <script src="../js/activity-log.js?v=3.37.0"></script>
+  <script src="../js/auth.js?v=3.37.0"></script>
+  <script src="../js/theme.js?v=3.37.0"></script>
+  <script src="../js/nav.js?v=3.37.0"></script>
+  <script src="../js/user-mgmt.js?v=3.37.0"></script>
+  <script src="../js/version.js?v=3.37.0"></script>
   <script>
     initSupabase();
     let session;
@@ -307,8 +307,8 @@
 
     function updateStats() {
       document.getElementById('cntAll').textContent = allUsers.length;
-      document.getElementById('cntAdmin').textContent = allUsers.filter(u => u.permission_level === 'admin').length;
-      document.getElementById('cntMgr').textContent = allUsers.filter(u => DEPT_MGR_LEVELS.includes(u.permission_level)).length;
+      document.getElementById('cntAdmin').textContent = allUsers.filter(u => ['admin','evangelist'].includes(u.permission_level)).length;
+      document.getElementById('cntMgr').textContent = allUsers.filter(u => ['chief','purchase_teacher','dept_teacher'].includes(u.permission_level)).length;
       document.getElementById('cntTeacher').textContent = allUsers.filter(u => u.user_type === 'teacher').length;
       document.getElementById('cntStudent').textContent = allUsers.filter(u => u.user_type === 'student').length;
     }
@@ -556,7 +556,7 @@
       const permLabel = PERMISSION_LABELS[perm] || perm;
       const permEmoji = PERMISSION_EMOJI[perm] || '';
       const typeLabel = TYPE_LABELS[u.user_type] || u.user_type;
-      const lastLogin = u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '없음';
+      const lastLogin = u.last_login_at ? formatKSTShort(u.last_login_at) : (u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '없음');
 
       let regInfo = '';
       try {

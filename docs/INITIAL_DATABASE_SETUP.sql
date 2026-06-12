@@ -21,6 +21,35 @@ CREATE SCHEMA IF NOT EXISTS extensions;
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
 
 -- ============================================================
+-- 0. Target Project Runtime Config
+-- ============================================================
+-- 새 Supabase 프로젝트에 실행하기 전에 아래 공개 설정값을 새 프로젝트 기준으로 수정하세요.
+-- 비밀 토큰 원문은 넣지 말고 env:... 참조값만 유지합니다.
+
+CREATE TEMP TABLE cho_install_runtime_config (
+  env text NOT NULL,
+  key_name text NOT NULL,
+  key_value text,
+  is_secret boolean NOT NULL DEFAULT false,
+  use_yn boolean NOT NULL DEFAULT true,
+  description text
+) ON COMMIT DROP;
+
+INSERT INTO cho_install_runtime_config (env, key_name, key_value, is_secret, use_yn, description)
+VALUES
+  ('production', 'SUPABASE_URL', 'https://YOUR_PROJECT_REF.supabase.co', false, true, '브라우저 Supabase 클라이언트 부트스트랩 URL'),
+  ('production', 'SUPABASE_ANON_KEY', 'YOUR_PUBLISHABLE_OR_ANON_KEY', false, true, '브라우저 공개 publishable/anon key. RLS/RPC로 권한 제한'),
+  ('production', 'SUPABASE_AUTH_EMAIL_DOMAIN', '@cho-talents.app', false, true, '아이디 로그인용 내부 이메일 도메인'),
+  ('production', 'KAKAO_MAP_KEY', 'YOUR_KAKAO_MAP_JAVASCRIPT_KEY', false, true, '카카오 지도 JavaScript 공개 키'),
+  ('production', 'GITHUB_OWNER', 'CHO-Talents', false, true, 'GitHub 저장소 owner 메타데이터'),
+  ('production', 'GITHUB_REPO', 'CHO-Talents', false, true, 'GitHub 저장소 이름 메타데이터'),
+  ('production', 'GITHUB_BRANCH', 'develop', false, true, '기본 배포/형상관리 브랜치 메타데이터'),
+  ('production', 'GITHUB_PAT', 'env:GITHUB_PAT', true, false, '비밀 원문 저장 금지. 로컬 .env.local 또는 Edge Function 환경변수에 저장'),
+  ('production', 'SUPABASE_ACCESS_TOKEN', 'env:SUPABASE_ACCESS_TOKEN', true, false, '비밀 원문 저장 금지. Supabase CLI/Management API 실행 환경변수에 저장'),
+  ('production', 'SUPABASE_SERVICE_ROLE_KEY', 'env:SUPABASE_SERVICE_ROLE_KEY', true, false, '서버 전용 키. Edge Function/서버 환경변수 또는 Supabase Vault에 저장'),
+  ('production', 'SUPABASE_DB_CONNECTION_STRING', 'env:SUPABASE_DB_CONNECTION_STRING', true, false, 'DB 관리/마이그레이션 전용. 로컬/CI 비밀 저장소에서만 사용');
+
+-- ============================================================
 -- 1. Core Tables
 -- ============================================================
 
@@ -1503,18 +1532,8 @@ SET can_view = EXCLUDED.can_view,
 
 -- 공개 런타임 설정과 비밀 참조값
 INSERT INTO public.app_config (env, key_name, key_value, is_secret, use_yn, description)
-VALUES
-  ('production', 'SUPABASE_URL', 'https://blitrrcdkkkszvgylnus.supabase.co', false, true, '브라우저 Supabase 클라이언트 부트스트랩 URL'),
-  ('production', 'SUPABASE_ANON_KEY', 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6', false, true, '브라우저 공개 publishable/anon key. RLS/RPC로 권한 제한'),
-  ('production', 'SUPABASE_AUTH_EMAIL_DOMAIN', '@cho-talents.app', false, true, '아이디 로그인용 내부 이메일 도메인'),
-  ('production', 'KAKAO_MAP_KEY', '0ef8925b28135eeac474bc411c456170', false, true, '카카오 지도 JavaScript 공개 키'),
-  ('production', 'GITHUB_OWNER', 'CHO-Talents', false, true, 'GitHub 저장소 owner 메타데이터'),
-  ('production', 'GITHUB_REPO', 'CHO-Talents', false, true, 'GitHub 저장소 이름 메타데이터'),
-  ('production', 'GITHUB_BRANCH', 'develop', false, true, '기본 배포/형상관리 브랜치 메타데이터'),
-  ('production', 'GITHUB_PAT', 'env:GITHUB_PAT', true, false, '비밀 원문 저장 금지. 로컬 .env.local 또는 Edge Function 환경변수에 저장'),
-  ('production', 'SUPABASE_ACCESS_TOKEN', 'env:SUPABASE_ACCESS_TOKEN', true, false, '비밀 원문 저장 금지. Supabase CLI/Management API 실행 환경변수에 저장'),
-  ('production', 'SUPABASE_SERVICE_ROLE_KEY', 'env:SUPABASE_SERVICE_ROLE_KEY', true, false, '서버 전용 키. Edge Function/서버 환경변수 또는 Supabase Vault에 저장'),
-  ('production', 'SUPABASE_DB_CONNECTION_STRING', 'env:SUPABASE_DB_CONNECTION_STRING', true, false, 'DB 관리/마이그레이션 전용. 로컬/CI 비밀 저장소에서만 사용')
+SELECT env, key_name, key_value, is_secret, use_yn, description
+FROM cho_install_runtime_config
 ON CONFLICT (env, key_name) DO UPDATE
 SET key_value = EXCLUDED.key_value,
     is_secret = EXCLUDED.is_secret,

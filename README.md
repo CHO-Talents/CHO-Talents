@@ -12,12 +12,22 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.36.1` (`js/version.js` 기준, 2026-06-10) |
+| 현재 버전 | `v3.37.0` (`js/version.js` 기준, 2026-06-12) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.36.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.37.0`으로 갱신되어 있습니다.
+- **v3.37.0 주요 변경 사항**:
+  - 네비게이션 배지: 달란트 통계, QR 관리, 로그 규칙, 감사 규칙, 비밀번호 변경 페이지에 누락된 badge 호출 추가
+  - 대시보드: 관리자 카드(admin+evangelist) 신규 추가, 부서 담당 카드에 purchase_teacher 포함
+  - 사용자 관리: 통계 카드를 대시보드와 통일 (관리자=admin+evangelist, 부서 담당=chief+purchase_teacher+dept_teacher)
+  - 관리자 관리: 조회 대상에 구매 담당 교사 추가, 필터 버튼 추가
+  - 부서 관리: 소속보기 정렬에 purchase_teacher(70) 추가
+  - 페이지 접근/기능 관리: purchase_teacher 역할 추가
+  - 마지막 로그인: profiles.last_login_at 컬럼 추가, 로그 삭제와 무관하게 유지
+  - 로그: 버튼명 변경(범위 삭제/선택 삭제), 필터 레벨별 범위 삭제, ERROR+ 미확인 로그 보호
+  - DB: `docs/TASK-049_schema.sql` (last_login_at 컬럼, update_last_login RPC)
 - **v3.36.0 주요 변경 사항**:
   - 다크 모드: 달란트 통계 카드/라디오, 부서 필터 등 잔여 흰 배경을 CSS 변수 기반 어두운 표면색으로 보정
   - 테마: 로그아웃 시 기본(일반) 테마로 리셋, 로그인 시 DB에 저장된 계정 테마 우선 적용
@@ -558,6 +568,7 @@ flowchart TD
 | `docs/TASK-039_user_preferences.sql` | `user_preferences` 테이블 (즐겨찾기 DB 저장), RLS 정책 |
 | `docs/TASK-047_activity_logs_grants.sql` | 운영 DB의 `activity_logs` INSERT 권한/정책 복구. 로그/작업 이력 DB 적재가 401로 거부될 때 적용 |
 | `docs/TASK-048_schema.sql` | v3.36.0: `talent_items` giving_rule/giving_description 컬럼, `purchase_teacher` 권한 CHECK 제약, `get_permission_rank` 갱신 |
+| `docs/TASK-049_schema.sql` | v3.37.0: `profiles.last_login_at` 컬럼, `update_last_login()` RPC |
 
 ## 관련 문서
 

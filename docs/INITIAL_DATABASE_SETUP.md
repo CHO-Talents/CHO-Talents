@@ -21,24 +21,12 @@
 
 ## 실행 방법 A: SQL Editor
 
-Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql` 전체를 실행한다.
-
-실행 후 새 프로젝트 값으로 공개 설정을 갱신한다.
+Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql`을 열고, 상단 `0. Target Project Runtime Config` 블록의 공개 설정값을 새 프로젝트 기준으로 수정한 뒤 전체를 실행한다.
 
 ```sql
-UPDATE public.app_config
-SET key_value = 'https://YOUR_PROJECT_REF.supabase.co',
-    updated_at = now()
-WHERE env = 'production'
-  AND key_name = 'SUPABASE_URL';
-
-UPDATE public.app_config
-SET key_value = 'YOUR_PUBLISHABLE_OR_ANON_KEY',
-    updated_at = now()
-WHERE env = 'production'
-  AND key_name = 'SUPABASE_ANON_KEY';
-
-NOTIFY pgrst, 'reload schema';
+('production', 'SUPABASE_URL', 'https://YOUR_PROJECT_REF.supabase.co', false, true, ...),
+('production', 'SUPABASE_ANON_KEY', 'YOUR_PUBLISHABLE_OR_ANON_KEY', false, true, ...),
+('production', 'KAKAO_MAP_KEY', 'YOUR_KAKAO_MAP_JAVASCRIPT_KEY', false, true, ...)
 ```
 
 ## 실행 방법 B: PowerShell/psql

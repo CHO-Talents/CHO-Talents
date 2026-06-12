@@ -144,6 +144,7 @@ async function login(username, password) {
     });
 
     await logInfo('LOGIN_SUCCESS', { 대상: username, permissionLevel: perm });
+    try { await _sb.rpc('update_last_login'); } catch(e) {}
     return { success: true, data: profile };
   } catch (err) {
     await logError('LOGIN_ERROR', { 대상: username, 오류: String(err) });

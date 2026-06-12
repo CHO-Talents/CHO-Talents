@@ -588,20 +588,23 @@ async function updateNavOrderBadge() {
   if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
 }
 
-async function deleteLogsByDateRange(dateFrom, dateTo) {
+async function deleteLogsByDateRange(dateFrom, dateTo, options = {}) {
   if (!_sb) return { error: 'Supabase not initialized', count: 0 };
   try {
-    const { data, error } = await _sb
+    let query = _sb
       .from('activity_logs')
       .update({ is_deleted: true, deleted_at: new Date().toISOString() })
       .gte('created_at', dateFrom)
       .lte('created_at', dateTo)
-      .eq('is_deleted', false)
-      .select('id');
-    if (error) {
-      if (_isMissingColErr(error.message)) return { error: _SOFT_DEL_COL_ERR, count: 0 };
-      return { error: error.message, count: 0 };
+      .eq('is_deleted', false);
+    if (options.level) {
+      query = query.eq('level', options.level);
     }
+    if (options.excludeUnacknowledged) {
+      query = query.eq('is_acknowledged', true);
+    }
+    const { data, error } = await query.select('id');
+    if (error) return { error: error.message, count: 0 };
     return { error: null, count: data ? data.length : 0 };
   } catch (err) {
     return { error: String(err), count: 0 };

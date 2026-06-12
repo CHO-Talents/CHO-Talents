@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.36.1" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.36.1" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.37.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.37.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -20,6 +20,7 @@
           <button class="filter-btn active" onclick="setMgrFilter('all',this)">전체</button>
           <button class="filter-btn" onclick="setMgrFilter('admin',this)">👑 관리자</button>
           <button class="filter-btn" onclick="setMgrFilter('dept_manager',this)">📋 부서 담당 교사</button>
+          <button class="filter-btn" onclick="setMgrFilter('purchase_teacher',this)">🛒 구매 담당</button>
           <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:var(--t-input-bg, #fff);" onchange="onDeptFilterChange()">
             <option value="">전체 부서</option>
           </select>
@@ -84,13 +85,13 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.36.1"></script>
-  <script src="../js/supabase-config.js?v=3.36.1"></script>
-  <script src="../js/activity-log.js?v=3.36.1"></script>
-  <script src="../js/auth.js?v=3.36.1"></script>
-  <script src="../js/theme.js?v=3.36.1"></script>
-  <script src="../js/nav.js?v=3.36.1"></script>
-  <script src="../js/user-mgmt.js?v=3.36.1"></script>
+  <script src="../config/public-config.js?v=3.37.0"></script>
+  <script src="../js/supabase-config.js?v=3.37.0"></script>
+  <script src="../js/activity-log.js?v=3.37.0"></script>
+  <script src="../js/auth.js?v=3.37.0"></script>
+  <script src="../js/theme.js?v=3.37.0"></script>
+  <script src="../js/nav.js?v=3.37.0"></script>
+  <script src="../js/user-mgmt.js?v=3.37.0"></script>
   <script>
     initSupabase();
     let session;
@@ -162,7 +163,7 @@
       sel.innerHTML = '<option value="">전체 부서</option>' + deptList.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
-    const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
+    const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'purchase_teacher', 'dept_teacher'];
 
     async function loadManagers() {
       let { data } = await fetchUsers();
@@ -394,6 +395,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.36.1"></script>
+  <script src="../js/version.js?v=3.37.0"></script>
 </body>
 </html>
