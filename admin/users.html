@@ -248,21 +248,22 @@
       let transfers = trfRes.data || [];
 
       const myManagedDept = session.managedDeptId || session.departmentId;
+      const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
 
       if (!session.isSuperAdmin) {
         users = users.filter(u => !u.is_super_admin);
       }
 
       if (myRank < 80) {
-        if (myManagedDept) {
-          users = users.filter(u => u.department_id === myManagedDept);
+        if (myDepts.size > 0) {
+          users = users.filter(u => myDepts.has(u.department_id));
         } else {
           users = [];
         }
       }
 
       if (myRank < 80) {
-        reqs = myManagedDept ? reqs.filter(r => r.department_id === myManagedDept) : [];
+        reqs = myDepts.size > 0 ? reqs.filter(r => myDepts.has(r.department_id)) : [];
       }
 
       if (myRank >= 90) {
@@ -270,7 +271,7 @@
       } else if (myRank >= 80) {
         // 부장 교사: 모든 이동 요청 표시 (처리는 관리 부서만)
       } else if (myRank >= 60) {
-        transfers = myManagedDept ? transfers.filter(t => t.to_department_id === myManagedDept) : [];
+        transfers = myDepts.size > 0 ? transfers.filter(t => myDepts.has(t.to_department_id)) : [];
       } else {
         transfers = [];
       }
@@ -785,11 +786,11 @@
         return;
       }
       const myRank = session.permissionRank || 0;
-      const myManagedDept = session.managedDeptId || session.departmentId;
+      const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
       const tbody = document.getElementById('reqList');
       tbody.innerHTML = allRequests.map(r => {
         const rb = ROLE_BADGES[badgeKeyForUser({ permission_level: r.permission_level || 'student', user_type: r.user_type })] || ROLE_BADGES.student;
-        const canProcess = myRank >= 90 || (r.department_id === myManagedDept);
+        const canProcess = myRank >= 90 || myDepts.has(r.department_id);
         return `<tr>
           <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
           <td>${r.display_name}</td>
@@ -939,9 +940,9 @@
         tbody.innerHTML = '<tr><td colspan="6" class="empty-state">대기 중인 부서 이동 요청이 없습니다.</td></tr>';
         return;
       }
-      const myManagedDept = session.managedDeptId || session.departmentId;
+      const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
       tbody.innerHTML = allTransfers.map(t => {
-        const canApprove = myRank >= 90 || (t.to_department_id === myManagedDept);
+        const canApprove = myRank >= 90 || myDepts.has(t.to_department_id);
         return `<tr>
           <td><strong>${t.display_name || t.username}</strong></td>
           <td>${getDeptName(t.from_department_id)}</td>
