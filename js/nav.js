@@ -244,6 +244,12 @@ function navUpdateAuth(session) {
 
     const rank = session.permissionRank || 0;
     if (typeof applyPermNav === 'function') applyPermNav(rank);
+
+    if (rank >= 60) {
+      if (typeof updatePendingBadge === 'function') updatePendingBadge();
+      if (typeof updateNavOrderBadge === 'function') updateNavOrderBadge();
+      if (typeof updateLogBadge === 'function') updateLogBadge();
+    }
   } else {
     if (loginArea) loginArea.style.display = '';
     if (authArea) authArea.style.display = 'none';
