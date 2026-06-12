@@ -1188,9 +1188,9 @@ CREATE POLICY profiles_delete_perm ON public.profiles FOR DELETE USING (public.g
 DROP POLICY IF EXISTS rr_insert_public ON public.registration_requests;
 CREATE POLICY rr_insert_public ON public.registration_requests FOR INSERT WITH CHECK (true);
 DROP POLICY IF EXISTS rr_select_perm ON public.registration_requests;
-CREATE POLICY rr_select_perm ON public.registration_requests FOR SELECT USING (public.get_permission_rank(public.get_my_role()) >= 80);
+CREATE POLICY rr_select_perm ON public.registration_requests FOR SELECT USING (public.get_permission_rank(public.get_my_role()) >= 60);
 DROP POLICY IF EXISTS rr_update_perm ON public.registration_requests;
-CREATE POLICY rr_update_perm ON public.registration_requests FOR UPDATE USING (public.get_permission_rank(public.get_my_role()) >= 80);
+CREATE POLICY rr_update_perm ON public.registration_requests FOR UPDATE USING (public.get_permission_rank(public.get_my_role()) >= 60);
 DROP POLICY IF EXISTS rr_delete_perm ON public.registration_requests;
 CREATE POLICY rr_delete_perm ON public.registration_requests FOR DELETE USING (public.get_permission_rank(public.get_my_role()) >= 80);
 
@@ -1202,7 +1202,7 @@ CREATE POLICY dept_transfer_insert ON public.department_transfer_requests FOR IN
   WITH CHECK (public.get_permission_rank(auth.uid()) >= 60);
 DROP POLICY IF EXISTS dept_transfer_update ON public.department_transfer_requests;
 CREATE POLICY dept_transfer_update ON public.department_transfer_requests FOR UPDATE TO authenticated
-  USING (public.get_permission_rank(auth.uid()) >= 80);
+  USING (public.get_permission_rank(auth.uid()) >= 60);
 DROP POLICY IF EXISTS dept_transfer_delete ON public.department_transfer_requests;
 CREATE POLICY dept_transfer_delete ON public.department_transfer_requests FOR DELETE TO authenticated
   USING (public.get_permission_rank(auth.uid()) >= 90);
