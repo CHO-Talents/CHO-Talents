@@ -426,16 +426,16 @@ async function getPendingRegistrationCount() {
       return count || 0;
     }
 
-    const myManagedDept = session.managedDeptId || session.departmentId;
-    if (!myManagedDept) return 0;
+    const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
+    if (myDepts.size === 0) return 0;
 
     const [regRes, trfRes] = await Promise.all([
       _sb.from('registration_requests').select('id,department_id').eq('status', 'pending'),
       _sb.from('department_transfer_requests').select('id,to_department_id').eq('status', 'pending')
     ]);
 
-    const regs = (regRes.data || []).filter(r => r.department_id === myManagedDept);
-    const trfs = (trfRes.data || []).filter(t => t.to_department_id === myManagedDept);
+    const regs = (regRes.data || []).filter(r => myDepts.has(r.department_id));
+    const trfs = (trfRes.data || []).filter(t => myDepts.has(t.to_department_id));
     return regs.length + trfs.length;
   } catch { return 0; }
 }
@@ -459,11 +459,11 @@ async function getProcessableRequestCount() {
       return regs.length + trfs.length;
     }
 
-    const myManagedDept = session.managedDeptId || session.departmentId;
-    if (!myManagedDept) return 0;
+    const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
+    if (myDepts.size === 0) return 0;
 
-    const processableRegs = regs.filter(r => r.department_id === myManagedDept);
-    const processableTrfs = trfs.filter(t => t.to_department_id === myManagedDept);
+    const processableRegs = regs.filter(r => myDepts.has(r.department_id));
+    const processableTrfs = trfs.filter(t => myDepts.has(t.to_department_id));
     return processableRegs.length + processableTrfs.length;
   } catch { return 0; }
 }
@@ -614,12 +614,13 @@ async function getPendingOrderCount() {
       }
     }
     if (myRank >= 90 || isPurchaseTeacher) return orders.length;
-    if (!session.managedDeptId) return 0;
+    const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
+    if (myDepts.size === 0) return 0;
     const userIds = [...new Set(orders.map(o => o.user_id))];
     if (userIds.length === 0) return 0;
     const { data: profiles } = await _sb.from('profiles').select('id,department_id').in('id', userIds);
     if (!profiles) return 0;
-    const deptUsers = new Set(profiles.filter(p => p.department_id === session.managedDeptId).map(p => p.id));
+    const deptUsers = new Set(profiles.filter(p => myDepts.has(p.department_id)).map(p => p.id));
     return orders.filter(o => deptUsers.has(o.user_id)).length;
   } catch (e) { return 0; }
 }

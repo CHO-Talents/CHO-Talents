@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-12 KST 현재 코드 기준 (v3.38.0)
+작성 기준: 2026-06-12 KST 현재 코드 기준 (v3.38.1)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -94,7 +94,7 @@ flowchart LR
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
-| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 배지 자동 호출 포함), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
+| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 자동 호출 포함), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
 | `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서 |
 
 ## 4. 권한 구조
@@ -124,6 +124,14 @@ flowchart LR
 | 페이지 접근 | `role_page_access` | `initPage()`에서 보조 확인. 페이지 최소 등급을 통과한 뒤 요소 숨김 설정을 적용 |
 | 페이지 기능 | `role_page_features` | 권한별 기능 설정값 관리 테이블. 현재 공통 런타임 차단은 `data-min-perm`, 직접 rank 체크, RLS/RPC가 담당 |
 | 데이터 접근 | Supabase RLS | 익명/저권한 직접 조회 제한 |
+
+네비게이션 배지 기준:
+
+| 배지 | 표시 위치 | 호출 권한 | 계산 기준 |
+|---|---|---:|---|
+| 관리 배지 | 관리 > 사용자 관리 | 60+ | 해당 계정이 처리 가능한 가입 신청 + 부서 이동 요청 수 |
+| 상품 배지 | 상품 > 구매 관리 | 60+ | 해당 계정이 처리 가능한 구매 건수. 구매 담당 교사는 전체 부서 주문 포함 |
+| 운영 배지 | 운영 > 로그 | 80+ 호출, 로그 화면 접근은 100+ | 미확인 ERROR/FATAL/CRITICAL 로그 수 |
 
 ## 5. 화면 연결 구조
 
@@ -437,12 +445,12 @@ flowchart TD
 
 | 리소스 | 용도 |
 |---|---|
-| `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`) |
-| `user_preferences` | 사용자별 즐겨찾기 바로가기 설정 (JSONB), RLS 적용 |
+| `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`), 마지막 로그인(`last_login_at`) |
+| `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB)과 테마(`theme`), RLS 적용 |
 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | `registration_requests` | 가입 신청/승인/거부 |
 | `department_transfer_requests` | 부서 이동 요청/승인/거부 |
-| `talent_items` | 달란트 지급 항목 (학생용/교사용 구분) |
+| `talent_items` | 달란트 지급 항목 (학생용/교사용 구분), 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
 | `talent_transactions` | 달란트 적립/사용/반환 내역. `created_by`로 지급자 추적 |
 | `products` | 상점 상품 (학생용/교사용 구분) |
 | `product_orders` | 구매 신청/4단계 상태 관리/담당자 기록 |
@@ -462,6 +470,7 @@ flowchart TD
 | RPC | 목적 |
 |---|---|
 | `get_my_profile` | 로그인 사용자 프로필/권한 조회 |
+| `update_last_login` | 로그인 성공 시 `profiles.last_login_at` 갱신 |
 | `check_username_available` | 가입 신청 아이디 중복확인 |
 | `check_registration_status` | 미승인/거부 계정 로그인 안내 조회 |
 | `admin_list_users` | 사용자 목록 조회 |
