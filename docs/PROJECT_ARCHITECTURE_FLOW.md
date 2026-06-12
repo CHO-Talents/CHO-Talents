@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-12 KST 현재 코드 기준 (v3.38.1)
+작성 기준: 2026-06-12 KST 현재 코드 기준 (v3.39.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -262,6 +262,10 @@ flowchart TD
   Users --> Reset["admin_reset_password RPC"]
   Users --> Delete["admin_delete_user RPC"]
   Users --> Transfer["부서 이동 요청/승인"]
+
+  Evangelist["90등급 이상"] --> BulkReg["admin/bulk-register.html"]
+  BulkReg --> ExcelUpload["엑셀 파일 업로드 → 양식 검증"]
+  BulkReg --> BulkCreate["admin_create_user RPC 반복 호출"]
 
   DeptManager["60등급 이상"] --> Departments["admin/departments.html"]
   Departments --> DeptCRUD["departments 등록/수정/비활성화"]

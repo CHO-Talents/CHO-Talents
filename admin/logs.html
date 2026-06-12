@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로그 관리 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.38.1" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.38.1" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -102,12 +102,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.38.1"></script>
-  <script src="../js/supabase-config.js?v=3.38.1"></script>
-  <script src="../js/activity-log.js?v=3.38.1"></script>
-  <script src="../js/auth.js?v=3.38.1"></script>
-  <script src="../js/theme.js?v=3.38.1"></script>
-  <script src="../js/nav.js?v=3.38.1"></script>
+  <script src="../config/public-config.js?v=3.39.0"></script>
+  <script src="../js/supabase-config.js?v=3.39.0"></script>
+  <script src="../js/activity-log.js?v=3.39.0"></script>
+  <script src="../js/auth.js?v=3.39.0"></script>
+  <script src="../js/theme.js?v=3.39.0"></script>
+  <script src="../js/nav.js?v=3.39.0"></script>
   <script>
     initSupabase();
     let session;
@@ -403,6 +403,7 @@
             .select('*', { count: 'exact', head: true })
             .gte('created_at', fromStr).lte('created_at', toStr);
           try { countQuery = countQuery.or('is_deleted.is.null,is_deleted.eq.false'); } catch(e) {}
+          countQuery = countQuery.or('level.not.in.(ERROR,FATAL,CRITICAL),is_acknowledged.eq.true');
           const { count: c, error: cntErr } = await countQuery;
           if (cntErr && /column|schema cache/i.test(cntErr.message)) {
             alert(_SOFT_DEL_COL_ERR || 'DB에 삭제 관리 컬럼이 없습니다.\nSupabase SQL Editor에서 docs/TASK-023_fixes.sql 을 실행해주세요.');
@@ -433,7 +434,7 @@
 
         let totalDeleted = 0;
         if (selectedLevels.length === 0) {
-          const result = await deleteLogsByDateRange(fromStr, toStr);
+          const result = await deleteLogsByDateRange(fromStr, toStr, { excludeUnacknowledged: true });
           if (result.error) {
             await logError('LOG_RANGE_DELETE_FAIL', { dateFrom, dateTo, 오류: result.error });
             alert('실패:\n\n' + tErr(result.error));
@@ -606,6 +607,6 @@
       toggleDeletedView();
     }
   </script>
-  <script src="../js/version.js?v=3.38.1"></script>
+  <script src="../js/version.js?v=3.39.0"></script>
 </body>
 </html>
