@@ -248,6 +248,8 @@ function navUpdateAuth(session) {
     if (rank >= 60) {
       if (typeof updatePendingBadge === 'function') updatePendingBadge();
       if (typeof updateNavOrderBadge === 'function') updateNavOrderBadge();
+    }
+    if (rank >= 80) {
       if (typeof updateLogBadge === 'function') updateLogBadge();
     }
   } else {
