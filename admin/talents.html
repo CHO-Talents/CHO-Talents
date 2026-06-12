@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.37.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.37.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.38.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.38.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -127,14 +127,14 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.37.0"></script>
-  <script src="../js/supabase-config.js?v=3.37.0"></script>
-  <script src="../js/activity-log.js?v=3.37.0"></script>
-  <script src="../js/auth.js?v=3.37.0"></script>
-  <script src="../js/theme.js?v=3.37.0"></script>
-  <script src="../js/nav.js?v=3.37.0"></script>
-  <script src="../js/user-mgmt.js?v=3.37.0"></script>
-  <script src="../js/talent.js?v=3.37.0"></script>
+  <script src="../config/public-config.js?v=3.38.0"></script>
+  <script src="../js/supabase-config.js?v=3.38.0"></script>
+  <script src="../js/activity-log.js?v=3.38.0"></script>
+  <script src="../js/auth.js?v=3.38.0"></script>
+  <script src="../js/theme.js?v=3.38.0"></script>
+  <script src="../js/nav.js?v=3.38.0"></script>
+  <script src="../js/user-mgmt.js?v=3.38.0"></script>
+  <script src="../js/talent.js?v=3.38.0"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
     @media(max-width:768px){.hide-mobile{display:none!important;}}
@@ -468,11 +468,18 @@
           (creators || []).forEach(c => { creatorMap[c.id] = c.display_name || c.username || '-'; });
         }
         const canReturn = (session.permissionRank || 0) >= 80;
+        const returnedTxnIds = new Set(history.filter(t => t.description && /^\[([a-f0-9-]+)\]/.test(t.description)).map(t => t.description.match(/^\[([a-f0-9-]+)\]/)[1]));
+        const returnDescTxnIds = new Set(history.filter(t => t.type === 'use' && t.description && t.description.startsWith('반환:')).map(t => {
+          const m = t.description.match(/\[([a-f0-9-]+)\]/); return m ? m[1] : null;
+        }).filter(Boolean));
+        const allReturnedIds = new Set([...returnedTxnIds, ...returnDescTxnIds]);
         tbody.innerHTML = history.map(t => {
           const creatorName = t.created_by ? (creatorMap[t.created_by] || '-') : '-';
           const isReturn = t.description && t.description.startsWith('반환:');
-          const returnBtn = (canReturn && t.type === 'earn' && !isReturn)
-            ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="openReturnModal('${userId}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">반환</button>`
+          const alreadyReturned = allReturnedIds.has(t.id);
+          const returnBtn = (canReturn && t.type === 'earn' && !isReturn && !alreadyReturned)
+            ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="openReturnModal('${userId}','${t.id}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">반환</button>`
+            : (alreadyReturned && t.type === 'earn' && !isReturn ? '<span style="font-size:0.7rem;color:#868e96;">반환됨</span>' : '');
             : '';
           return `<tr>
           <td>${formatKSTShort(t.created_at)}</td>
@@ -611,7 +618,7 @@
 
       container.innerHTML = items.map(i => {
         const done = !!_weeklyGivenMap[i.id];
-        return `<div style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1px solid ${done?'#51cf66':'#dee2e6'};border-radius:8px;background:${done?'#e6fcf5':'#fff'};font-size:0.88rem;">
+        return `<div style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1px solid ${done?'#51cf66':'var(--t-border, #dee2e6)'};border-radius:8px;background:${done?'var(--t-success-surface, #e6fcf5)':'var(--t-card, #fff)'};font-size:0.88rem;color:var(--t-text, #212529);">
           ${done
             ? `<span style="flex:1;">${i.name} <strong style="color:#868e96;">+${i.talent_amount}</strong> <span style="font-size:0.7rem;color:#51cf66;">✓완료</span></span>
                <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="cancelTalentItem('${i.id}','${i.name}',${i.talent_amount})">취소</button>`
@@ -724,8 +731,8 @@
     }
 
     let returnCtx = {};
-    function openReturnModal(userId, amount, desc) {
-      returnCtx = { userId, amount: parseInt(amount) };
+    function openReturnModal(userId, txnId, amount, desc) {
+      returnCtx = { userId, txnId, amount: parseInt(amount) };
       document.getElementById('returnInfo').textContent = `항목: ${desc} / 금액: ${amount} 달란트`;
       document.getElementById('returnReason').value = '';
       document.getElementById('returnError').classList.remove('show');
@@ -737,12 +744,13 @@
       const errEl = document.getElementById('returnError');
       if (!reason) { errEl.textContent = '반환 사유를 입력해주세요.'; errEl.classList.add('show'); return; }
       try {
-        const result = await returnTalent(returnCtx.userId, returnCtx.amount, reason, session.id);
+        const desc = returnCtx.txnId ? `[${returnCtx.txnId}] 반환: ${reason}` : `반환: ${reason}`;
+        const result = await returnTalent(returnCtx.userId, returnCtx.amount, desc, session.id);
         if (result.success === false) {
           await logError('TALENT_RETURN_FAIL', { userId: returnCtx.userId, 금액: returnCtx.amount, 사유: reason, 오류: result.error });
           errEl.textContent = tErr(result.error); errEl.classList.add('show'); return;
         }
-        await logInfo('TALENT_RETURN', { userId: returnCtx.userId, 금액: returnCtx.amount, 사유: reason });
+        await logInfo('TALENT_RETURN', { userId: returnCtx.userId, 금액: returnCtx.amount, 사유: reason, txnId: returnCtx.txnId });
         closeReturnModal();
         await openDetailModal(returnCtx.userId, document.getElementById('detailTitle').textContent.replace(' - 달란트 상세',''));
         await loadUsers();
@@ -757,6 +765,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.37.0"></script>
+  <script src="../js/version.js?v=3.38.0"></script>
 </body>
 </html>

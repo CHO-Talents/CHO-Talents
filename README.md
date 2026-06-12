@@ -12,22 +12,20 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.37.0` (`js/version.js` 기준, 2026-06-12) |
+| 현재 버전 | `v3.38.0` (`js/version.js` 기준, 2026-06-12) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.37.0`으로 갱신되어 있습니다.
-- **v3.37.0 주요 변경 사항**:
-  - 네비게이션 배지: 달란트 통계, QR 관리, 로그 규칙, 감사 규칙, 비밀번호 변경 페이지에 누락된 badge 호출 추가
-  - 대시보드: 관리자 카드(admin+evangelist) 신규 추가, 부서 담당 카드에 purchase_teacher 포함
-  - 사용자 관리: 통계 카드를 대시보드와 통일 (관리자=admin+evangelist, 부서 담당=chief+purchase_teacher+dept_teacher)
-  - 관리자 관리: 조회 대상에 구매 담당 교사 추가, 필터 버튼 추가
-  - 부서 관리: 소속보기 정렬에 purchase_teacher(70) 추가
-  - 페이지 접근/기능 관리: purchase_teacher 역할 추가
-  - 마지막 로그인: profiles.last_login_at 컬럼 추가, 로그 삭제와 무관하게 유지
-  - 로그: 버튼명 변경(범위 삭제/선택 삭제), 필터 레벨별 범위 삭제, ERROR+ 미확인 로그 보호
-  - DB: `docs/TASK-049_schema.sql` (last_login_at 컬럼, update_last_login RPC)
+- `APP_VERSION.current`는 `3.38.0`으로 갱신되어 있습니다.
+- **v3.38.0 주요 변경 사항**:
+  - 달란트 지급: 다크모드에서 항목 배경을 CSS 변수(`--t-success-surface`, `--t-card`)로 변경하여 가독성 확보
+  - 달란트 상세: 반환 버튼을 트랜잭션 ID 기반으로 변경 — 동일 항목 1회만 반환 가능, 반환된 항목은 "반환됨" 표시
+  - 달란트 지급/상세: 취소·반환 시 txnId를 설명에 포함하여 상호 동기화
+  - 상품 구매: 대리 구매 모달 다크모드 대응 (모달 배경, 검색 입력, 선택 표시, 드롭다운)
+  - 상품 구매: 구매 신청 비활성화 버튼 다크모드 대응
+  - 네비게이션 배지: `navUpdateAuth`에서 rank ≥ 60 시 자동 호출 — 모든 페이지에서 공통 적용
+  - CSS: `--t-success-surface`, `--t-accent-surface` 변수 추가 (라이트/다크 모드)
 - **v3.36.0 주요 변경 사항**:
   - 다크 모드: 달란트 통계 카드/라디오, 부서 필터 등 잔여 흰 배경을 CSS 변수 기반 어두운 표면색으로 보정
   - 테마: 로그아웃 시 기본(일반) 테마로 리셋, 로그인 시 DB에 저장된 계정 테마 우선 적용

@@ -74,9 +74,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   is_first_login boolean DEFAULT true,
   user_type text NOT NULL DEFAULT 'student' CHECK (user_type IN ('teacher', 'student')),
   permission_level text NOT NULL DEFAULT 'student'
-    CHECK (permission_level IN ('admin','evangelist','chief','dept_teacher','teacher','student')),
+    CHECK (permission_level IN ('admin','evangelist','chief','purchase_teacher','dept_teacher','teacher','student')),
   is_super_admin boolean DEFAULT false,
   class_number integer,
+  last_login_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT profiles_username_unique UNIQUE (username)
@@ -94,7 +95,7 @@ CREATE TABLE IF NOT EXISTS public.registration_requests (
   reviewed_at timestamptz,
   user_type text NOT NULL DEFAULT 'student' CHECK (user_type IN ('teacher', 'student')),
   permission_level text NOT NULL DEFAULT 'student'
-    CHECK (permission_level IN ('admin','evangelist','chief','dept_teacher','teacher','student')),
+    CHECK (permission_level IN ('admin','evangelist','chief','purchase_teacher','dept_teacher','teacher','student')),
   created_at timestamptz DEFAULT now()
 );
 
@@ -123,7 +124,10 @@ CREATE TABLE IF NOT EXISTS public.talent_items (
   sort_order integer DEFAULT 0,
   created_by uuid REFERENCES public.profiles(id),
   is_quick_button boolean DEFAULT false,
-  created_at timestamptz DEFAULT now()
+  giving_rule text,
+  giving_description text,
+  created_at timestamptz DEFAULT now(),
+  CONSTRAINT talent_items_amount_max100 CHECK (talent_amount <= 100)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_talent_items_target_name
   ON public.talent_items(target_type, name);
@@ -271,6 +275,7 @@ CREATE TABLE IF NOT EXISTS public.role_page_features (
 CREATE TABLE IF NOT EXISTS public.user_preferences (
   user_id uuid PRIMARY KEY REFERENCES public.profiles(id) ON DELETE CASCADE,
   favorite_shortcuts jsonb DEFAULT '["earn-talents","shop","my-talents"]'::jsonb,
+  theme text DEFAULT 'default' CHECK (theme IN ('default', 'dark', 'spring', 'summer', 'autumn', 'winter')),
   updated_at timestamptz DEFAULT now()
 );
 
@@ -298,7 +303,8 @@ CREATE TABLE IF NOT EXISTS public.talent_qr_codes (
   repeat_weeks integer[] DEFAULT NULL,
   is_active boolean DEFAULT true,
   created_by uuid REFERENCES public.profiles(id),
-  created_at timestamptz DEFAULT now()
+  created_at timestamptz DEFAULT now(),
+  CONSTRAINT talent_qr_codes_amount_max100 CHECK (amount <= 100)
 );
 
 CREATE TABLE IF NOT EXISTS public.talent_qr_scans (
@@ -338,6 +344,12 @@ CREATE INDEX IF NOT EXISTS idx_profiles_username ON public.profiles(username);
 CREATE INDEX IF NOT EXISTS idx_profiles_department ON public.profiles(department_id);
 CREATE INDEX IF NOT EXISTS idx_profiles_permission ON public.profiles(permission_level);
 CREATE INDEX IF NOT EXISTS idx_registration_status ON public.registration_requests(status, created_at);
+CREATE INDEX IF NOT EXISTS idx_department_transfer_requests_status
+  ON public.department_transfer_requests(status);
+CREATE INDEX IF NOT EXISTS idx_department_transfer_requests_created_at
+  ON public.department_transfer_requests(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_department_transfer_requests_user_id
+  ON public.department_transfer_requests(user_id);
 CREATE INDEX IF NOT EXISTS idx_talent_transactions_user ON public.talent_transactions(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_talent_transactions_item ON public.talent_transactions(talent_item_id);
 CREATE INDEX IF NOT EXISTS idx_products_active_target ON public.products(is_active, target_role);
@@ -345,14 +357,17 @@ CREATE INDEX IF NOT EXISTS idx_product_orders_user_status ON public.product_orde
 CREATE INDEX IF NOT EXISTS idx_product_orders_status ON public.product_orders(status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_qna_status ON public.qna(status, is_faq, is_deleted);
 CREATE INDEX IF NOT EXISTS idx_qna_comments_qna_id ON public.qna_comments(qna_id);
+CREATE INDEX IF NOT EXISTS idx_qna_comments_created_at ON public.qna_comments(created_at);
 CREATE INDEX IF NOT EXISTS idx_activity_logs_created ON public.activity_logs(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_activity_logs_level_ack ON public.activity_logs(level, is_acknowledged);
+CREATE INDEX IF NOT EXISTS idx_activity_logs_action_created ON public.activity_logs(action, created_at DESC);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_qr_codes_code_unique
   ON public.talent_qr_codes(code)
   WHERE code IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_qr_scans_qr_code ON public.talent_qr_scans(qr_code_id);
 CREATE INDEX IF NOT EXISTS idx_qr_scans_user ON public.talent_qr_scans(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON public.user_preferences(user_id);
+CREATE INDEX IF NOT EXISTS idx_app_config_env_use ON public.app_config(env, use_yn);
 CREATE INDEX IF NOT EXISTS idx_app_config_public ON public.app_config(env, key_name)
   WHERE is_secret = false AND use_yn = true;
 
@@ -370,6 +385,7 @@ BEGIN
     WHEN 'admin' THEN 100
     WHEN 'evangelist' THEN 90
     WHEN 'chief' THEN 80
+    WHEN 'purchase_teacher' THEN 70
     WHEN 'dept_teacher' THEN 60
     WHEN 'teacher' THEN 40
     WHEN 'student' THEN 20
@@ -469,6 +485,20 @@ BEGIN
   WHERE id = auth.uid();
 
   RETURN json_build_object('success', true);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.update_last_login()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  UPDATE public.profiles
+  SET last_login_at = now(),
+      updated_at = now()
+  WHERE id = auth.uid();
 END;
 $$;
 
@@ -882,6 +912,10 @@ BEGIN
     END IF;
     v_actual_amount := p_amount;
     v_actual_desc := COALESCE(NULLIF(p_description, ''), 'Manual');
+  END IF;
+
+  IF v_actual_amount > 100 THEN
+    RETURN json_build_object('success', false, 'error', 'Amount cannot exceed 100');
   END IF;
 
   UPDATE public.profiles
@@ -1341,6 +1375,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO anon, aut
 GRANT EXECUTE ON FUNCTION public.get_my_profile() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_my_role() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.change_my_password(text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.update_last_login() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.check_username_available(text) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.check_registration_status(text) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.admin_list_users(text, uuid) TO authenticated;
@@ -1498,6 +1533,7 @@ WITH levels(permission_level, rank) AS (
     ('admin', 100),
     ('evangelist', 90),
     ('chief', 80),
+    ('purchase_teacher', 70),
     ('dept_teacher', 60),
     ('teacher', 40),
     ('student', 20)
