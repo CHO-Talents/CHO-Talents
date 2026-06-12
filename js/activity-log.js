@@ -647,9 +647,14 @@ async function deleteLogsByDateRange(dateFrom, dateTo, options = {}) {
       .eq('is_deleted', false);
     if (options.level) {
       query = query.eq('level', options.level);
-    }
-    if (options.excludeUnacknowledged) {
-      query = query.eq('is_acknowledged', true);
+      if (options.excludeUnacknowledged) {
+        const ERROR_PLUS = ['ERROR', 'FATAL', 'CRITICAL'];
+        if (ERROR_PLUS.includes(options.level)) {
+          query = query.eq('is_acknowledged', true);
+        }
+      }
+    } else if (options.excludeUnacknowledged) {
+      query = query.or('level.not.in.(ERROR,FATAL,CRITICAL),is_acknowledged.eq.true');
     }
     const { data, error } = await query.select('id');
     if (error) return { error: error.message, count: 0 };

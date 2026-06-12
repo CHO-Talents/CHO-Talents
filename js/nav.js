@@ -44,6 +44,7 @@ const NAV_MENU = [
     items: [
       { href: 'admin/index.html', label: '대시보드', minPerm: 60 },
       { href: 'admin/users.html', label: '사용자 관리', minPerm: 60, id: 'navUsers', badgeId: 'navUserBadge' },
+      { href: 'admin/bulk-register.html', label: '학생 일괄 등록', minPerm: 90 },
       { href: 'admin/managers.html', label: '관리자 관리', minPerm: 80 },
       { href: 'admin/departments.html', label: '부서 관리', minPerm: 60 }
     ]
