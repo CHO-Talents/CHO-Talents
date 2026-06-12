@@ -75,13 +75,13 @@ flowchart LR
 | `shop.html` | 상점 조회 + 구매 신청 + 대리 구매. 비로그인은 학생용, 교사는 교사용 기본 필터 |
 | `my-talents.html` | 로그인 사용자 본인의 사용 가능 달란트/상품 수령 예정/사용 대기/사용 완료/누적 적립 달란트, 달란트 내역, 구매 내역 |
 | `my-orders.html` | 로그인 사용자 본인의 구매 신청 내역과 4단계 상태 조회 |
-| `admin/index.html` | 80등급 이상 대시보드. 사용자/부서/보고서/가입대기 요약. 미확인 ERROR+ 카드는 100등급 이상만 표시(클릭→로그). 바로가기에 달란트 통계/QR 관리 포함 |
+| `admin/index.html` | 60등급 이상 대시보드. 사용자/부서/보고서/가입대기 요약. 미확인 ERROR+ 카드는 100등급 이상만 표시(클릭→로그). 바로가기에 달란트 통계/QR 관리 포함 |
 | `admin/users.html` | 60등급 이상 사용자 관리. 교사/학생 그룹별 분리(학생은 권한 열 제거). 관리 드롭다운. 통계 카드 모바일 3개씩 반응형. 가입 신청/부서 이동 요청/승인 처리. 페이징(모바일 5개/PC 10개) |
 | `admin/departments.html` | 60등급 이상 부서 관리. 관리 드롭다운(소속보기/수정/삭제). 부서별 인원(교사 전체 포함)/담당자 확인 |
 | `admin/managers.html` | 80등급 이상 관리자 계열 권한 관리. 수정만 가능 |
 | `admin/talents.html` | 40등급 이상 달란트 처리. 출석 버튼+관리 드롭다운(달란트 지급/상세). 잔여 달란트→달란트 명칭 변경. 사용/누적 달란트 모바일 숨김. 모바일 10/PC 20 페이징. 수동 적립은 100등급(관리자)만 표시 |
 | `admin/talent-stats.html` | 60등급 이상 달란트 누적적립 통계. 라디오 이모지+칩 스타일. 부서별/사용자별: 달란트/항목 라벨, 비율 그래프. 부서별 상세: 전체 대비 비율 pct-bar. 사용자별 상세: 항목명→수령수→달란트→비율 순서, 비율 pct-bar. 라디오 필터, 부서 필터, 기간 프리셋 |
-| `admin/talent-items.html` | 90등급 이상 달란트 지급 항목 관리. ⚡퀵 버튼 지정(유형별 1개) |
+| `admin/talent-items.html` | 60등급 이상 달란트 지급 항목 관리. 지급 규칙/설명 관리, ⚡퀵 버튼 지정은 80등급 이상 |
 | `admin/talent-qr.html` | 90등급 이상 QR 코드 생성(qrcode.js 이미지)/수정(새 코드 재생성)/비활성화. 지급 대상(학생/교사) 구분, 유효기간 라디오(지정일/기간/무기한), 반복 수령(none/daily/weekday/week_weekday), 위치 제한(카카오맵 API, 반경 500m~5km, Geolocation 검증). 검색/필터(대상/조건), 날짜 from-to 범위 필터(초기값 오늘, 오늘/1주/1달/1년 프리셋) |
 | `admin/shop.html` | 60등급 이상 상품 관리. 교사/학생 그룹별 분리+페이징(모바일 10/PC 20). 카테고리 열 맨 왼쪽, 대상 열 삭제. 관리 드롭다운(수정/삭제). 삭제는 소프트 삭제 |
 | `admin/purchases.html` | 60등급 이상 구매 관리. 상태별 상품 합계+일괄 처리 버튼(일괄 준비/구매 확정). 관리 드롭다운. 부서/기간 필터(기본 오늘) + 기간 프리셋, 4단계 구매 흐름 + 되돌리기(↩) |
@@ -155,12 +155,12 @@ flowchart TD
   Password -->|예| ChangePassword["admin/change-password.html"]
   Password -->|아니오| Home
 
-  Home --> AdminDash["admin/index.html<br/>80+"]
+  Home --> AdminDash["admin/index.html<br/>60+"]
   Home --> Users["admin/users.html<br/>60+"]
   Home --> Departments["admin/departments.html<br/>60+"]
   Home --> Managers["admin/managers.html<br/>80+"]
   Home --> Talents["admin/talents.html<br/>40+"]
-  Home --> TalentItems["admin/talent-items.html<br/>90+"]
+  Home --> TalentItems["admin/talent-items.html<br/>60+"]
   Home --> AdminShop["admin/shop.html<br/>60+"]
   Home --> Purchases["admin/purchases.html<br/>60+"]
   Home --> Reports["admin/reports.html<br/>80+"]
@@ -501,7 +501,7 @@ flowchart TD
 13. 80등급 이상만 달란트 반환이 가능한지 확인한다.
 14. 부서 이동이 수정 모달이 아닌 부서 이동 버튼으로만 되는지 확인한다.
 15. 60등급 이상이 `admin/users.html`, `admin/shop.html`, `admin/purchases.html`을 사용할 수 있는지 확인한다.
-16. 80등급 이상이 대시보드, 관리자, 보고서, 버전 화면을 사용할 수 있는지 확인한다.
+16. 60등급 이상이 대시보드를, 80등급 이상이 관리자, 보고서, 버전 화면을 사용할 수 있는지 확인한다.
 17. 100등급 이상만 `admin/page-access.html`, `admin/page-features.html`, `admin/audit.html`, `admin/logs.html`에 접근 가능한지 확인한다.
 18. `qna.html`에서 공개 FAQ, 로그인 질문 등록, 60등급 이상 댓글(답변)/FAQ 등록/직접 FAQ 추가, 90등급 이상 삭제가 동작하는지 확인한다.
 19. 아이디가 관리자에게만 표시되고 일반 사용자는 본인 것만 보이는지 확인한다.

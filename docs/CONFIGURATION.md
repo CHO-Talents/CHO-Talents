@@ -20,6 +20,9 @@
 | `.env.local` | 미추적 | 실제 GitHub PAT, Supabase access token, service-role key 등 비밀값 |
 | `js/supabase-config.js` | 추적 | `window.CHO_TALENTS_CONFIG`를 읽어 Supabase 클라이언트 초기화 |
 | `scripts/load-env.ps1` | 추적 | `.env.local`을 읽어 현재 PowerShell 세션의 환경변수로 설정 |
+| `scripts/install-supabase-database.ps1` | 추적 | 새 Supabase DB에 전체 설치 SQL을 적용하거나 설치 SQL을 생성 |
+| `docs/INITIAL_DATABASE_SETUP.sql` | 추적 | 빈 Supabase DB에 현재 테이블/RPC/RLS/Storage/기본 데이터를 한 번에 설치 |
+| `docs/INITIAL_DATABASE_SETUP.md` | 추적 | SQL Editor 실행 순서와 PowerShell 자동 설치 방법 |
 | `docs/TASK-041_app_config.sql` | 추적 | Supabase `app_config` 테이블, RLS, 공개 설정 RPC, 초기 데이터 |
 
 ## 3. 공개 설정
@@ -31,6 +34,8 @@
 - Auth 이메일 도메인
 - Kakao JavaScript key
 - GitHub 저장소 owner/repo/branch 같은 비밀이 아닌 메타데이터
+
+`TARGET_ENV` 값으로 `production` 또는 `development` 설정을 선택한다. 현재 production 부트스트랩 설정은 `https://rabakjtjtkelpskptnvi.supabase.co` 프로젝트를 바라본다.
 
 Supabase 접속 이후에는 `app_config` 테이블의 공개 설정을 `get_public_app_config()` RPC로 조회한다. 브라우저는 테이블을 직접 조회하지 않고 RPC 결과만 사용한다.
 
@@ -74,7 +79,11 @@ Supabase `app_config` 테이블에는 비밀 원문을 넣지 않는다. 대신 
 
 ## 5. Supabase app_config 적용
 
-Supabase SQL Editor 또는 Management API에서 `docs/TASK-041_app_config.sql`을 실행한다.
+새 Supabase Database를 완전히 비어 있는 상태에서 구성할 때는 먼저 `docs/INITIAL_DATABASE_SETUP.sql`을 Supabase SQL Editor에서 실행한다. 이 파일은 테이블, 함수/RPC, RLS 정책, Storage 버킷, 기본 권한 데이터를 포함한다.
+
+공개 설정만 기존 DB에 보강하거나 점검할 때는 Supabase SQL Editor 또는 Management API에서 `docs/TASK-041_app_config.sql`을 실행한다.
+
+로컬에서 DB 접속 문자열을 사용할 수 있으면 `scripts/install-supabase-database.ps1`로 설치 SQL 생성 또는 실행을 자동화할 수 있다.
 
 적용 후 브라우저에서는 아래 흐름으로 설정을 읽는다.
 
@@ -85,6 +94,8 @@ Supabase SQL Editor 또는 Management API에서 `docs/TASK-041_app_config.sql`�
 5. 코드에서는 `getPublicConfigValue(keyName, fallback)`로 공개 설정을 조회할 수 있다.
 
 `app_config` 테이블은 RLS가 켜져 있고 직접 SELECT 정책을 만들지 않는다. 공개값은 `SECURITY DEFINER` RPC가 `is_secret = false`이고 `use_yn = true`인 행만 반환한다.
+
+주의: publishable/anon key는 브라우저에 공개 가능한 키이지만 비밀키가 아니다. 서비스 롤 키, DB connection string, Supabase access token은 `.env.local`, CI secret, 서버/Edge Function 환경변수, Vault 같은 비공개 위치에서만 사용한다.
 
 ## 6. 추가로 필요한 Supabase 정보
 
