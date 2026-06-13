@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 항목 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.40.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.40.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -29,6 +29,7 @@
         <thead><tr><th>순서</th><th>항목명</th><th>지급 달란트</th><th>상태</th><th>관리</th></tr></thead>
         <tbody id="itemList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
+      <div id="itemPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -73,19 +74,21 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.39.0"></script>
-  <script src="../js/supabase-config.js?v=3.39.0"></script>
-  <script src="../js/activity-log.js?v=3.39.0"></script>
-  <script src="../js/auth.js?v=3.39.0"></script>
-  <script src="../js/theme.js?v=3.39.0"></script>
-  <script src="../js/nav.js?v=3.39.0"></script>
-  <script src="../js/talent.js?v=3.39.0"></script>
+  <script src="../config/public-config.js?v=3.40.0"></script>
+  <script src="../js/supabase-config.js?v=3.40.0"></script>
+  <script src="../js/activity-log.js?v=3.40.0"></script>
+  <script src="../js/auth.js?v=3.40.0"></script>
+  <script src="../js/theme.js?v=3.40.0"></script>
+  <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/talent.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session;
     let allItems = [];
     let editingId = null;
     let currentTab = 'student';
+    function getItemPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    let itemPage = 1;
 
     (async () => {
       await navInit();
@@ -101,6 +104,7 @@
 
     function switchTab(tab) {
       currentTab = tab;
+      itemPage = 1;
       document.getElementById('tabStudent').classList.toggle('active', tab === 'student');
       document.getElementById('tabTeacher').classList.toggle('active', tab === 'teacher');
       renderItems();
@@ -120,10 +124,17 @@
 
       if (list.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="empty-state">등록된 항목이 없습니다.</td></tr>`;
+        document.getElementById('itemPaging').innerHTML = '';
         return;
       }
 
-      tbody.innerHTML = list.map(i => {
+      const pageSize = getItemPageSize();
+      const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
+      if (itemPage > totalPages) itemPage = totalPages;
+      const startIdx = (itemPage - 1) * pageSize;
+      const pageData = list.slice(startIdx, startIdx + pageSize);
+
+      tbody.innerHTML = pageData.map(i => {
         const isQuick = i.is_quick_button === true;
         return `<tr${!i.is_active ? ' style="opacity:0.5;"' : ''}>
         <td>${i.sort_order}</td>
@@ -137,7 +148,22 @@
         </td>
       </tr>`;
       }).join('');
+      renderItemPaging(totalPages);
     }
+
+    function renderItemPaging(totalPages) {
+      const wrap = document.getElementById('itemPaging');
+      const page = itemPage;
+      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goItemPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="filter-btn${i===page?' active':''}" onclick="goItemPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goItemPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+    function goItemPage(p) { itemPage = p; renderItems(); }
 
     function openAddModal() {
       editingId = null;
@@ -242,6 +268,6 @@
 
     document.getElementById('itemModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.39.0"></script>
+  <script src="../js/version.js?v=3.40.0"></script>
 </body>
 </html>

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 구매 상품 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.39.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.39.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.40.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.40.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -21,15 +21,18 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.39.0"></script>
-  <script src="js/supabase-config.js?v=3.39.0"></script>
-  <script src="js/activity-log.js?v=3.39.0"></script>
-  <script src="js/auth.js?v=3.39.0"></script>
-  <script src="js/theme.js?v=3.39.0"></script>
-  <script src="js/nav.js?v=3.39.0"></script>
+  <script src="config/public-config.js?v=3.40.0"></script>
+  <script src="js/supabase-config.js?v=3.40.0"></script>
+  <script src="js/activity-log.js?v=3.40.0"></script>
+  <script src="js/auth.js?v=3.40.0"></script>
+  <script src="js/theme.js?v=3.40.0"></script>
+  <script src="js/nav.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session;
+    let myOrders = [];
+    function getMyOrderPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    let myOrderPage = 1;
 
     function formatKSTShort(isoStr) {
       if (!isoStr) return '-';
@@ -48,15 +51,17 @@
     })();
 
     async function loadOrders() {
-      const main = document.getElementById('mainContent');
-      let orders = [];
       try {
         const { data, error } = await _sb.from('product_orders').select('*').eq('user_id', session.id).order('created_at', { ascending: false });
-        if (error) { logWarn('MY_ORDERS_FETCH', { 오류: error.message }); }
-        else { orders = data || []; }
-      } catch (e) { /* table may not exist */ }
+        if (error) { logWarn('MY_ORDERS_FETCH', { 오류: error.message }); myOrders = []; }
+        else { myOrders = (data || []).filter(o => o.status !== 'cancelled'); }
+      } catch (e) { myOrders = []; }
+      renderMyOrders();
+    }
 
-      orders = (orders || []).filter(o => o.status !== 'cancelled');
+    function renderMyOrders() {
+      const main = document.getElementById('mainContent');
+      const orders = myOrders;
       const statusMap = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
       const statusColor = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
       const statusEmoji = { requested:'🛒', preparing:'📦', purchased:'💳', delivered:'✅' };
@@ -67,11 +72,17 @@
       if (orders.length === 0) {
         html += '<div class="empty-state"><div class="empty-state-icon">📦</div><p>구매 내역이 없습니다.</p></div>';
       } else {
+        const pageSize = getMyOrderPageSize();
+        const totalPages = Math.max(1, Math.ceil(orders.length / pageSize));
+        if (myOrderPage > totalPages) myOrderPage = totalPages;
+        const startIdx = (myOrderPage - 1) * pageSize;
+        const pageOrders = orders.slice(startIdx, startIdx + pageSize);
+
         html += `<div class="data-table-wrap">
           <div class="data-table-header"><div class="data-table-title">구매 내역 (${orders.length}건)</div></div>
           <table class="data-table">
             <thead><tr><th>날짜</th><th>상품명</th><th>가격</th><th>현재 상태</th></tr></thead>
-            <tbody>` + orders.map(o => `<tr>
+            <tbody>` + pageOrders.map(o => `<tr>
               <td>${formatKSTShort(o.requested_at || o.created_at)}</td>
               <td>${o.product_name || '-'}</td>
               <td style="font-weight:700;">${fmtNum(o.price)} 달란트</td>
@@ -79,10 +90,34 @@
                 <span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.6rem;border-radius:6px;font-size:0.82rem;font-weight:600;background:${statusColor[o.status]||'#868e96'}15;color:${statusColor[o.status]||'#868e96'};">${statusEmoji[o.status]||''} ${statusMap[o.status]||o.status}</span>
                 ${o.status === 'requested' ? `<button onclick="cancelOrder('${o.id}','${(o.product_name||'').replace(/'/g,"\\'")}',${o.price})" style="margin-left:0.4rem;padding:0.15rem 0.5rem;font-size:0.75rem;border:1px solid #e03131;color:#e03131;background:#fff;border-radius:4px;cursor:pointer;">\ucde8\uc18c</button>` : ''}
               </td>
-            </tr>`).join('') + '</tbody></table></div>';
+            </tr>`).join('') + '</tbody></table>';
+        html += `<div id="myOrderPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div></div>`;
       }
 
       main.innerHTML = html;
+      if (orders.length > 0) {
+        const totalPages = Math.max(1, Math.ceil(orders.length / getMyOrderPageSize()));
+        renderMyOrderPaging(totalPages);
+      }
+    }
+
+    function renderMyOrderPaging(totalPages) {
+      const wrap = document.getElementById('myOrderPaging');
+      if (!wrap) return;
+      const page = myOrderPage;
+      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goMyOrderPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="filter-btn${i===page?' active':''}" onclick="goMyOrderPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goMyOrderPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+
+    function goMyOrderPage(p) {
+      myOrderPage = p;
+      renderMyOrders();
     }
 
     async function cancelOrder(orderId, productName, price) {
@@ -101,6 +136,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.39.0"></script>
+  <script src="js/version.js?v=3.40.0"></script>
 </body>
 </html>

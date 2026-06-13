@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로그 관리 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.40.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.40.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -102,17 +102,17 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.39.0"></script>
-  <script src="../js/supabase-config.js?v=3.39.0"></script>
-  <script src="../js/activity-log.js?v=3.39.0"></script>
-  <script src="../js/auth.js?v=3.39.0"></script>
-  <script src="../js/theme.js?v=3.39.0"></script>
-  <script src="../js/nav.js?v=3.39.0"></script>
+  <script src="../config/public-config.js?v=3.40.0"></script>
+  <script src="../js/supabase-config.js?v=3.40.0"></script>
+  <script src="../js/activity-log.js?v=3.40.0"></script>
+  <script src="../js/auth.js?v=3.40.0"></script>
+  <script src="../js/theme.js?v=3.40.0"></script>
+  <script src="../js/nav.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session;
     let currentPage = 0;
-    const PAGE_SIZE = 50;
+    function getPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
     let totalLogCount = 0;
     let selectedLevels = [];
     let currentAckId = null;
@@ -225,8 +225,8 @@
       const dateTo = document.getElementById('dateTo').value;
 
       const options = {
-        limit: PAGE_SIZE,
-        offset: currentPage * PAGE_SIZE
+        limit: getPageSize(),
+        offset: currentPage * getPageSize()
       };
       if (selectedLevels.length > 0) options.levels = selectedLevels;
       if (dateFrom) options.dateFrom = dateFrom + 'T00:00:00+09:00';
@@ -291,7 +291,7 @@
 
     function renderPagination(count) {
       const el = document.getElementById('pagination');
-      const totalPages = Math.max(1, Math.ceil(totalLogCount / PAGE_SIZE));
+      const totalPages = Math.max(1, Math.ceil(totalLogCount / getPageSize()));
       const cur = currentPage + 1;
       const hasPrev = currentPage > 0;
       const hasNext = cur < totalPages;
@@ -607,6 +607,6 @@
       toggleDeletedView();
     }
   </script>
-  <script src="../js/version.js?v=3.39.0"></script>
+  <script src="../js/version.js?v=3.40.0"></script>
 </body>
 </html>

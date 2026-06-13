@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.40.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.40.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -23,7 +23,7 @@
     </div>
 
     <div id="statusFilterWrap" style="margin-bottom:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
-      <select id="statusFilter" onchange="renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
+      <select id="statusFilter" onchange="orderPage=1;renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
         <option value="">전체 상태</option>
         <option value="requested">📋 구매 신청</option>
         <option value="preparing">📦 상품 준비</option>
@@ -31,13 +31,13 @@
         <option value="delivered">✅ 상품 지급</option>
         <option value="cancelled">❌ 구매 취소</option>
       </select>
-      <select id="deptFilter" onchange="renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
+      <select id="deptFilter" onchange="orderPage=1;renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
         <option value="">전체 부서</option>
       </select>
       <span style="margin-left:0.3rem;font-size:0.82rem;color:var(--admin-text-muted);">기간:</span>
-      <input type="date" id="dateFrom" onchange="renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
+      <input type="date" id="dateFrom" onchange="orderPage=1;renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="font-size:0.82rem;">~</span>
-      <input type="date" id="dateTo" onchange="renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
+      <input type="date" id="dateTo" onchange="orderPage=1;renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="display:inline-flex;gap:0.2rem;">
         <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">오늘</button>
         <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1주</button>
@@ -63,21 +63,22 @@
         </thead>
         <tbody id="orderList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
+      <div id="orderPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
   <style>
-    .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:#fff;border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:140px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:#333;text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:#f1f3f5;}
+    .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:140px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.39.0"></script>
-  <script src="../js/supabase-config.js?v=3.39.0"></script>
-  <script src="../js/activity-log.js?v=3.39.0"></script>
-  <script src="../js/auth.js?v=3.39.0"></script>
-  <script src="../js/theme.js?v=3.39.0"></script>
-  <script src="../js/nav.js?v=3.39.0"></script>
-  <script src="../js/user-mgmt.js?v=3.39.0"></script>
+  <script src="../config/public-config.js?v=3.40.0"></script>
+  <script src="../js/supabase-config.js?v=3.40.0"></script>
+  <script src="../js/activity-log.js?v=3.40.0"></script>
+  <script src="../js/auth.js?v=3.40.0"></script>
+  <script src="../js/theme.js?v=3.40.0"></script>
+  <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/user-mgmt.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session;
@@ -85,6 +86,8 @@
     let allOrders = [];
     let profileMap = {};
     let processorMap = {};
+    function getOrderPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    let orderPage = 1;
 
     const STATUS_LABEL = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급', cancelled:'구매 취소' };
     const STATUS_COLOR = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e', cancelled:'#e03131' };
@@ -112,10 +115,12 @@
       else if (type === 'year') { fromStr = todayStr.slice(0, 4) + '-01-01'; }
       document.getElementById('dateFrom').value = fromStr;
       document.getElementById('dateTo').value = todayStr;
+      orderPage = 1;
       renderOrders();
     }
 
     function switchPurchaseTab(tab) {
+      orderPage = 1;
       currentPTab = tab;
       TAB_IDS.forEach(t => {
         const el = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
@@ -332,10 +337,17 @@
       const colCount = document.getElementById('tableHead').children.length;
       if (orders.length === 0) {
         tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">해당 상태의 주문이 없습니다.</td></tr>`;
+        renderOrderPaging(1);
         return;
       }
 
-      tbody.innerHTML = orders.map(o => {
+      const pageSize = getOrderPageSize();
+      const totalPages = Math.max(1, Math.ceil(orders.length / pageSize));
+      if (orderPage > totalPages) orderPage = totalPages;
+      const startIdx = (orderPage - 1) * pageSize;
+      const pageOrders = orders.slice(startIdx, startIdx + pageSize);
+
+      tbody.innerHTML = pageOrders.map(o => {
         const canProc = canProcessOrder(o);
 
         let procInfo = '';
@@ -367,6 +379,25 @@
         row += '</tr>';
         return row;
       }).join('');
+      renderOrderPaging(totalPages);
+    }
+
+    function renderOrderPaging(totalPages) {
+      const wrap = document.getElementById('orderPaging');
+      const page = orderPage;
+      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goOrderPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="filter-btn${i===page?' active':''}" onclick="goOrderPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goOrderPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+
+    function goOrderPage(p) {
+      orderPage = p;
+      renderOrders();
     }
 
     async function updateStatus(orderId, newStatus) {
@@ -561,6 +592,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.39.0"></script>
+  <script src="../js/version.js?v=3.40.0"></script>
 </body>
 </html>

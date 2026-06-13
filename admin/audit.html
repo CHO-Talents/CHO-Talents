@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>작업 이력 - 달란트 마을</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.40.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.40.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -37,7 +37,7 @@
         <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('year')">1년</button>
       </span>
       <button class="filter-btn" onclick="loadAuditLogs()">조회</button>
-      <input type="text" id="auditSearch" placeholder="작업자/대상 검색..." class="filter-input" style="flex:1;min-width:120px;" oninput="renderAudit()" />
+      <input type="text" id="auditSearch" placeholder="작업자/대상 검색..." class="filter-input" style="flex:1;min-width:120px;" oninput="auditPage=1;renderAudit()" />
     </div>
 
     <div class="admin-table-wrap">
@@ -48,6 +48,7 @@
         <thead><tr><th>시간</th><th>작업자</th><th>작업 유형</th><th>대상</th><th>상세</th></tr></thead>
         <tbody id="auditList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
+      <div id="auditPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -62,16 +63,18 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.39.0"></script>
-  <script src="../js/supabase-config.js?v=3.39.0"></script>
-  <script src="../js/activity-log.js?v=3.39.0"></script>
-  <script src="../js/auth.js?v=3.39.0"></script>
-  <script src="../js/theme.js?v=3.39.0"></script>
-  <script src="../js/nav.js?v=3.39.0"></script>
-  <script src="../js/user-mgmt.js?v=3.39.0"></script>
+  <script src="../config/public-config.js?v=3.40.0"></script>
+  <script src="../js/supabase-config.js?v=3.40.0"></script>
+  <script src="../js/activity-log.js?v=3.40.0"></script>
+  <script src="../js/auth.js?v=3.40.0"></script>
+  <script src="../js/theme.js?v=3.40.0"></script>
+  <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/user-mgmt.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session, allAuditLogs = [], currentFilter = 'all';
+    function getAuditPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    let auditPage = 1;
 
     const AUDIT_ACTIONS = {
       // === USER (사용자) ===
@@ -191,6 +194,7 @@
     })();
 
     function setFilter(f) {
+      auditPage = 1;
       currentFilter = f;
       document.querySelectorAll('#auditCategoryFilters .filter-btn').forEach(b => {
         b.classList.remove('active');
@@ -213,6 +217,7 @@
     }
 
     async function loadAuditLogs() {
+      auditPage = 1;
       const fromDate = document.getElementById('auditDateFrom').value;
       const toDate = document.getElementById('auditDateTo').value;
 
@@ -270,11 +275,18 @@
 
       if (list.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="empty-state">조회된 작업 이력이 없습니다.</td></tr>';
+        renderAuditPaging(1);
         return;
       }
 
+      const pageSize = getAuditPageSize();
+      const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
+      if (auditPage > totalPages) auditPage = totalPages;
+      const startIdx = (auditPage - 1) * pageSize;
+      const pageList = list.slice(startIdx, startIdx + pageSize);
+
       const isAdmin = session.permissionRank >= 100;
-      tbody.innerHTML = list.map(l => {
+      tbody.innerHTML = pageList.map(l => {
         const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '📋', category: '' };
         const dt = l.created_at ? formatKSTShort(l.created_at) : '-';
         const actorName = l.user_name || (l.details && l.details._userName) || null;
@@ -296,6 +308,25 @@
           <td><button class="filter-btn" onclick='showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>상세</button></td>
         </tr>`;
       }).join('');
+      renderAuditPaging(totalPages);
+    }
+
+    function renderAuditPaging(totalPages) {
+      const wrap = document.getElementById('auditPaging');
+      const page = auditPage;
+      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goAuditPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="filter-btn${i===page?' active':''}" onclick="goAuditPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goAuditPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+
+    function goAuditPage(p) {
+      auditPage = p;
+      renderAudit();
     }
 
     function extractTarget(log) {
@@ -373,6 +404,6 @@
       if (e.target.classList.contains('modal-overlay')) closeDetailModal();
     });
   </script>
-  <script src="../js/version.js?v=3.39.0"></script>
+  <script src="../js/version.js?v=3.40.0"></script>
 </body>
 </html>
