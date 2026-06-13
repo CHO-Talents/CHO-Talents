@@ -413,19 +413,65 @@ async function acknowledgeLog(logId, username, note) {
 async function getPendingRegistrationCount() {
   if (!_sb) return 0;
   try {
-    const { count, error } = await _sb
-      .from('registration_requests')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'pending');
-    if (error) return 0;
-    return count || 0;
+    const session = getSession();
+    if (!session || (session.permissionRank || 0) < 60) return 0;
+    const myRank = session.permissionRank || 0;
+
+    if (myRank >= 90) {
+      const { count, error } = await _sb
+        .from('registration_requests')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
+      if (error) return 0;
+      return count || 0;
+    }
+
+    const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
+    if (myDepts.size === 0) return 0;
+
+    const [regRes, trfRes] = await Promise.all([
+      _sb.from('registration_requests').select('id,department_id').eq('status', 'pending'),
+      _sb.from('department_transfer_requests').select('id,to_department_id').eq('status', 'pending')
+    ]);
+
+    const regs = (regRes.data || []).filter(r => myDepts.has(r.department_id));
+    const trfs = (trfRes.data || []).filter(t => myDepts.has(t.to_department_id));
+    return regs.length + trfs.length;
+  } catch { return 0; }
+}
+
+async function getProcessableRequestCount() {
+  if (!_sb) return 0;
+  try {
+    const session = getSession();
+    if (!session || (session.permissionRank || 0) < 60) return 0;
+    const myRank = session.permissionRank || 0;
+
+    const [regRes, trfRes] = await Promise.all([
+      _sb.from('registration_requests').select('id,department_id').eq('status', 'pending'),
+      _sb.from('department_transfer_requests').select('id,to_department_id').eq('status', 'pending')
+    ]);
+
+    let regs = regRes.data || [];
+    let trfs = trfRes.data || [];
+
+    if (myRank >= 90) {
+      return regs.length + trfs.length;
+    }
+
+    const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
+    if (myDepts.size === 0) return 0;
+
+    const processableRegs = regs.filter(r => myDepts.has(r.department_id));
+    const processableTrfs = trfs.filter(t => myDepts.has(t.to_department_id));
+    return processableRegs.length + processableTrfs.length;
   } catch { return 0; }
 }
 
 async function updatePendingBadge() {
   const badge = document.getElementById('navUserBadge');
   if (!badge) return;
-  const count = await getPendingRegistrationCount();
+  const count = await getProcessableRequestCount();
   if (count > 0) {
     badge.textContent = count;
     badge.classList.remove('hidden');
@@ -556,7 +602,8 @@ async function getPendingOrderCount() {
     const session = getSession();
     if (!session || (session.permissionRank || 0) < 60) return 0;
     const myRank = session.permissionRank || 0;
-    const { data, error } = await _sb.from('product_orders').select('user_id').neq('status', 'delivered');
+    const isPurchaseTeacher = session.permissionLevel === 'purchase_teacher';
+    const { data, error } = await _sb.from('product_orders').select('user_id').neq('status', 'delivered').neq('status', 'cancelled');
     if (error || !data) return 0;
     let orders = data;
     if (!session.isSuperAdmin) {
@@ -566,13 +613,14 @@ async function getPendingOrderCount() {
         orders = orders.filter(o => !saIds.has(o.user_id));
       }
     }
-    if (myRank >= 90) return orders.length;
-    if (!session.managedDeptId) return 0;
+    if (myRank >= 90 || isPurchaseTeacher) return orders.length;
+    const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
+    if (myDepts.size === 0) return 0;
     const userIds = [...new Set(orders.map(o => o.user_id))];
     if (userIds.length === 0) return 0;
     const { data: profiles } = await _sb.from('profiles').select('id,department_id').in('id', userIds);
     if (!profiles) return 0;
-    const deptUsers = new Set(profiles.filter(p => p.department_id === session.managedDeptId).map(p => p.id));
+    const deptUsers = new Set(profiles.filter(p => myDepts.has(p.department_id)).map(p => p.id));
     return orders.filter(o => deptUsers.has(o.user_id)).length;
   } catch (e) { return 0; }
 }
@@ -588,20 +636,28 @@ async function updateNavOrderBadge() {
   if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
 }
 
-async function deleteLogsByDateRange(dateFrom, dateTo) {
+async function deleteLogsByDateRange(dateFrom, dateTo, options = {}) {
   if (!_sb) return { error: 'Supabase not initialized', count: 0 };
   try {
-    const { data, error } = await _sb
+    let query = _sb
       .from('activity_logs')
       .update({ is_deleted: true, deleted_at: new Date().toISOString() })
       .gte('created_at', dateFrom)
       .lte('created_at', dateTo)
-      .eq('is_deleted', false)
-      .select('id');
-    if (error) {
-      if (_isMissingColErr(error.message)) return { error: _SOFT_DEL_COL_ERR, count: 0 };
-      return { error: error.message, count: 0 };
+      .eq('is_deleted', false);
+    if (options.level) {
+      query = query.eq('level', options.level);
+      if (options.excludeUnacknowledged) {
+        const ERROR_PLUS = ['ERROR', 'FATAL', 'CRITICAL'];
+        if (ERROR_PLUS.includes(options.level)) {
+          query = query.eq('is_acknowledged', true);
+        }
+      }
+    } else if (options.excludeUnacknowledged) {
+      query = query.or('level.not.in.(ERROR,FATAL,CRITICAL),is_acknowledged.eq.true');
     }
+    const { data, error } = await query.select('id');
+    if (error) return { error: error.message, count: 0 };
     return { error: null, count: data ? data.length : 0 };
   } catch (err) {
     return { error: String(err), count: 0 };

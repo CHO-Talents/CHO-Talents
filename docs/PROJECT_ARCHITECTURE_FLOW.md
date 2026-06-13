@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-09 KST 현재 코드 기준 (v3.35.0)
+작성 기준: 2026-06-12 KST 현재 코드 기준 (v3.39.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -75,13 +75,13 @@ flowchart LR
 | `shop.html` | 상점 조회 + 구매 신청 + 대리 구매. 비로그인은 학생용, 교사는 교사용 기본 필터 |
 | `my-talents.html` | 로그인 사용자 본인의 사용 가능 달란트/상품 수령 예정/사용 대기/사용 완료/누적 적립 달란트, 달란트 내역, 구매 내역 |
 | `my-orders.html` | 로그인 사용자 본인의 구매 신청 내역과 4단계 상태 조회 |
-| `admin/index.html` | 80등급 이상 대시보드. 사용자/부서/보고서/가입대기 요약. 미확인 ERROR+ 카드는 100등급 이상만 표시(클릭→로그). 바로가기에 달란트 통계/QR 관리 포함 |
+| `admin/index.html` | 60등급 이상 대시보드. 사용자/부서/보고서/가입대기 요약. 미확인 ERROR+ 카드는 100등급 이상만 표시(클릭→로그). 바로가기에 달란트 통계/QR 관리 포함 |
 | `admin/users.html` | 60등급 이상 사용자 관리. 교사/학생 그룹별 분리(학생은 권한 열 제거). 관리 드롭다운. 통계 카드 모바일 3개씩 반응형. 가입 신청/부서 이동 요청/승인 처리. 페이징(모바일 5개/PC 10개) |
 | `admin/departments.html` | 60등급 이상 부서 관리. 관리 드롭다운(소속보기/수정/삭제). 부서별 인원(교사 전체 포함)/담당자 확인 |
 | `admin/managers.html` | 80등급 이상 관리자 계열 권한 관리. 수정만 가능 |
 | `admin/talents.html` | 40등급 이상 달란트 처리. 출석 버튼+관리 드롭다운(달란트 지급/상세). 잔여 달란트→달란트 명칭 변경. 사용/누적 달란트 모바일 숨김. 모바일 10/PC 20 페이징. 수동 적립은 100등급(관리자)만 표시 |
 | `admin/talent-stats.html` | 60등급 이상 달란트 누적적립 통계. 라디오 이모지+칩 스타일. 부서별/사용자별: 달란트/항목 라벨, 비율 그래프. 부서별 상세: 전체 대비 비율 pct-bar. 사용자별 상세: 항목명→수령수→달란트→비율 순서, 비율 pct-bar. 라디오 필터, 부서 필터, 기간 프리셋 |
-| `admin/talent-items.html` | 90등급 이상 달란트 지급 항목 관리. ⚡퀵 버튼 지정(유형별 1개) |
+| `admin/talent-items.html` | 60등급 이상 달란트 지급 항목 관리. 지급 규칙/설명 관리, ⚡퀵 버튼 지정은 80등급 이상 |
 | `admin/talent-qr.html` | 90등급 이상 QR 코드 생성(qrcode.js 이미지)/수정(새 코드 재생성)/비활성화. 지급 대상(학생/교사) 구분, 유효기간 라디오(지정일/기간/무기한), 반복 수령(none/daily/weekday/week_weekday), 위치 제한(카카오맵 API, 반경 500m~5km, Geolocation 검증). 검색/필터(대상/조건), 날짜 from-to 범위 필터(초기값 오늘, 오늘/1주/1달/1년 프리셋) |
 | `admin/shop.html` | 60등급 이상 상품 관리. 교사/학생 그룹별 분리+페이징(모바일 10/PC 20). 카테고리 열 맨 왼쪽, 대상 열 삭제. 관리 드롭다운(수정/삭제). 삭제는 소프트 삭제 |
 | `admin/purchases.html` | 60등급 이상 구매 관리. 상태별 상품 합계+일괄 처리 버튼(일괄 준비/구매 확정). 관리 드롭다운. 부서/기간 필터(기본 오늘) + 기간 프리셋, 4단계 구매 흐름 + 되돌리기(↩) |
@@ -94,7 +94,7 @@ flowchart LR
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
-| `js/` | 테마(`theme.js`), 네비게이션(`nav.js`), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
+| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 자동 호출 포함), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
 | `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서 |
 
 ## 4. 권한 구조
@@ -106,7 +106,8 @@ flowchart LR
 | 최고 관리자 | `admin` + `is_super_admin` | 110 | `index.html` | 관리자 포함 전체 사용자 관리, 시스템 설정, 보고서 초기화 |
 | 관리자 | `admin` | 100 | `index.html` | 전체 운영 관리, 페이지 접근/기능/감사/로그 관리 |
 | 전도사님 | `evangelist` | 90 | `index.html` | 달란트 항목/상품 삭제, 부서 즉시 이동, 전체 구매 처리 |
-| 부장 교사 | `chief` | 80 | `index.html` | 대시보드, 부서, 관리자, 보고서, 버전, 달란트 반환 |
+| 부장 교사 | `chief` | 80 | `index.html` | 대시보드, 부서, 관리자, 보고서, 버전, 달란트 반환 — txnId 기반 1회 제한 (사용자/관리자 관리 조회 전용) |
+| 구매 담당 교사 | `purchase_teacher` | 70 | `index.html` | 부서 담당 교사와 동일, 구매 관리에서 전체 부서 주문 처리 |
 | 부서 담당 교사 | `dept_teacher` | 60 | `index.html` | 담당 부서 사용자/달란트/상품/구매/Q&A 관리 |
 | 일반 교사 | `teacher` | 40 | `index.html` | 담당 부서/반 학생 달란트 처리, 대리 구매, 교사용/학생용 상점 |
 | 학생 | `student` | 20 | `index.html` | 내 달란트, 내 구매 상품, Q&A 질문, 학생용 상점, 구매 신청 |
@@ -123,6 +124,14 @@ flowchart LR
 | 페이지 접근 | `role_page_access` | `initPage()`에서 보조 확인. 페이지 최소 등급을 통과한 뒤 요소 숨김 설정을 적용 |
 | 페이지 기능 | `role_page_features` | 권한별 기능 설정값 관리 테이블. 현재 공통 런타임 차단은 `data-min-perm`, 직접 rank 체크, RLS/RPC가 담당 |
 | 데이터 접근 | Supabase RLS | 익명/저권한 직접 조회 제한 |
+
+네비게이션 배지 기준:
+
+| 배지 | 표시 위치 | 호출 권한 | 계산 기준 |
+|---|---|---:|---|
+| 관리 배지 | 관리 > 사용자 관리 | 60+ | 해당 계정이 처리 가능한 가입 신청 + 부서 이동 요청 수 |
+| 상품 배지 | 상품 > 구매 관리 | 60+ | 해당 계정이 처리 가능한 구매 건수. 구매 담당 교사는 전체 부서 주문 포함 |
+| 운영 배지 | 운영 > 로그 | 80+ 호출, 로그 화면 접근은 100+ | 미확인 ERROR/FATAL/CRITICAL 로그 수 |
 
 ## 5. 화면 연결 구조
 
@@ -146,12 +155,12 @@ flowchart TD
   Password -->|예| ChangePassword["admin/change-password.html"]
   Password -->|아니오| Home
 
-  Home --> AdminDash["admin/index.html<br/>80+"]
+  Home --> AdminDash["admin/index.html<br/>60+"]
   Home --> Users["admin/users.html<br/>60+"]
   Home --> Departments["admin/departments.html<br/>60+"]
   Home --> Managers["admin/managers.html<br/>80+"]
   Home --> Talents["admin/talents.html<br/>40+"]
-  Home --> TalentItems["admin/talent-items.html<br/>90+"]
+  Home --> TalentItems["admin/talent-items.html<br/>60+"]
   Home --> AdminShop["admin/shop.html<br/>60+"]
   Home --> Purchases["admin/purchases.html<br/>60+"]
   Home --> Reports["admin/reports.html<br/>80+"]
@@ -254,6 +263,10 @@ flowchart TD
   Users --> Delete["admin_delete_user RPC"]
   Users --> Transfer["부서 이동 요청/승인"]
 
+  Evangelist["90등급 이상"] --> BulkReg["admin/bulk-register.html"]
+  BulkReg --> ExcelUpload["엑셀 파일 업로드 → 양식 검증"]
+  BulkReg --> BulkCreate["admin_create_user RPC 반복 호출"]
+
   DeptManager["60등급 이상"] --> Departments["admin/departments.html"]
   Departments --> DeptCRUD["departments 등록/수정/비활성화"]
 
@@ -317,8 +330,8 @@ flowchart TD
 | 항목 | 내용 |
 |---|---|
 | 지급 방식 | 체크박스 선택 + 일괄 확정 |
-| 출석 버튼 | 테이블 각 행에 '출석' 버튼 → 클릭 즉시 출석 달란트 지급 (당일 중복 방지) |
-| 이미 지급된 항목 | 오늘/이번 주 지급 여부 자동 표시 |
+| 출석 버튼 | 테이블 각 행에 '출석' 버튼 → 클릭 즉시 출석 달란트 지급 (주간 중복 방지) |
+| 이미 지급된 항목 | 이번 주(월~일) 지급 여부 자동 표시 |
 | 반환 | 80등급(부장 교사) 이상, 사유 필수, 잔여 > 0일 때만 |
 | 지급자 기록 | `created_by` 필드에 지급자 ID 저장, 상세 모달에서 확인 |
 | 에러 처리 | RPC 성공/실패/거부 모두 activity_logs에 기록 |
@@ -355,6 +368,7 @@ flowchart TD
 | 권한 | 조회 범위 | 처리 범위 |
 |---|---|---|
 | 부서 담당 교사 | 담당 부서 신청 | 담당 부서 신청의 준비/구매 확정/지급 처리 |
+| 구매 담당 교사 | 전체 신청 | 전체 처리 가능 |
 | 부장 교사 | 전체 신청 | 담당 관리 부서 신청 처리 |
 | 전도사님 이상 | 전체 신청 | 전체 처리 가능 |
 
@@ -435,12 +449,12 @@ flowchart TD
 
 | 리소스 | 용도 |
 |---|---|
-| `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`) |
-| `user_preferences` | 사용자별 즐겨찾기 바로가기 설정 (JSONB), RLS 적용 |
+| `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`), 마지막 로그인(`last_login_at`) |
+| `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB)과 테마(`theme`), RLS 적용 |
 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | `registration_requests` | 가입 신청/승인/거부 |
 | `department_transfer_requests` | 부서 이동 요청/승인/거부 |
-| `talent_items` | 달란트 지급 항목 (학생용/교사용 구분) |
+| `talent_items` | 달란트 지급 항목 (학생용/교사용 구분), 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
 | `talent_transactions` | 달란트 적립/사용/반환 내역. `created_by`로 지급자 추적 |
 | `products` | 상점 상품 (학생용/교사용 구분) |
 | `product_orders` | 구매 신청/4단계 상태 관리/담당자 기록 |
@@ -460,6 +474,7 @@ flowchart TD
 | RPC | 목적 |
 |---|---|
 | `get_my_profile` | 로그인 사용자 프로필/권한 조회 |
+| `update_last_login` | 로그인 성공 시 `profiles.last_login_at` 갱신 |
 | `check_username_available` | 가입 신청 아이디 중복확인 |
 | `check_registration_status` | 미승인/거부 계정 로그인 안내 조회 |
 | `admin_list_users` | 사용자 목록 조회 |
@@ -490,7 +505,7 @@ flowchart TD
 13. 80등급 이상만 달란트 반환이 가능한지 확인한다.
 14. 부서 이동이 수정 모달이 아닌 부서 이동 버튼으로만 되는지 확인한다.
 15. 60등급 이상이 `admin/users.html`, `admin/shop.html`, `admin/purchases.html`을 사용할 수 있는지 확인한다.
-16. 80등급 이상이 대시보드, 관리자, 보고서, 버전 화면을 사용할 수 있는지 확인한다.
+16. 60등급 이상이 대시보드를, 80등급 이상이 관리자, 보고서, 버전 화면을 사용할 수 있는지 확인한다.
 17. 100등급 이상만 `admin/page-access.html`, `admin/page-features.html`, `admin/audit.html`, `admin/logs.html`에 접근 가능한지 확인한다.
 18. `qna.html`에서 공개 FAQ, 로그인 질문 등록, 60등급 이상 댓글(답변)/FAQ 등록/직접 FAQ 추가, 90등급 이상 삭제가 동작하는지 확인한다.
 19. 아이디가 관리자에게만 표시되고 일반 사용자는 본인 것만 보이는지 확인한다.
@@ -514,3 +529,38 @@ flowchart TD
 | 11 | `docs/TASK-035_qna_comments.sql` | Q&A 댓글 테이블/RLS 및 삭제 권한 수정 |
 | 12 | `docs/TASK-039_user_preferences.sql` | `user_preferences` 테이블 (즐겨찾기 DB 저장), RLS 정책 |
 | 13 | `docs/TASK-047_activity_logs_grants.sql` | 운영 DB `activity_logs` INSERT 권한/정책 복구 SQL |
+| 14 | `docs/TASK-048_schema.sql` | v3.36.0: talent_items 컬럼, purchase_teacher CHECK 제약 |
+| 15 | `docs/TASK-049_schema.sql` | v3.37.0: profiles.last_login_at, update_last_login RPC |
+
+## 18. 개발 주의사항
+
+### 파일 인코딩
+
+모든 소스 파일은 **UTF-8 (BOM 없음)**. PowerShell의 `Set-Content`, `Out-File`, `>` 리다이렉션은 인코딩을 변환하므로 **사용 금지**. 대량 치환은 `[System.IO.File]::ReadAllBytes` / `WriteAllBytes` 조합만 허용.
+
+### Git 머지 충돌
+
+충돌 마커(`<<<<<<<`, `=======`, `>>>>>>>`)가 남으면 HTML 파싱 실패 → 사이트 전체 동작 불가. 머지 후 반드시 전 파일 마커 검색 필수.
+
+### 신규 Admin 페이지 생성 시 필수 스크립트
+
+`admin/*.html` 신규 페이지를 만들 때 아래 순서를 반드시 지킨다. **순서가 틀리거나 누락되면 세션 인식 실패 → 로그인 리다이렉트 무한 루프 발생.**
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../config/public-config.js?v=VERSION"></script>
+<script src="../js/supabase-config.js?v=VERSION"></script>
+<script src="../js/activity-log.js?v=VERSION"></script>   <!-- auth.js보다 먼저! -->
+<script src="../js/auth.js?v=VERSION"></script>
+<script src="../js/theme.js?v=VERSION"></script>
+<script src="../js/nav.js?v=VERSION"></script>
+```
+
+인라인 `<script>` 첫 줄에 `initSupabase();` 호출 필수. 누락 시 `_sb=null` → `loadAuthSession()` 즉시 null 반환.
+
+| 체크 항목 | 누락 시 증상 |
+|-----------|-------------|
+| Supabase CDN | `window.supabase` 미정의 → initSupabase 실패 |
+| public-config.js | Supabase URL/Key 로드 불가 |
+| activity-log.js 순서 | loadAuthSession 미정의 → initPage 에러 |
+| initSupabase() | _sb=null → 세션 인식 불가 → 리다이렉트 |

@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.35.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.35.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -48,7 +48,7 @@
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">사용자 목록</div>
         <div class="filters" style="flex-wrap:wrap;gap:0.4rem;">
-          <select id="deptFilter" style="padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:#fff;" onchange="onDeptFilterChange()">
+          <select id="deptFilter" style="padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:var(--t-input-bg, #fff);" onchange="onDeptFilterChange()">
             <option value="">전체 부서</option>
           </select>
           <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()" data-testid="user-add-button">+ 사용자 등록</button>
@@ -181,14 +181,14 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.35.0"></script>
-  <script src="../js/supabase-config.js?v=3.35.0"></script>
-  <script src="../js/activity-log.js?v=3.35.0"></script>
-  <script src="../js/auth.js?v=3.35.0"></script>
-  <script src="../js/theme.js?v=3.35.0"></script>
-  <script src="../js/nav.js?v=3.35.0"></script>
-  <script src="../js/user-mgmt.js?v=3.35.0"></script>
-  <script src="../js/version.js?v=3.35.0"></script>
+  <script src="../config/public-config.js?v=3.39.0"></script>
+  <script src="../js/supabase-config.js?v=3.39.0"></script>
+  <script src="../js/activity-log.js?v=3.39.0"></script>
+  <script src="../js/auth.js?v=3.39.0"></script>
+  <script src="../js/theme.js?v=3.39.0"></script>
+  <script src="../js/nav.js?v=3.39.0"></script>
+  <script src="../js/user-mgmt.js?v=3.39.0"></script>
+  <script src="../js/version.js?v=3.39.0"></script>
   <script>
     initSupabase();
     let session;
@@ -248,21 +248,22 @@
       let transfers = trfRes.data || [];
 
       const myManagedDept = session.managedDeptId || session.departmentId;
+      const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
 
       if (!session.isSuperAdmin) {
         users = users.filter(u => !u.is_super_admin);
       }
 
-      if (myRank < 90) {
-        if (myManagedDept) {
-          users = users.filter(u => u.department_id === myManagedDept);
+      if (myRank < 80) {
+        if (myDepts.size > 0) {
+          users = users.filter(u => myDepts.has(u.department_id));
         } else {
           users = [];
         }
       }
 
       if (myRank < 80) {
-        reqs = myManagedDept ? reqs.filter(r => r.department_id === myManagedDept) : [];
+        reqs = myDepts.size > 0 ? reqs.filter(r => myDepts.has(r.department_id)) : [];
       }
 
       if (myRank >= 90) {
@@ -270,7 +271,7 @@
       } else if (myRank >= 80) {
         // 부장 교사: 모든 이동 요청 표시 (처리는 관리 부서만)
       } else if (myRank >= 60) {
-        transfers = myManagedDept ? transfers.filter(t => t.to_department_id === myManagedDept) : [];
+        transfers = myDepts.size > 0 ? transfers.filter(t => myDepts.has(t.to_department_id)) : [];
       } else {
         transfers = [];
       }
@@ -288,11 +289,12 @@
       renderTransfers();
     }
 
-    const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'dept_teacher'];
+    const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'purchase_teacher', 'dept_teacher'];
 
     const PERM_LEVELS = [
       { value: 'teacher', label: '일반 교사', rank: 40 },
       { value: 'dept_teacher', label: '부서 담당 교사', rank: 60 },
+      { value: 'purchase_teacher', label: '구매 담당 교사', rank: 70 },
       { value: 'chief', label: '부장 교사', rank: 80 },
       { value: 'evangelist', label: '전도사님', rank: 90 },
       { value: 'admin', label: '관리자', rank: 100 }
@@ -306,8 +308,8 @@
 
     function updateStats() {
       document.getElementById('cntAll').textContent = allUsers.length;
-      document.getElementById('cntAdmin').textContent = allUsers.filter(u => u.permission_level === 'admin').length;
-      document.getElementById('cntMgr').textContent = allUsers.filter(u => DEPT_MGR_LEVELS.includes(u.permission_level)).length;
+      document.getElementById('cntAdmin').textContent = allUsers.filter(u => ['admin','evangelist'].includes(u.permission_level)).length;
+      document.getElementById('cntMgr').textContent = allUsers.filter(u => ['chief','purchase_teacher','dept_teacher'].includes(u.permission_level)).length;
       document.getElementById('cntTeacher').textContent = allUsers.filter(u => u.user_type === 'teacher').length;
       document.getElementById('cntStudent').textContent = allUsers.filter(u => u.user_type === 'student').length;
     }
@@ -361,6 +363,12 @@
     function populateDeptFilter() {
       const sel = document.getElementById('deptFilter');
       if (!sel) return;
+      const myRank = session.permissionRank || 0;
+      if (myRank < 80) {
+        sel.style.display = 'none';
+        return;
+      }
+      sel.style.display = '';
       sel.innerHTML = '<option value="">전체 부서</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
@@ -467,10 +475,43 @@
     }
 
     function canManageUser(user) {
+      //if (!user) return false;
+      //const myRank = session.permissionRank || 0;
+      //if (myRank <= 80) return false;
+      //if (user.id === session.id) return true;
+      //if (isProtectedSuperAdminUser(user)) return false;
+      //return myRank > getPermRank(user.permission_level, false);
+
+
       if (!user) return false;
+
+      const myRank = session.permissionRank || 0;
+      const myManagedDept = session.managedDeptId || session.departmentId;
+
+      // 사용자 관리 접근 권한 미만은 관리 불가
+      if (myRank < 80) return false;
+
+      // 최고관리자 보호
+      if (user.id !== session.id && isProtectedSuperAdminUser(user)) return false;
+
+      // 본인 수정 허용
       if (user.id === session.id) return true;
-      if (isProtectedSuperAdminUser(user)) return false;
-      return (session.permissionRank || 0) > getPermRank(user.permission_level, false);
+
+      const targetRank = getPermRank(user.permission_level, false);
+
+      // 자기와 같거나 높은 권한은 수정 불가
+      if (myRank <= targetRank) return false;
+
+      // 부장 교사(rank 80)는 담당 부서 범위 안에서만 수정 가능
+      if (myRank === 80) {
+        return !!myManagedDept && (
+          user.department_id === myManagedDept ||
+          user.managed_dept_id === myManagedDept
+        );
+      }
+
+      // 전도사님 이상(rank 90+)은 자기보다 낮은 권한 수정 가능
+      return true;
     }
 
     async function refreshUserProtection(user) {
@@ -516,7 +557,7 @@
       const permLabel = PERMISSION_LABELS[perm] || perm;
       const permEmoji = PERMISSION_EMOJI[perm] || '';
       const typeLabel = TYPE_LABELS[u.user_type] || u.user_type;
-      const lastLogin = u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '없음';
+      const lastLogin = u.last_login_at ? formatKSTShort(u.last_login_at) : (u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '없음');
 
       let regInfo = '';
       try {
@@ -596,7 +637,7 @@
       document.getElementById('detailModal').classList.remove('hidden');
     }
 
-    const MGMT_LEVELS = ['dept_teacher','chief','evangelist','admin'];
+    const MGMT_LEVELS = ['purchase_teacher','dept_teacher','chief','evangelist','admin'];
 
     function onUserTypeChange() {
       const ut = document.getElementById('mUserType').value;
@@ -625,8 +666,15 @@
       document.getElementById('mDisplayName').value = '';
       document.getElementById('mUserType').value = 'student';
       document.getElementById('permLevelWrap').style.display = 'none';
-      document.getElementById('mDept').value = '';
-      document.getElementById('mDept').disabled = false;
+      const myRank = session.permissionRank || 0;
+      const deptSel = document.getElementById('mDept');
+      if (myRank >= 90) {
+        deptSel.disabled = false;
+      } else {
+        const myDeptId = session.managedDeptId || session.departmentId || '';
+        deptSel.value = myDeptId;
+        deptSel.disabled = true;
+      }
       document.getElementById('mClassNumber').value = '';
       document.getElementById('mClassNumber').disabled = false;
       document.getElementById('classWrap').style.display = 'none';
@@ -738,11 +786,11 @@
         return;
       }
       const myRank = session.permissionRank || 0;
-      const myManagedDept = session.managedDeptId || session.departmentId;
+      const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
       const tbody = document.getElementById('reqList');
       tbody.innerHTML = allRequests.map(r => {
         const rb = ROLE_BADGES[badgeKeyForUser({ permission_level: r.permission_level || 'student', user_type: r.user_type })] || ROLE_BADGES.student;
-        const canProcess = myRank >= 90 || (r.department_id === myManagedDept);
+        const canProcess = myRank >= 90 || myDepts.has(r.department_id);
         return `<tr>
           <td><span class="level-badge ${rb.cls}">${rb.emoji} ${rb.label}</span></td>
           <td>${r.display_name}</td>
@@ -892,9 +940,9 @@
         tbody.innerHTML = '<tr><td colspan="6" class="empty-state">대기 중인 부서 이동 요청이 없습니다.</td></tr>';
         return;
       }
-      const myManagedDept = session.managedDeptId || session.departmentId;
+      const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
       tbody.innerHTML = allTransfers.map(t => {
-        const canApprove = myRank >= 90 || (t.to_department_id === myManagedDept);
+        const canApprove = myRank >= 90 || myDepts.has(t.to_department_id);
         return `<tr>
           <td><strong>${t.display_name || t.username}</strong></td>
           <td>${getDeptName(t.from_department_id)}</td>

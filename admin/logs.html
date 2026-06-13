@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로그 관리 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.35.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.35.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -42,8 +42,8 @@
             <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('month')">1달</button>
             <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('year')">1년</button>
           </span>
-          <button class="btn-ack admin-only-btn" style="margin-left:0.5rem;display:none;" onclick="deleteByRange()">범위 삭제 대기</button>
-          <button class="btn-ack admin-only-btn" style="background:#d63031;display:none;" onclick="deleteSelectedLogs()" id="btnDeleteLogs" disabled>선택 삭제 대기</button>
+          <button class="btn-ack admin-only-btn" style="margin-left:0.5rem;display:none;" onclick="deleteByRange()">범위 삭제</button>
+          <button class="btn-ack admin-only-btn" style="background:#d63031;display:none;" onclick="deleteSelectedLogs()" id="btnDeleteLogs" disabled>선택 삭제</button>
           <button class="filter-btn admin-only-btn" onclick="toggleDeletedView()" id="btnToggleDeleted" style="margin-left:0.3rem;display:none;">🗑️ 삭제 대기 목록</button>
         </div>
       </div>
@@ -102,12 +102,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.35.0"></script>
-  <script src="../js/supabase-config.js?v=3.35.0"></script>
-  <script src="../js/activity-log.js?v=3.35.0"></script>
-  <script src="../js/auth.js?v=3.35.0"></script>
-  <script src="../js/theme.js?v=3.35.0"></script>
-  <script src="../js/nav.js?v=3.35.0"></script>
+  <script src="../config/public-config.js?v=3.39.0"></script>
+  <script src="../js/supabase-config.js?v=3.39.0"></script>
+  <script src="../js/activity-log.js?v=3.39.0"></script>
+  <script src="../js/auth.js?v=3.39.0"></script>
+  <script src="../js/theme.js?v=3.39.0"></script>
+  <script src="../js/nav.js?v=3.39.0"></script>
   <script>
     initSupabase();
     let session;
@@ -392,27 +392,70 @@
       if (dateFrom > dateTo) { alert('시작 날짜가 끝 날짜보다 클 수 없습니다.'); return; }
       const fromStr = dateFrom + 'T00:00:00+09:00';
       const toStr = dateTo + 'T23:59:59+09:00';
+      const ERROR_PLUS = ['ERROR', 'FATAL', 'CRITICAL'];
+      const levelLabel = selectedLevels.length > 0
+        ? (selectedLevels.length === 1 ? selectedLevels[0] : selectedLevels.join(', '))
+        : null;
       try {
-        let countQuery = _sb.from('activity_logs')
-          .select('*', { count: 'exact', head: true })
-          .gte('created_at', fromStr).lte('created_at', toStr);
-        try { countQuery = countQuery.or('is_deleted.is.null,is_deleted.eq.false'); } catch(e) {}
-        const { count, error: cntErr } = await countQuery;
-        if (cntErr && /column|schema cache/i.test(cntErr.message)) {
-          alert(_SOFT_DEL_COL_ERR || 'DB에 삭제 관리 컬럼이 없습니다.\nSupabase SQL Editor에서 docs/TASK-023_fixes.sql 을 실행해주세요.');
-          return;
+        let count = 0;
+        if (selectedLevels.length === 0) {
+          let countQuery = _sb.from('activity_logs')
+            .select('*', { count: 'exact', head: true })
+            .gte('created_at', fromStr).lte('created_at', toStr);
+          try { countQuery = countQuery.or('is_deleted.is.null,is_deleted.eq.false'); } catch(e) {}
+          countQuery = countQuery.or('level.not.in.(ERROR,FATAL,CRITICAL),is_acknowledged.eq.true');
+          const { count: c, error: cntErr } = await countQuery;
+          if (cntErr && /column|schema cache/i.test(cntErr.message)) {
+            alert(_SOFT_DEL_COL_ERR || 'DB에 삭제 관리 컬럼이 없습니다.\nSupabase SQL Editor에서 docs/TASK-023_fixes.sql 을 실행해주세요.');
+            return;
+          }
+          count = c || 0;
+        } else {
+          for (const lvl of selectedLevels) {
+            let countQuery = _sb.from('activity_logs')
+              .select('*', { count: 'exact', head: true })
+              .gte('created_at', fromStr).lte('created_at', toStr)
+              .eq('level', lvl);
+            try { countQuery = countQuery.or('is_deleted.is.null,is_deleted.eq.false'); } catch(e) {}
+            if (ERROR_PLUS.includes(lvl)) countQuery = countQuery.eq('is_acknowledged', true);
+            const { count: c, error: cntErr } = await countQuery;
+            if (cntErr && /column|schema cache/i.test(cntErr.message)) {
+              alert(_SOFT_DEL_COL_ERR || 'DB에 삭제 관리 컬럼이 없습니다.\nSupabase SQL Editor에서 docs/TASK-023_fixes.sql 을 실행해주세요.');
+              return;
+            }
+            count += c || 0;
+          }
         }
         if (!count || count === 0) { alert('해당 범위에 삭제할 로그가 없습니다.'); return; }
-        if (!confirm(dateFrom + ' ~ ' + dateTo + ' 기간의 로그 ' + count + '건을 삭제 대기 상태로 변경하시겠습니까?')) return;
-        const result = await deleteLogsByDateRange(fromStr, toStr);
-        if (result.error) {
-          await logError('LOG_RANGE_DELETE_FAIL', { dateFrom, dateTo, 오류: result.error });
-          alert('실패:\n\n' + tErr(result.error));
-          return;
+        const confirmMsg = levelLabel
+          ? dateFrom + ' ~ ' + dateTo + ' 기간의 [' + levelLabel + '] 로그 ' + count + '건을 삭제 대기 상태로 변경하시겠습니까?'
+          : dateFrom + ' ~ ' + dateTo + ' 기간의 로그 ' + count + '건을 삭제 대기 상태로 변경하시겠습니까?';
+        if (!confirm(confirmMsg)) return;
+
+        let totalDeleted = 0;
+        if (selectedLevels.length === 0) {
+          const result = await deleteLogsByDateRange(fromStr, toStr, { excludeUnacknowledged: true });
+          if (result.error) {
+            await logError('LOG_RANGE_DELETE_FAIL', { dateFrom, dateTo, 오류: result.error });
+            alert('실패:\n\n' + tErr(result.error));
+            return;
+          }
+          totalDeleted = result.count || 0;
+        } else {
+          for (const lvl of selectedLevels) {
+            const opts = { level: lvl };
+            if (ERROR_PLUS.includes(lvl)) opts.excludeUnacknowledged = true;
+            const result = await deleteLogsByDateRange(fromStr, toStr, opts);
+            if (result.error) {
+              await logError('LOG_RANGE_DELETE_FAIL', { dateFrom, dateTo, level: lvl, 오류: result.error });
+              alert('실패:\n\n' + tErr(result.error));
+              return;
+            }
+            totalDeleted += result.count || 0;
+          }
         }
-        const deleted = result.count || count;
-        await logInfo('LOG_RANGE_DELETE', { dateFrom, dateTo, 건수: deleted });
-        alert(deleted + '건의 로그가 삭제 대기 상태로 변경되었습니다.\n\n실제 삭제는 관리자가 SQL로 직접 수행합니다.');
+        await logInfo('LOG_RANGE_DELETE', { dateFrom, dateTo, level: levelLabel || 'ALL', 건수: totalDeleted });
+        alert(totalDeleted + '건의 로그가 삭제 대기 상태로 변경되었습니다.\n\n실제 삭제는 관리자가 SQL로 직접 수행합니다.');
         await loadAll();
       } catch (err) {
         await logError('LOG_RANGE_DELETE_ERROR', { dateFrom, dateTo, 오류: String(err) });
@@ -471,7 +514,7 @@
     function updateLogDeleteBtn() {
       const checked = document.querySelectorAll('.log-chk:checked').length;
       document.getElementById('btnDeleteLogs').disabled = checked === 0;
-      document.getElementById('btnDeleteLogs').textContent = checked > 0 ? '선택 삭제 대기 (' + checked + ')' : '선택 삭제 대기';
+      document.getElementById('btnDeleteLogs').textContent = checked > 0 ? '선택 삭제 (' + checked + ')' : '선택 삭제';
     }
 
     async function deleteSelectedLogs() {
@@ -564,6 +607,6 @@
       toggleDeletedView();
     }
   </script>
-  <script src="../js/version.js?v=3.35.0"></script>
+  <script src="../js/version.js?v=3.39.0"></script>
 </body>
 </html>

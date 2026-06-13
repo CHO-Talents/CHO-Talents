@@ -7,17 +7,17 @@ function fmtNum(n) { return n == null ? '0' : Number(n).toLocaleString(); }
 
 const PERMISSION_RANK = {
   admin: 100, evangelist: 90, chief: 80,
-  dept_teacher: 60, teacher: 40, student: 20
+  purchase_teacher: 70, dept_teacher: 60, teacher: 40, student: 20
 };
 
 const PERMISSION_LABELS = {
   admin: '관리자', evangelist: '전도사님', chief: '부장 교사',
-  dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
+  purchase_teacher: '구매 담당 교사', dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
 };
 
 const PERMISSION_EMOJI = {
   admin: '👑', evangelist: '✝️', chief: '📋',
-  dept_teacher: '👩‍🏫', teacher: '👨‍🏫', student: '🎒'
+  purchase_teacher: '🛒', dept_teacher: '👩‍🏫', teacher: '👨‍🏫', student: '🎒'
 };
 
 const TYPE_LABELS = { teacher: '교사', student: '학생' };
@@ -26,6 +26,7 @@ const PERMISSION_REDIRECT = {
   admin: 'index.html',
   evangelist: 'index.html',
   chief: 'index.html',
+  purchase_teacher: 'index.html',
   dept_teacher: 'index.html',
   teacher: 'index.html',
   student: 'index.html'
@@ -143,6 +144,7 @@ async function login(username, password) {
     });
 
     await logInfo('LOGIN_SUCCESS', { 대상: username, permissionLevel: perm });
+    try { await _sb.rpc('update_last_login'); } catch(e) {}
     return { success: true, data: profile };
   } catch (err) {
     await logError('LOGIN_ERROR', { 대상: username, 오류: String(err) });
@@ -172,6 +174,7 @@ async function logout(loginPath) {
     await _sb.auth.signOut();
   }
   clearSession();
+  if (typeof applyTheme === 'function') applyTheme('default');
   window.location.href = loginPath || '../login.html';
 }
 

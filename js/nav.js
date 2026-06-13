@@ -44,6 +44,7 @@ const NAV_MENU = [
     items: [
       { href: 'admin/index.html', label: '대시보드', minPerm: 60 },
       { href: 'admin/users.html', label: '사용자 관리', minPerm: 60, id: 'navUsers', badgeId: 'navUserBadge' },
+      { href: 'admin/bulk-register.html', label: '학생 일괄 등록', minPerm: 80 },
       { href: 'admin/managers.html', label: '관리자 관리', minPerm: 80 },
       { href: 'admin/departments.html', label: '부서 관리', minPerm: 60 }
     ]
@@ -55,7 +56,7 @@ const NAV_MENU = [
     items: [
       { href: 'admin/page-access.html', label: '페이지 접근', minPerm: 100 },
       { href: 'admin/page-features.html', label: '페이지 기능', minPerm: 100 },
-      { href: 'docs/page-permission-rules.html', label: '페이지 권한 룰', minPerm: 100 },
+      { href: 'docs/page-permission-rules.html', label: '페이지 권한 룰', minPerm: 80 },
       { href: 'admin/log-rules.html', label: '로그 작성 룰', minPerm: 80 },
       { href: 'admin/audit-rules.html', label: '작업 이력 작성 룰', minPerm: 80 },
       { href: 'admin/versions.html', label: '버전', minPerm: 80 },
@@ -244,6 +245,14 @@ function navUpdateAuth(session) {
 
     const rank = session.permissionRank || 0;
     if (typeof applyPermNav === 'function') applyPermNav(rank);
+
+    if (rank >= 60) {
+      if (typeof updatePendingBadge === 'function') updatePendingBadge();
+      if (typeof updateNavOrderBadge === 'function') updateNavOrderBadge();
+    }
+    if (rank >= 80) {
+      if (typeof updateLogBadge === 'function') updateLogBadge();
+    }
   } else {
     if (loginArea) loginArea.style.display = '';
     if (authArea) authArea.style.display = 'none';

@@ -21,24 +21,12 @@
 
 ## 실행 방법 A: SQL Editor
 
-Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql` 전체를 실행한다.
-
-실행 후 새 프로젝트 값으로 공개 설정을 갱신한다.
+Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql`을 열고, 상단 `0. Target Project Runtime Config` 블록의 공개 설정값을 새 프로젝트 기준으로 수정한 뒤 전체를 실행한다.
 
 ```sql
-UPDATE public.app_config
-SET key_value = 'https://YOUR_PROJECT_REF.supabase.co',
-    updated_at = now()
-WHERE env = 'production'
-  AND key_name = 'SUPABASE_URL';
-
-UPDATE public.app_config
-SET key_value = 'YOUR_PUBLISHABLE_OR_ANON_KEY',
-    updated_at = now()
-WHERE env = 'production'
-  AND key_name = 'SUPABASE_ANON_KEY';
-
-NOTIFY pgrst, 'reload schema';
+('production', 'SUPABASE_URL', 'https://YOUR_PROJECT_REF.supabase.co', false, true, ...),
+('production', 'SUPABASE_ANON_KEY', 'YOUR_PUBLISHABLE_OR_ANON_KEY', false, true, ...),
+('production', 'KAKAO_MAP_KEY', 'YOUR_KAKAO_MAP_JAVASCRIPT_KEY', false, true, ...)
 ```
 
 ## 실행 방법 B: PowerShell/psql
@@ -73,10 +61,10 @@ SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
 | 테이블 | 용도 | 새 DB 기본 데이터 |
 |---|---|---|
 | `departments` | 부서/반 관리 | `기본 부서` 1개 |
-| `profiles` | Supabase Auth 사용자 프로필, 권한, 달란트 잔액 | `admin_user` 최고 관리자 1명 |
+| `profiles` | Supabase Auth 사용자 프로필, 권한, 달란트 잔액, 마지막 로그인 | `admin_user` 최고 관리자 1명 |
 | `registration_requests` | 가입 신청 | 비움 |
 | `department_transfer_requests` | 부서 이동 신청/승인 | 비움 |
-| `talent_items` | 달란트 지급 항목 | 학생 8개, 교사 5개 |
+| `talent_items` | 달란트 지급 항목, 지급 규칙/설명 | 학생 8개, 교사 5개 |
 | `talent_transactions` | 달란트 적립/사용 이력 | 비움 |
 | `products` | 상품 목록 | 비움 |
 | `product_orders` | 상품 구매 신청/처리 | 비움 |
@@ -88,7 +76,7 @@ SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
 | `page_permissions` | 권한별 페이지 매트릭스 | 기본 권한표 |
 | `role_page_access` | 역할별 페이지 접근/요소 숨김 설정 | 비움, 기본 허용 |
 | `role_page_features` | 역할별 페이지 기능 설정 | 비움, 기본 허용 |
-| `user_preferences` | 사용자별 즐겨찾기 바로가기 설정 | 비움 |
+| `user_preferences` | 사용자별 즐겨찾기 바로가기와 테마 설정 | 비움 |
 | `talent_qr_codes` | 달란트 QR 코드 | 비움 |
 | `talent_qr_scans` | QR 수령 이력 | 비움 |
 | `app_config` | 공개 설정/비밀 참조 설정 | 공개 설정 7개, 비밀 참조 4개 |
@@ -100,6 +88,7 @@ SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
 | 학생 | 20 | 내 달란트, 상품 구매, 내 구매 상품, Q&A |
 | 일반 교사 | 40 | 담당 반 학생 달란트 지급, 대리 구매 |
 | 부서 담당 교사 | 60 | 담당 부서 사용자/달란트/상품/구매 관리 |
+| 구매 담당 교사 | 70 | 부서 담당 교사와 동일 접근, 구매 관리에서 전체 부서 주문 처리 |
 | 부장 교사 | 80 | 보고서, 버전, 가입 승인, 부서 운영 관리 |
 | 전도사님 | 90 | 달란트 항목, QR, 페이지 접근/기능 설정 |
 | 관리자 | 100 | 로그, 권한 매트릭스, 전체 시스템 관리 |

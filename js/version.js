@@ -2,9 +2,98 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.35.0',
-  date: '2026-06-09',
+  current: '3.39.0',
+  date: '2026-06-12',
   history: [
+    {
+      version: '3.39.0',
+      date: '2026-06-12',
+      title: '학생 일괄 등록 + 로그 삭제 보호 강화 + 대시보드 모바일 레이아웃',
+      changes: [
+        '학생 일괄 등록: 엑셀 파일 업로드로 학생 계정 일괄 생성 (부장 교사 80+ 이상)',
+        '학생 일괄 등록: 양식 다운로드, 미리보기(검증), 등록 결과 표시',
+        '로그 범위 삭제: 전체 레벨 삭제 시에도 미확인 ERROR+ 로그 보호',
+        '대시보드: 모바일 stat 박스 한 줄 3개씩 자동 배치 (인라인 grid 제거)',
+        '네비게이션: 관리 메뉴에 학생 일괄 등록 추가 (80+)',
+        '즐겨찾기: 전체 메뉴 항목 추가 — 권한별로 달란트 항목, 관리자 관리, 보고서, 로그 등 표시'
+      ]
+    },
+    {
+      version: '3.38.1',
+      date: '2026-06-12',
+      title: '네비게이션 배지 권한별 처리 가능 건수 표시',
+      changes: [
+        '관리 배지: 해당 계정이 승인 처리 가능한 가입 신청 + 부서 이동 건수 표시',
+        '상품 배지: 해당 계정이 처리 가능한 구매 건수 표시 (구매 담당 교사는 전체 부서)',
+        '운영 배지: ERROR+ 미확인 로그 건수 (부장 교사 80+ 이상에서 호출)',
+        '구매 담당 교사(purchase_teacher): 전체 부서 주문 카운트에 포함'
+      ]
+    },
+    {
+      version: '3.38.0',
+      date: '2026-06-12',
+      title: '달란트 반환 동기화 + 다크모드 UI 수정 + 배지 공통화',
+      changes: [
+        '달란트 지급: 다크모드에서 항목 배경 CSS 변수 적용 (--t-success-surface, --t-card)',
+        '달란트 상세: 반환 버튼을 트랜잭션 ID 기반으로 변경 — 1회만 반환 가능, 반환된 항목은 "반환됨" 표시',
+        '달란트 지급/상세: 취소·반환 시 txnId를 설명에 포함하여 상호 동기화',
+        '상품 구매: 대리 구매 모달 다크모드 대응 (배경, 검색 입력, 선택 표시, 드롭다운)',
+        '상품 구매: 구매 신청 비활성화 버튼 다크모드 대응',
+        '네비게이션 배지: navUpdateAuth에서 rank ≥ 60 시 자동 호출 — 모든 페이지에 공통 적용',
+        'CSS: --t-success-surface, --t-accent-surface 변수 추가 (라이트/다크 모드)'
+      ]
+    },
+    {
+      version: '3.37.0',
+      date: '2026-06-12',
+      title: '네비게이션 배지 + 구매 담당 교사 통합 + 로그 필터 삭제 + 마지막 로그인',
+      changes: [
+        '네비게이션: 달란트 통계, QR 관리, 로그 규칙, 감사 규칙, 비밀번호 변경 페이지에 배지 갱신 호출 추가',
+        '대시보드: 관리자 카드(admin+evangelist) 추가, 부서 담당 카드에 purchase_teacher 포함',
+        '사용자 관리: 관리자 카드 = admin+evangelist, 부서 담당 = chief+purchase_teacher+dept_teacher',
+        '관리자 관리: DEPT_MGR_LEVELS에 purchase_teacher 추가, 구매 담당 필터 버튼 추가',
+        '부서 관리: PERM_RANK_MAP에 purchase_teacher(70) 추가 — 소속보기 정렬 정상화',
+        '페이지 접근: ROLE_LIST에 purchase_teacher 추가',
+        '페이지 기능: PERM_LIST에 purchase_teacher 추가',
+        '사용자 상세: last_login_at 컬럼 기반 마지막 로그인 표시 (로그 삭제와 무관)',
+        '로그인: update_last_login RPC 호출로 profiles.last_login_at 갱신',
+        '로그: 버튼명 변경 (범위 삭제 대기→범위 삭제, 선택 삭제 대기→선택 삭제)',
+        '로그: 범위 삭제 시 현재 필터 레벨만 대상, ERROR+ 미확인 로그 제외',
+        'DB: docs/TASK-049_schema.sql (profiles.last_login_at, update_last_login RPC)'
+      ]
+    },
+    {
+      version: '3.36.1',
+      date: '2026-06-10',
+      title: '구매 담당 교사 등록 폼 반영 + UTF-8 인코딩 보존 룰 + 문서 보완',
+      changes: [
+        '사용자 관리: PERM_LEVELS에 구매 담당 교사(70) 항목 추가 — 등록/수정 폼에서 선택 가능',
+        '관리자 관리: PERM_LEVELS·MGMT_LEVELS에 구매 담당 교사 추가 — 등록/수정 시 담당 부서 할당 가능',
+        'UTF-8 인코딩 보존 룰(.cursor/rules/utf8-encoding.mdc) 생성 — PowerShell Set-Content 사용 금지 명시',
+        'README.md: 개발 시 주의사항(인코딩, 머지 충돌) 섹션 추가',
+        'PROJECT_ARCHITECTURE_FLOW.md: 개발 주의사항 섹션 + TASK-048 참조 추가',
+        'page-permission-rules.html: 구매 담당 교사 등급(70) 추가, 부장 교사 조회 전용 명시, 구매 관리 스코핑 업데이트'
+      ]
+    },
+    {
+      version: '3.36.0',
+      date: '2026-06-10',
+      title: '다크 테마 보강 + 구매 담당 교사 권한 + 달란트 항목 설명 필드 + 부장 교사 조회 전용',
+      changes: [
+        '다크 모드: 달란트 관리 부서 필터, 사용자 관리 부서 필터, 상품 등록/수정 모달, 부서 수정 모달, 달란트 통계 라디오/카드 배경을 어두운 표면색으로 보정',
+        '테마: 로그아웃 시 기본(일반) 테마로 리셋, 로그인 시 계정에 저장된 테마를 DB에서 로드하여 적용',
+        '부장 교사(80): 사용자 관리, 관리자 관리 페이지에서 모든 부서 조회 가능하되 관리 기능(수정/삭제/비밀번호 초기화) 숨김',
+        '달란트 통계: 부서 필터 옵션 순서를 전체 → 1부~5부 → 예배부로 고정 정렬',
+        '달란트 항목 관리: 등록/수정 모달에 달란트 지급 규칙, 달란트 지급 설명 텍스트 입력 필드 추가',
+        '달란트 적립: talent_items의 giving_rule과 giving_description을 항목 카드에 동적 반영',
+        '신규 권한: 구매 담당 교사(purchase_teacher, 등급 70) - dept_teacher와 동일 접근 권한이나 구매 관리에서 모든 부서 주문 관리 가능',
+        '사용자 등록: 전도사님(90+)만 모든 부서 선택 가능, 부장 교사(80) 이하는 본인 담당 부서로만 등록 제한',
+        '부서 필터: 모든 페이지에서 부장 교사(80+) 이상만 표시',
+        '로그/작업 이력 룰: 테이블 overflow-x 및 word-break 보정',
+        'DB: talent_items giving_rule/giving_description 컬럼, purchase_teacher 권한 CHECK 제약 추가 (docs/TASK-048_schema.sql)',
+        '문서/가이드: README, 사용자 안내서, 구성도 권한 표에 구매 담당 교사 반영'
+      ]
+    },
     {
       version: '3.35.0',
       date: '2026-06-09',

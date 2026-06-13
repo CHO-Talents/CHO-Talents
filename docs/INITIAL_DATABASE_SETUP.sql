@@ -21,6 +21,35 @@ CREATE SCHEMA IF NOT EXISTS extensions;
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
 
 -- ============================================================
+-- 0. Target Project Runtime Config
+-- ============================================================
+-- 새 Supabase 프로젝트에 실행하기 전에 아래 공개 설정값을 새 프로젝트 기준으로 수정하세요.
+-- 비밀 토큰 원문은 넣지 말고 env:... 참조값만 유지합니다.
+
+CREATE TEMP TABLE cho_install_runtime_config (
+  env text NOT NULL,
+  key_name text NOT NULL,
+  key_value text,
+  is_secret boolean NOT NULL DEFAULT false,
+  use_yn boolean NOT NULL DEFAULT true,
+  description text
+) ON COMMIT DROP;
+
+INSERT INTO cho_install_runtime_config (env, key_name, key_value, is_secret, use_yn, description)
+VALUES
+  ('production', 'SUPABASE_URL', 'https://YOUR_PROJECT_REF.supabase.co', false, true, '브라우저 Supabase 클라이언트 부트스트랩 URL'),
+  ('production', 'SUPABASE_ANON_KEY', 'YOUR_PUBLISHABLE_OR_ANON_KEY', false, true, '브라우저 공개 publishable/anon key. RLS/RPC로 권한 제한'),
+  ('production', 'SUPABASE_AUTH_EMAIL_DOMAIN', '@cho-talents.app', false, true, '아이디 로그인용 내부 이메일 도메인'),
+  ('production', 'KAKAO_MAP_KEY', 'YOUR_KAKAO_MAP_JAVASCRIPT_KEY', false, true, '카카오 지도 JavaScript 공개 키'),
+  ('production', 'GITHUB_OWNER', 'CHO-Talents', false, true, 'GitHub 저장소 owner 메타데이터'),
+  ('production', 'GITHUB_REPO', 'CHO-Talents', false, true, 'GitHub 저장소 이름 메타데이터'),
+  ('production', 'GITHUB_BRANCH', 'develop', false, true, '기본 배포/형상관리 브랜치 메타데이터'),
+  ('production', 'GITHUB_PAT', 'env:GITHUB_PAT', true, false, '비밀 원문 저장 금지. 로컬 .env.local 또는 Edge Function 환경변수에 저장'),
+  ('production', 'SUPABASE_ACCESS_TOKEN', 'env:SUPABASE_ACCESS_TOKEN', true, false, '비밀 원문 저장 금지. Supabase CLI/Management API 실행 환경변수에 저장'),
+  ('production', 'SUPABASE_SERVICE_ROLE_KEY', 'env:SUPABASE_SERVICE_ROLE_KEY', true, false, '서버 전용 키. Edge Function/서버 환경변수 또는 Supabase Vault에 저장'),
+  ('production', 'SUPABASE_DB_CONNECTION_STRING', 'env:SUPABASE_DB_CONNECTION_STRING', true, false, 'DB 관리/마이그레이션 전용. 로컬/CI 비밀 저장소에서만 사용');
+
+-- ============================================================
 -- 1. Core Tables
 -- ============================================================
 
@@ -45,9 +74,10 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   is_first_login boolean DEFAULT true,
   user_type text NOT NULL DEFAULT 'student' CHECK (user_type IN ('teacher', 'student')),
   permission_level text NOT NULL DEFAULT 'student'
-    CHECK (permission_level IN ('admin','evangelist','chief','dept_teacher','teacher','student')),
+    CHECK (permission_level IN ('admin','evangelist','chief','purchase_teacher','dept_teacher','teacher','student')),
   is_super_admin boolean DEFAULT false,
   class_number integer,
+  last_login_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT profiles_username_unique UNIQUE (username)
@@ -65,7 +95,7 @@ CREATE TABLE IF NOT EXISTS public.registration_requests (
   reviewed_at timestamptz,
   user_type text NOT NULL DEFAULT 'student' CHECK (user_type IN ('teacher', 'student')),
   permission_level text NOT NULL DEFAULT 'student'
-    CHECK (permission_level IN ('admin','evangelist','chief','dept_teacher','teacher','student')),
+    CHECK (permission_level IN ('admin','evangelist','chief','purchase_teacher','dept_teacher','teacher','student')),
   created_at timestamptz DEFAULT now()
 );
 
@@ -94,7 +124,10 @@ CREATE TABLE IF NOT EXISTS public.talent_items (
   sort_order integer DEFAULT 0,
   created_by uuid REFERENCES public.profiles(id),
   is_quick_button boolean DEFAULT false,
-  created_at timestamptz DEFAULT now()
+  giving_rule text,
+  giving_description text,
+  created_at timestamptz DEFAULT now(),
+  CONSTRAINT talent_items_amount_max100 CHECK (talent_amount <= 100)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_talent_items_target_name
   ON public.talent_items(target_type, name);
@@ -242,6 +275,7 @@ CREATE TABLE IF NOT EXISTS public.role_page_features (
 CREATE TABLE IF NOT EXISTS public.user_preferences (
   user_id uuid PRIMARY KEY REFERENCES public.profiles(id) ON DELETE CASCADE,
   favorite_shortcuts jsonb DEFAULT '["earn-talents","shop","my-talents"]'::jsonb,
+  theme text DEFAULT 'default' CHECK (theme IN ('default', 'dark', 'spring', 'summer', 'autumn', 'winter')),
   updated_at timestamptz DEFAULT now()
 );
 
@@ -269,7 +303,8 @@ CREATE TABLE IF NOT EXISTS public.talent_qr_codes (
   repeat_weeks integer[] DEFAULT NULL,
   is_active boolean DEFAULT true,
   created_by uuid REFERENCES public.profiles(id),
-  created_at timestamptz DEFAULT now()
+  created_at timestamptz DEFAULT now(),
+  CONSTRAINT talent_qr_codes_amount_max100 CHECK (amount <= 100)
 );
 
 CREATE TABLE IF NOT EXISTS public.talent_qr_scans (
@@ -309,6 +344,12 @@ CREATE INDEX IF NOT EXISTS idx_profiles_username ON public.profiles(username);
 CREATE INDEX IF NOT EXISTS idx_profiles_department ON public.profiles(department_id);
 CREATE INDEX IF NOT EXISTS idx_profiles_permission ON public.profiles(permission_level);
 CREATE INDEX IF NOT EXISTS idx_registration_status ON public.registration_requests(status, created_at);
+CREATE INDEX IF NOT EXISTS idx_department_transfer_requests_status
+  ON public.department_transfer_requests(status);
+CREATE INDEX IF NOT EXISTS idx_department_transfer_requests_created_at
+  ON public.department_transfer_requests(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_department_transfer_requests_user_id
+  ON public.department_transfer_requests(user_id);
 CREATE INDEX IF NOT EXISTS idx_talent_transactions_user ON public.talent_transactions(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_talent_transactions_item ON public.talent_transactions(talent_item_id);
 CREATE INDEX IF NOT EXISTS idx_products_active_target ON public.products(is_active, target_role);
@@ -316,14 +357,17 @@ CREATE INDEX IF NOT EXISTS idx_product_orders_user_status ON public.product_orde
 CREATE INDEX IF NOT EXISTS idx_product_orders_status ON public.product_orders(status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_qna_status ON public.qna(status, is_faq, is_deleted);
 CREATE INDEX IF NOT EXISTS idx_qna_comments_qna_id ON public.qna_comments(qna_id);
+CREATE INDEX IF NOT EXISTS idx_qna_comments_created_at ON public.qna_comments(created_at);
 CREATE INDEX IF NOT EXISTS idx_activity_logs_created ON public.activity_logs(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_activity_logs_level_ack ON public.activity_logs(level, is_acknowledged);
+CREATE INDEX IF NOT EXISTS idx_activity_logs_action_created ON public.activity_logs(action, created_at DESC);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_qr_codes_code_unique
   ON public.talent_qr_codes(code)
   WHERE code IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_qr_scans_qr_code ON public.talent_qr_scans(qr_code_id);
 CREATE INDEX IF NOT EXISTS idx_qr_scans_user ON public.talent_qr_scans(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON public.user_preferences(user_id);
+CREATE INDEX IF NOT EXISTS idx_app_config_env_use ON public.app_config(env, use_yn);
 CREATE INDEX IF NOT EXISTS idx_app_config_public ON public.app_config(env, key_name)
   WHERE is_secret = false AND use_yn = true;
 
@@ -341,6 +385,7 @@ BEGIN
     WHEN 'admin' THEN 100
     WHEN 'evangelist' THEN 90
     WHEN 'chief' THEN 80
+    WHEN 'purchase_teacher' THEN 70
     WHEN 'dept_teacher' THEN 60
     WHEN 'teacher' THEN 40
     WHEN 'student' THEN 20
@@ -440,6 +485,20 @@ BEGIN
   WHERE id = auth.uid();
 
   RETURN json_build_object('success', true);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.update_last_login()
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  UPDATE public.profiles
+  SET last_login_at = now(),
+      updated_at = now()
+  WHERE id = auth.uid();
 END;
 $$;
 
@@ -855,6 +914,10 @@ BEGIN
     v_actual_desc := COALESCE(NULLIF(p_description, ''), 'Manual');
   END IF;
 
+  IF v_actual_amount > 100 THEN
+    RETURN json_build_object('success', false, 'error', 'Amount cannot exceed 100');
+  END IF;
+
   UPDATE public.profiles
   SET talent_balance = COALESCE(talent_balance, 0) + v_actual_amount
   WHERE id = p_user_id
@@ -1125,9 +1188,9 @@ CREATE POLICY profiles_delete_perm ON public.profiles FOR DELETE USING (public.g
 DROP POLICY IF EXISTS rr_insert_public ON public.registration_requests;
 CREATE POLICY rr_insert_public ON public.registration_requests FOR INSERT WITH CHECK (true);
 DROP POLICY IF EXISTS rr_select_perm ON public.registration_requests;
-CREATE POLICY rr_select_perm ON public.registration_requests FOR SELECT USING (public.get_permission_rank(public.get_my_role()) >= 80);
+CREATE POLICY rr_select_perm ON public.registration_requests FOR SELECT USING (public.get_permission_rank(public.get_my_role()) >= 60);
 DROP POLICY IF EXISTS rr_update_perm ON public.registration_requests;
-CREATE POLICY rr_update_perm ON public.registration_requests FOR UPDATE USING (public.get_permission_rank(public.get_my_role()) >= 80);
+CREATE POLICY rr_update_perm ON public.registration_requests FOR UPDATE USING (public.get_permission_rank(public.get_my_role()) >= 60);
 DROP POLICY IF EXISTS rr_delete_perm ON public.registration_requests;
 CREATE POLICY rr_delete_perm ON public.registration_requests FOR DELETE USING (public.get_permission_rank(public.get_my_role()) >= 80);
 
@@ -1139,7 +1202,7 @@ CREATE POLICY dept_transfer_insert ON public.department_transfer_requests FOR IN
   WITH CHECK (public.get_permission_rank(auth.uid()) >= 60);
 DROP POLICY IF EXISTS dept_transfer_update ON public.department_transfer_requests;
 CREATE POLICY dept_transfer_update ON public.department_transfer_requests FOR UPDATE TO authenticated
-  USING (public.get_permission_rank(auth.uid()) >= 80);
+  USING (public.get_permission_rank(auth.uid()) >= 60);
 DROP POLICY IF EXISTS dept_transfer_delete ON public.department_transfer_requests;
 CREATE POLICY dept_transfer_delete ON public.department_transfer_requests FOR DELETE TO authenticated
   USING (public.get_permission_rank(auth.uid()) >= 90);
@@ -1312,6 +1375,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO anon, aut
 GRANT EXECUTE ON FUNCTION public.get_my_profile() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_my_role() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.change_my_password(text) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.update_last_login() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.check_username_available(text) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.check_registration_status(text) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.admin_list_users(text, uuid) TO authenticated;
@@ -1469,6 +1533,7 @@ WITH levels(permission_level, rank) AS (
     ('admin', 100),
     ('evangelist', 90),
     ('chief', 80),
+    ('purchase_teacher', 70),
     ('dept_teacher', 60),
     ('teacher', 40),
     ('student', 20)
@@ -1503,18 +1568,8 @@ SET can_view = EXCLUDED.can_view,
 
 -- 공개 런타임 설정과 비밀 참조값
 INSERT INTO public.app_config (env, key_name, key_value, is_secret, use_yn, description)
-VALUES
-  ('production', 'SUPABASE_URL', 'https://blitrrcdkkkszvgylnus.supabase.co', false, true, '브라우저 Supabase 클라이언트 부트스트랩 URL'),
-  ('production', 'SUPABASE_ANON_KEY', 'sb_publishable_TgsQePzjxca9Hr3Lh_dHvA_O1JqRAQ6', false, true, '브라우저 공개 publishable/anon key. RLS/RPC로 권한 제한'),
-  ('production', 'SUPABASE_AUTH_EMAIL_DOMAIN', '@cho-talents.app', false, true, '아이디 로그인용 내부 이메일 도메인'),
-  ('production', 'KAKAO_MAP_KEY', '0ef8925b28135eeac474bc411c456170', false, true, '카카오 지도 JavaScript 공개 키'),
-  ('production', 'GITHUB_OWNER', 'CHO-Talents', false, true, 'GitHub 저장소 owner 메타데이터'),
-  ('production', 'GITHUB_REPO', 'CHO-Talents', false, true, 'GitHub 저장소 이름 메타데이터'),
-  ('production', 'GITHUB_BRANCH', 'develop', false, true, '기본 배포/형상관리 브랜치 메타데이터'),
-  ('production', 'GITHUB_PAT', 'env:GITHUB_PAT', true, false, '비밀 원문 저장 금지. 로컬 .env.local 또는 Edge Function 환경변수에 저장'),
-  ('production', 'SUPABASE_ACCESS_TOKEN', 'env:SUPABASE_ACCESS_TOKEN', true, false, '비밀 원문 저장 금지. Supabase CLI/Management API 실행 환경변수에 저장'),
-  ('production', 'SUPABASE_SERVICE_ROLE_KEY', 'env:SUPABASE_SERVICE_ROLE_KEY', true, false, '서버 전용 키. Edge Function/서버 환경변수 또는 Supabase Vault에 저장'),
-  ('production', 'SUPABASE_DB_CONNECTION_STRING', 'env:SUPABASE_DB_CONNECTION_STRING', true, false, 'DB 관리/마이그레이션 전용. 로컬/CI 비밀 저장소에서만 사용')
+SELECT env, key_name, key_value, is_secret, use_yn, description
+FROM cho_install_runtime_config
 ON CONFLICT (env, key_name) DO UPDATE
 SET key_value = EXCLUDED.key_value,
     is_secret = EXCLUDED.is_secret,

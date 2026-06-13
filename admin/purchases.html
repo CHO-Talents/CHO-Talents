@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.35.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.35.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -71,13 +71,13 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.35.0"></script>
-  <script src="../js/supabase-config.js?v=3.35.0"></script>
-  <script src="../js/activity-log.js?v=3.35.0"></script>
-  <script src="../js/auth.js?v=3.35.0"></script>
-  <script src="../js/theme.js?v=3.35.0"></script>
-  <script src="../js/nav.js?v=3.35.0"></script>
-  <script src="../js/user-mgmt.js?v=3.35.0"></script>
+  <script src="../config/public-config.js?v=3.39.0"></script>
+  <script src="../js/supabase-config.js?v=3.39.0"></script>
+  <script src="../js/activity-log.js?v=3.39.0"></script>
+  <script src="../js/auth.js?v=3.39.0"></script>
+  <script src="../js/theme.js?v=3.39.0"></script>
+  <script src="../js/nav.js?v=3.39.0"></script>
+  <script src="../js/user-mgmt.js?v=3.39.0"></script>
   <script>
     initSupabase();
     let session;
@@ -143,7 +143,8 @@
       }
 
       const myRank = session.permissionRank || 0;
-      const scopedDeptId = myRank >= 60 && myRank < 80 ? (session.managedDeptId || session.departmentId) : null;
+      const isPurchaseTeacher = (session.permissionLevel === 'purchase_teacher');
+      const scopedDeptId = (myRank >= 60 && myRank < 80 && !isPurchaseTeacher) ? (session.managedDeptId || session.departmentId) : null;
       let scopedUsers = null;
       if (scopedDeptId) {
         const { data: users, error: userErr } = await fetchUsers({ departmentId: scopedDeptId });
@@ -222,6 +223,7 @@
       const myRank = session.permissionRank || 0;
       if (order.status === 'delivered') return false;
       if (myRank >= 90) return true;
+      if (session.permissionLevel === 'purchase_teacher') return true;
       if (myRank >= 60 && session.managedDeptId && order._deptId === session.managedDeptId) return true;
       return false;
     }
@@ -559,6 +561,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.35.0"></script>
+  <script src="../js/version.js?v=3.39.0"></script>
 </body>
 </html>

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.35.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.35.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.35.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.39.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.39.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.39.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -15,7 +15,7 @@
 
   <main class="guide-container">
     <section class="guide-hero">
-      <div class="guide-kicker">부장 교사 · 전도사님 · 관리자</div>
+      <div class="guide-kicker">구매 담당 교사 · 부서 담당 교사 · 부장 교사 · 전도사님 · 관리자</div>
       <h1>관리자 가이드</h1>
       <p>사용자, 부서, 달란트, 상품, 구매, QR, 통계, 로그 등 전체 운영 관리 방법을 안내합니다. 메뉴와 버튼은 계정 권한에 따라 자동으로 달라집니다.</p>
     </section>
@@ -33,6 +33,7 @@
           <thead><tr><th>권한</th><th>주요 역할</th><th>대표 메뉴</th></tr></thead>
           <tbody>
             <tr><td><span class="guide-badge badge-oper">부서 담당 교사</span></td><td>담당 부서의 사용자, 달란트, 상품 신청을 관리합니다.</td><td>대시보드, 사용자 관리, 부서 관리, 달란트 관리, 달란트 통계, 상품 관리, 구매 관리</td></tr>
+            <tr><td><span class="guide-badge badge-oper">구매 담당 교사</span></td><td>부서 담당 교사와 같은 메뉴를 사용하며, 구매 관리에서는 전체 부서 주문을 처리합니다.</td><td>구매 관리, 상품 배지 전체 집계</td></tr>
             <tr><td><span class="guide-badge badge-teacher">부장 교사</span></td><td>전체 현황을 보고 담당 관리 부서 중심으로 승인과 운영을 처리합니다.</td><td>대시보드, 관리자 관리, 보고서, 버전, 달란트 반환</td></tr>
             <tr><td><span class="guide-badge badge-admin">전도사님</span></td><td>QR 코드, 상품 삭제 대기, 더 넓은 범위의 운영 처리를 담당합니다.</td><td>달란트 QR 관리, 달란트 항목 관리, Q&amp;A 삭제, 부서 비활성화</td></tr>
             <tr><td><span class="guide-badge badge-admin">관리자</span></td><td>시스템 설정과 로그, 작업 이력, 권한별 접근 설정을 관리합니다.</td><td>페이지 접근, 페이지 기능, 로그, 작업 이력, 코드 복사, 수동 달란트 지급</td></tr>
@@ -49,9 +50,23 @@
         <li>가입 신청이 있으면 신청자의 이름, 부서, 신청 사유를 확인합니다.</li>
         <li>사용자 유형과 권한을 선택한 뒤 승인하거나, 사유를 입력해 거부합니다.</li>
         <li>각 사용자의 <strong>관리 ▾</strong> 드롭다운에서 상세 정보, 수정, 부서 이동, 비밀번호 초기화, 삭제를 선택합니다.</li>
-        <li><strong>상세 정보</strong>에서 아이디, 역할, 권한, 부서, 신청 이력, 달란트 내역, 구매 내역을 확인할 수 있습니다.</li>
+        <li><strong>상세 정보</strong>에서 아이디, 역할, 권한, 부서, 마지막 로그인, 신청 이력, 달란트 내역, 구매 내역을 확인할 수 있습니다.</li>
       </ol>
       <div class="guide-note">부서 이동은 권한에 따라 즉시 처리되거나 승인 요청으로 생성됩니다. 담당 범위 밖의 사용자는 처리 권한이 없을 수 있습니다.</div>
+    </section>
+
+    <section class="guide-section">
+      <h2>📋 학생 일괄 등록</h2>
+      <ol class="guide-steps">
+        <li><strong>관리 &gt; 학생 일괄 등록</strong>으로 이동합니다 (부장 교사 80+ 이상).</li>
+        <li><strong>양식 다운로드</strong> 버튼으로 엑셀 파일(.xlsx)을 받습니다.</li>
+        <li>양식에 아이디, 이름, 부서, 반을 입력합니다.</li>
+        <li>작성한 엑셀 파일을 드래그하거나 클릭하여 업로드합니다.</li>
+        <li>미리보기에서 오류 항목(아이디 누락, 부서 없음 등)을 확인합니다.</li>
+        <li><strong>일괄 등록 시작</strong>을 클릭하면 정상 데이터만 등록됩니다.</li>
+        <li>등록 결과에서 성공/실패 건수와 사유를 확인합니다.</li>
+      </ol>
+      <div class="guide-note">초기 비밀번호는 "1234"입니다. 등록 후 학생에게 비밀번호 변경을 안내해주세요.</div>
     </section>
 
     <section class="guide-section">
@@ -87,7 +102,7 @@
             <tr><td>상세 내역</td><td>관리 드롭다운에서 상세를 선택해 적립 내역, 지급자, 잔액을 확인합니다.</td><td>달란트 관리 접근 권한</td></tr>
             <tr><td>달란트 반환</td><td>잘못 지급된 달란트를 사유 입력 후 반환합니다.</td><td>부장 교사 이상</td></tr>
             <tr><td>수동 입력</td><td>항목에 없는 사유와 금액을 직접 입력해 지급합니다.</td><td>관리자</td></tr>
-            <tr><td>달란트 항목 관리</td><td>학생용/교사용 지급 항목, 금액, 정렬 순서, 활성 상태를 관리합니다.</td><td>전도사님 이상</td></tr>
+            <tr><td>달란트 항목 관리</td><td>학생용/교사용 지급 항목, 금액, 지급 규칙/설명, 정렬 순서, 활성 상태를 관리합니다. 퀵 버튼 설정은 별도 권한 기준을 따릅니다.</td><td>60등급 이상 접근, 퀵 버튼 80등급 이상</td></tr>
           </tbody>
         </table>
       </div>
@@ -123,6 +138,7 @@
           <ul class="guide-list">
             <li>상태별 탭을 선택하면 상품별 합계와 일괄 처리 버튼이 표시됩니다.</li>
             <li>부서와 기간 필터로 필요한 주문만 조회합니다.</li>
+            <li>구매 담당 교사는 전체 부서 주문을 조회하고 처리하며, 상품 메뉴 배지도 전체 범위로 집계됩니다.</li>
             <li>관리 드롭다운에서 상태 변경이나 되돌리기를 선택합니다.</li>
             <li>구매 확정 단계에서 달란트가 실제 차감됩니다.</li>
           </ul>
@@ -141,6 +157,20 @@
             <tr><td>보고서</td><td>작업 계획, 테스트 결과, 보안 보고서, 수정 보고서를 확인하거나 등록합니다.</td></tr>
             <tr><td>버전</td><td>배포된 기능 변경 이력을 확인합니다.</td></tr>
             <tr><td>Q &amp; A</td><td>질문에 답변을 남기고, 필요한 항목을 FAQ로 등록합니다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>🔔 상단 처리 배지</h2>
+      <div class="guide-table-wrap">
+        <table class="guide-table">
+          <thead><tr><th>배지</th><th>의미</th><th>표시 기준</th></tr></thead>
+          <tbody>
+            <tr><td>관리</td><td>가입 신청과 부서 이동 요청 중 내가 처리할 수 있는 건수</td><td>부서 담당 교사(60+) 이상</td></tr>
+            <tr><td>상품</td><td>구매 관리에서 처리 가능한 주문 건수</td><td>부서 담당 교사(60+) 이상, 구매 담당 교사는 전체 부서</td></tr>
+            <tr><td>운영</td><td>미확인 ERROR/FATAL/CRITICAL 로그 건수</td><td>부장 교사(80+) 이상에서 호출, 로그 화면은 관리자(100+) 접근</td></tr>
           </tbody>
         </table>
       </div>
@@ -198,6 +228,7 @@
         <ul class="guide-list">
           <li>비밀번호는 확인할 수 없고, 필요한 경우 1234로 초기화만 할 수 있습니다.</li>
           <li>구매 신청은 바로 차감이 아니며, 구매 확정 시점에 달란트가 차감됩니다.</li>
+          <li>달란트 반환은 거래 ID 기준으로 1회만 가능하며, 반환된 항목은 지급 모달의 취소 상태와 동기화됩니다.</li>
           <li>권한이 낮은 계정은 일부 버튼이 보이지 않거나, 보이더라도 처리 권한이 제한될 수 있습니다.</li>
           <li>삭제 대기 처리된 로그나 상품은 일반 목록에서 숨겨지지만 기록은 남습니다.</li>
           <li>작업 이력은 별도 저장소가 아니라 활동 로그 중 관리 작업만 필터링해서 보여줍니다.</li>
@@ -212,12 +243,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.35.0"></script>
-  <script src="js/supabase-config.js?v=3.35.0"></script>
-  <script src="js/activity-log.js?v=3.35.0"></script>
-  <script src="js/auth.js?v=3.35.0"></script>
-  <script src="js/theme.js?v=3.35.0"></script>
-  <script src="js/nav.js?v=3.35.0"></script>
+  <script src="config/public-config.js?v=3.39.0"></script>
+  <script src="js/supabase-config.js?v=3.39.0"></script>
+  <script src="js/activity-log.js?v=3.39.0"></script>
+  <script src="js/auth.js?v=3.39.0"></script>
+  <script src="js/theme.js?v=3.39.0"></script>
+  <script src="js/nav.js?v=3.39.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -232,6 +263,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.35.0"></script>
+  <script src="js/version.js?v=3.39.0"></script>
 </body>
 </html>
