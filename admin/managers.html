@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.40.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.40.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -32,6 +32,7 @@
         <thead><tr><th>권한</th><th>이름</th><th>소속 부서</th><th>담당 부서</th><th>관리</th></tr></thead>
         <tbody id="mgrList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
+      <div id="mgrPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -85,13 +86,13 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.39.0"></script>
-  <script src="../js/supabase-config.js?v=3.39.0"></script>
-  <script src="../js/activity-log.js?v=3.39.0"></script>
-  <script src="../js/auth.js?v=3.39.0"></script>
-  <script src="../js/theme.js?v=3.39.0"></script>
-  <script src="../js/nav.js?v=3.39.0"></script>
-  <script src="../js/user-mgmt.js?v=3.39.0"></script>
+  <script src="../config/public-config.js?v=3.40.0"></script>
+  <script src="../js/supabase-config.js?v=3.40.0"></script>
+  <script src="../js/activity-log.js?v=3.40.0"></script>
+  <script src="../js/auth.js?v=3.40.0"></script>
+  <script src="../js/theme.js?v=3.40.0"></script>
+  <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/user-mgmt.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session;
@@ -142,11 +143,14 @@
 
     let allManagers = [];
     let currentFilter = 'all';
+    function getMgrPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    let mgrPage = 1;
 
     let currentDeptFilter = '';
 
     function setMgrFilter(role, btn) {
       currentFilter = role;
+      mgrPage = 1;
       document.querySelectorAll('.admin-table-header .filter-btn:not([style*="background:var(--admin-primary)"])').forEach(b => b.classList.remove('active'));
       if (btn) btn.classList.add('active');
       renderManagers();
@@ -154,6 +158,7 @@
 
     function onDeptFilterChange() {
       currentDeptFilter = document.getElementById('deptFilter').value;
+      mgrPage = 1;
       renderManagers();
     }
 
@@ -204,20 +209,28 @@
 
       if (list.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="empty-state">등록된 관리자가 없습니다.</td></tr>';
+        document.getElementById('mgrPaging').innerHTML = '';
         return;
       }
+
+      const pageSize = getMgrPageSize();
+      const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
+      if (mgrPage > totalPages) mgrPage = totalPages;
+      const startIdx = (mgrPage - 1) * pageSize;
+      const pageData = list.slice(startIdx, startIdx + pageSize);
 
       const ROLE_BADGE = {
         admin: { emoji: '👑', label: '관리자', cls: 'ERROR' },
         evangelist: { emoji: '✝️', label: '전도사님', cls: 'WARN' },
         chief: { emoji: '📋', label: '부장 교사', cls: 'WARN' },
+        purchase_teacher: { emoji: '🛒', label: '구매 담당 교사', cls: 'INFO' },
         dept_teacher: { emoji: '👩‍🏫', label: '부서 담당', cls: 'INFO' }
       };
 
       const nameMap = resolveDisplayNames(allManagers);
       const myRank = session.permissionRank || 0;
 
-      tbody.innerHTML = list.map(u => {
+      tbody.innerHTML = pageData.map(u => {
         const rb = ROLE_BADGE[u.permission_level] || ROLE_BADGE.admin;
         const dn = nameMap[u.id] || u.display_name || '-';
         const ownDept = deptList.find(d => d.id === u.department_id);
@@ -236,7 +249,22 @@
           </td>
         </tr>`;
       }).join('');
+      renderMgrPaging(totalPages);
     }
+
+    function renderMgrPaging(totalPages) {
+      const wrap = document.getElementById('mgrPaging');
+      const page = mgrPage;
+      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goMgrPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="filter-btn${i===page?' active':''}" onclick="goMgrPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goMgrPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+    function goMgrPage(p) { mgrPage = p; renderManagers(); }
 
     let _allUsers = [];
     let _selectedUserId = null;
@@ -266,7 +294,7 @@
           box.innerHTML = matches.map(u => {
             const dept = deptList.find(d => d.id === u.department_id);
             const deptName = dept ? dept.name : '';
-            return `<div style="padding:0.6rem 0.8rem;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:0.88rem;" onmousedown="selectUser('${u.id}')" onmouseover="this.style.background='#f3f0ff'" onmouseout="this.style.background='#fff'">
+            return `<div style="padding:0.6rem 0.8rem;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:0.88rem;" onmousedown="selectUser('${u.id}')" onmouseover="this.style.background='#f3f0ff'" onmouseout="this.style.background=''">
               <strong>${u.display_name || u.username}</strong>
               <span style="margin-left:0.5rem;color:var(--admin-text-muted);font-size:0.78rem;">${u.user_type === 'student' ? '학생' : '교사'}${deptName ? ' / ' + deptName : ''}</span>
             </div>`;
@@ -395,6 +423,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.39.0"></script>
+  <script src="../js/version.js?v=3.40.0"></script>
 </body>
 </html>

@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.39.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.39.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.40.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.40.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
     .qr-item-card.inactive { opacity: 0.5; }
-    .qr-img-wrap { flex-shrink: 0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 8px; border: 1px solid #e9ecef; overflow: hidden; position: relative; }
+    .qr-img-wrap { flex-shrink: 0; width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; background: var(--t-card, #fff); border-radius: 8px; border: 1px solid var(--t-border, #e9ecef); overflow: hidden; position: relative; }
     .qr-img-wrap img, .qr-img-wrap canvas { max-width: 100%; max-height: 100%; }
     .qr-info { flex: 1; min-width: 160px; }
     .qr-code-label { font-family: monospace; font-size: 0.78rem; color: var(--admin-text-muted); letter-spacing: 1px; margin-bottom: 0.2rem; }
@@ -23,7 +23,7 @@
     .qr-actions button.info { color: #1971c2; border-color: #1971c2; background: #e7f5ff; }
     .create-form { background: #f8f9fa; border-radius: 12px; padding: 1.2rem; margin-bottom: 1.5rem; }
     .create-form h3 { margin-bottom: 1rem; font-size: 1rem; }
-    .form-section { background: #fff; border: 1px solid #e9ecef; border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.8rem; }
+    .form-section { background: var(--t-card, #fff); border: 1px solid var(--t-border, #e9ecef); border-radius: 10px; padding: 0.8rem 1rem; margin-bottom: 0.8rem; }
     .form-section:last-of-type { margin-bottom: 0; }
     .form-grid { display: grid; grid-template-columns: 1fr; gap: 0.6rem; }
     .form-grid label { font-size: 0.82rem; font-weight: 600; display: block; margin-bottom: 0.3rem; }
@@ -70,7 +70,7 @@
       .modal-box h3 { font-size: 0.95rem; }
     }
     .scan-list-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .scan-list-table th, .scan-list-table td { padding: 0.5rem 0.6rem; text-align: left; border-bottom: 1px solid #e9ecef; }
+    .scan-list-table th, .scan-list-table td { padding: 0.5rem 0.6rem; text-align: left; border-bottom: 1px solid var(--t-border, #e9ecef); }
     .scan-list-table th { background: #f8f9fa; font-weight: 600; font-size: 0.8rem; color: var(--admin-text-muted); }
     .scan-list-table tr:hover td { background: #f1f3f5; }
     .scan-empty { text-align: center; padding: 1.5rem; color: var(--admin-text-muted); font-size: 0.9rem; }
@@ -248,13 +248,13 @@
       <span id="qrCount" style="margin-left:auto;font-size:0.82rem;color:var(--admin-text-muted);"></span>
     </div>
     <div class="filter-bar">
-      <input type="text" id="qrSearchInput" placeholder="🔍 검색 (설명, 코드)" oninput="renderQRList()" />
-      <select id="qrFilterTarget" onchange="renderQRList()">
+      <input type="text" id="qrSearchInput" placeholder="🔍 검색 (설명, 코드)" oninput="onQRFilterChange()" />
+      <select id="qrFilterTarget" onchange="onQRFilterChange()">
         <option value="">전체 대상</option>
         <option value="student">🎒 학생</option>
         <option value="teacher">👨‍🏫 교사</option>
       </select>
-      <select id="qrFilterCondition" onchange="renderQRList()">
+      <select id="qrFilterCondition" onchange="onQRFilterChange()">
         <option value="">전체 조건</option>
         <option value="unlimited">무제한</option>
         <option value="limited">선착순</option>
@@ -263,9 +263,9 @@
       </select>
     </div>
     <div class="filter-bar" style="margin-top:-0.4rem;">
-      <input type="date" id="qrFilterDateFrom" onchange="renderQRList()" title="시작일" />
+      <input type="date" id="qrFilterDateFrom" onchange="onQRFilterChange()" title="시작일" />
       <span style="font-size:0.82rem;color:var(--admin-text-muted);">~</span>
-      <input type="date" id="qrFilterDateTo" onchange="renderQRList()" title="종료일" />
+      <input type="date" id="qrFilterDateTo" onchange="onQRFilterChange()" title="종료일" />
       <button class="filter-btn" onclick="setQRDatePreset('today')" style="font-size:0.75rem;">오늘</button>
       <button class="filter-btn" onclick="setQRDatePreset('week')" style="font-size:0.75rem;">1주</button>
       <button class="filter-btn" onclick="setQRDatePreset('month')" style="font-size:0.75rem;">1달</button>
@@ -275,6 +275,7 @@
     <div id="qrList">
       <div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">불러오는 중...</div>
     </div>
+    <div id="qrListPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
   </div>
 
   <!-- Edit Modal -->
@@ -434,16 +435,18 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../config/public-config.js?v=3.39.0"></script>
-  <script src="../js/supabase-config.js?v=3.39.0"></script>
-  <script src="../js/activity-log.js?v=3.39.0"></script>
-  <script src="../js/auth.js?v=3.39.0"></script>
-  <script src="../js/theme.js?v=3.39.0"></script>
-  <script src="../js/nav.js?v=3.39.0"></script>
-  <script src="../js/talent.js?v=3.39.0"></script>
+  <script src="../config/public-config.js?v=3.40.0"></script>
+  <script src="../js/supabase-config.js?v=3.40.0"></script>
+  <script src="../js/activity-log.js?v=3.40.0"></script>
+  <script src="../js/auth.js?v=3.40.0"></script>
+  <script src="../js/theme.js?v=3.40.0"></script>
+  <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/talent.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
+    function getQRPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    let qrListPage = 1;
     let talentItems = [];
     let isAdmin = false;
     let kakaoLoaded = false;
@@ -863,6 +866,7 @@
 
         await logInfo('qr_create', { code, 금액: v.amount, 설명: v.desc, 유형: v.targetType, max_uses: v.maxUses, qrId: data.id });
         currentTab = 'active';
+        qrListPage = 1;
         document.getElementById('tabActive').classList.add('active');
         document.getElementById('tabAll').classList.remove('active');
         document.getElementById('qrSearchInput').value = '';
@@ -923,6 +927,7 @@
     /* ── Tabs & List ── */
     function switchTab(tab) {
       currentTab = tab;
+      qrListPage = 1;
       document.getElementById('tabActive').classList.toggle('active', tab === 'active');
       document.getElementById('tabAll').classList.toggle('active', tab === 'all');
       renderQRList();
@@ -1014,6 +1019,11 @@
       });
     }
 
+    function onQRFilterChange() {
+      qrListPage = 1;
+      renderQRList();
+    }
+
     function setQRDatePreset(preset) {
       const today = toDateStr(nowKST());
       let from = today;
@@ -1028,6 +1038,7 @@
       }
       document.getElementById('qrFilterDateFrom').value = from;
       document.getElementById('qrFilterDateTo').value = today;
+      qrListPage = 1;
       renderQRList();
     }
 
@@ -1045,9 +1056,17 @@
       document.getElementById('qrCount').textContent = items.length + '개';
       if (items.length === 0) {
         list.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">QR 코드가 없습니다.</div>';
+        document.getElementById('qrListPaging').innerHTML = '';
         return;
       }
-      list.innerHTML = items.map((q, idx) => {
+
+      const pageSize = getQRPageSize();
+      const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+      if (qrListPage > totalPages) qrListPage = totalPages;
+      const startIdx = (qrListPage - 1) * pageSize;
+      const pageData = items.slice(startIdx, startIdx + pageSize);
+
+      list.innerHTML = pageData.map((q, idx) => {
         const expired = isExpired(q);
         const usedUp = q.max_uses > 0 && (q.used_count || 0) >= q.max_uses;
         const safeDesc = (q.description || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -1076,14 +1095,29 @@
           + '</div></div>';
       }).join('');
 
-      items.forEach((q, idx) => {
+      pageData.forEach((q, idx) => {
         const el = document.getElementById('qr-img-' + idx);
         if (el) {
           try { new QRCode(el, { text: q.code, width: 88, height: 88, correctLevel: QRCode.CorrectLevel.M }); }
           catch (e) { el.textContent = '?'; }
         }
       });
+      renderQRPaging(totalPages);
     }
+
+    function renderQRPaging(totalPages) {
+      const wrap = document.getElementById('qrListPaging');
+      const page = qrListPage;
+      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goQRPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="filter-btn${i===page?' active':''}" onclick="goQRPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goQRPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+    function goQRPage(p) { qrListPage = p; renderQRList(); }
 
     /* ── Copy / Print ── */
     function copyCode(code) {
@@ -1250,6 +1284,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.39.0"></script>
+  <script src="../js/version.js?v=3.40.0"></script>
 </body>
 </html>

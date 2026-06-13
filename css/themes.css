@@ -224,6 +224,14 @@
   background: var(--t-hover-bg);
 }
 
+[data-theme="dark"] .fav-item-title {
+  color: var(--t-text);
+}
+
+[data-theme="dark"] .fav-item-desc {
+  color: var(--t-text-light);
+}
+
 [data-theme="dark"] .fav-toggle {
   background: #45506b;
 }
@@ -461,10 +469,36 @@
 [data-theme="dark"] [style*="background:#e3fafc"],
 [data-theme="dark"] [style*="background: #e3fafc"],
 [data-theme="dark"] [style*="background:#e7f5ff"],
-[data-theme="dark"] [style*="background: #e7f5ff"] {
+[data-theme="dark"] [style*="background: #e7f5ff"],
+[data-theme="dark"] [style*="background:#e6fcf5"],
+[data-theme="dark"] [style*="background: #e6fcf5"],
+[data-theme="dark"] [style*="background:#fafafa"],
+[data-theme="dark"] [style*="background: #fafafa"],
+[data-theme="dark"] [style*="background:#f1f3f5"],
+[data-theme="dark"] [style*="background: #f1f3f5"] {
   background: var(--t-card) !important;
   color: var(--t-text) !important;
   border-color: var(--t-border) !important;
+}
+
+[data-theme="dark"] [style*="border-bottom:1px solid #e9ecef"],
+[data-theme="dark"] [style*="border-bottom: 1px solid #e9ecef"],
+[data-theme="dark"] [style*="border:1px solid #e9ecef"],
+[data-theme="dark"] [style*="border: 1px solid #e9ecef"],
+[data-theme="dark"] [style*="border-bottom:1px solid #f0f0f0"],
+[data-theme="dark"] [style*="border-bottom: 1px solid #f0f0f0"],
+[data-theme="dark"] [style*="border-top:1px solid #e9ecef"],
+[data-theme="dark"] [style*="border-top: 1px solid #e9ecef"] {
+  border-color: var(--t-border) !important;
+}
+
+[data-theme="dark"] [style*="color:#333"],
+[data-theme="dark"] [style*="color: #333"],
+[data-theme="dark"] [style*="color:#2d3436"],
+[data-theme="dark"] [style*="color: #2d3436"],
+[data-theme="dark"] [style*="color:#212529"],
+[data-theme="dark"] [style*="color: #212529"] {
+  color: var(--t-text) !important;
 }
 
 [data-theme="dark"] [style*="color:#636e72"],
