@@ -60,6 +60,7 @@ body.page-body {
   align-items: center;
   gap: 0.4rem;
   flex-shrink: 0;
+  order: 1;
 }
 
 .top-nav-brand .brand-icon,
@@ -80,7 +81,10 @@ body.page-body {
   gap: 0.3rem;
   list-style: none;
   flex-shrink: 0;
+  order: 2;
 }
+.top-nav > .nav-header-actions,
+.admin-nav > .nav-header-actions { order: 3; }
 
 .top-nav-links > li,
 .admin-nav-links > li {
@@ -241,12 +245,14 @@ body.page-body {
   font-weight: 500;
 }
 
-/* ===== Header Actions (logout + theme - single instance) ===== */
+/* ===== Header Actions (logout + theme - single instance, always 1 row) ===== */
 .nav-header-actions {
   display: flex;
   align-items: center;
   gap: 0.4rem;
   margin-left: auto;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 .nav-header-logout {
   font-size: 0.78rem;
@@ -572,11 +578,13 @@ table.data-table tr:hover { background: #fafbfc; }
     white-space: normal;
     justify-content: flex-start;
   }
-  .top-nav-hamburger,
-  .nav-hamburger { display: block; order: 3; }
   .admin-nav-brand,
   .top-nav-brand { order: 1; }
   .nav-header-actions { order: 2; gap: 0.3rem; }
+  .top-nav-hamburger,
+  .nav-hamburger { display: block; order: 3; }
+  .top-nav-links,
+  .admin-nav-links { order: 4; }
   .nav-header-actions #navAuthArea { display: none !important; }
   .nav-header-actions #navLoginArea { display: none !important; }
   .nav-header-logout { font-size: 0.72rem; padding: 0.2rem 0.55rem; }
@@ -617,6 +625,12 @@ table.data-table tr:hover { background: #fafbfc; }
     padding-left: 0.5rem;
     margin-left: 0.5rem;
     display: none;
+  }
+  .top-nav-links > li:hover > .nav-dropdown-menu,
+  .admin-nav-links > li:hover > .nav-dropdown-menu { display: none !important; }
+  .top-nav-links > li:hover:not(.dropdown-open):not(.mobile-open) > .nav-dropdown-toggle,
+  .admin-nav-links > li:hover:not(.dropdown-open):not(.mobile-open) > .nav-dropdown-toggle {
+    background: transparent; color: var(--c-text);
   }
   .top-nav-links > li.mobile-open > .nav-dropdown-menu,
   .admin-nav-links > li.mobile-open > .nav-dropdown-menu { display: block; }

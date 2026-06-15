@@ -264,17 +264,7 @@
 
     function renderMgrPaging(totalPages) {
       const wrap = document.getElementById('mgrPaging');
-      const page = mgrPage;
-      let html = '';
-      if (totalPages > 1) {
-        html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goMgrPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
-        for (let i = 1; i <= totalPages; i++) {
-          html += `<button class="filter-btn${i===page?' active':''}" onclick="goMgrPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
-        }
-        html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goMgrPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
-        html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
-      }
-      wrap.innerHTML = html;
+      wrap.innerHTML = buildPagingButtons(mgrPage, totalPages, 'goMgrPage(__PAGE__)');
       const headerWrap = document.getElementById('mgrPageSizeWrap');
       if (headerWrap) headerWrap.innerHTML = renderPageSizeSelector('managers', getMgrPageSize(), "onMgrPageSizeChange(this.value)");
     }

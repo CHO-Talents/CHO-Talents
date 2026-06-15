@@ -79,6 +79,7 @@
   <script src="../js/activity-log.js?v=3.40.0"></script>
   <script src="../js/auth.js?v=3.40.0"></script>
   <script src="../js/theme.js?v=3.40.0"></script>
+  <script src="../js/page-size.js?v=3.40.0"></script>
   <script src="../js/nav.js?v=3.40.0"></script>
   <script src="../js/talent.js?v=3.40.0"></script>
   <script>
@@ -152,16 +153,7 @@
     }
 
     function renderItemPaging(totalPages) {
-      const wrap = document.getElementById('itemPaging');
-      const page = itemPage;
-      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
-      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goItemPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
-      for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="filter-btn${i===page?' active':''}" onclick="goItemPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
-      }
-      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goItemPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
-      html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
-      wrap.innerHTML = html;
+      document.getElementById('itemPaging').innerHTML = buildPagingButtons(itemPage, totalPages, 'goItemPage(__PAGE__)');
     }
     function goItemPage(p) { itemPage = p; renderItems(); }
 

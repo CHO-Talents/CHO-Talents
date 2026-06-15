@@ -209,20 +209,10 @@
     }
 
     function renderShopPaging(groupKey, totalPages, pagingId) {
-      const wrap = document.getElementById(pagingId);
       const page = shopPages[groupKey] || 1;
       const pageSize = getShopPageSize(groupKey);
       const prefKey = groupKey === 'teacher' ? 'shop_teacher' : 'shop_student';
-      let html = '';
-      if (totalPages > 1) {
-        html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goShopPage('${groupKey}',${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
-        for (let i = 1; i <= totalPages; i++) {
-          html += `<button class="filter-btn${i===page?' active':''}" onclick="goShopPage('${groupKey}',${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
-        }
-        html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goShopPage('${groupKey}',${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
-        html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
-      }
-      wrap.innerHTML = html;
+      document.getElementById(pagingId).innerHTML = buildPagingButtons(page, totalPages, "goShopPage('" + groupKey + "',__PAGE__)");
       const headerWrap = document.getElementById(groupKey + 'PageSizeWrap');
       if (headerWrap) headerWrap.innerHTML = renderPageSizeSelector(prefKey, pageSize, "onShopPageSizeChange('" + groupKey + "', this.value)");
     }

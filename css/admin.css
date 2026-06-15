@@ -61,6 +61,7 @@ body.admin-body {
   align-items: center;
   gap: 0.4rem;
   flex-shrink: 0;
+  order: 1;
 }
 
 .admin-nav-links {
@@ -69,7 +70,10 @@ body.admin-body {
   gap: 0.3rem;
   list-style: none;
   flex-shrink: 0;
+  order: 2;
 }
+
+.admin-nav > .nav-header-actions { order: 3; }
 
 .admin-nav-links > li {
   position: relative;
@@ -708,9 +712,10 @@ table.admin-table tr:hover { background: #fafbfc; }
     position: relative;
     justify-content: flex-start;
   }
-  .nav-hamburger { display: block; order: 3; }
   .admin-nav-brand { order: 1; }
   .nav-header-actions { order: 2; gap: 0.3rem; }
+  .nav-hamburger { display: block; order: 3; }
+  .admin-nav-links { order: 4; }
   .nav-header-actions #navAuthArea { display: none !important; }
   .nav-header-actions #navLoginArea { display: none !important; }
   .nav-header-logout { font-size: 0.72rem; padding: 0.2rem 0.55rem; }
@@ -745,6 +750,10 @@ table.admin-table tr:hover { background: #fafbfc; }
     padding-left: 0.5rem;
     margin-left: 0.5rem;
     display: none;
+  }
+  .admin-nav-links > li:hover > .nav-dropdown-menu { display: none !important; }
+  .admin-nav-links > li:hover:not(.dropdown-open):not(.mobile-open) > .nav-dropdown-toggle {
+    background: transparent; color: var(--c-text, var(--admin-text));
   }
   .admin-nav-links > li.mobile-open > .nav-dropdown-menu { display: block; }
   .admin-nav-links > li.dropdown-open > .nav-dropdown-menu { display: block; }
