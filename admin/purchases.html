@@ -3,46 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.40.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.40.0" />
+  <title>구매 관�?- CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/themes.css?v=3.41.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.41.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">🛒 구매 관리</h2>
+    <h2 style="margin-bottom:1rem;">?�� 구매 관�?/h2>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="tabAll" onclick="switchPurchaseTab('all')">📊 전체</button>
-      <button class="filter-btn" id="tabRequested" onclick="switchPurchaseTab('requested')">📋 구매 신청</button>
-      <button class="filter-btn" id="tabPreparing" onclick="switchPurchaseTab('preparing')">📦 상품 준비</button>
-      <button class="filter-btn" id="tabPurchased" onclick="switchPurchaseTab('purchased')">💳 상품 구매</button>
-      <button class="filter-btn" id="tabDelivered" onclick="switchPurchaseTab('delivered')">✅ 상품 지급</button>
-      <button class="filter-btn" id="tabCancelled" onclick="switchPurchaseTab('cancelled')">❌ 구매 취소</button>
+      <button class="filter-btn active" id="tabAll" onclick="switchPurchaseTab('all')">?�� ?�체</button>
+      <button class="filter-btn" id="tabRequested" onclick="switchPurchaseTab('requested')">?�� 구매 ?�청</button>
+      <button class="filter-btn" id="tabPreparing" onclick="switchPurchaseTab('preparing')">?�� ?�품 준�?/button>
+      <button class="filter-btn" id="tabPurchased" onclick="switchPurchaseTab('purchased')">?�� ?�품 구매</button>
+      <button class="filter-btn" id="tabDelivered" onclick="switchPurchaseTab('delivered')">???�품 지�?/button>
+      <button class="filter-btn" id="tabCancelled" onclick="switchPurchaseTab('cancelled')">??구매 취소</button>
     </div>
 
     <div id="statusFilterWrap" style="margin-bottom:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
       <select id="statusFilter" onchange="orderPage=1;renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
-        <option value="">전체 상태</option>
-        <option value="requested">📋 구매 신청</option>
-        <option value="preparing">📦 상품 준비</option>
-        <option value="purchased">💳 상품 구매</option>
-        <option value="delivered">✅ 상품 지급</option>
-        <option value="cancelled">❌ 구매 취소</option>
+        <option value="">?�체 ?�태</option>
+        <option value="requested">?�� 구매 ?�청</option>
+        <option value="preparing">?�� ?�품 준�?/option>
+        <option value="purchased">?�� ?�품 구매</option>
+        <option value="delivered">???�품 지�?/option>
+        <option value="cancelled">??구매 취소</option>
       </select>
       <select id="deptFilter" onchange="orderPage=1;renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
-        <option value="">전체 부서</option>
+        <option value="">?�체 부??/option>
       </select>
       <span style="margin-left:0.3rem;font-size:0.82rem;color:var(--admin-text-muted);">기간:</span>
       <input type="date" id="dateFrom" onchange="orderPage=1;renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="font-size:0.82rem;">~</span>
       <input type="date" id="dateTo" onchange="orderPage=1;renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="display:inline-flex;gap:0.2rem;">
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">오늘</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1주</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('month')">1달</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('year')">1년</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">?�늘</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1�?/button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('month')">1??/button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('year')">1??/button>
       </span>
     </div>
 
@@ -50,13 +50,13 @@
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">전체 목록</div>
+        <div class="admin-table-title" id="tableTitle">?�체 목록</div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
           <span id="orderPageSizeWrap"></span>
         <div id="bulkActions" style="display:none;">
-          <button class="btn-confirm" id="btnBulkPrepare" onclick="bulkPrepare()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">📦 일괄 상품 준비</button>
-          <button class="btn-confirm" id="btnBulkPurchase" onclick="bulkPurchase()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">💳 일괄 구매 확정</button>
-          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">✅ 선택 지급 완료</button>
+          <button class="btn-confirm" id="btnBulkPrepare" onclick="bulkPrepare()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">?�� ?�괄 ?�품 준�?/button>
+          <button class="btn-confirm" id="btnBulkPurchase" onclick="bulkPurchase()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">?�� ?�괄 구매 ?�정</button>
+          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">???�택 지�??�료</button>
         </div>
         </div>
       </div>
@@ -64,7 +64,7 @@
         <thead>
           <tr id="tableHead"></tr>
         </thead>
-        <tbody id="orderList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
+        <tbody id="orderList"><tr><td colspan="7" class="empty-state">로딩 �?..</td></tr></tbody>
       </table>
       <div id="orderPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
@@ -75,14 +75,14 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.40.0"></script>
-  <script src="../js/supabase-config.js?v=3.40.0"></script>
-  <script src="../js/activity-log.js?v=3.40.0"></script>
-  <script src="../js/auth.js?v=3.40.0"></script>
-  <script src="../js/theme.js?v=3.40.0"></script>
-  <script src="../js/nav.js?v=3.40.0"></script>
-  <script src="../js/page-size.js?v=3.40.0"></script>
-  <script src="../js/user-mgmt.js?v=3.40.0"></script>
+  <script src="../config/public-config.js?v=3.41.0"></script>
+  <script src="../js/supabase-config.js?v=3.41.0"></script>
+  <script src="../js/activity-log.js?v=3.41.0"></script>
+  <script src="../js/auth.js?v=3.41.0"></script>
+  <script src="../js/theme.js?v=3.41.0"></script>
+  <script src="../js/nav.js?v=3.41.0"></script>
+  <script src="../js/page-size.js?v=3.41.0"></script>
+  <script src="../js/user-mgmt.js?v=3.41.0"></script>
   <script>
     initSupabase();
     let session;
@@ -97,7 +97,7 @@
     }
     let orderPage = 1;
 
-    const STATUS_LABEL = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급', cancelled:'구매 취소' };
+    const STATUS_LABEL = { requested:'구매 ?�청', preparing:'?�품 준�?, purchased:'?�품 구매', delivered:'?�품 지�?, cancelled:'구매 취소' };
     const STATUS_COLOR = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e', cancelled:'#e03131' };
     const TAB_IDS = ['all','requested','preparing','purchased','delivered','cancelled'];
 
@@ -142,8 +142,8 @@
     async function loadOrders() {
       const { data, error } = await _sb.from('product_orders').select('*').order('created_at', { ascending: false });
       if (error) {
-        logError('PURCHASE_LOAD_FAIL', { 오류: error.message });
-        document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">데이터 조회 실패</td></tr>';
+        logError('PURCHASE_LOAD_FAIL', { ?�류: error.message });
+        document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">?�이??조회 ?�패</td></tr>';
         return;
       }
       allOrders = data || [];
@@ -163,7 +163,7 @@
       if (scopedDeptId) {
         const { data: users, error: userErr } = await fetchUsers({ departmentId: scopedDeptId });
         if (userErr) {
-          await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopedDeptId, 오류: userErr });
+          await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopedDeptId, ?�류: userErr });
           allOrders = [];
         } else {
           scopedUsers = users || [];
@@ -211,7 +211,7 @@
 
       const deptSel = document.getElementById('deptFilter');
       const deptNames = [...new Set(allOrders.map(o => o._deptName).filter(d => d && d !== '-'))].sort();
-      deptSel.innerHTML = '<option value="">전체 부서</option>' + deptNames.map(d => `<option value="${d}">${d}</option>`).join('');
+      deptSel.innerHTML = '<option value="">?�체 부??/option>' + deptNames.map(d => `<option value="${d}">${d}</option>`).join('');
 
       renderOrders();
       updateOrderBadge();
@@ -256,11 +256,11 @@
     function getProcessorInfo(order, stage) {
       let byField, atField, label;
       if (stage === 'preparing') {
-        byField = order.prepared_by; atField = order.prepared_at; label = '준비';
+        byField = order.prepared_by; atField = order.prepared_at; label = '준�?;
       } else if (stage === 'purchased') {
         byField = order.purchased_by; atField = order.purchased_at; label = '구매';
       } else if (stage === 'delivered') {
-        byField = order.delivered_by; atField = order.delivered_at; label = '지급';
+        byField = order.delivered_by; atField = order.delivered_at; label = '지�?;
       }
       if (!byField) return '';
       const name = processorMap[byField] || '-';
@@ -289,30 +289,30 @@
         return;
       }
       el.style.display = '';
-      el.innerHTML = `<div style="font-size:0.85rem;font-weight:600;margin-bottom:0.4rem;">상품별 합계</div>
+      el.innerHTML = `<div style="font-size:0.85rem;font-weight:600;margin-bottom:0.4rem;">?�품�??�계</div>
         <table class="admin-table" style="margin-bottom:0;font-size:0.82rem;">
-          <thead><tr><th>상품명</th><th>수량 합계</th><th>금액 합계</th></tr></thead>
+          <thead><tr><th>?�품�?/th><th>?�량 ?�계</th><th>금액 ?�계</th></tr></thead>
           <tbody>${rows.map(([name, v]) => `<tr><td>${name}</td><td>${v.qty}</td><td>${fmtNum(v.amount)}</td></tr>`).join('')}</tbody>
         </table>`;
     }
 
     function buildMgmtMenu(o, canProc, isAllTab) {
       const items = [];
-      if (isAllTab) items.push(`<a onclick="showOrderDetail('${o.id}')">📋 상세</a>`);
+      if (isAllTab) items.push(`<a onclick="showOrderDetail('${o.id}')">?�� ?�세</a>`);
       if (o.status === 'requested' && canProc) {
-        items.push(`<a onclick="updateStatus('${o.id}','preparing')">📦 상품 준비</a>`);
+        items.push(`<a onclick="updateStatus('${o.id}','preparing')">?�� ?�품 준�?/a>`);
       } else if (o.status === 'preparing' && canProc) {
-        items.push(`<a onclick="confirmPurchase('${o.id}')">💳 구매 확정</a>`);
-        items.push(`<a onclick="revertStatus('${o.id}','requested')">↩ 되돌리기</a>`);
+        items.push(`<a onclick="confirmPurchase('${o.id}')">?�� 구매 ?�정</a>`);
+        items.push(`<a onclick="revertStatus('${o.id}','requested')">???�돌리기</a>`);
       } else if (o.status === 'purchased' && canProc) {
-        items.push(`<a onclick="updateStatus('${o.id}','delivered')">✅ 지급 완료</a>`);
-        items.push(`<a onclick="revertStatus('${o.id}','preparing')">↩ 되돌리기</a>`);
+        items.push(`<a onclick="updateStatus('${o.id}','delivered')">??지�??�료</a>`);
+        items.push(`<a onclick="revertStatus('${o.id}','preparing')">???�돌리기</a>`);
       } else if (o.status === 'delivered' && canProc) {
-        items.push(`<a onclick="revertStatus('${o.id}','purchased')">↩ 되돌리기</a>`);
+        items.push(`<a onclick="revertStatus('${o.id}','purchased')">???�돌리기</a>`);
       }
       if (items.length === 0) return '-';
       return `<div class="mgmt-dropdown">
-        <button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="toggleMgmt(event, this)">관리 ▾</button>
+        <button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="toggleMgmt(event, this)">관�???/button>
         <div class="mgmt-menu">${items.join('')}</div>
       </div>`;
     }
@@ -322,8 +322,8 @@
       const tbody = document.getElementById('orderList');
       const title = document.getElementById('tableTitle');
       const isAllTab = currentPTab === 'all';
-      const tabLabel = isAllTab ? '전체' : STATUS_LABEL[currentPTab];
-      title.textContent = `${tabLabel} 목록 (${orders.length}건)`;
+      const tabLabel = isAllTab ? '?�체' : STATUS_LABEL[currentPTab];
+      title.textContent = `${tabLabel} 목록 (${orders.length}�?`;
 
       renderProductSummary(orders);
 
@@ -344,19 +344,19 @@
 
       let headCols = '';
       if (showBulk) headCols += '<th style="width:30px;"><input type="checkbox" onchange="toggleAllOrders(this)"></th>';
-      if (isAllTab) headCols += '<th>상태</th>';
-      headCols += '<th>신청일</th><th>상품명</th><th>가격</th><th>신청자</th><th>부서</th>';
+      if (isAllTab) headCols += '<th>?�태</th>';
+      headCols += '<th>?�청??/th><th>?�품�?/th><th>가�?/th><th>?�청??/th><th>부??/th>';
 
-      if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>이전 처리</th>';
-      else if (currentPTab === 'purchased') headCols += '<th>준비 처리</th>';
+      if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>?�전 처리</th>';
+      else if (currentPTab === 'purchased') headCols += '<th>준�?처리</th>';
       else if (currentPTab === 'delivered') headCols += '<th>구매 처리</th>';
 
-      headCols += '<th>관리</th>';
+      headCols += '<th>관�?/th>';
       document.getElementById('tableHead').innerHTML = headCols;
 
       const colCount = document.getElementById('tableHead').children.length;
       if (orders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">해당 상태의 주문이 없습니다.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">?�당 ?�태??주문???�습?�다.</td></tr>`;
         renderOrderPaging(1);
         return;
       }
@@ -429,21 +429,21 @@
 
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
-          await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, 변경상태: newStatus, 오류: error.message });
-          alert('상태 변경 실패: ' + tErr(error.message));
+          await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, 변경상?? newStatus, ?�류: error.message });
+          alert('?�태 변�??�패: ' + tErr(error.message));
           return;
         }
-        await logInfo('ORDER_STATUS_CHANGE', { orderId, 변경상태: newStatus });
+        await logInfo('ORDER_STATUS_CHANGE', { orderId, 변경상?? newStatus });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, 변경상태: newStatus, 오류: String(err) });
-        alert('상태 변경 중 오류: ' + tErr(err.message));
+        await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, 변경상?? newStatus, ?�류: String(err) });
+        alert('?�태 변�?�??�류: ' + tErr(err.message));
       }
     }
 
     async function revertStatus(orderId, prevStatus) {
-      const PREV_LABELS = { requested: '구매 신청', preparing: '상품 준비', purchased: '상품 구매' };
-      if (!confirm(`"${PREV_LABELS[prevStatus]}" 단계로 되돌리시겠습니까?`)) return;
+      const PREV_LABELS = { requested: '구매 ?�청', preparing: '?�품 준�?, purchased: '?�품 구매' };
+      if (!confirm(`"${PREV_LABELS[prevStatus]}" ?�계�??�돌리시겠습?�까?`)) return;
       try {
         const updateFields = { status: prevStatus };
         if (prevStatus === 'requested') { updateFields.prepared_at = null; updateFields.prepared_by = null; }
@@ -451,15 +451,15 @@
         if (prevStatus === 'purchased') { updateFields.delivered_at = null; updateFields.delivered_by = null; }
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
-          await logError('ORDER_REVERT_FAIL', { orderId, 변경상태: prevStatus, 오류: error.message });
-          alert('되돌리기 실패: ' + tErr(error.message));
+          await logError('ORDER_REVERT_FAIL', { orderId, 변경상?? prevStatus, ?�류: error.message });
+          alert('?�돌리기 ?�패: ' + tErr(error.message));
           return;
         }
-        await logInfo('ORDER_REVERT', { orderId, 변경상태: prevStatus });
+        await logInfo('ORDER_REVERT', { orderId, 변경상?? prevStatus });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_REVERT_ERROR', { orderId, 변경상태: prevStatus, 오류: String(err) });
-        alert('되돌리기 중 오류: ' + tErr(err.message));
+        await logError('ORDER_REVERT_ERROR', { orderId, 변경상?? prevStatus, ?�류: String(err) });
+        alert('?�돌리기 �??�류: ' + tErr(err.message));
       }
     }
 
@@ -470,40 +470,40 @@
       const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.82rem;background:${STATUS_COLOR[o.status]}22;color:${STATUS_COLOR[o.status]};font-weight:600;">${STATUS_LABEL[o.status]}</span>`;
       const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="this.remove()">
         <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
-          <h3 style="margin:0 0 0.8rem;">📋 주문 상세</h3>
-          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} 달란트</div>
-          <div style="font-size:0.85rem;margin-bottom:0.5rem;">신청자: ${o._userName} | 부서: ${o._deptName}</div>
-          <div style="font-size:0.85rem;margin-bottom:0.8rem;">상태: ${statusBadge}</div>
-          <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">처리 이력</div>
-          <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">처리 이력 없음</span>'}</div>
-          <div style="text-align:right;margin-top:1rem;"><button onclick="this.closest('[style*=fixed]').remove()" style="padding:0.4rem 1rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;">닫기</button></div>
+          <h3 style="margin:0 0 0.8rem;">?�� 주문 ?�세</h3>
+          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} ?��???/div>
+          <div style="font-size:0.85rem;margin-bottom:0.5rem;">?�청?? ${o._userName} | 부?? ${o._deptName}</div>
+          <div style="font-size:0.85rem;margin-bottom:0.8rem;">?�태: ${statusBadge}</div>
+          <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">처리 ?�력</div>
+          <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">처리 ?�력 ?�음</span>'}</div>
+          <div style="text-align:right;margin-top:1rem;"><button onclick="this.closest('[style*=fixed]').remove()" style="padding:0.4rem 1rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;">?�기</button></div>
         </div>
       </div>`;
       document.body.insertAdjacentHTML('beforeend', html);
     }
 
     async function confirmPurchase(orderId) {
-      if (!confirm('상품 구매를 확정하시겠습니까?\n달란트가 실제 차감됩니다.')) return;
+      if (!confirm('?�품 구매�??�정?�시겠습?�까?\n?��??��? ?�제 차감?�니??')) return;
       try {
         const { data, error } = await _sb.rpc('confirm_product_purchase', {
           p_order_id: orderId,
           p_admin_id: session.id
         });
         if (error) {
-          await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, 오류: error.message });
-          alert('구매 확정 실패: ' + tErr(error.message));
+          await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, ?�류: error.message });
+          alert('구매 ?�정 ?�패: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('ORDER_PURCHASE_CONFIRM_DENIED', { orderId, 사유: data.error });
+          await logWarn('ORDER_PURCHASE_CONFIRM_DENIED', { orderId, ?�유: data.error });
           alert(tErr(data.error));
           return;
         }
         await logInfo('ORDER_PURCHASE_CONFIRM', { orderId });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, 오류: String(err) });
-        alert('구매 확정 중 오류: ' + tErr(err.message));
+        await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, ?�류: String(err) });
+        alert('구매 ?�정 �??�류: ' + tErr(err.message));
       }
     }
 
@@ -520,8 +520,8 @@
 
     async function bulkPrepare() {
       const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
-      if (ids.length === 0) { alert('상품 준비 처리할 항목을 선택해주세요.'); return; }
-      if (!confirm(`${ids.length}건을 상품 준비 처리하시겠습니까?`)) return;
+      if (ids.length === 0) { alert('?�품 준�?처리????��???�택?�주?�요.'); return; }
+      if (!confirm(`${ids.length}건을 ?�품 준�?처리?�시겠습?�까?`)) return;
 
       let failCount = 0;
       for (const id of ids) {
@@ -530,17 +530,17 @@
           prepared_at: new Date().toISOString(),
           prepared_by: session.id
         }).eq('id', id);
-        if (error) { failCount++; await logError('ORDER_BULK_PREPARE_ITEM_FAIL', { orderId: id, 오류: error.message }); }
+        if (error) { failCount++; await logError('ORDER_BULK_PREPARE_ITEM_FAIL', { orderId: id, ?�류: error.message }); }
       }
-      if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
-      await logInfo('ORDER_BULK_PREPARE', { 건수: ids.length, 실패건수: failCount });
+      if (failCount > 0) alert(`${failCount}�?처리 ?�패. 로그�??�인?�주?�요.`);
+      await logInfo('ORDER_BULK_PREPARE', { 건수: ids.length, ?�패건수: failCount });
       await loadOrders();
     }
 
     async function bulkPurchase() {
       const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
-      if (ids.length === 0) { alert('구매 확정할 항목을 선택해주세요.'); return; }
-      if (!confirm(`${ids.length}건을 구매 확정하시겠습니까?\n달란트가 실제 차감됩니다.`)) return;
+      if (ids.length === 0) { alert('구매 ?�정????��???�택?�주?�요.'); return; }
+      if (!confirm(`${ids.length}건을 구매 ?�정?�시겠습?�까?\n?��??��? ?�제 차감?�니??`)) return;
 
       let failCount = 0;
       for (const id of ids) {
@@ -550,21 +550,21 @@
         });
         if (error) {
           failCount++;
-          await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', { orderId: id, 오류: error.message });
+          await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', { orderId: id, ?�류: error.message });
         } else if (data && data.success === false) {
           failCount++;
-          await logWarn('ORDER_BULK_PURCHASE_DENIED', { orderId: id, 사유: data.error });
+          await logWarn('ORDER_BULK_PURCHASE_DENIED', { orderId: id, ?�유: data.error });
         }
       }
-      if (failCount > 0) alert(`${failCount}건 처리 실패. 잔액 부족 등의 사유일 수 있습니다.`);
-      await logInfo('ORDER_BULK_PURCHASE', { 건수: ids.length, 실패건수: failCount });
+      if (failCount > 0) alert(`${failCount}�?처리 ?�패. ?�액 부�??�의 ?�유?????�습?�다.`);
+      await logInfo('ORDER_BULK_PURCHASE', { 건수: ids.length, ?�패건수: failCount });
       await loadOrders();
     }
 
     async function bulkDeliver() {
       const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
-      if (ids.length === 0) { alert('지급 완료 처리할 항목을 선택해주세요.'); return; }
-      if (!confirm(`${ids.length}건을 지급 완료 처리하시겠습니까?`)) return;
+      if (ids.length === 0) { alert('지�??�료 처리????��???�택?�주?�요.'); return; }
+      if (!confirm(`${ids.length}건을 지�??�료 처리?�시겠습?�까?`)) return;
 
       let failCount = 0;
       for (const id of ids) {
@@ -573,10 +573,10 @@
           delivered_at: new Date().toISOString(),
           delivered_by: session.id
         }).eq('id', id);
-        if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, 오류: error.message }); }
+        if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, ?�류: error.message }); }
       }
-      if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
-      await logInfo('ORDER_BULK_DELIVER', { 건수: ids.length, 실패건수: failCount });
+      if (failCount > 0) alert(`${failCount}�?처리 ?�패. 로그�??�인?�주?�요.`);
+      await logInfo('ORDER_BULK_DELIVER', { 건수: ids.length, ?�패건수: failCount });
       await loadOrders();
     }
 
@@ -613,6 +613,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.40.0"></script>
+  <script src="../js/version.js?v=3.41.0"></script>
 </body>
 </html>
