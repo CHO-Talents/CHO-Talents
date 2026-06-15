@@ -361,11 +361,6 @@ body.admin-body {
 .btn-primary:hover { background: #5a4bd1; }
 .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
-#navThemeArea {
-  display: flex;
-  align-items: center;
-  margin-left: 0.3rem;
-}
 
 .form-error {
   background: #fff5f5;
@@ -689,14 +684,6 @@ table.admin-table tr:hover { background: #fafbfc; }
   line-height: 1;
 }
 
-/* ===== Mobile Top-bar Actions (theme + logout) ===== */
-.nav-mobile-actions {
-  display: none;
-  align-items: center;
-  gap: 0.35rem;
-  margin-left: auto;
-}
-
 /* ===== Responsive ===== */
 
 @media (max-width: 1024px) {
@@ -723,9 +710,10 @@ table.admin-table tr:hover { background: #fafbfc; }
   }
   .nav-hamburger { display: block; order: 3; }
   .admin-nav-brand { order: 1; }
-  .nav-mobile-actions { display: flex; order: 2; }
-  #navThemeArea { display: none !important; }
-  #navLogoutArea { display: none !important; }
+  .nav-header-actions { order: 2; gap: 0.3rem; }
+  .nav-header-actions #navAuthArea { display: none !important; }
+  .nav-header-actions #navLoginArea { display: none !important; }
+  .nav-header-logout { font-size: 0.72rem; padding: 0.2rem 0.55rem; }
   .admin-nav-links {
     display: none;
     flex-direction: column;
@@ -776,14 +764,6 @@ table.admin-table tr:hover { background: #fafbfc; }
     min-width: 16px;
     height: 16px;
     font-size: 0.62rem;
-  }
-  .btn-logout,
-  .btn-nav-logout {
-    width: 100%;
-    text-align: center;
-    margin-top: 0.2rem;
-    padding: 0.45rem 0.8rem;
-    font-size: 0.82rem;
   }
   .nav-user { font-size: 0.78rem; }
 

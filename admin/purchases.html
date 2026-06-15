@@ -187,7 +187,7 @@
             profiles = profiles.concat(processors || []);
           }
         } else {
-          const { data: profileRows } = await _sb.from('profiles').select('id,display_name,username,department_id').in('id', allIds);
+          const { data: profileRows } = await _sb.from('profiles').select('id,display_name,username,department_id,class_number').in('id', allIds);
           profiles = profileRows || [];
         }
         profileMap = {};
@@ -206,6 +206,7 @@
         o._userName = prof ? (prof.display_name || prof.username) : '-';
         o._deptId = prof ? prof.department_id : null;
         o._deptName = prof && prof.department_id ? (deptMap[prof.department_id] || '-') : '-';
+        o._classNum = prof ? (prof.class_number || 0) : 0;
       });
 
       const deptSel = document.getElementById('deptFilter');
@@ -216,6 +217,7 @@
       updateOrderBadge();
     }
 
+    const _ORDER_STATUS_RANK = { requested: 0, prepared: 1, purchased: 2, delivered: 3 };
     function getVisibleOrders() {
       let orders;
       if (currentPTab === 'all') {
@@ -230,6 +232,15 @@
       const dateTo = document.getElementById('dateTo').value;
       if (dateFrom) orders = orders.filter(o => (o.created_at || '').slice(0, 10) >= dateFrom);
       if (dateTo) orders = orders.filter(o => (o.created_at || '').slice(0, 10) <= dateTo);
+      orders.sort((a, b) => {
+        const sA = _ORDER_STATUS_RANK[a.status] ?? 9;
+        const sB = _ORDER_STATUS_RANK[b.status] ?? 9;
+        if (sA !== sB) return sA - sB;
+        const dCmp = (a._deptName || '').localeCompare(b._deptName || '', 'ko');
+        if (dCmp !== 0) return dCmp;
+        if ((a._classNum || 0) !== (b._classNum || 0)) return (a._classNum || 0) - (b._classNum || 0);
+        return (a._userName || '').localeCompare(b._userName || '', 'ko');
+      });
       return orders;
     }
 

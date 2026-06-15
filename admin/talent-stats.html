@@ -370,14 +370,21 @@
         const dName = prof.department_id ? (deptMap[prof.department_id] || '미배정') : '미배정';
         const uName = prof.display_name || prof.username || '-';
         const key = `${dName}|${uName}|${prof.id}`;
-        if (!byUser[key]) byUser[key] = { id: prof.id, dept: dName, name: uName, type: prof.user_type, amount: 0, count: 0, items: {} };
+        if (!byUser[key]) byUser[key] = { id: prof.id, dept: dName, name: uName, type: prof.user_type, classNum: prof.class_number || 0, permLevel: prof.permission_level || '', amount: 0, count: 0, items: {} };
         byUser[key].amount += t.amount || 0; byUser[key].count++;
         const desc = t.description || '기타';
         byUser[key].items[desc] = (byUser[key].items[desc] || 0) + (t.amount || 0);
       });
       const allUsers = Object.values(byUser);
-      const teachers = allUsers.filter(u => u.type === 'teacher').sort((a, b) => b.amount - a.amount);
-      const students = allUsers.filter(u => u.type !== 'teacher').sort((a, b) => b.amount - a.amount);
+      const _permRank = { admin:100, evangelist:90, chief:80, purchase_teacher:70, dept_teacher:60, teacher:40, student:20 };
+      const _sortStatUsers = (arr) => arr.sort((a, b) => {
+        const d = a.dept.localeCompare(b.dept, 'ko'); if (d !== 0) return d;
+        if (a.classNum !== b.classNum) return a.classNum - b.classNum;
+        const pr = (_permRank[b.permLevel]||0) - (_permRank[a.permLevel]||0); if (pr !== 0) return pr;
+        return a.name.localeCompare(b.name, 'ko');
+      });
+      const teachers = _sortStatUsers(allUsers.filter(u => u.type === 'teacher'));
+      const students = _sortStatUsers(allUsers.filter(u => u.type !== 'teacher'));
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
       const avgPP = allUsers.length > 0 ? Math.round(total / allUsers.length) : 0;
 

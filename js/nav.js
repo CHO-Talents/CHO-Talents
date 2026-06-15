@@ -124,10 +124,14 @@ function renderNav(containerId) {
 
   let html = `<nav class="admin-nav" id="mainNavBar">`;
   html += `<a href="${_navResolveHref('index.html')}" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>`;
-  html += `<div class="nav-mobile-actions" id="navMobileActions">`;
-  html += `<button class="btn-nav-logout nav-mobile-logout-btn" id="navMobileLogoutBtn" style="display:none;">로그아웃</button>`;
-  html += `<div id="navMobileTheme"></div>`;
+
+  html += `<div class="nav-header-actions" id="navHeaderActions">`;
+  html += `<span id="navLoginArea"><a href="${_navResolveHref('login.html')}" class="nav-header-login">로그인</a></span>`;
+  html += `<span id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></span>`;
+  html += `<button class="nav-header-logout" id="navLogoutBtn" style="display:none;">로그아웃</button>`;
+  html += `<div id="navThemePicker"></div>`;
   html += `</div>`;
+
   html += `<button class="nav-hamburger" id="navHamburger" aria-label="메뉴 열기">&#9776;</button>`;
   html += `<ul class="admin-nav-links" id="navLinks">`;
 
@@ -148,10 +152,6 @@ function renderNav(containerId) {
     html += `</ul></li>`;
   });
 
-  html += `<li id="navLoginArea"><a href="${_navResolveHref('login.html')}">로그인</a></li>`;
-  html += `<li id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></li>`;
-  html += `<li id="navLogoutArea" style="display:none;"><button class="btn-nav-logout" id="navLogoutBtn">로그아웃</button></li>`;
-  html += `<li id="navThemeArea"><div id="navThemePicker"></div></li>`;
   html += `</ul></nav>`;
 
   container.innerHTML = html;
@@ -189,13 +189,14 @@ function _navBindEvents() {
     });
   });
 
-  document.querySelectorAll('#navLogoutBtn, #navMobileLogoutBtn').forEach(btn => {
-    btn.addEventListener('click', () => {
+  const logoutBtn = document.getElementById('navLogoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
       if (typeof logout === 'function') {
         logout(_navResolveHref('login.html'));
       }
     });
-  });
+  }
 }
 
 function _navPositionDropdown(li) {
@@ -222,24 +223,21 @@ function _navPositionDropdown(li) {
 function _navInitThemePicker() {
   if (typeof renderThemePicker === 'function') {
     renderThemePicker('navThemePicker');
-    renderThemePicker('navMobileTheme');
   }
 }
 
 function navUpdateAuth(session) {
   const loginArea = document.getElementById('navLoginArea');
   const authArea = document.getElementById('navAuthArea');
-  const logoutArea = document.getElementById('navLogoutArea');
+  const logoutBtn = document.getElementById('navLogoutBtn');
   const navUser = document.getElementById('navUser');
   const navMyTalent = document.getElementById('navMyTalent');
   const navMyOrders = document.getElementById('navMyOrders');
 
-  const mobileLogout = document.getElementById('navMobileLogoutBtn');
   if (session) {
     if (loginArea) loginArea.style.display = 'none';
     if (authArea) authArea.style.display = '';
-    if (logoutArea) logoutArea.style.display = '';
-    if (mobileLogout) mobileLogout.style.display = '';
+    if (logoutBtn) logoutBtn.style.display = '';
     if (navUser) {
       const perm = session.permissionLevel;
       const emoji = (typeof PERMISSION_EMOJI !== 'undefined') ? (PERMISSION_EMOJI[perm] || '👤') : '👤';
@@ -262,8 +260,7 @@ function navUpdateAuth(session) {
   } else {
     if (loginArea) loginArea.style.display = '';
     if (authArea) authArea.style.display = 'none';
-    if (logoutArea) logoutArea.style.display = 'none';
-    if (mobileLogout) mobileLogout.style.display = 'none';
+    if (logoutBtn) logoutBtn.style.display = 'none';
   }
 }
 

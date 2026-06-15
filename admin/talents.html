@@ -289,7 +289,7 @@
       await loadBatchSummary(userIds);
       await loadAttendanceThisWeek(userIds);
 
-      talentUserList = data;
+      talentUserList = sortUserList(data, getDeptName);
       renderTalentTable();
     }
 

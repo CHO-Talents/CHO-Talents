@@ -405,8 +405,8 @@
     function renderUsers() {
       let list = allUsers;
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter);
-      const teachers = list.filter(u => u.user_type === 'teacher');
-      const students = list.filter(u => u.user_type === 'student');
+      const teachers = sortUserList(list.filter(u => u.user_type === 'teacher'), getDeptName);
+      const students = sortUserList(list.filter(u => u.user_type === 'student'), getDeptName);
       document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
       _nameMap = resolveDisplayNames(allUsers);
       renderGroup(teachers, 'teacher', 'teacherList', 'teacherPaging', 'teacherCount');
