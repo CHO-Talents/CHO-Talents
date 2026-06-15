@@ -638,16 +638,16 @@ table.data-table tr:hover { background: #fafbfc; }
     margin-left: 0.5rem;
     display: none;
   }
-  .top-nav-links > li:hover > .nav-dropdown-menu,
-  .admin-nav-links > li:hover > .nav-dropdown-menu { display: none !important; }
+  .top-nav-links > li:hover:not(.dropdown-open):not(.mobile-open) > .nav-dropdown-menu,
+  .admin-nav-links > li:hover:not(.dropdown-open):not(.mobile-open) > .nav-dropdown-menu { display: none !important; }
   .top-nav-links > li:hover:not(.dropdown-open):not(.mobile-open) > .nav-dropdown-toggle,
   .admin-nav-links > li:hover:not(.dropdown-open):not(.mobile-open) > .nav-dropdown-toggle {
     background: transparent; color: var(--c-text);
   }
   .top-nav-links > li.mobile-open > .nav-dropdown-menu,
-  .admin-nav-links > li.mobile-open > .nav-dropdown-menu { display: block; }
+  .admin-nav-links > li.mobile-open > .nav-dropdown-menu { display: block !important; }
   .top-nav-links > li.dropdown-open > .nav-dropdown-menu,
-  .admin-nav-links > li.dropdown-open > .nav-dropdown-menu { display: block; }
+  .admin-nav-links > li.dropdown-open > .nav-dropdown-menu { display: block !important; }
   .top-nav-links a,
   .admin-nav-links a {
     display: block;

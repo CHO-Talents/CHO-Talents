@@ -761,12 +761,12 @@ table.admin-table tr:hover { background: #fafbfc; }
     margin-left: 0.5rem;
     display: none;
   }
-  .admin-nav-links > li:hover > .nav-dropdown-menu { display: none !important; }
+  .admin-nav-links > li:hover:not(.dropdown-open):not(.mobile-open) > .nav-dropdown-menu { display: none !important; }
   .admin-nav-links > li:hover:not(.dropdown-open):not(.mobile-open) > .nav-dropdown-toggle {
     background: transparent; color: var(--c-text, var(--admin-text));
   }
-  .admin-nav-links > li.mobile-open > .nav-dropdown-menu { display: block; }
-  .admin-nav-links > li.dropdown-open > .nav-dropdown-menu { display: block; }
+  .admin-nav-links > li.mobile-open > .nav-dropdown-menu { display: block !important; }
+  .admin-nav-links > li.dropdown-open > .nav-dropdown-menu { display: block !important; }
   .admin-nav-links a {
     display: block;
     padding: 0.5rem 0.6rem;
