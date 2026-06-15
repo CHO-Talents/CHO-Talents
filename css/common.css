@@ -118,15 +118,21 @@ body.page-body {
   margin-left: 0.1rem;
 }
 
-.top-nav-links > li:hover > .nav-dropdown-toggle,
 .top-nav-links > li.dropdown-open > .nav-dropdown-toggle,
 .top-nav-links > li > .nav-dropdown-toggle.active,
-.admin-nav-links > li:hover > .nav-dropdown-toggle,
 .admin-nav-links > li.dropdown-open > .nav-dropdown-toggle,
 .admin-nav-links > li > .nav-dropdown-toggle.active {
   background: var(--c-primary);
   color: #fff;
   border-radius: 8px;
+}
+@media (hover: hover) {
+  .top-nav-links > li:hover > .nav-dropdown-toggle,
+  .admin-nav-links > li:hover > .nav-dropdown-toggle {
+    background: var(--c-primary);
+    color: #fff;
+    border-radius: 8px;
+  }
 }
 
 .top-nav-links .nav-dropdown-menu,
@@ -146,11 +152,15 @@ body.page-body {
   list-style: none;
 }
 
-.top-nav-links > li:hover > .nav-dropdown-menu,
 .top-nav-links > li.dropdown-open > .nav-dropdown-menu,
-.admin-nav-links > li:hover > .nav-dropdown-menu,
 .admin-nav-links > li.dropdown-open > .nav-dropdown-menu {
   display: block;
+}
+@media (hover: hover) {
+  .top-nav-links > li:hover > .nav-dropdown-menu,
+  .admin-nav-links > li:hover > .nav-dropdown-menu {
+    display: block;
+  }
 }
 
 .top-nav-links .nav-dropdown-menu li a,
@@ -247,13 +257,15 @@ body.page-body {
 
 /* ===== Header Actions (logout + theme - single instance, always 1 row) ===== */
 .nav-header-actions {
-  display: flex;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   align-items: center;
   gap: 0.4rem;
   margin-left: auto;
-  flex-wrap: nowrap;
   flex-shrink: 0;
 }
+.nav-header-actions > * { flex-shrink: 0; }
 .nav-header-logout {
   font-size: 0.78rem;
   padding: 0.25rem 0.7rem;

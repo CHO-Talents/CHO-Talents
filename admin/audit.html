@@ -3,53 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>작업 이력 - 달란트 마을</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.40.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.40.0" />
+  <title>?�업 ?�력 - ?��???마을</title>
+  <link rel="stylesheet" href="../css/themes.css?v=3.41.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.41.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">📝 작업 이력 관리</h2>
-    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">관리자 작업(사용자 수정, 권한 변경, 부서 이동, 비밀번호 초기화 등)의 이력을 조회합니다.</p>
+    <h2 style="margin-bottom:1rem;">?�� ?�업 ?�력 관�?/h2>
+    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">관리자 ?�업(?�용???�정, 권한 변�? 부???�동, 비�?번호 초기???????�력??조회?�니??</p>
 
     <div id="auditCategoryFilters" style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.8rem;">
-      <button class="filter-btn active" onclick="setFilter('all')">전체</button>
-      <button class="filter-btn" onclick="setFilter('USER')">👤 사용자</button>
-      <button class="filter-btn" onclick="setFilter('REGISTER')">📝 등록</button>
-      <button class="filter-btn" onclick="setFilter('DEPT')">🏢 부서</button>
-      <button class="filter-btn" onclick="setFilter('TALENT')">💰 달란트</button>
-      <button class="filter-btn" onclick="setFilter('ORDER')">🛒 상품/주문</button>
-      <button class="filter-btn" onclick="setFilter('QNA')">❓ Q&A</button>
-      <button class="filter-btn" onclick="setFilter('AUTH')">🔑 인증</button>
-      <button class="filter-btn" onclick="setFilter('LOG_MGMT')">📋 로그 관리</button>
-      <button class="filter-btn" onclick="setFilter('PERM')">🔐 권한/설정</button>
+      <button class="filter-btn active" onclick="setFilter('all')">?�체</button>
+      <button class="filter-btn" onclick="setFilter('USER')">?�� ?�용??/button>
+      <button class="filter-btn" onclick="setFilter('REGISTER')">?�� ?�록</button>
+      <button class="filter-btn" onclick="setFilter('DEPT')">?�� 부??/button>
+      <button class="filter-btn" onclick="setFilter('TALENT')">?�� ?��???/button>
+      <button class="filter-btn" onclick="setFilter('ORDER')">?�� ?�품/주문</button>
+      <button class="filter-btn" onclick="setFilter('QNA')">??Q&A</button>
+      <button class="filter-btn" onclick="setFilter('AUTH')">?�� ?�증</button>
+      <button class="filter-btn" onclick="setFilter('LOG_MGMT')">?�� 로그 관�?/button>
+      <button class="filter-btn" onclick="setFilter('PERM')">?�� 권한/?�정</button>
     </div>
     <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.4rem;flex-wrap:wrap;align-items:center;">
       <input type="date" class="filter-input" id="auditDateFrom" />
       <span style="font-size:0.8rem;color:#adb5bd;">~</span>
       <input type="date" class="filter-input" id="auditDateTo" />
       <span style="display:inline-flex;gap:0.2rem;">
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('today')">오늘</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('week')">1주</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('month')">1달</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('year')">1년</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('today')">?�늘</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('week')">1�?/button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('month')">1??/button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setAuditPeriod('year')">1??/button>
       </span>
       <button class="filter-btn" onclick="loadAuditLogs()">조회</button>
-      <input type="text" id="auditSearch" placeholder="작업자/대상 검색..." class="filter-input" style="flex:1;min-width:120px;" oninput="auditPage=1;renderAudit()" />
+      <input type="text" id="auditSearch" placeholder="?�업???�??검??.." class="filter-input" style="flex:1;min-width:120px;" oninput="auditPage=1;renderAudit()" />
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="auditTitle">작업 이력 (0건)</div>
+        <div class="admin-table-title" id="auditTitle">?�업 ?�력 (0�?</div>
         <div class="filters" style="display:flex;align-items:center;gap:0.3rem;margin-left:auto;">
           <span id="auditPageSizeWrap"></span>
         </div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>시간</th><th>작업자</th><th>작업 유형</th><th>대상</th><th>상세</th></tr></thead>
-        <tbody id="auditList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
+        <thead><tr><th>?�간</th><th>?�업??/th><th>?�업 ?�형</th><th>?�??/th><th>?�세</th></tr></thead>
+        <tbody id="auditList"><tr><td colspan="5" class="empty-state">로딩 �?..</td></tr></tbody>
       </table>
       <div id="auditPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
@@ -58,22 +58,22 @@
   <div class="modal-overlay hidden" id="auditDetailModal">
     <div class="modal-box" style="max-width:650px;max-height:80vh;overflow-y:auto;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-        <h3 class="modal-title">작업 상세 정보</h3>
-        <button class="btn-cancel" onclick="closeDetailModal()">닫기</button>
+        <h3 class="modal-title">?�업 ?�세 ?�보</h3>
+        <button class="btn-cancel" onclick="closeDetailModal()">?�기</button>
       </div>
       <div id="auditDetailBody" style="font-size:0.85rem;"></div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.40.0"></script>
-  <script src="../js/supabase-config.js?v=3.40.0"></script>
-  <script src="../js/activity-log.js?v=3.40.0"></script>
-  <script src="../js/auth.js?v=3.40.0"></script>
-  <script src="../js/theme.js?v=3.40.0"></script>
-  <script src="../js/nav.js?v=3.40.0"></script>
-  <script src="../js/page-size.js?v=3.40.0"></script>
-  <script src="../js/user-mgmt.js?v=3.40.0"></script>
+  <script src="../config/public-config.js?v=3.41.0"></script>
+  <script src="../js/supabase-config.js?v=3.41.0"></script>
+  <script src="../js/activity-log.js?v=3.41.0"></script>
+  <script src="../js/auth.js?v=3.41.0"></script>
+  <script src="../js/theme.js?v=3.41.0"></script>
+  <script src="../js/nav.js?v=3.41.0"></script>
+  <script src="../js/page-size.js?v=3.41.0"></script>
+  <script src="../js/user-mgmt.js?v=3.41.0"></script>
   <script>
     initSupabase();
     let session, allAuditLogs = [], currentFilter = 'all';
@@ -82,107 +82,107 @@
     let auditPage = 1;
 
     const AUDIT_ACTIONS = {
-      // === USER (사용자) ===
-      USER_CREATE: { label: '사용자 등록', category: 'USER', emoji: '➕' },
-      USER_UPDATE: { label: '사용자 수정', category: 'USER', emoji: '✏️' },
-      USER_DELETE: { label: '사용자 삭제', category: 'USER', emoji: '🗑️' },
-      USER_PW_RESET: { label: '비밀번호 초기화', category: 'USER', emoji: '🔑' },
-      PASSWORD_RESET: { label: '비밀번호 초기화', category: 'USER', emoji: '🔑' },
-      // === REGISTER (등록) ===
-      REGISTER_REQUEST: { label: '가입 신청', category: 'REGISTER', emoji: '📝' },
-      REGISTER_APPROVE: { label: '가입 승인', category: 'REGISTER', emoji: '✅' },
-      REGISTER_REJECT: { label: '가입 거부', category: 'REGISTER', emoji: '❌' },
-      // === DEPT (부서) ===
-      DEPT_CREATE: { label: '부서 등록', category: 'DEPT', emoji: '🏢' },
-      DEPT_UPDATE: { label: '부서 수정', category: 'DEPT', emoji: '✏️' },
-      DEPT_DELETE: { label: '부서 삭제', category: 'DEPT', emoji: '🗑️' },
-      DEPT_DEACTIVATE: { label: '부서 비활성화', category: 'DEPT', emoji: '🚫' },
-      DEPT_TRANSFER_IMMEDIATE: { label: '부서 즉시 이동', category: 'DEPT', emoji: '🔄' },
-      DEPT_TRANSFER_REQUEST: { label: '부서 이동 요청', category: 'DEPT', emoji: '📮' },
-      DEPT_TRANSFER_APPROVE: { label: '부서 이동 승인', category: 'DEPT', emoji: '✅' },
-      DEPT_TRANSFER_REJECT: { label: '부서 이동 거부', category: 'DEPT', emoji: '❌' },
-      MANAGER_UPDATE: { label: '관리자 수정', category: 'DEPT', emoji: '👤' },
-      MANAGER_PROMOTE: { label: '관리자 승격', category: 'DEPT', emoji: '⬆️' },
-      // === TALENT (달란트) ===
-      TALENT_GIVE: { label: '달란트 지급', category: 'TALENT', emoji: '💰' },
-      TALENT_GIVE_ITEM: { label: '달란트 항목 지급', category: 'TALENT', emoji: '💰' },
-      TALENT_GIVE_ITEMS: { label: '달란트 일괄 지급', category: 'TALENT', emoji: '💰' },
-      TALENT_MANUAL_GIVE: { label: '달란트 수동 지급', category: 'TALENT', emoji: '✍️' },
-      TALENT_USE: { label: '달란트 사용', category: 'TALENT', emoji: '💸' },
-      TALENT_RETURN: { label: '달란트 반환', category: 'TALENT', emoji: '↩️' },
-      ATTENDANCE_GIVE: { label: '출석 달란트 지급', category: 'TALENT', emoji: '⛪' },
-      ATTENDANCE_CANCEL: { label: '출석 달란트 취소', category: 'TALENT', emoji: '🔙' },
-      TALENT_ITEM_CANCEL: { label: '달란트 항목 취소', category: 'TALENT', emoji: '🔙' },
-      TALENT_ITEM_CREATE: { label: '달란트 항목 등록', category: 'TALENT', emoji: '📋' },
-      TALENT_ITEM_UPDATE: { label: '달란트 항목 수정', category: 'TALENT', emoji: '📋' },
-      TALENT_ITEM_TOGGLE: { label: '달란트 항목 활성 토글', category: 'TALENT', emoji: '🔘' },
-      TALENT_ITEM_QUICKBTN: { label: '달란트 퀵버튼 설정', category: 'TALENT', emoji: '⚡' },
-      qr_create: { label: 'QR 코드 생성', category: 'TALENT', emoji: '📷' },
-      qr_edit: { label: 'QR 코드 수정', category: 'TALENT', emoji: '✏️' },
-      qr_toggle: { label: 'QR 코드 토글', category: 'TALENT', emoji: '🔘' },
-      qr_scan: { label: 'QR 달란트 수령', category: 'TALENT', emoji: '📱' },
-      // === ORDER (상품/주문) ===
-      PRODUCT_CREATE: { label: '상품 등록', category: 'ORDER', emoji: '🛍️' },
-      PRODUCT_UPDATE: { label: '상품 수정', category: 'ORDER', emoji: '✏️' },
-      PRODUCT_DELETE: { label: '상품 삭제', category: 'ORDER', emoji: '🗑️' },
-      PRODUCT_DEACTIVATE: { label: '상품 비활성화', category: 'ORDER', emoji: '🚫' },
-      PRODUCT_SOFT_DELETE: { label: '상품 비활성화', category: 'ORDER', emoji: '🚫' },
-      ORDER_REQUEST_SUCCESS: { label: '상품 구매 신청', category: 'ORDER', emoji: '🛒' },
-      PROXY_ORDER_SUCCESS: { label: '대리 구매 신청', category: 'ORDER', emoji: '🛒' },
-      order_cancel: { label: '주문 취소', category: 'ORDER', emoji: '❌' },
-      ORDER_STATUS_CHANGE: { label: '주문 상태 변경', category: 'ORDER', emoji: '🔄' },
-      ORDER_REVERT: { label: '주문 상태 되돌리기', category: 'ORDER', emoji: '↩️' },
-      ORDER_PURCHASE_CONFIRM: { label: '구매 확정', category: 'ORDER', emoji: '✅' },
-      ORDER_BULK_PREPARE: { label: '일괄 상품 준비', category: 'ORDER', emoji: '📦' },
-      ORDER_BULK_PURCHASE: { label: '일괄 구매 확정', category: 'ORDER', emoji: '📦' },
-      ORDER_BULK_DELIVER: { label: '일괄 상품 지급', category: 'ORDER', emoji: '📦' },
+      // === USER (?�용?? ===
+      USER_CREATE: { label: '?�용???�록', category: 'USER', emoji: '?? },
+      USER_UPDATE: { label: '?�용???�정', category: 'USER', emoji: '?�️' },
+      USER_DELETE: { label: '?�용????��', category: 'USER', emoji: '?���? },
+      USER_PW_RESET: { label: '비�?번호 초기??, category: 'USER', emoji: '?��' },
+      PASSWORD_RESET: { label: '비�?번호 초기??, category: 'USER', emoji: '?��' },
+      // === REGISTER (?�록) ===
+      REGISTER_REQUEST: { label: '가???�청', category: 'REGISTER', emoji: '?��' },
+      REGISTER_APPROVE: { label: '가???�인', category: 'REGISTER', emoji: '?? },
+      REGISTER_REJECT: { label: '가??거�?', category: 'REGISTER', emoji: '?? },
+      // === DEPT (부?? ===
+      DEPT_CREATE: { label: '부???�록', category: 'DEPT', emoji: '?��' },
+      DEPT_UPDATE: { label: '부???�정', category: 'DEPT', emoji: '?�️' },
+      DEPT_DELETE: { label: '부????��', category: 'DEPT', emoji: '?���? },
+      DEPT_DEACTIVATE: { label: '부??비활?�화', category: 'DEPT', emoji: '?��' },
+      DEPT_TRANSFER_IMMEDIATE: { label: '부??즉시 ?�동', category: 'DEPT', emoji: '?��' },
+      DEPT_TRANSFER_REQUEST: { label: '부???�동 ?�청', category: 'DEPT', emoji: '?��' },
+      DEPT_TRANSFER_APPROVE: { label: '부???�동 ?�인', category: 'DEPT', emoji: '?? },
+      DEPT_TRANSFER_REJECT: { label: '부???�동 거�?', category: 'DEPT', emoji: '?? },
+      MANAGER_UPDATE: { label: '관리자 ?�정', category: 'DEPT', emoji: '?��' },
+      MANAGER_PROMOTE: { label: '관리자 ?�격', category: 'DEPT', emoji: '⬆️' },
+      // === TALENT (?��??? ===
+      TALENT_GIVE: { label: '?��???지�?, category: 'TALENT', emoji: '?��' },
+      TALENT_GIVE_ITEM: { label: '?��?????�� 지�?, category: 'TALENT', emoji: '?��' },
+      TALENT_GIVE_ITEMS: { label: '?��????�괄 지�?, category: 'TALENT', emoji: '?��' },
+      TALENT_MANUAL_GIVE: { label: '?��????�동 지�?, category: 'TALENT', emoji: '?�️' },
+      TALENT_USE: { label: '?��????�용', category: 'TALENT', emoji: '?��' },
+      TALENT_RETURN: { label: '?��???반환', category: 'TALENT', emoji: '?�️' },
+      ATTENDANCE_GIVE: { label: '출석 ?��???지�?, category: 'TALENT', emoji: '?? },
+      ATTENDANCE_CANCEL: { label: '출석 ?��???취소', category: 'TALENT', emoji: '?��' },
+      TALENT_ITEM_CANCEL: { label: '?��?????�� 취소', category: 'TALENT', emoji: '?��' },
+      TALENT_ITEM_CREATE: { label: '?��?????�� ?�록', category: 'TALENT', emoji: '?��' },
+      TALENT_ITEM_UPDATE: { label: '?��?????�� ?�정', category: 'TALENT', emoji: '?��' },
+      TALENT_ITEM_TOGGLE: { label: '?��?????�� ?�성 ?��?', category: 'TALENT', emoji: '?��' },
+      TALENT_ITEM_QUICKBTN: { label: '?��????�버???�정', category: 'TALENT', emoji: '?? },
+      qr_create: { label: 'QR 코드 ?�성', category: 'TALENT', emoji: '?��' },
+      qr_edit: { label: 'QR 코드 ?�정', category: 'TALENT', emoji: '?�️' },
+      qr_toggle: { label: 'QR 코드 ?��?', category: 'TALENT', emoji: '?��' },
+      qr_scan: { label: 'QR ?��????�령', category: 'TALENT', emoji: '?��' },
+      // === ORDER (?�품/주문) ===
+      PRODUCT_CREATE: { label: '?�품 ?�록', category: 'ORDER', emoji: '?���? },
+      PRODUCT_UPDATE: { label: '?�품 ?�정', category: 'ORDER', emoji: '?�️' },
+      PRODUCT_DELETE: { label: '?�품 ??��', category: 'ORDER', emoji: '?���? },
+      PRODUCT_DEACTIVATE: { label: '?�품 비활?�화', category: 'ORDER', emoji: '?��' },
+      PRODUCT_SOFT_DELETE: { label: '?�품 비활?�화', category: 'ORDER', emoji: '?��' },
+      ORDER_REQUEST_SUCCESS: { label: '?�품 구매 ?�청', category: 'ORDER', emoji: '?��' },
+      PROXY_ORDER_SUCCESS: { label: '?��?구매 ?�청', category: 'ORDER', emoji: '?��' },
+      order_cancel: { label: '주문 취소', category: 'ORDER', emoji: '?? },
+      ORDER_STATUS_CHANGE: { label: '주문 ?�태 변�?, category: 'ORDER', emoji: '?��' },
+      ORDER_REVERT: { label: '주문 ?�태 ?�돌리기', category: 'ORDER', emoji: '?�️' },
+      ORDER_PURCHASE_CONFIRM: { label: '구매 ?�정', category: 'ORDER', emoji: '?? },
+      ORDER_BULK_PREPARE: { label: '?�괄 ?�품 준�?, category: 'ORDER', emoji: '?��' },
+      ORDER_BULK_PURCHASE: { label: '?�괄 구매 ?�정', category: 'ORDER', emoji: '?��' },
+      ORDER_BULK_DELIVER: { label: '?�괄 ?�품 지�?, category: 'ORDER', emoji: '?��' },
       // === QNA (Q&A) ===
-      QNA_CREATE: { label: '질문 등록', category: 'QNA', emoji: '❓' },
-      QNA_ANSWER: { label: '답변 등록', category: 'QNA', emoji: '💬' },
-      QNA_COMMENT: { label: '댓글 등록', category: 'QNA', emoji: '💬' },
-      QNA_DELETE: { label: 'Q&A 삭제', category: 'QNA', emoji: '🗑️' },
-      QNA_FAQ_SET: { label: 'FAQ 설정', category: 'QNA', emoji: '📌' },
-      // === AUTH (인증) ===
-      LOGIN_SUCCESS: { label: '로그인 성공', category: 'AUTH', emoji: '🔓' },
-      LOGOUT: { label: '로그아웃', category: 'AUTH', emoji: '🔒' },
-      PASSWORD_CHANGE: { label: '비밀번호 변경', category: 'AUTH', emoji: '🔑' },
-      // === LOG_MGMT (로그 관리) ===
-      LOG_ACKNOWLEDGED: { label: '로그 확인', category: 'LOG_MGMT', emoji: '✅' },
-      LOG_BULK_ACK: { label: '로그 일괄 확인', category: 'LOG_MGMT', emoji: '✅' },
-      LOG_RANGE_DELETE: { label: '로그 범위 삭제', category: 'LOG_MGMT', emoji: '🗑️' },
-      LOG_SELECT_DELETE: { label: '로그 선택 삭제', category: 'LOG_MGMT', emoji: '🗑️' },
-      LOG_RESTORE: { label: '로그 복원', category: 'LOG_MGMT', emoji: '♻️' },
-      // === PERM (권한/설정) ===
-      ROLE_ACCESS_UPDATE: { label: '페이지 접근 권한 변경', category: 'PERM', emoji: '🔐' },
-      ROLE_FEATURE_UPDATE: { label: '페이지 기능 권한 변경', category: 'PERM', emoji: '🔧' },
-      PAGE_PERM_UPDATE: { label: '페이지 권한 설정 변경', category: 'PERM', emoji: '🛡️' },
-      REPORT_SAVE: { label: '보고서 저장', category: 'PERM', emoji: '📄' },
-      REPORT_DELETE: { label: '보고서 삭제', category: 'PERM', emoji: '🗑️' },
-      REPORT_SEED: { label: '보고서 시드 등록', category: 'PERM', emoji: '🌱' },
+      QNA_CREATE: { label: '질문 ?�록', category: 'QNA', emoji: '?? },
+      QNA_ANSWER: { label: '?��? ?�록', category: 'QNA', emoji: '?��' },
+      QNA_COMMENT: { label: '?��? ?�록', category: 'QNA', emoji: '?��' },
+      QNA_DELETE: { label: 'Q&A ??��', category: 'QNA', emoji: '?���? },
+      QNA_FAQ_SET: { label: 'FAQ ?�정', category: 'QNA', emoji: '?��' },
+      // === AUTH (?�증) ===
+      LOGIN_SUCCESS: { label: '로그???�공', category: 'AUTH', emoji: '?��' },
+      LOGOUT: { label: '로그?�웃', category: 'AUTH', emoji: '?��' },
+      PASSWORD_CHANGE: { label: '비�?번호 변�?, category: 'AUTH', emoji: '?��' },
+      // === LOG_MGMT (로그 관�? ===
+      LOG_ACKNOWLEDGED: { label: '로그 ?�인', category: 'LOG_MGMT', emoji: '?? },
+      LOG_BULK_ACK: { label: '로그 ?�괄 ?�인', category: 'LOG_MGMT', emoji: '?? },
+      LOG_RANGE_DELETE: { label: '로그 범위 ??��', category: 'LOG_MGMT', emoji: '?���? },
+      LOG_SELECT_DELETE: { label: '로그 ?�택 ??��', category: 'LOG_MGMT', emoji: '?���? },
+      LOG_RESTORE: { label: '로그 복원', category: 'LOG_MGMT', emoji: '?�️' },
+      // === PERM (권한/?�정) ===
+      ROLE_ACCESS_UPDATE: { label: '?�이지 ?�근 권한 변�?, category: 'PERM', emoji: '?��' },
+      ROLE_FEATURE_UPDATE: { label: '?�이지 기능 권한 변�?, category: 'PERM', emoji: '?��' },
+      PAGE_PERM_UPDATE: { label: '?�이지 권한 ?�정 변�?, category: 'PERM', emoji: '?���? },
+      REPORT_SAVE: { label: '보고???�??, category: 'PERM', emoji: '?��' },
+      REPORT_DELETE: { label: '보고????��', category: 'PERM', emoji: '?���? },
+      REPORT_SEED: { label: '보고???�드 ?�록', category: 'PERM', emoji: '?��' },
     };
 
     const AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
     const PERM_KEY_LABELS = {
-      super_admin: '최고 관리자', admin: '관리자', evangelist: '전도사님',
-      chief: '부장 교사', dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
+      super_admin: '최고 관리자', admin: '관리자', evangelist: '?�도?�님',
+      chief: '부??교사', dept_teacher: '부???�당 교사', teacher: '?�반 교사', student: '?�생'
     };
     const DETAIL_KEY_LABELS = {
-      targetName: '대상', displayName: '표시 이름', name: '이름', username: '아이디',
-      userId: '사용자 ID', roleKey: '역할', permissionKey: '권한', permissionLevel: '권한 등급',
-      rank: '순위', department: '부서', departmentId: '부서 ID', departmentName: '부서명',
-      fromDept: '이전 부서', toDept: '이동 부서', amount: '수량', balance: '잔액',
-      reason: '사유', taskId: '작업 ID', taskTitle: '작업 제목', pageId: '페이지 ID',
-      action: '작업', error: '오류', _userName: '작업자 이름', _client: '클라이언트 정보',
-      user_type: '유형', class_number: '반', old: '이전 값', new: '변경 값',
-      approval_scope: '승인 범위', transfer_type: '이동 유형', status: '상태',
-      product_name: '상품명', product_id: '상품 ID', price: '가격',
-      talent_balance: '달란트 잔액', pending_talent: '보류 달란트',
-      features: '기능 설정', description: '설명', email: '이메일',
-      fromDeptName: '이전 부서명', toDeptName: '이동 부서명',
-      is_super_admin: '슈퍼 관리자', is_active: '활성 상태',
-      '대상': '대상', '변경내역': '변경내역', '사유': '사유', '금액': '금액',
-      '항목명': '항목명', '수량': '수량', '상품명': '상품명', '주문번호': '주문번호',
-      '이전값': '이전 값', '변경값': '변경 값', '부서명': '부서명', '작업자': '작업자'
+      targetName: '?�??, displayName: '?�시 ?�름', name: '?�름', username: '?�이??,
+      userId: '?�용??ID', roleKey: '??��', permissionKey: '권한', permissionLevel: '권한 ?�급',
+      rank: '?�위', department: '부??, departmentId: '부??ID', departmentName: '부?�명',
+      fromDept: '?�전 부??, toDept: '?�동 부??, amount: '?�량', balance: '?�액',
+      reason: '?�유', taskId: '?�업 ID', taskTitle: '?�업 ?�목', pageId: '?�이지 ID',
+      action: '?�업', error: '?�류', _userName: '?�업???�름', _client: '?�라?�언???�보',
+      user_type: '?�형', class_number: '�?, old: '?�전 �?, new: '변�?�?,
+      approval_scope: '?�인 범위', transfer_type: '?�동 ?�형', status: '?�태',
+      product_name: '?�품�?, product_id: '?�품 ID', price: '가�?,
+      talent_balance: '?��????�액', pending_talent: '보류 ?��???,
+      features: '기능 ?�정', description: '?�명', email: '?�메??,
+      fromDeptName: '?�전 부?�명', toDeptName: '?�동 부?�명',
+      is_super_admin: '?�퍼 관리자', is_active: '?�성 ?�태',
+      '?�??: '?�??, '변경내??: '변경내??, '?�유': '?�유', '금액': '금액',
+      '??���?: '??���?, '?�량': '?�량', '?�품�?: '?�품�?, '주문번호': '주문번호',
+      '?�전�?: '?�전 �?, '변경값': '변�?�?, '부?�명': '부?�명', '?�업??: '?�업??
     };
 
     (async () => {
@@ -249,7 +249,7 @@
       const { data, error } = await query;
       if (error) {
         console.error('[AUDIT] load error:', error);
-        document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 오류: ${tErr(error.message)}</td></tr>`;
+        document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 ?�류: ${tErr(error.message)}</td></tr>`;
         return;
       }
       allAuditLogs = data || [];
@@ -270,17 +270,17 @@
         list = list.filter(l => {
           const userName = l.user_name || (l.details && l.details._userName) || l.username || '';
           const targetRaw = l.details?.targetName || l.details?.displayName || l.details?.name
-            || l.details?.['대상'] || l.details?.['변경내역'] || '';
+            || l.details?.['?�??] || l.details?.['변경내??] || '';
           const target = typeof targetRaw === 'string' ? targetRaw : JSON.stringify(targetRaw);
           return userName.toLowerCase().includes(search) || target.toLowerCase().includes(search) || (l.action || '').toLowerCase().includes(search);
         });
       }
 
-      document.getElementById('auditTitle').textContent = `작업 이력 (${list.length}건)`;
+      document.getElementById('auditTitle').textContent = `?�업 ?�력 (${list.length}�?`;
       const tbody = document.getElementById('auditList');
 
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">조회된 작업 이력이 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">조회???�업 ?�력???�습?�다.</td></tr>';
         renderAuditPaging(1);
         return;
       }
@@ -293,7 +293,7 @@
 
       const isAdmin = session.permissionRank >= 100;
       tbody.innerHTML = pageList.map(l => {
-        const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '📋', category: '' };
+        const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '?��', category: '' };
         const dt = l.created_at ? formatKSTShort(l.created_at) : '-';
         const actorName = l.user_name || (l.details && l.details._userName) || null;
         const actorId = l.username || null;
@@ -303,7 +303,7 @@
         } else if (actorId) {
           actor = actorId;
         } else {
-          actor = '시스템';
+          actor = '?�스??;
         }
         const target = extractTarget(l);
         return `<tr>
@@ -311,7 +311,7 @@
           <td>${actor}</td>
           <td><span class="level-badge INFO">${info.emoji} ${info.label}</span></td>
           <td>${target}</td>
-          <td><button class="filter-btn" onclick='showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>상세</button></td>
+          <td><button class="filter-btn" onclick='showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>?�세</button></td>
         </tr>`;
       }).join('');
       renderAuditPaging(totalPages);
@@ -338,15 +338,15 @@
     function extractTarget(log) {
       const d = log.details || {};
       if (d.targetName) return d.targetName;
-      if (d['대상']) return d['대상'];
+      if (d['?�??]) return d['?�??];
       if (d.displayName) return d.displayName;
       if (d.name) return d.name;
       if (d.username) return d.username;
-      if (d['항목명']) return d['항목명'];
-      if (d['상품명']) return d['상품명'];
+      if (d['??���?]) return d['??���?];
+      if (d['?�품�?]) return d['?�품�?];
       if (d.product_name) return d.product_name;
-      if (d['변경내역']) {
-        const changes = d['변경내역'];
+      if (d['변경내??]) {
+        const changes = d['변경내??];
         if (typeof changes === 'string') return changes;
         if (typeof changes === 'object') return JSON.stringify(changes);
       }
@@ -358,19 +358,19 @@
     }
 
     function showDetail(log) {
-      const info = AUDIT_ACTIONS[log.action] || { label: log.action, emoji: '📋' };
+      const info = AUDIT_ACTIONS[log.action] || { label: log.action, emoji: '?��' };
       const dt = log.created_at ? new Date(log.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' }) : '-';
       const details = log.details || {};
 
       let html = `
         <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
-          <tr><td style="padding:0.4rem;font-weight:700;width:100px;">시간</td><td style="padding:0.4rem;">${dt}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">작업자</td><td style="padding:0.4rem;">${log.user_name || '-'}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">작업</td><td style="padding:0.4rem;">${info.emoji} ${info.label}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">페이지</td><td style="padding:0.4rem;">${log.page || '-'}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;width:100px;">?�간</td><td style="padding:0.4rem;">${dt}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">?�업??/td><td style="padding:0.4rem;">${log.user_name || '-'}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">?�업</td><td style="padding:0.4rem;">${info.emoji} ${info.label}</td></tr>
+          <tr><td style="padding:0.4rem;font-weight:700;">?�이지</td><td style="padding:0.4rem;">${log.page || '-'}</td></tr>
         </table>
         <div style="margin-top:0.8rem;border-top:1px solid var(--admin-border);padding-top:0.6rem;">
-          <div style="font-weight:700;margin-bottom:0.4rem;">상세 데이터</div>
+          <div style="font-weight:700;margin-bottom:0.4rem;">?�세 ?�이??/div>
           <pre style="background:#f8f9fa;padding:0.6rem;border-radius:6px;font-size:0.78rem;overflow-x:auto;max-height:300px;">${localizeDetailJson(details)}</pre>
         </div>`;
 
@@ -384,7 +384,7 @@
           return PERM_KEY_LABELS[val] || val;
         }
         if (key === 'user_type') {
-          return val === 'teacher' ? '교사' : val === 'student' ? '학생' : val;
+          return val === 'teacher' ? '교사' : val === 'student' ? '?�생' : val;
         }
         return val;
       }
@@ -410,6 +410,6 @@
       if (e.target.classList.contains('modal-overlay')) closeDetailModal();
     });
   </script>
-  <script src="../js/version.js?v=3.40.0"></script>
+  <script src="../js/version.js?v=3.41.0"></script>
 </body>
 </html>

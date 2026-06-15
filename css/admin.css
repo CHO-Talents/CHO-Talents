@@ -103,12 +103,18 @@ body.admin-body {
   margin-left: 0.1rem;
 }
 
-.admin-nav-links > li:hover > .nav-dropdown-toggle,
 .admin-nav-links > li.dropdown-open > .nav-dropdown-toggle,
 .admin-nav-links > li > .nav-dropdown-toggle.active {
   background: var(--admin-primary);
   color: #fff;
   border-radius: 8px;
+}
+@media (hover: hover) {
+  .admin-nav-links > li:hover > .nav-dropdown-toggle {
+    background: var(--admin-primary);
+    color: #fff;
+    border-radius: 8px;
+  }
 }
 
 .nav-dropdown-menu {
@@ -127,9 +133,13 @@ body.admin-body {
   list-style: none;
 }
 
-.admin-nav-links > li:hover > .nav-dropdown-menu,
 .admin-nav-links > li.dropdown-open > .nav-dropdown-menu {
   display: block;
+}
+@media (hover: hover) {
+  .admin-nav-links > li:hover > .nav-dropdown-menu {
+    display: block;
+  }
 }
 
 .nav-dropdown-menu li a {
