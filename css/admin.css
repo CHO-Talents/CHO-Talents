@@ -689,6 +689,24 @@ table.admin-table tr:hover { background: #fafbfc; }
   line-height: 1;
 }
 
+/* ===== Mobile Top-bar Actions (theme + logout) ===== */
+.nav-mobile-actions {
+  display: none;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+.nav-mobile-logout-btn {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--admin-border, #dee2e6);
+  border-radius: 6px;
+  background: var(--t-input-bg, #fff);
+  color: var(--t-text, #333);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 /* ===== Responsive ===== */
 
 @media (max-width: 1024px) {
@@ -711,8 +729,13 @@ table.admin-table tr:hover { background: #fafbfc; }
     overflow-y: visible;
     white-space: normal;
     position: relative;
+    justify-content: flex-start;
   }
-  .nav-hamburger { display: block; }
+  .nav-hamburger { display: block; order: 3; }
+  .admin-nav-brand { order: 1; }
+  .nav-mobile-actions { display: flex; order: 2; }
+  #navThemeArea { display: none !important; }
+  #navLogoutArea { display: none !important; }
   .admin-nav-links {
     display: none;
     flex-direction: column;
