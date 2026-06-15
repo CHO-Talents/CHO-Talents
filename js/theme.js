@@ -125,7 +125,7 @@ function renderThemePicker(containerId) {
       <span class="theme-switch-text">일반</span>
       <button
         class="theme-switch${isDark ? ' dark' : ''}"
-        id="themeSwitchBtn"
+        data-theme-btn
         title="다크 모드 전환"
         aria-label="다크 모드 전환"
         aria-pressed="${isDark ? 'true' : 'false'}"
@@ -138,7 +138,7 @@ function renderThemePicker(containerId) {
     </div>
   `;
 
-  const btn = document.getElementById('themeSwitchBtn');
+  const btn = container.querySelector('[data-theme-btn]');
   btn.addEventListener('click', () => {
     const nextTheme = getCurrentTheme() === 'dark' ? 'default' : 'dark';
     setTheme(nextTheme);
@@ -146,13 +146,13 @@ function renderThemePicker(containerId) {
 }
 
 function updateThemePickerUI(themeId) {
-  const btn = document.getElementById('themeSwitchBtn');
-  if (!btn) return;
   const isDark = normalizeThemeId(themeId) === 'dark';
-  btn.classList.toggle('dark', isDark);
-  btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-  const thumb = btn.querySelector('.theme-switch-thumb');
-  if (thumb) thumb.textContent = isDark ? '🌙' : '☀️';
+  document.querySelectorAll('[data-theme-btn]').forEach(btn => {
+    btn.classList.toggle('dark', isDark);
+    btn.setAttribute('aria-pressed', isDark ? 'true' : 'false');
+    const thumb = btn.querySelector('.theme-switch-thumb');
+    if (thumb) thumb.textContent = isDark ? '🌙' : '☀️';
+  });
 }
 
 // Apply theme immediately on script load (prevents flash)

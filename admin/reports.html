@@ -17,6 +17,7 @@
       <div class="admin-table-header">
         <div class="admin-table-title">작업 보고서 목록</div>
         <div class="filters" style="display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;">
+          <span id="reportPageSizeWrap"></span>
           <button class="filter-btn active" data-type="all" onclick="filterReports('all', this)">전체</button>
           <button class="filter-btn" data-type="plan" onclick="filterReports('plan', this)">계획서</button>
           <button class="filter-btn" data-type="test_scenario" onclick="filterReports('test_scenario', this)">검증 시나리오</button>
@@ -36,6 +37,7 @@
           <tr><td colspan="7" class="empty-state">로딩 중... <span id="loadStatus" style="font-size:0.75rem;color:#868e96;display:block;margin-top:0.3rem;"></span></td></tr>
         </tbody>
       </table>
+      <div id="reportPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -93,6 +95,7 @@
   <script src="../js/auth.js?v=3.40.0"></script>
   <script src="../js/theme.js?v=3.40.0"></script>
   <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/page-size.js?v=3.40.0"></script>
   <script>
     const _stepLog = (step, msg) => {
       console.log('[REPORTS][' + step + '] ' + msg);
@@ -130,6 +133,7 @@
           const seedBtn = document.getElementById('btnSeedReports');
           if (seedBtn) seedBtn.style.display = '';
         }
+        reportPageSize = await loadPageSize('reports', 20);
         _stepLog('4', 'loadReports 호출 중...');
         await loadReports();
         _stepLog('6', 'loadReports 완료');
@@ -147,7 +151,8 @@
       }
     })();
 
-    let allReports = [];
+    let allReports = [], filteredReports = [];
+    let reportPage = 1, reportPageSize = 20, currentReportFilter = 'all';
     const REPORT_TYPE_LABELS = {
       plan: '계획서', test_scenario: '검증 시나리오',
       test_result: '테스트 결과', security_report: '보안 보고서',
@@ -225,13 +230,24 @@
     }
 
     function renderReports(list) {
+      filteredReports = list || [];
       const tbody = document.getElementById('reportsList');
-      if (!list || list.length === 0) {
+      const sizeWrap = document.getElementById('reportPageSizeWrap');
+      if (sizeWrap) sizeWrap.innerHTML = renderPageSizeSelector('reports', reportPageSize, 'onReportPageSizeChange(this.value)');
+
+      if (!filteredReports.length) {
         tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">
           <div class="empty-state-icon">📄</div><p>보고서가 없습니다.</p></div></td></tr>`;
+        renderReportPaging(1);
         return;
       }
-      tbody.innerHTML = list.map(r => `
+
+      const totalPages = Math.max(1, Math.ceil(filteredReports.length / reportPageSize));
+      if (reportPage > totalPages) reportPage = totalPages;
+      const startIdx = (reportPage - 1) * reportPageSize;
+      const pageList = filteredReports.slice(startIdx, startIdx + reportPageSize);
+
+      tbody.innerHTML = pageList.map(r => `
         <tr>
           <td><input type="checkbox" class="rpt-chk" value="${r.id}" onchange="updateDeleteBtn()"></td>
           <td><strong>${r.task_id}</strong></td>
@@ -242,11 +258,35 @@
           <td><button class="filter-btn" onclick="viewReport('${r.id}')">보기</button> <button class="filter-btn" onclick="editReport('${r.id}')">수정</button></td>
         </tr>
       `).join('');
+      renderReportPaging(totalPages);
+    }
+
+    function renderReportPaging(totalPages) {
+      const wrap = document.getElementById('reportPaging');
+      const page = reportPage;
+      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goReportPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="filter-btn${i===page?' active':''}" onclick="goReportPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      }
+      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goReportPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+      html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      wrap.innerHTML = html;
+    }
+
+    function goReportPage(p) { reportPage = p; renderReports(filteredReports); }
+
+    async function onReportPageSizeChange(val) {
+      reportPageSize = parseInt(val, 10);
+      reportPage = 1;
+      await savePageSize('reports', reportPageSize);
+      renderReports(filteredReports);
     }
 
     function filterReports(type, btn) {
       document.querySelectorAll('.admin-table-header .filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      currentReportFilter = type;
+      reportPage = 1;
       if (type === 'all') {
         renderReports(allReports);
       } else {

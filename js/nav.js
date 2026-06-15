@@ -124,6 +124,10 @@ function renderNav(containerId) {
 
   let html = `<nav class="admin-nav" id="mainNavBar">`;
   html += `<a href="${_navResolveHref('index.html')}" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>`;
+  html += `<div class="nav-mobile-actions" id="navMobileActions">`;
+  html += `<button class="btn-nav-logout nav-mobile-logout-btn" id="navMobileLogoutBtn" style="display:none;">로그아웃</button>`;
+  html += `<div id="navMobileTheme"></div>`;
+  html += `</div>`;
   html += `<button class="nav-hamburger" id="navHamburger" aria-label="메뉴 열기">&#9776;</button>`;
   html += `<ul class="admin-nav-links" id="navLinks">`;
 
@@ -185,14 +189,13 @@ function _navBindEvents() {
     });
   });
 
-  const logoutBtn = document.getElementById('navLogoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+  document.querySelectorAll('#navLogoutBtn, #navMobileLogoutBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
       if (typeof logout === 'function') {
         logout(_navResolveHref('login.html'));
       }
     });
-  }
+  });
 }
 
 function _navPositionDropdown(li) {
@@ -219,6 +222,7 @@ function _navPositionDropdown(li) {
 function _navInitThemePicker() {
   if (typeof renderThemePicker === 'function') {
     renderThemePicker('navThemePicker');
+    renderThemePicker('navMobileTheme');
   }
 }
 
@@ -230,10 +234,12 @@ function navUpdateAuth(session) {
   const navMyTalent = document.getElementById('navMyTalent');
   const navMyOrders = document.getElementById('navMyOrders');
 
+  const mobileLogout = document.getElementById('navMobileLogoutBtn');
   if (session) {
     if (loginArea) loginArea.style.display = 'none';
     if (authArea) authArea.style.display = '';
     if (logoutArea) logoutArea.style.display = '';
+    if (mobileLogout) mobileLogout.style.display = '';
     if (navUser) {
       const perm = session.permissionLevel;
       const emoji = (typeof PERMISSION_EMOJI !== 'undefined') ? (PERMISSION_EMOJI[perm] || '👤') : '👤';
@@ -257,6 +263,7 @@ function navUpdateAuth(session) {
     if (loginArea) loginArea.style.display = '';
     if (authArea) authArea.style.display = 'none';
     if (logoutArea) logoutArea.style.display = 'none';
+    if (mobileLogout) mobileLogout.style.display = 'none';
   }
 }
 
