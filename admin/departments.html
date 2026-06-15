@@ -200,8 +200,8 @@
 
     const PERM_RANK_MAP = { admin:100, evangelist:90, chief:80, purchase_teacher:70, dept_teacher:60, teacher:40, student:20 };
     function showMembers(deptName, deptId) {
-      const members = allUsers.filter(u => u.department_id === deptId)
-        .sort((a, b) => (PERM_RANK_MAP[b.permission_level] || 0) - (PERM_RANK_MAP[a.permission_level] || 0));
+      const deptNameFn = () => deptName;
+      const members = sortUserList(allUsers.filter(u => u.department_id === deptId), deptNameFn);
       const dept = allDeptData.find(d => d.id === deptId);
       const hasClasses = dept && dept.class_count > 0;
       const isAdmin = (session.permissionRank || 0) >= 100;

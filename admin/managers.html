@@ -208,9 +208,12 @@
 
     const _isAdmin = () => isAdminLevel(session);
 
+    function _mgrDeptName(id) { const d = deptList.find(d => d.id === id); return d ? d.name : '-'; }
+
     function renderManagers() {
       let list = currentFilter === 'all' ? allManagers : allManagers.filter(u => managerMatchesFilter(u, currentFilter));
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter || u.managed_dept_id === currentDeptFilter);
+      list = sortUserList([...list], _mgrDeptName);
       const tbody = document.getElementById('mgrList');
       document.getElementById('tableTitle').textContent = `관리자 목록 (${list.length}명)`;
 

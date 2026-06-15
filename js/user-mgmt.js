@@ -26,6 +26,26 @@ function isAdminLevel(session) {
   return session && (session.permissionLevel === 'admin' || session.isSuperAdmin);
 }
 
+const _PERM_SORT_RANK = { admin:100, evangelist:90, chief:80, purchase_teacher:70, dept_teacher:60, teacher:40, student:20 };
+
+function sortUserList(list, getDeptNameFn) {
+  return list.sort((a, b) => {
+    const dA = (getDeptNameFn ? getDeptNameFn(a.department_id) : a._deptName) || '';
+    const dB = (getDeptNameFn ? getDeptNameFn(b.department_id) : b._deptName) || '';
+    const dCmp = dA.localeCompare(dB, 'ko');
+    if (dCmp !== 0) return dCmp;
+    const cA = a.class_number || 0;
+    const cB = b.class_number || 0;
+    if (cA !== cB) return cA - cB;
+    const rA = _PERM_SORT_RANK[a.permission_level] || 0;
+    const rB = _PERM_SORT_RANK[b.permission_level] || 0;
+    if (rA !== rB) return rB - rA;
+    const nA = a.display_name || a.username || '';
+    const nB = b.display_name || b.username || '';
+    return nA.localeCompare(nB, 'ko');
+  });
+}
+
 async function fetchUsers(options = {}) {
   if (!_sb) return { data: [], error: 'Supabase not initialized' };
   try {

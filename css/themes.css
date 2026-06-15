@@ -117,6 +117,16 @@
   background: var(--t-nav-bg);
   border-bottom-color: var(--t-nav-border);
 }
+[data-theme="dark"] .nav-header-logout {
+  border-color: var(--t-border);
+  background: var(--t-subtle-surface);
+  color: var(--t-text-muted);
+}
+[data-theme="dark"] .nav-header-logout:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.12);
+}
 
 [data-theme="dark"] .card,
 [data-theme="dark"] .product-card,

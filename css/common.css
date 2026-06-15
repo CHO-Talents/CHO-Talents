@@ -233,52 +233,50 @@ body.page-body {
   font-size: 0.6rem;
 }
 
-.top-nav-links .nav-user,
-.admin-nav-links .nav-user {
+.nav-user {
   font-size: 0.85rem;
   color: var(--c-text);
-  padding: 0 0.6rem;
+  padding: 0 0.3rem;
   white-space: nowrap;
   font-weight: 500;
 }
 
-.top-nav-links .btn-nav-logout,
-.admin-nav-links .btn-nav-logout {
-  background: none;
-  border: 1.5px solid var(--c-border);
-  border-radius: 8px;
-  padding: 0.35rem 0.8rem;
-  font-size: 0.85rem;
-  color: var(--c-text-muted);
-  cursor: pointer;
-  transition: all 0.2s;
+/* ===== Header Actions (logout + theme - single instance) ===== */
+.nav-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
 }
-
-.top-nav-links .btn-nav-logout:hover,
-.admin-nav-links .btn-nav-logout:hover {
+.nav-header-logout {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--t-border, var(--c-border, #dee2e6));
+  border-radius: 999px;
+  background: var(--t-subtle-surface, var(--c-bg, #f8f9fa));
+  color: var(--t-text-muted, var(--c-text-muted, #868e96));
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+.nav-header-logout:hover {
   border-color: #ff6b6b;
   color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.08);
 }
-
-#navThemeArea { display: flex; align-items: center; margin-left: 0.3rem; }
-
-.top-nav-links #navLoginArea a,
-.admin-nav-links #navLoginArea a {
-  display: inline-block;
-  padding: 0.4rem 1rem;
-  background: var(--c-primary);
-  color: #fff;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
+.nav-header-login {
+  font-size: 0.82rem;
+  padding: 0.3rem 0.8rem;
+  background: var(--c-primary, #6c5ce7);
+  color: #fff !important;
+  border-radius: 999px;
   text-decoration: none;
+  white-space: nowrap;
   transition: opacity 0.2s;
 }
+.nav-header-login:hover { opacity: 0.85; }
 
-.top-nav-links #navLoginArea a:hover,
-.admin-nav-links #navLoginArea a:hover {
-  opacity: 0.85;
-}
 
 /* ===== Page Container ===== */
 .page-container {
@@ -572,9 +570,16 @@ table.data-table tr:hover { background: #fafbfc; }
     overflow-x: visible;
     overflow-y: visible;
     white-space: normal;
+    justify-content: flex-start;
   }
   .top-nav-hamburger,
-  .nav-hamburger { display: block; }
+  .nav-hamburger { display: block; order: 3; }
+  .admin-nav-brand,
+  .top-nav-brand { order: 1; }
+  .nav-header-actions { order: 2; gap: 0.3rem; }
+  .nav-header-actions #navAuthArea { display: none !important; }
+  .nav-header-actions #navLoginArea { display: none !important; }
+  .nav-header-logout { font-size: 0.72rem; padding: 0.2rem 0.55rem; }
   .top-nav-links,
   .admin-nav-links {
     display: none;
@@ -632,13 +637,6 @@ table.data-table tr:hover { background: #fafbfc; }
     min-width: 16px;
     height: 16px;
     font-size: 0.62rem;
-  }
-  .top-nav-links .btn-nav-logout,
-  .admin-nav-links .btn-nav-logout {
-    width: 100%;
-    text-align: center;
-    margin-top: 0.2rem;
-    padding: 0.45rem 0.8rem;
   }
   .page-container { padding: 1rem 0.8rem; }
   .page-title { font-size: 1.3rem; }
