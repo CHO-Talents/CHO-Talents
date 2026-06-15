@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CHO-Talents ?�이지�?권한 ?�정 ?�리</title>
+<title>CHO-Talents 페이지별 권한 설정 정리</title>
 <link rel="stylesheet" href="../css/themes.css?v=3.41.0">
 <link rel="stylesheet" href="../css/admin.css?v=3.41.0">
 <style>
@@ -118,130 +118,130 @@
 <div id="nav-container"></div>
 <div class="container">
 
-  <h1>CHO-Talents ?�이지�?권한 ?�정 ?�리</h1>
-  <p class="subtitle">?�제 ?�스 코드(initPage, data-min-perm, JS 조건�??�서 추출??권한 ?�정?�니?? v3.40.0 기�? (2026-06-13)</p>
+  <h1>CHO-Talents 페이지별 권한 설정 정리</h1>
+  <p class="subtitle">실제 소스 코드(initPage, data-min-perm, JS 조건문)에서 추출한 권한 설정입니다. v3.40.0 기준 (2026-06-13)</p>
 
   <hr class="section-divider">
 
-  <!-- 1. 권한 ?�급 체계 -->
-  <h2>1. 권한 ?�급 체계</h2>
+  <!-- 1. 권한 등급 체계 -->
+  <h2>1. 권한 등급 체계</h2>
   <div class="rank-strip">
     <span class="rank-chip rc-guest"><span class="num">0</span> 비로그인</span>
-    <span class="rank-chip rc-20"><span class="num">20</span> ?�생</span>
-    <span class="rank-chip rc-40"><span class="num">40</span> ?�반 교사</span>
-    <span class="rank-chip rc-60"><span class="num">60</span> 부???�당 교사</span>
-    <span class="rank-chip rc-70"><span class="num">70</span> 구매 ?�당 교사</span>
-    <span class="rank-chip rc-80"><span class="num">80</span> 부??교사</span>
-    <span class="rank-chip rc-90"><span class="num">90</span> ?�도?�님</span>
+    <span class="rank-chip rc-20"><span class="num">20</span> 학생</span>
+    <span class="rank-chip rc-40"><span class="num">40</span> 일반 교사</span>
+    <span class="rank-chip rc-60"><span class="num">60</span> 부서 담당 교사</span>
+    <span class="rank-chip rc-70"><span class="num">70</span> 구매 담당 교사</span>
+    <span class="rank-chip rc-80"><span class="num">80</span> 부장 교사</span>
+    <span class="rank-chip rc-90"><span class="num">90</span> 전도사님</span>
     <span class="rank-chip rc-100"><span class="num">100</span> 관리자</span>
   </div>
-  <p class="note">auth.js??<code>initPage(minRank)</code> ?�수가 ?�이지 ?�근???�어?�고, <code>applyPermNav(rank)</code> ?�수가 <code>data-min-perm</code> ?�성 기�??�로 ?�비게이??메뉴�??�시/?��? 처리?�니??</p>
+  <p class="note">auth.js의 <code>initPage(minRank)</code> 함수가 페이지 접근을 제어하고, <code>applyPermNav(rank)</code> 함수가 <code>data-min-perm</code> 속성 기준으로 내비게이션 메뉴를 표시/숨김 처리합니다.</p>
 
   <hr class="section-divider">
 
-  <!-- 2. ?�비게이??메뉴 -->
-  <h2>2. ?�비게이??메뉴 (data-min-perm)</h2>
-  <p class="note">applyPermNav(rank) ?�수가 rank 기�??�로 메뉴 ?�시/?��? 처리?�니?? "???��???, "??구매 ?�품"?� 로그????JS�?별도 ?�시?�니??</p>
+  <!-- 2. 내비게이션 메뉴 -->
+  <h2>2. 내비게이션 메뉴 (data-min-perm)</h2>
+  <p class="note">applyPermNav(rank) 함수가 rank 기준으로 메뉴 표시/숨김 처리합니다. "내 달란트", "내 구매 상품"은 로그인 시 JS로 별도 표시됩니다.</p>
   <table>
-    <thead><tr><th>메뉴 ??��</th><th>최소 권한</th></tr></thead>
+    <thead><tr><th>메뉴 항목</th><th>최소 권한</th></tr></thead>
     <tbody>
-      <tr><td>?�생 가?�드</td><td><span class="badge b-public">공개</span></td></tr>
-      <tr><td>?��????�립 방법</td><td><span class="badge b-public">공개</span></td></tr>
+      <tr><td>학생 가이드</td><td><span class="badge b-public">공개</span></td></tr>
+      <tr><td>달란트 적립 방법</td><td><span class="badge b-public">공개</span></td></tr>
       <tr><td>Q & A</td><td><span class="badge b-public">공개</span></td></tr>
-      <tr><td>?�품 구매</td><td><span class="badge b-public">공개</span></td></tr>
-      <tr><td>???��???/ ??구매 ?�품 / ?��????�령</td><td><span class="badge b-20">로그??(JS ?��?)</span></td></tr>
-      <tr><td>교사 가?�드</td><td><span class="badge b-40">40 (?�반 교사)</span></td></tr>
-      <tr><td>?��???관�?/td><td><span class="badge b-40">40 (?�반 교사)</span></td></tr>
-      <tr><td>관리자 가?�드</td><td><span class="badge b-60">60 (부???�당 교사)</span></td></tr>
-      <tr><td>?��????�계</td><td><span class="badge b-60">60 (부???�당 교사)</span></td></tr>
-      <tr><td>?�품 관�?/td><td><span class="badge b-60">60 (부???�당 교사)</span></td></tr>
-      <tr><td>구매 관�?/td><td><span class="badge b-60">60 (부???�당 교사)</span></td></tr>
-      <tr><td>?�?�보??/td><td><span class="badge b-60">60 (부???�당 교사)</span></td></tr>
-      <tr><td>?�용??관�?/td><td><span class="badge b-60">60 (부???�당 교사)</span></td></tr>
-      <tr><td>부??관�?/td><td><span class="badge b-60">60 (부???�당 교사)</span></td></tr>
-      <tr><td>관리자 관�?/td><td><span class="badge b-80">80 (부??교사)</span></td></tr>
-      <tr><td>버전</td><td><span class="badge b-80">80 (부??교사)</span></td></tr>
-      <tr><td>보고??/td><td><span class="badge b-80">80 (부??교사)</span></td></tr>
-      <tr><td>?��???QR 관�?/td><td><span class="badge b-90">90 (?�도?�님)</span></td></tr>
-      <tr><td>?�이지 ?�근</td><td><span class="badge b-100">100 (관리자)</span></td></tr>
-      <tr><td>?�이지 기능</td><td><span class="badge b-100">100 (관리자)</span></td></tr>
-      <tr><td>?�업 ?�력</td><td><span class="badge b-100">100 (관리자)</span></td></tr>
+      <tr><td>상품 구매</td><td><span class="badge b-public">공개</span></td></tr>
+      <tr><td>내 달란트 / 내 구매 상품 / 달란트 수령</td><td><span class="badge b-20">로그인 (JS 토글)</span></td></tr>
+      <tr><td>교사 가이드</td><td><span class="badge b-40">40 (일반 교사)</span></td></tr>
+      <tr><td>달란트 관리</td><td><span class="badge b-40">40 (일반 교사)</span></td></tr>
+      <tr><td>관리자 가이드</td><td><span class="badge b-60">60 (부서 담당 교사)</span></td></tr>
+      <tr><td>달란트 통계</td><td><span class="badge b-60">60 (부서 담당 교사)</span></td></tr>
+      <tr><td>상품 관리</td><td><span class="badge b-60">60 (부서 담당 교사)</span></td></tr>
+      <tr><td>구매 관리</td><td><span class="badge b-60">60 (부서 담당 교사)</span></td></tr>
+      <tr><td>대시보드</td><td><span class="badge b-60">60 (부서 담당 교사)</span></td></tr>
+      <tr><td>사용자 관리</td><td><span class="badge b-60">60 (부서 담당 교사)</span></td></tr>
+      <tr><td>부서 관리</td><td><span class="badge b-60">60 (부서 담당 교사)</span></td></tr>
+      <tr><td>관리자 관리</td><td><span class="badge b-80">80 (부장 교사)</span></td></tr>
+      <tr><td>버전</td><td><span class="badge b-80">80 (부장 교사)</span></td></tr>
+      <tr><td>보고서</td><td><span class="badge b-80">80 (부장 교사)</span></td></tr>
+      <tr><td>달란트 QR 관리</td><td><span class="badge b-90">90 (전도사님)</span></td></tr>
+      <tr><td>페이지 접근</td><td><span class="badge b-100">100 (관리자)</span></td></tr>
+      <tr><td>페이지 기능</td><td><span class="badge b-100">100 (관리자)</span></td></tr>
+      <tr><td>작업 이력</td><td><span class="badge b-100">100 (관리자)</span></td></tr>
       <tr><td>로그</td><td><span class="badge b-100">100 (관리자)</span></td></tr>
     </tbody>
   </table>
 
   <hr class="section-divider">
 
-  <!-- 3. ?�이지�?initPage 최소 권한 ?�약 -->
-  <h2>3. ?�이지�??�근 최소 권한 ?�약</h2>
+  <!-- 3. 페이지별 initPage 최소 권한 요약 -->
+  <h2>3. 페이지별 접근 최소 권한 요약</h2>
   <table class="summary-table">
-    <thead><tr><th>?�일</th><th>?�이지�?/th><th>최소 권한</th><th>비고</th></tr></thead>
+    <thead><tr><th>파일</th><th>페이지명</th><th>최소 권한</th><th>비고</th></tr></thead>
     <tbody>
-      <tr><td><code>index.html</code></td><td>메인 ?�이지</td><td><span class="badge b-public">공개</span></td><td>?�구???�근 가??/td></tr>
-      <tr><td><code>login.html</code></td><td>로그??/td><td><span class="badge b-public">공개</span></td><td>?��? 로그????리디?�트</td></tr>
-      <tr><td><code>register.html</code></td><td>계정 ?�록 ?�청</td><td><span class="badge b-public">공개</span></td><td>?�생(rank 20)?�로 고정 ?�록</td></tr>
-      <tr><td><code>guide.html</code></td><td>?�생 가?�드</td><td><span class="badge b-public">공개</span></td><td>비로그인 ?�함</td></tr>
-      <tr><td><code>earn-talents.html</code></td><td>?��????�립 방법</td><td><span class="badge b-public">공개</span></td><td>?�보 ?�이지</td></tr>
-      <tr><td><code>qna.html</code></td><td>Q & A</td><td><span class="badge b-public">공개</span></td><td>FAQ 조회 비로그인 가??/td></tr>
-      <tr><td><code>shop.html</code></td><td>?�품 구매</td><td><span class="badge b-public">공개</span></td><td>?�생 ?�품 조회 비로그인 가??/td></tr>
-      <tr><td><code>my-talents.html</code></td><td>???��???/td><td><span class="badge b-20">20 (?�생)</span></td><td>initPage(20) - 로그???�수</td></tr>
-      <tr><td><code>my-orders.html</code></td><td>??구매 ?�품</td><td><span class="badge b-20">20 (?�생)</span></td><td>initPage(20) - 로그???�수</td></tr>
-      <tr><td><code>talent-receive.html</code></td><td>?��????�령</td><td><span class="badge b-20">20 (?�생)</span></td><td>initPage(20) - 로그???�수</td></tr>
-      <tr><td><code>teacher-guide.html</code></td><td>교사 가?�드</td><td><span class="badge b-40">40 (?�반 교사)</span></td><td>rank &lt; 40 ??guide.html 리디?�트</td></tr>
-      <tr><td><code>admin/talents.html</code></td><td>?��???관�?/td><td><span class="badge b-40">40 (?�반 교사)</span></td><td>initPage(40)</td></tr>
-      <tr><td><code>admin-guide.html</code></td><td>관리자 가?�드</td><td><span class="badge b-60">60 (부???�당)</span></td><td>rank 40~59 ??teacher-guide 리디?�트</td></tr>
-      <tr><td><code>admin/index.html</code></td><td>?�?�보??/td><td><span class="badge b-60">60 (부???�당)</span></td><td>initPage(60)</td></tr>
-      <tr><td><code>admin/users.html</code></td><td>?�용??관�?/td><td><span class="badge b-60">60 (부???�당)</span></td><td>initPage(60)</td></tr>
-      <tr><td><code>admin/departments.html</code></td><td>부??관�?/td><td><span class="badge b-60">60 (부???�당)</span></td><td>initPage(60)</td></tr>
-      <tr><td><code>admin/talent-stats.html</code></td><td>?��????�계</td><td><span class="badge b-60">60 (부???�당)</span></td><td>initPage(60)</td></tr>
-      <tr><td><code>admin/shop.html</code></td><td>?�품 관�?/td><td><span class="badge b-60">60 (부???�당)</span></td><td>initPage(60)</td></tr>
-      <tr><td><code>admin/purchases.html</code></td><td>구매 관�?/td><td><span class="badge b-60">60 (부???�당)</span></td><td>initPage(60)</td></tr>
-      <tr><td><code>admin/managers.html</code></td><td>관리자 관�?/td><td><span class="badge b-80">80 (부??교사)</span></td><td>initPage(80)</td></tr>
-      <tr><td><code>admin/versions.html</code></td><td>버전 ?�력</td><td><span class="badge b-80">80 (부??교사)</span></td><td>initPage(80)</td></tr>
-      <tr><td><code>admin/reports.html</code></td><td>보고??/td><td><span class="badge b-80">80 (부??교사)</span></td><td>initPage(80)</td></tr>
-      <tr><td><code>admin/talent-items.html</code></td><td>?��?????�� 관�?/td><td><span class="badge b-90">90 (?�도?�님)</span></td><td>initPage(90)</td></tr>
-      <tr><td><code>admin/talent-qr.html</code></td><td>?��???QR 관�?/td><td><span class="badge b-90">90 (?�도?�님)</span></td><td>initPage(90)</td></tr>
+      <tr><td><code>index.html</code></td><td>메인 페이지</td><td><span class="badge b-public">공개</span></td><td>누구나 접근 가능</td></tr>
+      <tr><td><code>login.html</code></td><td>로그인</td><td><span class="badge b-public">공개</span></td><td>이미 로그인 시 리디렉트</td></tr>
+      <tr><td><code>register.html</code></td><td>계정 등록 신청</td><td><span class="badge b-public">공개</span></td><td>학생(rank 20)으로 고정 등록</td></tr>
+      <tr><td><code>guide.html</code></td><td>학생 가이드</td><td><span class="badge b-public">공개</span></td><td>비로그인 포함</td></tr>
+      <tr><td><code>earn-talents.html</code></td><td>달란트 적립 방법</td><td><span class="badge b-public">공개</span></td><td>정보 페이지</td></tr>
+      <tr><td><code>qna.html</code></td><td>Q & A</td><td><span class="badge b-public">공개</span></td><td>FAQ 조회 비로그인 가능</td></tr>
+      <tr><td><code>shop.html</code></td><td>상품 구매</td><td><span class="badge b-public">공개</span></td><td>학생 상품 조회 비로그인 가능</td></tr>
+      <tr><td><code>my-talents.html</code></td><td>내 달란트</td><td><span class="badge b-20">20 (학생)</span></td><td>initPage(20) - 로그인 필수</td></tr>
+      <tr><td><code>my-orders.html</code></td><td>내 구매 상품</td><td><span class="badge b-20">20 (학생)</span></td><td>initPage(20) - 로그인 필수</td></tr>
+      <tr><td><code>talent-receive.html</code></td><td>달란트 수령</td><td><span class="badge b-20">20 (학생)</span></td><td>initPage(20) - 로그인 필수</td></tr>
+      <tr><td><code>teacher-guide.html</code></td><td>교사 가이드</td><td><span class="badge b-40">40 (일반 교사)</span></td><td>rank &lt; 40 → guide.html 리디렉트</td></tr>
+      <tr><td><code>admin/talents.html</code></td><td>달란트 관리</td><td><span class="badge b-40">40 (일반 교사)</span></td><td>initPage(40)</td></tr>
+      <tr><td><code>admin-guide.html</code></td><td>관리자 가이드</td><td><span class="badge b-60">60 (부서 담당)</span></td><td>rank 40~59 → teacher-guide 리디렉트</td></tr>
+      <tr><td><code>admin/index.html</code></td><td>대시보드</td><td><span class="badge b-60">60 (부서 담당)</span></td><td>initPage(60)</td></tr>
+      <tr><td><code>admin/users.html</code></td><td>사용자 관리</td><td><span class="badge b-60">60 (부서 담당)</span></td><td>initPage(60)</td></tr>
+      <tr><td><code>admin/departments.html</code></td><td>부서 관리</td><td><span class="badge b-60">60 (부서 담당)</span></td><td>initPage(60)</td></tr>
+      <tr><td><code>admin/talent-stats.html</code></td><td>달란트 통계</td><td><span class="badge b-60">60 (부서 담당)</span></td><td>initPage(60)</td></tr>
+      <tr><td><code>admin/shop.html</code></td><td>상품 관리</td><td><span class="badge b-60">60 (부서 담당)</span></td><td>initPage(60)</td></tr>
+      <tr><td><code>admin/purchases.html</code></td><td>구매 관리</td><td><span class="badge b-60">60 (부서 담당)</span></td><td>initPage(60)</td></tr>
+      <tr><td><code>admin/managers.html</code></td><td>관리자 관리</td><td><span class="badge b-80">80 (부장 교사)</span></td><td>initPage(80)</td></tr>
+      <tr><td><code>admin/versions.html</code></td><td>버전 이력</td><td><span class="badge b-80">80 (부장 교사)</span></td><td>initPage(80)</td></tr>
+      <tr><td><code>admin/reports.html</code></td><td>보고서</td><td><span class="badge b-80">80 (부장 교사)</span></td><td>initPage(80)</td></tr>
+      <tr><td><code>admin/talent-items.html</code></td><td>달란트 항목 관리</td><td><span class="badge b-90">90 (전도사님)</span></td><td>initPage(90)</td></tr>
+      <tr><td><code>admin/talent-qr.html</code></td><td>달란트 QR 관리</td><td><span class="badge b-90">90 (전도사님)</span></td><td>initPage(90)</td></tr>
       <tr><td><code>admin/logs.html</code></td><td>로그</td><td><span class="badge b-100">100 (관리자)</span></td><td>initPage(100)</td></tr>
-      <tr><td><code>admin/audit.html</code></td><td>?�업 ?�력</td><td><span class="badge b-100">100 (관리자)</span></td><td>initPage(100)</td></tr>
-      <tr><td><code>admin/page-access.html</code></td><td>?�이지 ?�근 관�?/td><td><span class="badge b-100">100 (관리자)</span></td><td>initPage(100)</td></tr>
-      <tr><td><code>admin/page-features.html</code></td><td>?�이지 기능 관�?/td><td><span class="badge b-100">100 (관리자)</span></td><td>initPage(100)</td></tr>
-      <tr><td><code>admin/page-permissions.html</code></td><td>?�이지 권한 매트�?��</td><td><span class="badge b-100">100 (관리자)</span></td><td>initPage(100)</td></tr>
-      <tr><td><code>admin/change-password.html</code></td><td>비�?번호 변�?/td><td><span class="badge b-20">?�증�?/span></td><td>initPage ?�음, 모든 로그???�용??/td></tr>
+      <tr><td><code>admin/audit.html</code></td><td>작업 이력</td><td><span class="badge b-100">100 (관리자)</span></td><td>initPage(100)</td></tr>
+      <tr><td><code>admin/page-access.html</code></td><td>페이지 접근 관리</td><td><span class="badge b-100">100 (관리자)</span></td><td>initPage(100)</td></tr>
+      <tr><td><code>admin/page-features.html</code></td><td>페이지 기능 관리</td><td><span class="badge b-100">100 (관리자)</span></td><td>initPage(100)</td></tr>
+      <tr><td><code>admin/page-permissions.html</code></td><td>페이지 권한 매트릭스</td><td><span class="badge b-100">100 (관리자)</span></td><td>initPage(100)</td></tr>
+      <tr><td><code>admin/change-password.html</code></td><td>비밀번호 변경</td><td><span class="badge b-20">인증만</span></td><td>initPage 없음, 모든 로그인 사용자</td></tr>
     </tbody>
   </table>
 
   <hr class="section-divider">
 
-  <!-- 4. ?�이지�??�세 권한 -->
-  <h2>4. ?�이지�??�세 권한</h2>
+  <!-- 4. 페이지별 상세 권한 -->
+  <h2>4. 페이지별 상세 권한</h2>
 
   <div class="filter-bar no-print">
-    <button class="filter-btn active" onclick="filterPages('all')">?�체 (30)</button>
-    <button class="filter-btn" onclick="filterPages('public')">공개 ?�이지 (12)</button>
-    <button class="filter-btn" onclick="filterPages('admin')">관�??�이지 (18)</button>
+    <button class="filter-btn active" onclick="filterPages('all')">전체 (30)</button>
+    <button class="filter-btn" onclick="filterPages('public')">공개 페이지 (12)</button>
+    <button class="filter-btn" onclick="filterPages('admin')">관리 페이지 (18)</button>
   </div>
 
   <div id="pageCards">
 
-    <!-- ===== 공개 ?�이지 ===== -->
+    <!-- ===== 공개 페이지 ===== -->
 
     <div class="page-card" data-group="public" id="pg-index">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>index.html</code> &mdash; 메인 ?�이지</span>
+        <span class="page-title"><code>index.html</code> &mdash; 메인 페이지</span>
         <span class="badge b-public">공개</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">공개 - ?�구???�근 가?? initPage ?�음.</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">공개 - 누구나 접근 가능. initPage 없음.</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>가?�드 링크 (?�생 가?�드)</td><td>rank &lt; 40 ?�는 비로그인</td></tr>
-            <tr><td>가?�드 링크 (교사 가?�드)</td><td>rank 40~59</td></tr>
-            <tr><td>가?�드 링크 (관리자 가?�드 + ?�?�보??</td><td>rank &gt;= 60</td></tr>
-            <tr><td>로그??버튼</td><td>비로그인 ???�시</td></tr>
-            <tr><td>?�용??배�? + 로그?�웃</td><td>로그?????�시</td></tr>
+            <tr><td>가이드 링크 (학생 가이드)</td><td>rank &lt; 40 또는 비로그인</td></tr>
+            <tr><td>가이드 링크 (교사 가이드)</td><td>rank 40~59</td></tr>
+            <tr><td>가이드 링크 (관리자 가이드 + 대시보드)</td><td>rank &gt;= 60</td></tr>
+            <tr><td>로그인 버튼</td><td>비로그인 시 표시</td></tr>
+            <tr><td>사용자 배지 + 로그아웃</td><td>로그인 시 표시</td></tr>
           </tbody>
         </table>
       </div>
@@ -249,17 +249,17 @@
 
     <div class="page-card" data-group="public" id="pg-login">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>login.html</code> &mdash; 로그??/span>
+        <span class="page-title"><code>login.html</code> &mdash; 로그인</span>
         <span class="badge b-public">공개</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">공개 - ?��? 로그????리디?�트</div>
+        <div class="access-note">공개 - 이미 로그인 시 리디렉트</div>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>�?로그??리디?�트</td><td>isFirstLogin &rarr; change-password.html</td></tr>
+            <tr><td>첫 로그인 리디렉트</td><td>isFirstLogin &rarr; change-password.html</td></tr>
           </tbody>
         </table>
       </div>
@@ -267,29 +267,29 @@
 
     <div class="page-card" data-group="public" id="pg-register">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>register.html</code> &mdash; 계정 ?�록 ?�청</span>
+        <span class="page-title"><code>register.html</code> &mdash; 계정 등록 신청</span>
         <span class="badge b-public">공개</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">공개 - ?�규 가?��? ?�생(rank 20)?�로 고정 ?�록</div>
-        <p class="empty-note">?�이지 ?�근 ??별도 권한 분기 ?�음</p>
+        <div class="access-note">공개 - 신규 가입은 학생(rank 20)으로 고정 등록</div>
+        <p class="empty-note">페이지 접근 외 별도 권한 분기 없음</p>
       </div>
     </div>
 
     <div class="page-card" data-group="public" id="pg-guide">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>guide.html</code> &mdash; ?�생 가?�드</span>
+        <span class="page-title"><code>guide.html</code> &mdash; 학생 가이드</span>
         <span class="badge b-public">공개</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">공개 - 비로그인 ?�함 모두 ?�근 가??/div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">공개 - 비로그인 포함 모두 접근 가능</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>?�비게이??로그???�역</td><td>로그?????�용???�보 ?�시</td></tr>
+            <tr><td>내비게이션 로그인 영역</td><td>로그인 시 사용자 정보 표시</td></tr>
           </tbody>
         </table>
       </div>
@@ -297,37 +297,37 @@
 
     <div class="page-card" data-group="public" id="pg-teacher-guide">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>teacher-guide.html</code> &mdash; 교사 가?�드</span>
-        <span class="badge b-40">40 (?�반 교사)</span>
+        <span class="page-title"><code>teacher-guide.html</code> &mdash; 교사 가이드</span>
+        <span class="badge b-40">40 (일반 교사)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">rank &lt; 40 &rarr; guide.html�?리디?�트</div>
-        <p class="empty-note">?�이지 ?�근 ??별도 권한 분기 ?�음</p>
+        <div class="access-note">rank &lt; 40 &rarr; guide.html로 리디렉트</div>
+        <p class="empty-note">페이지 접근 외 별도 권한 분기 없음</p>
       </div>
     </div>
 
     <div class="page-card" data-group="public" id="pg-admin-guide">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin-guide.html</code> &mdash; 관리자 가?�드</span>
-        <span class="badge b-60">60 (부???�당)</span>
+        <span class="page-title"><code>admin-guide.html</code> &mdash; 관리자 가이드</span>
+        <span class="badge b-60">60 (부서 담당)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">rank &lt; 40 &rarr; guide.html / rank 40~59 &rarr; teacher-guide.html 리디?�트</div>
-        <p class="empty-note">?�이지 ?�근 ??별도 권한 분기 ?�음</p>
+        <div class="access-note">rank &lt; 40 &rarr; guide.html / rank 40~59 &rarr; teacher-guide.html 리디렉트</div>
+        <p class="empty-note">페이지 접근 외 별도 권한 분기 없음</p>
       </div>
     </div>
 
     <div class="page-card" data-group="public" id="pg-earn">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>earn-talents.html</code> &mdash; ?��????�립 방법</span>
+        <span class="page-title"><code>earn-talents.html</code> &mdash; 달란트 적립 방법</span>
         <span class="badge b-public">공개</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">공개 - ?�보 ?�이지</div>
-        <p class="empty-note">?�이지 ?�근 ??별도 권한 분기 ?�음</p>
+        <div class="access-note">공개 - 정보 페이지</div>
+        <p class="empty-note">페이지 접근 외 별도 권한 분기 없음</p>
       </div>
     </div>
 
@@ -338,25 +338,25 @@
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">공개 - FAQ 조회??비로그인??가??/div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">공개 - FAQ 조회는 비로그인도 가능</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>FAQ 직접 ?�록 ?�역</td><td>rank &gt;= 60 (_isAdmin)</td></tr>
-            <tr><td>비로그인 ?�름 ?�력 ?�드</td><td>비로그인 ?�만 ?�시</td></tr>
+            <tr><td>FAQ 직접 등록 영역</td><td>rank &gt;= 60 (_isAdmin)</td></tr>
+            <tr><td>비로그인 이름 입력 필드</td><td>비로그인 시만 표시</td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>비로그인 질문 ?�록</td><td>?�름 ?�력 ???�출</td></tr>
-            <tr><td>로그??질문 ?�록</td><td>모든 로그???�용??/td></tr>
-            <tr><td>?��?(?��?) ?�록</td><td><span class="badge b-60">rank &gt;= 60</span></td></tr>
-            <tr><td>FAQ ?�록 / FAQ 마크</td><td><span class="badge b-60">rank &gt;= 60</span></td></tr>
-            <tr><td>질문 ??��</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
-            <tr><td>?�이??username) ?�시</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
+            <tr><td>비로그인 질문 등록</td><td>이름 입력 후 제출</td></tr>
+            <tr><td>로그인 질문 등록</td><td>모든 로그인 사용자</td></tr>
+            <tr><td>댓글(답변) 등록</td><td><span class="badge b-60">rank &gt;= 60</span></td></tr>
+            <tr><td>FAQ 등록 / FAQ 마크</td><td><span class="badge b-60">rank &gt;= 60</span></td></tr>
+            <tr><td>질문 삭제</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
+            <tr><td>아이디(username) 표시</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -364,30 +364,30 @@
 
     <div class="page-card" data-group="public" id="pg-shop">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>shop.html</code> &mdash; ?�품 구매</span>
+        <span class="page-title"><code>shop.html</code> &mdash; 상품 구매</span>
         <span class="badge b-public">공개</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">공개 - ?�생 ?�품 조회??비로그인??가??/div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">공개 - 학생 상품 조회는 비로그인도 가능</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>?�생/교사 ???�역</td><td>교사 계정 ?�는 rank &gt;= 60</td></tr>
-            <tr><td>?��?구매 버튼</td><td><span class="badge b-40">rank &gt;= 40</span></td></tr>
-            <tr><td>구매 ?�청 버튼</td><td>로그??+ ?�액 충분</td></tr>
+            <tr><td>학생/교사 탭 영역</td><td>교사 계정 또는 rank &gt;= 60</td></tr>
+            <tr><td>대리 구매 버튼</td><td><span class="badge b-40">rank &gt;= 40</span></td></tr>
+            <tr><td>구매 신청 버튼</td><td>로그인 + 잔액 충분</td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>교사 ?�품 조회</td><td>userType=teacher ?�는 <span class="badge b-60">rank &gt;= 60</span></td></tr>
-            <tr><td>본인 구매 ?�청</td><td>교사가 ?�생 ?�품 구매 불�?</td></tr>
-            <tr><td>?��?구매 (?�체 ?�용??</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
-            <tr><td>?��?구매 (?�당 부??</td><td><span class="badge b-60">rank 60~89</span></td></tr>
-            <tr><td>?��?구매 (같�? �??�생)</td><td><span class="badge b-40">rank 40</span></td></tr>
+            <tr><td>교사 상품 조회</td><td>userType=teacher 또는 <span class="badge b-60">rank &gt;= 60</span></td></tr>
+            <tr><td>본인 구매 신청</td><td>교사가 학생 상품 구매 불가</td></tr>
+            <tr><td>대리 구매 (전체 사용자)</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
+            <tr><td>대리 구매 (담당 부서)</td><td><span class="badge b-60">rank 60~89</span></td></tr>
+            <tr><td>대리 구매 (같은 반 학생)</td><td><span class="badge b-40">rank 40</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -395,34 +395,34 @@
 
     <div class="page-card" data-group="public" id="pg-my-talents">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>my-talents.html</code> &mdash; ???��???/span>
-        <span class="badge b-20">20 (?�생)</span>
+        <span class="page-title"><code>my-talents.html</code> &mdash; 내 달란트</span>
+        <span class="badge b-20">20 (학생)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(20) - 로그???�수</div>
+        <div class="access-note">initPage(20) - 로그인 필수</div>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>본인 ?��????�역 조회</td><td>본인 ?�이?�만 ?�근</td></tr></tbody>
+          <tbody><tr><td>본인 달란트/내역 조회</td><td>본인 데이터만 접근</td></tr></tbody>
         </table>
       </div>
     </div>
 
     <div class="page-card" data-group="public" id="pg-my-orders">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>my-orders.html</code> &mdash; ??구매 ?�품</span>
-        <span class="badge b-20">20 (?�생)</span>
+        <span class="page-title"><code>my-orders.html</code> &mdash; 내 구매 상품</span>
+        <span class="badge b-20">20 (학생)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(20) - 로그???�수</div>
+        <div class="access-note">initPage(20) - 로그인 필수</div>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>본인 구매 ?�역 조회</td><td>본인 ?�이?�만 ?�근</td></tr>
-            <tr><td>구매 취소</td><td>status=requested??본인 주문�?/td></tr>
+            <tr><td>본인 구매 내역 조회</td><td>본인 데이터만 접근</td></tr>
+            <tr><td>구매 취소</td><td>status=requested인 본인 주문만</td></tr>
           </tbody>
         </table>
       </div>
@@ -430,65 +430,65 @@
 
     <div class="page-card" data-group="public" id="pg-talent-receive">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>talent-receive.html</code> &mdash; ?��????�령</span>
-        <span class="badge b-20">20 (?�생)</span>
+        <span class="page-title"><code>talent-receive.html</code> &mdash; 달란트 수령</span>
+        <span class="badge b-20">20 (학생)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(20) - 로그???�수</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(20) - 로그인 필수</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>QR 코드 ?�동 ?�력 + ?�인 버튼</td><td><span class="badge b-90">rank &gt;= 90 (?�도?�님+)</span> �??�시</td></tr>
-            <tr><td>카메???�캔 버튼</td><td>모든 로그???�용??/td></tr>
-            <tr><td>?�성 QR 코드 목록</td><td>모든 로그???�용??/td></tr>
+            <tr><td>QR 코드 수동 입력 + 확인 버튼</td><td><span class="badge b-90">rank &gt;= 90 (전도사님+)</span> 만 표시</td></tr>
+            <tr><td>카메라 스캔 버튼</td><td>모든 로그인 사용자</td></tr>
+            <tr><td>활성 QR 코드 목록</td><td>모든 로그인 사용자</td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>QR ?�령</td><td>target_type??본인 user_type�??�치?�야 ??/td></tr>
-            <tr><td>?�치 ?�한 QR</td><td>Geolocation 거리 검�??�요</td></tr>
+            <tr><td>QR 수령</td><td>target_type이 본인 user_type과 일치해야 함</td></tr>
+            <tr><td>위치 제한 QR</td><td>Geolocation 거리 검증 필요</td></tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- ===== 관�??�이지 ===== -->
+    <!-- ===== 관리 페이지 ===== -->
 
     <div class="page-card" data-group="admin" id="pg-dashboard">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/index.html</code> &mdash; ?�?�보??/span>
-        <span class="badge b-60">60 (부???�당)</span>
+        <span class="page-title"><code>admin/index.html</code> &mdash; 대시보드</span>
+        <span class="badge b-60">60 (부서 담당)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(60) - 부???�당 교사 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(60) - 부서 담당 교사 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>미확??ERROR+ 카드 (?�릭&rarr;로그)</td><td><span class="badge b-100">rank &gt;= 100</span>�??�시</td></tr>
-            <tr><td>부??보고??부???�당/가?��?�?카드</td><td><span class="badge b-80">rank &gt;= 80</span></td></tr>
-            <tr><td>최근 ?�슈 로그 ?�이�?/td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
+            <tr><td>미확인 ERROR+ 카드 (클릭&rarr;로그)</td><td><span class="badge b-100">rank &gt;= 100</span>만 표시</td></tr>
+            <tr><td>부서/보고서/부서 담당/가입대기 카드</td><td><span class="badge b-80">rank &gt;= 80</span></td></tr>
+            <tr><td>최근 이슈 로그 테이블</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>?�체 ?�계 조회</td><td>rank &gt;= 80</td></tr>
-            <tr><td>부???�?�보??(?�한 ?�계)</td><td>rank 60~79 (?�?��?: "부???�?�보??)</td></tr>
+            <tr><td>전체 통계 조회</td><td>rank &gt;= 80</td></tr>
+            <tr><td>부서 대시보드 (제한 통계)</td><td>rank 60~79 (타이틀: "부서 대시보드")</td></tr>
           </tbody>
         </table>
-        <h3>?�이??범위 (?�코??</h3>
+        <h3>데이터 범위 (스코핑)</h3>
         <table>
           <thead><tr><th>권한 범위</th><th>조회 범위</th></tr></thead>
           <tbody>
-            <tr><td>80+</td><td>?�체 ?�용??부???�계</td></tr>
-            <tr><td>60~79</td><td>managedDeptId 기�? 부???�계�?/td></tr>
+            <tr><td>80+</td><td>전체 사용자/부서 통계</td></tr>
+            <tr><td>60~79</td><td>managedDeptId 기준 부서 통계만</td></tr>
           </tbody>
         </table>
       </div>
@@ -496,39 +496,39 @@
 
     <div class="page-card" data-group="admin" id="pg-users">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/users.html</code> &mdash; ?�용??관�?/span>
-        <span class="badge b-60">60 (부???�당)</span>
+        <span class="page-title"><code>admin/users.html</code> &mdash; 사용자 관리</span>
+        <span class="badge b-60">60 (부서 담당)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(60) - 부???�당 교사 ?�상. v3.40.0: rank 60~79??canManageUser()�??�당 부???�생??�??�정·비�?번호 초기??가??(??��·부???�동?� 80+)</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(60) - 부서 담당 교사 이상. v3.40.0: rank 60~79는 canManageUser()로 담당 부서 학생의 반 수정·비밀번호 초기화 가능 (삭제·부서 이동은 80+)</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>관리자/부???�당 ?�계 카드</td><td><span class="badge b-80">data-min-perm=80</span></td></tr>
-            <tr><td>?�이???�시 (목록/?�세)</td><td>본인 ?�는 <span class="badge b-100">isAdminLevel(100+)</span></td></tr>
-            <tr><td>부???�동 ?�벨</td><td>90+: "부???�동" / &lt;90: "부???�동 ?�청"</td></tr>
+            <tr><td>관리자/부서 담당 통계 카드</td><td><span class="badge b-80">data-min-perm=80</span></td></tr>
+            <tr><td>아이디 표시 (목록/상세)</td><td>본인 또는 <span class="badge b-100">isAdminLevel(100+)</span></td></tr>
+            <tr><td>부서 이동 라벨</td><td>90+: "부서 이동" / &lt;90: "부서 이동 신청"</td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>?�용???�정/??��/비번초기??/td><td><code>canManageUser()</code>: rank 60+ &amp; ?�??rank &lt; 본인 rank &amp; ?�당 부??범위<br><strong>60~79</strong>: �??�정·비�?번호 초기?�만 (??��·부???�동 버튼?� 80+)<br><strong>80</strong>: ?�당 관�?부??범위 ???�정·비번초기?�·삭?�·�????�동<br><strong>90+</strong>: ?�기보다 ??? 권한 ?�체 관�?/td></tr>
-            <tr><td>부???�동 즉시 처리</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
-            <tr><td>부???�동 ?�청 ?�성</td><td>rank &lt; 90</td></tr>
-            <tr><td>가???�청 ?�인/거�?</td><td>90+ ?�체 / 60~89 ?�당 부?�만</td></tr>
-            <tr><td>권한 부??/td><td>본인 rank 미만??권한�??�택 가??/td></tr>
-            <tr><td>?�속 부???�택</td><td>90+: 모든 부??/ 80?�하: 본인 ?�당 부?�만</td></tr>
+            <tr><td>사용자 수정/삭제/비번초기화</td><td><code>canManageUser()</code>: rank 60+ &amp; 대상 rank &lt; 본인 rank &amp; 담당 부서 범위<br><strong>60~79</strong>: 반 수정·비밀번호 초기화만 (삭제·부서 이동 버튼은 80+)<br><strong>80</strong>: 담당 관리 부서 범위 내 수정·비번초기화·삭제·부서 이동<br><strong>90+</strong>: 자기보다 낮은 권한 전체 관리</td></tr>
+            <tr><td>부서 이동 즉시 처리</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
+            <tr><td>부서 이동 요청 생성</td><td>rank &lt; 90</td></tr>
+            <tr><td>가입 신청 승인/거부</td><td>90+ 전체 / 60~89 담당 부서만</td></tr>
+            <tr><td>권한 부여</td><td>본인 rank 미만의 권한만 선택 가능</td></tr>
+            <tr><td>소속 부서 선택</td><td>90+: 모든 부서 / 80이하: 본인 담당 부서만</td></tr>
           </tbody>
         </table>
-        <h3>?�이??범위 (?�코??</h3>
+        <h3>데이터 범위 (스코핑)</h3>
         <table>
           <thead><tr><th>권한 범위</th><th>조회 범위</th></tr></thead>
           <tbody>
-            <tr><td>90+</td><td>?�체 ?�용??/td></tr>
-            <tr><td>60~89</td><td>managedDeptId 기�? ?�용?�만</td></tr>
+            <tr><td>90+</td><td>전체 사용자</td></tr>
+            <tr><td>60~89</td><td>managedDeptId 기준 사용자만</td></tr>
           </tbody>
         </table>
       </div>
@@ -536,27 +536,27 @@
 
     <div class="page-card" data-group="admin" id="pg-bulk-register">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/bulk-register.html</code> &mdash; ?�생 ?�괄 ?�록</span>
-        <span class="badge b-80">80 (부??교사)</span>
+        <span class="page-title"><code>admin/bulk-register.html</code> &mdash; 학생 일괄 등록</span>
+        <span class="badge b-80">80 (부장 교사)</span>
       </div>
       <div class="page-body">
-        <h3>?�근 권한</h3>
+        <h3>접근 권한</h3>
         <table>
-          <thead><tr><th>?�벨</th><th>?�근</th></tr></thead>
+          <thead><tr><th>레벨</th><th>접근</th></tr></thead>
           <tbody>
-            <tr><td>80+ (부??교사, ?�도?�님, 관리자)</td><td>?�근 가??/td></tr>
-            <tr><td>79 ?�하</td><td>?�근 불�? (login 리다?�렉??</td></tr>
+            <tr><td>80+ (부장 교사, 전도사님, 관리자)</td><td>접근 가능</td></tr>
+            <tr><td>79 이하</td><td>접근 불가 (login 리다이렉트)</td></tr>
           </tbody>
         </table>
         <h3>기능</h3>
         <table>
-          <thead><tr><th>기능</th><th>?�명</th></tr></thead>
+          <thead><tr><th>기능</th><th>설명</th></tr></thead>
           <tbody>
-            <tr><td>?�식 ?�운로드</td><td>?�이?? ?�름, 부?? �?컬럼???�함??.xlsx ?�일???�운로드</td></tr>
-            <tr><td>?��? ?�로??/td><td>.xlsx/.xls/.csv ?�일???�래�??�는 ?�릭?�로 ?�로??/td></tr>
-            <tr><td>미리보기</td><td>?�로?�된 ?�이?��? 검증하???�상/?�류 건수�??�시</td></tr>
-            <tr><td>?�괄 ?�록</td><td>?�상 ?�이?�만 admin_create_user RPC�??�록 (초기 비�?번호 1234)</td></tr>
-            <tr><td>결과 ?�인</td><td>?�공/?�패 건수?� ?�패 ?�유�??�시</td></tr>
+            <tr><td>양식 다운로드</td><td>아이디, 이름, 부서, 반 컬럼이 포함된 .xlsx 파일을 다운로드</td></tr>
+            <tr><td>엑셀 업로드</td><td>.xlsx/.xls/.csv 파일을 드래그 또는 클릭으로 업로드</td></tr>
+            <tr><td>미리보기</td><td>업로드된 데이터를 검증하여 정상/오류 건수를 표시</td></tr>
+            <tr><td>일괄 등록</td><td>정상 데이터만 admin_create_user RPC로 등록 (초기 비밀번호 1234)</td></tr>
+            <tr><td>결과 확인</td><td>성공/실패 건수와 실패 사유를 표시</td></tr>
           </tbody>
         </table>
       </div>
@@ -564,27 +564,27 @@
 
     <div class="page-card" data-group="admin" id="pg-departments">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/departments.html</code> &mdash; 부??관�?/span>
-        <span class="badge b-60">60 (부???�당)</span>
+        <span class="page-title"><code>admin/departments.html</code> &mdash; 부서 관리</span>
+        <span class="badge b-60">60 (부서 담당)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(60) - 부???�당 교사 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(60) - 부서 담당 교사 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>+ 부???�록 버튼</td><td><span class="badge b-90">rank &gt;= 90</span>�??�시</td></tr>
-            <tr><td>?�정 메뉴</td><td>rank &gt;= 90 ?�는 ?�당 부??/td></tr>
-            <tr><td>??�� 메뉴</td><td><span class="badge b-90">rank &gt;= 90</span>�?/td></tr>
+            <tr><td>+ 부서 등록 버튼</td><td><span class="badge b-90">rank &gt;= 90</span>만 표시</td></tr>
+            <tr><td>수정 메뉴</td><td>rank &gt;= 90 또는 담당 부서</td></tr>
+            <tr><td>삭제 메뉴</td><td><span class="badge b-90">rank &gt;= 90</span>만</td></tr>
           </tbody>
         </table>
-        <h3>?�이??범위 (?�코??</h3>
+        <h3>데이터 범위 (스코핑)</h3>
         <table>
           <thead><tr><th>권한 범위</th><th>조회 범위</th></tr></thead>
           <tbody>
-            <tr><td>80+</td><td>?�체 ?�성 부??/td></tr>
-            <tr><td>60~79</td><td>managedDeptId 부?�만</td></tr>
+            <tr><td>80+</td><td>전체 활성 부서</td></tr>
+            <tr><td>60~79</td><td>managedDeptId 부서만</td></tr>
           </tbody>
         </table>
       </div>
@@ -592,32 +592,32 @@
 
     <div class="page-card" data-group="admin" id="pg-managers">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/managers.html</code> &mdash; 관리자 관�?/span>
-        <span class="badge b-80">80 (부??교사)</span>
+        <span class="page-title"><code>admin/managers.html</code> &mdash; 관리자 관리</span>
+        <span class="badge b-80">80 (부장 교사)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(80) - 부??교사 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(80) - 부장 교사 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>부???�터</td><td><span class="badge b-80">data-min-perm=80</span></td></tr>
-            <tr><td>?�이???�시</td><td>본인 ?�는 <span class="badge b-100">isAdminLevel</span></td></tr>
-            <tr><td>?�정 버튼</td><td>canManage (myRank &gt; 80 && myRank &gt; targetRank)<br><strong>부??교사(80)??조회�?가?? ?�정 불�?</strong></td></tr>
+            <tr><td>부서 필터</td><td><span class="badge b-80">data-min-perm=80</span></td></tr>
+            <tr><td>아이디 표시</td><td>본인 또는 <span class="badge b-100">isAdminLevel</span></td></tr>
+            <tr><td>수정 버튼</td><td>canManage (myRank &gt; 80 && myRank &gt; targetRank)<br><strong>부장 교사(80)는 조회만 가능, 수정 불가</strong></td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>권한 부??/td><td>본인 rank 미만??권한�??�택 가??/td></tr></tbody>
+          <tbody><tr><td>권한 부여</td><td>본인 rank 미만의 권한만 선택 가능</td></tr></tbody>
         </table>
-        <h3>?�이??범위 (?�코??</h3>
+        <h3>데이터 범위 (스코핑)</h3>
         <table>
           <thead><tr><th>권한 범위</th><th>조회 범위</th></tr></thead>
           <tbody>
-            <tr><td>90+</td><td>?�체 관리자/부???�당</td></tr>
-            <tr><td>80~89</td><td>?�당 부??관??관리자�?/td></tr>
+            <tr><td>90+</td><td>전체 관리자/부서 담당</td></tr>
+            <tr><td>80~89</td><td>담당 부서 관련 관리자만</td></tr>
           </tbody>
         </table>
       </div>
@@ -625,37 +625,37 @@
 
     <div class="page-card" data-group="admin" id="pg-talents">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/talents.html</code> &mdash; ?��???관�?/span>
-        <span class="badge b-40">40 (?�반 교사)</span>
+        <span class="page-title"><code>admin/talents.html</code> &mdash; 달란트 관리</span>
+        <span class="badge b-40">40 (일반 교사)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(40) - ?�반 교사 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(40) - 일반 교사 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>?��?????�� 관�?링크</td><td><span class="badge b-60">data-min-perm=60</span></td></tr>
-            <tr><td>부???�터</td><td><span class="badge b-80">data-min-perm=80</span></td></tr>
-            <tr><td>?�동 지�??�역 (모달 ??</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
-            <tr><td>?��???반환 버튼 (?�세 ??</td><td><span class="badge b-80">rank &gt;= 80</span></td></tr>
+            <tr><td>달란트 항목 관리 링크</td><td><span class="badge b-60">data-min-perm=60</span></td></tr>
+            <tr><td>부서 필터</td><td><span class="badge b-80">data-min-perm=80</span></td></tr>
+            <tr><td>수동 지급 영역 (모달 내)</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
+            <tr><td>달란트 반환 버튼 (상세 내)</td><td><span class="badge b-80">rank &gt;= 80</span></td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>출석 지�?/ ?��???지�?/td><td>canGiveTalent ?�수�??�단</td></tr>
-            <tr><td>?�동 ?�력 지�?/td><td><span class="badge b-100">rank &gt;= 100</span>�?UI ?�시</td></tr>
+            <tr><td>출석 지급 / 달란트 지급</td><td>canGiveTalent 함수로 판단</td></tr>
+            <tr><td>수동 입력 지급</td><td><span class="badge b-100">rank &gt;= 100</span>만 UI 표시</td></tr>
           </tbody>
         </table>
-        <h3>?�이??범위 (?�코??</h3>
+        <h3>데이터 범위 (스코핑)</h3>
         <table>
           <thead><tr><th>권한 범위</th><th>조회 범위</th></tr></thead>
           <tbody>
-            <tr><td>90+</td><td>?�체 ?�용??/td></tr>
-            <tr><td>60~79</td><td>managedDeptId 부?�만</td></tr>
-            <tr><td>40</td><td>같�? 부??+ 같�? �??�생�?/td></tr>
+            <tr><td>90+</td><td>전체 사용자</td></tr>
+            <tr><td>60~79</td><td>managedDeptId 부서만</td></tr>
+            <tr><td>40</td><td>같은 부서 + 같은 반 학생만</td></tr>
           </tbody>
         </table>
       </div>
@@ -663,79 +663,79 @@
 
     <div class="page-card" data-group="admin" id="pg-talent-items">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/talent-items.html</code> &mdash; ?��?????�� 관�?/span>
-        <span class="badge b-90">90 (?�도?�님)</span>
+        <span class="page-title"><code>admin/talent-items.html</code> &mdash; 달란트 항목 관리</span>
+        <span class="badge b-90">90 (전도사님)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(90) - ?�도?�님 ?�상</div>
+        <div class="access-note">initPage(90) - 전도사님 이상</div>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>??�� 추�?/?�정/?�성???��?</td><td>90+ ?�체 가??/td></tr></tbody>
+          <tbody><tr><td>항목 추가/수정/활성화 토글</td><td>90+ 전체 가능</td></tr></tbody>
         </table>
       </div>
     </div>
 
     <div class="page-card" data-group="admin" id="pg-talent-qr">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/talent-qr.html</code> &mdash; ?��???QR 관�?/span>
-        <span class="badge b-90">90 (?�도?�님)</span>
+        <span class="page-title"><code>admin/talent-qr.html</code> &mdash; 달란트 QR 관리</span>
+        <span class="badge b-90">90 (전도사님)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(90) - ?�도?�님 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(90) - 전도사님 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>QR 코드 ?�스??�??�시</td><td><span class="badge b-100">rank &gt;= 100 (관리자)</span>�?보임</td></tr>
-            <tr><td>?�령???�이????/td><td><span class="badge b-100">rank &gt;= 100</span>�??�시</td></tr>
+            <tr><td>QR 코드 텍스트 값 표시</td><td><span class="badge b-100">rank &gt;= 100 (관리자)</span>만 보임</td></tr>
+            <tr><td>수령자 아이디 열</td><td><span class="badge b-100">rank &gt;= 100</span>만 표시</td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>QR ?�성/?�정/비활?�화/?�쇄</td><td>90+ ?�체 가??/td></tr></tbody>
+          <tbody><tr><td>QR 생성/수정/비활성화/인쇄</td><td>90+ 전체 가능</td></tr></tbody>
         </table>
       </div>
     </div>
 
     <div class="page-card" data-group="admin" id="pg-talent-stats">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/talent-stats.html</code> &mdash; ?��????�계</span>
-        <span class="badge b-60">60 (부???�당)</span>
+        <span class="page-title"><code>admin/talent-stats.html</code> &mdash; 달란트 통계</span>
+        <span class="badge b-60">60 (부서 담당)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(60) - 부???�당 교사 ?�상</div>
+        <div class="access-note">initPage(60) - 부서 담당 교사 이상</div>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>?�체/부?�별/?�용?�별/?�형�??�계 조회</td><td>60+ ?�체 ?�이???�근</td></tr></tbody>
+          <tbody><tr><td>전체/부서별/사용자별/유형별 통계 조회</td><td>60+ 전체 데이터 접근</td></tr></tbody>
         </table>
       </div>
     </div>
 
     <div class="page-card" data-group="admin" id="pg-admin-shop">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/shop.html</code> &mdash; ?�품 관�?/span>
-        <span class="badge b-60">60 (부???�당)</span>
+        <span class="page-title"><code>admin/shop.html</code> &mdash; 상품 관리</span>
+        <span class="badge b-60">60 (부서 담당)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(60) - 부???�당 교사 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(60) - 부서 담당 교사 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
-          <tbody><tr><td>??�� 메뉴 (관�??�롭?�운)</td><td><span class="badge b-90">rank &gt;= 90</span>�??�시</td></tr></tbody>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
+          <tbody><tr><td>삭제 메뉴 (관리 드롭다운)</td><td><span class="badge b-90">rank &gt;= 90</span>만 표시</td></tr></tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>?�품 ?�록/?�정</td><td>60+ 가??/td></tr>
-            <tr><td>?�품 ??�� (?�프????��)</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
+            <tr><td>상품 등록/수정</td><td>60+ 가능</td></tr>
+            <tr><td>상품 삭제 (소프트 삭제)</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -743,37 +743,37 @@
 
     <div class="page-card" data-group="admin" id="pg-purchases">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/purchases.html</code> &mdash; 구매 관�?/span>
-        <span class="badge b-60">60 (부???�당)</span>
+        <span class="page-title"><code>admin/purchases.html</code> &mdash; 구매 관리</span>
+        <span class="badge b-60">60 (부서 담당)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(60) - 부???�당 교사 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(60) - 부서 담당 교사 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>?�괄 처리 버튼 ?�역</td><td>rank &gt;= 60 + ?�당 ??/td></tr>
-            <tr><td>체크박스 ??/td><td>rank &gt;= 60 + ?�당 ?�태 ??/td></tr>
+            <tr><td>일괄 처리 버튼 영역</td><td>rank &gt;= 60 + 해당 탭</td></tr>
+            <tr><td>체크박스 열</td><td>rank &gt;= 60 + 해당 상태 탭</td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>주문 ?�태 변�?/td><td>canProcessOrder: 90+ ?�체 / <strong>구매 ?�당 교사(70) ?�체</strong> / 60~89 ?�당 부?�만</td></tr>
-            <tr><td>?�괄 ?�품 준�?/td><td>구매 ?�청 ??+ rank &gt;= 60</td></tr>
-            <tr><td>?�괄 구매 ?�정</td><td>?�품 준�???+ rank &gt;= 60</td></tr>
-            <tr><td>?�괄 지�??�료</td><td>?�품 구매 ??+ rank &gt;= 60</td></tr>
+            <tr><td>주문 상태 변경</td><td>canProcessOrder: 90+ 전체 / <strong>구매 담당 교사(70) 전체</strong> / 60~89 담당 부서만</td></tr>
+            <tr><td>일괄 상품 준비</td><td>구매 신청 탭 + rank &gt;= 60</td></tr>
+            <tr><td>일괄 구매 확정</td><td>상품 준비 탭 + rank &gt;= 60</td></tr>
+            <tr><td>일괄 지급 완료</td><td>상품 구매 탭 + rank &gt;= 60</td></tr>
           </tbody>
         </table>
-        <h3>?�이??범위 (?�코??</h3>
+        <h3>데이터 범위 (스코핑)</h3>
         <table>
           <thead><tr><th>권한 범위</th><th>조회 범위</th></tr></thead>
           <tbody>
-            <tr><td>90+</td><td>?�체 주문</td></tr>
-            <tr><td>구매 ?�당 교사(70)</td><td><strong>?�체 부??주문</strong> (부???�한 ?�음)</td></tr>
-            <tr><td>60~89 (구매 ?�당 ?�외)</td><td>?�당 부???�용?�의 주문�?/td></tr>
+            <tr><td>90+</td><td>전체 주문</td></tr>
+            <tr><td>구매 담당 교사(70)</td><td><strong>전체 부서 주문</strong> (부서 제한 없음)</td></tr>
+            <tr><td>60~89 (구매 담당 제외)</td><td>담당 부서 사용자의 주문만</td></tr>
           </tbody>
         </table>
       </div>
@@ -781,23 +781,23 @@
 
     <div class="page-card" data-group="admin" id="pg-reports">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/reports.html</code> &mdash; 보고??/span>
-        <span class="badge b-80">80 (부??교사)</span>
+        <span class="page-title"><code>admin/reports.html</code> &mdash; 보고서</span>
+        <span class="badge b-80">80 (부장 교사)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(80) - 부??교사 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(80) - 부장 교사 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
-          <tbody><tr><td>?�체 보고??초기??버튼</td><td><span class="badge b-110">isSuperAdmin</span>�??�시</td></tr></tbody>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
+          <tbody><tr><td>전체 보고서 초기화 버튼</td><td><span class="badge b-110">isSuperAdmin</span>만 표시</td></tr></tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>보고??조회/?�록/?�정/??��</td><td>80+ 가??/td></tr>
-            <tr><td>?�체 보고???�드 초기??/td><td><span class="badge b-110">isSuperAdmin</span>�?/td></tr>
+            <tr><td>보고서 조회/등록/수정/삭제</td><td>80+ 가능</td></tr>
+            <tr><td>전체 보고서 시드 초기화</td><td><span class="badge b-110">isSuperAdmin</span>만</td></tr>
           </tbody>
         </table>
       </div>
@@ -805,16 +805,16 @@
 
     <div class="page-card" data-group="admin" id="pg-versions">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/versions.html</code> &mdash; 버전 ?�력</span>
-        <span class="badge b-80">80 (부??교사)</span>
+        <span class="page-title"><code>admin/versions.html</code> &mdash; 버전 이력</span>
+        <span class="badge b-80">80 (부장 교사)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(80) - 부??교사 ?�상</div>
+        <div class="access-note">initPage(80) - 부장 교사 이상</div>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>버전 ?�력 조회</td><td>?�기 ?�용</td></tr></tbody>
+          <tbody><tr><td>버전 이력 조회</td><td>읽기 전용</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -826,21 +826,21 @@
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(100) - 관리자 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(100) - 관리자 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>?�택 ??��/범위 ??��/??�� ?��??�괄 ?�인 버튼</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
-            <tr><td>??체크박스</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
+            <tr><td>선택 삭제/범위 삭제/삭제 대기/일괄 확인 버튼</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
+            <tr><td>행 체크박스</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>로그 조회/?�터/?�인 처리</td><td>100+</td></tr>
-            <tr><td>로그 ??�� (?�프??/복원</td><td>100+</td></tr>
+            <tr><td>로그 조회/필터/확인 처리</td><td>100+</td></tr>
+            <tr><td>로그 삭제 (소프트)/복원</td><td>100+</td></tr>
           </tbody>
         </table>
       </div>
@@ -848,101 +848,101 @@
 
     <div class="page-card" data-group="admin" id="pg-audit">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/audit.html</code> &mdash; ?�업 ?�력</span>
+        <span class="page-title"><code>admin/audit.html</code> &mdash; 작업 이력</span>
         <span class="badge b-100">100 (관리자)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(100) - 관리자 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(100) - 관리자 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
-          <tbody><tr><td>?�업???�이???�시</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr></tbody>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
+          <tbody><tr><td>작업자 아이디 표시</td><td><span class="badge b-100">rank &gt;= 100</span></td></tr></tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>?�업 ?�력 조회</td><td>?�기 ?�용, 100+</td></tr></tbody>
+          <tbody><tr><td>작업 이력 조회</td><td>읽기 전용, 100+</td></tr></tbody>
         </table>
       </div>
     </div>
 
     <div class="page-card" data-group="admin" id="pg-page-access">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/page-access.html</code> &mdash; ?�이지 ?�근 관�?/span>
+        <span class="page-title"><code>admin/page-access.html</code> &mdash; 페이지 접근 관리</span>
         <span class="badge b-100">100 (관리자)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(100) - 관리자 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(100) - 관리자 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>?�??버튼</td><td><span class="badge b-90">rank &gt;= 90</span> (UI?�서 ?��?)</td></tr>
-            <tr><td>super_admin ??/td><td><span class="badge b-110">isSuperAdmin</span>�??�시</td></tr>
+            <tr><td>저장 버튼</td><td><span class="badge b-90">rank &gt;= 90</span> (UI에서 숨김)</td></tr>
+            <tr><td>super_admin 행</td><td><span class="badge b-110">isSuperAdmin</span>만 표시</td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>?�근 규칙 ?�정/?�??/td><td>rank &gt;= 90 (?�질??100+)</td></tr></tbody>
+          <tbody><tr><td>접근 규칙 수정/저장</td><td>rank &gt;= 90 (실질적 100+)</td></tr></tbody>
         </table>
       </div>
     </div>
 
     <div class="page-card" data-group="admin" id="pg-page-features">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/page-features.html</code> &mdash; ?�이지 기능 관�?/span>
+        <span class="page-title"><code>admin/page-features.html</code> &mdash; 페이지 기능 관리</span>
         <span class="badge b-100">100 (관리자)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(100) - 관리자 ?�상</div>
-        <h3>UI ?�소 ?�시 조건</h3>
+        <div class="access-note">initPage(100) - 관리자 이상</div>
+        <h3>UI 요소 표시 조건</h3>
         <table>
-          <thead><tr><th>?�소</th><th>?�시 조건</th></tr></thead>
+          <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
           <tbody>
-            <tr><td>?�??버튼</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
-            <tr><td>super_admin ??/td><td><span class="badge b-110">isSuperAdmin</span>�?/td></tr>
+            <tr><td>저장 버튼</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
+            <tr><td>super_admin 행</td><td><span class="badge b-110">isSuperAdmin</span>만</td></tr>
           </tbody>
         </table>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>기능 규칙 ?�정/?�??/td><td>rank &gt;= 90 (?�질??100+)</td></tr></tbody>
+          <tbody><tr><td>기능 규칙 수정/저장</td><td>rank &gt;= 90 (실질적 100+)</td></tr></tbody>
         </table>
       </div>
     </div>
 
     <div class="page-card" data-group="admin" id="pg-page-perms">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/page-permissions.html</code> &mdash; ?�이지 권한 매트�?��</span>
+        <span class="page-title"><code>admin/page-permissions.html</code> &mdash; 페이지 권한 매트릭스</span>
         <span class="badge b-100">100 (관리자)</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(100) - 관리자 ?�상</div>
+        <div class="access-note">initPage(100) - 관리자 이상</div>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>권한 매트�?�� ?�정/?�??/td><td>100+</td></tr></tbody>
+          <tbody><tr><td>권한 매트릭스 수정/저장</td><td>100+</td></tr></tbody>
         </table>
       </div>
     </div>
 
     <div class="page-card" data-group="admin" id="pg-change-pw">
       <div class="page-header" onclick="toggleCard(this)">
-        <span class="page-title"><code>admin/change-password.html</code> &mdash; 비�?번호 변�?/span>
-        <span class="badge b-20">?�증�?/span>
+        <span class="page-title"><code>admin/change-password.html</code> &mdash; 비밀번호 변경</span>
+        <span class="badge b-20">인증만</span>
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">?�증�??�요 - initPage ?�음, 모든 로그???�용??/div>
+        <div class="access-note">인증만 필요 - initPage 없음, 모든 로그인 사용자</div>
         <h3>기능 권한</h3>
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
-          <tbody><tr><td>비�?번호 변�?/td><td>8??, ?�문+?�자, 1234 금�?</td></tr></tbody>
+          <tbody><tr><td>비밀번호 변경</td><td>8자+, 영문+숫자, 1234 금지</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -951,7 +951,7 @@
 
   <hr class="section-divider">
   <p style="text-align:center;font-size:0.75rem;color:var(--text3);margin-top:1rem;">
-    CHO-Talents v3.40.0 &middot; ?�제 ?�스 코드 기�? 권한 ?�정 &middot; 2026-06-13 ?�성
+    CHO-Talents v3.40.0 &middot; 실제 소스 코드 기준 권한 설정 &middot; 2026-06-13 작성
   </p>
 
 </div>

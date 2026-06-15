@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Q & A - ?��???마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>�?/text></svg>" />
+  <title>Q & A - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
   <link rel="stylesheet" href="css/themes.css?v=3.41.0" />
   <link rel="stylesheet" href="css/common.css?v=3.41.0" />
   <style>
@@ -17,7 +17,7 @@
     .faq-q { padding: 0.8rem 1rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.15s; }
     .faq-q:hover { background: #f8f5ff; }
     .faq-q::after { content: '+'; font-size: 1.2rem; color: var(--c-primary); transition: transform 0.2s; }
-    .faq-item.open .faq-q::after { content: '??; }
+    .faq-item.open .faq-q::after { content: '−'; }
     .faq-a { display: none; padding: 0 1rem 0.8rem; font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.6; border-top: 1px solid var(--c-border); padding-top: 0.8rem; margin-top: 0; }
     .faq-item.open .faq-a { display: block; }
     .qna-card { background: #fff; border: 1px solid var(--c-border); border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem; }
@@ -49,40 +49,40 @@
 
   <div class="qna-container">
     <div class="qna-hero">
-      <h1>?�� Q & A</h1>
-      <p>궁금???�을 질문?�고 ?��????�인?�세??/p>
+      <h1>💬 Q & A</h1>
+      <p>궁금한 점을 질문하고 답변을 확인하세요</p>
     </div>
 
     <div id="faqAdminWrap" style="display:none;margin-bottom:1rem;">
-      <button type="button" onclick="toggleFaqForm()" style="padding:0.45rem 1rem;background:#51cf66;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;">FAQ 직접 ?�록</button>
+      <button type="button" onclick="toggleFaqForm()" style="padding:0.45rem 1rem;background:#51cf66;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;">FAQ 직접 등록</button>
       <div id="faqForm" class="ask-form" style="display:none;margin-top:0.6rem;">
-        <h3>�?FAQ 직접 ?�록</h3>
-        <input type="text" id="faqQuestion" placeholder="질문???�력?�세?? style="width:100%;padding:0.5rem;border:1px solid var(--c-border);border-radius:8px;font-size:0.9rem;margin-bottom:0.4rem;" />
-        <textarea id="faqAnswer" placeholder="?��????�력?�세??.." style="width:100%;min-height:80px;border:1px solid var(--c-border);border-radius:8px;padding:0.6rem;font-size:0.9rem;resize:vertical;"></textarea>
-        <button type="button" onclick="submitFAQ()">FAQ ?�록</button>
+        <h3>⭐ FAQ 직접 등록</h3>
+        <input type="text" id="faqQuestion" placeholder="질문을 입력하세요" style="width:100%;padding:0.5rem;border:1px solid var(--c-border);border-radius:8px;font-size:0.9rem;margin-bottom:0.4rem;" />
+        <textarea id="faqAnswer" placeholder="답변을 입력하세요..." style="width:100%;min-height:80px;border:1px solid var(--c-border);border-radius:8px;padding:0.6rem;font-size:0.9rem;resize:vertical;"></textarea>
+        <button type="button" onclick="submitFAQ()">FAQ 등록</button>
         <div class="form-error" id="faqError" style="margin-top:0.5rem;"></div>
       </div>
     </div>
 
-    <div class="qna-section-title">�??�주 묻는 질문</div>
-    <div id="faqList"><div class="empty-state">불러?�는 �?..</div></div>
+    <div class="qna-section-title">⭐ 자주 묻는 질문</div>
+    <div id="faqList"><div class="empty-state">불러오는 중...</div></div>
 
-    <div class="qna-section-title">?�� 질문 게시??/div>
-    <div id="qnaList"><div class="empty-state">불러?�는 �?..</div></div>
+    <div class="qna-section-title">📝 질문 게시판</div>
+    <div id="qnaList"><div class="empty-state">불러오는 중...</div></div>
 
     <div class="ask-form" id="askForm">
-      <h3>??질문?�기</h3>
+      <h3>✋ 질문하기</h3>
       <div id="nameFieldWrap" style="margin-bottom:0.5rem;">
-        <input type="text" id="askName" placeholder="?�름???�력?�세?? style="width:100%;padding:0.5rem;border:1px solid var(--c-border);border-radius:8px;font-size:0.9rem;margin-bottom:0.4rem;" />
+        <input type="text" id="askName" placeholder="이름을 입력하세요" style="width:100%;padding:0.5rem;border:1px solid var(--c-border);border-radius:8px;font-size:0.9rem;margin-bottom:0.4rem;" />
       </div>
-      <textarea id="askQuestion" placeholder="궁금???�을 ?�력?�주?�요..."></textarea>
-      <button type="button" onclick="submitQuestion()">질문 ?�록</button>
+      <textarea id="askQuestion" placeholder="궁금한 점을 입력해주세요..."></textarea>
+      <button type="button" onclick="submitQuestion()">질문 등록</button>
       <div class="form-error" id="askError" style="margin-top:0.5rem;"></div>
     </div>
   </div>
 
   <footer class="page-footer">
-    <p>초등부 ?��???관�?&copy; 2026 CHO-Talents</p>
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -126,13 +126,13 @@
       const container = document.getElementById('faqList');
       const { data, error } = await _sb.from('qna').select('*').eq('is_faq', true).eq('is_deleted', false).order('created_at');
       if (error || !data || data.length === 0) {
-        container.innerHTML = '<div class="empty-state">?�록??FAQ가 ?�습?�다.</div>';
+        container.innerHTML = '<div class="empty-state">등록된 FAQ가 없습니다.</div>';
         return;
       }
       container.innerHTML = data.map(q => `
         <div class="faq-item" onclick="this.classList.toggle('open')">
           <div class="faq-q">Q. ${escHtml(q.question)}</div>
-          <div class="faq-a">A. ${escHtml(q.answer || '?��? 준�?�?)}</div>
+          <div class="faq-a">A. ${escHtml(q.answer || '답변 준비 중')}</div>
         </div>`).join('');
     }
 
@@ -140,12 +140,12 @@
       const container = document.getElementById('qnaList');
       const { data, error } = await _sb.from('qna').select('*').eq('is_faq', false).order('created_at', { ascending: false });
       if (error) {
-        container.innerHTML = '<div class="empty-state">질문??불러?��? 못했?�니??</div>';
+        container.innerHTML = '<div class="empty-state">질문을 불러오지 못했습니다.</div>';
         return;
       }
       const filtered = (data || []).filter(q => !q.is_deleted);
       if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-state">?�록??질문???�습?�다.</div>';
+        container.innerHTML = '<div class="empty-state">등록된 질문이 없습니다.</div>';
         return;
       }
 
@@ -173,15 +173,15 @@
     function renderQuestionCard(q, comments) {
       const hasComments = comments.length > 0;
       const statusClass = hasComments ? 'answered' : 'pending';
-      const statusText = hasComments ? '?��??�료' : '?�기중';
+      const statusText = hasComments ? '답변완료' : '대기중';
       const askerDisplay = renderAskerName(q);
       const dateStr = formatDateTime(q.created_at);
       const threadHtml = hasComments
         ? comments.map(c => renderCommentItem(c)).join('')
-        : '<div class="a-text" style="color:#adb5bd;">?�직 ?��????�어??/div>';
+        : '<div class="a-text" style="color:#adb5bd;">아직 답변이 없어요</div>';
       const adminBtns = [];
-      if (_isAdmin && hasComments) adminBtns.push(`<button class="faq-btn" onclick="markAsFaq('${q.id}')">FAQ ?�록</button>`);
-      if (_canDelete) adminBtns.push(`<button style="background:#ff6b6b;color:#fff;border-color:#ff6b6b;" onclick="deleteQuestion('${q.id}')">??��</button>`);
+      if (_isAdmin && hasComments) adminBtns.push(`<button class="faq-btn" onclick="markAsFaq('${q.id}')">FAQ 등록</button>`);
+      if (_canDelete) adminBtns.push(`<button style="background:#ff6b6b;color:#fff;border-color:#ff6b6b;" onclick="deleteQuestion('${q.id}')">삭제</button>`);
       const canComment = !!_session;
       return `<div class="qna-card">
         <div class="q-text"><span class="qna-status ${statusClass}">${statusText}</span> ${escHtml(q.question)}</div>
@@ -196,8 +196,8 @@
       const commenter = renderCommenterName(c);
       const dateStr = formatDateTime(c.created_at);
       return `<div class="a-text" style="margin-bottom:0.4rem;">
-        ?�� ${escHtml(c.content)}
-        <span style="display:block;margin-top:0.3rem;font-size:0.75rem;color:#868e96;">??${commenter} · ${dateStr}</span>
+        💬 ${escHtml(c.content)}
+        <span style="display:block;margin-top:0.3rem;font-size:0.75rem;color:#868e96;">— ${commenter} · ${dateStr}</span>
       </div>`;
     }
 
@@ -213,7 +213,7 @@
     }
 
     function renderAskerName(q) {
-      const name = q.asked_by_name || '?�명';
+      const name = q.asked_by_name || '익명';
       if (_isSuperAdmin && q.asked_by) {
         const username = _usernameMap[q.asked_by] || '';
         if (username) {
@@ -225,10 +225,10 @@
 
     function renderCommentForm(id) {
       return `<div class="admin-answer">
-        <textarea id="cmt_${id}" placeholder="?��?(?��?)???�력?�세??.."></textarea>
+        <textarea id="cmt_${id}" placeholder="답변(댓글)을 입력하세요..."></textarea>
         <div class="btn-row">
-          <button class="primary" onclick="submitComment('${id}')">?��? ?�록</button>
-          ${_isAdmin ? `<button class="faq-btn" onclick="submitComment('${id}', true)">?��? + FAQ ?�록</button>` : ''}
+          <button class="primary" onclick="submitComment('${id}')">답변 등록</button>
+          ${_isAdmin ? `<button class="faq-btn" onclick="submitComment('${id}', true)">답변 + FAQ 등록</button>` : ''}
         </div>
       </div>`;
     }
@@ -237,7 +237,7 @@
       const errEl = document.getElementById('askError');
       const text = document.getElementById('askQuestion').value.trim();
       errEl.classList.remove('show');
-      if (!text) { errEl.textContent = '질문???�력?�주?�요.'; errEl.classList.add('show'); return; }
+      if (!text) { errEl.textContent = '질문을 입력해주세요.'; errEl.classList.add('show'); return; }
 
       if (_session) {
         const { error } = await _sb.from('qna').insert({
@@ -248,11 +248,11 @@
         if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
       } else {
         const name = (document.getElementById('askName').value || '').trim();
-        if (!name) { errEl.textContent = '?�름???�력?�주?�요.'; errEl.classList.add('show'); return; }
+        if (!name) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
         const { error } = await _sb.rpc('submit_anonymous_question', { p_question: text, p_name: name });
         if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
       }
-      await logInfo('QNA_CREATE', { ?�목: text });
+      await logInfo('QNA_CREATE', { 제목: text });
       document.getElementById('askQuestion').value = '';
       await loadQuestions();
     }
@@ -262,7 +262,7 @@
       const textarea = document.getElementById('cmt_' + questionId);
       if (!textarea) return;
       const content = textarea.value.trim();
-      if (!content) { alert('?��????�력?�주?�요.'); return; }
+      if (!content) { alert('답변을 입력해주세요.'); return; }
 
       const commenterName = _session.displayName || _session.username;
       const { error: cErr } = await _sb.from('qna_comments').insert({
@@ -287,8 +287,8 @@
       }
       const { error: uErr } = await _sb.from('qna').update(updates).eq('id', questionId);
       if (uErr) { alert(tErr(uErr)); return; }
-      await logInfo('QNA_ANSWER', { 질문ID: questionId, ?��??? commenterName });
-      if (asFaq) await logInfo('QNA_FAQ_SET', { 질문ID: questionId, FAQ?��?: true });
+      await logInfo('QNA_ANSWER', { 질문ID: questionId, 답변자: commenterName });
+      if (asFaq) await logInfo('QNA_FAQ_SET', { 질문ID: questionId, FAQ여부: true });
 
       if (asFaq) await loadFAQ();
       await loadQuestions();
@@ -300,8 +300,8 @@
       const question = document.getElementById('faqQuestion').value.trim();
       const answer = document.getElementById('faqAnswer').value.trim();
       errEl.classList.remove('show');
-      if (!question) { errEl.textContent = '질문???�력?�주?�요.'; errEl.classList.add('show'); return; }
-      if (!answer) { errEl.textContent = '?��????�력?�주?�요.'; errEl.classList.add('show'); return; }
+      if (!question) { errEl.textContent = '질문을 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!answer) { errEl.textContent = '답변을 입력해주세요.'; errEl.classList.add('show'); return; }
 
       const adminName = _session.displayName || _session.username;
       const { error } = await _sb.from('qna').insert({
@@ -316,7 +316,7 @@
         answered_at: new Date().toISOString()
       });
       if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-      await logInfo('QNA_CREATE', { ?�목: question });
+      await logInfo('QNA_CREATE', { 제목: question });
 
       document.getElementById('faqQuestion').value = '';
       document.getElementById('faqAnswer').value = '';
@@ -326,24 +326,24 @@
 
     async function markAsFaq(id) {
       if (!_isAdmin) return;
-      if (!confirm('??질문??FAQ�??�록?�시겠습?�까?')) return;
+      if (!confirm('이 질문을 FAQ로 등록하시겠습니까?')) return;
       const { data: latest } = await _sb.from('qna_comments').select('content').eq('qna_id', id).order('created_at', { ascending: false }).limit(1).maybeSingle();
       const updates = { is_faq: true, status: 'faq' };
       if (latest && latest.content) updates.answer = latest.content;
       const { error } = await _sb.from('qna').update(updates).eq('id', id);
       if (error) { alert(tErr(error)); return; }
-      await logInfo('QNA_FAQ_SET', { 질문ID: id, FAQ?��?: true });
+      await logInfo('QNA_FAQ_SET', { 질문ID: id, FAQ여부: true });
       await loadFAQ();
       await loadQuestions();
     }
 
     async function deleteQuestion(id) {
       if (!_canDelete) return;
-      if (!confirm('??질문????��?�시겠습?�까?')) return;
+      if (!confirm('이 질문을 삭제하시겠습니까?')) return;
       const { data: qRow } = await _sb.from('qna').select('question').eq('id', id).single();
       const { error } = await _sb.rpc('admin_soft_delete_qna', { p_qna_id: id });
-      if (error) { alert('??�� ?�패: ' + tErr(error.message)); return; }
-      await logInfo('QNA_DELETE', { 질문ID: id, ?�목: qRow?.question || '' });
+      if (error) { alert('삭제 실패: ' + tErr(error.message)); return; }
+      await logInfo('QNA_DELETE', { 질문ID: id, 제목: qRow?.question || '' });
       await loadQuestions();
     }
 

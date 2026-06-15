@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>?��???마을 - CHO Talents</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>�?/text></svg>" />
+  <title>달란트 마을 - CHO Talents</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
   <link rel="stylesheet" href="css/themes.css?v=3.41.0" />
   <link rel="stylesheet" href="css/common.css?v=3.41.0" />
   <link rel="stylesheet" href="css/style.css?v=3.41.0" />
@@ -16,70 +16,70 @@
 
   <main class="main">
     <section class="hero">
-      <div class="hero-badge">??금�?교회 초등부</div>
+      <div class="hero-badge">✝ 금란교회 초등부</div>
       <h1 class="hero-title">
-        <span class="wave-text" style="--i:0">??/span><span class="wave-text" style="--i:1">?�</span><span class="wave-text" style="--i:2">??/span>
+        <span class="wave-text" style="--i:0">달</span><span class="wave-text" style="--i:1">란</span><span class="wave-text" style="--i:2">트</span>
         <span class="wave-text space" style="--i:3">&nbsp;</span>
-        <span class="wave-text highlight" style="--i:4">�?/span><span class="wave-text highlight" style="--i:5">??/span>
+        <span class="wave-text highlight" style="--i:4">마</span><span class="wave-text highlight" style="--i:5">을</span>
       </h1>
-      <p class="hero-sub">?�리???��??�로 ?�상???�름?�게! ?�️</p>
+      <p class="hero-sub">우리의 달란트로 세상을 아름답게! ❤️</p>
 
       <div class="village-layout">
         <div class="village-center">
           <div class="mascots">
-            <div class="mascot bounce-1">?��</div>
-            <div class="mascot bounce-2">?��</div>
-            <div class="mascot bounce-3">?��</div>
+            <div class="mascot bounce-1">🌟</div>
+            <div class="mascot bounce-2">🎁</div>
+            <div class="mascot bounce-3">🏆</div>
           </div>
           <div class="feature-cards-header" id="favHeader" style="display:none;">
-            <button class="fav-setting-btn" onclick="openFavModal()">�?즐겨찾기 ?�정</button>
+            <button class="fav-setting-btn" onclick="openFavModal()">⭐ 즐겨찾기 설정</button>
           </div>
           <div class="feature-cards" id="featureCards">
             <a href="earn-talents.html" class="card" style="border-color:var(--accent)">
-              <div class="card-icon">?��</div>
-              <h3>?��????�립</h3>
-              <p>?�심???�동?�고<br/>?��??��? 모아??</p>
+              <div class="card-icon">💰</div>
+              <h3>달란트 적립</h3>
+              <p>열심히 활동하고<br/>달란트를 모아요!</p>
             </a>
             <a href="shop.html" class="card" style="border-color:var(--mint)">
-              <div class="card-icon">?��</div>
-              <h3>?�품 구매</h3>
-              <p>모�? ?��??�로<br/>?�하???�품??골라??</p>
+              <div class="card-icon">🛒</div>
+              <h3>상품 구매</h3>
+              <p>모은 달란트로<br/>원하는 상품을 골라요!</p>
             </a>
             <a href="my-talents.html" class="card" style="border-color:var(--sky)">
-              <div class="card-icon">?��</div>
-              <h3>???��???/h3>
-              <p>?��? 모�? ?��??��?<br/>?�인??봐요!</p>
+              <div class="card-icon">🏅</div>
+              <h3>내 달란트</h3>
+              <p>내가 모은 달란트를<br/>확인해 봐요!</p>
             </a>
           </div>
         </div>
       </div>
 
       <div class="status-box" id="statusBox">
-        <div class="status-icon">?��</div>
+        <div class="status-icon">🔗</div>
         <div class="status-text">
-          <span class="status-label">?�버 ?�결 ?�태</span>
-          <span class="status-value" id="statusValue">?�인 �?..</span>
+          <span class="status-label">서버 연결 상태</span>
+          <span class="status-value" id="statusValue">확인 중...</span>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <p>초등부 ?��???관�?&copy; 2026 CHO-Talents</p>
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
   </footer>
 
   <!-- Favorites Modal -->
   <div class="fav-overlay" id="favOverlay" style="display:none;" onclick="closeFavModal()">
     <div class="fav-modal" onclick="event.stopPropagation()">
       <div class="fav-modal-header">
-        <h3>�?즐겨찾기 ?�정</h3>
+        <h3>⭐ 즐겨찾기 설정</h3>
         <button class="fav-modal-close" onclick="closeFavModal()">&times;</button>
       </div>
-      <p class="fav-modal-desc" id="favModalDesc">메인 ?�면???�시??바로가기�? ?�택?�세??(최소 1�?</p>
+      <p class="fav-modal-desc" id="favModalDesc">메인 화면에 표시할 바로가기를 선택하세요 (최소 1개)</p>
       <div class="fav-list" id="favList"></div>
       <div class="fav-modal-footer">
-        <button class="fav-btn-reset" onclick="resetFavorites()">??기본�?복원</button>
-        <button class="fav-btn-save" onclick="saveFavorites()">?�� ?�??/button>
+        <button class="fav-btn-reset" onclick="resetFavorites()">↩ 기본값 복원</button>
+        <button class="fav-btn-save" onclick="saveFavorites()">💾 저장</button>
       </div>
     </div>
   </div>
@@ -94,35 +94,35 @@
   <script src="js/app.js?v=3.41.0"></script>
   <script>
     const ALL_SHORTCUTS = [
-      { id:'earn-talents',  href:'earn-talents.html',        icon:'?��', title:'?��????�립',   desc:'?�심???�동?�고 ?��??��? 모아??',           color:'var(--accent)',  minRank:0 },
-      { id:'shop',          href:'shop.html',                icon:'?��', title:'?�품 구매',     desc:'모�? ?��??�로 ?�하???�품??골라??',         color:'var(--mint)',    minRank:0 },
-      { id:'my-talents',    href:'my-talents.html',          icon:'?��', title:'???��???,     desc:'?��? 모�? ?��??��? ?�인??봐요!',             color:'var(--sky)',     minRank:0 },
-      { id:'my-orders',     href:'my-orders.html',           icon:'?��', title:'??구매 ?�품',   desc:'주문???�품???�태�??�인?�요!',              color:'#a29bfe',       minRank:20 },
-      { id:'talent-receive',href:'talent-receive.html',      icon:'?��', title:'?��????�령',   desc:'QR 코드�??��??��? ?�령?�요!',               color:'#fd79a8',       minRank:20 },
-      { id:'qna',           href:'qna.html',                 icon:'??, title:'Q&A',          desc:'궁금???�을 질문??보세??',                  color:'#00b894',       minRank:0 },
-      { id:'guide',         href:'guide.html',               icon:'?��', title:'?�생 가?�드',   desc:'?�용 방법???�인??보세??',                  color:'#636e72',       minRank:0 },
-      { id:'teacher-guide', href:'teacher-guide.html',       icon:'?��?��?, title:'교사 가?�드',  desc:'교사 ?�용 ?�용 가?�드',                      color:'#e17055',       minRank:40 },
-      { id:'admin-guide',   href:'admin-guide.html',         icon:'?���?, title:'관리자 가?�드', desc:'관리자 ?�용 ?�용 가?�드',                     color:'#d63031',       minRank:60 },
-      { id:'admin-dash',    href:'admin/index.html',         icon:'?��', title:'?�?�보??,      desc:'관�??�황???�눈???�인!',                    color:'#6c5ce7',       minRank:60 },
-      { id:'admin-talents', href:'admin/talents.html',       icon:'?��', title:'?��???관�?,   desc:'?��??��? 지급하�?관리해??',                 color:'#fdcb6e',       minRank:40 },
-      { id:'admin-stats',   href:'admin/talent-stats.html',  icon:'?��', title:'?��????�계',   desc:'?��????�계�??�인?�요!',                     color:'#55efc4',       minRank:60 },
-      { id:'admin-users',   href:'admin/users.html',         icon:'?��', title:'?�용??관�?,   desc:'?�용?��? 관리해??',                          color:'#74b9ff',       minRank:60 },
-      { id:'admin-purch',   href:'admin/purchases.html',     icon:'?��', title:'구매 관�?,     desc:'구매 ?�청??처리?�요!',                       color:'#ffeaa7',       minRank:60 },
-      { id:'admin-depts',   href:'admin/departments.html',   icon:'?��', title:'부??관�?,     desc:'부?��? 관리해??',                            color:'#81ecec',       minRank:60 },
-      { id:'admin-qr',      href:'admin/talent-qr.html',     icon:'?��', title:'QR 관�?,      desc:'?��???QR 코드�?관리해??',                  color:'#fab1a0',       minRank:90 },
-      { id:'admin-shop',    href:'admin/shop.html',          icon:'?��', title:'?�품 관�?,     desc:'?�품???�록?�고 관리해??',                   color:'#dfe6e9',       minRank:60 },
-      { id:'admin-items',   href:'admin/talent-items.html',  icon:'?��', title:'?��?????��',   desc:'?��?????��???�록?�고 관리해??',             color:'#00b894',       minRank:60 },
-      { id:'admin-bulk',    href:'admin/bulk-register.html', icon:'?��', title:'?�생 ?�괄 ?�록', desc:'?��?�??�생 계정???�괄 ?�성?�요!',            color:'#2d3436',       minRank:80 },
-      { id:'admin-mgrs',    href:'admin/managers.html',      icon:'?��', title:'관리자 관�?,   desc:'관리자�??�록?�고 관리해??',                  color:'#e67700',       minRank:80 },
-      { id:'admin-perm',    href:'docs/page-permission-rules.html', icon:'?��', title:'?�이지 권한 �?, desc:'?�이지�??�근 권한???�인?�요!',       color:'#636e72',       minRank:80 },
-      { id:'admin-logrule', href:'admin/log-rules.html',     icon:'?��', title:'로그 ?�성 �?,   desc:'로그 ?�성 규칙???�인?�요!',                  color:'#b2bec3',       minRank:80 },
-      { id:'admin-auditrule',href:'admin/audit-rules.html',  icon:'?��', title:'?�업 ?�력 �?,   desc:'?�업 ?�력 ?�성 규칙???�인?�요!',             color:'#dfe6e9',       minRank:80 },
-      { id:'admin-ver',     href:'admin/versions.html',      icon:'?��', title:'버전',          desc:'버전 ?�데?�트 ?�력???�인?�요!',               color:'#636e72',       minRank:80 },
-      { id:'admin-report',  href:'admin/reports.html',       icon:'?��', title:'보고??,         desc:'?�영 보고?��? ?�인?�요!',                     color:'#00cec9',       minRank:80 },
-      { id:'admin-access',  href:'admin/page-access.html',   icon:'?��', title:'?�이지 ?�근',   desc:'?�이지 ?�근 권한???�정?�요!',                color:'#e17055',       minRank:100 },
-      { id:'admin-feat',    href:'admin/page-features.html', icon:'?�️', title:'?�이지 기능',   desc:'?�이지 기능 권한???�정?�요!',                color:'#d63031',       minRank:100 },
-      { id:'admin-audit',   href:'admin/audit.html',         icon:'?��', title:'?�업 ?�력',      desc:'?�업 ?�력???�인?�요!',                       color:'#6c5ce7',       minRank:100 },
-      { id:'admin-logs',    href:'admin/logs.html',          icon:'?���?, title:'로그',           desc:'?�스??로그�??�인?�요!',                     color:'#fd79a8',       minRank:100 },
+      { id:'earn-talents',  href:'earn-talents.html',        icon:'💰', title:'달란트 적립',   desc:'열심히 활동하고 달란트를 모아요!',           color:'var(--accent)',  minRank:0 },
+      { id:'shop',          href:'shop.html',                icon:'🛒', title:'상품 구매',     desc:'모은 달란트로 원하는 상품을 골라요!',         color:'var(--mint)',    minRank:0 },
+      { id:'my-talents',    href:'my-talents.html',          icon:'🏅', title:'내 달란트',     desc:'내가 모은 달란트를 확인해 봐요!',             color:'var(--sky)',     minRank:0 },
+      { id:'my-orders',     href:'my-orders.html',           icon:'📦', title:'내 구매 상품',   desc:'주문한 상품의 상태를 확인해요!',              color:'#a29bfe',       minRank:20 },
+      { id:'talent-receive',href:'talent-receive.html',      icon:'📱', title:'달란트 수령',   desc:'QR 코드로 달란트를 수령해요!',               color:'#fd79a8',       minRank:20 },
+      { id:'qna',           href:'qna.html',                 icon:'❓', title:'Q&A',          desc:'궁금한 점을 질문해 보세요!',                  color:'#00b894',       minRank:0 },
+      { id:'guide',         href:'guide.html',               icon:'📖', title:'학생 가이드',   desc:'사용 방법을 확인해 보세요!',                  color:'#636e72',       minRank:0 },
+      { id:'teacher-guide', href:'teacher-guide.html',       icon:'👩‍🏫', title:'교사 가이드',  desc:'교사 전용 사용 가이드',                      color:'#e17055',       minRank:40 },
+      { id:'admin-guide',   href:'admin-guide.html',         icon:'🛠️', title:'관리자 가이드', desc:'관리자 전용 사용 가이드',                     color:'#d63031',       minRank:60 },
+      { id:'admin-dash',    href:'admin/index.html',         icon:'📊', title:'대시보드',      desc:'관리 현황을 한눈에 확인!',                    color:'#6c5ce7',       minRank:60 },
+      { id:'admin-talents', href:'admin/talents.html',       icon:'🎯', title:'달란트 관리',   desc:'달란트를 지급하고 관리해요!',                 color:'#fdcb6e',       minRank:40 },
+      { id:'admin-stats',   href:'admin/talent-stats.html',  icon:'📈', title:'달란트 통계',   desc:'달란트 통계를 확인해요!',                     color:'#55efc4',       minRank:60 },
+      { id:'admin-users',   href:'admin/users.html',         icon:'👥', title:'사용자 관리',   desc:'사용자를 관리해요!',                          color:'#74b9ff',       minRank:60 },
+      { id:'admin-purch',   href:'admin/purchases.html',     icon:'💳', title:'구매 관리',     desc:'구매 요청을 처리해요!',                       color:'#ffeaa7',       minRank:60 },
+      { id:'admin-depts',   href:'admin/departments.html',   icon:'🏢', title:'부서 관리',     desc:'부서를 관리해요!',                            color:'#81ecec',       minRank:60 },
+      { id:'admin-qr',      href:'admin/talent-qr.html',     icon:'📷', title:'QR 관리',      desc:'달란트 QR 코드를 관리해요!',                  color:'#fab1a0',       minRank:90 },
+      { id:'admin-shop',    href:'admin/shop.html',          icon:'🏪', title:'상품 관리',     desc:'상품을 등록하고 관리해요!',                   color:'#dfe6e9',       minRank:60 },
+      { id:'admin-items',   href:'admin/talent-items.html',  icon:'🎯', title:'달란트 항목',   desc:'달란트 항목을 등록하고 관리해요!',             color:'#00b894',       minRank:60 },
+      { id:'admin-bulk',    href:'admin/bulk-register.html', icon:'📋', title:'학생 일괄 등록', desc:'엑셀로 학생 계정을 일괄 생성해요!',            color:'#2d3436',       minRank:80 },
+      { id:'admin-mgrs',    href:'admin/managers.html',      icon:'👑', title:'관리자 관리',   desc:'관리자를 등록하고 관리해요!',                  color:'#e67700',       minRank:80 },
+      { id:'admin-perm',    href:'docs/page-permission-rules.html', icon:'🔐', title:'페이지 권한 룰', desc:'페이지별 접근 권한을 확인해요!',       color:'#636e72',       minRank:80 },
+      { id:'admin-logrule', href:'admin/log-rules.html',     icon:'📝', title:'로그 작성 룰',   desc:'로그 작성 규칙을 확인해요!',                  color:'#b2bec3',       minRank:80 },
+      { id:'admin-auditrule',href:'admin/audit-rules.html',  icon:'📃', title:'작업 이력 룰',   desc:'작업 이력 작성 규칙을 확인해요!',             color:'#dfe6e9',       minRank:80 },
+      { id:'admin-ver',     href:'admin/versions.html',      icon:'🔖', title:'버전',          desc:'버전 업데이트 이력을 확인해요!',               color:'#636e72',       minRank:80 },
+      { id:'admin-report',  href:'admin/reports.html',       icon:'📑', title:'보고서',         desc:'운영 보고서를 확인해요!',                     color:'#00cec9',       minRank:80 },
+      { id:'admin-access',  href:'admin/page-access.html',   icon:'🔑', title:'페이지 접근',   desc:'페이지 접근 권한을 설정해요!',                color:'#e17055',       minRank:100 },
+      { id:'admin-feat',    href:'admin/page-features.html', icon:'⚙️', title:'페이지 기능',   desc:'페이지 기능 권한을 설정해요!',                color:'#d63031',       minRank:100 },
+      { id:'admin-audit',   href:'admin/audit.html',         icon:'📜', title:'작업 이력',      desc:'작업 이력을 확인해요!',                       color:'#6c5ce7',       minRank:100 },
+      { id:'admin-logs',    href:'admin/logs.html',          icon:'🗂️', title:'로그',           desc:'시스템 로그를 확인해요!',                     color:'#fd79a8',       minRank:100 },
     ];
     const DEFAULT_FAV_IDS = ['earn-talents','shop','my-talents'];
     const MAX_FAV_MOBILE = 10;
@@ -200,7 +200,7 @@
       const avail = getAvailable();
       const maxFav = _getMaxFav();
       document.getElementById('favModalDesc').textContent =
-        `메인 ?�면???�시??바로가기�? ?�택?�세??(최소 1�? 최�? ${maxFav}�?`;
+        `메인 화면에 표시할 바로가기를 선택하세요 (최소 1개, 최대 ${maxFav}개)`;
       document.getElementById('favList').innerHTML = avail.map(s => {
         const chk = ids.includes(s.id) ? 'checked' : '';
         return `<label class="fav-item">` +
@@ -219,8 +219,8 @@
       const checked = document.querySelectorAll('#favList .fav-check:checked');
       const ids = getSanitizedFavIds(Array.from(checked).map(c => c.value));
       const maxFav = _getMaxFav();
-      if (!ids.length) { alert('최소 1�??�상??바로가기�? ?�택?�주?�요.'); return; }
-      if (ids.length > maxFav) { alert(`최�? ${maxFav}개까지 ?�택?????�습?�다.`); return; }
+      if (!ids.length) { alert('최소 1개 이상의 바로가기를 선택해주세요.'); return; }
+      if (ids.length > maxFav) { alert(`최대 ${maxFav}개까지 선택할 수 있습니다.`); return; }
       if (_favSession && _sb) {
         try {
           await _sb.from('user_preferences').upsert({ user_id: _favSession.id, favorite_shortcuts: ids, updated_at: new Date().toISOString() });

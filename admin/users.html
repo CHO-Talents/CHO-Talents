@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>?�용??관�?- 관리자</title>
+  <title>사용자 관리 - 관리자</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.41.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.41.0" />
 </head>
@@ -11,91 +11,91 @@
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?�� ?�용??관�?/h2>
+    <h2 style="margin-bottom:1rem;">👥 사용자 관리</h2>
 
     <div class="cards-grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(5,1fr);">
-      <div class="stat-card"><div class="stat-card-label">?�체</div><div class="stat-card-value" id="cntAll">-</div></div>
-      <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">?�� 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
-      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">?�� 부???�당</div><div class="stat-card-value" id="cntMgr">-</div></div>
-      <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">?��?��?교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
-      <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">?�� ?�생</div><div class="stat-card-value" id="cntStudent">-</div></div>
+      <div class="stat-card"><div class="stat-card-label">전체</div><div class="stat-card-value" id="cntAll">-</div></div>
+      <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
+      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">📋 부서 담당</div><div class="stat-card-value" id="cntMgr">-</div></div>
+      <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">👩‍🏫 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
+      <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">🎒 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
     </div>
     <style>.cards-grid{display:grid;gap:0.6rem;}@media(max-width:768px){.cards-grid{grid-template-columns:repeat(3,1fr)!important;}.cards-grid .stat-card{padding:0.7rem 0.5rem;}.cards-grid .stat-card-value{font-size:1.3rem;}}</style>
 
-    <!-- 가???�청 ?�역 -->
+    <!-- 가입 신청 내역 -->
     <div class="admin-table-wrap" id="reqSection" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="reqTitle" style="color:#e67700;">?�� 가???�청 ?�역</div>
+        <div class="admin-table-title" id="reqTitle" style="color:#e67700;">📝 가입 신청 내역</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>??��</th><th>?�름</th><th>부??/th><th>?�유</th><th>?�청??/th><th>처리</th></tr></thead>
+        <thead><tr><th>역할</th><th>이름</th><th>부서</th><th>사유</th><th>신청일</th><th>처리</th></tr></thead>
         <tbody id="reqList"></tbody>
       </table>
     </div>
 
-    <!-- 부???�동 ?�청 ?�역 -->
+    <!-- 부서 이동 신청 내역 -->
     <div class="admin-table-wrap" id="transferSection" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="transferTitle" style="color:#1971c2;">?�� 부???�동 ?�청 ?�역</div>
+        <div class="admin-table-title" id="transferTitle" style="color:#1971c2;">🔄 부서 이동 신청 내역</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>?�름</th><th>?�재 부??/th><th>?�동 ?�청 부??/th><th>?�청??/th><th>?�청??/th><th>처리</th></tr></thead>
+        <thead><tr><th>이름</th><th>현재 부서</th><th>이동 요청 부서</th><th>요청자</th><th>요청일</th><th>처리</th></tr></thead>
         <tbody id="transferList"></tbody>
       </table>
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">?�용??목록</div>
+        <div class="admin-table-title" id="tableTitle">사용자 목록</div>
         <div class="filters" style="flex-wrap:wrap;gap:0.4rem;">
           <select id="deptFilter" style="padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:var(--t-input-bg, #fff);" onchange="onDeptFilterChange()">
-            <option value="">?�체 부??/option>
+            <option value="">전체 부서</option>
           </select>
-          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()" data-testid="user-add-button">+ ?�용???�록</button>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()" data-testid="user-add-button">+ 사용자 등록</button>
         </div>
       </div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin:1rem 0 0.5rem;border-bottom:2px solid #4dabf7;padding-bottom:0.3rem;">
-        <h3 style="font-size:0.95rem;margin:0;">?��?��?교사 <span id="teacherCount" style="font-size:0.8rem;color:var(--admin-text-muted);"></span></h3>
+        <h3 style="font-size:0.95rem;margin:0;">👩‍🏫 교사 <span id="teacherCount" style="font-size:0.8rem;color:var(--admin-text-muted);"></span></h3>
         <span id="teacherPageSizeWrap"></span>
       </div>
       <table class="admin-table">
-        <thead><tr><th>권한</th><th>?�름</th><th>부??/th><th>�?/th><th>?��???/th><th>관�?/th></tr></thead>
-        <tbody id="teacherList"><tr><td colspan="6" class="empty-state">로딩 �?..</td></tr></tbody>
+        <thead><tr><th>권한</th><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th>관리</th></tr></thead>
+        <tbody id="teacherList"><tr><td colspan="6" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="teacherPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin:1.5rem 0 0.5rem;border-bottom:2px solid #51cf66;padding-bottom:0.3rem;">
-        <h3 style="font-size:0.95rem;margin:0;">?�� ?�생 <span id="studentCount" style="font-size:0.8rem;color:var(--admin-text-muted);"></span></h3>
+        <h3 style="font-size:0.95rem;margin:0;">🎒 학생 <span id="studentCount" style="font-size:0.8rem;color:var(--admin-text-muted);"></span></h3>
         <span id="studentPageSizeWrap"></span>
       </div>
       <table class="admin-table">
-        <thead><tr><th>?�름</th><th>부??/th><th>�?/th><th>?��???/th><th>관�?/th></tr></thead>
-        <tbody id="studentList"><tr><td colspan="5" class="empty-state">로딩 �?..</td></tr></tbody>
+        <thead><tr><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th>관리</th></tr></thead>
+        <tbody id="studentList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="studentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
-  <!-- ?�용???�록/?�정 모달 -->
+  <!-- 사용자 등록/수정 모달 -->
   <div class="modal-overlay hidden" id="userModal">
     <div class="modal-box" style="max-width:500px;">
-      <h3 class="modal-title" id="modalTitle">?�용???�록</h3>
+      <h3 class="modal-title" id="modalTitle">사용자 등록</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�이??/label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">아이디</label>
         <input type="text" id="mUsername" data-testid="user-form-username" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�름 (?�시�?</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이름 (표시명)</label>
         <input type="text" id="mDisplayName" data-testid="user-form-display-name" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">??��</label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">역할</label>
           <select id="mUserType" data-testid="user-form-type" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onUserTypeChange()">
-            <option value="student">?�� ?�생</option>
-            <option value="teacher">?��?��?교사</option>
+            <option value="student">🎒 학생</option>
+            <option value="teacher">👩‍🏫 교사</option>
           </select>
         </div>
         <div style="flex:1;" id="permLevelWrap">
@@ -106,74 +106,74 @@
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�속 부??<span style="color:#e03131;">*</span></label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">소속 부서 <span style="color:#e03131;">*</span></label>
           <select id="mDept" data-testid="user-form-department" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" onchange="onDeptChange()">
-            <option value="">?�음</option>
+            <option value="">없음</option>
           </select>
         </div>
         <div style="flex:1;" id="classWrap">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">�?/label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">반</label>
           <select id="mClassNumber" data-testid="user-form-class-number" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-            <option value="">?�음</option>
+            <option value="">없음</option>
           </select>
         </div>
       </div>
       <div id="managedDeptWrap" style="margin-bottom:0.8rem;display:none;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�당 관�?부??<span style="color:#e03131;">*?�수</span></label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">담당 관리 부서 <span style="color:#e03131;">*필수</span></label>
         <select id="mManagedDept" data-testid="user-form-managed-department" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="">?�음</option>
+          <option value="">없음</option>
         </select>
       </div>
       <div id="passwordWrap" style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">초기 비�?번호</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">초기 비밀번호</label>
         <input type="text" id="mPassword" data-testid="user-form-password" value="1234" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
-        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">�?로그????변�??�수</div>
+        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">첫 로그인 시 변경 필수</div>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">취소</button>
-        <button class="btn-confirm" onclick="saveUser()" data-testid="user-form-save">?�??/button>
+        <button class="btn-confirm" onclick="saveUser()" data-testid="user-form-save">저장</button>
       </div>
     </div>
   </div>
 
-  <!-- 부???�동 모달 -->
+  <!-- 부서 이동 모달 -->
   <div class="modal-overlay hidden" id="transferModal">
     <div class="modal-box" style="max-width:420px;">
-      <h3 class="modal-title">?�� 부???�동</h3>
+      <h3 class="modal-title">🔄 부서 이동</h3>
       <div class="form-error" id="transferError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�???�용??/label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">대상 사용자</label>
         <div id="transferUserInfo" style="padding:0.6rem;background:#f8f9fa;border-radius:8px;font-size:0.9rem;"></div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�재 부??/label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">현재 부서</label>
         <div id="transferFromDept" style="padding:0.6rem;background:#f8f9fa;border-radius:8px;font-size:0.9rem;color:#868e96;"></div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�동??부??<span style="color:#e03131;">*</span></label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">이동할 부서 <span style="color:#e03131;">*</span></label>
         <select id="transferToDept" data-testid="transfer-to-department" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="">-- 부???�택 --</option>
+          <option value="">-- 부서 선택 --</option>
         </select>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">?�유</label>
-        <input type="text" id="transferReason" data-testid="transfer-reason" placeholder="?�동 ?�유 ?�력" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">사유</label>
+        <input type="text" id="transferReason" data-testid="transfer-reason" placeholder="이동 사유 입력" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div id="transferNote" style="font-size:0.78rem;color:#868e96;margin-bottom:0.8rem;"></div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeTransferModal()">취소</button>
-        <button class="btn-confirm" onclick="submitTransfer()" data-testid="transfer-submit">?�인</button>
+        <button class="btn-confirm" onclick="submitTransfer()" data-testid="transfer-submit">확인</button>
       </div>
     </div>
   </div>
 
-  <!-- ?�세 ?�보 모달 -->
+  <!-- 상세 정보 모달 -->
   <div class="modal-overlay hidden" id="detailModal">
     <div class="modal-box" style="max-width:600px;max-height:85vh;overflow-y:auto;">
-      <h3 class="modal-title">?�� ?�용???�세 ?�보</h3>
+      <h3 class="modal-title">📋 사용자 상세 정보</h3>
       <div id="detailContent" style="font-size:0.88rem;"></div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="document.getElementById('detailModal').classList.add('hidden')">?�기</button>
+        <button class="btn-cancel" onclick="document.getElementById('detailModal').classList.add('hidden')">닫기</button>
       </div>
     </div>
   </div>
@@ -278,9 +278,9 @@
       }
 
       if (myRank >= 90) {
-        // ?�도?�님+: 모든 ?�동 ?�청 ?�시
+        // 전도사님+: 모든 이동 요청 표시
       } else if (myRank >= 80) {
-        // 부??교사: 모든 ?�동 ?�청 ?�시 (처리??관�?부?�만)
+        // 부장 교사: 모든 이동 요청 표시 (처리는 관리 부서만)
       } else if (myRank >= 60) {
         transfers = myDepts.size > 0 ? transfers.filter(t => myDepts.has(t.to_department_id)) : [];
       } else {
@@ -303,11 +303,11 @@
     const DEPT_MGR_LEVELS = ['evangelist', 'chief', 'purchase_teacher', 'dept_teacher'];
 
     const PERM_LEVELS = [
-      { value: 'teacher', label: '?�반 교사', rank: 40 },
-      { value: 'dept_teacher', label: '부???�당 교사', rank: 60 },
-      { value: 'purchase_teacher', label: '구매 ?�당 교사', rank: 70 },
-      { value: 'chief', label: '부??교사', rank: 80 },
-      { value: 'evangelist', label: '?�도?�님', rank: 90 },
+      { value: 'teacher', label: '일반 교사', rank: 40 },
+      { value: 'dept_teacher', label: '부서 담당 교사', rank: 60 },
+      { value: 'purchase_teacher', label: '구매 담당 교사', rank: 70 },
+      { value: 'chief', label: '부장 교사', rank: 80 },
+      { value: 'evangelist', label: '전도사님', rank: 90 },
       { value: 'admin', label: '관리자', rank: 100 }
     ];
 
@@ -341,13 +341,13 @@
     }
 
     function populateDeptSelects() {
-      const opts = '<option value="">?�음</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      const opts = '<option value="">없음</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
       document.getElementById('mDept').innerHTML = opts;
       document.getElementById('mManagedDept').innerHTML = opts;
     }
 
     function getClassLabel(classNum) {
-      return classNum ? classNum + '�? : '-';
+      return classNum ? classNum + '반' : '-';
     }
 
     function onDeptChange() {
@@ -355,8 +355,8 @@
       const classSelect = document.getElementById('mClassNumber');
       const dept = allDepts.find(d => d.id === deptId);
       const count = (dept && dept.class_count) ? dept.class_count : 0;
-      let html = '<option value="">?�음</option>';
-      for (let i = 1; i <= count; i++) html += `<option value="${i}">${i}�?/option>`;
+      let html = '<option value="">없음</option>';
+      for (let i = 1; i <= count; i++) html += `<option value="${i}">${i}반</option>`;
       classSelect.innerHTML = html;
       document.getElementById('classWrap').style.display = count > 0 ? 'block' : 'none';
     }
@@ -384,7 +384,7 @@
         return;
       }
       sel.style.display = '';
-      sel.innerHTML = '<option value="">?�체 부??/option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      sel.innerHTML = '<option value="">전체 부서</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
     function getDeptName(id) {
@@ -393,10 +393,10 @@
     }
 
     const ROLE_BADGES = {
-      admin: { emoji: '?��', label: '관리자', cls: 'ERROR' },
-      dept_manager: { emoji: '?��', label: '부???�당 교사', cls: 'WARN' },
-      teacher: { emoji: '?��?��?, label: '교사', cls: 'INFO' },
-      student: { emoji: '?��', label: '?�생', cls: 'DEBUG' }
+      admin: { emoji: '👑', label: '관리자', cls: 'ERROR' },
+      dept_manager: { emoji: '📋', label: '부서 담당 교사', cls: 'WARN' },
+      teacher: { emoji: '👩‍🏫', label: '교사', cls: 'INFO' },
+      student: { emoji: '🎒', label: '학생', cls: 'DEBUG' }
     };
 
     let _nameMap = {};
@@ -407,7 +407,7 @@
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter);
       const teachers = sortUserList(list.filter(u => u.user_type === 'teacher'), getDeptName);
       const students = sortUserList(list.filter(u => u.user_type === 'student'), getDeptName);
-      document.getElementById('tableTitle').textContent = `?�용??목록 (${list.length}�?`;
+      document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
       _nameMap = resolveDisplayNames(allUsers);
       renderGroup(teachers, 'teacher', 'teacherList', 'teacherPaging', 'teacherCount');
       renderGroup(students, 'student', 'studentList', 'studentPaging', 'studentCount');
@@ -418,11 +418,11 @@
       const page = groupPages[groupKey] || 1;
       const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
       if (page > totalPages) groupPages[groupKey] = totalPages;
-      document.getElementById(countId).textContent = `(${list.length}�?`;
+      document.getElementById(countId).textContent = `(${list.length}명)`;
       const tbody = document.getElementById(tbodyId);
       const colSpan = groupKey === 'student' ? 5 : 6;
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state">?�록???�용?��? ?�습?�다.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${colSpan}" class="empty-state">등록된 사용자가 없습니다.</td></tr>`;
         document.getElementById(pagingId).innerHTML = '';
         return;
       }
@@ -437,13 +437,13 @@
         const dn = _nameMap[u.id] || u.display_name || '-';
         const canManage = canManageUser(u);
         const isSelf = u.id === session.id;
-        let items = [`<a onclick="openDetailModal('${u.id}')">?�� ?�세 ?�보</a>`];
-        if (canManage) items.push(`<a onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>?�️ ?�정</a>`);
-        else if (isProtectedSuperAdminUser(u)) items.push('<a style="color:#868e96;cursor:default;">?�� 최고관리자??본인�??�정 가??/a>');
+        let items = [`<a onclick="openDetailModal('${u.id}')">📋 상세 정보</a>`];
+        if (canManage) items.push(`<a onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>✏️ 수정</a>`);
+        else if (isProtectedSuperAdminUser(u)) items.push('<a style="color:#868e96;cursor:default;">🔒 최고관리자는 본인만 수정 가능</a>');
         if (canManage && !isSelf) {
-          if (myRank >= 80) items.push(`<a onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">${myRank >= 90 ? '?�� 부???�동' : '?�� 부???�동 ?�청'}</a>`);
-          items.push(`<a onclick="resetPw('${u.id}','${(dn).replace(/'/g,"\\'")}')">?�� 비�?번호 초기??/a>`);
-          if (myRank >= 80) items.push(`<a onclick="confirmDelete('${u.id}','${(dn).replace(/'/g,"\\'")}')">?���???��</a>`);
+          if (myRank >= 80) items.push(`<a onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">${myRank >= 90 ? '🔄 부서 이동' : '🔄 부서 이동 신청'}</a>`);
+          items.push(`<a onclick="resetPw('${u.id}','${(dn).replace(/'/g,"\\'")}')">🔑 비밀번호 초기화</a>`);
+          if (myRank >= 80) items.push(`<a onclick="confirmDelete('${u.id}','${(dn).replace(/'/g,"\\'")}')">🗑️ 삭제</a>`);
         }
         const permCol = groupKey !== 'student' ? `<td><span class="level-badge ${rb.cls}">${permEmoji} ${permLabel}</span></td>` : '';
         return `<tr>
@@ -454,7 +454,7 @@
           <td style="font-weight:700;">${fmtNum(u.talent_balance || 0)}</td>
           <td>
             <div class="mgmt-dropdown">
-              <button class="filter-btn" onclick="toggleMgmtMenu(event, this)">관�???/button>
+              <button class="filter-btn" onclick="toggleMgmtMenu(event, this)">관리 ▾</button>
               <div class="mgmt-menu">${items.join('')}</div>
             </div>
           </td>
@@ -509,18 +509,18 @@
       const myRank = session.permissionRank || 0;
       const myManagedDept = session.managedDeptId || session.departmentId;
 
-      // ?�용??관�??�근 권한 미만?� 관�?불�?
+      // 사용자 관리 접근 권한 미만은 관리 불가
       if (myRank < 60) return false;
 
       // 최고관리자 보호
       if (user.id !== session.id && isProtectedSuperAdminUser(user)) return false;
 
-      // 본인 ?�정 ?�용
+      // 본인 수정 허용
       if (user.id === session.id) return true;
 
       const targetRank = getPermRank(user.permission_level, false);
 
-      // ?�기?� 같거???��? 권한?� ?�정 불�?
+      // 자기와 같거나 높은 권한은 수정 불가
       if (myRank <= targetRank) return false;
 
       if (myRank < 80) {
@@ -530,7 +530,7 @@
         );
       }
 
-      // 부??교사(rank 80)???�당 부??범위 ?�에?�만 ?�정 가??
+      // 부장 교사(rank 80)는 담당 부서 범위 안에서만 수정 가능
       if (myRank === 80) {
         return !!myManagedDept && (
           user.department_id === myManagedDept ||
@@ -538,7 +538,7 @@
         );
       }
 
-      // ?�도?�님 ?�상(rank 90+)?� ?�기보다 ??? 권한 ?�정 가??
+      // 전도사님 이상(rank 90+)은 자기보다 낮은 권한 수정 가능
       return true;
     }
 
@@ -559,8 +559,8 @@
 
     function showProtectedUserMessage(target, errEl) {
       const message = isProtectedSuperAdminUser(target)
-        ? '최고관리자 계정?� 본인�??�정?????�습?�다.'
-        : '???�용?��? ?�정??권한???�습?�다.';
+        ? '최고관리자 계정은 본인만 수정할 수 있습니다.'
+        : '이 사용자를 수정할 권한이 없습니다.';
       if (errEl) {
         errEl.textContent = message;
         errEl.classList.add('show');
@@ -585,7 +585,7 @@
       const permLabel = PERMISSION_LABELS[perm] || perm;
       const permEmoji = PERMISSION_EMOJI[perm] || '';
       const typeLabel = TYPE_LABELS[u.user_type] || u.user_type;
-      const lastLogin = u.last_login_at ? formatKSTShort(u.last_login_at) : (u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '?�음');
+      const lastLogin = u.last_login_at ? formatKSTShort(u.last_login_at) : (u.last_sign_in_at ? formatKSTShort(u.last_sign_in_at) : '없음');
 
       let regInfo = '';
       try {
@@ -601,7 +601,7 @@
                 reviewerDisplay = rp.display_name || rp.username || r.reviewed_by;
                 if (myRank >= 100 && rp.username) reviewerDisplay += ` (${rp.username})`;
               } else {
-                reviewerDisplay = myRank >= 100 ? r.reviewed_by : '?�인 ?�료';
+                reviewerDisplay = myRank >= 100 ? r.reviewed_by : '승인 완료';
               }
             } else {
               const { data: rps } = await _sb.from('profiles').select('display_name, username').eq('username', r.reviewed_by).limit(1);
@@ -609,14 +609,14 @@
                 reviewerDisplay = rps[0].display_name || r.reviewed_by;
                 if (myRank >= 100) reviewerDisplay += ` (${r.reviewed_by})`;
               } else {
-                reviewerDisplay = myRank >= 100 ? r.reviewed_by : '?�인 ?�료';
+                reviewerDisplay = myRank >= 100 ? r.reviewed_by : '승인 완료';
               }
             }
           }
-          regInfo = `<tr><td style="font-weight:600;width:35%;">계정 ?�청??/td><td>${formatKSTShort(r.created_at)}</td></tr>
-            <tr><td style="font-weight:600;">?�청 ?�유</td><td>${r.reason || '-'}</td></tr>
-            <tr><td style="font-weight:600;">?�인??/td><td>${r.reviewed_at ? formatKSTShort(r.reviewed_at) : '-'}</td></tr>
-            <tr><td style="font-weight:600;">?�인??/td><td>${reviewerDisplay}</td></tr>`;
+          regInfo = `<tr><td style="font-weight:600;width:35%;">계정 신청일</td><td>${formatKSTShort(r.created_at)}</td></tr>
+            <tr><td style="font-weight:600;">신청 사유</td><td>${r.reason || '-'}</td></tr>
+            <tr><td style="font-weight:600;">승인일</td><td>${r.reviewed_at ? formatKSTShort(r.reviewed_at) : '-'}</td></tr>
+            <tr><td style="font-weight:600;">승인자</td><td>${reviewerDisplay}</td></tr>`;
         }
       } catch (e) {}
 
@@ -624,42 +624,42 @@
       try {
         const { data: txns } = await _sb.from('talent_transactions').select('type, amount, description, balance_after, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(10);
         if (txns && txns.length > 0) {
-          talentHtml = '<table style="width:100%;font-size:0.8rem;border-collapse:collapse;margin-top:0.3rem;"><thead><tr style="background:#f1f3f5;"><th style="padding:0.3rem;">?�형</th><th>금액</th><th>?�명</th><th>?�액</th><th>?�짜</th></tr></thead><tbody>';
+          talentHtml = '<table style="width:100%;font-size:0.8rem;border-collapse:collapse;margin-top:0.3rem;"><thead><tr style="background:#f1f3f5;"><th style="padding:0.3rem;">유형</th><th>금액</th><th>설명</th><th>잔액</th><th>날짜</th></tr></thead><tbody>';
           txns.forEach(t => {
             const color = t.type === 'earn' ? '#2b8a3e' : '#e03131';
-            talentHtml += `<tr style="border-bottom:1px solid #e9ecef;"><td style="padding:0.3rem;color:${color};">${t.type==='earn'?'?�립':'?�용'}</td><td style="font-weight:700;color:${color};">${t.type==='earn'?'+':''}${t.amount}</td><td>${t.description||'-'}</td><td>${t.balance_after||0}</td><td>${formatKSTShort(t.created_at)}</td></tr>`;
+            talentHtml += `<tr style="border-bottom:1px solid #e9ecef;"><td style="padding:0.3rem;color:${color};">${t.type==='earn'?'적립':'사용'}</td><td style="font-weight:700;color:${color};">${t.type==='earn'?'+':''}${t.amount}</td><td>${t.description||'-'}</td><td>${t.balance_after||0}</td><td>${formatKSTShort(t.created_at)}</td></tr>`;
           });
           talentHtml += '</tbody></table>';
-        } else { talentHtml = '<p style="color:#adb5bd;font-size:0.82rem;">?��????�역???�습?�다.</p>'; }
+        } else { talentHtml = '<p style="color:#adb5bd;font-size:0.82rem;">달란트 내역이 없습니다.</p>'; }
       } catch (e) { talentHtml = ''; }
 
       let orderHtml = '';
       try {
         const { data: orders } = await _sb.from('product_orders').select('product_name, price, status, created_at').eq('user_id', userId).neq('status', 'cancelled').order('created_at', { ascending: false }).limit(10);
         if (orders && orders.length > 0) {
-          const sMap = { requested:'구매 ?�청', preparing:'?�품 준�?, purchased:'?�품 구매', delivered:'?�품 지�? };
-          orderHtml = '<table style="width:100%;font-size:0.8rem;border-collapse:collapse;margin-top:0.3rem;"><thead><tr style="background:#f1f3f5;"><th style="padding:0.3rem;">?�품</th><th>금액</th><th>?�태</th><th>?�짜</th></tr></thead><tbody>';
+          const sMap = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
+          orderHtml = '<table style="width:100%;font-size:0.8rem;border-collapse:collapse;margin-top:0.3rem;"><thead><tr style="background:#f1f3f5;"><th style="padding:0.3rem;">상품</th><th>금액</th><th>상태</th><th>날짜</th></tr></thead><tbody>';
           orders.forEach(o => {
             orderHtml += `<tr style="border-bottom:1px solid #e9ecef;"><td style="padding:0.3rem;">${o.product_name||'-'}</td><td>${fmtNum(o.price||0)}</td><td>${sMap[o.status]||o.status||'-'}</td><td>${formatKSTShort(o.created_at)}</td></tr>`;
           });
           orderHtml += '</tbody></table>';
-        } else { orderHtml = '<p style="color:#adb5bd;font-size:0.82rem;">구매 ?�역???�습?�다.</p>'; }
+        } else { orderHtml = '<p style="color:#adb5bd;font-size:0.82rem;">구매 내역이 없습니다.</p>'; }
       } catch (e) { orderHtml = ''; }
 
       let html = '<table style="width:100%;border-collapse:collapse;">';
-      if (myRank >= 100) html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;width:35%;border-bottom:1px solid #e9ecef;">?�이??/td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${u.username}</td></tr>`;
-      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">?�름</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${dn}</td></tr>`;
-      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">??��</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${typeLabel}</td></tr>`;
+      if (myRank >= 100) html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;width:35%;border-bottom:1px solid #e9ecef;">아이디</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${u.username}</td></tr>`;
+      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">이름</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${dn}</td></tr>`;
+      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">역할</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${typeLabel}</td></tr>`;
       html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">권한</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${permEmoji} ${permLabel}</td></tr>`;
-      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">부??/td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${getDeptName(u.department_id)}</td></tr>`;
-      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">?�당 부??/td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${u.managed_dept_id ? getDeptName(u.managed_dept_id) : '-'}</td></tr>`;
+      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">부서</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${getDeptName(u.department_id)}</td></tr>`;
+      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">담당 부서</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${u.managed_dept_id ? getDeptName(u.managed_dept_id) : '-'}</td></tr>`;
       html += regInfo;
-      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">?�록??/td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${formatKSTShort(u.created_at)}</td></tr>`;
-      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">마�?�?로그??/td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${lastLogin}</td></tr>`;
-      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">?��????�액</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;font-weight:700;">${fmtNum(u.talent_balance || 0)}</td></tr>`;
+      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">등록일</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${formatKSTShort(u.created_at)}</td></tr>`;
+      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">마지막 로그인</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${lastLogin}</td></tr>`;
+      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">달란트 잔액</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;font-weight:700;">${fmtNum(u.talent_balance || 0)}</td></tr>`;
       html += '</table>';
-      html += '<h4 style="margin:1rem 0 0.3rem;font-size:0.9rem;">?�� ?��????�역 (최근 10�?</h4>' + talentHtml;
-      html += '<h4 style="margin:1rem 0 0.3rem;font-size:0.9rem;">?�� 구매 ?�역 (최근 10�?</h4>' + orderHtml;
+      html += '<h4 style="margin:1rem 0 0.3rem;font-size:0.9rem;">💰 달란트 내역 (최근 10건)</h4>' + talentHtml;
+      html += '<h4 style="margin:1rem 0 0.3rem;font-size:0.9rem;">🛒 구매 내역 (최근 10건)</h4>' + orderHtml;
 
       document.getElementById('detailContent').innerHTML = html;
       document.getElementById('detailModal').classList.remove('hidden');
@@ -687,7 +687,7 @@
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = '?�용???�록';
+      document.getElementById('modalTitle').textContent = '사용자 등록';
       document.getElementById('usernameWrap').style.display = _isAdmin() ? 'block' : 'none';
       document.getElementById('mUsername').value = '';
       document.getElementById('mUsername').disabled = false;
@@ -721,7 +721,7 @@
         return;
       }
       editingId = u.id;
-      document.getElementById('modalTitle').textContent = '?�용???�정';
+      document.getElementById('modalTitle').textContent = '사용자 수정';
       document.getElementById('usernameWrap').style.display = _isAdmin() ? 'block' : 'none';
       document.getElementById('mUsername').value = u.username;
       document.getElementById('mUsername').disabled = true;
@@ -765,12 +765,12 @@
       const managedDeptId = document.getElementById('mManagedDept').value || null;
       const needsManagedDept = MGMT_LEVELS.includes(permLevel);
 
-      if (!displayName) { errEl.textContent = '?�름???�력?�주?�요.'; errEl.classList.add('show'); return; }
-      if (!editingId && username && !/^[a-zA-Z0-9_-]+$/.test(username)) { errEl.textContent = '?�이?�는 ?�문, ?�자, _, - �??�용 가?�합?�다.'; errEl.classList.add('show'); return; }
+      if (!displayName) { errEl.textContent = '이름을 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!editingId && username && !/^[a-zA-Z0-9_-]+$/.test(username)) { errEl.textContent = '아이디는 영문, 숫자, _, - 만 사용 가능합니다.'; errEl.classList.add('show'); return; }
       if (!editingId && !username) username = 'user_' + Date.now().toString(36);
-      if (_isAdmin() && !editingId && !username) { errEl.textContent = '?�이?��? ?�력?�주?�요.'; errEl.classList.add('show'); return; }
-      if (!deptId) { errEl.textContent = '?�속 부?��? ?�택?�주?�요.'; errEl.classList.add('show'); return; }
-      if (needsManagedDept && !managedDeptId) { errEl.textContent = '?�당 관�?부?��? ?�택?�주?�요.'; errEl.classList.add('show'); return; }
+      if (_isAdmin() && !editingId && !username) { errEl.textContent = '아이디를 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!deptId) { errEl.textContent = '소속 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
+      if (needsManagedDept && !managedDeptId) { errEl.textContent = '담당 관리 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
         const target = allUsers.find(u => u.id === editingId);
@@ -780,43 +780,43 @@
           return;
         }
         const { error } = await updateUser(editingId, { displayName, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null, classNumber });
-        if (error) { await logError('USER_UPDATE_FAIL', { userId: editingId, ?�류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        if (error) { await logError('USER_UPDATE_FAIL', { userId: editingId, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
         const 변경Parts = [];
-        if ((target.display_name || '') !== displayName) 변경Parts.push(`?�름: ${target.display_name || '-'} ??${displayName}`);
-        if ((target.user_type || 'student') !== userType) 변경Parts.push(`?�형: ${target.user_type || 'student'} ??${userType}`);
-        if ((target.permission_level || 'student') !== permLevel) 변경Parts.push(`권한: ${PERMISSION_LABELS[target.permission_level] || target.permission_level} ??${PERMISSION_LABELS[permLevel] || permLevel}`);
+        if ((target.display_name || '') !== displayName) 변경Parts.push(`이름: ${target.display_name || '-'} → ${displayName}`);
+        if ((target.user_type || 'student') !== userType) 변경Parts.push(`유형: ${target.user_type || 'student'} → ${userType}`);
+        if ((target.permission_level || 'student') !== permLevel) 변경Parts.push(`권한: ${PERMISSION_LABELS[target.permission_level] || target.permission_level} → ${PERMISSION_LABELS[permLevel] || permLevel}`);
         const newManaged = needsManagedDept ? managedDeptId : null;
-        if ((target.managed_dept_id || null) !== (newManaged || null)) 변경Parts.push(`?�당부?? ${target.managed_dept_id ? getDeptName(target.managed_dept_id) : '-'} ??${newManaged ? getDeptName(newManaged) : '-'}`);
-        if ((target.class_number ?? null) !== classNumber) 변경Parts.push(`�? ${target.class_number ?? '-'} ??${classNumber ?? '-'}`);
-        await logInfo('USER_UPDATE', { userId: editingId, ?�?? displayName, 변경내?? 변경Parts.length ? 변경Parts.join(', ') : `?�름: ${displayName}` });
+        if ((target.managed_dept_id || null) !== (newManaged || null)) 변경Parts.push(`담당부서: ${target.managed_dept_id ? getDeptName(target.managed_dept_id) : '-'} → ${newManaged ? getDeptName(newManaged) : '-'}`);
+        if ((target.class_number ?? null) !== classNumber) 변경Parts.push(`반: ${target.class_number ?? '-'} → ${classNumber ?? '-'}`);
+        await logInfo('USER_UPDATE', { userId: editingId, 대상: displayName, 변경내역: 변경Parts.length ? 변경Parts.join(', ') : `이름: ${displayName}` });
       } else {
         const pw = document.getElementById('mPassword').value || '1234';
         const { error } = await createUser({ username, password: pw, displayName: displayName || username, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null, classNumber });
-        if (error) { await logError('USER_CREATE_FAIL', { ?�이?? username, ?�류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('USER_CREATE', { ?�이?? username, ?�?? displayName || username, 권한: PERMISSION_LABELS[permLevel] || permLevel, 부?? getDeptName(deptId), ...(classNumber != null ? { �? classNumber } : {}), 변경내?? `?�용???�록: ${displayName || username}` });
+        if (error) { await logError('USER_CREATE_FAIL', { 아이디: username, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('USER_CREATE', { 아이디: username, 대상: displayName || username, 권한: PERMISSION_LABELS[permLevel] || permLevel, 부서: getDeptName(deptId), ...(classNumber != null ? { 반: classNumber } : {}), 변경내역: `사용자 등록: ${displayName || username}` });
       }
       closeModal();
       await loadData();
     }
 
     async function resetPw(id, username) {
-      if (!confirm(`"${username}" 비�?번호�?초기??1234)?�시겠습?�까?`)) return;
+      if (!confirm(`"${username}" 비밀번호를 초기화(1234)하시겠습니까?`)) return;
       const { error } = await resetUserPassword(id, username);
-      if (error) { await logError('USER_PW_RESET_FAIL', { userId: id, ?�이?? username, ?�류: error }); alert('초기???�패: ' + tErr(error)); }
-      else { await logInfo('USER_PW_RESET', { userId: id, ?�이?? username, ?�?? username, 변경내?? `${username} 비�?번호 초기?? }); alert('비�?번호가 1234�?초기?�되?�습?�다.'); }
+      if (error) { await logError('USER_PW_RESET_FAIL', { userId: id, 아이디: username, 오류: error }); alert('초기화 실패: ' + tErr(error)); }
+      else { await logInfo('USER_PW_RESET', { userId: id, 아이디: username, 대상: username, 변경내역: `${username} 비밀번호 초기화` }); alert('비밀번호가 1234로 초기화되었습니다.'); }
     }
 
     async function confirmDelete(id, username) {
-      if (!confirm(`"${username}" ?�용?��? ??��?�시겠습?�까?\n???�업?� ?�돌�????�습?�다.`)) return;
+      if (!confirm(`"${username}" 사용자를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
       const { error } = await deleteUser(id);
-      if (error) { await logError('USER_DELETE_FAIL', { userId: id, ?�이?? username, ?�류: error }); alert('??�� ?�패: ' + tErr(error)); }
-      else { await logInfo('USER_DELETE', { userId: id, ?�이?? username, ?�?? username, 변경내?? `?�용????��: ${username}` }); await loadData(); }
+      if (error) { await logError('USER_DELETE_FAIL', { userId: id, 아이디: username, 오류: error }); alert('삭제 실패: ' + tErr(error)); }
+      else { await logInfo('USER_DELETE', { userId: id, 아이디: username, 대상: username, 변경내역: `사용자 삭제: ${username}` }); await loadData(); }
     }
 
     function renderRequests() {
-      document.getElementById('reqTitle').textContent = `?�� 가???�청 ?�역 (${allRequests.length}�?`;
+      document.getElementById('reqTitle').textContent = `📝 가입 신청 내역 (${allRequests.length}건)`;
       if (allRequests.length === 0) {
-        document.getElementById('reqList').innerHTML = '<tr><td colspan="7" class="empty-state">?��?중인 가???�청???�습?�다.</td></tr>';
+        document.getElementById('reqList').innerHTML = '<tr><td colspan="7" class="empty-state">대기 중인 가입 신청이 없습니다.</td></tr>';
         return;
       }
       const myRank = session.permissionRank || 0;
@@ -833,20 +833,20 @@
           <td>${formatKSTShort(r.created_at)}</td>
           <td>
             ${canProcess ? `<select id="reqType_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;" onchange="onReqTypeChange('${r.id}')">
-              <option value="student">?�� ?�생</option>
-              <option value="teacher">?��?��?교사</option>
+              <option value="student">🎒 학생</option>
+              <option value="teacher">👩‍🏫 교사</option>
             </select>
             <select id="reqPerm_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;margin-bottom:0.3rem;display:none;">
               ${buildPermOptions(session.permissionRank || 0, 'teacher')}
             </select>
             <div id="reqManagedWrap_${r.id}" style="display:none;margin:0.3rem 0;">
               <select id="reqManaged_${r.id}" style="padding:0.3rem;border-radius:6px;border:1px solid var(--admin-border);font-size:0.8rem;width:100%;">
-                <option value="">?�당 부???�택</option>
+                <option value="">담당 부서 선택</option>
                 ${allDepts.map(d => '<option value="' + d.id + '">' + d.name + '</option>').join('')}
               </select>
             </div>
-            <button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveReq('${r.id}','${r.username}','${r.display_name}','${r.department_id || ''}')">?�인</button>
-            <button class="btn-ack" onclick="rejectReq('${r.id}','${r.username}')">거�?</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">처리 권한 ?�음</span>'}
+            <button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveReq('${r.id}','${r.username}','${r.display_name}','${r.department_id || ''}')">승인</button>
+            <button class="btn-ack" onclick="rejectReq('${r.id}','${r.username}')">거부</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">처리 권한 없음</span>'}
           </td>
         </tr>`;
       }).join('');
@@ -868,23 +868,23 @@
       const needsManagedDept = MGMT_LEVELS.includes(permLevel);
       const managedDeptId = (needsManagedDept && managedEl) ? managedEl.value || null : null;
       const permLabel = PERMISSION_LABELS[permLevel] || permLevel;
-      if (!confirm(`"${username}" (${displayName})??�? [${permLabel}] ??���??�인?�시겠습?�까?`)) return;
+      if (!confirm(`"${username}" (${displayName})을(를) [${permLabel}] 역할로 승인하시겠습니까?`)) return;
       const { error } = await createUser({ username, password: '1234', displayName, userType, permissionLevel: permLevel, departmentId: deptId || null, managedDeptId });
-      if (error) { await logError('REGISTER_APPROVE_FAIL', { ?�이?? username, ?�류: error }); alert('계정 ?�성 ?�패: ' + tErr(error)); return; }
+      if (error) { await logError('REGISTER_APPROVE_FAIL', { 아이디: username, 오류: error }); alert('계정 생성 실패: ' + tErr(error)); return; }
       await _sb.from('registration_requests').update({
-        status: 'approved', reviewed_by: session.username, review_note: '?�인??, reviewed_at: new Date().toISOString()
+        status: 'approved', reviewed_by: session.username, review_note: '승인됨', reviewed_at: new Date().toISOString()
       }).eq('id', reqId);
-      await logInfo('REGISTER_APPROVE', { ?�이?? username, ?�?? displayName, 권한: PERMISSION_LABELS[permLevel] || permLevel, 부?? getDeptName(deptId), 변경내?? `가???�인: ${displayName} (${PERMISSION_LABELS[permLevel] || permLevel})` });
+      await logInfo('REGISTER_APPROVE', { 아이디: username, 대상: displayName, 권한: PERMISSION_LABELS[permLevel] || permLevel, 부서: getDeptName(deptId), 변경내역: `가입 승인: ${displayName} (${PERMISSION_LABELS[permLevel] || permLevel})` });
       await loadData();
     }
 
     async function rejectReq(reqId, username) {
-      const note = prompt(`"${username}" 가??거�? ?�유�??�력?�주?�요:`, '');
+      const note = prompt(`"${username}" 가입 거부 사유를 입력해주세요:`, '');
       if (note === null) return;
       await _sb.from('registration_requests').update({
-        status: 'rejected', reviewed_by: session.username, review_note: note || '거�???, reviewed_at: new Date().toISOString()
+        status: 'rejected', reviewed_by: session.username, review_note: note || '거부됨', reviewed_at: new Date().toISOString()
       }).eq('id', reqId);
-      await logInfo('REGISTER_REJECT', { ?�이?? username, ?�유: note || '거�???, 변경내?? `가??거�?: ${username}` });
+      await logInfo('REGISTER_REJECT', { 아이디: username, 사유: note || '거부됨', 변경내역: `가입 거부: ${username}` });
       await loadData();
     }
 
@@ -896,7 +896,7 @@
     document.getElementById('transferModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeTransferModal(); });
     document.getElementById('detailModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) document.getElementById('detailModal').classList.add('hidden'); });
 
-    // ?�?� 부???�동 관�??�?�
+    // ── 부서 이동 관리 ──
     let _transferUserId = null;
     let _transferFromDeptId = null;
 
@@ -904,17 +904,17 @@
       _transferUserId = userId;
       _transferFromDeptId = deptId;
       document.getElementById('transferUserInfo').textContent = displayName;
-      document.getElementById('transferFromDept').textContent = getDeptName(deptId) || '?�음';
-      const opts = '<option value="">-- 부???�택 --</option>' +
+      document.getElementById('transferFromDept').textContent = getDeptName(deptId) || '없음';
+      const opts = '<option value="">-- 부서 선택 --</option>' +
         allDepts.filter(d => d.id !== deptId).map(d => `<option value="${d.id}">${d.name}</option>`).join('');
       document.getElementById('transferToDept').innerHTML = opts;
       document.getElementById('transferReason').value = '';
       document.getElementById('transferError').classList.remove('show');
       const myRank = session.permissionRank || 0;
       if (myRank >= 90) {
-        document.getElementById('transferNote').textContent = '즉시 부???�동??처리?�니??';
+        document.getElementById('transferNote').textContent = '즉시 부서 이동이 처리됩니다.';
       } else {
-        document.getElementById('transferNote').textContent = '?�동 ?�청???�성?�며, ?�당 부??부??교사 ?�는 관리자???�인???�요?�니??';
+        document.getElementById('transferNote').textContent = '이동 요청이 생성되며, 해당 부서 부장 교사 또는 관리자의 승인이 필요합니다.';
       }
       document.getElementById('transferModal').classList.remove('hidden');
     }
@@ -925,14 +925,14 @@
       const errEl = document.getElementById('transferError');
       const toDeptId = document.getElementById('transferToDept').value;
       const reason = document.getElementById('transferReason').value.trim();
-      if (!toDeptId) { errEl.textContent = '?�동??부?��? ?�택?�주?�요.'; errEl.classList.add('show'); return; }
+      if (!toDeptId) { errEl.textContent = '이동할 부서를 선택해주세요.'; errEl.classList.add('show'); return; }
       const myRank = session.permissionRank || 0;
       const user = allUsers.find(u => u.id === _transferUserId);
       const toDeptName = getDeptName(toDeptId);
       const userName = user ? (user.display_name || user.username) : '';
 
       if (myRank >= 90) {
-        if (!confirm(`"${userName}"??�? "${toDeptName}" 부?�로 즉시 ?�동?�시겠습?�까?`)) return;
+        if (!confirm(`"${userName}"을(를) "${toDeptName}" 부서로 즉시 이동하시겠습니까?`)) return;
         const { error } = await updateUser(_transferUserId, {
           displayName: user.display_name,
           userType: user.user_type,
@@ -941,11 +941,11 @@
           managedDeptId: user.managed_dept_id,
           classNumber: null
         });
-        if (error) { await logError('DEPT_TRANSFER_IMMEDIATE_FAIL', { userId: _transferUserId, ?�류: error }); errEl.textContent = '?�동 ?�패: ' + tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('DEPT_TRANSFER_IMMEDIATE', { userId: _transferUserId, ?�이?? user.username, ?�?? userName, ?�전�? getDeptName(_transferFromDeptId), 변경값: toDeptName, ?�유: reason || null, 변경내?? `부?? ${getDeptName(_transferFromDeptId) || '-'} ??${toDeptName}` });
-        alert(`"${userName}"??가) "${toDeptName}" 부?�로 ?�동?�었?�니??`);
+        if (error) { await logError('DEPT_TRANSFER_IMMEDIATE_FAIL', { userId: _transferUserId, 오류: error }); errEl.textContent = '이동 실패: ' + tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('DEPT_TRANSFER_IMMEDIATE', { userId: _transferUserId, 아이디: user.username, 대상: userName, 이전값: getDeptName(_transferFromDeptId), 변경값: toDeptName, 사유: reason || null, 변경내역: `부서: ${getDeptName(_transferFromDeptId) || '-'} → ${toDeptName}` });
+        alert(`"${userName}"이(가) "${toDeptName}" 부서로 이동되었습니다.`);
       } else {
-        if (!confirm(`"${userName}"??"${toDeptName}" 부???�동 ?�청???�성?�시겠습?�까?\n?�당 부??부??교사 ?�는 관리자 ?�인???�요?�니??`)) return;
+        if (!confirm(`"${userName}"의 "${toDeptName}" 부서 이동 요청을 생성하시겠습니까?\n해당 부서 부장 교사 또는 관리자 승인이 필요합니다.`)) return;
         const { error } = await _sb.from('department_transfer_requests').insert({
           user_id: _transferUserId,
           username: user.username,
@@ -955,9 +955,9 @@
           requested_by: session.username,
           request_reason: reason || null
         });
-        if (error) { await logError('DEPT_TRANSFER_REQUEST_FAIL', { userId: _transferUserId, ?�류: error.message }); errEl.textContent = '?�청 ?�패: ' + tErr(error.message); errEl.classList.add('show'); return; }
-        await logInfo('DEPT_TRANSFER_REQUEST', { userId: _transferUserId, ?�이?? user.username, ?�?? userName, ?�전�? getDeptName(_transferFromDeptId), 변경값: toDeptName, ?�유: reason || null, 변경내?? `부???�동 ?�청: ${getDeptName(_transferFromDeptId) || '-'} ??${toDeptName}` });
-        alert(`부???�동 ?�청???�성?�었?�니??\n"${toDeptName}" 부???�당 교사???�인??기다립니??`);
+        if (error) { await logError('DEPT_TRANSFER_REQUEST_FAIL', { userId: _transferUserId, 오류: error.message }); errEl.textContent = '요청 실패: ' + tErr(error.message); errEl.classList.add('show'); return; }
+        await logInfo('DEPT_TRANSFER_REQUEST', { userId: _transferUserId, 아이디: user.username, 대상: userName, 이전값: getDeptName(_transferFromDeptId), 변경값: toDeptName, 사유: reason || null, 변경내역: `부서 이동 요청: ${getDeptName(_transferFromDeptId) || '-'} → ${toDeptName}` });
+        alert(`부서 이동 요청이 생성되었습니다.\n"${toDeptName}" 부서 담당 교사의 승인을 기다립니다.`);
       }
       closeTransferModal();
       await loadData();
@@ -968,10 +968,10 @@
       const myRank = session.permissionRank || 0;
       if (myRank < 60) { section.style.display = 'none'; return; }
       section.style.display = '';
-      document.getElementById('transferTitle').textContent = `?�� 부???�동 ?�청 ?�역 (${allTransfers.length}�?`;
+      document.getElementById('transferTitle').textContent = `🔄 부서 이동 신청 내역 (${allTransfers.length}건)`;
       const tbody = document.getElementById('transferList');
       if (allTransfers.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">?��?중인 부???�동 ?�청???�습?�다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">대기 중인 부서 이동 요청이 없습니다.</td></tr>';
         return;
       }
       const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
@@ -984,8 +984,8 @@
           <td style="font-size:0.82rem;">${t.requested_by}${t.request_reason ? '<br><span style="color:#868e96;font-size:0.75rem;">' + t.request_reason + '</span>' : ''}</td>
           <td>${formatKSTShort(t.created_at)}</td>
           <td>
-            ${canApprove ? `<button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveTransfer('${t.id}','${t.user_id}','${(t.display_name||t.username).replace(/'/g,"\\'")}','${t.to_department_id}')">?�인</button>
-            <button class="btn-ack" onclick="rejectTransfer('${t.id}','${(t.display_name||t.username).replace(/'/g,"\\'")}')">거�?</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">처리 권한 ?�음</span>'}
+            ${canApprove ? `<button class="filter-btn" style="background:#51cf66;color:#fff;" onclick="approveTransfer('${t.id}','${t.user_id}','${(t.display_name||t.username).replace(/'/g,"\\'")}','${t.to_department_id}')">승인</button>
+            <button class="btn-ack" onclick="rejectTransfer('${t.id}','${(t.display_name||t.username).replace(/'/g,"\\'")}')">거부</button>` : '<span style="font-size:0.8rem;color:#adb5bd;">처리 권한 없음</span>'}
           </td>
         </tr>`;
       }).join('');
@@ -993,7 +993,7 @@
 
     async function approveTransfer(trfId, userId, displayName, toDeptId) {
       const toDeptName = getDeptName(toDeptId);
-      if (!confirm(`"${displayName}"??"${toDeptName}" 부???�동???�인?�시겠습?�까?`)) return;
+      if (!confirm(`"${displayName}"의 "${toDeptName}" 부서 이동을 승인하시겠습니까?`)) return;
       const user = allUsers.find(u => u.id === userId);
       if (user) {
         const { error } = await updateUser(userId, {
@@ -1004,26 +1004,26 @@
           managedDeptId: user.managed_dept_id,
           classNumber: null
         });
-        if (error) { alert('부???�동 ?�패: ' + tErr(error)); return; }
+        if (error) { alert('부서 이동 실패: ' + tErr(error)); return; }
       } else {
         const { error } = await _sb.from('profiles').update({ department_id: toDeptId, class_number: null }).eq('id', userId);
-        if (error) { alert('부???�동 ?�패: ' + tErr(error.message)); return; }
+        if (error) { alert('부서 이동 실패: ' + tErr(error.message)); return; }
       }
       await _sb.from('department_transfer_requests').update({
-        status: 'approved', reviewed_by: session.username, review_note: '?�인??, reviewed_at: new Date().toISOString()
+        status: 'approved', reviewed_by: session.username, review_note: '승인됨', reviewed_at: new Date().toISOString()
       }).eq('id', trfId);
-      await logInfo('DEPT_TRANSFER_APPROVE', { userId, ?�?? displayName, 부?? toDeptName, 변경내?? `부???�동 ?�인: ${toDeptName}` });
-      alert(`"${displayName}"??가) "${toDeptName}" 부?�로 ?�동?�었?�니??`);
+      await logInfo('DEPT_TRANSFER_APPROVE', { userId, 대상: displayName, 부서: toDeptName, 변경내역: `부서 이동 승인: ${toDeptName}` });
+      alert(`"${displayName}"이(가) "${toDeptName}" 부서로 이동되었습니다.`);
       await loadData();
     }
 
     async function rejectTransfer(trfId, displayName) {
-      const note = prompt(`"${displayName}" 부???�동 거�? ?�유�??�력?�주?�요:`, '');
+      const note = prompt(`"${displayName}" 부서 이동 거부 사유를 입력해주세요:`, '');
       if (note === null) return;
       await _sb.from('department_transfer_requests').update({
-        status: 'rejected', reviewed_by: session.username, review_note: note || '거�???, reviewed_at: new Date().toISOString()
+        status: 'rejected', reviewed_by: session.username, review_note: note || '거부됨', reviewed_at: new Date().toISOString()
       }).eq('id', trfId);
-      await logInfo('DEPT_TRANSFER_REJECT', { ?�?? displayName, ?�유: note || '거�???, 변경내?? `부???�동 거�?: ${displayName}` });
+      await logInfo('DEPT_TRANSFER_REJECT', { 대상: displayName, 사유: note || '거부됨', 변경내역: `부서 이동 거부: ${displayName}` });
       await loadData();
     }
   </script>
