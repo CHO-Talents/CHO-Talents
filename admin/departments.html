@@ -87,7 +87,7 @@
     async function loadDepts() {
       const { data: depts } = await fetchDepartments();
       const { data: users } = await _sb.from('profiles')
-        .select('id, username, user_type, permission_level, department_id, managed_dept_id, display_name, is_super_admin, last_login_at');
+        .select('id, username, user_type, permission_level, department_id, managed_dept_id, display_name, is_super_admin, last_login_at, class_number');
       allUsers = users || [];
       if (!session.isSuperAdmin) {
         allUsers = allUsers.filter(u => !u.is_super_admin);

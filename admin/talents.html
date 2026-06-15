@@ -27,7 +27,10 @@
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">학생 목록</div>
-        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <span id="talentPageSizeWrap"></span>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
+        </div>
       </div>
       <table class="admin-table">
         <thead><tr><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th class="hide-mobile">사용 달란트</th><th class="hide-mobile">누적 달란트</th><th>관리</th></tr></thead>
@@ -347,8 +350,9 @@
         html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goTalentPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
         html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
       }
-      html += ' ' + renderPageSizeSelector('talents', pageSize, "onTalentsPageSizeChange(this.value)");
       wrap.innerHTML = html;
+      const headerWrap = document.getElementById('talentPageSizeWrap');
+      if (headerWrap) headerWrap.innerHTML = renderPageSizeSelector('talents', pageSize, "onTalentsPageSizeChange(this.value)");
     }
 
     async function onTalentsPageSizeChange(val) {
