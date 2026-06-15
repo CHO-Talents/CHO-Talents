@@ -187,6 +187,7 @@
   <script src="../js/auth.js?v=3.40.0"></script>
   <script src="../js/theme.js?v=3.40.0"></script>
   <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/page-size.js?v=3.40.0"></script>
   <script src="../js/user-mgmt.js?v=3.40.0"></script>
   <script src="../js/version.js?v=3.40.0"></script>
   <script>
@@ -196,12 +197,16 @@
     let allDepts = [];
     let editingId = null;
     let currentFilter = 'all';
+    let userTeacherPageSize = null;
+    let userStudentPageSize = null;
     (async () => {
       await navInit();
       session = await initPage(60, '../login.html');
       if (!session) return;
       navUpdateAuth(session);
       autoLogPageView();
+      userTeacherPageSize = await loadPageSize('users_teacher', 10);
+      userStudentPageSize = await loadPageSize('users_student', 10);
       updatePendingBadge();
       updateNavOrderBadge();
       const myRank = session.permissionRank || 0;
@@ -352,7 +357,11 @@
 
     let currentDeptFilter = '';
     let groupPages = { teacher: 1, student: 1 };
-    function getGroupPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    function getGroupPageSize(groupKey) {
+      if (groupKey === 'teacher' && userTeacherPageSize !== null) return userTeacherPageSize;
+      if (groupKey === 'student' && userStudentPageSize !== null) return userStudentPageSize;
+      return window.innerWidth <= 768 ? 10 : 20;
+    }
 
     function onDeptFilterChange() {
       currentDeptFilter = document.getElementById('deptFilter').value;
@@ -399,7 +408,7 @@
     }
 
     function renderGroup(list, groupKey, tbodyId, pagingId, countId) {
-      const pageSize = getGroupPageSize();
+      const pageSize = getGroupPageSize(groupKey);
       const page = groupPages[groupKey] || 1;
       const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
       if (page > totalPages) groupPages[groupKey] = totalPages;
@@ -426,9 +435,9 @@
         if (canManage) items.push(`<a onclick='openEditModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>✏️ 수정</a>`);
         else if (isProtectedSuperAdminUser(u)) items.push('<a style="color:#868e96;cursor:default;">🔒 최고관리자는 본인만 수정 가능</a>');
         if (canManage && !isSelf) {
-          items.push(`<a onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">${myRank >= 90 ? '🔄 부서 이동' : '🔄 부서 이동 신청'}</a>`);
+          if (myRank >= 80) items.push(`<a onclick="openTransferModal('${u.id}','${(dn).replace(/'/g,"\\'")}','${u.department_id||''}')">${myRank >= 90 ? '🔄 부서 이동' : '🔄 부서 이동 신청'}</a>`);
           items.push(`<a onclick="resetPw('${u.id}','${(dn).replace(/'/g,"\\'")}')">🔑 비밀번호 초기화</a>`);
-          items.push(`<a onclick="confirmDelete('${u.id}','${(dn).replace(/'/g,"\\'")}')">🗑️ 삭제</a>`);
+          if (myRank >= 80) items.push(`<a onclick="confirmDelete('${u.id}','${(dn).replace(/'/g,"\\'")}')">🗑️ 삭제</a>`);
         }
         const permCol = groupKey !== 'student' ? `<td><span class="level-badge ${rb.cls}">${permEmoji} ${permLabel}</span></td>` : '';
         return `<tr>
@@ -451,14 +460,28 @@
     function renderGroupPaging(groupKey, totalPages, pagingId) {
       const wrap = document.getElementById(pagingId);
       const page = groupPages[groupKey] || 1;
-      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
-      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goGroupPage('${groupKey}',${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
-      for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="filter-btn${i===page?' active':''}" onclick="goGroupPage('${groupKey}',${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      const pageSize = getGroupPageSize(groupKey);
+      let html = '';
+      if (totalPages > 1) {
+        html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goGroupPage('${groupKey}',${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="filter-btn${i===page?' active':''}" onclick="goGroupPage('${groupKey}',${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+        }
+        html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goGroupPage('${groupKey}',${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+        html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
       }
-      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goGroupPage('${groupKey}',${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
-      html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      html += ' ' + renderPageSizeSelector(groupKey === 'teacher' ? 'users_teacher' : 'users_student', pageSize, "onUsersPageSizeChange('" + groupKey + "', this.value)");
       wrap.innerHTML = html;
+    }
+
+    async function onUsersPageSizeChange(groupKey, val) {
+      const size = parseInt(val) || 10;
+      const key = groupKey === 'teacher' ? 'users_teacher' : 'users_student';
+      if (groupKey === 'teacher') userTeacherPageSize = size;
+      else userStudentPageSize = size;
+      await savePageSize(key, size);
+      groupPages[groupKey] = 1;
+      renderUsers();
     }
 
     function goGroupPage(groupKey, p) {
@@ -489,7 +512,7 @@
       const myManagedDept = session.managedDeptId || session.departmentId;
 
       // 사용자 관리 접근 권한 미만은 관리 불가
-      if (myRank < 80) return false;
+      if (myRank < 60) return false;
 
       // 최고관리자 보호
       if (user.id !== session.id && isProtectedSuperAdminUser(user)) return false;
@@ -501,6 +524,13 @@
 
       // 자기와 같거나 높은 권한은 수정 불가
       if (myRank <= targetRank) return false;
+
+      if (myRank < 80) {
+        return !!myManagedDept && (
+          user.department_id === myManagedDept ||
+          user.managed_dept_id === myManagedDept
+        );
+      }
 
       // 부장 교사(rank 80)는 담당 부서 범위 안에서만 수정 가능
       if (myRank === 80) {
@@ -711,6 +741,12 @@
       document.getElementById('mClassNumber').value = u.class_number || '';
       const canEditClass = (session.permissionRank || 0) >= 60;
       document.getElementById('mClassNumber').disabled = !canEditClass;
+      const myRank = session.permissionRank || 0;
+      if (myRank < 80) {
+        document.getElementById('mUserType').disabled = true;
+        document.getElementById('mPermLevel').disabled = true;
+        if (document.getElementById('mManagedDept')) document.getElementById('mManagedDept').disabled = true;
+      }
       document.getElementById('mManagedDept').value = u.managed_dept_id || '';
       document.getElementById('managedDeptWrap').style.display = MGMT_LEVELS.includes(u.permission_level) ? 'block' : 'none';
       document.getElementById('passwordWrap').style.display = 'none';

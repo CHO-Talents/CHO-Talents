@@ -510,6 +510,96 @@
   color: var(--t-text-muted) !important;
 }
 
+/* ===== Dark Mode: Inputs + Stats Tables + Quick Links (v3.40.0) ===== */
+[data-theme="dark"] input[type="date"],
+[data-theme="dark"] input[type="datetime-local"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"] {
+  background: var(--t-input-bg) !important;
+  border-color: var(--t-input-border) !important;
+  color: var(--t-text) !important;
+  color-scheme: dark;
+}
+
+[data-theme="dark"] .stats-table thead th {
+  background: var(--t-table-header) !important;
+  color: var(--t-text-muted) !important;
+  border-bottom-color: var(--t-border) !important;
+}
+
+[data-theme="dark"] .stats-table tbody tr {
+  border-bottom-color: var(--t-border) !important;
+}
+
+[data-theme="dark"] .stats-table tbody tr:hover {
+  background: var(--t-hover-bg) !important;
+}
+
+[data-theme="dark"] .stats-table tbody tr:nth-child(even) {
+  background: var(--t-subtle-surface) !important;
+}
+
+[data-theme="dark"] .type-section {
+  background: var(--t-card) !important;
+  border-color: var(--t-border) !important;
+}
+
+[data-theme="dark"] .type-section-header {
+  border-bottom-color: var(--t-border) !important;
+}
+
+[data-theme="dark"] .type-detail-inline .val {
+  color: var(--t-text) !important;
+}
+
+[data-theme="dark"] .pct-bar {
+  background: var(--t-subtle-surface) !important;
+}
+
+[data-theme="dark"] .pct-bar-text {
+  color: var(--t-text-muted) !important;
+}
+
+[data-theme="dark"] .period-presets button {
+  background: var(--t-subtle-surface) !important;
+  color: var(--t-text-muted) !important;
+  border-color: var(--t-border) !important;
+}
+
+[data-theme="dark"] .period-presets button:hover {
+  background: var(--t-hover-bg) !important;
+  color: var(--t-text) !important;
+}
+
+[data-theme="dark"] #quickLinks a {
+  background: var(--t-card) !important;
+  border: 1px solid var(--t-border) !important;
+}
+
+[data-theme="dark"] #quickLinks a div:last-child {
+  color: var(--t-text) !important;
+}
+
+[data-theme="dark"] .inline-num {
+  background: var(--t-input-bg) !important;
+  border-color: var(--t-input-border) !important;
+  color: var(--t-text) !important;
+}
+
+[data-theme="dark"] #selectedUser {
+  background: var(--t-accent-surface) !important;
+  color: var(--t-text) !important;
+}
+
+[data-theme="dark"] .page-size-select {
+  background: var(--t-input-bg) !important;
+  border-color: var(--t-input-border) !important;
+  color: var(--t-text) !important;
+}
+
 /* ===== Theme Switch UI ===== */
 .theme-switch-wrap {
   position: relative;

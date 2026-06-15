@@ -117,6 +117,7 @@
   <script src="../js/auth.js?v=3.40.0"></script>
   <script src="../js/theme.js?v=3.40.0"></script>
   <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/page-size.js?v=3.40.0"></script>
   <script src="../js/product.js"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
@@ -127,8 +128,14 @@
     let allProducts = [];
     let editingId = null;
     let shopPages = { teacher: 1, student: 1 };
+    let shopTeacherPageSize = null;
+    let shopStudentPageSize = null;
 
-    function getShopPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    function getShopPageSize(groupKey) {
+      if (groupKey === 'teacher' && shopTeacherPageSize !== null) return shopTeacherPageSize;
+      if (groupKey === 'student' && shopStudentPageSize !== null) return shopStudentPageSize;
+      return window.innerWidth <= 768 ? 10 : 20;
+    }
 
     (async () => {
       await navInit();
@@ -136,6 +143,8 @@
       if (!session) return;
       navUpdateAuth(session);
       autoLogPageView();
+      shopTeacherPageSize = await loadPageSize('shop_teacher', 10);
+      shopStudentPageSize = await loadPageSize('shop_student', 10);
       updatePendingBadge();
       updateNavOrderBadge();
       if ((session.permissionRank || 0) >= 80) updateBadge();
@@ -159,7 +168,7 @@
     }
 
     function renderShopGroup(list, groupKey, tbodyId, pagingId, titleId, titleLabel) {
-      const pageSize = getShopPageSize();
+      const pageSize = getShopPageSize(groupKey);
       const page = shopPages[groupKey] || 1;
       const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
       if (page > totalPages) shopPages[groupKey] = totalPages;
@@ -196,14 +205,29 @@
     function renderShopPaging(groupKey, totalPages, pagingId) {
       const wrap = document.getElementById(pagingId);
       const page = shopPages[groupKey] || 1;
-      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
-      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goShopPage('${groupKey}',${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
-      for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="filter-btn${i===page?' active':''}" onclick="goShopPage('${groupKey}',${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      const pageSize = getShopPageSize(groupKey);
+      const prefKey = groupKey === 'teacher' ? 'shop_teacher' : 'shop_student';
+      let html = '';
+      if (totalPages > 1) {
+        html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goShopPage('${groupKey}',${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="filter-btn${i===page?' active':''}" onclick="goShopPage('${groupKey}',${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+        }
+        html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goShopPage('${groupKey}',${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+        html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
       }
-      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goShopPage('${groupKey}',${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
-      html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      html += ' ' + renderPageSizeSelector(prefKey, pageSize, "onShopPageSizeChange('" + groupKey + "', this.value)");
       wrap.innerHTML = html;
+    }
+
+    async function onShopPageSizeChange(groupKey, val) {
+      const size = parseInt(val) || 10;
+      const key = groupKey === 'teacher' ? 'shop_teacher' : 'shop_student';
+      if (groupKey === 'teacher') shopTeacherPageSize = size;
+      else shopStudentPageSize = size;
+      await savePageSize(key, size);
+      shopPages[groupKey] = 1;
+      renderProducts();
     }
 
     function goShopPage(groupKey, p) {

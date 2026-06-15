@@ -108,11 +108,13 @@
   <script src="../js/auth.js?v=3.40.0"></script>
   <script src="../js/theme.js?v=3.40.0"></script>
   <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/page-size.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session;
     let currentPage = 0;
-    function getPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    let PAGE_SIZE = 50;
+    function getPageSize() { return PAGE_SIZE; }
     let totalLogCount = 0;
     let selectedLevels = [];
     let currentAckId = null;
@@ -140,6 +142,7 @@
       if (!session) return;
       navUpdateAuth(session);
       autoLogPageView();
+      PAGE_SIZE = await loadPageSize('logs', PAGE_SIZE);
       updatePendingBadge();
       updateNavOrderBadge();
       if ((session.permissionRank || 0) >= 100) {
@@ -316,7 +319,15 @@
       }
       html += `<button ${hasNext ? '' : 'disabled'} onclick="goPage(${currentPage + 1})">다음</button>`;
       html += `<span class="page-info" style="margin-left:0.5rem;">(${totalPages} 페이지)</span>`;
+      html += ' ' + renderPageSizeSelector('logs', PAGE_SIZE, "onLogsPageSizeChange(this.value)");
       el.innerHTML = html;
+    }
+
+    async function onLogsPageSizeChange(val) {
+      PAGE_SIZE = parseInt(val) || 50;
+      await savePageSize('logs', PAGE_SIZE);
+      currentPage = 0;
+      applyFilters();
     }
 
     function goPage(page) {

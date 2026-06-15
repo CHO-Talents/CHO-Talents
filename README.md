@@ -28,6 +28,11 @@
   - 부서 관리: 소속보기에서 관리자(100+)일 때 마지막 로그인 일시 컬럼 표시
   - 달란트 관리: 지급 취소 항목의 달란트 ID를 관리자(100+)만 표시, 그 외 숨김
   - 내 달란트: 지급 취소 이력의 달란트 ID(UUID) 숨김 처리
+  - **페이지당 항목 수 설정**: 사용자별 그리드당 표시 개수 설정 (3~30개, DB 저장, 콤보 박스 UI)
+  - **부서 담당 교사 권한 확대**: rank 60+ 사용자가 소속 부서 학생의 반 변경 및 비밀번호 초기화 가능
+  - **PAGE_VIEW 로그 비활성화**: 페이지 조회 로그 기록 중단
+  - **DB 변경**: `user_preferences.page_sizes` JSONB 컬럼 추가 (`docs/TASK-041_page_sizes.sql`)
+  - **신규 파일**: `js/page-size.js` (페이지 크기 공통 유틸)
 - **v3.39.0 주요 변경 사항**:
   - 학생 일괄 등록: 엑셀 파일 업로드로 학생 계정 일괄 생성 (부장 교사 80+ 이상)
   - 학생 일괄 등록: 양식 다운로드, 미리보기(검증), 등록 결과 표시
@@ -284,6 +289,7 @@ CHO-Talents/
 │   ├── supabase-config.js         # Supabase 설정, Auth 도메인, 공통 CRUD 유틸
 │   ├── app.js                     # 메인 화면 효과/연결 상태 확인
 │   ├── activity-log.js            # 활동 로그, 세션 캐시, 소프트 삭제
+│   ├── page-size.js               # 그리드별 페이지당 항목 수 설정 (user_preferences.page_sizes)
 │   ├── auth.js                    # 로그인, 세션, 권한, 비밀번호 변경, tErr() 에러 번역
 │   ├── user-mgmt.js               # 사용자/부서 관리 RPC 래퍼
 │   ├── talent.js                  # 달란트 잔액/내역/지급/사용/반환
@@ -516,7 +522,7 @@ flowchart TD
 | 구분 | 리소스 | 용도 |
 |---|---|---|
 | 사용자 | `profiles` | 사용자 정보, 유형, 권한, 부서, 반, 잔액, 사용 대기 달란트, 마지막 로그인(`last_login_at`) |
-| 사용자 설정 | `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB), 테마(`theme`) |
+| 사용자 설정 | `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB), 테마(`theme`), 그리드별 페이지 크기(`page_sizes` JSONB) |
 | 부서 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | 가입 신청 | `registration_requests` | 계정 신청과 승인/거부 상태 |
 | 부서 이동 | `department_transfer_requests` | 부서 이동 요청, 승인/거부, 처리 기록 |
@@ -585,6 +591,7 @@ flowchart TD
 | `docs/TASK-047_activity_logs_grants.sql` | 운영 DB의 `activity_logs` INSERT 권한/정책 복구. 로그/작업 이력 DB 적재가 401로 거부될 때 적용 |
 | `docs/TASK-048_schema.sql` | v3.36.0: `talent_items` giving_rule/giving_description 컬럼, `purchase_teacher` 권한 CHECK 제약, `get_permission_rank` 갱신 |
 | `docs/TASK-049_schema.sql` | v3.37.0: `profiles.last_login_at` 컬럼, `update_last_login()` RPC |
+| `docs/TASK-041_page_sizes.sql` | v3.40.0: `user_preferences.page_sizes` JSONB 컬럼 추가 |
 
 ## 관련 문서
 
