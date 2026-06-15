@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>버전 ?�력 - 관리자</title>
+  <title>버전 이력 - 관리자</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.41.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.41.0" />
   <style>
@@ -56,14 +56,14 @@
       font-size: 0.88rem; color: #495057; line-height: 1.8;
       list-style: none; position: relative; padding-left: 0.5rem;
     }
-    .ver-changes li::before { content: '??; position: absolute; left: -1rem; color: var(--admin-primary); font-weight: 700; }
+    .ver-changes li::before { content: '✓'; position: absolute; left: -1rem; color: var(--admin-primary); font-weight: 700; }
   </style>
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?�� 버전 ?�력 관�?/h2>
+    <h2 style="margin-bottom:1rem;">📋 버전 이력 관리</h2>
 
     <div class="ver-current" id="currentVersion"></div>
     <div class="ver-timeline" id="timeline"></div>
@@ -102,7 +102,7 @@
         <div class="ver-current-badge">v${current.version}</div>
         <div class="ver-current-info">
           <h3>${current.title}</h3>
-          <p>최종 ?�데?�트: ${current.date} | ?�체 ${history.length}�?버전</p>
+          <p>최종 업데이트: ${current.date} | 전체 ${history.length}개 버전</p>
         </div>
       `;
 

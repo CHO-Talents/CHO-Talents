@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>로그??- ?��???마을</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>�?/text></svg>" />
+  <title>로그인 - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
   <link rel="stylesheet" href="css/themes.css?v=3.41.0" />
   <link rel="stylesheet" href="css/admin.css?v=3.41.0" />
   <style>
@@ -22,35 +22,35 @@
 <body class="admin-body">
   <div class="login-wrapper">
     <div class="login-card">
-      <div style="text-align:center;font-size:2.5rem;margin-bottom:0.5rem;">�?/div>
-      <div class="login-title">?��???마을 로그??/div>
-      <p class="login-sub">?�이?��? 비�?번호�??�력?�주?�요</p>
+      <div style="text-align:center;font-size:2.5rem;margin-bottom:0.5rem;">⭐</div>
+      <div class="login-title">달란트 마을 로그인</div>
+      <p class="login-sub">아이디와 비밀번호를 입력해주세요</p>
 
       <div class="form-error" id="errorMsg"></div>
 
       <form id="loginForm" onsubmit="return false;">
         <div class="form-group">
-          <label for="username">?�이??/label>
-          <input type="text" id="username" placeholder="?�이???�력" autocomplete="username" required />
+          <label for="username">아이디</label>
+          <input type="text" id="username" placeholder="아이디 입력" autocomplete="username" required />
         </div>
         <div class="form-group">
-          <label for="password">비�?번호</label>
-          <input type="password" id="password" placeholder="비�?번호 ?�력" autocomplete="current-password" required />
+          <label for="password">비밀번호</label>
+          <input type="password" id="password" placeholder="비밀번호 입력" autocomplete="current-password" required />
         </div>
         <div class="remember-row">
           <label class="remember-label" for="rememberUsername">
             <input type="checkbox" id="rememberUsername" />
-            <span>?�이???�??/span>
+            <span>아이디 저장</span>
           </label>
         </div>
-        <button type="submit" class="btn-primary" id="btnLogin">로그??/button>
+        <button type="submit" class="btn-primary" id="btnLogin">로그인</button>
       </form>
 
       <div style="text-align:center;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--admin-border);">
-        <a href="register.html" style="display:inline-block;padding:0.5rem 1.5rem;background:linear-gradient(135deg,#51cf66,#40c057);color:#fff;border-radius:50px;text-decoration:none;font-weight:700;font-size:0.9rem;transition:all 0.2s;">?�� 계정 ?�록 ?�청</a>
-        <div style="font-size:0.75rem;color:var(--admin-text-muted);margin-top:0.5rem;">계정???�으?��??? ?�청 ??관리자 ?�인??받으�??�용 가?�합?�다</div>
+        <a href="register.html" style="display:inline-block;padding:0.5rem 1.5rem;background:linear-gradient(135deg,#51cf66,#40c057);color:#fff;border-radius:50px;text-decoration:none;font-weight:700;font-size:0.9rem;transition:all 0.2s;">📝 계정 등록 신청</a>
+        <div style="font-size:0.75rem;color:var(--admin-text-muted);margin-top:0.5rem;">계정이 없으신가요? 신청 후 관리자 승인을 받으면 이용 가능합니다</div>
       </div>
-      <a href="index.html" class="back-home">??메인 ?�이지�??�아가�?/a>
+      <a href="index.html" class="back-home">← 메인 페이지로 돌아가기</a>
     </div>
   </div>
 
@@ -91,7 +91,7 @@
         const errEl = document.getElementById('errorMsg');
         errEl.classList.remove('show');
         btn.disabled = true;
-        btn.textContent = '로그??�?..';
+        btn.textContent = '로그인 중...';
 
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
@@ -121,17 +121,17 @@
           } catch (e) { /* fallback */ }
 
           if (regStatus === 'pending') {
-            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#9203;</span><div><strong>?�인 ?��?중이?�요</strong><br><span style="font-size:0.8rem;color:#636e72;">관리자가 ?�인?�면 로그?�할 ???�어??/span></div></div>';
+            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#9203;</span><div><strong>승인 대기 중이에요</strong><br><span style="font-size:0.8rem;color:#636e72;">관리자가 승인하면 로그인할 수 있어요</span></div></div>';
           } else if (regStatus === 'rejected') {
-            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#10060;</span><div><strong>가???�청??거�??�었?�요</strong><br><span style="font-size:0.8rem;color:#636e72;">?�세???�용?� 관리자?�게 문의?�주?�요</span></div></div>';
+            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#10060;</span><div><strong>가입 신청이 거부되었어요</strong><br><span style="font-size:0.8rem;color:#636e72;">자세한 내용은 관리자에게 문의해주세요</span></div></div>';
           } else if (regStatus === 'approved') {
-            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> 비�?번호가 ?�치?��? ?�습?�다.';
+            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> 비밀번호가 일치하지 않습니다.';
           } else {
-            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> ?�이???�는 비�?번호가 ?�치?��? ?�습?�다.';
+            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> 아이디 또는 비밀번호가 일치하지 않습니다.';
           }
           errEl.classList.add('show');
           btn.disabled = false;
-          btn.textContent = '로그??;
+          btn.textContent = '로그인';
         }
       });
     })();

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>?�생 ?�괄 ?�록 - 관리자</title>
+  <title>학생 일괄 등록 - 관리자</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.41.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.41.0" />
 </head>
@@ -11,34 +11,34 @@
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?�� ?�생 ?�괄 ?�록</h2>
+    <h2 style="margin-bottom:1rem;">📋 학생 일괄 등록</h2>
 
     <div class="admin-table-wrap" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title">1. ?��? ?�식 ?�운로드</div>
+        <div class="admin-table-title">1. 엑셀 양식 다운로드</div>
       </div>
       <div style="padding:1rem;">
         <p style="font-size:0.88rem;margin-bottom:0.8rem;color:var(--t-text-muted);">
-          ?�래 버튼?�로 ?�식 ?�일???�운로드?�고, ?�식??맞게 ?�생 ?�보�??�력?????�로?�하?�요.
+          아래 버튼으로 양식 파일을 다운로드하고, 양식에 맞게 학생 정보를 입력한 뒤 업로드하세요.
         </p>
-        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;padding:0.5rem 1rem;font-size:0.88rem;" onclick="downloadTemplate()">?�� ?�식 ?�운로드 (.xlsx)</button>
+        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;padding:0.5rem 1rem;font-size:0.88rem;" onclick="downloadTemplate()">📥 양식 다운로드 (.xlsx)</button>
       </div>
     </div>
 
     <div class="admin-table-wrap" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title">2. ?��? ?�일 ?�로??/div>
+        <div class="admin-table-title">2. 엑셀 파일 업로드</div>
       </div>
       <div style="padding:1rem;">
         <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="handleFile(event)" />
         <div id="dropZone" style="border:2px dashed var(--t-border, #dee2e6);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;background:var(--t-subtle-surface, #f8f9fa);transition:border-color 0.2s;" onclick="document.getElementById('fileInput').click()">
-          <div style="font-size:2rem;margin-bottom:0.5rem;">?��</div>
-          <div style="font-size:0.9rem;font-weight:600;color:var(--t-text);">?�릭?�거???�일???�래그하???�로??/div>
-          <div style="font-size:0.8rem;color:var(--t-text-muted);margin-top:0.3rem;">지???�식: .xlsx, .xls, .csv</div>
+          <div style="font-size:2rem;margin-bottom:0.5rem;">📁</div>
+          <div style="font-size:0.9rem;font-weight:600;color:var(--t-text);">클릭하거나 파일을 드래그하여 업로드</div>
+          <div style="font-size:0.8rem;color:var(--t-text-muted);margin-top:0.3rem;">지원 형식: .xlsx, .xls, .csv</div>
         </div>
         <div id="fileInfo" style="display:none;margin-top:0.8rem;padding:0.6rem;background:var(--t-accent-surface, #f3f0ff);border-radius:8px;font-size:0.85rem;">
           <span id="fileName"></span>
-          <button onclick="clearFile()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">??초기??/button>
+          <button onclick="clearFile()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">✕ 초기화</button>
         </div>
       </div>
     </div>
@@ -54,25 +54,25 @@
       <div style="overflow-x:auto;">
         <table class="admin-table">
           <thead>
-            <tr><th>#</th><th>?�이??/th><th>?�름</th><th>부??/th><th>�?/th><th>?�태</th></tr>
+            <tr><th>#</th><th>아이디</th><th>이름</th><th>부서</th><th>반</th><th>상태</th></tr>
           </thead>
           <tbody id="previewBody"></tbody>
         </table>
       </div>
       <div style="padding:1rem;text-align:center;">
-        <button class="filter-btn" id="btnRegister" style="background:#2b8a3e;color:#fff;padding:0.6rem 2rem;font-size:0.95rem;font-weight:700;" onclick="startRegistration()" disabled>???�괄 ?�록 ?�작</button>
+        <button class="filter-btn" id="btnRegister" style="background:#2b8a3e;color:#fff;padding:0.6rem 2rem;font-size:0.95rem;font-weight:700;" onclick="startRegistration()" disabled>✅ 일괄 등록 시작</button>
       </div>
     </div>
 
     <div class="admin-table-wrap" id="resultSection" style="display:none;margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title">4. ?�록 결과</div>
+        <div class="admin-table-title">4. 등록 결과</div>
       </div>
       <div style="padding:1rem;">
         <div id="resultSummary" style="font-size:0.9rem;margin-bottom:0.8rem;"></div>
         <div style="overflow-x:auto;">
           <table class="admin-table">
-            <thead><tr><th>#</th><th>?�이??/th><th>?�름</th><th>결과</th><th>?�유</th></tr></thead>
+            <thead><tr><th>#</th><th>아이디</th><th>이름</th><th>결과</th><th>사유</th></tr></thead>
             <tbody id="resultBody"></tbody>
           </table>
         </div>
@@ -129,13 +129,13 @@
     }
 
     function downloadTemplate() {
-      const header = [['?�이??, '?�름', '부??, '�?]];
-      const sample = [['student01', '?�길??, '1부', '1'], ['student02', '김철수', '2부', '2']];
+      const header = [['아이디', '이름', '부서', '반']];
+      const sample = [['student01', '홍길동', '1부', '1'], ['student02', '김철수', '2부', '2']];
       const ws = XLSX.utils.aoa_to_sheet([...header, ...sample]);
       ws['!cols'] = [{ wch: 15 }, { wch: 12 }, { wch: 10 }, { wch: 5 }];
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, '?�생목록');
-      XLSX.writeFile(wb, '?�생_?�괄?�록_?�식.xlsx');
+      XLSX.utils.book_append_sheet(wb, ws, '학생목록');
+      XLSX.writeFile(wb, '학생_일괄등록_양식.xlsx');
     }
 
     function handleFile(e) {
@@ -145,7 +145,7 @@
     }
 
     function processFile(file) {
-      document.getElementById('fileName').textContent = `?�� ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      document.getElementById('fileName').textContent = `📄 ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
       document.getElementById('fileInfo').style.display = '';
 
       const reader = new FileReader();
@@ -155,16 +155,16 @@
           const ws = wb.Sheets[wb.SheetNames[0]];
           const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-          if (rows.length < 2) { alert('?�이?��? ?�습?�다. ?�식???�인?�주?�요.'); return; }
+          if (rows.length < 2) { alert('데이터가 없습니다. 양식을 확인해주세요.'); return; }
 
           const header = rows[0].map(h => String(h || '').trim());
-          const idxId = header.findIndex(h => /?�이??id|username/i.test(h));
-          const idxName = header.findIndex(h => /?�름|name|display/i.test(h));
-          const idxDept = header.findIndex(h => /부??dept|department/i.test(h));
-          const idxClass = header.findIndex(h => /�?class|번호/i.test(h));
+          const idxId = header.findIndex(h => /아이디|id|username/i.test(h));
+          const idxName = header.findIndex(h => /이름|name|display/i.test(h));
+          const idxDept = header.findIndex(h => /부서|dept|department/i.test(h));
+          const idxClass = header.findIndex(h => /반|class|번호/i.test(h));
 
           if (idxId < 0 || idxName < 0) {
-            alert('?�수 컬럼(?�이?? ?�름)??찾을 ???�습?�다.\n?�식???�운로드?�여 ?�용?�주?�요.');
+            alert('필수 컬럼(아이디, 이름)을 찾을 수 없습니다.\n양식을 다운로드하여 사용해주세요.');
             return;
           }
 
@@ -178,12 +178,12 @@
             const classNum = r[idxClass] != null ? String(r[idxClass]).trim() : '';
 
             let error = '';
-            if (!username) error = '?�이???�락';
-            else if (!/^[a-zA-Z0-9_-]+$/.test(username)) error = '?�이?? ?�문/?�자/_/- �?가??;
-            if (!displayName) error = error ? error + ', ?�름 ?�락' : '?�름 ?�락';
+            if (!username) error = '아이디 누락';
+            else if (!/^[a-zA-Z0-9_-]+$/.test(username)) error = '아이디: 영문/숫자/_/- 만 가능';
+            if (!displayName) error = error ? error + ', 이름 누락' : '이름 누락';
 
             const deptId = deptName ? (_deptMap[deptName] || _deptMap[deptName.replace(/\s/g, '')] || null) : null;
-            if (deptName && !deptId) error = error ? error + ', 부???�음' : `부??"${deptName}" ?�음`;
+            if (deptName && !deptId) error = error ? error + ', 부서 없음' : `부서 "${deptName}" 없음`;
 
             _parsedRows.push({
               row: i + 1,
@@ -194,7 +194,7 @@
           }
           renderPreview();
         } catch (err) {
-          alert('?�일 ?�기 ?�류: ' + err.message);
+          alert('파일 읽기 오류: ' + err.message);
         }
       };
       reader.readAsArrayBuffer(file);
@@ -212,9 +212,9 @@
       const validRows = _parsedRows.filter(r => !r.error);
       const errorRows = _parsedRows.filter(r => r.error);
 
-      document.getElementById('previewTitle').textContent = `3. 미리보기 (�?${_parsedRows.length}�?`;
-      document.getElementById('validCount').textContent = `???�상 ${validRows.length}�?;
-      document.getElementById('errorCount').textContent = errorRows.length > 0 ? `???�류 ${errorRows.length}�? : '';
+      document.getElementById('previewTitle').textContent = `3. 미리보기 (총 ${_parsedRows.length}건)`;
+      document.getElementById('validCount').textContent = `✅ 정상 ${validRows.length}건`;
+      document.getElementById('errorCount').textContent = errorRows.length > 0 ? `❌ 오류 ${errorRows.length}건` : '';
 
       const tbody = document.getElementById('previewBody');
       tbody.innerHTML = _parsedRows.map((r, i) => `<tr style="${r.error ? 'background:var(--t-subtle-surface, #fff5f5);' : ''}">
@@ -224,8 +224,8 @@
         <td>${r.deptName || '-'}</td>
         <td>${r.classNumber != null ? r.classNumber : '-'}</td>
         <td>${r.error
-          ? `<span style="color:#e03131;font-size:0.8rem;">??${r.error}</span>`
-          : '<span style="color:#2b8a3e;font-size:0.8rem;">???�상</span>'}</td>
+          ? `<span style="color:#e03131;font-size:0.8rem;">❌ ${r.error}</span>`
+          : '<span style="color:#2b8a3e;font-size:0.8rem;">✅ 정상</span>'}</td>
       </tr>`).join('');
 
       document.getElementById('previewSection').style.display = '';
@@ -234,11 +234,11 @@
 
     async function startRegistration() {
       const validRows = _parsedRows.filter(r => !r.error);
-      if (validRows.length === 0) { alert('?�록 가?�한 ?�이?��? ?�습?�다.'); return; }
-      if (!confirm(`?�상 ?�이??${validRows.length}건을 ?�괄 ?�록?�니??\n초기 비�?번호??"1234"?�니??\n\n계속?�시겠습?�까?`)) return;
+      if (validRows.length === 0) { alert('등록 가능한 데이터가 없습니다.'); return; }
+      if (!confirm(`정상 데이터 ${validRows.length}건을 일괄 등록합니다.\n초기 비밀번호는 "1234"입니다.\n\n계속하시겠습니까?`)) return;
 
       document.getElementById('btnRegister').disabled = true;
-      document.getElementById('btnRegister').textContent = '???�록 �?..';
+      document.getElementById('btnRegister').textContent = '⏳ 등록 중...';
 
       const results = [];
       let success = 0, fail = 0;
@@ -255,33 +255,33 @@
             classNumber: r.classNumber
           });
           if (error) {
-            results.push({ ...r, result: '?�패', reason: tErr(error) });
+            results.push({ ...r, result: '실패', reason: tErr(error) });
             fail++;
           } else {
-            results.push({ ...r, result: '?�공', reason: '' });
+            results.push({ ...r, result: '성공', reason: '' });
             success++;
           }
         } catch (e) {
-          results.push({ ...r, result: '?�패', reason: e.message || String(e) });
+          results.push({ ...r, result: '실패', reason: e.message || String(e) });
           fail++;
         }
       }
 
-      await logInfo('BULK_REGISTER', { 총건?? validRows.length, ?�공: success, ?�패: fail });
+      await logInfo('BULK_REGISTER', { 총건수: validRows.length, 성공: success, 실패: fail });
 
       document.getElementById('resultSummary').innerHTML =
-        `<strong>?�록 ?�료</strong>: �?${validRows.length}�?�?<span style="color:#2b8a3e;">?�공 ${success}�?/span>, <span style="color:#e03131;">?�패 ${fail}�?/span>`;
+        `<strong>등록 완료</strong>: 총 ${validRows.length}건 중 <span style="color:#2b8a3e;">성공 ${success}건</span>, <span style="color:#e03131;">실패 ${fail}건</span>`;
 
-      document.getElementById('resultBody').innerHTML = results.map((r, i) => `<tr style="${r.result === '?�패' ? 'background:var(--t-subtle-surface, #fff5f5);' : ''}">
+      document.getElementById('resultBody').innerHTML = results.map((r, i) => `<tr style="${r.result === '실패' ? 'background:var(--t-subtle-surface, #fff5f5);' : ''}">
         <td>${i + 1}</td>
         <td>${r.username}</td>
         <td>${r.displayName}</td>
-        <td style="color:${r.result === '?�공' ? '#2b8a3e' : '#e03131'};font-weight:700;">${r.result === '?�공' ? '???�공' : '???�패'}</td>
+        <td style="color:${r.result === '성공' ? '#2b8a3e' : '#e03131'};font-weight:700;">${r.result === '성공' ? '✅ 성공' : '❌ 실패'}</td>
         <td style="font-size:0.82rem;">${r.reason || '-'}</td>
       </tr>`).join('');
 
       document.getElementById('resultSection').style.display = '';
-      document.getElementById('btnRegister').textContent = '???�록 ?�료';
+      document.getElementById('btnRegister').textContent = '✅ 등록 완료';
     }
   </script>
 </body>
