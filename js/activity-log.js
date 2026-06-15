@@ -566,9 +566,6 @@ window.addEventListener('unhandledrejection', (e) => {
 /* ===== Auto Page View Log ===== */
 
 function autoLogPageView() {
-  if (_sb) {
-    logInfo('PAGE_VIEW', { url: window.location.href });
-  }
 }
 
 const _SOFT_DEL_COL_ERR = 'DB에 삭제 관리 컬럼이 없습니다.\nSupabase SQL Editor에서 아래 SQL을 실행해주세요:\n\nALTER TABLE activity_logs ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT false;\nALTER TABLE activity_logs ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMPTZ;';

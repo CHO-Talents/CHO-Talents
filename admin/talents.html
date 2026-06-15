@@ -133,6 +133,7 @@
   <script src="../js/auth.js?v=3.40.0"></script>
   <script src="../js/theme.js?v=3.40.0"></script>
   <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/page-size.js?v=3.40.0"></script>
   <script src="../js/user-mgmt.js?v=3.40.0"></script>
   <script src="../js/talent.js?v=3.40.0"></script>
   <style>
@@ -154,6 +155,7 @@
     let _attendanceTxnMap = {};
     let talentPage = 1;
     let talentUserList = [];
+    let talentPageSize = null;
 
     function maskTalentDesc(desc) {
       if (!desc) return '-';
@@ -171,7 +173,10 @@
       return new Date(kst.getTime() - 9 * 60 * 60 * 1000);
     }
 
-    function getTalentPageSize(){return window.innerWidth<=768?10:20;}
+    function getTalentPageSize(){
+      if (talentPageSize !== null) return talentPageSize;
+      return window.innerWidth<=768?10:20;
+    }
 
     (async () => {
       await navInit();
@@ -179,6 +184,7 @@
       if (!session) return;
       navUpdateAuth(session);
       autoLogPageView();
+      talentPageSize = await loadPageSize('talents', 10);
       updatePendingBadge();
       updateNavOrderBadge();
       updateLogBadge();
@@ -331,14 +337,25 @@
     function renderTalentPaging(totalPages) {
       const wrap = document.getElementById('talentPaging');
       const page = talentPage;
-      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
-      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goTalentPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
-      for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="filter-btn${i===page?' active':''}" onclick="goTalentPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      const pageSize = getTalentPageSize();
+      let html = '';
+      if (totalPages > 1) {
+        html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goTalentPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="filter-btn${i===page?' active':''}" onclick="goTalentPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+        }
+        html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goTalentPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+        html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
       }
-      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goTalentPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
-      html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
+      html += ' ' + renderPageSizeSelector('talents', pageSize, "onTalentsPageSizeChange(this.value)");
       wrap.innerHTML = html;
+    }
+
+    async function onTalentsPageSizeChange(val) {
+      talentPageSize = parseInt(val) || 10;
+      await savePageSize('talents', talentPageSize);
+      talentPage = 1;
+      renderTalentTable();
     }
 
     function goTalentPage(p) {

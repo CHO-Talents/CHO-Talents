@@ -89,12 +89,16 @@
   <script src="js/auth.js?v=3.40.0"></script>
   <script src="js/theme.js?v=3.40.0"></script>
   <script src="js/nav.js?v=3.40.0"></script>
+  <script src="js/page-size.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session;
     let cameraStream = null;
     let scanAnimFrame = null;
     let scanPaused = false;
+    let QR_PAGE_SIZE = 5;
+    let allQRCodes = [];
+    let qrPages = { student: 1, teacher: 1 };
 
     (async () => {
       await navInit();
@@ -106,6 +110,7 @@
         document.getElementById('adminInputWrap').style.display = '';
       }
       autoLogPageView();
+      QR_PAGE_SIZE = await loadPageSize('talent_receive', 5);
       updateNavOrderBadge();
       loadHistory();
       loadQRList();
@@ -393,10 +398,6 @@
       if (e.key === 'Enter') scanCode();
     });
 
-    const QR_PAGE_SIZE = 5;
-    let allQRCodes = [];
-    let qrPages = { student: 1, teacher: 1 };
-
     async function loadQRList() {
       try {
         const { data } = await _sb.from('talent_qr_codes')
@@ -457,11 +458,16 @@
         html += '</div>';
       });
       if (total > 1) {
-        html += '<div style="display:flex;justify-content:center;gap:0.3rem;margin-top:0.5rem;">';
+        html += '<div style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;">';
         for (let i = 1; i <= total; i++) {
           const active = i === page ? 'background:var(--c-primary);color:#fff;' : 'background:#e9ecef;';
           html += '<button onclick="goQRPage(\''+groupKey+'\','+i+')" style="border:none;padding:0.3rem 0.6rem;border-radius:4px;cursor:pointer;font-size:0.8rem;'+active+'">'+i+'</button>';
         }
+        html += ' ' + renderPageSizeSelector('talent_receive', QR_PAGE_SIZE, "onQRPageSizeChange(this.value)");
+        html += '</div>';
+      } else if (codes.length > 0) {
+        html += '<div style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;">';
+        html += renderPageSizeSelector('talent_receive', QR_PAGE_SIZE, "onQRPageSizeChange(this.value)");
         html += '</div>';
       }
       html += '</div>';
@@ -470,6 +476,13 @@
 
     function goQRPage(group, page) {
       qrPages[group] = page;
+      renderQRList();
+    }
+
+    async function onQRPageSizeChange(val) {
+      QR_PAGE_SIZE = parseInt(val) || 5;
+      await savePageSize('talent_receive', QR_PAGE_SIZE);
+      qrPages = { student: 1, teacher: 1 };
       renderQRList();
     }
   </script>

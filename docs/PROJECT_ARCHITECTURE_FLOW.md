@@ -15,7 +15,7 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 | 상품 구매 시스템 | 4단계 구매 흐름(신청→준비→구매→지급)으로 상품 교환을 관리하며, 되돌리기와 구매 취소(cancelled)도 가능하다. |
 | 승인 기반 계정 운영 | 신규 사용자는 신청 후 관리자 승인으로 계정이 생성된다. |
 | 부서 이동 관리 | 부서 변경은 요청→승인 흐름으로 처리한다 (90등급 이상은 즉시 이동). |
-| 운영 추적 | 페이지 방문, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. |
+| 운영 추적 | 로그인, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. (v3.40.0부터 PAGE_VIEW 비활성화) |
 | 에러 한글화 | 영문 DB/RPC 에러를 `tErr()` 함수로 한글 변환하여 사용자에게 표시한다. |
 | 보안 강화 | Supabase Auth, RLS, SECURITY DEFINER RPC로 민감 데이터 접근을 제한한다. |
 
@@ -62,7 +62,7 @@ flowchart LR
 
 ## 3. 폴더 및 파일 구성
 
-목록 페이징은 11개 화면(사용자 관리, 달란트 관리, 상품 관리, 달란트 통계, 로그, 구매 관리, 작업 이력, 내 구매 상품, 달란트 항목, 달란트 QR, 관리자 관리)에서 PC 20개/모바일 10개로 통일되었으며, 현재 페이지 번호가 강조 표시됩니다.
+목록 페이징은 11개 화면(사용자 관리, 달란트 관리, 상품 관리, 달란트 통계, 로그, 구매 관리, 작업 이력, 내 구매 상품, 달란트 항목, 달란트 QR, 관리자 관리)에서 PC 20개/모바일 10개 기본값을 사용하며, `js/page-size.js`로 그리드별 3~30개 사용자 설정(`user_preferences.page_sizes`)을 지원합니다. 현재 페이지 번호가 강조 표시됩니다.
 
 | 경로 | 역할 |
 |---|---|
@@ -96,7 +96,7 @@ flowchart LR
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
-| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 자동 호출 포함), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
+| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 자동 호출 포함), 페이지 크기(`page-size.js`), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
 | `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서 |
 
 ## 4. 권한 구조
@@ -295,6 +295,7 @@ flowchart TD
 | 항목 | 기준 |
 |---|---|
 | 사용자 등록/수정/삭제 | 본인보다 낮은 등급만 가능. 실제 검증은 RPC에서 수행 |
+| 부서 담당 교사(60~79) 사용자 관리 | `canManageUser()`: 담당 부서 소속 학생의 반 수정·비밀번호 초기화 가능. 삭제·부서 이동은 80+ |
 | 아이디 표시 | 관리자에게만 전체 노출. 그 외에는 본인 아이디만 표시 |
 | 동명이인 | 같은 이름/유형/부서면 `①`, `②` 번호를 붙여 구분 표시 |
 | 최고관리자 | `is_super_admin` 사용자는 삭제/수정 보호 |
@@ -390,7 +391,7 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  Event["페이지 방문/로그인/오류/관리 작업"] --> WriteLog["writeLog() → activity_logs INSERT<br/>반환 error 감지 + 호환 재시도"]
+  Event["로그인/오류/관리 작업"] --> WriteLog["writeLog() → activity_logs INSERT<br/>반환 error 감지 + 호환 재시도"]
   WriteLog --> ActionLabel["ACTION_LABELS 한글 매핑 (~150개)<br/>details._actionLabel 자동 저장"]
   ActionLabel --> Logs["admin/logs.html (100등급+)"]
   Logs --> Filter["레벨/기간 필터"]
@@ -406,6 +407,7 @@ flowchart TD
 
 로그 레벨: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`, `CRITICAL`
 
+- v3.40.0부터 `autoLogPageView()`는 no-op이며 PAGE_VIEW 로그를 기록하지 않는다 (함수 호출은 각 페이지에 유지)
 - `activity-log.js`의 `ACTION_LABELS`에 약 150개 action 키의 한글 라벨이 정의되어 있다
 - `writeLog()`는 기록 시 `ACTION_LABELS[action]`이 있으면 `details._actionLabel`에 한글 라벨을 자동 저장한다
 - `writeLog()`는 Supabase insert 결과의 `error`를 확인하고, 구버전 DB 스키마에서 `user_name`/`is_acknowledged` 컬럼 오류가 나면 해당 선택 컬럼을 제거해 재시도한다
@@ -452,7 +454,7 @@ flowchart TD
 | 리소스 | 용도 |
 |---|---|
 | `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`), 마지막 로그인(`last_login_at`) |
-| `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB)과 테마(`theme`), RLS 적용 |
+| `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB), 테마(`theme`), 그리드별 페이지 크기(`page_sizes` JSONB), RLS 적용 |
 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | `registration_requests` | 가입 신청/승인/거부 |
 | `department_transfer_requests` | 부서 이동 요청/승인/거부 |
@@ -533,6 +535,7 @@ flowchart TD
 | 13 | `docs/TASK-047_activity_logs_grants.sql` | 운영 DB `activity_logs` INSERT 권한/정책 복구 SQL |
 | 14 | `docs/TASK-048_schema.sql` | v3.36.0: talent_items 컬럼, purchase_teacher CHECK 제약 |
 | 15 | `docs/TASK-049_schema.sql` | v3.37.0: profiles.last_login_at, update_last_login RPC |
+| 16 | `docs/TASK-041_page_sizes.sql` | v3.40.0: user_preferences.page_sizes JSONB 컬럼 |
 
 ## 18. 개발 주의사항
 

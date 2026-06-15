@@ -501,7 +501,7 @@
         <span class="arrow">&#9654;</span>
       </div>
       <div class="page-body">
-        <div class="access-note">initPage(60) - 부서 담당 교사 이상</div>
+        <div class="access-note">initPage(60) - 부서 담당 교사 이상. v3.40.0: rank 60~79는 canManageUser()로 담당 부서 학생의 반 수정·비밀번호 초기화 가능 (삭제·부서 이동은 80+)</div>
         <h3>UI 요소 표시 조건</h3>
         <table>
           <thead><tr><th>요소</th><th>표시 조건</th></tr></thead>
@@ -515,7 +515,7 @@
         <table>
           <thead><tr><th>기능</th><th>조건</th></tr></thead>
           <tbody>
-            <tr><td>사용자 수정/삭제/비번초기화</td><td>canManage = myRank &gt; 80 && myRank &gt; targetRank<br><strong>부장 교사(80)는 조회만 가능, 관리 기능 불가</strong></td></tr>
+            <tr><td>사용자 수정/삭제/비번초기화</td><td><code>canManageUser()</code>: rank 60+ &amp; 대상 rank &lt; 본인 rank &amp; 담당 부서 범위<br><strong>60~79</strong>: 반 수정·비밀번호 초기화만 (삭제·부서 이동 버튼은 80+)<br><strong>80</strong>: 담당 관리 부서 범위 내 수정·비번초기화·삭제·부서 이동<br><strong>90+</strong>: 자기보다 낮은 권한 전체 관리</td></tr>
             <tr><td>부서 이동 즉시 처리</td><td><span class="badge b-90">rank &gt;= 90</span></td></tr>
             <tr><td>부서 이동 요청 생성</td><td>rank &lt; 90</td></tr>
             <tr><td>가입 신청 승인/거부</td><td>90+ 전체 / 60~89 담당 부서만</td></tr>
