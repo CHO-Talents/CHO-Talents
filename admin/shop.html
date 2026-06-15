@@ -21,14 +21,20 @@
         </div>
       </div>
 
-      <h3 style="margin:1rem 0 0.5rem;font-size:0.95rem;border-bottom:2px solid #fab005;padding-bottom:0.3rem;" id="teacherTitle">👩‍🏫 교사용 상품 (0건)</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:1rem 0 0.5rem;border-bottom:2px solid #fab005;padding-bottom:0.3rem;">
+        <h3 style="font-size:0.95rem;margin:0;" id="teacherTitle">👩‍🏫 교사용 상품 (0건)</h3>
+        <span id="teacherPageSizeWrap"></span>
+      </div>
       <table class="admin-table">
         <thead><tr><th>카테고리</th><th></th><th>상품명</th><th>가격</th><th>관리</th></tr></thead>
         <tbody id="teacherProducts"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="teacherPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
 
-      <h3 style="margin:1.5rem 0 0.5rem;font-size:0.95rem;border-bottom:2px solid #51cf66;padding-bottom:0.3rem;" id="studentTitle">🎒 학생용 상품 (0건)</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin:1.5rem 0 0.5rem;border-bottom:2px solid #51cf66;padding-bottom:0.3rem;">
+        <h3 style="font-size:0.95rem;margin:0;" id="studentTitle">🎒 학생용 상품 (0건)</h3>
+        <span id="studentPageSizeWrap"></span>
+      </div>
       <table class="admin-table">
         <thead><tr><th>카테고리</th><th></th><th>상품명</th><th>가격</th><th>관리</th></tr></thead>
         <tbody id="studentProducts"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
@@ -216,8 +222,9 @@
         html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goShopPage('${groupKey}',${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
         html += `<span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
       }
-      html += ' ' + renderPageSizeSelector(prefKey, pageSize, "onShopPageSizeChange('" + groupKey + "', this.value)");
       wrap.innerHTML = html;
+      const headerWrap = document.getElementById(groupKey + 'PageSizeWrap');
+      if (headerWrap) headerWrap.innerHTML = renderPageSizeSelector(prefKey, pageSize, "onShopPageSizeChange('" + groupKey + "', this.value)");
     }
 
     async function onShopPageSizeChange(groupKey, val) {

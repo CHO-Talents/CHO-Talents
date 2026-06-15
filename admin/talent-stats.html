@@ -336,14 +336,13 @@
           paging += `<button class="filter-btn${i === page ? ' active' : ''}" onclick="goUserStatPage('${typeKey}',${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
         }
         paging += `<button class="filter-btn" ${page >= totalPages ? 'disabled' : ''} onclick="goUserStatPage('${typeKey}',${page + 1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>
-          <span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span>`;
-      } else {
-        paging = `<div style="padding:0.6rem 1rem;display:flex;align-items:center;gap:0.3rem;flex-wrap:wrap;border-top:1px solid #e9ecef;">`;
+          <span style="font-size:0.78rem;color:#adb5bd;margin-left:0.5rem;">${page}/${totalPages}</span></div>`;
       }
-      paging += ' ' + renderPageSizeSelector(prefKey, pageSize, "onUserStatPageSizeChange('" + typeKey + "', this.value)") + '</div>';
+
+      const pageSizeHtml = renderPageSizeSelector(prefKey, pageSize, "onUserStatPageSizeChange('" + typeKey + "', this.value)");
 
       return `<div style="background:var(--t-card, #fff);border:1px solid var(--t-border, #e9ecef);border-radius:14px;overflow:hidden;margin-bottom:1rem;">
-        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;">${label} (${users.length}명)</div>
+        <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;display:flex;align-items:center;justify-content:space-between;">${label} (${users.length}명) <span>${pageSizeHtml}</span></div>
         <table class="stats-table"><thead><tr><th>부서</th><th>이름</th><th style="text-align:right;">달란트</th><th style="text-align:right;">항목</th><th>상세</th></tr></thead><tbody>${rows}</tbody></table>${paging}</div>`;
     }
 

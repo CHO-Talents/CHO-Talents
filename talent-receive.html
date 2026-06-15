@@ -441,7 +441,8 @@
       const total = Math.ceil(codes.length / QR_PAGE_SIZE);
       const start = (page - 1) * QR_PAGE_SIZE;
       const slice = codes.slice(start, start + QR_PAGE_SIZE);
-      let html = '<div style="margin-bottom:1.5rem;"><h3 style="font-size:0.95rem;margin-bottom:0.5rem;border-bottom:2px solid '+(groupKey==='student'?'#51cf66':'#4dabf7')+';padding-bottom:0.3rem;">'+title+' <span style="font-size:0.8rem;color:var(--c-text-muted);">('+codes.length+'개)</span></h3>';
+      const pageSizeHtml = codes.length > 0 ? renderPageSizeSelector('talent_receive', QR_PAGE_SIZE, "onQRPageSizeChange(this.value)") : '';
+      let html = '<div style="margin-bottom:1.5rem;"><div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid '+(groupKey==='student'?'#51cf66':'#4dabf7')+';padding-bottom:0.3rem;margin-bottom:0.5rem;"><h3 style="font-size:0.95rem;margin:0;">'+title+' <span style="font-size:0.8rem;color:var(--c-text-muted);">('+codes.length+'개)</span></h3><span>'+pageSizeHtml+'</span></div>';
       slice.forEach(q => {
         const expired = (q.valid_until && new Date(q.valid_until) < now) || (q.expires_at && new Date(q.expires_at) < now);
         const bg = expired ? '#f8f9fa' : '#fff';
@@ -463,11 +464,6 @@
           const active = i === page ? 'background:var(--c-primary);color:#fff;' : 'background:#e9ecef;';
           html += '<button onclick="goQRPage(\''+groupKey+'\','+i+')" style="border:none;padding:0.3rem 0.6rem;border-radius:4px;cursor:pointer;font-size:0.8rem;'+active+'">'+i+'</button>';
         }
-        html += ' ' + renderPageSizeSelector('talent_receive', QR_PAGE_SIZE, "onQRPageSizeChange(this.value)");
-        html += '</div>';
-      } else if (codes.length > 0) {
-        html += '<div style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;">';
-        html += renderPageSizeSelector('talent_receive', QR_PAGE_SIZE, "onQRPageSizeChange(this.value)");
         html += '</div>';
       }
       html += '</div>';

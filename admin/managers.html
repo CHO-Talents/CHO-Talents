@@ -25,6 +25,7 @@
             <option value="">전체 부서</option>
           </select>
           <span style="margin-left:0.5rem;"></span>
+          <span id="mgrPageSizeWrap"></span>
           <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 관리자 등록</button>
         </div>
       </div>
@@ -92,18 +93,21 @@
   <script src="../js/auth.js?v=3.40.0"></script>
   <script src="../js/theme.js?v=3.40.0"></script>
   <script src="../js/nav.js?v=3.40.0"></script>
+  <script src="../js/page-size.js?v=3.40.0"></script>
   <script src="../js/user-mgmt.js?v=3.40.0"></script>
   <script>
     initSupabase();
     let session;
     let editingId = null;
     let deptList = [];
+    let mgrPageSize = null;
     (async () => {
       await navInit();
       session = await initPage(80, '../login.html');
       if (!session) return;
       navUpdateAuth(session);
       autoLogPageView();
+      mgrPageSize = await loadPageSize('managers', 20);
       updatePendingBadge();
       updateNavOrderBadge();
       updateBadge();
@@ -143,7 +147,10 @@
 
     let allManagers = [];
     let currentFilter = 'all';
-    function getMgrPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    function getMgrPageSize() {
+      if (mgrPageSize !== null) return mgrPageSize;
+      return window.innerWidth <= 768 ? 10 : 20;
+    }
     let mgrPage = 1;
 
     let currentDeptFilter = '';
@@ -255,16 +262,26 @@
     function renderMgrPaging(totalPages) {
       const wrap = document.getElementById('mgrPaging');
       const page = mgrPage;
-      if (totalPages <= 1) { wrap.innerHTML = ''; return; }
-      let html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goMgrPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
-      for (let i = 1; i <= totalPages; i++) {
-        html += `<button class="filter-btn${i===page?' active':''}" onclick="goMgrPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+      let html = '';
+      if (totalPages > 1) {
+        html = `<button class="filter-btn" ${page<=1?'disabled':''} onclick="goMgrPage(${page-1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">◀</button>`;
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="filter-btn${i===page?' active':''}" onclick="goMgrPage(${i})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">${i}</button>`;
+        }
+        html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goMgrPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
+        html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
       }
-      html += `<button class="filter-btn" ${page>=totalPages?'disabled':''} onclick="goMgrPage(${page+1})" style="padding:0.3rem 0.6rem;font-size:0.8rem;">▶</button>`;
-      html += `<span style="font-size:0.78rem;color:var(--t-text-muted, #adb5bd);margin-left:0.5rem;">${page}/${totalPages}</span>`;
       wrap.innerHTML = html;
+      const headerWrap = document.getElementById('mgrPageSizeWrap');
+      if (headerWrap) headerWrap.innerHTML = renderPageSizeSelector('managers', getMgrPageSize(), "onMgrPageSizeChange(this.value)");
     }
     function goMgrPage(p) { mgrPage = p; renderManagers(); }
+    async function onMgrPageSizeChange(val) {
+      mgrPageSize = parseInt(val) || 20;
+      await savePageSize('managers', mgrPageSize);
+      mgrPage = 1;
+      renderManagers();
+    }
 
     let _allUsers = [];
     let _selectedUserId = null;
