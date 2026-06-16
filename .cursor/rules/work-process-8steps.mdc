@@ -42,6 +42,13 @@ alwaysApply: true
   - `README.md`
   - `docs/SITE_USER_GUIDE.md`
   - `docs/PROJECT_ARCHITECTURE_FLOW.md`
+- 아래 가이드 페이지에 수정 내용에 맞게 업데이트:
+  - `https://cho-talents.github.io/CHO-Talents/guide.html`
+  - `https://cho-talents.github.io/CHO-Talents/teacher-guide.html`
+  - `https://cho-talents.github.io/CHO-Talents/admin-guide.html`
+  - `https://cho-talents.github.io/CHO-Talents/docs/page-permission-rules.html`
+  - `https://cho-talents.github.io/CHO-Talents/admin/log-rules.html`
+  - `https://cho-talents.github.io/CHO-Talents/admin/audit-rules.html`
 - 버전 업데이트 + 캐시 버스팅 적용
 - **develop 브랜치에만** 커밋 및 push (main 브랜치 금지)
 - 사용자가 명시적으로 main 브랜치를 요청한 경우에만 main에 반영
