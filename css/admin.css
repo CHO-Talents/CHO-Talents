@@ -778,6 +778,7 @@ table.admin-table tr:hover { background: #fafbfc; }
   .nav-header-logout { font-size: 0.72rem; padding: 0.2rem 0.55rem; }
   .admin-nav-links {
     display: none;
+    flex: 0 0 100%;
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
