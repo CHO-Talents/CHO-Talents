@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.43.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.43.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.43.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.44.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.44.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.44.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -53,6 +53,7 @@
         <li><strong>상세 정보</strong>에서 아이디, 역할, 권한, 부서, 마지막 로그인, 신청 이력, 달란트 내역, 구매 내역을 확인할 수 있습니다.</li>
       </ol>
       <div class="guide-note">부서 이동은 권한에 따라 즉시 처리되거나 승인 요청으로 생성됩니다. 담당 범위 밖의 사용자는 처리 권한이 없을 수 있습니다. 부서 담당 교사(60+)는 담당 부서 학생의 반 변경과 비밀번호 초기화가 가능하며, 삭제·부서 이동은 부장 교사(80+) 이상만 가능합니다.</div>
+      <div class="guide-note"><strong>최고관리자(Super Admin)</strong>: is_super_admin이 TRUE인 계정은 수정 모달에서 역할, 권한, 소속 부서, 담당 부서 등 모든 필드를 제약 없이 변경할 수 있습니다.</div>
     </section>
 
     <section class="guide-section">
@@ -248,12 +249,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.43.0"></script>
-  <script src="js/supabase-config.js?v=3.43.0"></script>
-  <script src="js/activity-log.js?v=3.43.0"></script>
-  <script src="js/auth.js?v=3.43.0"></script>
-  <script src="js/theme.js?v=3.43.0"></script>
-  <script src="js/nav.js?v=3.43.0"></script>
+  <script src="config/public-config.js?v=3.44.0"></script>
+  <script src="js/supabase-config.js?v=3.44.0"></script>
+  <script src="js/activity-log.js?v=3.44.0"></script>
+  <script src="js/auth.js?v=3.44.0"></script>
+  <script src="js/theme.js?v=3.44.0"></script>
+  <script src="js/nav.js?v=3.44.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -268,6 +269,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.43.0"></script>
+  <script src="js/version.js?v=3.44.0"></script>
 </body>
 </html>

@@ -2,9 +2,25 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.43.0',
+  current: '3.44.0',
   date: '2026-06-16',
   history: [
+    {
+      version: '3.44.0',
+      date: '2026-06-16',
+      title: '구매 취소 버그 수정 + Super Admin 권한 변경 제약 해제',
+      changes: [
+        '구매 취소: RPC 기반 취소 우선 시도 (cancel_product_order), 미존재 시 직접 업데이트 폴백',
+        '구매 취소: .select() 기반 업데이트 결과 검증 — 실제 상태 변경 여부 확인 후 후속 처리',
+        '구매 취소: product_id 포함하여 정확한 주문 건 대상 취소 처리',
+        '구매 취소: profiles 업데이트 403 에러 시 로그 기록 및 적절한 에러 핸들링',
+        '구매 취소: Slack 알림은 실제 취소 확인 후에만 전송',
+        'Super Admin: is_super_admin=true 계정은 사용자 수정 시 모든 권한 레벨 선택 가능',
+        'Super Admin: 수정 모달에서 부서/역할/권한/담당부서 필드 제약 없이 편집 가능',
+        'Super Admin: canManageUser에서 모든 사용자 관리 가능 (다른 super admin 포함)',
+        'Super Admin: buildPermOptions에서 전체 권한 옵션 표시 (rank 필터 미적용)'
+      ]
+    },
     {
       version: '3.43.0',
       date: '2026-06-16',
