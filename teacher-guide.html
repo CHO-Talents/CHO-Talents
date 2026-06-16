@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>교사 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.44.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.44.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.44.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.45.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.45.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.45.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -46,7 +46,8 @@
             <tr><td>달란트 수령</td><td>QR 코드 스캔 또는 코드 입력으로 달란트를 수령합니다.</td></tr>
             <tr><td>상품 구매</td><td>교사용 상품을 구매하거나 학생용 상품을 확인합니다. 교사는 학생 상품을 직접 구매할 수 없습니다.</td></tr>
             <tr><td>대리 구매</td><td>학생을 선택(이름·유형·부서·반 표시)하여 학생 명의로 상품 구매 신청을 합니다.</td></tr>
-            <tr><td>구매 관리</td><td>부서 담당 교사 이상은 권한 범위 안의 주문을 처리합니다. 구매 담당 교사는 모든 부서 주문을 처리할 수 있습니다.</td></tr>
+            <tr><td>구매 관리</td><td>부서 담당 교사 이상은 칸반보드 형태의 상태별 카드로 현황을 파악하고 권한 범위 안의 주문을 처리합니다. 구매 담당 교사는 모든 부서 주문을 처리할 수 있습니다.</td></tr>
+            <tr><td>구매 통계</td><td>부서 담당 교사 이상은 전체/부서별/사용자별/유형별 구매 통계를 확인합니다. 교사/학생 분리 표시, 상세 드릴다운 제공.</td></tr>
             <tr><td>내 달란트</td><td>사용 가능 달란트, 수령 대기 상품수, 적립/사용 내역, 상품 수령 예정 현황을 확인합니다.</td></tr>
             <tr><td>대시보드</td><td>부서 담당 교사(60+) 이상 권한이면 관리 대시보드에 접근할 수 있습니다. 전체 현황과 바로가기를 확인합니다.</td></tr>
           </tbody>
@@ -181,12 +182,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.44.0"></script>
-  <script src="js/supabase-config.js?v=3.44.0"></script>
-  <script src="js/activity-log.js?v=3.44.0"></script>
-  <script src="js/auth.js?v=3.44.0"></script>
-  <script src="js/theme.js?v=3.44.0"></script>
-  <script src="js/nav.js?v=3.44.0"></script>
+  <script src="config/public-config.js?v=3.45.0"></script>
+  <script src="js/supabase-config.js?v=3.45.0"></script>
+  <script src="js/activity-log.js?v=3.45.0"></script>
+  <script src="js/auth.js?v=3.45.0"></script>
+  <script src="js/theme.js?v=3.45.0"></script>
+  <script src="js/nav.js?v=3.45.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -206,6 +207,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.44.0"></script>
+  <script src="js/version.js?v=3.45.0"></script>
 </body>
 </html>
