@@ -12,12 +12,18 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.42.0` (`js/version.js` 기준, 2026-06-16) |
+| 현재 버전 | `v3.43.0` (`js/version.js` 기준, 2026-06-16) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.42.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.43.0`으로 갱신되어 있습니다.
+- **v3.43.0 주요 변경 사항**:
+  - Slack 알림 연동: `#달란트-마을` 채널로 운영 이벤트 실시간 알림
+  - Slack 알림 6가지 유형: 신규 구매, 구매 상태 변경, 가입 신청, 부서 이동 신청, WARN+ 로그, Q&A 질문
+  - Supabase Edge Function `slack-notify` 사용 (Slack Block Kit 메시지 포맷)
+  - `js/slack-notify.js` 공통 유틸리티 (fire-and-forget, 5초 throttle)
+  - **신규 파일**: `js/slack-notify.js`, `docs/edge-function-slack-notify.ts`
 - **v3.42.0 주요 변경 사항**:
   - 네비게이션 레이아웃 정비: PC에서 Brand(좌측) / Links(중앙) / Actions(우측) 3-column flex 배치
   - 네비게이션: admin 20개 페이지에서 로그아웃/테마가 2줄 표시되던 문제 해결 (`admin.css`에 `nav-header-actions` base 스타일 추가)
@@ -309,6 +315,7 @@ CHO-Talents/
 │   ├── auth.js                    # 로그인, 세션, 권한, 비밀번호 변경, tErr() 에러 번역
 │   ├── user-mgmt.js               # 사용자/부서 관리 RPC 래퍼
 │   ├── table-sort.js              # 그리드 헤더 클릭 정렬 공통 유틸리티
+│   ├── slack-notify.js            # Slack 알림 공통 유틸리티 (Edge Function slack-notify 호출)
 │   ├── talent.js                  # 달란트 잔액/내역/지급/사용/반환
 │   ├── product.js                 # 상품 조회/등록/수정/삭제/비활성화/이미지 업로드
 │   └── version.js                 # 버전 정보와 변경 이력
@@ -323,6 +330,26 @@ CHO-Talents/
 - **Auth:** Supabase email/password Auth. 화면에서는 `아이디 + @cho-talents.app` 형태로 로그인 처리
 - **Security:** RLS 정책과 `SECURITY DEFINER` RPC로 사용자/달란트/로그 등 민감 데이터 접근 제어
 - **에러 처리:** `tErr()` 함수로 영문 DB 에러를 한글로 자동 변환, 전체 기능에 `logError`/`logWarn`/`logInfo` 로깅
+- **Slack 알림:** `#달란트-마을` 채널 연동. 브라우저에서 `js/slack-notify.js` → Supabase Edge Function `slack-notify` → Slack Webhook 경로로 전송
+
+## Slack 알림 연동
+
+운영자가 사이트 밖에서도 처리 필요 이벤트를 빠르게 확인할 수 있도록 Slack `#달란트-마을` 채널과 연동되어 있습니다.
+
+| 알림 유형 | 트리거 | 호출 위치 |
+|---|---|---|
+| 신규 구매 (`purchase_new`) | 상품 구매 신청(일반/대리 구매) 완료 | `shop.html` |
+| 구매 상태 변경 (`purchase_status`) | 구매 준비/확정/지급/되돌리기/취소/일괄 처리 | `admin/purchases.html`, `my-orders.html` |
+| 가입 신청 (`user_register`) | 계정 등록 신청 제출 | `register.html` |
+| 부서 이동 신청 (`dept_transfer`) | 부서 이동 요청 생성 | `admin/users.html` |
+| WARN+ 로그 (`log_alert`) | `WARN`/`ERROR`/`FATAL`/`CRITICAL` 로그 기록 | `js/activity-log.js` (`writeLog()`) |
+| Q&A 질문 (`qna_new`) | 새 질문 등록 | `qna.html` |
+
+구현 구성:
+
+- **클라이언트:** `js/slack-notify.js`의 `sendSlackNotify(type, data)` — fire-and-forget 방식, 동일 알림 5초 throttle
+- **서버:** Supabase Edge Function `slack-notify` — Slack Block Kit 메시지 포맷, `SLACK_WEBHOOK_URL` 환경변수 사용
+- **배포 참고:** Edge Function 소스는 `docs/edge-function-slack-notify.ts`에 포함
 
 ## 사용자 권한 체계
 
@@ -533,6 +560,7 @@ flowchart TD
 - `ERROR`, `FATAL`, `CRITICAL` 로그는 미확인 상태로 남고, `admin/logs.html`에서 확인 처리합니다.
 - 로그 삭제는 소프트 삭제(`is_deleted=true`)이며, 실제 삭제는 SQL Editor에서 수행합니다.
 - `admin/reports.html`은 `reports` 테이블의 작업 보고서를 유형별로 조회하고, 등록/수정/삭제를 제공합니다.
+- `writeLog()`에서 `WARN` 이상 로그가 기록되면 `sendSlackNotify('log_alert', ...)`로 Slack 알림이 함께 전송됩니다.
 
 ## 주요 데이터와 RPC
 

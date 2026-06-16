@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-16 KST 현재 코드 기준 (v3.42.0)
+작성 기준: 2026-06-16 KST 현재 코드 기준 (v3.43.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -16,6 +16,7 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 | 승인 기반 계정 운영 | 신규 사용자는 신청 후 관리자 승인으로 계정이 생성된다. |
 | 부서 이동 관리 | 부서 변경은 요청→승인 흐름으로 처리한다 (90등급 이상은 즉시 이동). |
 | 운영 추적 | 로그인, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. (v3.40.0부터 PAGE_VIEW 비활성화) |
+| Slack 알림 | `#달란트-마을` 채널로 구매/가입/부서이동/WARN+ 로그/Q&A 등 6가지 운영 이벤트를 Edge Function 경유 전송한다. |
 | 에러 한글화 | 영문 DB/RPC 에러를 `tErr()` 함수로 한글 변환하여 사용자에게 표시한다. |
 | 보안 강화 | Supabase Auth, RLS, SECURITY DEFINER RPC로 민감 데이터 접근을 제한한다. |
 
@@ -31,7 +32,11 @@ flowchart LR
   Pages --> TalentJS["js/talent.js<br/>달란트 조회/지급/사용/반환"]
   Pages --> ProductJS["js/product.js<br/>상품 조회/관리"]
   Pages --> TableSortJS["js/table-sort.js<br/>헤더 클릭 정렬"]
+  Pages --> SlackJS["js/slack-notify.js<br/>Slack 알림 (fire-and-forget)"]
   Pages --> VersionJS["js/version.js<br/>버전 이력"]
+
+  SlackJS --> EdgeFn["Supabase Edge Function<br/>slack-notify"]
+  EdgeFn --> Slack["Slack Webhook<br/>#달란트-마을"]
 
   AuthJS --> Auth["Supabase Auth"]
   UserMgmt --> RPC["Supabase RPC"]
@@ -97,8 +102,10 @@ flowchart LR
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
-| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 자동 호출 포함), 페이지 크기(`page-size.js`), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
-| `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서 |
+| `js/slack-notify.js` | Slack 알림 공통 유틸리티. `sendSlackNotify(type, data)`로 Edge Function `slack-notify` 호출. fire-and-forget, 동일 알림 5초 throttle |
+| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 자동 호출 포함), 페이지 크기(`page-size.js`), Slack 알림(`slack-notify.js`), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
+| `docs/edge-function-slack-notify.ts` | Supabase Edge Function `slack-notify` 배포용 소스. Slack Block Kit 메시지 포맷, `SLACK_WEBHOOK_URL` 환경변수로 Webhook 호출 |
+| `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서, Edge Function 소스 |
 
 ## 4. 권한 구조
 
@@ -436,7 +443,40 @@ flowchart TD
 - 작업 이력은 별도 테이블이 아니라 `activity_logs`에서 `AUDIT_ACTIONS` 키에 해당하는 로그만 필터링한다
 - 상세 내역은 `writeLog()`가 저장한 `details._actionLabel` 및 한글화된 details 키를 표시한다
 
-## 13. 에러 처리 흐름
+## 13. Slack 알림 흐름
+
+```mermaid
+flowchart LR
+  Browser["브라우저<br/>(shop/register/users/purchases/qna/activity-log)"]
+  SlackJS["js/slack-notify.js<br/>sendSlackNotify()"]
+  EdgeFn["Supabase Edge Function<br/>slack-notify"]
+  Webhook["Slack Incoming Webhook"]
+  Channel["Slack #달란트-마을"]
+
+  Browser --> SlackJS
+  SlackJS -->|"functions.invoke('slack-notify')"| EdgeFn
+  EdgeFn -->|"POST JSON (Block Kit)"| Webhook
+  Webhook --> Channel
+```
+
+알림 유형과 호출 위치:
+
+| type | 설명 | 호출 파일 |
+|---|---|---|
+| `purchase_new` | 신규 구매 신청 (일반/대리) | `shop.html` |
+| `purchase_status` | 구매 상태 변경/되돌리기/취소/일괄 처리 | `admin/purchases.html`, `my-orders.html` |
+| `user_register` | 계정 등록 신청 | `register.html` |
+| `dept_transfer` | 부서 이동 요청 생성 | `admin/users.html` |
+| `log_alert` | WARN/ERROR/FATAL/CRITICAL 로그 | `js/activity-log.js` (`writeLog()`) |
+| `qna_new` | Q&A 새 질문 등록 | `qna.html` |
+
+구현 메모:
+
+- `js/slack-notify.js`: Supabase 클라이언트(`_sb`)가 초기화된 페이지에서만 동작. 실패 시 콘솔 경고만 출력하고 사용자 흐름은 차단하지 않음
+- `docs/edge-function-slack-notify.ts`: Supabase Dashboard > Edge Functions에 배포. `SLACK_WEBHOOK_URL` 시크릿 설정 필요
+- Edge Function은 type별 Slack Block Kit 메시지를 생성해 Incoming Webhook으로 POST
+
+## 14. 에러 처리 흐름
 
 ```mermaid
 flowchart TD
@@ -450,7 +490,7 @@ flowchart TD
 
 `tErr()` 함수는 25개 이상의 정규식 패턴으로 영문 DB/RPC 에러를 한글로 변환한다. 이미 한글인 메시지는 그대로 반환한다.
 
-## 14. 주요 Supabase 리소스
+## 15. 주요 Supabase 리소스
 
 | 리소스 | 용도 |
 |---|---|
@@ -474,7 +514,7 @@ flowchart TD
 | `page_permissions` | 페이지 권한 설정 (레거시) |
 | `Talents_Items` | 상품 이미지 Storage 버킷 |
 
-## 15. 주요 RPC
+## 16. 주요 RPC
 
 | RPC | 목적 |
 |---|---|
@@ -493,7 +533,7 @@ flowchart TD
 | `request_product_order` | 상품 구매 신청 (사용 대기 달란트 관리) |
 | `confirm_product_purchase` | 상품 구매 확정 (실제 달란트 차감) |
 
-## 16. 빠른 검증 체크리스트
+## 17. 빠른 검증 체크리스트
 
 1. `login.html`에서 로그인 성공/실패 메시지가 한글로 표시되는지 확인한다.
 2. 승인 대기 계정 로그인 시 "승인 대기 중" 안내가 구분 표시되는지 확인한다.
@@ -517,14 +557,16 @@ flowchart TD
 20. 에러 메시지가 한글로 변환되어 표시되는지 확인한다.
 21. 주요 기능의 성공/실패/거부가 활동 로그에 기록되는지 확인하고, DB insert 실패가 콘솔 오류로 노출되는지 확인한다.
 
-## 17. 다음 작업자가 먼저 볼 파일
+## 18. 다음 작업자가 먼저 볼 파일
 
 | 우선순위 | 파일 | 이유 |
 |---:|---|---|
 | 1 | `README.md` | 현재 구조, 페이지 연결, 권한, 운영 흐름 요약 |
 | 2 | `docs/PROJECT_ARCHITECTURE_FLOW.md` | 상세 구성도와 프로세스 흐름 |
 | 3 | `js/auth.js` | 권한 등급, 리디렉트, 세션, tErr() 에러 번역 |
-| 4 | `js/activity-log.js` | 로그 기록, ACTION_LABELS 한글 매핑, writeLog() 자동 라벨, 세션 캐시, 소프트 삭제 |
+| 4 | `js/activity-log.js` | 로그 기록, ACTION_LABELS 한글 매핑, writeLog() 자동 라벨, WARN+ Slack 알림 연동, 세션 캐시, 소프트 삭제 |
+| 4a | `js/slack-notify.js` | Slack 알림 공통 유틸리티, Edge Function slack-notify 호출 |
+| 4b | `docs/edge-function-slack-notify.ts` | Edge Function 배포 소스, Slack Block Kit 포맷 |
 | 5 | `js/user-mgmt.js` | 사용자/부서 관리 RPC |
 | 6 | `js/talent.js` | 달란트 지급/사용/반환 |
 | 7 | `js/product.js` | 상품 조회/관리 |
@@ -538,7 +580,7 @@ flowchart TD
 | 15 | `docs/TASK-049_schema.sql` | v3.37.0: profiles.last_login_at, update_last_login RPC |
 | 16 | `docs/TASK-041_page_sizes.sql` | v3.40.0: user_preferences.page_sizes JSONB 컬럼 |
 
-## 18. 개발 주의사항
+## 19. 개발 주의사항
 
 ### 파일 인코딩
 
