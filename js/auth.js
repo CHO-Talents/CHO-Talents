@@ -288,6 +288,7 @@ function detectCurrentPageId() {
   if (path.includes('admin/talent-qr.html')) return 'admin-talent-qr';
   if (path.includes('admin/shop.html')) return 'admin-shop';
   if (path.includes('admin/purchases.html')) return 'admin-purchases';
+  if (path.includes('admin/purchase-stats.html')) return 'admin-purchase-stats';
   if (path.includes('admin/reports.html')) return 'admin-reports';
   if (path.includes('admin/logs.html')) return 'admin-logs';
   if (path.includes('admin/log-rules.html')) return 'admin-log-rules';

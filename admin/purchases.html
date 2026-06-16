@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.44.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.44.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.45.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.45.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -13,13 +13,49 @@
   <div class="admin-container">
     <h2 style="margin-bottom:1rem;">🛒 구매 관리</h2>
 
-    <div class="filters" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="tabAll" onclick="switchPurchaseTab('all')">📊 전체</button>
-      <button class="filter-btn" id="tabRequested" onclick="switchPurchaseTab('requested')">📋 구매 신청</button>
-      <button class="filter-btn" id="tabPreparing" onclick="switchPurchaseTab('preparing')">📦 상품 준비</button>
-      <button class="filter-btn" id="tabPurchased" onclick="switchPurchaseTab('purchased')">💳 상품 구매</button>
-      <button class="filter-btn" id="tabDelivered" onclick="switchPurchaseTab('delivered')">✅ 상품 지급</button>
-      <button class="filter-btn" id="tabCancelled" onclick="switchPurchaseTab('cancelled')">❌ 구매 취소</button>
+    <div class="kanban-board">
+      <div class="kanban-card active" id="tabAll" data-status="all" onclick="switchPurchaseTab('all')">
+        <div class="kanban-card-top" style="background:#6c5ce7;"></div>
+        <div class="kanban-card-body">
+          <span class="kanban-label">📊 전체</span>
+          <span class="kanban-count" id="countAll">0</span>
+        </div>
+      </div>
+      <div class="kanban-card" id="tabRequested" data-status="requested" onclick="switchPurchaseTab('requested')">
+        <div class="kanban-card-top" style="background:#868e96;"></div>
+        <div class="kanban-card-body">
+          <span class="kanban-label">📋 구매 신청</span>
+          <span class="kanban-count" id="countRequested">0</span>
+        </div>
+      </div>
+      <div class="kanban-card" id="tabPreparing" data-status="preparing" onclick="switchPurchaseTab('preparing')">
+        <div class="kanban-card-top" style="background:#e67700;"></div>
+        <div class="kanban-card-body">
+          <span class="kanban-label">📦 상품 준비</span>
+          <span class="kanban-count" id="countPreparing">0</span>
+        </div>
+      </div>
+      <div class="kanban-card" id="tabPurchased" data-status="purchased" onclick="switchPurchaseTab('purchased')">
+        <div class="kanban-card-top" style="background:#1971c2;"></div>
+        <div class="kanban-card-body">
+          <span class="kanban-label">💳 상품 구매</span>
+          <span class="kanban-count" id="countPurchased">0</span>
+        </div>
+      </div>
+      <div class="kanban-card" id="tabDelivered" data-status="delivered" onclick="switchPurchaseTab('delivered')">
+        <div class="kanban-card-top" style="background:#2b8a3e;"></div>
+        <div class="kanban-card-body">
+          <span class="kanban-label">✅ 상품 지급</span>
+          <span class="kanban-count" id="countDelivered">0</span>
+        </div>
+      </div>
+      <div class="kanban-card" id="tabCancelled" data-status="cancelled" onclick="switchPurchaseTab('cancelled')">
+        <div class="kanban-card-top" style="background:#e03131;"></div>
+        <div class="kanban-card-body">
+          <span class="kanban-label">❌ 구매 취소</span>
+          <span class="kanban-count" id="countCancelled">0</span>
+        </div>
+      </div>
     </div>
 
     <div id="statusFilterWrap" style="margin-bottom:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
@@ -71,20 +107,30 @@
   </div>
 
   <style>
+    .kanban-board{display:flex;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;}
+    .kanban-card{flex:1 1 120px;min-width:110px;max-width:180px;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:10px;cursor:pointer;overflow:hidden;transition:transform 0.2s ease,box-shadow 0.2s ease,border-color 0.2s ease;user-select:none;}
+    .kanban-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+    .kanban-card.active{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.15);border-color:transparent;}
+    .kanban-card-top{height:4px;width:100%;}
+    .kanban-card-body{padding:0.65rem 0.75rem;display:flex;flex-direction:column;gap:0.25rem;}
+    .kanban-label{font-size:0.78rem;color:var(--t-text, #333);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .kanban-count{font-size:1.35rem;font-weight:700;color:var(--t-text, #333);line-height:1.2;transition:color 0.2s ease;}
+    .kanban-card.active .kanban-count{font-size:1.45rem;}
+    @media (max-width:768px){.kanban-card{flex:1 1 calc(33% - 0.5rem);min-width:95px;max-width:none;}.kanban-label{font-size:0.72rem;}.kanban-count{font-size:1.15rem;}}
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:140px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.44.0"></script>
-  <script src="../js/supabase-config.js?v=3.44.0"></script>
-  <script src="../js/activity-log.js?v=3.44.0"></script>
-  <script src="../js/auth.js?v=3.44.0"></script>
-  <script src="../js/theme.js?v=3.44.0"></script>
-  <script src="../js/nav.js?v=3.44.0"></script>
-  <script src="../js/page-size.js?v=3.44.0"></script>
-  <script src="../js/user-mgmt.js?v=3.44.0"></script>
-  <script src="../js/table-sort.js?v=3.44.0"></script>
-  <script src="../js/slack-notify.js?v=3.44.0"></script>
+  <script src="../config/public-config.js?v=3.45.0"></script>
+  <script src="../js/supabase-config.js?v=3.45.0"></script>
+  <script src="../js/activity-log.js?v=3.45.0"></script>
+  <script src="../js/auth.js?v=3.45.0"></script>
+  <script src="../js/theme.js?v=3.45.0"></script>
+  <script src="../js/nav.js?v=3.45.0"></script>
+  <script src="../js/page-size.js?v=3.45.0"></script>
+  <script src="../js/user-mgmt.js?v=3.45.0"></script>
+  <script src="../js/table-sort.js?v=3.45.0"></script>
+  <script src="../js/slack-notify.js?v=3.45.0"></script>
   <script>
     initSupabase();
     let session;
@@ -323,8 +369,27 @@
       </div>`;
     }
 
+    function updateKanbanCounts() {
+      let orders = [...allOrders];
+      const deptVal = document.getElementById('deptFilter').value;
+      if (deptVal) orders = orders.filter(o => o._deptName === deptVal);
+      const dateFrom = document.getElementById('dateFrom').value;
+      const dateTo = document.getElementById('dateTo').value;
+      if (dateFrom) orders = orders.filter(o => (o.created_at || '').slice(0, 10) >= dateFrom);
+      if (dateTo) orders = orders.filter(o => (o.created_at || '').slice(0, 10) <= dateTo);
+      const counts = { all: orders.length, requested: 0, preparing: 0, purchased: 0, delivered: 0, cancelled: 0 };
+      orders.forEach(o => {
+        if (counts[o.status] !== undefined) counts[o.status]++;
+      });
+      TAB_IDS.forEach(t => {
+        const countEl = document.getElementById('count' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (countEl) countEl.textContent = counts[t] ?? 0;
+      });
+    }
+
     let _currentOrders = [];
     function renderOrders() {
+      updateKanbanCounts();
       const orders = getVisibleOrders();
       _currentOrders = orders;
       const tbody = document.getElementById('orderList');
@@ -632,6 +697,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.44.0"></script>
+  <script src="../js/version.js?v=3.45.0"></script>
 </body>
 </html>

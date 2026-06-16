@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-16 KST 현재 코드 기준 (v3.44.0)
+작성 기준: 2026-06-16 KST 현재 코드 기준 (v3.45.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -92,7 +92,8 @@ flowchart LR
 | `admin/talent-items.html` | 60등급 이상 달란트 지급 항목 관리. 지급 규칙/설명 관리, ⚡퀵 버튼 지정은 80등급 이상. 공통 페이징(PC 20/모바일 10) |
 | `admin/talent-qr.html` | 90등급 이상 QR 코드 생성(qrcode.js 이미지)/수정(새 코드 재생성)/비활성화. 지급 대상(학생/교사) 구분, 유효기간 라디오(지정일/기간/무기한), 반복 수령(none/daily/weekday/week_weekday), 위치 제한(카카오맵 API, 반경 500m~5km, Geolocation 검증). 검색/필터(대상/조건), 날짜 from-to 범위 필터(초기값 오늘, 오늘/1주/1달/1년 프리셋). 공통 페이징(PC 20/모바일 10) |
 | `admin/shop.html` | 60등급 이상 상품 관리. 교사/학생 그룹별 분리+공통 페이징(PC 20/모바일 10). 카테고리 열 맨 왼쪽, 대상 열 삭제. 관리 드롭다운(수정/삭제). 삭제는 소프트 삭제 |
-| `admin/purchases.html` | 60등급 이상 구매 관리. 상태별 상품 합계+일괄 처리 버튼(일괄 준비/구매 확정). 관리 드롭다운. 부서/기간 필터(기본 오늘) + 기간 프리셋, 4단계 구매 흐름 + 되돌리기(↩). 공통 페이징(PC 20/모바일 10) |
+| `admin/purchases.html` | 60등급 이상 구매 관리. 칸반보드 형태 상태별 카드(개수 실시간 표시)+일괄 처리 버튼(일괄 준비/구매 확정). 관리 드롭다운. 부서/기간 필터(기본 1주) + 기간 프리셋, 4단계 구매 흐름 + 되돌리기(↩). 공통 페이징(PC 20/모바일 10) |
+| `admin/purchase-stats.html` | 60등급 이상 구매 통계. 전체/부서별/사용자별/유형별 4개 탭. 교사/학생 분리 표시. 상태별 요약 칸반 카드. 상세 드릴다운 모달. 부서 필터+유형 필터+기간 필터(기본 1주). 부서 담당 교사는 담당 부서만 조회, 부장 교사 이상 전체 조회 |
 | `admin/reports.html` | 80등급 이상 보고서 조회/등록/수정/삭제 |
 | `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리. action 열 한글 라벨 표시(`getActionLabel`). 기본 조회 범위 1년 + 기간 프리셋(오늘/1주/1달/1년). 공통 페이징(PC 20/모바일 10) |
 | `admin/versions.html` | 80등급 이상 버전 이력 확인 |
@@ -579,6 +580,7 @@ flowchart TD
 | 14 | `docs/TASK-048_schema.sql` | v3.36.0: talent_items 컬럼, purchase_teacher CHECK 제약 |
 | 15 | `docs/TASK-049_schema.sql` | v3.37.0: profiles.last_login_at, update_last_login RPC |
 | 16 | `docs/TASK-041_page_sizes.sql` | v3.40.0: user_preferences.page_sizes JSONB 컬럼 |
+| 17 | `docs/TASK-052_super_admin_update_fix.sql` | v3.45.0: admin_update_user RPC에서 is_super_admin 호출자 rank 110 처리 |
 
 ## 19. 개발 주의사항
 
