@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.41.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.41.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.42.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.42.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -32,8 +32,8 @@
           <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 사용자 등록</button>
         </div>
       </div>
-      <table class="admin-table">
-        <thead><tr><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th class="hide-mobile">사용 달란트</th><th class="hide-mobile">누적 달란트</th><th>관리</th></tr></thead>
+      <table class="admin-table" id="talentTable">
+        <thead><tr><th data-sort-key="display_name">이름</th><th data-sort-key="_deptName">부서</th><th data-sort-key="class_number" data-sort-type="number">반</th><th data-sort-key="talent_balance" data-sort-type="number">달란트</th><th class="hide-mobile" data-sort-key="_usedTalent" data-sort-type="number">사용 달란트</th><th class="hide-mobile" data-sort-key="_totalTalent" data-sort-type="number">누적 달란트</th><th>관리</th></tr></thead>
         <tbody id="userList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="talentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
@@ -130,15 +130,16 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.41.0"></script>
-  <script src="../js/supabase-config.js?v=3.41.0"></script>
-  <script src="../js/activity-log.js?v=3.41.0"></script>
-  <script src="../js/auth.js?v=3.41.0"></script>
-  <script src="../js/theme.js?v=3.41.0"></script>
-  <script src="../js/nav.js?v=3.41.0"></script>
-  <script src="../js/page-size.js?v=3.41.0"></script>
-  <script src="../js/user-mgmt.js?v=3.41.0"></script>
-  <script src="../js/talent.js?v=3.41.0"></script>
+  <script src="../config/public-config.js?v=3.42.0"></script>
+  <script src="../js/supabase-config.js?v=3.42.0"></script>
+  <script src="../js/activity-log.js?v=3.42.0"></script>
+  <script src="../js/auth.js?v=3.42.0"></script>
+  <script src="../js/theme.js?v=3.42.0"></script>
+  <script src="../js/nav.js?v=3.42.0"></script>
+  <script src="../js/page-size.js?v=3.42.0"></script>
+  <script src="../js/user-mgmt.js?v=3.42.0"></script>
+  <script src="../js/table-sort.js?v=3.42.0"></script>
+  <script src="../js/talent.js?v=3.42.0"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
     @media(max-width:768px){.hide-mobile{display:none!important;}}
@@ -290,6 +291,11 @@
       await loadAttendanceThisWeek(userIds);
 
       talentUserList = sortUserList(data, getDeptName);
+      talentUserList.forEach(u => {
+        u._deptName = getDeptName(u.department_id);
+        const sm = talentSummaryMap[u.id] || { earned: 0, used: 0 };
+        u._usedTalent = sm.used; u._totalTalent = sm.earned;
+      });
       renderTalentTable();
     }
 
@@ -335,6 +341,7 @@
       </tr>`;
       }).join('');
       renderTalentPaging(totalPages);
+      initSortableHeaders('talentTable', function(){ return talentUserList; }, function(d){ talentUserList = d; talentPage = 1; renderTalentTable(); });
     }
 
     function renderTalentPaging(totalPages) {
@@ -781,6 +788,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.41.0"></script>
+  <script src="../js/version.js?v=3.42.0"></script>
 </body>
 </html>

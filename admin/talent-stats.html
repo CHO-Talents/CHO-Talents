@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 통계 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.41.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.41.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.42.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.42.0" />
   <style>
     .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; margin-bottom: 1.5rem; }
     .stat-card { background: linear-gradient(135deg, var(--t-subtle-surface, #f8f9fa) 0%, var(--t-card, #fff) 100%); border: 1px solid var(--t-border, #e9ecef); border-radius: 14px; padding: 1rem 1.2rem; text-align: center; transition: transform 0.15s, box-shadow 0.15s; }
@@ -113,13 +113,14 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.41.0"></script>
-  <script src="../js/supabase-config.js?v=3.41.0"></script>
-  <script src="../js/activity-log.js?v=3.41.0"></script>
-  <script src="../js/auth.js?v=3.41.0"></script>
-  <script src="../js/theme.js?v=3.41.0"></script>
-  <script src="../js/nav.js?v=3.41.0"></script>
-  <script src="../js/page-size.js?v=3.41.0"></script>
+  <script src="../config/public-config.js?v=3.42.0"></script>
+  <script src="../js/supabase-config.js?v=3.42.0"></script>
+  <script src="../js/activity-log.js?v=3.42.0"></script>
+  <script src="../js/auth.js?v=3.42.0"></script>
+  <script src="../js/theme.js?v=3.42.0"></script>
+  <script src="../js/nav.js?v=3.42.0"></script>
+  <script src="../js/page-size.js?v=3.42.0"></script>
+  <script src="../js/table-sort.js?v=3.42.0"></script>
   <script>
     initSupabase();
     let session, allTxns = [], allProfiles = [], allDepts = [];
@@ -335,7 +336,7 @@
 
       return `<div style="background:var(--t-card, #fff);border:1px solid var(--t-border, #e9ecef);border-radius:14px;overflow:hidden;margin-bottom:1rem;">
         <div style="padding:0.8rem 1rem;border-bottom:1px solid #e9ecef;font-weight:700;display:flex;align-items:center;justify-content:space-between;">${label} (${users.length}명) <span>${pageSizeHtml}</span></div>
-        <table class="stats-table"><thead><tr><th>부서</th><th>이름</th><th style="text-align:right;">달란트</th><th style="text-align:right;">항목</th><th>상세</th></tr></thead><tbody>${rows}</tbody></table>${paging}</div>`;
+        <table class="stats-table" id="statUserTable_${typeKey}"><thead><tr><th data-sort-key="dept">부서</th><th data-sort-key="name">이름</th><th data-sort-key="amount" data-sort-type="number" style="text-align:right;">달란트</th><th data-sort-key="count" data-sort-type="number" style="text-align:right;">항목</th><th>상세</th></tr></thead><tbody>${rows}</tbody></table>${paging}</div>`;
     }
 
     function goUserStatPage(typeKey, p) {
@@ -525,6 +526,6 @@
     document.getElementById('deptDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDeptDetailModal(); });
     document.getElementById('userDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeUserDetailModal(); });
   </script>
-  <script src="../js/version.js?v=3.41.0"></script>
+  <script src="../js/version.js?v=3.42.0"></script>
 </body>
 </html>

@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.41.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.41.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.41.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.42.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.42.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.42.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -46,7 +46,7 @@
       <h2>👥 사용자 관리</h2>
       <ol class="guide-steps">
         <li><strong>관리 &gt; 사용자 관리</strong>로 이동합니다.</li>
-        <li>사용자 목록은 교사/학생 그룹별로 분리되어 표시됩니다 (각 그룹 PC 20명, 모바일 10명씩 페이징).</li>
+        <li>사용자 목록은 교사/학생 그룹별로 분리되어 표시됩니다 (각 그룹 PC 20명, 모바일 10명씩 페이징). 테이블 헤더를 클릭하면 해당 열 기준으로 정렬할 수 있습니다.</li>
         <li>가입 신청이 있으면 신청자의 이름, 부서, 신청 사유를 확인합니다.</li>
         <li>사용자 유형과 권한을 선택한 뒤 승인하거나, 사유를 입력해 거부합니다.</li>
         <li>각 사용자의 <strong>관리 ▾</strong> 드롭다운에서 상세 정보, 수정, 부서 이동, 비밀번호 초기화, 삭제를 선택합니다.</li>
@@ -131,7 +131,7 @@
         <div class="guide-card">
           <h3>상품 관리</h3>
           <ul class="guide-list">
-            <li>교사용/학생용 그룹별로 상품이 분리 표시됩니다(모바일 10개/PC 20개 페이징).</li>
+            <li>교사용/학생용 그룹별로 상품이 분리 표시됩니다(모바일 10개/PC 20개 페이징). 테이블 헤더를 클릭하면 카테고리, 상품명, 가격 기준으로 정렬할 수 있습니다.</li>
             <li>상품명, 카테고리, 가격, 설명, 이미지 또는 이모지를 입력합니다.</li>
             <li>관리 드롭다운에서 수정 또는 삭제를 선택합니다.</li>
           </ul>
@@ -236,7 +236,8 @@
           <li>삭제 대기 처리된 로그나 상품은 일반 목록에서 숨겨지지만 기록은 남습니다.</li>
           <li>작업 이력은 별도 저장소가 아니라 활동 로그 중 관리 작업만 필터링해서 보여줍니다.</li>
           <li>QR 위치 제한을 쓰려면 사용자가 수령할 때 브라우저 위치 권한을 허용해야 합니다.</li>
-          <li>목록형 화면은 공통 페이징 규칙을 사용합니다. PC 20개, 모바일 10개씩 표시되며 현재 페이지가 강조됩니다. 각 그리드의 <strong>페이지당 항목 수</strong> 콤보 박스(3~30개)로 개인 설정이 가능하며 DB에 저장됩니다.</li>
+          <li>목록형 화면은 공통 페이징 규칙을 사용합니다. PC 20개, 모바일 10개씩 표시되며 현재 페이지가 강조됩니다. 페이지가 7개를 초과하면 말줄임표(...)로 축약됩니다. 각 그리드의 <strong>페이지당 항목 수</strong> 콤보 박스(3~30개)로 개인 설정이 가능하며 DB에 저장됩니다.</li>
+          <li>대부분의 테이블 헤더를 클릭하면 해당 열 기준으로 오름차순/내림차순 정렬이 토글됩니다. 정렬 중인 열에는 ▲/▼ 화살표가 표시됩니다.</li>
         </ul>
       </div>
     </section>
@@ -247,12 +248,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.41.0"></script>
-  <script src="js/supabase-config.js?v=3.41.0"></script>
-  <script src="js/activity-log.js?v=3.41.0"></script>
-  <script src="js/auth.js?v=3.41.0"></script>
-  <script src="js/theme.js?v=3.41.0"></script>
-  <script src="js/nav.js?v=3.41.0"></script>
+  <script src="config/public-config.js?v=3.42.0"></script>
+  <script src="js/supabase-config.js?v=3.42.0"></script>
+  <script src="js/activity-log.js?v=3.42.0"></script>
+  <script src="js/auth.js?v=3.42.0"></script>
+  <script src="js/theme.js?v=3.42.0"></script>
+  <script src="js/nav.js?v=3.42.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -267,6 +268,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.41.0"></script>
+  <script src="js/version.js?v=3.42.0"></script>
 </body>
 </html>
