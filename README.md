@@ -12,12 +12,20 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.43.0` (`js/version.js` 기준, 2026-06-16) |
+| 현재 버전 | `v3.44.0` (`js/version.js` 기준, 2026-06-16) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.43.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.44.0`으로 갱신되어 있습니다.
+- **v3.44.0 주요 변경 사항**:
+  - 구매 취소 버그 수정: RPC 기반 취소 우선 시도 (`cancel_product_order`), `.select()` 기반 업데이트 결과 검증
+  - 구매 취소: `product_id` 포함 정확한 주문 건 대상 취소 처리
+  - 구매 취소: profiles 업데이트 실패 시 에러 로깅 및 적절한 핸들링
+  - 구매 취소: Slack 알림은 실제 취소 확인 후에만 전송
+  - Super Admin(`is_super_admin=true`): 사용자 수정 시 모든 권한 레벨 선택 가능 (제약 없음)
+  - Super Admin: 부서/역할/권한/담당부서 필드 제약 없이 편집 가능
+  - Super Admin: `canManageUser`에서 모든 사용자 관리 가능
 - **v3.43.0 주요 변경 사항**:
   - Slack 알림 연동: `#달란트-마을` 채널로 운영 이벤트 실시간 알림
   - Slack 알림 6가지 유형: 신규 구매, 구매 상태 변경, 가입 신청, 부서 이동 신청, WARN+ 로그, Q&A 질문
