@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.41.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.41.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.42.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.42.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -59,8 +59,8 @@
         <h3 style="font-size:0.95rem;margin:0;">👩‍🏫 교사 <span id="teacherCount" style="font-size:0.8rem;color:var(--admin-text-muted);"></span></h3>
         <span id="teacherPageSizeWrap"></span>
       </div>
-      <table class="admin-table">
-        <thead><tr><th>권한</th><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th>관리</th></tr></thead>
+      <table class="admin-table" id="teacherTable">
+        <thead><tr><th data-sort-key="permission_level">권한</th><th data-sort-key="display_name">이름</th><th data-sort-key="_deptName">부서</th><th data-sort-key="class_number" data-sort-type="number">반</th><th data-sort-key="talent_balance" data-sort-type="number">달란트</th><th>관리</th></tr></thead>
         <tbody id="teacherList"><tr><td colspan="6" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="teacherPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
@@ -69,8 +69,8 @@
         <h3 style="font-size:0.95rem;margin:0;">🎒 학생 <span id="studentCount" style="font-size:0.8rem;color:var(--admin-text-muted);"></span></h3>
         <span id="studentPageSizeWrap"></span>
       </div>
-      <table class="admin-table">
-        <thead><tr><th>이름</th><th>부서</th><th>반</th><th>달란트</th><th>관리</th></tr></thead>
+      <table class="admin-table" id="studentTable">
+        <thead><tr><th data-sort-key="display_name">이름</th><th data-sort-key="_deptName">부서</th><th data-sort-key="class_number" data-sort-type="number">반</th><th data-sort-key="talent_balance" data-sort-type="number">달란트</th><th>관리</th></tr></thead>
         <tbody id="studentList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="studentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
@@ -187,15 +187,16 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.41.0"></script>
-  <script src="../js/supabase-config.js?v=3.41.0"></script>
-  <script src="../js/activity-log.js?v=3.41.0"></script>
-  <script src="../js/auth.js?v=3.41.0"></script>
-  <script src="../js/theme.js?v=3.41.0"></script>
-  <script src="../js/nav.js?v=3.41.0"></script>
-  <script src="../js/page-size.js?v=3.41.0"></script>
-  <script src="../js/user-mgmt.js?v=3.41.0"></script>
-  <script src="../js/version.js?v=3.41.0"></script>
+  <script src="../config/public-config.js?v=3.42.0"></script>
+  <script src="../js/supabase-config.js?v=3.42.0"></script>
+  <script src="../js/activity-log.js?v=3.42.0"></script>
+  <script src="../js/auth.js?v=3.42.0"></script>
+  <script src="../js/theme.js?v=3.42.0"></script>
+  <script src="../js/nav.js?v=3.42.0"></script>
+  <script src="../js/page-size.js?v=3.42.0"></script>
+  <script src="../js/user-mgmt.js?v=3.42.0"></script>
+  <script src="../js/table-sort.js?v=3.42.0"></script>
+  <script src="../js/version.js?v=3.42.0"></script>
   <script>
     initSupabase();
     let session;
@@ -402,15 +403,20 @@
     let _nameMap = {};
     const _isAdmin = () => isAdminLevel(session);
 
+    let _currentTeachers = [], _currentStudents = [];
     function renderUsers() {
       let list = allUsers;
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter);
-      const teachers = sortUserList(list.filter(u => u.user_type === 'teacher'), getDeptName);
-      const students = sortUserList(list.filter(u => u.user_type === 'student'), getDeptName);
+      _currentTeachers = sortUserList(list.filter(u => u.user_type === 'teacher'), getDeptName);
+      _currentStudents = sortUserList(list.filter(u => u.user_type === 'student'), getDeptName);
       document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;
       _nameMap = resolveDisplayNames(allUsers);
-      renderGroup(teachers, 'teacher', 'teacherList', 'teacherPaging', 'teacherCount');
-      renderGroup(students, 'student', 'studentList', 'studentPaging', 'studentCount');
+      _currentTeachers.forEach(u => { u._deptName = getDeptName(u.department_id); });
+      _currentStudents.forEach(u => { u._deptName = getDeptName(u.department_id); });
+      renderGroup(_currentTeachers, 'teacher', 'teacherList', 'teacherPaging', 'teacherCount');
+      renderGroup(_currentStudents, 'student', 'studentList', 'studentPaging', 'studentCount');
+      initSortableHeaders('teacherTable', function(){ return _currentTeachers; }, function(d){ _currentTeachers = d; groupPages.teacher = 1; renderGroup(d,'teacher','teacherList','teacherPaging','teacherCount'); });
+      initSortableHeaders('studentTable', function(){ return _currentStudents; }, function(d){ _currentStudents = d; groupPages.student = 1; renderGroup(d,'student','studentList','studentPaging','studentCount'); });
     }
 
     function renderGroup(list, groupKey, tbodyId, pagingId, countId) {

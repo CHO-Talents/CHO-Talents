@@ -2,9 +2,26 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.41.0',
-  date: '2026-06-15',
+  current: '3.42.0',
+  date: '2026-06-16',
   history: [
+    {
+      version: '3.42.0',
+      date: '2026-06-16',
+      title: '네비게이션 레이아웃 정비 + 그리드 헤더 클릭 정렬 + 데이터 정렬 기준 변경',
+      changes: [
+        '네비게이션 레이아웃: PC에서 Brand(좌측) / Links(중앙) / Actions(우측) 3-column flex 배치',
+        '네비게이션: admin.css에 nav-header-actions base 스타일 추가 — admin 20개 페이지에서 로그아웃/테마 2줄 표시 문제 해결',
+        '그리드 헤더 클릭 정렬: js/table-sort.js 공통 유틸리티 신규 생성 (initSortableHeaders)',
+        '그리드 헤더 클릭 정렬: 7개 페이지 테이블에 data-sort-key + initSortableHeaders 적용',
+        '정렬 화살표: th[data-sort-key] ⇅/▲/▼ ::after pseudo-element CSS 추가',
+        '사용자 정렬: 유형(교사→학생) → 권한(내림차순) → 부서 → 반(null 마지막) → 이름',
+        '구매 관리 정렬: 상태(단계순) → 신청일(내림차순) → 상품명 → 부서 → 신청자',
+        '상품 관리 정렬: 카테고리 → 상품명 → 가격(내림차순)',
+        '문서: README.md, SITE_USER_GUIDE.md, PROJECT_ARCHITECTURE_FLOW.md 최신화',
+        '가이드: admin-guide.html, teacher-guide.html 정렬/페이징 기능 설명 업데이트'
+      ]
+    },
     {
       version: '3.41.0',
       date: '2026-06-15',

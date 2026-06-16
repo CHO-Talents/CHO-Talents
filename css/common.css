@@ -80,7 +80,8 @@ body.page-body {
   align-items: center;
   gap: 0.3rem;
   list-style: none;
-  flex-shrink: 0;
+  flex: 1;
+  justify-content: center;
   order: 2;
 }
 .top-nav > .nav-header-actions,
@@ -262,7 +263,7 @@ body.page-body {
   flex-wrap: nowrap !important;
   align-items: center;
   gap: 0.4rem;
-  margin-left: auto;
+  margin-left: 0;
   flex-shrink: 0;
 }
 .nav-header-actions > * { flex-shrink: 0; }
@@ -295,6 +296,12 @@ body.page-body {
 }
 .nav-header-login:hover { opacity: 0.85; }
 
+
+/* ===== Sortable Table Headers ===== */
+th[data-sort-key] { cursor: pointer; user-select: none; position: relative; padding-right: 1.2em !important; }
+th[data-sort-key]::after { content: '⇅'; position: absolute; right: 0.3em; top: 50%; transform: translateY(-50%); opacity: 0.3; font-size: 0.75em; }
+th[data-sort-key].sort-asc::after  { content: '▲'; opacity: 0.8; }
+th[data-sort-key].sort-desc::after { content: '▼'; opacity: 0.8; }
 
 /* ===== Page Container ===== */
 .page-container {
@@ -592,7 +599,7 @@ table.data-table tr:hover { background: #fafbfc; }
   }
   .admin-nav-brand,
   .top-nav-brand { order: 1; }
-  .nav-header-actions { order: 2; gap: 0.3rem; }
+  .nav-header-actions { order: 2; gap: 0.3rem; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; }
   .top-nav-hamburger,
   .nav-hamburger { display: block; order: 3; }
   .top-nav-links,

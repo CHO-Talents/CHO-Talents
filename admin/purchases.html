@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.41.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.41.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.42.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.42.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -60,7 +60,7 @@
         </div>
         </div>
       </div>
-      <table class="admin-table">
+      <table class="admin-table" id="purchaseTable">
         <thead>
           <tr id="tableHead"></tr>
         </thead>
@@ -75,14 +75,15 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.41.0"></script>
-  <script src="../js/supabase-config.js?v=3.41.0"></script>
-  <script src="../js/activity-log.js?v=3.41.0"></script>
-  <script src="../js/auth.js?v=3.41.0"></script>
-  <script src="../js/theme.js?v=3.41.0"></script>
-  <script src="../js/nav.js?v=3.41.0"></script>
-  <script src="../js/page-size.js?v=3.41.0"></script>
-  <script src="../js/user-mgmt.js?v=3.41.0"></script>
+  <script src="../config/public-config.js?v=3.42.0"></script>
+  <script src="../js/supabase-config.js?v=3.42.0"></script>
+  <script src="../js/activity-log.js?v=3.42.0"></script>
+  <script src="../js/auth.js?v=3.42.0"></script>
+  <script src="../js/theme.js?v=3.42.0"></script>
+  <script src="../js/nav.js?v=3.42.0"></script>
+  <script src="../js/page-size.js?v=3.42.0"></script>
+  <script src="../js/user-mgmt.js?v=3.42.0"></script>
+  <script src="../js/table-sort.js?v=3.42.0"></script>
   <script>
     initSupabase();
     let session;
@@ -217,7 +218,7 @@
       updateOrderBadge();
     }
 
-    const _ORDER_STATUS_RANK = { requested: 0, prepared: 1, purchased: 2, delivered: 3 };
+    const _ORDER_STATUS_RANK = { requested:1, preparing:2, purchased:3, delivered:4, cancelled:5 };
     function getVisibleOrders() {
       let orders;
       if (currentPTab === 'all') {
@@ -236,9 +237,13 @@
         const sA = _ORDER_STATUS_RANK[a.status] ?? 9;
         const sB = _ORDER_STATUS_RANK[b.status] ?? 9;
         if (sA !== sB) return sA - sB;
+        const dateA = a.requested_at || a.created_at || '';
+        const dateB = b.requested_at || b.created_at || '';
+        if (dateA !== dateB) return dateB.localeCompare(dateA);
+        const pCmp = (a.product_name || '').localeCompare(b.product_name || '', 'ko');
+        if (pCmp !== 0) return pCmp;
         const dCmp = (a._deptName || '').localeCompare(b._deptName || '', 'ko');
         if (dCmp !== 0) return dCmp;
-        if ((a._classNum || 0) !== (b._classNum || 0)) return (a._classNum || 0) - (b._classNum || 0);
         return (a._userName || '').localeCompare(b._userName || '', 'ko');
       });
       return orders;
@@ -317,8 +322,10 @@
       </div>`;
     }
 
+    let _currentOrders = [];
     function renderOrders() {
       const orders = getVisibleOrders();
+      _currentOrders = orders;
       const tbody = document.getElementById('orderList');
       const title = document.getElementById('tableTitle');
       const isAllTab = currentPTab === 'all';
@@ -344,8 +351,8 @@
 
       let headCols = '';
       if (showBulk) headCols += '<th style="width:30px;"><input type="checkbox" onchange="toggleAllOrders(this)"></th>';
-      if (isAllTab) headCols += '<th>상태</th>';
-      headCols += '<th>신청일</th><th>상품명</th><th>가격</th><th>신청자</th><th>부서</th>';
+      if (isAllTab) headCols += '<th data-sort-key="status">상태</th>';
+      headCols += '<th data-sort-key="created_at" data-sort-type="date">신청일</th><th data-sort-key="product_name">상품명</th><th data-sort-key="price" data-sort-type="number">가격</th><th data-sort-key="_userName">신청자</th><th data-sort-key="_deptName">부서</th>';
 
       if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>이전 처리</th>';
       else if (currentPTab === 'purchased') headCols += '<th>준비 처리</th>';
@@ -367,6 +374,7 @@
       const startIdx = (orderPage - 1) * pageSize;
       const pageOrders = orders.slice(startIdx, startIdx + pageSize);
 
+      orders.forEach(o => { o.created_at = o.requested_at || o.created_at; });
       tbody.innerHTML = pageOrders.map(o => {
         const canProc = canProcessOrder(o);
 
@@ -400,6 +408,7 @@
         return row;
       }).join('');
       renderOrderPaging(totalPages);
+      initSortableHeaders('purchaseTable', function(){ return _currentOrders; }, function(d){ _currentOrders = d; orderPage = 1; renderOrders(); });
     }
 
     function renderOrderPaging(totalPages) {
@@ -613,6 +622,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.41.0"></script>
+  <script src="../js/version.js?v=3.42.0"></script>
 </body>
 </html>

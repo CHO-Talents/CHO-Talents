@@ -27,19 +27,28 @@ function isAdminLevel(session) {
 }
 
 const _PERM_SORT_RANK = { admin:100, evangelist:90, chief:80, purchase_teacher:70, dept_teacher:60, teacher:40, student:20 };
+const _TYPE_SORT_RANK = { teacher:1, student:2 };
 
 function sortUserList(list, getDeptNameFn) {
   return list.sort((a, b) => {
+    // 1) 유형: teacher → student
+    const tA = _TYPE_SORT_RANK[a.user_type] || 99;
+    const tB = _TYPE_SORT_RANK[b.user_type] || 99;
+    if (tA !== tB) return tA - tB;
+    // 2) 권한: 내림차순 (admin 먼저)
+    const rA = _PERM_SORT_RANK[a.permission_level] || 0;
+    const rB = _PERM_SORT_RANK[b.permission_level] || 0;
+    if (rA !== rB) return rB - rA;
+    // 3) 부서: 오름차순
     const dA = (getDeptNameFn ? getDeptNameFn(a.department_id) : a._deptName) || '';
     const dB = (getDeptNameFn ? getDeptNameFn(b.department_id) : b._deptName) || '';
     const dCmp = dA.localeCompare(dB, 'ko');
     if (dCmp !== 0) return dCmp;
-    const cA = a.class_number || 0;
-    const cB = b.class_number || 0;
+    // 4) 반: 오름차순 (null → 마지막)
+    const cA = a.class_number != null ? a.class_number : 9999;
+    const cB = b.class_number != null ? b.class_number : 9999;
     if (cA !== cB) return cA - cB;
-    const rA = _PERM_SORT_RANK[a.permission_level] || 0;
-    const rB = _PERM_SORT_RANK[b.permission_level] || 0;
-    if (rA !== rB) return rB - rA;
+    // 5) 이름: 오름차순
     const nA = a.display_name || a.username || '';
     const nB = b.display_name || b.username || '';
     return nA.localeCompare(nB, 'ko');

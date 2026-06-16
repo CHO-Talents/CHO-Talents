@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-13 KST 현재 코드 기준 (v3.40.0)
+작성 기준: 2026-06-16 KST 현재 코드 기준 (v3.42.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -30,6 +30,7 @@ flowchart LR
   Pages --> UserMgmt["js/user-mgmt.js<br/>사용자/부서 관리"]
   Pages --> TalentJS["js/talent.js<br/>달란트 조회/지급/사용/반환"]
   Pages --> ProductJS["js/product.js<br/>상품 조회/관리"]
+  Pages --> TableSortJS["js/table-sort.js<br/>헤더 클릭 정렬"]
   Pages --> VersionJS["js/version.js<br/>버전 이력"]
 
   AuthJS --> Auth["Supabase Auth"]

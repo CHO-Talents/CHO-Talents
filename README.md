@@ -12,12 +12,28 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.40.0` (`js/version.js` 기준, 2026-06-13) |
+| 현재 버전 | `v3.42.0` (`js/version.js` 기준, 2026-06-16) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.40.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.42.0`으로 갱신되어 있습니다.
+- **v3.42.0 주요 변경 사항**:
+  - 네비게이션 레이아웃 정비: PC에서 Brand(좌측) / Links(중앙) / Actions(우측) 3-column flex 배치
+  - 네비게이션: admin 20개 페이지에서 로그아웃/테마가 2줄 표시되던 문제 해결 (`admin.css`에 `nav-header-actions` base 스타일 추가)
+  - 그리드 헤더 클릭 정렬: `js/table-sort.js` 공통 유틸리티 신규 생성
+  - 그리드 헤더 클릭 정렬: 7개 페이지 테이블에 `data-sort-key` 속성 + `initSortableHeaders()` 적용 (사용자/관리자/달란트/달란트 통계/구매/상품/부서 소속보기)
+  - 사용자 정렬 순서 변경: 유형(교사→학생) → 권한(내림차순) → 부서 → 반(null 마지막) → 이름
+  - 구매 관리 정렬 변경: 상태(단계순) → 신청일(내림차순) → 상품명 → 부서 → 신청자
+  - 상품 관리 정렬 추가: 카테고리 → 상품명 → 가격(내림차순)
+  - CSS: 정렬 화살표 스타일 (`sort-asc`/`sort-desc` 클래스, `::after` pseudo-element)
+  - **신규 파일**: `js/table-sort.js` (공통 헤더 클릭 정렬 유틸리티)
+- **v3.41.0 주요 변경 사항**:
+  - 페이징: 최대 7개 페이지 버튼 + 말줄임표(...) 표시
+  - 네비게이션: 로그아웃/테마 스위치 한 줄 표시 (flex nowrap)
+  - 네비게이션: 모바일에서 드롭다운 클릭 전용 (hover 비활성화, @media (hover: hover) 분기)
+  - 네비게이션: 모바일 dropdown-open/mobile-open 클래스 CSS !important 충돌 해결
+  - 캐시 버스팅: 전체 HTML ?v=3.40.0 → ?v=3.41.0 (Python 바이트 교체로 UTF-8 보존)
 - **v3.40.0 주요 변경 사항**:
   - 다크 모드: 관리 드롭다운, 이미지 업로드 영역, QR 폼, 통계 테이블 등 잔여 흰 배경을 CSS 변수 기반 어두운 표면색으로 보정
   - 다크 모드: 인라인 배경/테두리 rescue 규칙 추가 (#e6fcf5, #fafafa, #f1f3f5, #e9ecef, #f0f0f0)
@@ -292,6 +308,7 @@ CHO-Talents/
 │   ├── page-size.js               # 그리드별 페이지당 항목 수 설정 (user_preferences.page_sizes)
 │   ├── auth.js                    # 로그인, 세션, 권한, 비밀번호 변경, tErr() 에러 번역
 │   ├── user-mgmt.js               # 사용자/부서 관리 RPC 래퍼
+│   ├── table-sort.js              # 그리드 헤더 클릭 정렬 공통 유틸리티
 │   ├── talent.js                  # 달란트 잔액/내역/지급/사용/반환
 │   ├── product.js                 # 상품 조회/등록/수정/삭제/비활성화/이미지 업로드
 │   └── version.js                 # 버전 정보와 변경 이력

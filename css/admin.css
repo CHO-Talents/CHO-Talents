@@ -69,11 +69,52 @@ body.admin-body {
   align-items: center;
   gap: 0.3rem;
   list-style: none;
-  flex-shrink: 0;
+  flex: 1;
+  justify-content: center;
   order: 2;
 }
 
 .admin-nav > .nav-header-actions { order: 3; }
+
+/* ===== Header Actions (logout + theme - always 1 row) ===== */
+.nav-header-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: 0;
+  flex-shrink: 0;
+}
+.nav-header-actions > * { flex-shrink: 0; }
+.nav-header-logout {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.7rem;
+  border: 1px solid var(--t-border, var(--admin-border, #dee2e6));
+  border-radius: 999px;
+  background: var(--t-subtle-surface, var(--admin-bg, #f8f9fa));
+  color: var(--t-text-muted, var(--admin-text-muted, #868e96));
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+.nav-header-logout:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.08);
+}
+.nav-header-login {
+  font-size: 0.82rem;
+  padding: 0.3rem 0.8rem;
+  background: var(--admin-primary, #6c5ce7);
+  color: #fff !important;
+  border-radius: 999px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+.nav-header-login:hover { opacity: 0.85; }
 
 .admin-nav-links > li {
   position: relative;
@@ -238,6 +279,12 @@ body.admin-body {
   border-color: var(--level-error);
   color: var(--level-error);
 }
+
+/* ===== Sortable Table Headers ===== */
+th[data-sort-key] { cursor: pointer; user-select: none; position: relative; padding-right: 1.2em !important; }
+th[data-sort-key]::after { content: '⇅'; position: absolute; right: 0.3em; top: 50%; transform: translateY(-50%); opacity: 0.3; font-size: 0.75em; }
+th[data-sort-key].sort-asc::after  { content: '▲'; opacity: 0.8; }
+th[data-sort-key].sort-desc::after { content: '▼'; opacity: 0.8; }
 
 /* ===== Container ===== */
 .admin-container {
@@ -723,7 +770,7 @@ table.admin-table tr:hover { background: #fafbfc; }
     justify-content: flex-start;
   }
   .admin-nav-brand { order: 1; }
-  .nav-header-actions { order: 2; gap: 0.3rem; }
+  .nav-header-actions { order: 2; gap: 0.3rem; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; }
   .nav-hamburger { display: block; order: 3; }
   .admin-nav-links { order: 4; }
   .nav-header-actions #navAuthArea { display: none !important; }
