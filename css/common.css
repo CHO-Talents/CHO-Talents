@@ -610,6 +610,7 @@ table.data-table tr:hover { background: #fafbfc; }
   .top-nav-links,
   .admin-nav-links {
     display: none;
+    flex: 0 0 100%;
     flex-direction: column;
     align-items: flex-start;
     width: 100%;
