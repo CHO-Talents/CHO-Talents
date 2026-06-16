@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.42.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.42.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.43.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.43.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -75,15 +75,16 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.42.0"></script>
-  <script src="../js/supabase-config.js?v=3.42.0"></script>
-  <script src="../js/activity-log.js?v=3.42.0"></script>
-  <script src="../js/auth.js?v=3.42.0"></script>
-  <script src="../js/theme.js?v=3.42.0"></script>
-  <script src="../js/nav.js?v=3.42.0"></script>
-  <script src="../js/page-size.js?v=3.42.0"></script>
-  <script src="../js/user-mgmt.js?v=3.42.0"></script>
-  <script src="../js/table-sort.js?v=3.42.0"></script>
+  <script src="../config/public-config.js?v=3.43.0"></script>
+  <script src="../js/supabase-config.js?v=3.43.0"></script>
+  <script src="../js/activity-log.js?v=3.43.0"></script>
+  <script src="../js/auth.js?v=3.43.0"></script>
+  <script src="../js/theme.js?v=3.43.0"></script>
+  <script src="../js/nav.js?v=3.43.0"></script>
+  <script src="../js/page-size.js?v=3.43.0"></script>
+  <script src="../js/user-mgmt.js?v=3.43.0"></script>
+  <script src="../js/table-sort.js?v=3.43.0"></script>
+  <script src="../js/slack-notify.js?v=3.43.0"></script>
   <script>
     initSupabase();
     let session;
@@ -442,7 +443,9 @@
           alert('상태 변경 실패: ' + tErr(error.message));
           return;
         }
+        const o = allOrders.find(x => x.id === orderId);
         await logInfo('ORDER_STATUS_CHANGE', { orderId, 변경상태: newStatus });
+        sendSlackNotify('purchase_status', { 상품명: o ? o.product_name : '-', 신청자: o ? (o._userName || '-') : '-', 이전상태: o ? o.status : '', 변경상태: newStatus, 처리자: session.displayName || session.username });
         await loadOrders();
       } catch (err) {
         await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, 변경상태: newStatus, 오류: String(err) });
@@ -464,7 +467,9 @@
           alert('되돌리기 실패: ' + tErr(error.message));
           return;
         }
+        const ro = allOrders.find(x => x.id === orderId);
         await logInfo('ORDER_REVERT', { orderId, 변경상태: prevStatus });
+        sendSlackNotify('purchase_status', { 상품명: ro ? ro.product_name : '-', 신청자: ro ? (ro._userName || '-') : '-', 이전상태: ro ? ro.status : '', 변경상태: prevStatus, 처리자: session.displayName || session.username });
         await loadOrders();
       } catch (err) {
         await logError('ORDER_REVERT_ERROR', { orderId, 변경상태: prevStatus, 오류: String(err) });
@@ -508,7 +513,9 @@
           alert(tErr(data.error));
           return;
         }
+        const co = allOrders.find(x => x.id === orderId);
         await logInfo('ORDER_PURCHASE_CONFIRM', { orderId });
+        sendSlackNotify('purchase_status', { 상품명: co ? co.product_name : '-', 신청자: co ? (co._userName || '-') : '-', 이전상태: 'preparing', 변경상태: 'purchased', 처리자: session.displayName || session.username });
         await loadOrders();
       } catch (err) {
         await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, 오류: String(err) });
@@ -543,6 +550,7 @@
       }
       if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
       await logInfo('ORDER_BULK_PREPARE', { 건수: ids.length, 실패건수: failCount });
+      sendSlackNotify('purchase_status', { 상품명: '일괄 처리', 이전상태: 'requested', 변경상태: 'preparing', 처리자: session.displayName || session.username, 건수: ids.length, 실패건수: failCount });
       await loadOrders();
     }
 
@@ -567,6 +575,7 @@
       }
       if (failCount > 0) alert(`${failCount}건 처리 실패. 잔액 부족 등의 사유일 수 있습니다.`);
       await logInfo('ORDER_BULK_PURCHASE', { 건수: ids.length, 실패건수: failCount });
+      sendSlackNotify('purchase_status', { 상품명: '일괄 처리', 이전상태: 'preparing', 변경상태: 'purchased', 처리자: session.displayName || session.username, 건수: ids.length, 실패건수: failCount });
       await loadOrders();
     }
 
@@ -586,6 +595,7 @@
       }
       if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
       await logInfo('ORDER_BULK_DELIVER', { 건수: ids.length, 실패건수: failCount });
+      sendSlackNotify('purchase_status', { 상품명: '일괄 처리', 이전상태: 'purchased', 변경상태: 'delivered', 처리자: session.displayName || session.username, 건수: ids.length, 실패건수: failCount });
       await loadOrders();
     }
 
@@ -622,6 +632,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.42.0"></script>
+  <script src="../js/version.js?v=3.43.0"></script>
 </body>
 </html>

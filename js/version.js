@@ -2,9 +2,25 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.42.0',
+  current: '3.43.0',
   date: '2026-06-16',
   history: [
+    {
+      version: '3.43.0',
+      date: '2026-06-16',
+      title: 'Slack 알림 연동 - 구매/가입/부서이동/로그/Q&A 알림',
+      changes: [
+        'Slack 알림: Supabase Edge Function slack-notify 생성 (Slack Block Kit 메시지 포맷)',
+        'Slack 알림: js/slack-notify.js 공통 유틸리티 생성 (fire-and-forget, 5초 throttle)',
+        'Slack 알림: 신규 구매 신청 알림 (일반 구매 + 대리 구매)',
+        'Slack 알림: 구매 상태 변경 알림 (상품 준비/구매 확정/지급 완료/되돌리기/취소/일괄 처리)',
+        'Slack 알림: 신규 가입 신청 알림 (아이디/이름/소속 부서)',
+        'Slack 알림: 부서 이동 신청 알림 (대상자/이전부서/이동부서/사유)',
+        'Slack 알림: WARN 이상 로그 발생 시 자동 알림 (레벨/액션/상세)',
+        'Slack 알림: Q&A 질문 등록 알림 (등록자/질문 내용)',
+        'Slack 채널: #달란트-마을 채널 연동'
+      ]
+    },
     {
       version: '3.42.0',
       date: '2026-06-16',

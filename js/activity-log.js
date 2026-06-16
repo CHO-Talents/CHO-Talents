@@ -5,6 +5,7 @@
 
 const LOG_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'CRITICAL'];
 const ERROR_LEVELS = ['ERROR', 'FATAL', 'CRITICAL'];
+const SLACK_ALERT_LEVELS = ['WARN', 'ERROR', 'FATAL', 'CRITICAL'];
 
 let _clientInfo = null;
 let _clientIp = null;
@@ -328,7 +329,15 @@ async function writeLog(level, action, page, details) {
     user_name: userName,
     is_acknowledged: !ERROR_LEVELS.includes(level)
   };
-  return await _insertActivityLogRow(row);
+  var result = await _insertActivityLogRow(row);
+  if (SLACK_ALERT_LEVELS.includes(level) && typeof sendSlackNotify === 'function') {
+    var safeDetails = {};
+    if (details) {
+      Object.keys(details).forEach(function(k) { if (!k.startsWith('_')) safeDetails[k] = details[k]; });
+    }
+    sendSlackNotify('log_alert', { 레벨: level, 액션: action, 페이지: page || window.location.pathname, 상세: safeDetails });
+  }
+  return result;
 }
 
 function logTrace(action, details) { return writeLog('TRACE', action, null, details); }

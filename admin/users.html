@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.42.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.42.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.43.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.43.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -187,16 +187,17 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.42.0"></script>
-  <script src="../js/supabase-config.js?v=3.42.0"></script>
-  <script src="../js/activity-log.js?v=3.42.0"></script>
-  <script src="../js/auth.js?v=3.42.0"></script>
-  <script src="../js/theme.js?v=3.42.0"></script>
-  <script src="../js/nav.js?v=3.42.0"></script>
-  <script src="../js/page-size.js?v=3.42.0"></script>
-  <script src="../js/user-mgmt.js?v=3.42.0"></script>
-  <script src="../js/table-sort.js?v=3.42.0"></script>
-  <script src="../js/version.js?v=3.42.0"></script>
+  <script src="../config/public-config.js?v=3.43.0"></script>
+  <script src="../js/supabase-config.js?v=3.43.0"></script>
+  <script src="../js/activity-log.js?v=3.43.0"></script>
+  <script src="../js/auth.js?v=3.43.0"></script>
+  <script src="../js/theme.js?v=3.43.0"></script>
+  <script src="../js/nav.js?v=3.43.0"></script>
+  <script src="../js/page-size.js?v=3.43.0"></script>
+  <script src="../js/user-mgmt.js?v=3.43.0"></script>
+  <script src="../js/table-sort.js?v=3.43.0"></script>
+  <script src="../js/slack-notify.js?v=3.43.0"></script>
+  <script src="../js/version.js?v=3.43.0"></script>
   <script>
     initSupabase();
     let session;
@@ -963,6 +964,7 @@
         });
         if (error) { await logError('DEPT_TRANSFER_REQUEST_FAIL', { userId: _transferUserId, 오류: error.message }); errEl.textContent = '요청 실패: ' + tErr(error.message); errEl.classList.add('show'); return; }
         await logInfo('DEPT_TRANSFER_REQUEST', { userId: _transferUserId, 아이디: user.username, 대상: userName, 이전값: getDeptName(_transferFromDeptId), 변경값: toDeptName, 사유: reason || null, 변경내역: `부서 이동 요청: ${getDeptName(_transferFromDeptId) || '-'} → ${toDeptName}` });
+        sendSlackNotify('dept_transfer', { 대상: userName, 이전부서: getDeptName(_transferFromDeptId) || '-', 이동부서: toDeptName, 사유: reason || '없음', 신청자: session.displayName || session.username });
         alert(`부서 이동 요청이 생성되었습니다.\n"${toDeptName}" 부서 담당 교사의 승인을 기다립니다.`);
       }
       closeTransferModal();
