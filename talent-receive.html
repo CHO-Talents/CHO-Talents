@@ -169,6 +169,18 @@
           }
         }
 
+        if (qr.talent_item_id) {
+          const wkStart = _getWeekStartKST();
+          const { data: adminEarns } = await _sb.from('talent_transactions')
+            .select('id').eq('user_id', session.id)
+            .eq('talent_item_id', qr.talent_item_id)
+            .eq('type', 'earn').eq('source', 'admin')
+            .gte('created_at', wkStart.toISOString());
+          if (adminEarns && adminEarns.length > 0) {
+            showResult('fail', '이번 주에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
+          }
+        }
+
         const repeatType = qr.repeat_type || 'none';
         if (repeatType === 'none') {
           const { data: existing } = await _sb.from('talent_qr_scans')
@@ -209,6 +221,7 @@
           talent_item_id: qr.talent_item_id || null,
           balance_after: newBalance,
           created_by: session.id,
+          source: 'qr',
           created_at: new Date().toISOString()
         });
 
@@ -231,6 +244,16 @@
         btn.textContent = '🔍 코드 확인';
         scanPaused = false;
       }
+    }
+
+    function _getWeekStartKST() {
+      const now = new Date();
+      const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+      const day = kst.getUTCDay();
+      const diff = day === 0 ? 6 : day - 1;
+      kst.setUTCDate(kst.getUTCDate() - diff);
+      kst.setUTCHours(0, 0, 0, 0);
+      return new Date(kst.getTime() - 9 * 60 * 60 * 1000);
     }
 
     function getTodayStartKST() {
@@ -295,21 +318,24 @@
 
     async function loadHistory() {
       try {
-        const { data } = await _sb.from('talent_qr_scans')
-          .select('*, talent_qr_codes(code, amount, description)')
-          .eq('user_id', session.id)
-          .order('scanned_at', { ascending: false }).limit(10);
+        const { data } = await _sb.from('talent_transactions')
+          .select('*')
+          .eq('user_id', session.id).eq('type', 'earn')
+          .order('created_at', { ascending: false }).limit(20);
         if (!data || data.length === 0) return;
         const sec = document.getElementById('historySection');
         sec.style.display = '';
         const list = document.getElementById('historyList');
-        list.innerHTML = data.map(s => {
-          const qr = s.talent_qr_codes || {};
-          const dt = new Date(s.scanned_at);
+        list.innerHTML = data.map(t => {
+          const dt = new Date(t.created_at);
           const dateStr = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
-          return `<div class="scan-item"><span>${dateStr} - ${qr.description || qr.code || '-'}</span><span class="amt">+${qr.amount || 0} 달란트</span></div>`;
+          const srcLabel = t.source === 'qr'
+            ? '<span style="font-size:0.7rem;padding:0.1rem 0.35rem;border-radius:4px;background:#d0ebff;color:#1971c2;margin-right:0.3rem;">📱 QR</span>'
+            : '<span style="font-size:0.7rem;padding:0.1rem 0.35rem;border-radius:4px;background:#fff3bf;color:#e67700;margin-right:0.3rem;">👨‍💼 관리자</span>';
+          const desc = (t.description || '-').replace(/\[[0-9a-f-]{36}\]\s*/gi, '');
+          return `<div class="scan-item">${srcLabel}<span>${dateStr} - ${desc}</span><span class="amt">+${t.amount || 0} 달란트</span></div>`;
         }).join('');
-      } catch (e) { /* table may not exist yet */ }
+      } catch (e) { /* column may not exist yet */ }
     }
 
     async function toggleCamera() {
