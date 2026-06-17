@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>³» ´Ş¶õÆ® - ´Ş¶õÆ® ¸¶À»</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>" />
+  <title>ë‚´ ë‹¬ë€íŠ¸ - ë‹¬ë€íŠ¸ ë§ˆì„</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ğŸ’°</text></svg>" />
   <link rel="stylesheet" href="css/themes.css?v=3.46.0" />
   <link rel="stylesheet" href="css/common.css?v=3.46.0" />
 </head>
@@ -15,7 +15,7 @@
   <div class="page-container" id="mainContent"></div>
 
   <footer class="page-footer">
-    <p>ÃÊµîºÎ ´Ş¶õÆ® °ü¸® &copy; 2026 CHO-Talents</p>
+    <p>ì´ˆë“±ë¶€ ë‹¬ë€íŠ¸ ê´€ë¦¬ &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -63,49 +63,49 @@
       } catch (e) {}
 
       let html = `
-        <h1 class="page-title">?? ³» ´Ş¶õÆ®</h1>
-        <p class="page-sub">${session.displayName || session.username}´ÔÀÇ ´Ş¶õÆ® ÇöÈ²</p>
+        <h1 class="page-title">ğŸ’° ë‚´ ë‹¬ë€íŠ¸</h1>
+        <p class="page-sub">${session.displayName || session.username}ë‹˜ì˜ ë‹¬ë€íŠ¸ í˜„í™©</p>
         <div class="summary-cards">
           <div class="summary-card balance">
-            <div class="summary-card-icon">?</div>
-            <div class="summary-card-label">»ç¿ë °¡´É ´Ş¶õÆ®</div>
+            <div class="summary-card-icon">â­</div>
+            <div class="summary-card-label">ì‚¬ìš© ê°€ëŠ¥ ë‹¬ë€íŠ¸</div>
             <div class="summary-card-value">${fmtNum(available)}</div>
           </div>
           <div class="summary-card" style="background:#e7f5ff;">
-            <div class="summary-card-icon">??</div>
-            <div class="summary-card-label">¼ö·É ´ë±â »óÇ°¼ö</div>
-            <div class="summary-card-value" style="color:#1971c2;">${fmtNum(deliveryCount)}°Ç</div>
+            <div class="summary-card-icon">ğŸ</div>
+            <div class="summary-card-label">ìˆ˜ë ¹ ëŒ€ê¸° ìƒí’ˆìˆ˜</div>
+            <div class="summary-card-value" style="color:#1971c2;">${fmtNum(deliveryCount)}ê±´</div>
           </div>
           <div class="summary-card" style="background:#fff3bf;">
-            <div class="summary-card-icon">?</div>
-            <div class="summary-card-label">»ç¿ë ´ë±â ´Ş¶õÆ®</div>
+            <div class="summary-card-icon">â³</div>
+            <div class="summary-card-label">ì‚¬ìš© ëŒ€ê¸° ë‹¬ë€íŠ¸</div>
             <div class="summary-card-value" style="color:#e67700;">${fmtNum(pendingTalent)}</div>
           </div>
           <div class="summary-card use">
-            <div class="summary-card-icon">??</div>
-            <div class="summary-card-label">»ç¿ë ¿Ï·á ´Ş¶õÆ®</div>
+            <div class="summary-card-icon">ğŸ“‰</div>
+            <div class="summary-card-label">ì‚¬ìš© ì™„ë£Œ ë‹¬ë€íŠ¸</div>
             <div class="summary-card-value">${fmtNum(summary.used)}</div>
           </div>
           <div class="summary-card earn">
-            <div class="summary-card-icon">??</div>
-            <div class="summary-card-label">´©Àû Àû¸³ ´Ş¶õÆ®</div>
+            <div class="summary-card-icon">ğŸ“ˆ</div>
+            <div class="summary-card-label">ëˆ„ì  ì ë¦½ ë‹¬ë€íŠ¸</div>
             <div class="summary-card-value">${fmtNum(summary.earned)}</div>
           </div>
         </div>
         <div id="earnBreakdown" style="margin-bottom:1.5rem;"></div>
         <div class="data-table-wrap">
-          <div class="data-table-header"><div class="data-table-title">´Ş¶õÆ® ³»¿ª</div></div>
+          <div class="data-table-header"><div class="data-table-title">ë‹¬ë€íŠ¸ ë‚´ì—­</div></div>
           <table class="data-table">
-            <thead><tr><th>³¯Â¥</th><th>À¯Çü</th><th>±İ¾×</th><th>¼³¸í</th><th>ÀÜ¾×</th></tr></thead>
+            <thead><tr><th>ë‚ ì§œ</th><th>ìœ í˜•</th><th>ê¸ˆì•¡</th><th>ì„¤ëª…</th><th>ì”ì•¡</th></tr></thead>
             <tbody>`;
 
       if (!history || history.length === 0) {
-        html += '<tr><td colspan="5" class="empty-state">¾ÆÁ÷ ´Ş¶õÆ® ³»¿ªÀÌ ¾ø½À´Ï´Ù.</td></tr>';
+        html += '<tr><td colspan="5" class="empty-state">ì•„ì§ ë‹¬ë€íŠ¸ ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
       } else {
         html += history.map(t => `
           <tr>
             <td>${formatKSTShort(t.created_at)}</td>
-            <td><span class="type-badge ${t.type}">${t.type === 'earn' ? 'Àû¸³' : '»ç¿ë'}</span></td>
+            <td><span class="type-badge ${t.type}">${t.type === 'earn' ? 'ì ë¦½' : 'ì‚¬ìš©'}</span></td>
             <td style="font-weight:700;color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'}">${t.type === 'earn' ? '+' : '-'}${fmtNum(t.amount)}</td>
             <td>${(t.description || '-').replace(/\[[0-9a-f-]{36}\]\s*/gi, '')}</td>
             <td>${fmtNum(t.balance_after)}</td>
@@ -121,16 +121,16 @@
         else { orders = od; }
       } catch (e) {}
       if (orders && orders.length > 0) {
-        const statusMap = { requested:'±¸¸Å ½ÅÃ»', preparing:'»óÇ° ÁØºñ', purchased:'»óÇ° ±¸¸Å', delivered:'»óÇ° Áö±Ş' };
+        const statusMap = { requested:'êµ¬ë§¤ ì‹ ì²­', preparing:'ìƒí’ˆ ì¤€ë¹„', purchased:'ìƒí’ˆ êµ¬ë§¤', delivered:'ìƒí’ˆ ì§€ê¸‰' };
         const statusColor = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
         html += `<div class="data-table-wrap" style="margin-top:1.5rem;">
-          <div class="data-table-header"><div class="data-table-title">?? ±¸¸Å ³»¿ª</div></div>
+          <div class="data-table-header"><div class="data-table-title">ğŸ›’ êµ¬ë§¤ ë‚´ì—­</div></div>
           <table class="data-table">
-            <thead><tr><th>³¯Â¥</th><th>»óÇ°¸í</th><th>°¡°İ</th><th>»óÅÂ</th></tr></thead>
+            <thead><tr><th>ë‚ ì§œ</th><th>ìƒí’ˆëª…</th><th>ê°€ê²©</th><th>ìƒíƒœ</th></tr></thead>
             <tbody>` + orders.map(o => `<tr>
               <td>${formatKSTShort(o.requested_at || o.created_at)}</td>
               <td>${o.product_name}</td>
-              <td>${fmtNum(o.price)} ´Ş¶õÆ®</td>
+              <td>${fmtNum(o.price)} ë‹¬ë€íŠ¸</td>
               <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${statusColor[o.status]||'#868e96'}22;color:${statusColor[o.status]||'#868e96'};font-weight:600;">${statusMap[o.status]||o.status}</span></td>
             </tr>`).join('') + '</tbody></table></div>';
       }
@@ -142,27 +142,27 @@
     async function showEarnBreakdown() {
       const el = document.getElementById('earnBreakdown');
       if (!el) return;
-      el.innerHTML = '<div style="text-align:center;color:#868e96;">ºÒ·¯¿À´Â Áß...</div>';
+      el.innerHTML = '<div style="text-align:center;color:#868e96;">ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</div>';
       const { data: txns } = await _sb.from('talent_transactions')
         .select('amount, description, talent_item_id')
         .eq('user_id', session.id).eq('type', 'earn');
-      if (!txns || txns.length === 0) { el.innerHTML = '<div style="text-align:center;color:#868e96;">Àû¸³ ³»¿ªÀÌ ¾ø½À´Ï´Ù.</div>'; return; }
+      if (!txns || txns.length === 0) { el.innerHTML = '<div style="text-align:center;color:#868e96;">ì ë¦½ ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.</div>'; return; }
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
       const byDesc = {};
       txns.forEach(t => {
-        const key = t.description || '±âÅ¸';
+        const key = t.description || 'ê¸°íƒ€';
         if (!byDesc[key]) byDesc[key] = { count: 0, amount: 0 };
         byDesc[key].count++;
         byDesc[key].amount += t.amount || 0;
       });
       const sorted = Object.entries(byDesc).sort((a, b) => b[1].amount - a[1].amount);
       el.innerHTML = `<div style="background:#fff;border:1px solid var(--c-border);border-radius:12px;padding:1rem;">
-        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.6rem;">?? Ç×¸ñº° Àû¸³ ÇöÈ²</div>
+        <div style="font-weight:700;font-size:0.9rem;margin-bottom:0.6rem;">ğŸ“Š í•­ëª©ë³„ ì ë¦½ í˜„í™©</div>
         <div style="font-size:0.82rem;">` + sorted.map(([name, v]) => {
           const pct = total > 0 ? ((v.amount / total) * 100).toFixed(1) : 0;
           return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid #f1f3f5;">
             <span>${name}</span>
-            <span style="font-weight:600;">${fmtNum(v.amount)} ´Ş¶õÆ® ¡¿ ${v.count}È¸ <span style="color:#868e96;">(${pct}%)</span></span>
+            <span style="font-weight:600;">${fmtNum(v.amount)} ë‹¬ë€íŠ¸ Ã— ${v.count}íšŒ <span style="color:#868e96;">(${pct}%)</span></span>
           </div>`;
         }).join('') + `</div></div>`;
     }

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ÆäÀÌÁö ±ÇÇÑ °ü¸® - CHO Talents Admin</title>
+  <title>í˜ì´ì§€ ê¶Œí•œ ê´€ë¦¬ - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
   <style>
@@ -20,23 +20,23 @@
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:0.5rem;">?? ÆäÀÌÁö ±ÇÇÑ °ü¸®</h2>
-    <p style="color:var(--admin-text-muted);margin-bottom:1rem;">°¢ ÆäÀÌÁöº° ±ÇÇÑ ·¹º§ÀÇ Á¶È¸/°ü¸® ±ÇÇÑÀ» ¼³Á¤ÇÕ´Ï´Ù.</p>
+    <h2 style="margin-bottom:0.5rem;">ğŸ” í˜ì´ì§€ ê¶Œí•œ ê´€ë¦¬</h2>
+    <p style="color:var(--admin-text-muted);margin-bottom:1rem;">ê° í˜ì´ì§€ë³„ ê¶Œí•œ ë ˆë²¨ì˜ ì¡°íšŒ/ê´€ë¦¬ ê¶Œí•œì„ ì„¤ì •í•©ë‹ˆë‹¤.</p>
 
     <div class="perm-legend">
-      <span>V = Á¶È¸(View)</span>
-      <span>M = °ü¸®(Manage)</span>
+      <span>V = ì¡°íšŒ(View)</span>
+      <span>M = ê´€ë¦¬(Manage)</span>
     </div>
 
     <div class="admin-table-wrap" style="overflow-x:auto;">
       <table class="perm-matrix" id="permMatrix">
         <thead id="matrixHead"></thead>
-        <tbody id="matrixBody"><tr><td colspan="13" class="empty-state">·Îµù Áß...</td></tr></tbody>
+        <tbody id="matrixBody"><tr><td colspan="13" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
       </table>
     </div>
 
     <div style="margin-top:1rem;display:flex;gap:0.5rem;">
-      <button class="btn-confirm" onclick="saveAll()">º¯°æ»çÇ× ÀúÀå</button>
+      <button class="btn-confirm" onclick="saveAll()">ë³€ê²½ì‚¬í•­ ì €ì¥</button>
       <span id="saveStatus" style="align-self:center;font-size:0.85rem;"></span>
     </div>
   </div>
@@ -53,20 +53,20 @@
     let session;
     let permData = [];
     const LEVELS = ['admin','evangelist','chief','dept_teacher','teacher','student'];
-    const LEVEL_LABELS = { admin:'°ü¸®ÀÚ', evangelist:'Àüµµ»ç´Ô', chief:'ºÎÀå ±³»ç', dept_teacher:'ºÎ¼­ ´ã´ç ±³»ç', teacher:'ÀÏ¹İ±³»ç', student:'ÇĞ»ı' };
+    const LEVEL_LABELS = { admin:'ê´€ë¦¬ì', evangelist:'ì „ë„ì‚¬ë‹˜', chief:'ë¶€ì¥ êµì‚¬', dept_teacher:'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', teacher:'ì¼ë°˜êµì‚¬', student:'í•™ìƒ' };
     const PAGES = [
-      { key:'dashboard', label:'´ë½Ãº¸µå' },
-      { key:'users', label:'»ç¿ëÀÚ °ü¸®' },
-      { key:'departments', label:'ºÎ¼­ °ü¸®' },
-      { key:'managers', label:'°ü¸®ÀÚ °ü¸®' },
-      { key:'talents', label:'´Ş¶õÆ® °ü¸®' },
-      { key:'talent_items', label:'´Ş¶õÆ® Ç×¸ñ' },
-      { key:'shop', label:'»óÇ° °ü¸®' },
-      { key:'purchases', label:'±¸¸Å °ü¸®' },
-      { key:'reports', label:'º¸°í¼­' },
-      { key:'logs', label:'·Î±×' },
-      { key:'versions', label:'¹öÀü' },
-      { key:'page_permissions', label:'±ÇÇÑ °ü¸®' }
+      { key:'dashboard', label:'ëŒ€ì‹œë³´ë“œ' },
+      { key:'users', label:'ì‚¬ìš©ì ê´€ë¦¬' },
+      { key:'departments', label:'ë¶€ì„œ ê´€ë¦¬' },
+      { key:'managers', label:'ê´€ë¦¬ì ê´€ë¦¬' },
+      { key:'talents', label:'ë‹¬ë€íŠ¸ ê´€ë¦¬' },
+      { key:'talent_items', label:'ë‹¬ë€íŠ¸ í•­ëª©' },
+      { key:'shop', label:'ìƒí’ˆ ê´€ë¦¬' },
+      { key:'purchases', label:'êµ¬ë§¤ ê´€ë¦¬' },
+      { key:'reports', label:'ë³´ê³ ì„œ' },
+      { key:'logs', label:'ë¡œê·¸' },
+      { key:'versions', label:'ë²„ì „' },
+      { key:'page_permissions', label:'ê¶Œí•œ ê´€ë¦¬' }
     ];
 
     (async () => {
@@ -93,7 +93,7 @@
 
     function renderMatrix() {
       const head = document.getElementById('matrixHead');
-      head.innerHTML = '<tr><th>ÆäÀÌÁö</th>' +
+      head.innerHTML = '<tr><th>í˜ì´ì§€</th>' +
         LEVELS.map(l => `<th colspan="2">${LEVEL_LABELS[l]}</th>`).join('') + '</tr>' +
         '<tr><th></th>' + LEVELS.map(() => '<th>V</th><th>M</th>').join('') + '</tr>';
 
@@ -112,7 +112,7 @@
 
     async function saveAll() {
       const statusEl = document.getElementById('saveStatus');
-      statusEl.textContent = 'ÀúÀå Áß...';
+      statusEl.textContent = 'ì €ì¥ ì¤‘...';
       statusEl.style.color = 'var(--admin-primary)';
 
       const checkboxes = document.querySelectorAll('.perm-matrix input[type="checkbox"]');
@@ -139,14 +139,14 @@
       });
 
       if (upserts.length === 0) {
-        statusEl.textContent = 'º¯°æ»çÇ× ¾øÀ½';
+        statusEl.textContent = 'ë³€ê²½ì‚¬í•­ ì—†ìŒ';
         statusEl.style.color = 'var(--admin-text-muted)';
         return;
       }
 
       const { error } = await _sb.from('page_permissions').upsert(upserts, { onConflict: 'page_key,permission_level' });
       if (error) {
-        statusEl.textContent = 'ÀúÀå ½ÇÆĞ: ' + error.message;
+        statusEl.textContent = 'ì €ì¥ ì‹¤íŒ¨: ' + error.message;
         statusEl.style.color = '#e03131';
         return;
       }
@@ -156,9 +156,9 @@
         const levelLabel = LEVEL_LABELS[u.permission_level] || u.permission_level;
         return `${pageLabel}(${levelLabel}): V=${u.can_view ? 'Y' : 'N'} M=${u.can_manage ? 'Y' : 'N'}`;
       }).join('; ');
-      await logInfo('PAGE_PERM_UPDATE', { ÆäÀÌÁö: '±ÇÇÑ ¸ÅÆ®¸¯½º', º¯°æ³»¿ª: changesDescription });
+      await logInfo('PAGE_PERM_UPDATE', { í˜ì´ì§€: 'ê¶Œí•œ ë§¤íŠ¸ë¦­ìŠ¤', ë³€ê²½ë‚´ì—­: changesDescription });
 
-      statusEl.textContent = `${upserts.length}°Ç ÀúÀå ¿Ï·á`;
+      statusEl.textContent = `${upserts.length}ê±´ ì €ì¥ ì™„ë£Œ`;
       statusEl.style.color = '#2b8a3e';
       await loadPermissions();
     }

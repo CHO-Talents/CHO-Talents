@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>´Ş¶õÆ® QR °ü¸® - CHO Talents Admin</title>
+  <title>ë‹¬ë€íŠ¸ QR ê´€ë¦¬ - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
   <style>
@@ -92,36 +92,36 @@
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2>?? ´Ş¶õÆ® QR ÄÚµå °ü¸®</h2>
+    <h2>ğŸ« ë‹¬ë€íŠ¸ QR ì½”ë“œ ê´€ë¦¬</h2>
 
     <div class="create-form" id="createForm">
-      <h3>? »õ QR ÄÚµå »ı¼º</h3>
+      <h3>â• ìƒˆ QR ì½”ë“œ ìƒì„±</h3>
 
       <div class="form-section">
-        <label class="section-label">Áö±Ş ´ë»ó</label>
+        <label class="section-label">ì§€ê¸‰ ëŒ€ìƒ</label>
         <div class="radio-row radio-inline">
-          <label><input type="radio" name="targetType" value="student" checked onchange="onTargetTypeChange()" /> ?? ÇĞ»ı</label>
-          <label><input type="radio" name="targetType" value="teacher" onchange="onTargetTypeChange()" /> ????? ±³»ç</label>
+          <label><input type="radio" name="targetType" value="student" checked onchange="onTargetTypeChange()" /> ğŸ’ í•™ìƒ</label>
+          <label><input type="radio" name="targetType" value="teacher" onchange="onTargetTypeChange()" /> ğŸ‘¨â€ğŸ« êµì‚¬</label>
         </div>
       </div>
 
       <div class="form-section">
-        <label class="section-label">´Ş¶õÆ® Ç×¸ñ</label>
+        <label class="section-label">ë‹¬ë€íŠ¸ í•­ëª©</label>
         <select id="qrItemSelect" class="form-input" onchange="onItemSelectChange()">
-          <option value="">-- Ç×¸ñÀ» ¼±ÅÃÇÏ¼¼¿ä --</option>
-          <option value="manual">?? Á÷Á¢ ÀÔ·Â</option>
+          <option value="">-- í•­ëª©ì„ ì„ íƒí•˜ì„¸ìš” --</option>
+          <option value="manual">âœï¸ ì§ì ‘ ì…ë ¥</option>
         </select>
         <div id="selectedItemInfo" class="item-info-box" style="display:none;">
-          ?? <strong id="selectedItemName"></strong> ¡¤ <span id="selectedItemAmount"></span> ´Ş¶õÆ®
+          ğŸ“Œ <strong id="selectedItemName"></strong> Â· <span id="selectedItemAmount"></span> ë‹¬ë€íŠ¸
         </div>
         <div id="manualFields" style="display:none;margin-top:0.5rem;">
           <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
             <div style="flex:2;min-width:140px;">
-              <label style="font-size:0.82rem;font-weight:600;">Ç×¸ñ ¼³¸í</label>
-              <input type="text" id="qrDesc" class="form-input" placeholder="¿¹: Æ¯º° È°µ¿ Âü¿©" />
+              <label style="font-size:0.82rem;font-weight:600;">í•­ëª© ì„¤ëª…</label>
+              <input type="text" id="qrDesc" class="form-input" placeholder="ì˜ˆ: íŠ¹ë³„ í™œë™ ì°¸ì—¬" />
             </div>
             <div style="flex:1;min-width:80px;">
-              <label style="font-size:0.82rem;font-weight:600;">±İ¾×</label>
+              <label style="font-size:0.82rem;font-weight:600;">ê¸ˆì•¡</label>
               <input type="number" id="qrAmount" class="form-input" min="1" max="100" value="1" />
             </div>
           </div>
@@ -129,52 +129,52 @@
       </div>
 
       <div class="form-section">
-        <label class="section-label">Áö±Ş ¹æ½Ä</label>
+        <label class="section-label">ì§€ê¸‰ ë°©ì‹</label>
         <div class="radio-row">
-          <label><input type="radio" name="maxUsesType" value="unlimited" checked onchange="onMaxUsesTypeChange()" /> Áö±Ş Á¦ÇÑ ¾øÀ½ (¹«Á¦ÇÑ)</label>
+          <label><input type="radio" name="maxUsesType" value="unlimited" checked onchange="onMaxUsesTypeChange()" /> ì§€ê¸‰ ì œí•œ ì—†ìŒ (ë¬´ì œí•œ)</label>
           <label>
             <input type="radio" name="maxUsesType" value="limited" onchange="onMaxUsesTypeChange()" />
-            ¼±Âø¼ø Áö±Ş
+            ì„ ì°©ìˆœ ì§€ê¸‰
             <input type="number" id="maxUsesCount" class="inline-num" min="1" max="100000" value="30" disabled />
-            ¸í
+            ëª…
           </label>
         </div>
       </div>
 
       <div class="form-section">
-        <label class="section-label">¹İº¹ ¼ö·É °¡´É ¿©ºÎ</label>
+        <label class="section-label">ë°˜ë³µ ìˆ˜ë ¹ ê°€ëŠ¥ ì—¬ë¶€</label>
         <div class="radio-row radio-inline">
-          <label><input type="radio" name="repeatEnabled" value="no" checked onchange="onRepeatEnabledChange()" /> ? X</label>
-          <label><input type="radio" name="repeatEnabled" value="yes" onchange="onRepeatEnabledChange()" /> ? O</label>
+          <label><input type="radio" name="repeatEnabled" value="no" checked onchange="onRepeatEnabledChange()" /> âŒ X</label>
+          <label><input type="radio" name="repeatEnabled" value="yes" onchange="onRepeatEnabledChange()" /> â­• O</label>
         </div>
         <div id="repeatOptions" style="display:none;">
           <div class="repeat-sub">
-            <label class="section-label">¹İº¹ ¹æ½Ä</label>
+            <label class="section-label">ë°˜ë³µ ë°©ì‹</label>
             <div class="radio-row">
-              <label><input type="radio" name="repeatType" value="daily" checked onchange="onRepeatTypeChange()" /> ?? ¸ÅÀÏ (¸ÅÀÏ 00:00 ÃÊ±âÈ­)</label>
-              <label><input type="radio" name="repeatType" value="weekday" onchange="onRepeatTypeChange()" /> ?? ¿äÀÏ ¹İº¹</label>
-              <label><input type="radio" name="repeatType" value="week_weekday" onchange="onRepeatTypeChange()" /> ??? ÁÖÂ÷ + ¿äÀÏ ¹İº¹</label>
+              <label><input type="radio" name="repeatType" value="daily" checked onchange="onRepeatTypeChange()" /> ğŸ”„ ë§¤ì¼ (ë§¤ì¼ 00:00 ì´ˆê¸°í™”)</label>
+              <label><input type="radio" name="repeatType" value="weekday" onchange="onRepeatTypeChange()" /> ğŸ“… ìš”ì¼ ë°˜ë³µ</label>
+              <label><input type="radio" name="repeatType" value="week_weekday" onchange="onRepeatTypeChange()" /> ğŸ—“ï¸ ì£¼ì°¨ + ìš”ì¼ ë°˜ë³µ</label>
             </div>
             <div id="repeatDaysWrap" style="display:none;margin-top:0.5rem;">
-              <label class="section-label">¼ö·É °¡´É ¿äÀÏ</label>
+              <label class="section-label">ìˆ˜ë ¹ ê°€ëŠ¥ ìš”ì¼</label>
               <div class="day-checks" id="repeatDaysChecks">
-                <label><input type="checkbox" name="repeatDay" value="0" /> ÀÏ</label>
-                <label><input type="checkbox" name="repeatDay" value="1" /> ¿ù</label>
-                <label><input type="checkbox" name="repeatDay" value="2" /> È­</label>
-                <label><input type="checkbox" name="repeatDay" value="3" /> ¼ö</label>
-                <label><input type="checkbox" name="repeatDay" value="4" /> ¸ñ</label>
-                <label><input type="checkbox" name="repeatDay" value="5" /> ±İ</label>
-                <label><input type="checkbox" name="repeatDay" value="6" /> Åä</label>
+                <label><input type="checkbox" name="repeatDay" value="0" /> ì¼</label>
+                <label><input type="checkbox" name="repeatDay" value="1" /> ì›”</label>
+                <label><input type="checkbox" name="repeatDay" value="2" /> í™”</label>
+                <label><input type="checkbox" name="repeatDay" value="3" /> ìˆ˜</label>
+                <label><input type="checkbox" name="repeatDay" value="4" /> ëª©</label>
+                <label><input type="checkbox" name="repeatDay" value="5" /> ê¸ˆ</label>
+                <label><input type="checkbox" name="repeatDay" value="6" /> í† </label>
               </div>
             </div>
             <div id="repeatWeeksWrap" style="display:none;margin-top:0.5rem;">
-              <label class="section-label">¼ö·É °¡´É ÁÖÂ÷</label>
+              <label class="section-label">ìˆ˜ë ¹ ê°€ëŠ¥ ì£¼ì°¨</label>
               <div class="week-checks" id="repeatWeeksChecks">
-                <label><input type="checkbox" name="repeatWeek" value="1" /> 1ÁÖ</label>
-                <label><input type="checkbox" name="repeatWeek" value="2" /> 2ÁÖ</label>
-                <label><input type="checkbox" name="repeatWeek" value="3" /> 3ÁÖ</label>
-                <label><input type="checkbox" name="repeatWeek" value="4" /> 4ÁÖ</label>
-                <label><input type="checkbox" name="repeatWeek" value="5" /> 5ÁÖ</label>
+                <label><input type="checkbox" name="repeatWeek" value="1" /> 1ì£¼</label>
+                <label><input type="checkbox" name="repeatWeek" value="2" /> 2ì£¼</label>
+                <label><input type="checkbox" name="repeatWeek" value="3" /> 3ì£¼</label>
+                <label><input type="checkbox" name="repeatWeek" value="4" /> 4ì£¼</label>
+                <label><input type="checkbox" name="repeatWeek" value="5" /> 5ì£¼</label>
               </div>
             </div>
           </div>
@@ -182,15 +182,15 @@
       </div>
 
       <div class="form-section">
-        <label class="section-label">À¯È¿ ±â°£</label>
+        <label class="section-label">ìœ íš¨ ê¸°ê°„</label>
         <div class="radio-row radio-inline" style="margin-bottom:0.4rem;">
-          <label><input type="radio" name="validityType" value="designated" checked onchange="onValidityTypeChange()" /> ?? ÁöÁ¤ÀÏ</label>
-          <label><input type="radio" name="validityType" value="period" onchange="onValidityTypeChange()" /> ?? ±â°£</label>
-          <label><input type="radio" name="validityType" value="unlimited" onchange="onValidityTypeChange()" /> ?? ¹«±âÇÑ</label>
+          <label><input type="radio" name="validityType" value="designated" checked onchange="onValidityTypeChange()" /> ğŸ“… ì§€ì •ì¼</label>
+          <label><input type="radio" name="validityType" value="period" onchange="onValidityTypeChange()" /> ğŸ“† ê¸°ê°„</label>
+          <label><input type="radio" name="validityType" value="unlimited" onchange="onValidityTypeChange()" /> â™¾ï¸ ë¬´ê¸°í•œ</label>
         </div>
         <div id="validityDesignated" class="period-row">
           <input type="date" id="qrValidDate" class="form-input" style="max-width:200px;" />
-          <span style="font-size:0.78rem;color:var(--admin-text-muted);margin-left:0.3rem;">(ÇØ´ç ÀÏÀÚ 00:00 ~ 23:59 À¯È¿)</span>
+          <span style="font-size:0.78rem;color:var(--admin-text-muted);margin-left:0.3rem;">(í•´ë‹¹ ì¼ì 00:00 ~ 23:59 ìœ íš¨)</span>
         </div>
         <div id="validityPeriod" class="period-row" style="display:none;">
           <input type="datetime-local" id="qrValidFrom" class="form-input" />
@@ -200,20 +200,20 @@
       </div>
 
       <div class="form-section">
-        <label class="section-label">À§Ä¡ Á¦ÇÑ</label>
+        <label class="section-label">ìœ„ì¹˜ ì œí•œ</label>
         <div class="radio-row radio-inline" style="margin-bottom:0.4rem;">
-          <label><input type="radio" name="locationType" value="none" checked onchange="onLocationTypeChange()" /> ?? Á¦ÇÑ ¾øÀ½</label>
-          <label><input type="radio" name="locationType" value="specific" onchange="onLocationTypeChange()" /> ?? Æ¯Á¤ À§Ä¡</label>
+          <label><input type="radio" name="locationType" value="none" checked onchange="onLocationTypeChange()" /> ğŸŒ ì œí•œ ì—†ìŒ</label>
+          <label><input type="radio" name="locationType" value="specific" onchange="onLocationTypeChange()" /> ğŸ“ íŠ¹ì • ìœ„ì¹˜</label>
         </div>
         <div id="locationFields" style="display:none;">
           <div style="display:flex;gap:0.4rem;margin-bottom:0.4rem;">
-            <input type="text" id="qrLocationSearch" class="form-input" placeholder="ÁÖ¼Ò³ª ¸íÄªÀ» ÀÔ·ÂÇÏ¼¼¿ä" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();searchLocationFor('qr');}" />
-            <button type="button" class="admin-btn" onclick="searchLocationFor('qr')" style="padding:0.4rem 0.8rem;font-size:0.82rem;white-space:nowrap;">?? °Ë»ö</button>
+            <input type="text" id="qrLocationSearch" class="form-input" placeholder="ì£¼ì†Œë‚˜ ëª…ì¹­ì„ ì…ë ¥í•˜ì„¸ìš”" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();searchLocationFor('qr');}" />
+            <button type="button" class="admin-btn" onclick="searchLocationFor('qr')" style="padding:0.4rem 0.8rem;font-size:0.82rem;white-space:nowrap;">ğŸ” ê²€ìƒ‰</button>
           </div>
           <div id="qrLocationResults" class="location-results" style="display:none;"></div>
           <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
             <div style="flex:1;min-width:160px;">
-              <input type="text" id="qrLocationName" class="form-input" placeholder="¼±ÅÃµÈ ÁÖ¼Ò (°Ë»ö ÈÄ ¼±ÅÃÇÏ¼¼¿ä)" oninput="clearLocationCoordsFor('qr')" />
+              <input type="text" id="qrLocationName" class="form-input" placeholder="ì„ íƒëœ ì£¼ì†Œ (ê²€ìƒ‰ í›„ ì„ íƒí•˜ì„¸ìš”)" oninput="clearLocationCoordsFor('qr')" />
             </div>
             <div>
               <select id="qrLocationRadius" class="form-input" style="width:auto;">
@@ -232,48 +232,48 @@
           </div>
           <input type="hidden" id="qrLocationLat" />
           <input type="hidden" id="qrLocationLng" />
-          <div class="loc-hint">?? ÁÖ¼Ò¸¦ ¼±ÅÃÇÏ¸é À§µµ/°æµµ°¡ ÀÚµ¿ ÀúÀåµË´Ï´Ù.</div>
+          <div class="loc-hint">ğŸ’¡ ì£¼ì†Œë¥¼ ì„ íƒí•˜ë©´ ìœ„ë„/ê²½ë„ê°€ ìë™ ì €ì¥ë©ë‹ˆë‹¤.</div>
         </div>
       </div>
 
       <div style="margin-top:0.8rem;">
-        <button class="admin-btn primary btn-create-qr" id="btnCreateQR" onclick="createQR()">?? QR ÄÚµå »ı¼º</button>
+        <button class="admin-btn primary btn-create-qr" id="btnCreateQR" onclick="createQR()">ğŸ« QR ì½”ë“œ ìƒì„±</button>
         <div id="qrFormStatus" style="display:none;margin-top:0.6rem;padding:0.55rem 0.7rem;border-radius:8px;font-size:0.84rem;"></div>
       </div>
     </div>
 
     <div class="qr-tabs">
-      <button class="filter-btn active" id="tabActive" onclick="switchTab('active')">È°¼º ÄÚµå</button>
-      <button class="filter-btn" id="tabAll" onclick="switchTab('all')">ÀüÃ¼</button>
+      <button class="filter-btn active" id="tabActive" onclick="switchTab('active')">í™œì„± ì½”ë“œ</button>
+      <button class="filter-btn" id="tabAll" onclick="switchTab('all')">ì „ì²´</button>
       <span id="qrCount" style="margin-left:auto;font-size:0.82rem;color:var(--admin-text-muted);"></span>
     </div>
     <div class="filter-bar">
-      <input type="text" id="qrSearchInput" placeholder="?? °Ë»ö (¼³¸í, ÄÚµå)" oninput="onQRFilterChange()" />
+      <input type="text" id="qrSearchInput" placeholder="ğŸ” ê²€ìƒ‰ (ì„¤ëª…, ì½”ë“œ)" oninput="onQRFilterChange()" />
       <select id="qrFilterTarget" onchange="onQRFilterChange()">
-        <option value="">ÀüÃ¼ ´ë»ó</option>
-        <option value="student">?? ÇĞ»ı</option>
-        <option value="teacher">????? ±³»ç</option>
+        <option value="">ì „ì²´ ëŒ€ìƒ</option>
+        <option value="student">ğŸ’ í•™ìƒ</option>
+        <option value="teacher">ğŸ‘¨â€ğŸ« êµì‚¬</option>
       </select>
       <select id="qrFilterCondition" onchange="onQRFilterChange()">
-        <option value="">ÀüÃ¼ Á¶°Ç</option>
-        <option value="unlimited">¹«Á¦ÇÑ</option>
-        <option value="limited">¼±Âø¼ø</option>
-        <option value="location">À§Ä¡ Á¦ÇÑ</option>
-        <option value="repeat">¹İº¹ ¼ö·É</option>
+        <option value="">ì „ì²´ ì¡°ê±´</option>
+        <option value="unlimited">ë¬´ì œí•œ</option>
+        <option value="limited">ì„ ì°©ìˆœ</option>
+        <option value="location">ìœ„ì¹˜ ì œí•œ</option>
+        <option value="repeat">ë°˜ë³µ ìˆ˜ë ¹</option>
       </select>
     </div>
     <div class="filter-bar" style="margin-top:-0.4rem;">
-      <input type="date" id="qrFilterDateFrom" onchange="onQRFilterChange()" title="½ÃÀÛÀÏ" />
+      <input type="date" id="qrFilterDateFrom" onchange="onQRFilterChange()" title="ì‹œì‘ì¼" />
       <span style="font-size:0.82rem;color:var(--admin-text-muted);">~</span>
-      <input type="date" id="qrFilterDateTo" onchange="onQRFilterChange()" title="Á¾·áÀÏ" />
-      <button class="filter-btn" onclick="setQRDatePreset('today')" style="font-size:0.75rem;">¿À´Ã</button>
-      <button class="filter-btn" onclick="setQRDatePreset('week')" style="font-size:0.75rem;">1ÁÖ</button>
-      <button class="filter-btn" onclick="setQRDatePreset('month')" style="font-size:0.75rem;">1´Ş</button>
-      <button class="filter-btn" onclick="setQRDatePreset('year')" style="font-size:0.75rem;">1³â</button>
+      <input type="date" id="qrFilterDateTo" onchange="onQRFilterChange()" title="ì¢…ë£Œì¼" />
+      <button class="filter-btn" onclick="setQRDatePreset('today')" style="font-size:0.75rem;">ì˜¤ëŠ˜</button>
+      <button class="filter-btn" onclick="setQRDatePreset('week')" style="font-size:0.75rem;">1ì£¼</button>
+      <button class="filter-btn" onclick="setQRDatePreset('month')" style="font-size:0.75rem;">1ë‹¬</button>
+      <button class="filter-btn" onclick="setQRDatePreset('year')" style="font-size:0.75rem;">1ë…„</button>
     </div>
 
     <div id="qrList">
-      <div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">ºÒ·¯¿À´Â Áß...</div>
+      <div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</div>
     </div>
     <div id="qrListPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
   </div>
@@ -281,59 +281,59 @@
   <!-- Edit Modal -->
   <div class="modal-overlay" id="editModal">
     <div class="modal-box" style="max-width:600px;max-height:85vh;overflow-y:auto;">
-      <h3>?? QR ÄÚµå ¼öÁ¤</h3>
+      <h3>âœï¸ QR ì½”ë“œ ìˆ˜ì •</h3>
       <input type="hidden" id="editId" />
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;">ÀúÀå ¹æ½Ä</label>
+        <label style="font-weight:600;">ì €ì¥ ë°©ì‹</label>
         <div class="radio-row radio-inline" style="margin-top:0.3rem;">
-          <label><input type="radio" name="editSaveMode" value="keep" checked /> ?? ±âÁ¸ QR À¯Áö</label>
-          <label><input type="radio" name="editSaveMode" value="new" /> ?? »õ QR »ı¼º</label>
+          <label><input type="radio" name="editSaveMode" value="keep" checked /> ğŸ“Œ ê¸°ì¡´ QR ìœ ì§€</label>
+          <label><input type="radio" name="editSaveMode" value="new" /> ğŸ”„ ìƒˆ QR ìƒì„±</label>
         </div>
       </div>
       <div class="form-grid" style="gap:0.8rem;">
         <div>
-          <label>Áö±Ş ´ë»ó</label>
+          <label>ì§€ê¸‰ ëŒ€ìƒ</label>
           <div class="radio-row radio-inline">
-            <label><input type="radio" name="editTargetType" value="student" checked onchange="onEditTargetTypeChange()" /> ÇĞ»ı</label>
-            <label><input type="radio" name="editTargetType" value="teacher" onchange="onEditTargetTypeChange()" /> ±³»ç</label>
+            <label><input type="radio" name="editTargetType" value="student" checked onchange="onEditTargetTypeChange()" /> í•™ìƒ</label>
+            <label><input type="radio" name="editTargetType" value="teacher" onchange="onEditTargetTypeChange()" /> êµì‚¬</label>
           </div>
         </div>
         <div>
-          <label>´Ş¶õÆ® Ç×¸ñ</label>
+          <label>ë‹¬ë€íŠ¸ í•­ëª©</label>
           <select id="editItemSelect" class="form-input" onchange="onEditItemChange()">
-            <option value="">-- Ç×¸ñ ¼±ÅÃ --</option>
-            <option value="manual">?? Á÷Á¢ ÀÔ·Â</option>
+            <option value="">-- í•­ëª© ì„ íƒ --</option>
+            <option value="manual">âœï¸ ì§ì ‘ ì…ë ¥</option>
           </select>
           <div id="editItemInfo" class="item-info-box" style="display:none;">
-            ?? <strong id="editItemName"></strong> ¡¤ <span id="editItemAmount"></span> ´Ş¶õÆ®
+            ğŸ“Œ <strong id="editItemName"></strong> Â· <span id="editItemAmount"></span> ë‹¬ë€íŠ¸
           </div>
         </div>
         <div id="editManualFields" style="display:none;">
-          <label>¼³¸í</label>
+          <label>ì„¤ëª…</label>
           <input type="text" id="editDesc" />
         </div>
         <div id="editManualAmountField" style="display:none;">
-          <label>´Ş¶õÆ® ±İ¾×</label>
+          <label>ë‹¬ë€íŠ¸ ê¸ˆì•¡</label>
           <input type="number" id="editAmount" min="1" max="100" />
         </div>
         <div>
-          <label>Áö±Ş ¹æ½Ä</label>
+          <label>ì§€ê¸‰ ë°©ì‹</label>
           <div class="radio-row">
-            <label><input type="radio" name="editMaxUsesType" value="unlimited" checked onchange="onEditMaxUsesTypeChange()" /> Áö±Ş Á¦ÇÑ ¾øÀ½</label>
+            <label><input type="radio" name="editMaxUsesType" value="unlimited" checked onchange="onEditMaxUsesTypeChange()" /> ì§€ê¸‰ ì œí•œ ì—†ìŒ</label>
             <label>
               <input type="radio" name="editMaxUsesType" value="limited" onchange="onEditMaxUsesTypeChange()" />
-              ¼±Âø¼ø
+              ì„ ì°©ìˆœ
               <input type="number" id="editMaxUsesCount" class="inline-num" min="1" max="100000" value="30" disabled />
-              ¸í
+              ëª…
             </label>
           </div>
         </div>
         <div style="grid-column:1/-1;">
-          <label>À¯È¿ ±â°£</label>
+          <label>ìœ íš¨ ê¸°ê°„</label>
           <div class="radio-row radio-inline" style="margin-bottom:0.4rem;">
-            <label><input type="radio" name="editValidityType" value="designated" checked onchange="onEditValidityTypeChange()" /> ÁöÁ¤ÀÏ</label>
-            <label><input type="radio" name="editValidityType" value="period" onchange="onEditValidityTypeChange()" /> ±â°£</label>
-            <label><input type="radio" name="editValidityType" value="unlimited" onchange="onEditValidityTypeChange()" /> ¹«±âÇÑ</label>
+            <label><input type="radio" name="editValidityType" value="designated" checked onchange="onEditValidityTypeChange()" /> ì§€ì •ì¼</label>
+            <label><input type="radio" name="editValidityType" value="period" onchange="onEditValidityTypeChange()" /> ê¸°ê°„</label>
+            <label><input type="radio" name="editValidityType" value="unlimited" onchange="onEditValidityTypeChange()" /> ë¬´ê¸°í•œ</label>
           </div>
           <div id="editValidityDesignated" class="period-row">
             <input type="date" id="editValidDate" class="form-input" style="max-width:200px;" />
@@ -345,58 +345,58 @@
           </div>
         </div>
         <div style="grid-column:1/-1;">
-          <label style="font-weight:600;">¹İº¹ ¼ö·É °¡´É ¿©ºÎ</label>
+          <label style="font-weight:600;">ë°˜ë³µ ìˆ˜ë ¹ ê°€ëŠ¥ ì—¬ë¶€</label>
           <div class="radio-row radio-inline">
-            <label><input type="radio" name="editRepeatEnabled" value="no" checked onchange="onEditRepeatEnabledChange()" /> ? X</label>
-            <label><input type="radio" name="editRepeatEnabled" value="yes" onchange="onEditRepeatEnabledChange()" /> ? O</label>
+            <label><input type="radio" name="editRepeatEnabled" value="no" checked onchange="onEditRepeatEnabledChange()" /> âŒ X</label>
+            <label><input type="radio" name="editRepeatEnabled" value="yes" onchange="onEditRepeatEnabledChange()" /> â­• O</label>
           </div>
           <div id="editRepeatOptions" style="display:none;">
             <div class="repeat-sub" style="margin-top:0.4rem;">
-              <label class="section-label">¹İº¹ ¹æ½Ä</label>
+              <label class="section-label">ë°˜ë³µ ë°©ì‹</label>
               <div class="radio-row">
-                <label><input type="radio" name="editRepeatType" value="daily" checked onchange="onEditRepeatTypeChange()" /> ¸ÅÀÏ</label>
-                <label><input type="radio" name="editRepeatType" value="weekday" onchange="onEditRepeatTypeChange()" /> ¿äÀÏ ¹İº¹</label>
-                <label><input type="radio" name="editRepeatType" value="week_weekday" onchange="onEditRepeatTypeChange()" /> ÁÖÂ÷+¿äÀÏ</label>
+                <label><input type="radio" name="editRepeatType" value="daily" checked onchange="onEditRepeatTypeChange()" /> ë§¤ì¼</label>
+                <label><input type="radio" name="editRepeatType" value="weekday" onchange="onEditRepeatTypeChange()" /> ìš”ì¼ ë°˜ë³µ</label>
+                <label><input type="radio" name="editRepeatType" value="week_weekday" onchange="onEditRepeatTypeChange()" /> ì£¼ì°¨+ìš”ì¼</label>
               </div>
               <div id="editRepeatDaysWrap" style="display:none;margin-top:0.4rem;">
-                <label class="section-label">¿äÀÏ</label>
+                <label class="section-label">ìš”ì¼</label>
                 <div class="day-checks">
-                  <label><input type="checkbox" name="editRepeatDay" value="0" /> ÀÏ</label>
-                  <label><input type="checkbox" name="editRepeatDay" value="1" /> ¿ù</label>
-                  <label><input type="checkbox" name="editRepeatDay" value="2" /> È­</label>
-                  <label><input type="checkbox" name="editRepeatDay" value="3" /> ¼ö</label>
-                  <label><input type="checkbox" name="editRepeatDay" value="4" /> ¸ñ</label>
-                  <label><input type="checkbox" name="editRepeatDay" value="5" /> ±İ</label>
-                  <label><input type="checkbox" name="editRepeatDay" value="6" /> Åä</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="0" /> ì¼</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="1" /> ì›”</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="2" /> í™”</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="3" /> ìˆ˜</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="4" /> ëª©</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="5" /> ê¸ˆ</label>
+                  <label><input type="checkbox" name="editRepeatDay" value="6" /> í† </label>
                 </div>
               </div>
               <div id="editRepeatWeeksWrap" style="display:none;margin-top:0.4rem;">
-                <label class="section-label">ÁÖÂ÷</label>
+                <label class="section-label">ì£¼ì°¨</label>
                 <div class="week-checks">
-                  <label><input type="checkbox" name="editRepeatWeek" value="1" /> 1ÁÖ</label>
-                  <label><input type="checkbox" name="editRepeatWeek" value="2" /> 2ÁÖ</label>
-                  <label><input type="checkbox" name="editRepeatWeek" value="3" /> 3ÁÖ</label>
-                  <label><input type="checkbox" name="editRepeatWeek" value="4" /> 4ÁÖ</label>
-                  <label><input type="checkbox" name="editRepeatWeek" value="5" /> 5ÁÖ</label>
+                  <label><input type="checkbox" name="editRepeatWeek" value="1" /> 1ì£¼</label>
+                  <label><input type="checkbox" name="editRepeatWeek" value="2" /> 2ì£¼</label>
+                  <label><input type="checkbox" name="editRepeatWeek" value="3" /> 3ì£¼</label>
+                  <label><input type="checkbox" name="editRepeatWeek" value="4" /> 4ì£¼</label>
+                  <label><input type="checkbox" name="editRepeatWeek" value="5" /> 5ì£¼</label>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div style="grid-column:1/-1;">
-          <label style="font-weight:600;">À§Ä¡ Á¦ÇÑ</label>
+          <label style="font-weight:600;">ìœ„ì¹˜ ì œí•œ</label>
           <div class="radio-row radio-inline" style="margin-bottom:0.4rem;">
-            <label><input type="radio" name="editLocationType" value="none" checked onchange="onEditLocationTypeChange()" /> Á¦ÇÑ ¾øÀ½</label>
-            <label><input type="radio" name="editLocationType" value="specific" onchange="onEditLocationTypeChange()" /> Æ¯Á¤ À§Ä¡</label>
+            <label><input type="radio" name="editLocationType" value="none" checked onchange="onEditLocationTypeChange()" /> ì œí•œ ì—†ìŒ</label>
+            <label><input type="radio" name="editLocationType" value="specific" onchange="onEditLocationTypeChange()" /> íŠ¹ì • ìœ„ì¹˜</label>
           </div>
           <div id="editLocationFields" style="display:none;">
             <div style="display:flex;gap:0.4rem;margin-bottom:0.4rem;">
-              <input type="text" id="editLocationSearch" class="form-input" placeholder="ÁÖ¼Ò³ª ¸íÄª ÀÔ·Â" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();searchLocationFor('edit');}" />
-              <button type="button" class="admin-btn" onclick="searchLocationFor('edit')" style="padding:0.35rem 0.6rem;font-size:0.78rem;">?? °Ë»ö</button>
+              <input type="text" id="editLocationSearch" class="form-input" placeholder="ì£¼ì†Œë‚˜ ëª…ì¹­ ì…ë ¥" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault();searchLocationFor('edit');}" />
+              <button type="button" class="admin-btn" onclick="searchLocationFor('edit')" style="padding:0.35rem 0.6rem;font-size:0.78rem;">ğŸ” ê²€ìƒ‰</button>
             </div>
             <div id="editLocationResults" class="location-results" style="display:none;"></div>
             <div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
-              <input type="text" id="editLocationName" class="form-input" placeholder="¼±ÅÃµÈ ÁÖ¼Ò" oninput="clearLocationCoordsFor('edit')" style="flex:1;" />
+              <input type="text" id="editLocationName" class="form-input" placeholder="ì„ íƒëœ ì£¼ì†Œ" oninput="clearLocationCoordsFor('edit')" style="flex:1;" />
               <select id="editLocationRadius" class="form-input" style="width:auto;">
                 <option value="500">500m</option>
                 <option value="1000" selected>1km</option>
@@ -416,8 +416,8 @@
         </div>
       </div>
       <div class="modal-actions" style="margin-top:0.8rem;">
-        <button class="admin-btn" onclick="closeEditModal()">Ãë¼Ò</button>
-        <button class="admin-btn primary" onclick="saveEdit()">?? ÀúÀå</button>
+        <button class="admin-btn" onclick="closeEditModal()">ì·¨ì†Œ</button>
+        <button class="admin-btn primary" onclick="saveEdit()">ğŸ’¾ ì €ì¥</button>
       </div>
     </div>
   </div>
@@ -425,10 +425,10 @@
   <!-- Scan List Modal -->
   <div class="modal-overlay" id="scanListModal">
     <div class="modal-box wide">
-      <h3>?? ¼ö·ÉÀÚ ¸ñ·Ï <span id="scanListTitle" style="font-size:0.85rem;font-weight:400;color:var(--admin-text-muted);"></span></h3>
-      <div id="scanListContent"><div class="scan-empty">ºÒ·¯¿À´Â Áß...</div></div>
+      <h3>ğŸ‘¥ ìˆ˜ë ¹ì ëª©ë¡ <span id="scanListTitle" style="font-size:0.85rem;font-weight:400;color:var(--admin-text-muted);"></span></h3>
+      <div id="scanListContent"><div class="scan-empty">ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</div></div>
       <div class="modal-actions">
-        <button class="admin-btn" onclick="closeScanListModal()">´İ±â</button>
+        <button class="admin-btn" onclick="closeScanListModal()">ë‹«ê¸°</button>
       </div>
     </div>
   </div>
@@ -469,11 +469,11 @@
       await loadQRList();
     })();
 
-    /* ¦¡¦¡ Kakao Maps SDK ¦¡¦¡ */
+    /* â”€â”€ Kakao Maps SDK â”€â”€ */
     async function loadKakaoSDK() {
       if (kakaoLoaded) return true;
       if (typeof KAKAO_MAP_KEY === 'undefined' || !KAKAO_MAP_KEY || KAKAO_MAP_KEY === 'YOUR_KAKAO_JS_KEY') {
-        alert('Ä«Ä«¿À ¸Ê API Å°°¡ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù.\njs/supabase-config.js ÆÄÀÏ¿¡¼­ KAKAO_MAP_KEY¸¦ ¼³Á¤ÇØÁÖ¼¼¿ä.\n\nhttps://developers.kakao.com ¿¡¼­ ¾Û µî·Ï ÈÄ JavaScript Å°¸¦ ¹ß±Ş¹ŞÀ¸¼¼¿ä.');
+        alert('ì¹´ì¹´ì˜¤ ë§µ API í‚¤ê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.\njs/supabase-config.js íŒŒì¼ì—ì„œ KAKAO_MAP_KEYë¥¼ ì„¤ì •í•´ì£¼ì„¸ìš”.\n\nhttps://developers.kakao.com ì—ì„œ ì•± ë“±ë¡ í›„ JavaScript í‚¤ë¥¼ ë°œê¸‰ë°›ìœ¼ì„¸ìš”.');
         return false;
       }
       if (kakaoLoadPromise) return kakaoLoadPromise;
@@ -484,7 +484,7 @@
             kakaoLoaded = true;
             resolve(true);
           } else {
-            alert('Ä«Ä«¿À ¸Ê SDK°¡ Á¤»ó ·ÎµåµÇÁö ¾Ê¾Ò½À´Ï´Ù.\n\nºê¶ó¿ìÀú »õ·Î°íÄ§ ÈÄ ´Ù½Ã ½ÃµµÇØÁÖ¼¼¿ä.\n¹®Á¦°¡ °è¼ÓµÇ¸é Kakao DevelopersÀÇ JavaScript Å°/µµ¸ŞÀÎ ¼³Á¤À» È®ÀÎÇØÁÖ¼¼¿ä:\n\n' + location.origin);
+            alert('ì¹´ì¹´ì˜¤ ë§µ SDKê°€ ì •ìƒ ë¡œë“œë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.\n\në¸Œë¼ìš°ì € ìƒˆë¡œê³ ì¹¨ í›„ ë‹¤ì‹œ ì‹œë„í•´ì£¼ì„¸ìš”.\në¬¸ì œê°€ ê³„ì†ë˜ë©´ Kakao Developersì˜ JavaScript í‚¤/ë„ë©”ì¸ ì„¤ì •ì„ í™•ì¸í•´ì£¼ì„¸ìš”:\n\n' + location.origin);
             kakaoLoadPromise = null;
             resolve(false);
           }
@@ -501,13 +501,13 @@
           if (typeof kakao !== 'undefined' && kakao.maps && kakao.maps.load) {
             kakao.maps.load(finishLoad);
           } else {
-            alert('Ä«Ä«¿À ¸Ê SDK°¡ Á¤»ó ·ÎµåµÇÁö ¾Ê¾Ò½À´Ï´Ù.\n\nKakao Developers (developers.kakao.com) ¿¡¼­\n³» ¾ÖÇÃ¸®ÄÉÀÌ¼Ç > ¾Û ¼³Á¤ > ÇÃ·§Æû > Web\n»çÀÌÆ® µµ¸ŞÀÎ¿¡ ¾Æ·¡ ÁÖ¼Ò¸¦ µî·ÏÇØÁÖ¼¼¿ä:\n\n' + location.origin);
+            alert('ì¹´ì¹´ì˜¤ ë§µ SDKê°€ ì •ìƒ ë¡œë“œë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.\n\nKakao Developers (developers.kakao.com) ì—ì„œ\në‚´ ì• í”Œë¦¬ì¼€ì´ì…˜ > ì•± ì„¤ì • > í”Œë«í¼ > Web\nì‚¬ì´íŠ¸ ë„ë©”ì¸ì— ì•„ë˜ ì£¼ì†Œë¥¼ ë“±ë¡í•´ì£¼ì„¸ìš”:\n\n' + location.origin);
             kakaoLoadPromise = null;
             resolve(false);
           }
         };
         s.onerror = () => {
-          alert('Ä«Ä«¿À ¸Ê SDK ·Îµå ½ÇÆĞ\n\nKakao Developers (developers.kakao.com) ¿¡¼­\n³» ¾ÖÇÃ¸®ÄÉÀÌ¼Ç > ¾Û ¼³Á¤ > ÇÃ·§Æû > Web\n»çÀÌÆ® µµ¸ŞÀÎ¿¡ ¾Æ·¡ ÁÖ¼Ò¸¦ µî·ÏÇØÁÖ¼¼¿ä:\n\n' + location.origin);
+          alert('ì¹´ì¹´ì˜¤ ë§µ SDK ë¡œë“œ ì‹¤íŒ¨\n\nKakao Developers (developers.kakao.com) ì—ì„œ\në‚´ ì• í”Œë¦¬ì¼€ì´ì…˜ > ì•± ì„¤ì • > í”Œë«í¼ > Web\nì‚¬ì´íŠ¸ ë„ë©”ì¸ì— ì•„ë˜ ì£¼ì†Œë¥¼ ë“±ë¡í•´ì£¼ì„¸ìš”:\n\n' + location.origin);
           kakaoLoadPromise = null;
           resolve(false);
         };
@@ -517,7 +517,7 @@
       return kakaoLoadPromise;
     }
 
-    /* ¦¡¦¡ Talent Items ¦¡¦¡ */
+    /* â”€â”€ Talent Items â”€â”€ */
     async function loadTalentItems() {
       const { data } = await fetchAllTalentItems();
       talentItems = (data || []).filter(i => i.is_active);
@@ -537,14 +537,14 @@
       filtered.forEach(item => {
         const opt = document.createElement('option');
         opt.value = item.id;
-        opt.textContent = item.name + ' (' + item.talent_amount + ' ´Ş¶õÆ®)';
+        opt.textContent = item.name + ' (' + item.talent_amount + ' ë‹¬ë€íŠ¸)';
         opt.dataset.amount = item.talent_amount;
         opt.dataset.name = item.name;
         sel.insertBefore(opt, manualOpt);
       });
     }
 
-    /* ¦¡¦¡ Target Type ¦¡¦¡ */
+    /* â”€â”€ Target Type â”€â”€ */
     function onTargetTypeChange() {
       const type = document.querySelector('input[name="targetType"]:checked').value;
       populateItemSelect('qrItemSelect', type);
@@ -562,7 +562,7 @@
       document.getElementById('editItemInfo').style.display = 'none';
     }
 
-    /* ¦¡¦¡ Item Select ¦¡¦¡ */
+    /* â”€â”€ Item Select â”€â”€ */
     function onItemSelectChange() {
       const val = document.getElementById('qrItemSelect').value;
       const manualDiv = document.getElementById('manualFields');
@@ -601,7 +601,7 @@
       }
     }
 
-    /* ¦¡¦¡ Max Uses ¦¡¦¡ */
+    /* â”€â”€ Max Uses â”€â”€ */
     function onMaxUsesTypeChange() {
       document.getElementById('maxUsesCount').disabled = !document.querySelector('input[name="maxUsesType"][value="limited"]').checked;
     }
@@ -609,7 +609,7 @@
       document.getElementById('editMaxUsesCount').disabled = !document.querySelector('input[name="editMaxUsesType"][value="limited"]').checked;
     }
 
-    /* ¦¡¦¡ Repeat ¦¡¦¡ */
+    /* â”€â”€ Repeat â”€â”€ */
     function onRepeatEnabledChange() {
       const yes = document.querySelector('input[name="repeatEnabled"][value="yes"]').checked;
       document.getElementById('repeatOptions').style.display = yes ? '' : 'none';
@@ -634,7 +634,7 @@
       return [...document.querySelectorAll('input[name="' + name + '"]:checked')].map(c => parseInt(c.value));
     }
 
-    /* ¦¡¦¡ Validity Type ¦¡¦¡ */
+    /* â”€â”€ Validity Type â”€â”€ */
     function onValidityTypeChange() {
       const type = document.querySelector('input[name="validityType"]:checked').value;
       document.getElementById('validityDesignated').style.display = type === 'designated' ? '' : 'none';
@@ -646,7 +646,7 @@
       document.getElementById('editValidityPeriod').style.display = type === 'period' ? '' : 'none';
     }
 
-    /* ¦¡¦¡ Location Type ¦¡¦¡ */
+    /* â”€â”€ Location Type â”€â”€ */
     function onLocationTypeChange() {
       document.getElementById('locationFields').style.display =
         document.querySelector('input[name="locationType"][value="specific"]').checked ? '' : 'none';
@@ -656,18 +656,18 @@
         document.querySelector('input[name="editLocationType"][value="specific"]').checked ? '' : 'none';
     }
 
-    /* ¦¡¦¡ Location Search (shared) ¦¡¦¡ */
+    /* â”€â”€ Location Search (shared) â”€â”€ */
     async function searchLocationFor(prefix) {
       const input = document.getElementById(prefix + 'LocationSearch');
       const query = input.value.trim();
-      if (!query) { alert('°Ë»ö¾î¸¦ ÀÔ·ÂÇÏ¼¼¿ä.'); return; }
+      if (!query) { alert('ê²€ìƒ‰ì–´ë¥¼ ì…ë ¥í•˜ì„¸ìš”.'); return; }
       if (!await loadKakaoSDK()) return;
 
       const ps = new kakao.maps.services.Places();
       ps.keywordSearch(query, function(data, status) {
         const box = document.getElementById(prefix + 'LocationResults');
         if (status !== kakao.maps.services.Status.OK || !data.length) {
-          box.innerHTML = '<div style="padding:0.8rem;text-align:center;color:var(--admin-text-muted);font-size:0.85rem;">°Ë»ö °á°ú°¡ ¾ø½À´Ï´Ù.</div>';
+          box.innerHTML = '<div style="padding:0.8rem;text-align:center;color:var(--admin-text-muted);font-size:0.85rem;">ê²€ìƒ‰ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤.</div>';
           box.style.display = '';
           return;
         }
@@ -694,7 +694,7 @@
       document.getElementById(prefix + 'LocationLng').value = '';
     }
 
-    /* ¦¡¦¡ Utility ¦¡¦¡ */
+    /* â”€â”€ Utility â”€â”€ */
     function nowKST() {
       return new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
     }
@@ -723,7 +723,7 @@
       return raw.slice(0,6) + '-' + raw.slice(6,12) + '-' + raw.slice(12,18);
     }
 
-    /* ¦¡¦¡ Form Values & Build ¦¡¦¡ */
+    /* â”€â”€ Form Values & Build â”€â”€ */
     function getFormValues(prefix) {
       const isCreate = prefix === '';
       const pf = isCreate ? '' : 'edit';
@@ -737,21 +737,21 @@
 
       let desc, amount, talentItemId = null;
       if (itemSel === '' || itemSel === 'manual') {
-        if (itemSel === '') return { error: '´Ş¶õÆ® Ç×¸ñÀ» ¼±ÅÃÇÏ¼¼¿ä.' };
+        if (itemSel === '') return { error: 'ë‹¬ë€íŠ¸ í•­ëª©ì„ ì„ íƒí•˜ì„¸ìš”.' };
         desc = document.getElementById(isCreate ? 'qrDesc' : 'editDesc').value.trim();
         amount = parseInt(document.getElementById(isCreate ? 'qrAmount' : 'editAmount').value) || 0;
-        if (!desc) return { error: '¼³¸íÀ» ÀÔ·ÂÇÏ¼¼¿ä.' };
-        if (amount < 1) return { error: '±İ¾×Àº 1 ÀÌ»óÀÌ¾î¾ß ÇÕ´Ï´Ù.' };
-        if (amount > 100) return { error: '´Ş¶õÆ®´Â ÃÖ´ë 100±îÁö¸¸ ¼³Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.' };
+        if (!desc) return { error: 'ì„¤ëª…ì„ ì…ë ¥í•˜ì„¸ìš”.' };
+        if (amount < 1) return { error: 'ê¸ˆì•¡ì€ 1 ì´ìƒì´ì–´ì•¼ í•©ë‹ˆë‹¤.' };
+        if (amount > 100) return { error: 'ë‹¬ë€íŠ¸ëŠ” ìµœëŒ€ 100ê¹Œì§€ë§Œ ì„¤ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.' };
       } else {
         const item = talentItems.find(i => i.id === itemSel);
-        if (!item) return { error: '¼±ÅÃÇÑ Ç×¸ñÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù.' };
+        if (!item) return { error: 'ì„ íƒí•œ í•­ëª©ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' };
         desc = item.name; amount = item.talent_amount; talentItemId = item.id;
       }
 
       const maxUses = maxUsesType === 'limited' ? maxUsesCount : 0;
       if (maxUsesType === 'limited' && (maxUsesCount < 1 || maxUsesCount > 100000))
-        return { error: '¼±Âø¼ø ÀÎ¿øÀº 1~100,000 »çÀÌ¿©¾ß ÇÕ´Ï´Ù.' };
+        return { error: 'ì„ ì°©ìˆœ ì¸ì›ì€ 1~100,000 ì‚¬ì´ì—¬ì•¼ í•©ë‹ˆë‹¤.' };
 
       let validFrom = null, validTo = null;
       if (validityType === 'designated') {
@@ -767,7 +767,7 @@
         locationLat = parseFloat(document.getElementById(locPrefix + 'LocationLat').value);
         locationLng = parseFloat(document.getElementById(locPrefix + 'LocationLng').value);
         if (!locationLat || !locationLng || isNaN(locationLat) || isNaN(locationLng))
-          return { error: 'À§Ä¡ Á¦ÇÑÀÌ "Æ¯Á¤ À§Ä¡"ÀÎ °æ¿ì ÁÖ¼Ò¸¦ °Ë»öÇÏ¿© ¼±ÅÃÇØ¾ß ÇÕ´Ï´Ù.\nÀ§µµ/°æµµ °ªÀÌ ¾øÀ¸¸é QR ÄÚµå¸¦ »ı¼ºÇÒ ¼ö ¾ø½À´Ï´Ù.' };
+          return { error: 'ìœ„ì¹˜ ì œí•œì´ "íŠ¹ì • ìœ„ì¹˜"ì¸ ê²½ìš° ì£¼ì†Œë¥¼ ê²€ìƒ‰í•˜ì—¬ ì„ íƒí•´ì•¼ í•©ë‹ˆë‹¤.\nìœ„ë„/ê²½ë„ ê°’ì´ ì—†ìœ¼ë©´ QR ì½”ë“œë¥¼ ìƒì„±í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.' };
         locationName = document.getElementById(locPrefix + 'LocationName').value;
         locationRadius = parseInt(document.getElementById(locPrefix + 'LocationRadius').value) || 1000;
       }
@@ -781,11 +781,11 @@
         repeatType = document.querySelector('input[name="' + (isCreate ? 'repeatType' : 'editRepeatType') + '"]:checked').value;
         if (repeatType === 'weekday' || repeatType === 'week_weekday') {
           repeatDays = getCheckedValues(isCreate ? 'repeatDay' : 'editRepeatDay');
-          if (repeatDays.length === 0) return { error: '¹İº¹ ¼ö·É ¿äÀÏÀ» ¼±ÅÃÇÏ¼¼¿ä.' };
+          if (repeatDays.length === 0) return { error: 'ë°˜ë³µ ìˆ˜ë ¹ ìš”ì¼ì„ ì„ íƒí•˜ì„¸ìš”.' };
         }
         if (repeatType === 'week_weekday') {
           repeatWeeks = getCheckedValues(isCreate ? 'repeatWeek' : 'editRepeatWeek');
-          if (repeatWeeks.length === 0) return { error: '¹İº¹ ¼ö·É ÁÖÂ÷¸¦ ¼±ÅÃÇÏ¼¼¿ä.' };
+          if (repeatWeeks.length === 0) return { error: 'ë°˜ë³µ ìˆ˜ë ¹ ì£¼ì°¨ë¥¼ ì„ íƒí•˜ì„¸ìš”.' };
         }
       }
 
@@ -834,7 +834,7 @@
       el.textContent = message;
     }
 
-    /* ¦¡¦¡ Create / Edit / Toggle ¦¡¦¡ */
+    /* â”€â”€ Create / Edit / Toggle â”€â”€ */
     async function createQR() {
       const btn = document.getElementById('btnCreateQR');
       showQRFormStatus('', '');
@@ -846,26 +846,26 @@
 
       btn.disabled = true;
       const originalText = btn.textContent;
-      btn.textContent = '»ı¼º Áß...';
+      btn.textContent = 'ìƒì„± ì¤‘...';
       try {
         const code = generateCode();
         const row = buildRow(code, v);
         const { data, error } = await _sb.from('talent_qr_codes').insert(row).select('id,code,description').single();
         if (error) {
-          await logError('QR_CREATE_FAIL', { ¼³¸í: v.desc, ¿À·ù: error.message });
+          await logError('QR_CREATE_FAIL', { ì„¤ëª…: v.desc, ì˜¤ë¥˜: error.message });
           const isDup = /duplicate key|unique/i.test(error.message);
           showQRFormStatus(isDup
-            ? '»ı¼º ½ÇÆĞ: µ¿ÀÏ Ç×¸ñÀÇ QRÀÌ ÀÌ¹Ì Á¸ÀçÇÕ´Ï´Ù. Áßº¹ Çã¿ëÀ» À§ÇØ docs/TASK-040_fixes.sqlÀ» ½ÇÇàÇØÁÖ¼¼¿ä.'
-            : '»ı¼º ½ÇÆĞ: ' + tErr(error.message), 'error');
+            ? 'ìƒì„± ì‹¤íŒ¨: ë™ì¼ í•­ëª©ì˜ QRì´ ì´ë¯¸ ì¡´ì¬í•©ë‹ˆë‹¤. ì¤‘ë³µ í—ˆìš©ì„ ìœ„í•´ docs/TASK-040_fixes.sqlì„ ì‹¤í–‰í•´ì£¼ì„¸ìš”.'
+            : 'ìƒì„± ì‹¤íŒ¨: ' + tErr(error.message), 'error');
           return;
         }
         if (!data || !data.id) {
-          await logWarn('QR_CREATE_NO_RESULT', { ¼³¸í: v.desc, code });
-          showQRFormStatus('»ı¼º °á°ú¸¦ È®ÀÎÇÏÁö ¸øÇß½À´Ï´Ù. »õ·Î°íÄ§ ÈÄ ¸ñ·ÏÀ» È®ÀÎÇØÁÖ¼¼¿ä.', 'warn');
+          await logWarn('QR_CREATE_NO_RESULT', { ì„¤ëª…: v.desc, code });
+          showQRFormStatus('ìƒì„± ê²°ê³¼ë¥¼ í™•ì¸í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤. ìƒˆë¡œê³ ì¹¨ í›„ ëª©ë¡ì„ í™•ì¸í•´ì£¼ì„¸ìš”.', 'warn');
           return;
         }
 
-        await logInfo('qr_create', { code, ±İ¾×: v.amount, ¼³¸í: v.desc, À¯Çü: v.targetType, max_uses: v.maxUses, qrId: data.id });
+        await logInfo('qr_create', { code, ê¸ˆì•¡: v.amount, ì„¤ëª…: v.desc, ìœ í˜•: v.targetType, max_uses: v.maxUses, qrId: data.id });
         currentTab = 'active';
         qrListPage = 1;
         document.getElementById('tabActive').classList.add('active');
@@ -875,10 +875,10 @@
         document.getElementById('qrFilterCondition').value = '';
         setQRDatePreset('week');
         await loadQRList();
-        showQRFormStatus('QR ÄÚµå°¡ »ı¼ºµÇ¾ú½À´Ï´Ù: ' + data.code, 'success');
+        showQRFormStatus('QR ì½”ë“œê°€ ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤: ' + data.code, 'success');
       } catch (err) {
-        await logError('QR_CREATE_ERROR', { ¼³¸í: v.desc, ¿À·ù: String(err) });
-        showQRFormStatus('»ı¼º Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù: ' + tErr(err.message || String(err)), 'error');
+        await logError('QR_CREATE_ERROR', { ì„¤ëª…: v.desc, ì˜¤ë¥˜: String(err) });
+        showQRFormStatus('ìƒì„± ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤: ' + tErr(err.message || String(err)), 'error');
       } finally {
         btn.disabled = false;
         btn.textContent = originalText;
@@ -909,23 +909,23 @@
         update.code = generateCode();
       }
       const { error } = await _sb.from('talent_qr_codes').update(update).eq('id', id);
-      if (error) { alert('¼öÁ¤ ½ÇÆĞ: ' + tErr(error.message)); return; }
-      await logInfo('qr_edit', { qr_id: id, mode: saveMode, ±İ¾×: v.amount, ¼³¸í: v.desc });
+      if (error) { alert('ìˆ˜ì • ì‹¤íŒ¨: ' + tErr(error.message)); return; }
+      await logInfo('qr_edit', { qr_id: id, mode: saveMode, ê¸ˆì•¡: v.amount, ì„¤ëª…: v.desc });
       closeEditModal();
-      alert(saveMode === 'new' ? '¼öÁ¤ ¿Ï·á. »õ QR ÄÚµå°¡ »ı¼ºµÇ¾ú½À´Ï´Ù.' : '¼öÁ¤ ¿Ï·á. ±âÁ¸ QR ÄÚµå°¡ À¯ÁöµË´Ï´Ù.');
+      alert(saveMode === 'new' ? 'ìˆ˜ì • ì™„ë£Œ. ìƒˆ QR ì½”ë“œê°€ ìƒì„±ë˜ì—ˆìŠµë‹ˆë‹¤.' : 'ìˆ˜ì • ì™„ë£Œ. ê¸°ì¡´ QR ì½”ë“œê°€ ìœ ì§€ë©ë‹ˆë‹¤.');
       await loadQRList();
     }
 
     async function toggleActive(id, current) {
-      const action = current ? 'ºñÈ°¼ºÈ­' : 'È°¼ºÈ­';
-      if (!confirm('ÀÌ ÄÚµå¸¦ ' + action + 'ÇÏ½Ã°Ú½À´Ï±î?')) return;
+      const action = current ? 'ë¹„í™œì„±í™”' : 'í™œì„±í™”';
+      if (!confirm('ì´ ì½”ë“œë¥¼ ' + action + 'í•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
       const { error } = await _sb.from('talent_qr_codes').update({ is_active: !current }).eq('id', id);
-      if (error) { alert(action + ' ½ÇÆĞ: ' + error.message); return; }
+      if (error) { alert(action + ' ì‹¤íŒ¨: ' + error.message); return; }
       await logInfo('qr_toggle', { qr_id: id, new_state: !current });
       await loadQRList();
     }
 
-    /* ¦¡¦¡ Tabs & List ¦¡¦¡ */
+    /* â”€â”€ Tabs & List â”€â”€ */
     function switchTab(tab) {
       currentTab = tab;
       qrListPage = 1;
@@ -955,23 +955,23 @@
     function getPeriodText(q) {
       const from = q.valid_from ? fmtDateTime(q.valid_from) : '';
       const to = q.valid_until ? fmtDateTime(q.valid_until) : '';
-      if (!from && !to) return '¹«±âÇÑ';
+      if (!from && !to) return 'ë¬´ê¸°í•œ';
       if (from && to) return from + ' ~ ' + to;
       if (from) return from + ' ~';
       return '~ ' + to;
     }
     function getMaxUsesText(q) {
-      if (!q.max_uses || q.max_uses === 0) return '¹«Á¦ÇÑ';
-      return '¼±Âø¼ø ' + q.max_uses.toLocaleString() + '¸í';
+      if (!q.max_uses || q.max_uses === 0) return 'ë¬´ì œí•œ';
+      return 'ì„ ì°©ìˆœ ' + q.max_uses.toLocaleString() + 'ëª…';
     }
     function getTargetText(q) {
-      return q.target_type === 'teacher' ? '±³»ç' : 'ÇĞ»ı';
+      return q.target_type === 'teacher' ? 'êµì‚¬' : 'í•™ìƒ';
     }
     function getLocationText(q) {
-      if (!q.location_lat || !q.location_lng) return 'Á¦ÇÑ ¾øÀ½';
+      if (!q.location_lat || !q.location_lng) return 'ì œí•œ ì—†ìŒ';
       const r = q.location_radius || 1000;
       const rt = r >= 1000 ? (r/1000) + 'km' : r + 'm';
-      return (q.location_name || 'Æ¯Á¤ À§Ä¡') + ' (' + rt + ')';
+      return (q.location_name || 'íŠ¹ì • ìœ„ì¹˜') + ' (' + rt + ')';
     }
     function isExpired(q) {
       const now = new Date();
@@ -980,18 +980,18 @@
       return false;
     }
 
-    const DAY_NAMES = ['ÀÏ','¿ù','È­','¼ö','¸ñ','±İ','Åä'];
+    const DAY_NAMES = ['ì¼','ì›”','í™”','ìˆ˜','ëª©','ê¸ˆ','í† '];
 
     function getRepeatText(q) {
       const rt = q.repeat_type || 'none';
-      if (rt === 'none') return '1È¸';
-      if (rt === 'daily') return '¸ÅÀÏ';
+      if (rt === 'none') return '1íšŒ';
+      if (rt === 'daily') return 'ë§¤ì¼';
       if (rt === 'weekday') {
         const days = (q.repeat_days || []).map(d => DAY_NAMES[d]).join(',');
-        return '¸ÅÁÖ ' + (days || '-');
+        return 'ë§¤ì£¼ ' + (days || '-');
       }
       if (rt === 'week_weekday') {
-        const weeks = (q.repeat_weeks || []).map(w => w + 'ÁÖ').join(',');
+        const weeks = (q.repeat_weeks || []).map(w => w + 'ì£¼').join(',');
         const days = (q.repeat_days || []).map(d => DAY_NAMES[d]).join(',');
         return weeks + ' ' + (days || '-');
       }
@@ -1054,9 +1054,9 @@
       const list = document.getElementById('qrList');
       let items = currentTab === 'active' ? allQR.filter(q => q.is_active) : allQR;
       items = applyQRFilters(items);
-      document.getElementById('qrCount').textContent = items.length + '°³';
+      document.getElementById('qrCount').textContent = items.length + 'ê°œ';
       if (items.length === 0) {
-        list.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">QR ÄÚµå°¡ ¾ø½À´Ï´Ù.</div>';
+        list.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">QR ì½”ë“œê°€ ì—†ìŠµë‹ˆë‹¤.</div>';
         document.getElementById('qrListPaging').innerHTML = '';
         return;
       }
@@ -1077,22 +1077,22 @@
           + '<div class="qr-img-wrap" id="qr-img-' + idx + '"></div>'
           + '<div class="qr-info">'
           + (isAdmin ? '<div class="qr-code-label">' + q.code + '</div>' : '')
-          + '<div style="font-weight:600;margin:0.2rem 0;">' + (q.description || '-') + ' ¡¤ ' + q.amount + ' ´Ş¶õÆ®</div>'
+          + '<div style="font-weight:600;margin:0.2rem 0;">' + (q.description || '-') + ' Â· ' + q.amount + ' ë‹¬ë€íŠ¸</div>'
           + '<div class="qr-meta">'
-          + '<span>?? ' + getTargetText(q) + '</span>'
-          + '<span>?? ' + fmtDate(q.created_at) + '</span>'
-          + '<span>?? »ç¿ë: ' + usedText + (usedUp ? ' (¿Ï·á)' : '') + '</span>'
-          + '<span>?? ' + getMaxUsesText(q) + '</span>'
-          + '<span>?? ' + repeatText + '</span>'
-          + '<span>? ' + getPeriodText(q) + (expired ? ' (¸¸·á)' : '') + '</span>'
-          + '<span>?? ' + getLocationText(q) + '</span>'
-          + '<span>' + (q.is_active ? '?? È°¼º' : '?? ºñÈ°¼º') + '</span>'
+          + '<span>ğŸ‘¤ ' + getTargetText(q) + '</span>'
+          + '<span>ğŸ“… ' + fmtDate(q.created_at) + '</span>'
+          + '<span>ğŸ‘¥ ì‚¬ìš©: ' + usedText + (usedUp ? ' (ì™„ë£Œ)' : '') + '</span>'
+          + '<span>ğŸ“Š ' + getMaxUsesText(q) + '</span>'
+          + '<span>ğŸ” ' + repeatText + '</span>'
+          + '<span>â° ' + getPeriodText(q) + (expired ? ' (ë§Œë£Œ)' : '') + '</span>'
+          + '<span>ğŸ“ ' + getLocationText(q) + '</span>'
+          + '<span>' + (q.is_active ? 'ğŸŸ¢ í™œì„±' : 'ğŸ”´ ë¹„í™œì„±') + '</span>'
           + '</div></div>'
           + '<div class="qr-actions">'
-          + '<button class="info" onclick="openScanListModal(\'' + q.id + '\',\'' + safeDesc + '\')">?? ¼ö·ÉÀÚ</button>'
-          + '<button onclick="printQR(\'' + q.code + '\',\'' + safeDesc + '\',' + q.amount + ')">??? ÀÎ¼â</button>'
-          + '<button class="edit" onclick="openEditModal(\'' + q.id + '\')">?? ¼öÁ¤</button>'
-          + '<button class="' + (q.is_active ? 'danger' : 'primary') + '" onclick="toggleActive(\'' + q.id + '\',' + q.is_active + ')">' + (q.is_active ? 'ºñÈ°¼ºÈ­' : 'È°¼ºÈ­') + '</button>'
+          + '<button class="info" onclick="openScanListModal(\'' + q.id + '\',\'' + safeDesc + '\')">ğŸ‘¥ ìˆ˜ë ¹ì</button>'
+          + '<button onclick="printQR(\'' + q.code + '\',\'' + safeDesc + '\',' + q.amount + ')">ğŸ–¨ï¸ ì¸ì‡„</button>'
+          + '<button class="edit" onclick="openEditModal(\'' + q.id + '\')">âœï¸ ìˆ˜ì •</button>'
+          + '<button class="' + (q.is_active ? 'danger' : 'primary') + '" onclick="toggleActive(\'' + q.id + '\',' + q.is_active + ')">' + (q.is_active ? 'ë¹„í™œì„±í™”' : 'í™œì„±í™”') + '</button>'
           + '</div></div>';
       }).join('');
 
@@ -1111,9 +1111,9 @@
     }
     function goQRPage(p) { qrListPage = p; renderQRList(); }
 
-    /* ¦¡¦¡ Copy / Print ¦¡¦¡ */
+    /* â”€â”€ Copy / Print â”€â”€ */
     function copyCode(code) {
-      navigator.clipboard.writeText(code).then(() => alert('ÄÚµå°¡ º¹»çµÇ¾ú½À´Ï´Ù: ' + code));
+      navigator.clipboard.writeText(code).then(() => alert('ì½”ë“œê°€ ë³µì‚¬ë˜ì—ˆìŠµë‹ˆë‹¤: ' + code));
     }
 
     function printQR(code, desc, amount) {
@@ -1127,26 +1127,26 @@
         document.body.removeChild(tmp);
         const codeSection = isAdmin ? '<p style="font-family:monospace;font-size:0.85rem;color:#888;letter-spacing:1px;margin:0.3rem 0;">' + code + '</p>' : '';
         const w = window.open('', '_blank', 'width=420,height=500');
-        w.document.write('<html><head><title>QR ÀÎ¼â</title></head><body style="text-align:center;padding:2rem;font-family:sans-serif;">'
-          + '<h2 style="margin-bottom:0.5rem;">?? ´Ş¶õÆ® QR ÄÚµå</h2>'
+        w.document.write('<html><head><title>QR ì¸ì‡„</title></head><body style="text-align:center;padding:2rem;font-family:sans-serif;">'
+          + '<h2 style="margin-bottom:0.5rem;">ğŸ« ë‹¬ë€íŠ¸ QR ì½”ë“œ</h2>'
           + '<img src="' + imgSrc + '" style="width:200px;height:200px;margin:1rem auto;display:block;" />'
           + codeSection
-          + '<p style="font-size:1.2rem;font-weight:700;">' + desc + ' ¡¤ ' + amount + ' ´Ş¶õÆ®</p>'
-          + '<hr/><p style="font-size:0.8rem;color:#888;">´Ş¶õÆ® ¸¶À» (CHO-Talents)</p>'
+          + '<p style="font-size:1.2rem;font-weight:700;">' + desc + ' Â· ' + amount + ' ë‹¬ë€íŠ¸</p>'
+          + '<hr/><p style="font-size:0.8rem;color:#888;">ë‹¬ë€íŠ¸ ë§ˆì„ (CHO-Talents)</p>'
           + '<script>setTimeout(()=>window.print(),300);<\/script></body></html>');
       }, 150);
     }
 
-    /* ¦¡¦¡ Scan List Modal ¦¡¦¡ */
+    /* â”€â”€ Scan List Modal â”€â”€ */
     async function openScanListModal(qrId, desc) {
       document.getElementById('scanListModal').classList.add('show');
       document.getElementById('scanListTitle').textContent = desc ? ' - ' + desc : '';
-      document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">ºÒ·¯¿À´Â Áß...</div>';
+      document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</div>';
       try {
         const { data: scans } = await _sb.from('talent_qr_scans')
           .select('*').eq('qr_code_id', qrId).order('scanned_at', { ascending: false });
         if (!scans || scans.length === 0) {
-          document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">¼ö·ÉÀÚ°¡ ¾ø½À´Ï´Ù.</div>';
+          document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">ìˆ˜ë ¹ìê°€ ì—†ìŠµë‹ˆë‹¤.</div>';
           return;
         }
         const userIds = [...new Set(scans.map(s => s.user_id))];
@@ -1161,7 +1161,7 @@
           (depts || []).forEach(d => { deptMap[d.id] = d.name; });
         }
         const isAdmin = (session.permissionRank || 0) >= 100;
-        let html = '<table class="scan-list-table"><thead><tr><th>#</th><th>ÀÌ¸§</th>' + (isAdmin ? '<th>¾ÆÀÌµğ</th>' : '') + '<th>ºÎ¼­</th><th>¼ö·É ½Ã°£</th></tr></thead><tbody>';
+        let html = '<table class="scan-list-table"><thead><tr><th>#</th><th>ì´ë¦„</th>' + (isAdmin ? '<th>ì•„ì´ë””</th>' : '') + '<th>ë¶€ì„œ</th><th>ìˆ˜ë ¹ ì‹œê°„</th></tr></thead><tbody>';
         scans.forEach((s, i) => {
           const p = profileMap[s.user_id] || {};
           const dt = new Date(s.scanned_at);
@@ -1170,15 +1170,15 @@
           html += '<tr><td>' + (i+1) + '</td><td>' + (p.display_name||'-') + '</td>' + (isAdmin ? '<td>' + (p.username||'-') + '</td>' : '') + '<td>' + (deptMap[p.department_id]||'-') + '</td><td>' + ts + '</td></tr>';
         });
         html += '</tbody></table>';
-        html += '<div style="margin-top:0.5rem;font-size:0.82rem;color:var(--admin-text-muted);">ÃÑ ' + scans.length + '¸í ¼ö·É</div>';
+        html += '<div style="margin-top:0.5rem;font-size:0.82rem;color:var(--admin-text-muted);">ì´ ' + scans.length + 'ëª… ìˆ˜ë ¹</div>';
         document.getElementById('scanListContent').innerHTML = html;
       } catch (e) {
-        document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">Á¶È¸ ½ÇÆĞ: ' + (e.message || e) + '</div>';
+        document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">ì¡°íšŒ ì‹¤íŒ¨: ' + (e.message || e) + '</div>';
       }
     }
     function closeScanListModal() { document.getElementById('scanListModal').classList.remove('show'); }
 
-    /* ¦¡¦¡ Edit Modal ¦¡¦¡ */
+    /* â”€â”€ Edit Modal â”€â”€ */
     function openEditModal(id) {
       const q = allQR.find(x => x.id === id);
       if (!q) return;
@@ -1272,7 +1272,7 @@
 
     function closeEditModal() { document.getElementById('editModal').classList.remove('show'); }
 
-    /* ¦¡¦¡ Modal backdrop close ¦¡¦¡ */
+    /* â”€â”€ Modal backdrop close â”€â”€ */
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>

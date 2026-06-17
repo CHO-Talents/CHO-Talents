@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>´Ş¶õÆ® °ü¸® - CHO Talents Admin</title>
+  <title>ë‹¬ë€íŠ¸ ê´€ë¦¬ - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
 </head>
@@ -12,29 +12,29 @@
 
   <div class="admin-container">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:1rem;">
-      <h2>?? ´Ş¶õÆ® °ü¸®</h2>
-      <a href="talent-items.html" class="filter-btn" data-min-perm="60" style="text-decoration:none;">?? ´Ş¶õÆ® Ç×¸ñ °ü¸®</a>
+      <h2>ğŸ’° ë‹¬ë€íŠ¸ ê´€ë¦¬</h2>
+      <a href="talent-items.html" class="filter-btn" data-min-perm="60" style="text-decoration:none;">ğŸ“‹ ë‹¬ë€íŠ¸ í•­ëª© ê´€ë¦¬</a>
     </div>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">?? ÇĞ»ı</button>
-      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">????? ±³»ç</button>
+      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">ğŸ’ í•™ìƒ</button>
+      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">ğŸ‘©â€ğŸ« êµì‚¬</button>
       <select id="deptFilter" data-min-perm="80" style="display:none;padding:0.35rem 0.6rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.8rem;background:var(--t-input-bg, #fff);" onchange="onDeptFilterChange()">
-        <option value="">ÀüÃ¼ ºÎ¼­</option>
+        <option value="">ì „ì²´ ë¶€ì„œ</option>
       </select>
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">ÇĞ»ı ¸ñ·Ï</div>
+        <div class="admin-table-title" id="tableTitle">í•™ìƒ ëª©ë¡</div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
           <span id="talentPageSizeWrap"></span>
-          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ »ç¿ëÀÚ µî·Ï</button>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ ì‚¬ìš©ì ë“±ë¡</button>
         </div>
       </div>
       <table class="admin-table" id="talentTable">
-        <thead><tr><th data-sort-key="display_name">ÀÌ¸§</th><th data-sort-key="_deptName">ºÎ¼­</th><th data-sort-key="class_number" data-sort-type="number">¹İ</th><th data-sort-key="talent_balance" data-sort-type="number">´Ş¶õÆ®</th><th class="hide-mobile" data-sort-key="_usedTalent" data-sort-type="number">»ç¿ë ´Ş¶õÆ®</th><th class="hide-mobile" data-sort-key="_totalTalent" data-sort-type="number">´©Àû ´Ş¶õÆ®</th><th>°ü¸®</th></tr></thead>
-        <tbody id="userList"><tr><td colspan="7" class="empty-state">·Îµù Áß...</td></tr></tbody>
+        <thead><tr><th data-sort-key="display_name">ì´ë¦„</th><th data-sort-key="_deptName">ë¶€ì„œ</th><th data-sort-key="class_number" data-sort-type="number">ë°˜</th><th data-sort-key="talent_balance" data-sort-type="number">ë‹¬ë€íŠ¸</th><th class="hide-mobile" data-sort-key="_usedTalent" data-sort-type="number">ì‚¬ìš© ë‹¬ë€íŠ¸</th><th class="hide-mobile" data-sort-key="_totalTalent" data-sort-type="number">ëˆ„ì  ë‹¬ë€íŠ¸</th><th>ê´€ë¦¬</th></tr></thead>
+        <tbody id="userList"><tr><td colspan="7" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
       </table>
       <div id="talentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
@@ -42,56 +42,56 @@
 
   <div class="modal-overlay hidden" id="userModal">
     <div class="modal-box">
-      <h3 class="modal-title" id="modalTitle">»ç¿ëÀÚ µî·Ï</h3>
+      <h3 class="modal-title" id="modalTitle">ì‚¬ìš©ì ë“±ë¡</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;" id="usernameWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¾ÆÀÌµğ</label>
-        <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="¿µ¹®/¼ıÀÚ" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì•„ì´ë””</label>
+        <input type="text" id="mUsername" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ì˜ë¬¸/ìˆ«ì" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÀÌ¸§</label>
-        <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="Ç¥½Ã ÀÌ¸§" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì´ë¦„</label>
+        <input type="text" id="mDisplayName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="í‘œì‹œ ì´ë¦„" />
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">Ãë¼Ò</button>
-        <button class="btn-confirm" onclick="saveUser()">ÀúÀå</button>
+        <button class="btn-cancel" onclick="closeModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" onclick="saveUser()">ì €ì¥</button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="talentModal">
     <div class="modal-box" style="max-width:500px;">
-      <h3 class="modal-title" id="talentTitle">´Ş¶õÆ® °ü¸®</h3>
+      <h3 class="modal-title" id="talentTitle">ë‹¬ë€íŠ¸ ê´€ë¦¬</h3>
       <div style="text-align:center;margin-bottom:1rem;">
-        <div style="font-size:0.85rem;color:var(--admin-text-muted);">ÇöÀç ÀÜ¾×</div>
+        <div style="font-size:0.85rem;color:var(--admin-text-muted);">í˜„ì¬ ì”ì•¡</div>
         <div style="font-size:2rem;font-weight:800;" id="talentBalance">0</div>
       </div>
       <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;" id="talentTypeArea">
-        <button class="filter-btn" id="btnEarn" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">Àû¸³</button>
+        <button class="filter-btn" id="btnEarn" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">ì ë¦½</button>
       </div>
 
       <div id="earnSection">
-        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">Ç×¸ñ ¼±ÅÃ (Ã¼Å© ÈÄ Áö±Ş È®Á¤)</div>
+        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">í•­ëª© ì„ íƒ (ì²´í¬ í›„ ì§€ê¸‰ í™•ì •)</div>
         <div id="talentItemBtns" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;"></div>
-        <button class="btn-confirm" id="btnConfirmGive" onclick="confirmGiveItems()" style="width:100%;padding:0.6rem;margin-bottom:0.8rem;display:none;">? Áö±Ş È®Á¤</button>
+        <button class="btn-confirm" id="btnConfirmGive" onclick="confirmGiveItems()" style="width:100%;padding:0.6rem;margin-bottom:0.8rem;display:none;">âœ… ì§€ê¸‰ í™•ì •</button>
         <details id="manualGiveSection" style="margin-bottom:0.8rem;display:none;">
-          <summary style="cursor:pointer;font-size:0.85rem;color:var(--admin-primary);">¼öµ¿ ÀÔ·Â (Ç×¸ñ¿¡ ¾ø´Â °æ¿ì)</summary>
+          <summary style="cursor:pointer;font-size:0.85rem;color:var(--admin-primary);">ìˆ˜ë™ ì…ë ¥ (í•­ëª©ì— ì—†ëŠ” ê²½ìš°)</summary>
           <div style="display:flex;gap:0.5rem;margin-top:0.5rem;">
-            <input type="number" id="talentAmount" min="1" max="100" style="flex:1;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="±İ¾× (ÃÖ´ë 100)" />
-            <input type="text" id="talentDesc" style="flex:2;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="»çÀ¯" />
+            <input type="number" id="talentAmount" min="1" max="100" style="flex:1;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ê¸ˆì•¡ (ìµœëŒ€ 100)" />
+            <input type="text" id="talentDesc" style="flex:2;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ì‚¬ìœ " />
           </div>
           <div style="margin-top:0.5rem;">
-            <button class="btn-confirm" onclick="submitManualTalent()" style="width:100%;padding:0.5rem;">¼öµ¿ Àû¸³</button>
+            <button class="btn-confirm" onclick="submitManualTalent()" style="width:100%;padding:0.5rem;">ìˆ˜ë™ ì ë¦½</button>
           </div>
         </details>
       </div>
 
       <div class="form-error" id="talentError"></div>
       <div class="modal-actions" style="margin-top:0.8rem;">
-        <button class="btn-cancel" onclick="closeTalentModal()">´İ±â</button>
+        <button class="btn-cancel" onclick="closeTalentModal()">ë‹«ê¸°</button>
       </div>
       <div style="margin-top:1rem;border-top:1px solid var(--admin-border);padding-top:0.8rem;">
-        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">ÃÖ±Ù ³»¿ª</div>
+        <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">ìµœê·¼ ë‚´ì—­</div>
         <div id="talentHistory" style="max-height:200px;overflow-y:auto;font-size:0.82rem;"></div>
       </div>
     </div>
@@ -99,32 +99,32 @@
 
   <div class="modal-overlay hidden" id="detailModal">
     <div class="modal-box" style="max-width:600px;">
-      <h3 class="modal-title" id="detailTitle">´Ş¶õÆ® »ó¼¼</h3>
+      <h3 class="modal-title" id="detailTitle">ë‹¬ë€íŠ¸ ìƒì„¸</h3>
       <div id="detailSummary" style="display:flex;gap:0.8rem;margin-bottom:1rem;"></div>
       <div class="admin-table-wrap" style="max-height:400px;overflow-y:auto;">
         <table class="admin-table" style="font-size:0.85rem;">
-          <thead><tr><th>³¯Â¥</th><th>À¯Çü</th><th>±İ¾×</th><th>¼³¸í</th><th>Áö±ŞÀÚ</th><th>ÀÜ¾×</th><th></th></tr></thead>
+          <thead><tr><th>ë‚ ì§œ</th><th>ìœ í˜•</th><th>ê¸ˆì•¡</th><th>ì„¤ëª…</th><th>ì§€ê¸‰ì</th><th>ì”ì•¡</th><th></th></tr></thead>
           <tbody id="detailHistory"></tbody>
         </table>
       </div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="closeDetailModal()">´İ±â</button>
+        <button class="btn-cancel" onclick="closeDetailModal()">ë‹«ê¸°</button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="returnModal">
     <div class="modal-box" style="max-width:400px;">
-      <h3 class="modal-title">´Ş¶õÆ® ¹İÈ¯</h3>
+      <h3 class="modal-title">ë‹¬ë€íŠ¸ ë°˜í™˜</h3>
       <div style="margin-bottom:0.8rem;">
         <div style="font-size:0.85rem;color:#868e96;margin-bottom:0.3rem;" id="returnInfo"></div>
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¹İÈ¯ »çÀ¯ (ÇÊ¼ö)</label>
-        <input type="text" id="returnReason" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="¹İÈ¯ »çÀ¯¸¦ ÀÔ·ÂÇÏ¼¼¿ä" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë°˜í™˜ ì‚¬ìœ  (í•„ìˆ˜)</label>
+        <input type="text" id="returnReason" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ë°˜í™˜ ì‚¬ìœ ë¥¼ ì…ë ¥í•˜ì„¸ìš”" />
       </div>
       <div class="form-error" id="returnError"></div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeReturnModal()">Ãë¼Ò</button>
-        <button class="btn-confirm" style="background:#e03131;border-color:#e03131;" onclick="submitReturn()">¹İÈ¯ Ã³¸®</button>
+        <button class="btn-cancel" onclick="closeReturnModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" style="background:#e03131;border-color:#e03131;" onclick="submitReturn()">ë°˜í™˜ ì²˜ë¦¬</button>
       </div>
     </div>
   </div>
@@ -213,7 +213,7 @@
     function populateDeptFilter() {
       const sel = document.getElementById('deptFilter');
       if (!sel) return;
-      sel.innerHTML = '<option value="">ÀüÃ¼ ºÎ¼­</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+      sel.innerHTML = '<option value="">ì „ì²´ ë¶€ì„œ</option>' + allDepts.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
     }
 
     function onDeptFilterChange() {
@@ -246,7 +246,7 @@
 
     async function loadUsers() {
       const myRank = session.permissionRank || 0;
-      const roleLabel = currentTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
+      const roleLabel = currentTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
       const opts = { userType: currentTab };
 
       if (myRank < 90) {
@@ -277,11 +277,11 @@
       }
 
       const tbody = document.getElementById('userList');
-      document.getElementById('tableTitle').textContent = `${roleLabel} ¸ñ·Ï (${data.length}¸í)`;
+      document.getElementById('tableTitle').textContent = `${roleLabel} ëª©ë¡ (${data.length}ëª…)`;
 
       if (data.length === 0) {
         talentUserList = [];
-        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">µî·ÏµÈ ${roleLabel}ÀÌ(°¡) ¾ø½À´Ï´Ù.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="empty-state">ë“±ë¡ëœ ${roleLabel}ì´(ê°€) ì—†ìŠµë‹ˆë‹¤.</td></tr>`;
         document.getElementById('talentPaging').innerHTML = '';
         return;
       }
@@ -301,9 +301,9 @@
 
     function renderTalentTable() {
       const data = talentUserList;
-      const roleLabel = currentTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
+      const roleLabel = currentTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
       const tbody = document.getElementById('userList');
-      document.getElementById('tableTitle').textContent = `${roleLabel} ¸ñ·Ï (${data.length}¸í)`;
+      document.getElementById('tableTitle').textContent = `${roleLabel} ëª©ë¡ (${data.length}ëª…)`;
 
       const pageSize = getTalentPageSize();
       const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
@@ -315,11 +315,11 @@
       tbody.innerHTML = pageData.map(u => {
         const dn = nameMap[u.id] || u.display_name || '-';
         const isSelf = u.id === session.id;
-        const classLabel = u.class_number ? u.class_number + '¹İ' : '-';
+        const classLabel = u.class_number ? u.class_number + 'ë°˜' : '-';
         const sm = talentSummaryMap[u.id] || { earned: 0, used: 0 };
         const attendDone = _attendanceGivenThisWeek.has(u.id);
         const attendBtn = canGiveTalent(u)
-          ? `<button class="filter-btn" style="background:${attendDone?'#e03131':'#51cf66'};color:#fff;border-color:${attendDone?'#e03131':'#51cf66'};" onclick="${attendDone ? `cancelAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')` : `giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')` }">${attendDone?'?Ãâ¼® Ãë¼Ò':'Ãâ¼®'}</button>`
+          ? `<button class="filter-btn" style="background:${attendDone?'#e03131':'#51cf66'};color:#fff;border-color:${attendDone?'#e03131':'#51cf66'};" onclick="${attendDone ? `cancelAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')` : `giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')` }">${attendDone?'âœ“ì¶œì„ ì·¨ì†Œ':'ì¶œì„'}</button>`
           : '';
         return `<tr>
         <td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
@@ -331,10 +331,10 @@
         <td>
           ${attendBtn}
           <div class="mgmt-dropdown">
-            <button class="filter-btn" onclick="toggleMgmt(event,this)">°ü¸® ?</button>
+            <button class="filter-btn" onclick="toggleMgmt(event,this)">ê´€ë¦¬ â–¾</button>
             <div class="mgmt-menu">
-              ${canGiveTalent(u) ? `<a onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">?? ´Ş¶õÆ® Áö±Ş</a>` : ''}
-              <a onclick="openDetailModal('${u.id}','${dn.replace(/'/g,"\\'")}')">?? »ó¼¼</a>
+              ${canGiveTalent(u) ? `<a onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">ğŸ’° ë‹¬ë€íŠ¸ ì§€ê¸‰</a>` : ''}
+              <a onclick="openDetailModal('${u.id}','${dn.replace(/'/g,"\\'")}')">ğŸ“‹ ìƒì„¸</a>
             </div>
           </div>
         </td>
@@ -383,7 +383,7 @@
       _attendanceTxnMap = {};
       if (!_sb || userIds.length === 0) return;
       const attendItem = talentItems.find(i => i.is_quick_button === true && i.target_type === currentTab && i.is_active)
-        || talentItems.find(i => i.name === 'Ãâ¼®' && i.target_type === currentTab && i.is_active);
+        || talentItems.find(i => i.name === 'ì¶œì„' && i.target_type === currentTab && i.is_active);
       if (!attendItem) return;
       const weekStart = getWeekStartKST();
       const { data: earns } = await _sb.from('talent_transactions')
@@ -397,15 +397,15 @@
         .select('user_id, amount, description')
         .in('user_id', userIds)
         .eq('type', 'use')
-        .like('description', '¹İÈ¯:%')
+        .like('description', 'ë°˜í™˜:%')
         .gte('created_at', weekStart.toISOString());
       const cancelledById = new Set();
       const legacyRetCount = {};
       (returns || []).forEach(r => {
-        const m = r.description.match(/¹İÈ¯:\s*\[([^\]]+)\]/);
+        const m = r.description.match(/ë°˜í™˜:\s*\[([^\]]+)\]/);
         if (m) { cancelledById.add(m[1]); }
         else {
-          const k = r.user_id + '|' + r.amount + '|' + r.description.replace('¹İÈ¯: ','').replace('¹İÈ¯:','');
+          const k = r.user_id + '|' + r.amount + '|' + r.description.replace('ë°˜í™˜: ','').replace('ë°˜í™˜:','');
           legacyRetCount[k] = (legacyRetCount[k] || 0) + 1;
         }
       });
@@ -422,20 +422,20 @@
     async function giveAttendance(userId, userName) {
       if (_attendBusy) return;
       const attendItem = talentItems.find(i => i.is_quick_button === true && i.target_type === currentTab && i.is_active)
-        || talentItems.find(i => i.name === 'Ãâ¼®' && i.target_type === currentTab && i.is_active);
-      if (!attendItem) { alert('Ãâ¼® Äü¹öÆ° Ç×¸ñÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù.\n´Ş¶õÆ® Ç×¸ñ °ü¸®¿¡¼­ ?Äü ¹öÆ°À» ÁöÁ¤ÇØÁÖ¼¼¿ä.'); return; }
-      if (_attendanceGivenThisWeek.has(userId)) { alert('ÀÌ¹ø ÁÖ¿¡ ÀÌ¹Ì Ãâ¼® ´Ş¶õÆ®°¡ Áö±ŞµÇ¾ú½À´Ï´Ù.'); return; }
+        || talentItems.find(i => i.name === 'ì¶œì„' && i.target_type === currentTab && i.is_active);
+      if (!attendItem) { alert('ì¶œì„ í€µë²„íŠ¼ í•­ëª©ì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.\në‹¬ë€íŠ¸ í•­ëª© ê´€ë¦¬ì—ì„œ âš¡í€µ ë²„íŠ¼ì„ ì§€ì •í•´ì£¼ì„¸ìš”.'); return; }
+      if (_attendanceGivenThisWeek.has(userId)) { alert('ì´ë²ˆ ì£¼ì— ì´ë¯¸ ì¶œì„ ë‹¬ë€íŠ¸ê°€ ì§€ê¸‰ë˜ì—ˆìŠµë‹ˆë‹¤.'); return; }
       _attendBusy = true;
       try {
         const result = await giveTalentByItem(userId, attendItem.id, session.id);
         if (result && result.success === false) {
-          alert(tErr(result.error || 'Ãâ¼® Áö±Ş ½ÇÆĞ'));
+          alert(tErr(result.error || 'ì¶œì„ ì§€ê¸‰ ì‹¤íŒ¨'));
           return;
         }
         _attendanceGivenThisWeek.add(userId);
         _attendanceTxnMap[userId] = { id: result?.id || '', amount: result?.amount || attendItem.talent_amount, description: result?.description || attendItem.name };
         renderTalentTable();
-        await logInfo('ATTENDANCE_GIVE', { targetUser: userId, ´ë»ó: userName, ±İ¾×: attendItem.talent_amount });
+        await logInfo('ATTENDANCE_GIVE', { targetUser: userId, ëŒ€ìƒ: userName, ê¸ˆì•¡: attendItem.talent_amount });
         await loadUsers();
       } finally { _attendBusy = false; }
     }
@@ -443,47 +443,47 @@
     async function cancelAttendance(userId, userName) {
       if (_attendBusy) return;
       const txn = _attendanceTxnMap[userId];
-      if (!txn) { alert('Ãë¼ÒÇÒ Ãâ¼® ³»¿ªÀ» Ã£À» ¼ö ¾ø½À´Ï´Ù.'); return; }
-      if (!confirm(`${userName}´ÔÀÇ Ãâ¼® ´Ş¶õÆ®(${txn.amount})¸¦ Ãë¼ÒÇÏ½Ã°Ú½À´Ï±î?`)) return;
+      if (!txn) { alert('ì·¨ì†Œí•  ì¶œì„ ë‚´ì—­ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.'); return; }
+      if (!confirm(`${userName}ë‹˜ì˜ ì¶œì„ ë‹¬ë€íŠ¸(${txn.amount})ë¥¼ ì·¨ì†Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
       _attendBusy = true;
       try {
-        const desc = '[' + txn.id + '] ' + (txn.description || 'Ãâ¼®');
+        const desc = '[' + txn.id + '] ' + (txn.description || 'ì¶œì„');
         const result = await returnTalent(userId, txn.amount, desc, session.id);
         if (result && result.success === false) {
-          alert('Ãë¼Ò ½ÇÆĞ: ' + tErr(result.error));
+          alert('ì·¨ì†Œ ì‹¤íŒ¨: ' + tErr(result.error));
           return;
         }
         _attendanceGivenThisWeek.delete(userId);
         delete _attendanceTxnMap[userId];
         renderTalentTable();
-        await logInfo('ATTENDANCE_CANCEL', { targetUser: userId, ´ë»ó: userName, ±İ¾×: txn.amount, txnId: txn.id });
+        await logInfo('ATTENDANCE_CANCEL', { targetUser: userId, ëŒ€ìƒ: userName, ê¸ˆì•¡: txn.amount, txnId: txn.id });
         await loadUsers();
       } catch (e) {
-        alert('Ãë¼Ò ¿À·ù: ' + (e.message || e));
+        alert('ì·¨ì†Œ ì˜¤ë¥˜: ' + (e.message || e));
       } finally { _attendBusy = false; }
     }
 
     async function openDetailModal(userId, name) {
-      document.getElementById('detailTitle').textContent = `${name} - ´Ş¶õÆ® »ó¼¼`;
+      document.getElementById('detailTitle').textContent = `${name} - ë‹¬ë€íŠ¸ ìƒì„¸`;
       document.getElementById('detailModal').classList.remove('hidden');
       const summary = await fetchTalentSummary(userId);
       document.getElementById('detailSummary').innerHTML = `
         <div style="flex:1;text-align:center;padding:0.8rem;background:#e6fcf5;border-radius:8px;">
-          <div style="font-size:0.8rem;color:#868e96;">´©Àû Àû¸³</div>
+          <div style="font-size:0.8rem;color:#868e96;">ëˆ„ì  ì ë¦½</div>
           <div style="font-size:1.5rem;font-weight:800;color:#2b8a3e;">+${summary.earned}</div>
         </div>
         <div style="flex:1;text-align:center;padding:0.8rem;background:#fff5f5;border-radius:8px;">
-          <div style="font-size:0.8rem;color:#868e96;">ÃÑ »ç¿ë</div>
+          <div style="font-size:0.8rem;color:#868e96;">ì´ ì‚¬ìš©</div>
           <div style="font-size:1.5rem;font-weight:800;color:#e03131;">-${summary.used}</div>
         </div>
         <div style="flex:1;text-align:center;padding:0.8rem;background:#e7f5ff;border-radius:8px;">
-          <div style="font-size:0.8rem;color:#868e96;">ÀÜ¿©</div>
+          <div style="font-size:0.8rem;color:#868e96;">ì”ì—¬</div>
           <div style="font-size:1.5rem;font-weight:800;color:#1971c2;">${summary.balance}</div>
         </div>`;
       const { data: history } = await fetchTalentHistory(userId, { limit: 100 });
       const tbody = document.getElementById('detailHistory');
       if (!history || history.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">³»¿ªÀÌ ¾ø½À´Ï´Ù.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
       } else {
         const creatorIds = [...new Set(history.map(t => t.created_by).filter(Boolean))];
         let creatorMap = {};
@@ -493,20 +493,20 @@
         }
         const canReturn = (session.permissionRank || 0) >= 80;
         const returnedTxnIds = new Set(history.filter(t => t.description && /^\[([a-f0-9-]+)\]/.test(t.description)).map(t => t.description.match(/^\[([a-f0-9-]+)\]/)[1]));
-        const returnDescTxnIds = new Set(history.filter(t => t.type === 'use' && t.description && t.description.startsWith('¹İÈ¯:')).map(t => {
+        const returnDescTxnIds = new Set(history.filter(t => t.type === 'use' && t.description && t.description.startsWith('ë°˜í™˜:')).map(t => {
           const m = t.description.match(/\[([a-f0-9-]+)\]/); return m ? m[1] : null;
         }).filter(Boolean));
         const allReturnedIds = new Set([...returnedTxnIds, ...returnDescTxnIds]);
         tbody.innerHTML = history.map(t => {
           const creatorName = t.created_by ? (creatorMap[t.created_by] || '-') : '-';
-          const isReturn = t.description && t.description.startsWith('¹İÈ¯:');
+          const isReturn = t.description && t.description.startsWith('ë°˜í™˜:');
           const alreadyReturned = allReturnedIds.has(t.id);
           const returnBtn = (canReturn && t.type === 'earn' && !isReturn && !alreadyReturned)
-            ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="openReturnModal('${userId}','${t.id}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">¹İÈ¯</button>`
-            : (alreadyReturned && t.type === 'earn' && !isReturn ? '<span style="font-size:0.7rem;color:#868e96;">¹İÈ¯µÊ</span>' : '');
+            ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="openReturnModal('${userId}','${t.id}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">ë°˜í™˜</button>`
+            : (alreadyReturned && t.type === 'earn' && !isReturn ? '<span style="font-size:0.7rem;color:#868e96;">ë°˜í™˜ë¨</span>' : '');
           return `<tr>
           <td>${formatKSTShort(t.created_at)}</td>
-          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?(isReturn?'¹İÈ¯':'Àû¸³'):'»ç¿ë'}</span></td>
+          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?(isReturn?'ë°˜í™˜':'ì ë¦½'):'ì‚¬ìš©'}</span></td>
           <td style="font-weight:700;color:${t.type==='earn'?'#2b8a3e':'#e03131'}">${t.type==='earn'?'+':'-'}${t.amount}</td>
           <td>${maskTalentDesc(t.description)}</td>
           <td style="font-size:0.78rem;">${creatorName}</td>
@@ -521,8 +521,8 @@
 
     function openAddModal() {
       editingId = null;
-      const label = currentTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
-      document.getElementById('modalTitle').textContent = `${label} µî·Ï`;
+      const label = currentTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
+      document.getElementById('modalTitle').textContent = `${label} ë“±ë¡`;
       document.getElementById('usernameWrap').style.display = isAdminLevel(session) ? 'block' : 'none';
       document.getElementById('mUsername').value = '';
       document.getElementById('mUsername').disabled = false;
@@ -533,8 +533,8 @@
 
     function openEditModal(id, username, displayName) {
       editingId = id;
-      const label = currentTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
-      document.getElementById('modalTitle').textContent = `${label} ¼öÁ¤`;
+      const label = currentTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
+      document.getElementById('modalTitle').textContent = `${label} ìˆ˜ì •`;
       document.getElementById('usernameWrap').style.display = isAdminLevel(session) ? 'block' : 'none';
       document.getElementById('mUsername').value = username;
       document.getElementById('mUsername').disabled = true;
@@ -549,7 +549,7 @@
       const errEl = document.getElementById('modalError');
       let username = document.getElementById('mUsername').value.trim();
       const displayName = document.getElementById('mDisplayName').value.trim();
-      if (!displayName) { errEl.textContent = 'ÀÌ¸§À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!displayName) { errEl.textContent = 'ì´ë¦„ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
       if (!editingId && !username) username = 'u_' + Date.now().toString(36);
 
       if (editingId) {
@@ -568,8 +568,8 @@
     }
 
     async function confirmDelete(id, username) {
-      const label = currentTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
-      if (!confirm(`"${username}" ${label}À»(¸¦) »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?`)) return;
+      const label = currentTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
+      if (!confirm(`"${username}" ${label}ì„(ë¥¼) ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
       await deleteUser(id);
       await loadUsers();
     }
@@ -577,7 +577,7 @@
     async function openTalentModal(userId, name, balance) {
       talentUserId = userId;
       talentType = 'earn';
-      document.getElementById('talentTitle').textContent = `${name} - ´Ş¶õÆ® °ü¸®`;
+      document.getElementById('talentTitle').textContent = `${name} - ë‹¬ë€íŠ¸ ê´€ë¦¬`;
       document.getElementById('talentBalance').textContent = fmtNum(balance);
       document.getElementById('talentError').classList.remove('show');
       setTalentType('earn');
@@ -603,7 +603,7 @@
       const container = document.getElementById('talentItemBtns');
       const confirmBtn = document.getElementById('btnConfirmGive');
       if (items.length === 0) {
-        container.innerHTML = '<div style="color:var(--admin-text-muted);font-size:0.85rem;">µî·ÏµÈ Ç×¸ñÀÌ ¾ø½À´Ï´Ù.</div>';
+        container.innerHTML = '<div style="color:var(--admin-text-muted);font-size:0.85rem;">ë“±ë¡ëœ í•­ëª©ì´ ì—†ìŠµë‹ˆë‹¤.</div>';
         confirmBtn.style.display = 'none';
         return;
       }
@@ -619,15 +619,15 @@
         .select('amount, description')
         .eq('user_id', talentUserId)
         .eq('type', 'use')
-        .like('description', '¹İÈ¯:%')
+        .like('description', 'ë°˜í™˜:%')
         .gte('created_at', weekStart.toISOString());
       const cancelledById = new Set();
       const legacyRetCount = {};
       (weekReturns || []).forEach(r => {
-        const m = r.description.match(/¹İÈ¯:\s*\[([^\]]+)\]/);
+        const m = r.description.match(/ë°˜í™˜:\s*\[([^\]]+)\]/);
         if (m) { cancelledById.add(m[1]); }
         else {
-          const k = r.amount + '|' + r.description.replace('¹İÈ¯: ','').replace('¹İÈ¯:','');
+          const k = r.amount + '|' + r.description.replace('ë°˜í™˜: ','').replace('ë°˜í™˜:','');
           legacyRetCount[k] = (legacyRetCount[k] || 0) + 1;
         }
       });
@@ -643,8 +643,8 @@
         const done = !!_weeklyGivenMap[i.id];
         return `<div style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1px solid ${done?'#51cf66':'var(--t-border, #dee2e6)'};border-radius:8px;background:${done?'var(--t-success-surface, #e6fcf5)':'var(--t-card, #fff)'};font-size:0.88rem;color:var(--t-text, #212529);">
           ${done
-            ? `<span style="flex:1;">${i.name} <strong style="color:#868e96;">+${i.talent_amount}</strong> <span style="font-size:0.7rem;color:#51cf66;">?¿Ï·á</span></span>
-               <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="cancelTalentItem('${i.id}','${i.name}',${i.talent_amount})">Ãë¼Ò</button>`
+            ? `<span style="flex:1;">${i.name} <strong style="color:#868e96;">+${i.talent_amount}</strong> <span style="font-size:0.7rem;color:#51cf66;">âœ“ì™„ë£Œ</span></span>
+               <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="cancelTalentItem('${i.id}','${i.name}',${i.talent_amount})">ì·¨ì†Œ</button>`
             : `<label style="flex:1;display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
                  <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${i.talent_amount}" onchange="updateConfirmBtn()" />
                  ${i.name} <strong style="color:#2b8a3e;">+${i.talent_amount}</strong>
@@ -658,21 +658,21 @@
     async function cancelTalentItem(itemId, itemName, amount) {
       const txn = _weeklyGivenMap[itemId];
       if (!txn) return;
-      if (!confirm(`"${itemName}" Áö±ŞÀ» Ãë¼ÒÇÏ½Ã°Ú½À´Ï±î? (${amount} ´Ş¶õÆ® ¹İÈ¯)`)) return;
+      if (!confirm(`"${itemName}" ì§€ê¸‰ì„ ì·¨ì†Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ? (${amount} ë‹¬ë€íŠ¸ ë°˜í™˜)`)) return;
       try {
         const desc = '[' + txn.id + '] ' + (txn.description || itemName);
         const result = await returnTalent(talentUserId, txn.amount, desc, session.id);
         if (result && result.success === false) {
-          alert('Ãë¼Ò ½ÇÆĞ: ' + tErr(result.error));
+          alert('ì·¨ì†Œ ì‹¤íŒ¨: ' + tErr(result.error));
           return;
         }
-        await logInfo('TALENT_ITEM_CANCEL', { userId: talentUserId, itemId, Ç×¸ñ¸í: itemName, ±İ¾×: txn.amount, txnId: txn.id });
+        await logInfo('TALENT_ITEM_CANCEL', { userId: talentUserId, itemId, í•­ëª©ëª…: itemName, ê¸ˆì•¡: txn.amount, txnId: txn.id });
         const bal = await fetchTalentBalance(talentUserId);
         document.getElementById('talentBalance').textContent = fmtNum(bal);
         await renderTalentItemButtons();
         await loadTalentHistory(talentUserId);
       } catch (e) {
-        alert('Ãë¼Ò ¿À·ù: ' + (e.message || e));
+        alert('ì·¨ì†Œ ì˜¤ë¥˜: ' + (e.message || e));
       }
     }
 
@@ -680,14 +680,14 @@
       const chks = document.querySelectorAll('.talent-item-chk:not(:disabled):checked');
       const btn = document.getElementById('btnConfirmGive');
       btn.style.display = chks.length > 0 ? 'block' : 'none';
-      btn.textContent = `? Áö±Ş È®Á¤ (${chks.length}°Ç)`;
+      btn.textContent = `âœ… ì§€ê¸‰ í™•ì • (${chks.length}ê±´)`;
     }
 
     async function confirmGiveItems() {
       const chks = [...document.querySelectorAll('.talent-item-chk:not(:disabled):checked')];
       if (chks.length === 0) return;
       const names = chks.map(c => c.dataset.name).join(', ');
-      if (!confirm(`${chks.length}°ÇÀÇ ´Ş¶õÆ®¸¦ Áö±ŞÇÏ½Ã°Ú½À´Ï±î?\nÇ×¸ñ: ${names}`)) return;
+      if (!confirm(`${chks.length}ê±´ì˜ ë‹¬ë€íŠ¸ë¥¼ ì§€ê¸‰í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\ní•­ëª©: ${names}`)) return;
       const errEl = document.getElementById('talentError');
       errEl.classList.remove('show');
       let lastBalance = 0;
@@ -696,19 +696,19 @@
         try {
           const result = await giveTalentByItem(talentUserId, chk.value, session.id);
           if (result.success === false) {
-            await logError('TALENT_GIVE_ITEM_FAIL', { userId: talentUserId, itemId: chk.value, Ç×¸ñ¸í: chk.dataset.name, ¿À·ù: result.error });
-            errEl.textContent = `"${chk.dataset.name}" Áö±Ş ½ÇÆĞ: ${tErr(result.error)}`;
+            await logError('TALENT_GIVE_ITEM_FAIL', { userId: talentUserId, itemId: chk.value, í•­ëª©ëª…: chk.dataset.name, ì˜¤ë¥˜: result.error });
+            errEl.textContent = `"${chk.dataset.name}" ì§€ê¸‰ ì‹¤íŒ¨: ${tErr(result.error)}`;
             errEl.classList.add('show');
             break;
           }
           _weeklyGivenMap[chk.value] = { id: result?.id || '', amount: result?.amount || Number(chk.dataset.amount), description: result?.description || chk.dataset.name };
           lastBalance = result.balance;
         } catch (err) {
-          await logError('TALENT_GIVE_ITEM_ERROR', { userId: talentUserId, itemId: chk.value, ¿À·ù: String(err) });
-          errEl.textContent = `¿À·ù ¹ß»ı: ${tErr(err.message)}`; errEl.classList.add('show'); break;
+          await logError('TALENT_GIVE_ITEM_ERROR', { userId: talentUserId, itemId: chk.value, ì˜¤ë¥˜: String(err) });
+          errEl.textContent = `ì˜¤ë¥˜ ë°œìƒ: ${tErr(err.message)}`; errEl.classList.add('show'); break;
         }
       }
-      await logInfo('TALENT_GIVE_ITEMS', { userId: talentUserId, items: names, °Ç¼ö: chks.length });
+      await logInfo('TALENT_GIVE_ITEMS', { userId: talentUserId, items: names, ê±´ìˆ˜: chks.length });
       document.getElementById('talentBalance').textContent = fmtNum(lastBalance);
       await renderTalentItemButtons();
       await loadTalentHistory(talentUserId);
@@ -719,16 +719,16 @@
       const errEl = document.getElementById('talentError');
       const amount = parseInt(document.getElementById('talentAmount').value);
       const desc = document.getElementById('talentDesc').value.trim();
-      if (!amount || amount <= 0) { errEl.textContent = 'À¯È¿ÇÑ ±İ¾×À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
-      if (amount > 100) { errEl.textContent = '´Ş¶õÆ®´Â ÃÖ´ë 100±îÁö¸¸ Áö±ŞÇÒ ¼ö ÀÖ½À´Ï´Ù.'; errEl.classList.add('show'); return; }
-      if (!desc) { errEl.textContent = '»çÀ¯¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!amount || amount <= 0) { errEl.textContent = 'ìœ íš¨í•œ ê¸ˆì•¡ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+      if (amount > 100) { errEl.textContent = 'ë‹¬ë€íŠ¸ëŠ” ìµœëŒ€ 100ê¹Œì§€ë§Œ ì§€ê¸‰í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.'; errEl.classList.add('show'); return; }
+      if (!desc) { errEl.textContent = 'ì‚¬ìœ ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
       try {
         const result = await giveTalent(talentUserId, amount, desc, session.id);
         if (result.success === false) {
-          await logError('TALENT_MANUAL_GIVE_FAIL', { userId: talentUserId, ±İ¾×: amount, ¼³¸í: desc, ¿À·ù: result.error });
-          errEl.textContent = tErr(result.error) || 'Ã³¸® ½ÇÆĞ'; errEl.classList.add('show'); return;
+          await logError('TALENT_MANUAL_GIVE_FAIL', { userId: talentUserId, ê¸ˆì•¡: amount, ì„¤ëª…: desc, ì˜¤ë¥˜: result.error });
+          errEl.textContent = tErr(result.error) || 'ì²˜ë¦¬ ì‹¤íŒ¨'; errEl.classList.add('show'); return;
         }
-        await logInfo('TALENT_MANUAL_GIVE', { userId: talentUserId, ±İ¾×: amount, ¼³¸í: desc });
+        await logInfo('TALENT_MANUAL_GIVE', { userId: talentUserId, ê¸ˆì•¡: amount, ì„¤ëª…: desc });
         document.getElementById('talentBalance').textContent = fmtNum(result.balance);
         document.getElementById('talentAmount').value = '';
         document.getElementById('talentDesc').value = '';
@@ -736,15 +736,15 @@
         await loadTalentHistory(talentUserId);
         await loadUsers();
       } catch (err) {
-        await logError('TALENT_MANUAL_GIVE_ERROR', { userId: talentUserId, ±İ¾×: amount, ¿À·ù: String(err) });
-        errEl.textContent = '¿À·ù: ' + tErr(err.message); errEl.classList.add('show');
+        await logError('TALENT_MANUAL_GIVE_ERROR', { userId: talentUserId, ê¸ˆì•¡: amount, ì˜¤ë¥˜: String(err) });
+        errEl.textContent = 'ì˜¤ë¥˜: ' + tErr(err.message); errEl.classList.add('show');
       }
     }
 
     async function loadTalentHistory(userId) {
       const { data } = await fetchTalentHistory(userId, { limit: 10 });
       const el = document.getElementById('talentHistory');
-      if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--admin-text-muted);text-align:center;">³»¿ª ¾øÀ½</div>'; return; }
+      if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--admin-text-muted);text-align:center;">ë‚´ì—­ ì—†ìŒ</div>'; return; }
       el.innerHTML = data.map(t => `
         <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f0f0f0;">
           <span>${formatKSTShort(t.created_at)}</span>
@@ -756,7 +756,7 @@
     let returnCtx = {};
     function openReturnModal(userId, txnId, amount, desc) {
       returnCtx = { userId, txnId, amount: parseInt(amount) };
-      document.getElementById('returnInfo').textContent = `Ç×¸ñ: ${desc} / ±İ¾×: ${amount} ´Ş¶õÆ®`;
+      document.getElementById('returnInfo').textContent = `í•­ëª©: ${desc} / ê¸ˆì•¡: ${amount} ë‹¬ë€íŠ¸`;
       document.getElementById('returnReason').value = '';
       document.getElementById('returnError').classList.remove('show');
       document.getElementById('returnModal').classList.remove('hidden');
@@ -765,21 +765,21 @@
     async function submitReturn() {
       const reason = document.getElementById('returnReason').value.trim();
       const errEl = document.getElementById('returnError');
-      if (!reason) { errEl.textContent = '¹İÈ¯ »çÀ¯¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!reason) { errEl.textContent = 'ë°˜í™˜ ì‚¬ìœ ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
       try {
-        const desc = returnCtx.txnId ? `[${returnCtx.txnId}] ¹İÈ¯: ${reason}` : `¹İÈ¯: ${reason}`;
+        const desc = returnCtx.txnId ? `[${returnCtx.txnId}] ë°˜í™˜: ${reason}` : `ë°˜í™˜: ${reason}`;
         const result = await returnTalent(returnCtx.userId, returnCtx.amount, desc, session.id);
         if (result.success === false) {
-          await logError('TALENT_RETURN_FAIL', { userId: returnCtx.userId, ±İ¾×: returnCtx.amount, »çÀ¯: reason, ¿À·ù: result.error });
+          await logError('TALENT_RETURN_FAIL', { userId: returnCtx.userId, ê¸ˆì•¡: returnCtx.amount, ì‚¬ìœ : reason, ì˜¤ë¥˜: result.error });
           errEl.textContent = tErr(result.error); errEl.classList.add('show'); return;
         }
-        await logInfo('TALENT_RETURN', { userId: returnCtx.userId, ±İ¾×: returnCtx.amount, »çÀ¯: reason, txnId: returnCtx.txnId });
+        await logInfo('TALENT_RETURN', { userId: returnCtx.userId, ê¸ˆì•¡: returnCtx.amount, ì‚¬ìœ : reason, txnId: returnCtx.txnId });
         closeReturnModal();
-        await openDetailModal(returnCtx.userId, document.getElementById('detailTitle').textContent.replace(' - ´Ş¶õÆ® »ó¼¼',''));
+        await openDetailModal(returnCtx.userId, document.getElementById('detailTitle').textContent.replace(' - ë‹¬ë€íŠ¸ ìƒì„¸',''));
         await loadUsers();
       } catch (err) {
-        await logError('TALENT_RETURN_ERROR', { userId: returnCtx.userId, ±İ¾×: returnCtx.amount, ¿À·ù: String(err) });
-        errEl.textContent = '¿À·ù: ' + tErr(err.message); errEl.classList.add('show');
+        await logError('TALENT_RETURN_ERROR', { userId: returnCtx.userId, ê¸ˆì•¡: returnCtx.amount, ì˜¤ë¥˜: String(err) });
+        errEl.textContent = 'ì˜¤ë¥˜: ' + tErr(err.message); errEl.classList.add('show');
       }
     }
 
