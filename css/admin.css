@@ -773,9 +773,9 @@ table.admin-table tr:hover { background: #fafbfc; }
   .nav-header-actions { order: 2; gap: 0.3rem; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; }
   .nav-hamburger { display: block; order: 3; }
   .admin-nav-links { order: 4; }
-  .nav-header-actions #navAuthArea { display: none !important; }
-  .nav-header-actions #navLoginArea { display: none !important; }
+  .nav-header-actions .nav-user { max-width: 6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.72rem; }
   .nav-header-logout { font-size: 0.72rem; padding: 0.2rem 0.55rem; }
+  .nav-header-login { font-size: 0.72rem; padding: 0.2rem 0.6rem; }
   .admin-nav-links {
     display: none;
     flex: 0 0 100%;
