@@ -506,7 +506,7 @@
             : (alreadyReturned && t.type === 'earn' && !isReturn ? '<span style="font-size:0.7rem;color:#868e96;">반환됨</span>' : '');
           return `<tr>
           <td>${formatKSTShort(t.created_at)}</td>
-          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?(isReturn?'반환':'적립'):'사용'}</span></td>
+          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?(isReturn?'반환':'적립'):'사용'}</span>${t.type==='earn' && t.source==='qr' ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;">QR</span>' : ''}</td>
           <td style="font-weight:700;color:${t.type==='earn'?'#2b8a3e':'#e03131'}">${t.type==='earn'?'+':'-'}${t.amount}</td>
           <td>${maskTalentDesc(t.description)}</td>
           <td style="font-size:0.78rem;">${creatorName}</td>
@@ -609,7 +609,7 @@
       }
       const weekStart = getWeekStartKST();
       const { data: weekEarns } = await _sb.from('talent_transactions')
-        .select('id, talent_item_id, amount, description, created_at')
+        .select('id, talent_item_id, amount, description, created_at, source')
         .eq('user_id', talentUserId)
         .eq('type', 'earn')
         .gte('created_at', weekStart.toISOString())
@@ -636,14 +636,14 @@
         if (cancelledById.has(t.id)) return;
         const matchKey = t.amount + '|' + (t.description || '');
         if (legacyRetCount[matchKey] > 0) { legacyRetCount[matchKey]--; return; }
-        _weeklyGivenMap[t.talent_item_id] = { id: t.id, amount: t.amount, description: t.description };
+        _weeklyGivenMap[t.talent_item_id] = { id: t.id, amount: t.amount, description: t.description, source: t.source || 'admin' };
       });
 
       container.innerHTML = items.map(i => {
         const done = !!_weeklyGivenMap[i.id];
         return `<div style="display:flex;align-items:center;gap:0.4rem;padding:0.5rem 0.8rem;border:1px solid ${done?'#51cf66':'var(--t-border, #dee2e6)'};border-radius:8px;background:${done?'var(--t-success-surface, #e6fcf5)':'var(--t-card, #fff)'};font-size:0.88rem;color:var(--t-text, #212529);">
           ${done
-            ? `<span style="flex:1;">${i.name} <strong style="color:#868e96;">+${i.talent_amount}</strong> <span style="font-size:0.7rem;color:#51cf66;">✓완료</span></span>
+            ? `<span style="flex:1;">${i.name} <strong style="color:#868e96;">+${i.talent_amount}</strong> <span style="font-size:0.7rem;color:#51cf66;">✓완료</span>${_weeklyGivenMap[i.id]?.source === 'qr' ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;">QR</span>' : ''}</span>
                <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="cancelTalentItem('${i.id}','${i.name}',${i.talent_amount})">취소</button>`
             : `<label style="flex:1;display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
                  <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${i.talent_amount}" onchange="updateConfirmBtn()" />
@@ -745,12 +745,14 @@
       const { data } = await fetchTalentHistory(userId, { limit: 10 });
       const el = document.getElementById('talentHistory');
       if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--admin-text-muted);text-align:center;">내역 없음</div>'; return; }
-      el.innerHTML = data.map(t => `
-        <div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f0f0f0;">
-          <span>${formatKSTShort(t.created_at)}</span>
+      el.innerHTML = data.map(t => {
+        const srcTag = t.type === 'earn' && t.source === 'qr' ? '<span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;margin-left:0.3rem;">QR</span>' : '';
+        return `<div style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f0f0f0;">
+          <span>${formatKSTShort(t.created_at)}${srcTag}</span>
           <span style="color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'};font-weight:700;">${t.type === 'earn' ? '+' : '-'}${t.amount}</span>
           <span style="color:var(--admin-text-muted);">${maskTalentDesc(t.description)}</span>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }
 
     let returnCtx = {};
