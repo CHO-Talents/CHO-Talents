@@ -12,12 +12,20 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.45.0` (`js/version.js` 기준, 2026-06-16) |
+| 현재 버전 | `v3.46.0` (`js/version.js` 기준, 2026-06-17) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.45.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.46.0`으로 갱신되어 있습니다.
+- **v3.46.0 주요 변경 사항**:
+  - Q&A: 네비게이션 "소개" 그룹 및 "Q & A" 항목에 미답변 질문 수 배지 표시 (관리자 rank 60+)
+  - Slack: 알림을 부서별/유형별 채널로 분리 라우팅 (기존 단일 Webhook 제거)
+  - Slack: 신규 가입/부서 이동/구매 신청 → 해당 부서 채널 (1부~5부, 예배부)
+  - Slack: 구매 상태 변경 (구매 신청→상품 준비) → 상품 관리 채널
+  - Slack: WARN+ 로그 알림 → 운영 채널, Q&A 질문 등록 → Q&A 채널
+  - Edge Function: 9개 Webhook Secret 기반 동적 라우팅
+  - 구매 상태: requested→preparing 전환만 Slack 발송 (기타 상태 변경 알림 제거)
 - **v3.45.0 주요 변경 사항**:
   - Super Admin: `admin_update_user` RPC에서 `is_super_admin=true` 호출자를 rank 110으로 처리 (SQL 마이그레이션 `TASK-052`)
   - Super Admin: 본인보다 높은 권한 부여 가능 (모든 레벨 할당 가능)
@@ -32,12 +40,12 @@
   - 구매 취소 버그 수정: RPC 기반 취소 우선 시도 (`cancel_product_order`), `.select()` 기반 업데이트 결과 검증
   - 구매 취소: `product_id` 포함 정확한 주문 건 대상 취소 처리
   - 구매 취소: profiles 업데이트 실패 시 에러 로깅 및 적절한 핸들링
-  - 구매 취소: Slack 알림은 실제 취소 확인 후에만 전송
+  - 구매 취소: Slack 알림은 v3.46.0에서 제거됨 (구매 취소는 알림 대상 아님)
   - Super Admin(`is_super_admin=true`): 사용자 수정 시 모든 권한 레벨 선택 가능 (제약 없음)
   - Super Admin: 부서/역할/권한/담당부서 필드 제약 없이 편집 가능
   - Super Admin: `canManageUser`에서 모든 사용자 관리 가능
 - **v3.43.0 주요 변경 사항**:
-  - Slack 알림 연동: `#달란트-마을` 채널로 운영 이벤트 실시간 알림
+  - Slack 알림 연동: 운영 이벤트 실시간 알림 (v3.46.0에서 채널별 분리 라우팅으로 개선)
   - Slack 알림 6가지 유형: 신규 구매, 구매 상태 변경, 가입 신청, 부서 이동 신청, WARN+ 로그, Q&A 질문
   - Supabase Edge Function `slack-notify` 사용 (Slack Block Kit 메시지 포맷)
   - `js/slack-notify.js` 공통 유틸리티 (fire-and-forget, 5초 throttle)
@@ -348,26 +356,43 @@ CHO-Talents/
 - **Auth:** Supabase email/password Auth. 화면에서는 `아이디 + @cho-talents.app` 형태로 로그인 처리
 - **Security:** RLS 정책과 `SECURITY DEFINER` RPC로 사용자/달란트/로그 등 민감 데이터 접근 제어
 - **에러 처리:** `tErr()` 함수로 영문 DB 에러를 한글로 자동 변환, 전체 기능에 `logError`/`logWarn`/`logInfo` 로깅
-- **Slack 알림:** `#달란트-마을` 채널 연동. 브라우저에서 `js/slack-notify.js` → Supabase Edge Function `slack-notify` → Slack Webhook 경로로 전송
+- **Slack 알림:** 부서별/유형별 채널 분리 라우팅. 브라우저에서 `js/slack-notify.js` → Supabase Edge Function `slack-notify` → 채널별 Slack Webhook 경로로 전송
 
 ## Slack 알림 연동
 
-운영자가 사이트 밖에서도 처리 필요 이벤트를 빠르게 확인할 수 있도록 Slack `#달란트-마을` 채널과 연동되어 있습니다.
+운영자가 사이트 밖에서도 처리 필요 이벤트를 빠르게 확인할 수 있도록 Slack 채널별로 알림이 분리 전송됩니다.
 
-| 알림 유형 | 트리거 | 호출 위치 |
-|---|---|---|
-| 신규 구매 (`purchase_new`) | 상품 구매 신청(일반/대리 구매) 완료 | `shop.html` |
-| 구매 상태 변경 (`purchase_status`) | 구매 준비/확정/지급/되돌리기/취소/일괄 처리 | `admin/purchases.html`, `my-orders.html` |
-| 가입 신청 (`user_register`) | 계정 등록 신청 제출 | `register.html` |
-| 부서 이동 신청 (`dept_transfer`) | 부서 이동 요청 생성 | `admin/users.html` |
-| WARN+ 로그 (`log_alert`) | `WARN`/`ERROR`/`FATAL`/`CRITICAL` 로그 기록 | `js/activity-log.js` (`writeLog()`) |
-| Q&A 질문 (`qna_new`) | 새 질문 등록 | `qna.html` |
+### 채널 라우팅 구조
 
-구현 구성:
+| Type Code | Group Code | Secret Name | 대상 |
+|---|---|---|---|
+| HumanResources | Part1 | `SLACK_WEBHOOK_PART1` | 1부 (가입/이동/구매 신청) |
+| HumanResources | Part2 | `SLACK_WEBHOOK_PART2` | 2부 |
+| HumanResources | Part3 | `SLACK_WEBHOOK_PART3` | 3부 |
+| HumanResources | Part4 | `SLACK_WEBHOOK_PART4` | 4부 |
+| HumanResources | Part5 | `SLACK_WEBHOOK_PART5` | 5부 |
+| HumanResources | Worship | `SLACK_WEBHOOK_WORSHIP` | 예배부 |
+| Product | Management | `SLACK_WEBHOOK_PRODUCT_MANAGEMENT` | 상품 관리 (구매 신청→상품 준비) |
+| Operations | Management | `SLACK_WEBHOOK_OPERATIONS` | 운영 (WARN+ 로그) |
+| Answer | Management | `SLACK_WEBHOOK_ANSWER` | Q&A 질문 등록 |
+
+### 알림 유형별 트리거
+
+| 알림 유형 | 트리거 | 라우팅 | 호출 위치 |
+|---|---|---|---|
+| 신규 구매 (`purchase_new`) | 상품 구매 신청(일반/대리) 완료 | 신청자 소속 부서 채널 | `shop.html` |
+| 구매 상태 변경 (`purchase_status`) | 구매 신청 → 상품 준비 전환 | 상품 관리 채널 | `admin/purchases.html` |
+| 가입 신청 (`user_register`) | 계정 등록 신청 제출 | 신청 부서 채널 | `register.html` |
+| 부서 이동 신청 (`dept_transfer`) | 부서 이동 요청 생성 | 이동 대상 부서 채널 | `admin/users.html` |
+| WARN+ 로그 (`log_alert`) | `WARN`/`ERROR`/`FATAL`/`CRITICAL` 로그 기록 | 운영 채널 | `js/activity-log.js` |
+| Q&A 질문 (`qna_new`) | 새 질문 등록 | Q&A 채널 | `qna.html` |
+
+### 구현 구성
 
 - **클라이언트:** `js/slack-notify.js`의 `sendSlackNotify(type, data)` — fire-and-forget 방식, 동일 알림 5초 throttle
-- **서버:** Supabase Edge Function `slack-notify` — Slack Block Kit 메시지 포맷, `SLACK_WEBHOOK_URL` 환경변수 사용
+- **서버:** Supabase Edge Function `slack-notify` — 부서/유형 기반 Webhook Secret 동적 선택, Slack Block Kit 메시지 포맷
 - **배포 참고:** Edge Function 소스는 `docs/edge-function-slack-notify.ts`에 포함
+- **부서 매핑:** Edge Function 내부에서 부서명(1부~5부, 예배부)을 Secret Name으로 변환하여 라우팅
 
 ## 사용자 권한 체계
 
@@ -578,7 +603,7 @@ flowchart TD
 - `ERROR`, `FATAL`, `CRITICAL` 로그는 미확인 상태로 남고, `admin/logs.html`에서 확인 처리합니다.
 - 로그 삭제는 소프트 삭제(`is_deleted=true`)이며, 실제 삭제는 SQL Editor에서 수행합니다.
 - `admin/reports.html`은 `reports` 테이블의 작업 보고서를 유형별로 조회하고, 등록/수정/삭제를 제공합니다.
-- `writeLog()`에서 `WARN` 이상 로그가 기록되면 `sendSlackNotify('log_alert', ...)`로 Slack 알림이 함께 전송됩니다.
+- `writeLog()`에서 `WARN` 이상 로그가 기록되면 `sendSlackNotify('log_alert', ...)`로 운영 채널에 Slack 알림이 전송됩니다.
 
 ## 주요 데이터와 RPC
 

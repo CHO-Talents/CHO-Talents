@@ -1,25 +1,25 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>íŽ˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬ - ë‹¬ëž€íŠ¸ ë§ˆì„</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.45.0" />
+  <title>ÆäÀÌÁö Á¢±Ù °ü¸® - ´Þ¶õÆ® ¸¶À»</title>
+  <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ðŸ” íŽ˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬</h2>
-    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">ì‚¬ìš©ìž ìœ í˜• ë° ê¶Œí•œë³„ë¡œ ì ‘ê·¼ ê°€ëŠ¥í•œ íŽ˜ì´ì§€ì™€ í™”ë©´ ìš”ì†Œë¥¼ ê´€ë¦¬í•©ë‹ˆë‹¤.</p>
+    <h2 style="margin-bottom:1rem;">?? ÆäÀÌÁö Á¢±Ù °ü¸®</h2>
+    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">»ç¿ëÀÚ À¯Çü ¹× ±ÇÇÑº°·Î Á¢±Ù °¡´ÉÇÑ ÆäÀÌÁö¿Í È­¸é ¿ä¼Ò¸¦ °ü¸®ÇÕ´Ï´Ù.</p>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title">ìœ í˜•/ê¶Œí•œë³„ ì ‘ê·¼ ì„¤ì •</div>
+        <div class="admin-table-title">À¯Çü/±ÇÇÑº° Á¢±Ù ¼³Á¤</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>êµ¬ë¶„</th><th>ìœ í˜•</th><th>ê¶Œí•œ</th><th>ë“±ê¸‰</th><th>ì„¤ëª…</th><th>ê´€ë¦¬</th></tr></thead>
+        <thead><tr><th>±¸ºÐ</th><th>À¯Çü</th><th>±ÇÇÑ</th><th>µî±Þ</th><th>¼³¸í</th><th>°ü¸®</th></tr></thead>
         <tbody id="roleList"></tbody>
       </table>
     </div>
@@ -27,73 +27,73 @@
 
   <div class="modal-overlay hidden" id="accessModal">
     <div class="modal-box" style="max-width:750px;max-height:85vh;overflow-y:auto;">
-      <h3 class="modal-title" id="accessTitle">íŽ˜ì´ì§€ ì ‘ê·¼ ì„¤ì •</h3>
+      <h3 class="modal-title" id="accessTitle">ÆäÀÌÁö Á¢±Ù ¼³Á¤</h3>
       <div class="form-error" id="accessError"></div>
       <div id="accessBody"></div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="closeAccessModal()">ì·¨ì†Œ</button>
-        <button class="btn-confirm" id="btnSaveAccess" onclick="saveAccess()">ì €ìž¥</button>
+        <button class="btn-cancel" onclick="closeAccessModal()">Ãë¼Ò</button>
+        <button class="btn-confirm" id="btnSaveAccess" onclick="saveAccess()">ÀúÀå</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.45.0"></script>
-  <script src="../js/supabase-config.js?v=3.45.0"></script>
-  <script src="../js/activity-log.js?v=3.45.0"></script>
-  <script src="../js/auth.js?v=3.45.0"></script>
-  <script src="../js/theme.js?v=3.45.0"></script>
-  <script src="../js/nav.js?v=3.45.0"></script>
-  <script src="../js/user-mgmt.js?v=3.45.0"></script>
+  <script src="../config/public-config.js?v=3.46.0"></script>
+  <script src="../js/supabase-config.js?v=3.46.0"></script>
+  <script src="../js/activity-log.js?v=3.46.0"></script>
+  <script src="../js/auth.js?v=3.46.0"></script>
+  <script src="../js/theme.js?v=3.46.0"></script>
+  <script src="../js/nav.js?v=3.46.0"></script>
+  <script src="../js/user-mgmt.js?v=3.46.0"></script>
   <script>
     initSupabase();
     let session;
     let editingKey = null;
 
     const ROLE_LIST = [
-      { key: 'super_admin', userType: 'teacher', perm: 'admin', rank: 110, label: 'ìµœê³  ê´€ë¦¬ìž', emoji: 'ðŸ”’', desc: 'ëª¨ë“  íŽ˜ì´ì§€ ì ‘ê·¼ ê°€ëŠ¥', superOnly: true },
-      { key: 'admin', userType: 'teacher', perm: 'admin', rank: 100, label: 'ê´€ë¦¬ìž', emoji: 'ðŸ‘‘', desc: 'ì „ì²´ ì‹œìŠ¤í…œ ê´€ë¦¬' },
-      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', rank: 90, label: 'ì „ë„ì‚¬ë‹˜', emoji: 'âœï¸', desc: 'ì‚¬ìš©ìž/ë¶€ì„œ/ê´€ë¦¬ìž ê´€ë¦¬' },
-      { key: 'chief', userType: 'teacher', perm: 'chief', rank: 80, label: 'ë¶€ìž¥ êµì‚¬', emoji: 'ðŸ“‹', desc: 'ë‹´ë‹¹ ë¶€ì„œ ê´€ë¦¬' },
-      { key: 'purchase_teacher', userType: 'teacher', perm: 'purchase_teacher', rank: 70, label: 'êµ¬ë§¤ ë‹´ë‹¹ êµì‚¬', emoji: 'ðŸ›’', desc: 'êµ¬ë§¤ ê´€ë¦¬ ì „ì²´ ë¶€ì„œ ì£¼ë¬¸ ì²˜ë¦¬' },
-      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', rank: 60, label: 'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', emoji: 'ðŸ‘©â€ðŸ«', desc: 'ë‹´ë‹¹ ë¶€ì„œ ì‚¬ìš©ìž ê´€ë¦¬' },
-      { key: 'teacher', userType: 'teacher', perm: 'teacher', rank: 40, label: 'ì¼ë°˜ êµì‚¬', emoji: 'ðŸ‘¨â€ðŸ«', desc: 'ë‹¬ëž€íŠ¸ ì§€ê¸‰' },
-      { key: 'student', userType: 'student', perm: 'student', rank: 20, label: 'í•™ìƒ', emoji: 'ðŸŽ’', desc: 'ë‚´ ë‹¬ëž€íŠ¸ ì¡°íšŒ / ìƒì ' }
+      { key: 'super_admin', userType: 'teacher', perm: 'admin', rank: 110, label: 'ÃÖ°í °ü¸®ÀÚ', emoji: '??', desc: '¸ðµç ÆäÀÌÁö Á¢±Ù °¡´É', superOnly: true },
+      { key: 'admin', userType: 'teacher', perm: 'admin', rank: 100, label: '°ü¸®ÀÚ', emoji: '??', desc: 'ÀüÃ¼ ½Ã½ºÅÛ °ü¸®' },
+      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', rank: 90, label: 'Àüµµ»ç´Ô', emoji: '??', desc: '»ç¿ëÀÚ/ºÎ¼­/°ü¸®ÀÚ °ü¸®' },
+      { key: 'chief', userType: 'teacher', perm: 'chief', rank: 80, label: 'ºÎÀå ±³»ç', emoji: '??', desc: '´ã´ç ºÎ¼­ °ü¸®' },
+      { key: 'purchase_teacher', userType: 'teacher', perm: 'purchase_teacher', rank: 70, label: '±¸¸Å ´ã´ç ±³»ç', emoji: '??', desc: '±¸¸Å °ü¸® ÀüÃ¼ ºÎ¼­ ÁÖ¹® Ã³¸®' },
+      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', rank: 60, label: 'ºÎ¼­ ´ã´ç ±³»ç', emoji: '?????', desc: '´ã´ç ºÎ¼­ »ç¿ëÀÚ °ü¸®' },
+      { key: 'teacher', userType: 'teacher', perm: 'teacher', rank: 40, label: 'ÀÏ¹Ý ±³»ç', emoji: '?????', desc: '´Þ¶õÆ® Áö±Þ' },
+      { key: 'student', userType: 'student', perm: 'student', rank: 20, label: 'ÇÐ»ý', emoji: '??', desc: '³» ´Þ¶õÆ® Á¶È¸ / »óÁ¡' }
     ];
 
     const PAGE_LIST = [
-      { id: 'index', name: 'ë©”ì¸ íŽ˜ì´ì§€', path: 'index.html', elements: ['feature-cards', 'status-box'] },
-      { id: 'login', name: 'ë¡œê·¸ì¸', path: 'login.html', elements: [] },
-      { id: 'register', name: 'ê³„ì • ë“±ë¡', path: 'register.html', elements: [] },
-      { id: 'guide', name: 'í•™ìƒ ê°€ì´ë“œ', path: 'guide.html', elements: [] },
-      { id: 'teacher-guide', name: 'êµì‚¬ ê°€ì´ë“œ', path: 'teacher-guide.html', elements: [] },
-      { id: 'admin-guide', name: 'ê´€ë¦¬ìž ê°€ì´ë“œ', path: 'admin-guide.html', elements: [] },
-      { id: 'earn-talents', name: 'ë‹¬ëž€íŠ¸ ì ë¦½ ë°©ë²•', path: 'earn-talents.html', elements: [] },
+      { id: 'index', name: '¸ÞÀÎ ÆäÀÌÁö', path: 'index.html', elements: ['feature-cards', 'status-box'] },
+      { id: 'login', name: '·Î±×ÀÎ', path: 'login.html', elements: [] },
+      { id: 'register', name: '°èÁ¤ µî·Ï', path: 'register.html', elements: [] },
+      { id: 'guide', name: 'ÇÐ»ý °¡ÀÌµå', path: 'guide.html', elements: [] },
+      { id: 'teacher-guide', name: '±³»ç °¡ÀÌµå', path: 'teacher-guide.html', elements: [] },
+      { id: 'admin-guide', name: '°ü¸®ÀÚ °¡ÀÌµå', path: 'admin-guide.html', elements: [] },
+      { id: 'earn-talents', name: '´Þ¶õÆ® Àû¸³ ¹æ¹ý', path: 'earn-talents.html', elements: [] },
       { id: 'qna', name: 'Q & A', path: 'qna.html', elements: [] },
-      { id: 'my-talents', name: 'ë‚´ ë‹¬ëž€íŠ¸', path: 'my-talents.html', elements: ['history-table'] },
-      { id: 'my-orders', name: 'ë‚´ êµ¬ë§¤ ìƒí’ˆ', path: 'my-orders.html', elements: [] },
-      { id: 'talent-receive', name: 'ë‹¬ëž€íŠ¸ ìˆ˜ë ¹', path: 'talent-receive.html', elements: ['qr-input', 'camera-btn', 'qr-list'] },
-      { id: 'shop', name: 'ìƒí’ˆ êµ¬ë§¤', path: 'shop.html', elements: ['purchase-btn'] },
-      { id: 'admin-dashboard', name: 'ëŒ€ì‹œë³´ë“œ', path: 'admin/index.html', elements: ['stats-cards', 'shortcuts', 'recent-logs', 'error-card'] },
-      { id: 'admin-users', name: 'ì‚¬ìš©ìž ê´€ë¦¬', path: 'admin/users.html', elements: ['request-section', 'transfer-section', 'user-table', 'detail-modal'] },
-      { id: 'admin-departments', name: 'ë¶€ì„œ ê´€ë¦¬', path: 'admin/departments.html', elements: ['dept-table', 'member-modal'] },
-      { id: 'admin-managers', name: 'ê´€ë¦¬ìž ê´€ë¦¬', path: 'admin/managers.html', elements: ['manager-table'] },
-      { id: 'admin-talents', name: 'ë‹¬ëž€íŠ¸ ê´€ë¦¬', path: 'admin/talents.html', elements: ['talent-table', 'talent-modal', 'detail-modal'] },
-      { id: 'admin-talent-stats', name: 'ë‹¬ëž€íŠ¸ í†µê³„', path: 'admin/talent-stats.html', elements: ['stats-chart', 'dept-filter', 'user-filter'] },
-      { id: 'admin-talent-qr', name: 'ë‹¬ëž€íŠ¸ QR ê´€ë¦¬', path: 'admin/talent-qr.html', elements: ['qr-table', 'qr-create-form', 'print-btn'] },
-      { id: 'admin-shop', name: 'ìƒí’ˆ ê´€ë¦¬', path: 'admin/shop.html', elements: ['product-table'] },
-      { id: 'admin-purchases', name: 'êµ¬ë§¤ ê´€ë¦¬', path: 'admin/purchases.html', elements: ['order-table'] },
-      { id: 'admin-reports', name: 'ë³´ê³ ì„œ', path: 'admin/reports.html', elements: ['report-table'] },
-      { id: 'admin-logs', name: 'ë¡œê·¸', path: 'admin/logs.html', elements: ['log-table', 'detail-modal'] },
-      { id: 'admin-versions', name: 'ë²„ì „', path: 'admin/versions.html', elements: ['version-list'] },
-      { id: 'admin-talent-items', name: 'ë‹¬ëž€íŠ¸ í•­ëª© ê´€ë¦¬', path: 'admin/talent-items.html', elements: ['item-table'] },
-      { id: 'admin-page-access', name: 'íŽ˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬', path: 'admin/page-access.html', elements: [] },
-      { id: 'admin-page-features', name: 'íŽ˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬', path: 'admin/page-features.html', elements: [] },
-      { id: 'docs-page-permission-rules', name: 'íŽ˜ì´ì§€ ê¶Œí•œ ë£°', path: 'docs/page-permission-rules.html', elements: [] },
-      { id: 'admin-log-rules', name: 'ë¡œê·¸ ìž‘ì„± ë£°', path: 'admin/log-rules.html', elements: [] },
-      { id: 'admin-audit-rules', name: 'ìž‘ì—… ì´ë ¥ ìž‘ì„± ë£°', path: 'admin/audit-rules.html', elements: [] },
-      { id: 'admin-page-perms', name: 'íŽ˜ì´ì§€ ê¶Œí•œ ê´€ë¦¬', path: 'admin/page-permissions.html', elements: [] },
-      { id: 'admin-audit', name: 'ìž‘ì—… ì´ë ¥', path: 'admin/audit.html', elements: ['audit-table'] }
+      { id: 'my-talents', name: '³» ´Þ¶õÆ®', path: 'my-talents.html', elements: ['history-table'] },
+      { id: 'my-orders', name: '³» ±¸¸Å »óÇ°', path: 'my-orders.html', elements: [] },
+      { id: 'talent-receive', name: '´Þ¶õÆ® ¼ö·É', path: 'talent-receive.html', elements: ['qr-input', 'camera-btn', 'qr-list'] },
+      { id: 'shop', name: '»óÇ° ±¸¸Å', path: 'shop.html', elements: ['purchase-btn'] },
+      { id: 'admin-dashboard', name: '´ë½Ãº¸µå', path: 'admin/index.html', elements: ['stats-cards', 'shortcuts', 'recent-logs', 'error-card'] },
+      { id: 'admin-users', name: '»ç¿ëÀÚ °ü¸®', path: 'admin/users.html', elements: ['request-section', 'transfer-section', 'user-table', 'detail-modal'] },
+      { id: 'admin-departments', name: 'ºÎ¼­ °ü¸®', path: 'admin/departments.html', elements: ['dept-table', 'member-modal'] },
+      { id: 'admin-managers', name: '°ü¸®ÀÚ °ü¸®', path: 'admin/managers.html', elements: ['manager-table'] },
+      { id: 'admin-talents', name: '´Þ¶õÆ® °ü¸®', path: 'admin/talents.html', elements: ['talent-table', 'talent-modal', 'detail-modal'] },
+      { id: 'admin-talent-stats', name: '´Þ¶õÆ® Åë°è', path: 'admin/talent-stats.html', elements: ['stats-chart', 'dept-filter', 'user-filter'] },
+      { id: 'admin-talent-qr', name: '´Þ¶õÆ® QR °ü¸®', path: 'admin/talent-qr.html', elements: ['qr-table', 'qr-create-form', 'print-btn'] },
+      { id: 'admin-shop', name: '»óÇ° °ü¸®', path: 'admin/shop.html', elements: ['product-table'] },
+      { id: 'admin-purchases', name: '±¸¸Å °ü¸®', path: 'admin/purchases.html', elements: ['order-table'] },
+      { id: 'admin-reports', name: 'º¸°í¼­', path: 'admin/reports.html', elements: ['report-table'] },
+      { id: 'admin-logs', name: '·Î±×', path: 'admin/logs.html', elements: ['log-table', 'detail-modal'] },
+      { id: 'admin-versions', name: '¹öÀü', path: 'admin/versions.html', elements: ['version-list'] },
+      { id: 'admin-talent-items', name: '´Þ¶õÆ® Ç×¸ñ °ü¸®', path: 'admin/talent-items.html', elements: ['item-table'] },
+      { id: 'admin-page-access', name: 'ÆäÀÌÁö Á¢±Ù °ü¸®', path: 'admin/page-access.html', elements: [] },
+      { id: 'admin-page-features', name: 'ÆäÀÌÁö ±â´É °ü¸®', path: 'admin/page-features.html', elements: [] },
+      { id: 'docs-page-permission-rules', name: 'ÆäÀÌÁö ±ÇÇÑ ·ê', path: 'docs/page-permission-rules.html', elements: [] },
+      { id: 'admin-log-rules', name: '·Î±× ÀÛ¼º ·ê', path: 'admin/log-rules.html', elements: [] },
+      { id: 'admin-audit-rules', name: 'ÀÛ¾÷ ÀÌ·Â ÀÛ¼º ·ê', path: 'admin/audit-rules.html', elements: [] },
+      { id: 'admin-page-perms', name: 'ÆäÀÌÁö ±ÇÇÑ °ü¸®', path: 'admin/page-permissions.html', elements: [] },
+      { id: 'admin-audit', name: 'ÀÛ¾÷ ÀÌ·Â', path: 'admin/audit.html', elements: ['audit-table'] }
     ];
 
     (async () => {
@@ -117,11 +117,11 @@
         .filter(r => !r.superOnly || isSA)
         .map(r => `<tr>
           <td><span class="level-badge">${r.emoji} ${r.label}</span></td>
-          <td>${r.userType === 'teacher' ? 'êµì‚¬' : 'í•™ìƒ'}</td>
+          <td>${r.userType === 'teacher' ? '±³»ç' : 'ÇÐ»ý'}</td>
           <td>${PERMISSION_LABELS[r.perm] || r.perm}</td>
           <td style="font-weight:700;">${r.rank}</td>
           <td style="font-size:0.82rem;color:var(--admin-text-muted);">${r.desc}</td>
-          <td><button class="filter-btn" onclick="openAccessModal('${r.key}')">ì„¤ì •</button></td>
+          <td><button class="filter-btn" onclick="openAccessModal('${r.key}')">¼³Á¤</button></td>
         </tr>`).join('');
     }
 
@@ -129,7 +129,7 @@
       editingKey = roleKey;
       const role = ROLE_LIST.find(r => r.key === roleKey);
       if (!role) return;
-      document.getElementById('accessTitle').textContent = `${role.emoji} ${role.label} - íŽ˜ì´ì§€ ì ‘ê·¼ ì„¤ì •`;
+      document.getElementById('accessTitle').textContent = `${role.emoji} ${role.label} - ÆäÀÌÁö Á¢±Ù ¼³Á¤`;
 
       let saved = {};
       const { data } = await _sb.from('role_page_access').select('*').eq('role_key', roleKey);
@@ -182,18 +182,18 @@
       await _sb.from('role_page_access').delete().eq('role_key', editingKey);
       const { error } = await _sb.from('role_page_access').insert(rows);
       if (error) {
-        await logError('ROLE_ACCESS_UPDATE_FAIL', { ê¶Œí•œ: editingKey, ì˜¤ë¥˜: error.message });
-        errEl.textContent = 'ì €ìž¥ ì‹¤íŒ¨: ' + tErr(error.message);
+        await logError('ROLE_ACCESS_UPDATE_FAIL', { ±ÇÇÑ: editingKey, ¿À·ù: error.message });
+        errEl.textContent = 'ÀúÀå ½ÇÆÐ: ' + tErr(error.message);
         errEl.classList.add('show');
         return;
       }
-      await logInfo('ROLE_ACCESS_UPDATE', { ê¶Œí•œ: editingKey });
+      await logInfo('ROLE_ACCESS_UPDATE', { ±ÇÇÑ: editingKey });
       closeAccessModal();
-      alert('ì €ìž¥ë˜ì—ˆìŠµë‹ˆë‹¤.');
+      alert('ÀúÀåµÇ¾ú½À´Ï´Ù.');
     }
 
     document.getElementById('accessModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeAccessModal(); });
   </script>
-  <script src="../js/version.js?v=3.45.0"></script>
+  <script src="../js/version.js?v=3.46.0"></script>
 </body>
 </html>

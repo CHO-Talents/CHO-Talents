@@ -1,12 +1,12 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ìž‘ì—… ì´ë ¥ ìž‘ì„± ë£° - ë‹¬ëž€íŠ¸ ë§ˆì„</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ“</text></svg>" />
-  <link rel="stylesheet" href="../css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.45.0" />
+  <title>ÀÛ¾÷ ÀÌ·Â ÀÛ¼º ·ê - ´Þ¶õÆ® ¸¶À»</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
   <style>
     .rule-section { background: var(--admin-card); border-radius: var(--admin-radius); box-shadow: var(--admin-shadow); padding: 1.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
     .rule-section h2 { font-size: 1.1rem; font-weight: 700; color: var(--admin-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -36,198 +36,198 @@
   <div id="nav-container"></div>
   <div class="admin-container">
     <div class="page-header">
-      <h1>ðŸ“ ìž‘ì—… ì´ë ¥ ìž‘ì„± ë£°</h1>
-      <p>ìž‘ì—… ì´ë ¥(Audit Trail)ì— ê¸°ë¡ë˜ëŠ” ê¸°ì¤€ê³¼ ì¹´í…Œê³ ë¦¬ë¥¼ ì„¤ëª…í•©ë‹ˆë‹¤</p>
+      <h1>?? ÀÛ¾÷ ÀÌ·Â ÀÛ¼º ·ê</h1>
+      <p>ÀÛ¾÷ ÀÌ·Â(Audit Trail)¿¡ ±â·ÏµÇ´Â ±âÁØ°ú Ä«Å×°í¸®¸¦ ¼³¸íÇÕ´Ï´Ù</p>
     </div>
 
-    <!-- ê°œìš” -->
+    <!-- °³¿ä -->
     <div class="rule-section">
-      <h2>ðŸ“Œ ìž‘ì—… ì´ë ¥ vs ë¡œê·¸ì˜ ì°¨ì´</h2>
+      <h2>?? ÀÛ¾÷ ÀÌ·Â vs ·Î±×ÀÇ Â÷ÀÌ</h2>
       <div class="diff-box">
-        <strong>ë¡œê·¸ (admin/logs.html):</strong> ëª¨ë“  ì‹œìŠ¤í…œ ì´ë²¤íŠ¸ ê¸°ë¡ (íŽ˜ì´ì§€ ë°©ë¬¸, JS ì—ëŸ¬ í¬í•¨) â€” ë ˆë²¨ë³„ í•„í„°ë§
+        <strong>·Î±× (admin/logs.html):</strong> ¸ðµç ½Ã½ºÅÛ ÀÌº¥Æ® ±â·Ï (ÆäÀÌÁö ¹æ¹®, JS ¿¡·¯ Æ÷ÇÔ) ? ·¹º§º° ÇÊÅÍ¸µ
       </div>
       <div class="diff-box">
-        <strong>ìž‘ì—… ì´ë ¥ (admin/audit.html):</strong> ê´€ë¦¬ ìž‘ì—…ë§Œ í•„í„°ë§í•œ ê°ì‚¬ ê¸°ë¡ â€” ì¹´í…Œê³ ë¦¬ë³„ í•„í„°ë§
+        <strong>ÀÛ¾÷ ÀÌ·Â (admin/audit.html):</strong> °ü¸® ÀÛ¾÷¸¸ ÇÊÅÍ¸µÇÑ °¨»ç ±â·Ï ? Ä«Å×°í¸®º° ÇÊÅÍ¸µ
       </div>
       <div class="note-box">
-        ë‘ ê¸°ëŠ¥ì€ ë™ì¼í•œ <code>activity_logs</code> í…Œì´ë¸”ì„ ì‚¬ìš©í•©ë‹ˆë‹¤. ìž‘ì—… ì´ë ¥ì€ <code>AUDIT_ACTIONS</code>ì— ë“±ë¡ëœ ì•¡ì…˜ë§Œ í‘œì‹œí•©ë‹ˆë‹¤.
+        µÎ ±â´ÉÀº µ¿ÀÏÇÑ <code>activity_logs</code> Å×ÀÌºíÀ» »ç¿ëÇÕ´Ï´Ù. ÀÛ¾÷ ÀÌ·ÂÀº <code>AUDIT_ACTIONS</code>¿¡ µî·ÏµÈ ¾×¼Ç¸¸ Ç¥½ÃÇÕ´Ï´Ù.
       </div>
       <div class="note-box">
-        <strong>DB ê¶Œí•œ í™•ì¸:</strong> ìž‘ì—… ì´ë ¥ì´ ë¹„ì–´ ìžˆê³  ë¡œê·¸ë„ ìŒ“ì´ì§€ ì•Šìœ¼ë©´ <code>docs/TASK-047_activity_logs_grants.sql</code>ì„ ì ìš©í•´ <code>activity_logs</code> INSERT ê¶Œí•œê³¼ RLS ì •ì±…ì„ ë³µêµ¬í•©ë‹ˆë‹¤.
+        <strong>DB ±ÇÇÑ È®ÀÎ:</strong> ÀÛ¾÷ ÀÌ·ÂÀÌ ºñ¾î ÀÖ°í ·Î±×µµ ½×ÀÌÁö ¾ÊÀ¸¸é <code>docs/TASK-047_activity_logs_grants.sql</code>À» Àû¿ëÇØ <code>activity_logs</code> INSERT ±ÇÇÑ°ú RLS Á¤Ã¥À» º¹±¸ÇÕ´Ï´Ù.
       </div>
     </div>
 
-    <!-- ê¸°ë¡ ê¸°ì¤€ -->
+    <!-- ±â·Ï ±âÁØ -->
     <div class="rule-section">
-      <h2>âœ… ìž‘ì—… ì´ë ¥ì— í¬í•¨ë˜ëŠ” ê¸°ì¤€</h2>
+      <h2>? ÀÛ¾÷ ÀÌ·Â¿¡ Æ÷ÇÔµÇ´Â ±âÁØ</h2>
       <table class="rule-table">
-        <thead><tr><th>ê¸°ì¤€</th><th>ì„¤ëª…</th></tr></thead>
+        <thead><tr><th>±âÁØ</th><th>¼³¸í</th></tr></thead>
         <tbody>
-          <tr><td>AUDIT_ACTIONS ë“±ë¡</td><td>admin/audit.htmlì˜ AUDIT_ACTIONS ê°ì²´ì— í‚¤ê°€ ë“±ë¡ëœ ì•¡ì…˜ë§Œ ìž‘ì—… ì´ë ¥ì— í‘œì‹œë©ë‹ˆë‹¤</td></tr>
-          <tr><td>ê´€ë¦¬ ìž‘ì—… ì¤‘ì‹¬</td><td>ì‚¬ìš©ìž/ë¶€ì„œ/ë‹¬ëž€íŠ¸/ìƒí’ˆ/ì£¼ë¬¸ ë“±ì˜ CRUD ìž‘ì—…ì´ ì£¼ ëŒ€ìƒ</td></tr>
-          <tr><td>ì‹œìŠ¤í…œ ìžë™ ì´ë²¤íŠ¸ ì œì™¸</td><td>PAGE_VIEW, JS_ERROR, PROMISE_REJECTION ë“±ì€ í¬í•¨ë˜ì§€ ì•ŠìŒ</td></tr>
-          <tr><td>ì‹¤íŒ¨/ê±°ë¶€ë„ ì¼ë¶€ í¬í•¨</td><td>ë¡œê·¸ì¸ ì‹¤íŒ¨ ë“± ë³´ì•ˆ ê´€ë ¨ì€ ìž‘ì—… ì´ë ¥ì—ë„ í¬í•¨ë  ìˆ˜ ìžˆìŒ</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 10ê°œ ì¹´í…Œê³ ë¦¬ -->
-    <div class="rule-section">
-      <h2>ðŸ“‚ 10ê°œ ì¹´í…Œê³ ë¦¬ ë¶„ë¥˜</h2>
-
-      <h3><span class="cat-badge user">USER</span> ì‚¬ìš©ìž ê´€ë¦¬</h3>
-      <table class="rule-table">
-        <thead><tr><th>ì•¡ì…˜</th><th>í•œê¸€ ë¼ë²¨</th><th>ê¸°ë¡ ì‹œì </th></tr></thead>
-        <tbody>
-          <tr><td>USER_CREATE</td><td>ðŸ‘¤ ì‚¬ìš©ìž ìƒì„±</td><td>ê´€ë¦¬ìžê°€ ì‚¬ìš©ìž ì§ì ‘ ìƒì„±</td></tr>
-          <tr><td>USER_UPDATE</td><td>âœï¸ ì‚¬ìš©ìž ìˆ˜ì •</td><td>ì‚¬ìš©ìž ì •ë³´(ì´ë¦„, ê¶Œí•œ, ë¶€ì„œ) ë³€ê²½</td></tr>
-          <tr><td>USER_DELETE</td><td>ðŸ—‘ï¸ ì‚¬ìš©ìž ì‚­ì œ</td><td>ì‚¬ìš©ìž ê³„ì • ì‚­ì œ</td></tr>
-          <tr><td>PASSWORD_RESET</td><td>ðŸ”‘ ë¹„ë°€ë²ˆí˜¸ ì´ˆê¸°í™”</td><td>ê´€ë¦¬ìžê°€ ë¹„ë°€ë²ˆí˜¸ ë¦¬ì…‹</td></tr>
-        </tbody>
-      </table>
-
-      <h3><span class="cat-badge register">REGISTER</span> ë“±ë¡ ê´€ë¦¬</h3>
-      <table class="rule-table">
-        <thead><tr><th>ì•¡ì…˜</th><th>í•œê¸€ ë¼ë²¨</th><th>ê¸°ë¡ ì‹œì </th></tr></thead>
-        <tbody>
-          <tr><td>REGISTER_REQUEST</td><td>ðŸ“‹ ë“±ë¡ ì‹ ì²­</td><td>ì‚¬ìš©ìžê°€ ê³„ì • ë“±ë¡ ì‹ ì²­</td></tr>
-          <tr><td>REGISTER_APPROVE</td><td>âœ… ë“±ë¡ ìŠ¹ì¸</td><td>ê´€ë¦¬ìžê°€ ë“±ë¡ ìŠ¹ì¸</td></tr>
-          <tr><td>REGISTER_REJECT</td><td>âŒ ë“±ë¡ ê±°ì ˆ</td><td>ê´€ë¦¬ìžê°€ ë“±ë¡ ê±°ì ˆ</td></tr>
-        </tbody>
-      </table>
-
-      <h3><span class="cat-badge dept">DEPT</span> ë¶€ì„œ ê´€ë¦¬</h3>
-      <table class="rule-table">
-        <thead><tr><th>ì•¡ì…˜</th><th>í•œê¸€ ë¼ë²¨</th><th>ê¸°ë¡ ì‹œì </th></tr></thead>
-        <tbody>
-          <tr><td>DEPT_CREATE / UPDATE / DELETE</td><td>ë¶€ì„œ ìƒì„±/ìˆ˜ì •/ì‚­ì œ</td><td>ë¶€ì„œ CRUD</td></tr>
-          <tr><td>DEPT_DEACTIVATE</td><td>ë¶€ì„œ ë¹„í™œì„±í™”</td><td>ë¶€ì„œ ì‚¬ìš© ì¤‘ì§€</td></tr>
-          <tr><td>DEPT_TRANSFER_REQUEST / APPROVE / REJECT</td><td>ë¶€ì„œ ì´ë™ ìš”ì²­/ìŠ¹ì¸/ê±°ì ˆ</td><td>ë¶€ì„œ ì´ë™ ì›Œí¬í”Œë¡œìš°</td></tr>
-          <tr><td>MANAGER_UPDATE / MANAGER_PROMOTE</td><td>ê´€ë¦¬ìž ë³€ê²½/ìŠ¹ê²©</td><td>ê´€ë¦¬ìž ì—­í•  ë³€ê²½</td></tr>
-        </tbody>
-      </table>
-
-      <h3><span class="cat-badge talent">TALENT</span> ë‹¬ëž€íŠ¸ ê´€ë¦¬</h3>
-      <table class="rule-table">
-        <thead><tr><th>ì•¡ì…˜</th><th>í•œê¸€ ë¼ë²¨</th><th>ê¸°ë¡ ì‹œì </th></tr></thead>
-        <tbody>
-          <tr><td>TALENT_GIVE / GIVE_ITEM / GIVE_ITEMS</td><td>ë‹¬ëž€íŠ¸ ì§€ê¸‰</td><td>êµì‚¬/ê´€ë¦¬ìžê°€ í•™ìƒì—ê²Œ ë‹¬ëž€íŠ¸ ì§€ê¸‰</td></tr>
-          <tr><td>TALENT_MANUAL_GIVE</td><td>ìˆ˜ë™ ë‹¬ëž€íŠ¸ ì§€ê¸‰</td><td>íŠ¹ë³„ ì§€ê¸‰</td></tr>
-          <tr><td>TALENT_USE / TALENT_RETURN</td><td>ë‹¬ëž€íŠ¸ ì‚¬ìš©/ë°˜í™˜</td><td>ìƒí’ˆ êµ¬ë§¤ ì‚¬ìš© ë˜ëŠ” ì·¨ì†Œ ë°˜í™˜</td></tr>
-          <tr><td>ATTENDANCE_GIVE / ATTENDANCE_CANCEL</td><td>ì¶œì„ ë‹¬ëž€íŠ¸ ì§€ê¸‰/ì·¨ì†Œ</td><td>ì¶œì„ ì²´í¬ ê´€ë ¨</td></tr>
-          <tr><td>TALENT_ITEM_CREATE / UPDATE / DELETE</td><td>ë‹¬ëž€íŠ¸ í•­ëª© ê´€ë¦¬</td><td>ì ë¦½ í•­ëª© CRUD</td></tr>
-          <tr><td>qr_create / qr_edit / qr_toggle / qr_scan</td><td>QR ê´€ë¦¬</td><td>QR ë‹¬ëž€íŠ¸ ì½”ë“œ ê´€ë ¨</td></tr>
-        </tbody>
-      </table>
-
-      <h3><span class="cat-badge order">ORDER</span> ìƒí’ˆ/ì£¼ë¬¸ ê´€ë¦¬</h3>
-      <table class="rule-table">
-        <thead><tr><th>ì•¡ì…˜</th><th>í•œê¸€ ë¼ë²¨</th><th>ê¸°ë¡ ì‹œì </th></tr></thead>
-        <tbody>
-          <tr><td>PRODUCT_CREATE / UPDATE / DELETE</td><td>ìƒí’ˆ CRUD</td><td>ìƒí’ˆ ë“±ë¡/ìˆ˜ì •/ì‚­ì œ</td></tr>
-          <tr><td>PRODUCT_DEACTIVATE / PRODUCT_SOFT_DELETE</td><td>ìƒí’ˆ ë¹„í™œì„±í™”/ì†Œí”„íŠ¸ì‚­ì œ</td><td>ìƒí’ˆ ìˆ¨ê¹€ ì²˜ë¦¬</td></tr>
-          <tr><td>ORDER_REQUEST_SUCCESS</td><td>êµ¬ë§¤ ìš”ì²­ ì„±ê³µ</td><td>í•™ìƒì´ ìƒí’ˆ êµ¬ë§¤ ìš”ì²­</td></tr>
-          <tr><td>ORDER_STATUS_CHANGE / ORDER_CANCEL / ORDER_REVERT</td><td>ì£¼ë¬¸ ìƒíƒœ ë³€ê²½</td><td>ê´€ë¦¬ìž ì£¼ë¬¸ ì²˜ë¦¬</td></tr>
-          <tr><td>ORDER_BULK_*</td><td>ì¼ê´„ ì£¼ë¬¸ ì²˜ë¦¬</td><td>ë‹¤ê±´ ì£¼ë¬¸ ì²˜ë¦¬</td></tr>
-          <tr><td>PROXY_ORDER_SUCCESS</td><td>ëŒ€ë¦¬ êµ¬ë§¤</td><td>ê´€ë¦¬ìžê°€ ëŒ€ë¦¬ êµ¬ë§¤</td></tr>
-        </tbody>
-      </table>
-
-      <h3><span class="cat-badge qna">QNA</span> Q&A ê´€ë¦¬</h3>
-      <table class="rule-table">
-        <thead><tr><th>ì•¡ì…˜</th><th>í•œê¸€ ë¼ë²¨</th><th>ê¸°ë¡ ì‹œì </th></tr></thead>
-        <tbody>
-          <tr><td>QNA_CREATE</td><td>ì§ˆë¬¸ ë“±ë¡</td><td>ì‚¬ìš©ìžê°€ ì§ˆë¬¸ ìž‘ì„±</td></tr>
-          <tr><td>QNA_ANSWER</td><td>ë‹µë³€ ë“±ë¡</td><td>ê´€ë¦¬ìž/êµì‚¬ ë‹µë³€</td></tr>
-          <tr><td>QNA_COMMENT</td><td>ëŒ“ê¸€ ë“±ë¡</td><td>ëŒ“ê¸€ ìž‘ì„±</td></tr>
-          <tr><td>QNA_DELETE</td><td>ì§ˆë¬¸ ì‚­ì œ</td><td>ì§ˆë¬¸ ì‚­ì œ</td></tr>
-          <tr><td>QNA_FAQ_SET</td><td>FAQ ì§€ì •</td><td>FAQë¡œ ì„¤ì •</td></tr>
-        </tbody>
-      </table>
-
-      <h3><span class="cat-badge auth">AUTH</span> ì¸ì¦ í™œë™</h3>
-      <table class="rule-table">
-        <thead><tr><th>ì•¡ì…˜</th><th>í•œê¸€ ë¼ë²¨</th><th>ê¸°ë¡ ì‹œì </th></tr></thead>
-        <tbody>
-          <tr><td>LOGIN_SUCCESS</td><td>ë¡œê·¸ì¸ ì„±ê³µ</td><td>ì •ìƒ ë¡œê·¸ì¸</td></tr>
-          <tr><td>LOGOUT</td><td>ë¡œê·¸ì•„ì›ƒ</td><td>ë¡œê·¸ì•„ì›ƒ ì‹¤í–‰</td></tr>
-          <tr><td>PASSWORD_CHANGE</td><td>ë¹„ë°€ë²ˆí˜¸ ë³€ê²½</td><td>ë¹„ë°€ë²ˆí˜¸ ë³€ê²½ ì„±ê³µ</td></tr>
-        </tbody>
-      </table>
-
-      <h3><span class="cat-badge log_mgmt">LOG_MGMT</span> ë¡œê·¸ ê´€ë¦¬</h3>
-      <table class="rule-table">
-        <thead><tr><th>ì•¡ì…˜</th><th>í•œê¸€ ë¼ë²¨</th><th>ê¸°ë¡ ì‹œì </th></tr></thead>
-        <tbody>
-          <tr><td>LOG_ACKNOWLEDGED</td><td>ë¡œê·¸ í™•ì¸</td><td>ì—ëŸ¬ ë¡œê·¸ í™•ì¸ ì²˜ë¦¬</td></tr>
-          <tr><td>LOG_BULK_ACK</td><td>ì¼ê´„ í™•ì¸</td><td>ì—¬ëŸ¬ ë¡œê·¸ ì¼ê´„ í™•ì¸</td></tr>
-          <tr><td>LOG_RANGE_DELETE</td><td>ê¸°ê°„ ì‚­ì œ</td><td>íŠ¹ì • ê¸°ê°„ ë¡œê·¸ ì‚­ì œ</td></tr>
-          <tr><td>LOG_SELECT_DELETE</td><td>ì„ íƒ ì‚­ì œ</td><td>ì„ íƒí•œ ë¡œê·¸ ì‚­ì œ</td></tr>
-          <tr><td>LOG_RESTORE</td><td>ë¡œê·¸ ë³µì›</td><td>ì‚­ì œëœ ë¡œê·¸ ë³µì›</td></tr>
-        </tbody>
-      </table>
-
-      <h3><span class="cat-badge perm">PERM</span> ê¶Œí•œ/ì„¤ì • ê´€ë¦¬</h3>
-      <table class="rule-table">
-        <thead><tr><th>ì•¡ì…˜</th><th>í•œê¸€ ë¼ë²¨</th><th>ê¸°ë¡ ì‹œì </th></tr></thead>
-        <tbody>
-          <tr><td>ROLE_ACCESS_UPDATE</td><td>íŽ˜ì´ì§€ ì ‘ê·¼ ê¶Œí•œ ë³€ê²½</td><td>ì—­í• ë³„ íŽ˜ì´ì§€ ì ‘ê·¼ ìˆ˜ì •</td></tr>
-          <tr><td>ROLE_FEATURE_UPDATE</td><td>íŽ˜ì´ì§€ ê¸°ëŠ¥ ê¶Œí•œ ë³€ê²½</td><td>ì—­í• ë³„ ê¸°ëŠ¥ ì œí•œ ìˆ˜ì •</td></tr>
-          <tr><td>PAGE_PERM_UPDATE</td><td>íŽ˜ì´ì§€ ê¶Œí•œ ì—…ë°ì´íŠ¸</td><td>ë ˆê±°ì‹œ ê¶Œí•œ ë§¤íŠ¸ë¦­ìŠ¤ ìˆ˜ì •</td></tr>
-          <tr><td>REPORT_SAVE / REPORT_DELETE / REPORT_SEED</td><td>ë³´ê³ ì„œ ê´€ë¦¬</td><td>ë³´ê³ ì„œ ì €ìž¥/ì‚­ì œ/ì‹œë“œ</td></tr>
+          <tr><td>AUDIT_ACTIONS µî·Ï</td><td>admin/audit.htmlÀÇ AUDIT_ACTIONS °´Ã¼¿¡ Å°°¡ µî·ÏµÈ ¾×¼Ç¸¸ ÀÛ¾÷ ÀÌ·Â¿¡ Ç¥½ÃµË´Ï´Ù</td></tr>
+          <tr><td>°ü¸® ÀÛ¾÷ Áß½É</td><td>»ç¿ëÀÚ/ºÎ¼­/´Þ¶õÆ®/»óÇ°/ÁÖ¹® µîÀÇ CRUD ÀÛ¾÷ÀÌ ÁÖ ´ë»ó</td></tr>
+          <tr><td>½Ã½ºÅÛ ÀÚµ¿ ÀÌº¥Æ® Á¦¿Ü</td><td>PAGE_VIEW, JS_ERROR, PROMISE_REJECTION µîÀº Æ÷ÇÔµÇÁö ¾ÊÀ½</td></tr>
+          <tr><td>½ÇÆÐ/°ÅºÎµµ ÀÏºÎ Æ÷ÇÔ</td><td>·Î±×ÀÎ ½ÇÆÐ µî º¸¾È °ü·ÃÀº ÀÛ¾÷ ÀÌ·Â¿¡µµ Æ÷ÇÔµÉ ¼ö ÀÖÀ½</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- ê¸°ë¡ë˜ëŠ” ë°ì´í„° -->
+    <!-- 10°³ Ä«Å×°í¸® -->
     <div class="rule-section">
-      <h2>ðŸ’¾ ìž‘ì—… ì´ë ¥ì— í‘œì‹œë˜ëŠ” ë°ì´í„°</h2>
+      <h2>?? 10°³ Ä«Å×°í¸® ºÐ·ù</h2>
+
+      <h3><span class="cat-badge user">USER</span> »ç¿ëÀÚ °ü¸®</h3>
       <table class="rule-table">
-        <thead><tr><th>í•„ë“œ</th><th>ì¶œì²˜</th><th>ì„¤ëª…</th></tr></thead>
+        <thead><tr><th>¾×¼Ç</th><th>ÇÑ±Û ¶óº§</th><th>±â·Ï ½ÃÁ¡</th></tr></thead>
         <tbody>
-          <tr><td>ì‹œê°„</td><td><code>created_at</code></td><td>KST ë³€í™˜ í‘œì‹œ</td></tr>
-          <tr><td>ìž‘ì—…ìž</td><td><code>user_name</code> / <code>details._userName</code></td><td>ìž‘ì—… ì‹¤í–‰ìž ì´ë¦„</td></tr>
-          <tr><td>ìž‘ì—… ìœ í˜•</td><td><code>AUDIT_ACTIONS[action].label</code></td><td>í•œê¸€ ë¼ë²¨ + ì´ëª¨ì§€</td></tr>
-          <tr><td>ëŒ€ìƒ</td><td><code>details</code>ì—ì„œ ì¶”ì¶œ</td><td>ëŒ€ìƒ ì‚¬ìš©ìžëª…, ìƒí’ˆëª…, ë³€ê²½ ë‚´ì—­ ë“±</td></tr>
-          <tr><td>ìƒì„¸</td><td><code>details</code> ì „ì²´</td><td>ëª¨ë‹¬ì—ì„œ JSON ì „ì²´ í‘œì‹œ (í•œê¸€ í‚¤ ë§¤í•‘)</td></tr>
+          <tr><td>USER_CREATE</td><td>?? »ç¿ëÀÚ »ý¼º</td><td>°ü¸®ÀÚ°¡ »ç¿ëÀÚ Á÷Á¢ »ý¼º</td></tr>
+          <tr><td>USER_UPDATE</td><td>?? »ç¿ëÀÚ ¼öÁ¤</td><td>»ç¿ëÀÚ Á¤º¸(ÀÌ¸§, ±ÇÇÑ, ºÎ¼­) º¯°æ</td></tr>
+          <tr><td>USER_DELETE</td><td>??? »ç¿ëÀÚ »èÁ¦</td><td>»ç¿ëÀÚ °èÁ¤ »èÁ¦</td></tr>
+          <tr><td>PASSWORD_RESET</td><td>?? ºñ¹Ð¹øÈ£ ÃÊ±âÈ­</td><td>°ü¸®ÀÚ°¡ ºñ¹Ð¹øÈ£ ¸®¼Â</td></tr>
         </tbody>
       </table>
 
-      <h3>ëŒ€ìƒ ì¶”ì¶œ ìš°ì„ ìˆœìœ„ (extractTarget í•¨ìˆ˜)</h3>
+      <h3><span class="cat-badge register">REGISTER</span> µî·Ï °ü¸®</h3>
       <table class="rule-table">
-        <thead><tr><th>ìˆœì„œ</th><th>í•„ë“œëª…</th><th>ì˜ˆì‹œ</th></tr></thead>
+        <thead><tr><th>¾×¼Ç</th><th>ÇÑ±Û ¶óº§</th><th>±â·Ï ½ÃÁ¡</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>ëŒ€ìƒ</td><td>"í™ê¸¸ë™"</td></tr>
-          <tr><td>2</td><td>displayName</td><td>"ê¹€êµì‚¬"</td></tr>
-          <tr><td>3</td><td>ìƒí’ˆëª…</td><td>"ì—°í•„ì„¸íŠ¸"</td></tr>
-          <tr><td>4</td><td>ë³€ê²½ë‚´ì—­</td><td>"ì´ë¦„: í™ê¸¸ë™ â†’ ê¹€ê¸¸ë™"</td></tr>
-          <tr><td>5</td><td>userId (ì•ž 8ìž)</td><td>"a1b2c3d4..."</td></tr>
+          <tr><td>REGISTER_REQUEST</td><td>?? µî·Ï ½ÅÃ»</td><td>»ç¿ëÀÚ°¡ °èÁ¤ µî·Ï ½ÅÃ»</td></tr>
+          <tr><td>REGISTER_APPROVE</td><td>? µî·Ï ½ÂÀÎ</td><td>°ü¸®ÀÚ°¡ µî·Ï ½ÂÀÎ</td></tr>
+          <tr><td>REGISTER_REJECT</td><td>? µî·Ï °ÅÀý</td><td>°ü¸®ÀÚ°¡ µî·Ï °ÅÀý</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cat-badge dept">DEPT</span> ºÎ¼­ °ü¸®</h3>
+      <table class="rule-table">
+        <thead><tr><th>¾×¼Ç</th><th>ÇÑ±Û ¶óº§</th><th>±â·Ï ½ÃÁ¡</th></tr></thead>
+        <tbody>
+          <tr><td>DEPT_CREATE / UPDATE / DELETE</td><td>ºÎ¼­ »ý¼º/¼öÁ¤/»èÁ¦</td><td>ºÎ¼­ CRUD</td></tr>
+          <tr><td>DEPT_DEACTIVATE</td><td>ºÎ¼­ ºñÈ°¼ºÈ­</td><td>ºÎ¼­ »ç¿ë ÁßÁö</td></tr>
+          <tr><td>DEPT_TRANSFER_REQUEST / APPROVE / REJECT</td><td>ºÎ¼­ ÀÌµ¿ ¿äÃ»/½ÂÀÎ/°ÅÀý</td><td>ºÎ¼­ ÀÌµ¿ ¿öÅ©ÇÃ·Î¿ì</td></tr>
+          <tr><td>MANAGER_UPDATE / MANAGER_PROMOTE</td><td>°ü¸®ÀÚ º¯°æ/½Â°Ý</td><td>°ü¸®ÀÚ ¿ªÇÒ º¯°æ</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cat-badge talent">TALENT</span> ´Þ¶õÆ® °ü¸®</h3>
+      <table class="rule-table">
+        <thead><tr><th>¾×¼Ç</th><th>ÇÑ±Û ¶óº§</th><th>±â·Ï ½ÃÁ¡</th></tr></thead>
+        <tbody>
+          <tr><td>TALENT_GIVE / GIVE_ITEM / GIVE_ITEMS</td><td>´Þ¶õÆ® Áö±Þ</td><td>±³»ç/°ü¸®ÀÚ°¡ ÇÐ»ý¿¡°Ô ´Þ¶õÆ® Áö±Þ</td></tr>
+          <tr><td>TALENT_MANUAL_GIVE</td><td>¼öµ¿ ´Þ¶õÆ® Áö±Þ</td><td>Æ¯º° Áö±Þ</td></tr>
+          <tr><td>TALENT_USE / TALENT_RETURN</td><td>´Þ¶õÆ® »ç¿ë/¹ÝÈ¯</td><td>»óÇ° ±¸¸Å »ç¿ë ¶Ç´Â Ãë¼Ò ¹ÝÈ¯</td></tr>
+          <tr><td>ATTENDANCE_GIVE / ATTENDANCE_CANCEL</td><td>Ãâ¼® ´Þ¶õÆ® Áö±Þ/Ãë¼Ò</td><td>Ãâ¼® Ã¼Å© °ü·Ã</td></tr>
+          <tr><td>TALENT_ITEM_CREATE / UPDATE / DELETE</td><td>´Þ¶õÆ® Ç×¸ñ °ü¸®</td><td>Àû¸³ Ç×¸ñ CRUD</td></tr>
+          <tr><td>qr_create / qr_edit / qr_toggle / qr_scan</td><td>QR °ü¸®</td><td>QR ´Þ¶õÆ® ÄÚµå °ü·Ã</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cat-badge order">ORDER</span> »óÇ°/ÁÖ¹® °ü¸®</h3>
+      <table class="rule-table">
+        <thead><tr><th>¾×¼Ç</th><th>ÇÑ±Û ¶óº§</th><th>±â·Ï ½ÃÁ¡</th></tr></thead>
+        <tbody>
+          <tr><td>PRODUCT_CREATE / UPDATE / DELETE</td><td>»óÇ° CRUD</td><td>»óÇ° µî·Ï/¼öÁ¤/»èÁ¦</td></tr>
+          <tr><td>PRODUCT_DEACTIVATE / PRODUCT_SOFT_DELETE</td><td>»óÇ° ºñÈ°¼ºÈ­/¼ÒÇÁÆ®»èÁ¦</td><td>»óÇ° ¼û±è Ã³¸®</td></tr>
+          <tr><td>ORDER_REQUEST_SUCCESS</td><td>±¸¸Å ¿äÃ» ¼º°ø</td><td>ÇÐ»ýÀÌ »óÇ° ±¸¸Å ¿äÃ»</td></tr>
+          <tr><td>ORDER_STATUS_CHANGE / ORDER_CANCEL / ORDER_REVERT</td><td>ÁÖ¹® »óÅÂ º¯°æ</td><td>°ü¸®ÀÚ ÁÖ¹® Ã³¸®</td></tr>
+          <tr><td>ORDER_BULK_*</td><td>ÀÏ°ý ÁÖ¹® Ã³¸®</td><td>´Ù°Ç ÁÖ¹® Ã³¸®</td></tr>
+          <tr><td>PROXY_ORDER_SUCCESS</td><td>´ë¸® ±¸¸Å</td><td>°ü¸®ÀÚ°¡ ´ë¸® ±¸¸Å</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cat-badge qna">QNA</span> Q&A °ü¸®</h3>
+      <table class="rule-table">
+        <thead><tr><th>¾×¼Ç</th><th>ÇÑ±Û ¶óº§</th><th>±â·Ï ½ÃÁ¡</th></tr></thead>
+        <tbody>
+          <tr><td>QNA_CREATE</td><td>Áú¹® µî·Ï</td><td>»ç¿ëÀÚ°¡ Áú¹® ÀÛ¼º</td></tr>
+          <tr><td>QNA_ANSWER</td><td>´äº¯ µî·Ï</td><td>°ü¸®ÀÚ/±³»ç ´äº¯</td></tr>
+          <tr><td>QNA_COMMENT</td><td>´ñ±Û µî·Ï</td><td>´ñ±Û ÀÛ¼º</td></tr>
+          <tr><td>QNA_DELETE</td><td>Áú¹® »èÁ¦</td><td>Áú¹® »èÁ¦</td></tr>
+          <tr><td>QNA_FAQ_SET</td><td>FAQ ÁöÁ¤</td><td>FAQ·Î ¼³Á¤</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cat-badge auth">AUTH</span> ÀÎÁõ È°µ¿</h3>
+      <table class="rule-table">
+        <thead><tr><th>¾×¼Ç</th><th>ÇÑ±Û ¶óº§</th><th>±â·Ï ½ÃÁ¡</th></tr></thead>
+        <tbody>
+          <tr><td>LOGIN_SUCCESS</td><td>·Î±×ÀÎ ¼º°ø</td><td>Á¤»ó ·Î±×ÀÎ</td></tr>
+          <tr><td>LOGOUT</td><td>·Î±×¾Æ¿ô</td><td>·Î±×¾Æ¿ô ½ÇÇà</td></tr>
+          <tr><td>PASSWORD_CHANGE</td><td>ºñ¹Ð¹øÈ£ º¯°æ</td><td>ºñ¹Ð¹øÈ£ º¯°æ ¼º°ø</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cat-badge log_mgmt">LOG_MGMT</span> ·Î±× °ü¸®</h3>
+      <table class="rule-table">
+        <thead><tr><th>¾×¼Ç</th><th>ÇÑ±Û ¶óº§</th><th>±â·Ï ½ÃÁ¡</th></tr></thead>
+        <tbody>
+          <tr><td>LOG_ACKNOWLEDGED</td><td>·Î±× È®ÀÎ</td><td>¿¡·¯ ·Î±× È®ÀÎ Ã³¸®</td></tr>
+          <tr><td>LOG_BULK_ACK</td><td>ÀÏ°ý È®ÀÎ</td><td>¿©·¯ ·Î±× ÀÏ°ý È®ÀÎ</td></tr>
+          <tr><td>LOG_RANGE_DELETE</td><td>±â°£ »èÁ¦</td><td>Æ¯Á¤ ±â°£ ·Î±× »èÁ¦</td></tr>
+          <tr><td>LOG_SELECT_DELETE</td><td>¼±ÅÃ »èÁ¦</td><td>¼±ÅÃÇÑ ·Î±× »èÁ¦</td></tr>
+          <tr><td>LOG_RESTORE</td><td>·Î±× º¹¿ø</td><td>»èÁ¦µÈ ·Î±× º¹¿ø</td></tr>
+        </tbody>
+      </table>
+
+      <h3><span class="cat-badge perm">PERM</span> ±ÇÇÑ/¼³Á¤ °ü¸®</h3>
+      <table class="rule-table">
+        <thead><tr><th>¾×¼Ç</th><th>ÇÑ±Û ¶óº§</th><th>±â·Ï ½ÃÁ¡</th></tr></thead>
+        <tbody>
+          <tr><td>ROLE_ACCESS_UPDATE</td><td>ÆäÀÌÁö Á¢±Ù ±ÇÇÑ º¯°æ</td><td>¿ªÇÒº° ÆäÀÌÁö Á¢±Ù ¼öÁ¤</td></tr>
+          <tr><td>ROLE_FEATURE_UPDATE</td><td>ÆäÀÌÁö ±â´É ±ÇÇÑ º¯°æ</td><td>¿ªÇÒº° ±â´É Á¦ÇÑ ¼öÁ¤</td></tr>
+          <tr><td>PAGE_PERM_UPDATE</td><td>ÆäÀÌÁö ±ÇÇÑ ¾÷µ¥ÀÌÆ®</td><td>·¹°Å½Ã ±ÇÇÑ ¸ÅÆ®¸¯½º ¼öÁ¤</td></tr>
+          <tr><td>REPORT_SAVE / REPORT_DELETE / REPORT_SEED</td><td>º¸°í¼­ °ü¸®</td><td>º¸°í¼­ ÀúÀå/»èÁ¦/½Ãµå</td></tr>
         </tbody>
       </table>
     </div>
 
-    <!-- ì°¸ê³  ì‚¬í•­ -->
+    <!-- ±â·ÏµÇ´Â µ¥ÀÌÅÍ -->
     <div class="rule-section">
-      <h2>ðŸ“ ì°¸ê³  ì‚¬í•­</h2>
+      <h2>?? ÀÛ¾÷ ÀÌ·Â¿¡ Ç¥½ÃµÇ´Â µ¥ÀÌÅÍ</h2>
+      <table class="rule-table">
+        <thead><tr><th>ÇÊµå</th><th>ÃâÃ³</th><th>¼³¸í</th></tr></thead>
+        <tbody>
+          <tr><td>½Ã°£</td><td><code>created_at</code></td><td>KST º¯È¯ Ç¥½Ã</td></tr>
+          <tr><td>ÀÛ¾÷ÀÚ</td><td><code>user_name</code> / <code>details._userName</code></td><td>ÀÛ¾÷ ½ÇÇàÀÚ ÀÌ¸§</td></tr>
+          <tr><td>ÀÛ¾÷ À¯Çü</td><td><code>AUDIT_ACTIONS[action].label</code></td><td>ÇÑ±Û ¶óº§ + ÀÌ¸ðÁö</td></tr>
+          <tr><td>´ë»ó</td><td><code>details</code>¿¡¼­ ÃßÃâ</td><td>´ë»ó »ç¿ëÀÚ¸í, »óÇ°¸í, º¯°æ ³»¿ª µî</td></tr>
+          <tr><td>»ó¼¼</td><td><code>details</code> ÀüÃ¼</td><td>¸ð´Þ¿¡¼­ JSON ÀüÃ¼ Ç¥½Ã (ÇÑ±Û Å° ¸ÅÇÎ)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>´ë»ó ÃßÃâ ¿ì¼±¼øÀ§ (extractTarget ÇÔ¼ö)</h3>
+      <table class="rule-table">
+        <thead><tr><th>¼ø¼­</th><th>ÇÊµå¸í</th><th>¿¹½Ã</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>´ë»ó</td><td>"È«±æµ¿"</td></tr>
+          <tr><td>2</td><td>displayName</td><td>"±è±³»ç"</td></tr>
+          <tr><td>3</td><td>»óÇ°¸í</td><td>"¿¬ÇÊ¼¼Æ®"</td></tr>
+          <tr><td>4</td><td>º¯°æ³»¿ª</td><td>"ÀÌ¸§: È«±æµ¿ ¡æ ±è±æµ¿"</td></tr>
+          <tr><td>5</td><td>userId (¾Õ 8ÀÚ)</td><td>"a1b2c3d4..."</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Âü°í »çÇ× -->
+    <div class="rule-section">
+      <h2>?? Âü°í »çÇ×</h2>
       <div class="note-box">
-        <strong>ìƒˆ ìž‘ì—… ì´ë ¥ ì¶”ê°€ ë°©ë²•:</strong> ê¸°ì¡´ <code>logInfo()</code>ë¡œ ê¸°ë¡í•˜ë˜, <code>admin/audit.html</code>ì˜ <code>AUDIT_ACTIONS</code> ê°ì²´ì— í•´ë‹¹ ì•¡ì…˜ í‚¤ë¥¼ ë“±ë¡í•˜ë©´ ìž‘ì—… ì´ë ¥ì— í‘œì‹œë©ë‹ˆë‹¤.
+        <strong>»õ ÀÛ¾÷ ÀÌ·Â Ãß°¡ ¹æ¹ý:</strong> ±âÁ¸ <code>logInfo()</code>·Î ±â·ÏÇÏµÇ, <code>admin/audit.html</code>ÀÇ <code>AUDIT_ACTIONS</code> °´Ã¼¿¡ ÇØ´ç ¾×¼Ç Å°¸¦ µî·ÏÇÏ¸é ÀÛ¾÷ ÀÌ·Â¿¡ Ç¥½ÃµË´Ï´Ù.
       </div>
       <div class="note-box">
-        <strong>ìž‘ì—… ì´ë ¥ ì¡°íšŒ:</strong> <a href="audit.html" style="color:var(--admin-primary);">ìš´ì˜ &gt; ìž‘ì—… ì´ë ¥</a>ì—ì„œ ì¹´í…Œê³ ë¦¬ë³„, ë‚ ì§œë³„, í…ìŠ¤íŠ¸ ê²€ìƒ‰ìœ¼ë¡œ ì¡°íšŒ ê°€ëŠ¥
+        <strong>ÀÛ¾÷ ÀÌ·Â Á¶È¸:</strong> <a href="audit.html" style="color:var(--admin-primary);">¿î¿µ &gt; ÀÛ¾÷ ÀÌ·Â</a>¿¡¼­ Ä«Å×°í¸®º°, ³¯Â¥º°, ÅØ½ºÆ® °Ë»öÀ¸·Î Á¶È¸ °¡´É
       </div>
       <div class="note-box">
-        <strong>ë¡œê·¸ ì¡°íšŒ:</strong> <a href="logs.html" style="color:var(--admin-primary);">ìš´ì˜ &gt; ë¡œê·¸</a>ì—ì„œ ì „ì²´ ì‹œìŠ¤í…œ ë¡œê·¸ ë ˆë²¨ë³„ ì¡°íšŒ ê°€ëŠ¥
+        <strong>·Î±× Á¶È¸:</strong> <a href="logs.html" style="color:var(--admin-primary);">¿î¿µ &gt; ·Î±×</a>¿¡¼­ ÀüÃ¼ ½Ã½ºÅÛ ·Î±× ·¹º§º° Á¶È¸ °¡´É
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.45.0"></script>
-  <script src="../js/supabase-config.js?v=3.45.0"></script>
-  <script src="../js/activity-log.js?v=3.45.0"></script>
-  <script src="../js/auth.js?v=3.45.0"></script>
-  <script src="../js/theme.js?v=3.45.0"></script>
-  <script src="../js/nav.js?v=3.45.0"></script>
+  <script src="../config/public-config.js?v=3.46.0"></script>
+  <script src="../js/supabase-config.js?v=3.46.0"></script>
+  <script src="../js/activity-log.js?v=3.46.0"></script>
+  <script src="../js/auth.js?v=3.46.0"></script>
+  <script src="../js/theme.js?v=3.46.0"></script>
+  <script src="../js/nav.js?v=3.46.0"></script>
   <script>
     initSupabase();
     (async () => {

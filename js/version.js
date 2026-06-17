@@ -2,9 +2,25 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.45.0',
-  date: '2026-06-16',
+  current: '3.46.0',
+  date: '2026-06-17',
   history: [
+    {
+      version: '3.46.0',
+      date: '2026-06-17',
+      title: 'Q&A 미답변 배지 + Slack 알림 채널별 라우팅',
+      changes: [
+        'Q&A: 네비게이션 "소개" 그룹 및 "Q & A" 항목에 미답변 질문 수 배지 표시 (관리자 rank 60+)',
+        'Slack: 알림을 부서별/유형별 채널로 분리 라우팅 (기존 단일 Webhook 제거)',
+        'Slack: 신규 가입/부서 이동/구매 신청 → 해당 부서 채널 (1부~5부, 예배부)',
+        'Slack: 구매 상태 변경 (구매 신청→상품 준비) → 상품 관리 채널',
+        'Slack: WARN+ 로그 알림 → 운영 채널',
+        'Slack: Q&A 질문 등록 → Q&A 채널',
+        'Edge Function: 9개 Webhook Secret 기반 동적 라우팅 (SLACK_WEBHOOK_PART1~5, WORSHIP, PRODUCT_MANAGEMENT, OPERATIONS, ANSWER)',
+        '구매 알림: 일반/대리 구매 시 소속 부서 정보 포함',
+        '구매 상태: requested→preparing 전환만 Slack 발송 (기타 상태 변경은 알림 제거)'
+      ]
+    },
     {
       version: '3.45.0',
       date: '2026-06-16',

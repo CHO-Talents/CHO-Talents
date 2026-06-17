@@ -1,34 +1,34 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ë‚´ êµ¬ë§¤ ìƒí’ˆ - ë‹¬ë€íŠ¸ ë§ˆì„</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ğŸ›’</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.45.0" />
+  <title>³» ±¸¸Å »óÇ° - ´Ş¶õÆ® ¸¶À»</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>" />
+  <link rel="stylesheet" href="css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.46.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
 
 
   <div class="page-container" id="mainContent">
-    <div class="empty-state"><div class="empty-state-icon">â³</div><p>ë¡œë”© ì¤‘...</p></div>
+    <div class="empty-state"><div class="empty-state-icon">?</div><p>·Îµù Áß...</p></div>
   </div>
 
   <footer class="page-footer">
-    <p>ì´ˆë“±ë¶€ ë‹¬ë€íŠ¸ ê´€ë¦¬ &copy; 2026 CHO-Talents</p>
+    <p>ÃÊµîºÎ ´Ş¶õÆ® °ü¸® &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.45.0"></script>
-  <script src="js/supabase-config.js?v=3.45.0"></script>
-  <script src="js/activity-log.js?v=3.45.0"></script>
-  <script src="js/auth.js?v=3.45.0"></script>
-  <script src="js/theme.js?v=3.45.0"></script>
-  <script src="js/page-size.js?v=3.45.0"></script>
-  <script src="js/nav.js?v=3.45.0"></script>
-  <script src="js/slack-notify.js?v=3.45.0"></script>
+  <script src="config/public-config.js?v=3.46.0"></script>
+  <script src="js/supabase-config.js?v=3.46.0"></script>
+  <script src="js/activity-log.js?v=3.46.0"></script>
+  <script src="js/auth.js?v=3.46.0"></script>
+  <script src="js/theme.js?v=3.46.0"></script>
+  <script src="js/page-size.js?v=3.46.0"></script>
+  <script src="js/nav.js?v=3.46.0"></script>
+  <script src="js/slack-notify.js?v=3.46.0"></script>
   <script>
     initSupabase();
     let session;
@@ -55,7 +55,7 @@
     async function loadOrders() {
       try {
         const { data, error } = await _sb.from('product_orders').select('*').eq('user_id', session.id).order('created_at', { ascending: false });
-        if (error) { logWarn('MY_ORDERS_FETCH', { ì˜¤ë¥˜: error.message }); myOrders = []; }
+        if (error) { logWarn('MY_ORDERS_FETCH', { ¿À·ù: error.message }); myOrders = []; }
         else { myOrders = (data || []).filter(o => o.status !== 'cancelled'); }
       } catch (e) { myOrders = []; }
       renderMyOrders();
@@ -64,15 +64,15 @@
     function renderMyOrders() {
       const main = document.getElementById('mainContent');
       const orders = myOrders;
-      const statusMap = { requested:'êµ¬ë§¤ ì‹ ì²­', preparing:'ìƒí’ˆ ì¤€ë¹„', purchased:'ìƒí’ˆ êµ¬ë§¤', delivered:'ìƒí’ˆ ì§€ê¸‰' };
+      const statusMap = { requested:'±¸¸Å ½ÅÃ»', preparing:'»óÇ° ÁØºñ', purchased:'»óÇ° ±¸¸Å', delivered:'»óÇ° Áö±Ş' };
       const statusColor = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
-      const statusEmoji = { requested:'ğŸ›’', preparing:'ğŸ“¦', purchased:'ğŸ’³', delivered:'âœ…' };
+      const statusEmoji = { requested:'??', preparing:'??', purchased:'??', delivered:'?' };
 
-      let html = `<h1 class="page-title">ğŸ›’ ë‚´ êµ¬ë§¤ ìƒí’ˆ</h1>
-        <p class="page-sub">${session.displayName || session.username}ë‹˜ì˜ êµ¬ë§¤ ë‚´ì—­ì…ë‹ˆë‹¤</p>`;
+      let html = `<h1 class="page-title">?? ³» ±¸¸Å »óÇ°</h1>
+        <p class="page-sub">${session.displayName || session.username}´ÔÀÇ ±¸¸Å ³»¿ªÀÔ´Ï´Ù</p>`;
 
       if (orders.length === 0) {
-        html += '<div class="empty-state"><div class="empty-state-icon">ğŸ“¦</div><p>êµ¬ë§¤ ë‚´ì—­ì´ ì—†ìŠµë‹ˆë‹¤.</p></div>';
+        html += '<div class="empty-state"><div class="empty-state-icon">??</div><p>±¸¸Å ³»¿ªÀÌ ¾ø½À´Ï´Ù.</p></div>';
       } else {
         const pageSize = getMyOrderPageSize();
         const totalPages = Math.max(1, Math.ceil(orders.length / pageSize));
@@ -81,13 +81,13 @@
         const pageOrders = orders.slice(startIdx, startIdx + pageSize);
 
         html += `<div class="data-table-wrap">
-          <div class="data-table-header"><div class="data-table-title">êµ¬ë§¤ ë‚´ì—­ (${orders.length}ê±´)</div></div>
+          <div class="data-table-header"><div class="data-table-title">±¸¸Å ³»¿ª (${orders.length}°Ç)</div></div>
           <table class="data-table">
-            <thead><tr><th>ë‚ ì§œ</th><th>ìƒí’ˆëª…</th><th>ê°€ê²©</th><th>í˜„ì¬ ìƒíƒœ</th></tr></thead>
+            <thead><tr><th>³¯Â¥</th><th>»óÇ°¸í</th><th>°¡°İ</th><th>ÇöÀç »óÅÂ</th></tr></thead>
             <tbody>` + pageOrders.map(o => `<tr>
               <td>${formatKSTShort(o.requested_at || o.created_at)}</td>
               <td>${o.product_name || '-'}</td>
-              <td style="font-weight:700;">${fmtNum(o.price)} ë‹¬ë€íŠ¸</td>
+              <td style="font-weight:700;">${fmtNum(o.price)} ´Ş¶õÆ®</td>
               <td>
                 <span style="display:inline-flex;align-items:center;gap:0.3rem;padding:0.2rem 0.6rem;border-radius:6px;font-size:0.82rem;font-weight:600;background:${statusColor[o.status]||'#868e96'}15;color:${statusColor[o.status]||'#868e96'};">${statusEmoji[o.status]||''} ${statusMap[o.status]||o.status}</span>
                 ${o.status === 'requested' ? `<button onclick="cancelOrder('${o.id}','${(o.product_name||'').replace(/'/g,"\\'")}',${o.price},'${o.product_id||''}')" style="margin-left:0.4rem;padding:0.15rem 0.5rem;font-size:0.75rem;border:1px solid #e03131;color:#e03131;background:#fff;border-radius:4px;cursor:pointer;">\ucde8\uc18c</button>` : ''}
@@ -115,11 +115,11 @@
     }
 
     async function cancelOrder(orderId, productName, price, productId) {
-      if (!confirm(`"${productName}" êµ¬ë§¤ë¥¼ ì·¨ì†Œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?\n${price} ë‹¬ë€íŠ¸ê°€ ë³µì›ë©ë‹ˆë‹¤.`)) return;
+      if (!confirm(`"${productName}" ±¸¸Å¸¦ Ãë¼ÒÇÏ½Ã°Ú½À´Ï±î?\n${price} ´Ş¶õÆ®°¡ º¹¿øµË´Ï´Ù.`)) return;
       try {
         let cancelled = false;
 
-        // 1) RPC ê¸°ë°˜ ì·¨ì†Œ ì‹œë„ (ì„œë²„ ì‚¬ì´ë“œ ê¶Œí•œ ê²€ì¦)
+        // 1) RPC ±â¹İ Ãë¼Ò ½Ãµµ (¼­¹ö »çÀÌµå ±ÇÇÑ °ËÁõ)
         try {
           const { data: rpcResult, error: rpcErr } = await _sb.rpc('cancel_product_order', {
             p_order_id: orderId,
@@ -128,45 +128,44 @@
           if (!rpcErr && rpcResult && rpcResult.success !== false) {
             cancelled = true;
           } else if (rpcErr && /does not exist|Could not find/i.test(rpcErr.message)) {
-            // RPC ë¯¸ì¡´ì¬ ì‹œ ì§ì ‘ ì—…ë°ì´íŠ¸ ì‹œë„
+            // RPC ¹ÌÁ¸Àç ½Ã Á÷Á¢ ¾÷µ¥ÀÌÆ® ½Ãµµ
           } else if (rpcErr) {
             throw new Error(rpcErr.message);
           } else if (rpcResult && rpcResult.success === false) {
-            throw new Error(rpcResult.error || 'ì·¨ì†Œ ì²˜ë¦¬ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.');
+            throw new Error(rpcResult.error || 'Ãë¼Ò Ã³¸®¿¡ ½ÇÆĞÇß½À´Ï´Ù.');
           }
         } catch (rpcE) {
           if (!/does not exist|Could not find/i.test(rpcE.message || '')) throw rpcE;
         }
 
-        // 2) RPC ë¯¸ì¡´ì¬ ì‹œ ì§ì ‘ í…Œì´ë¸” ì—…ë°ì´íŠ¸ (selectë¡œ ê²°ê³¼ ê²€ì¦)
+        // 2) RPC ¹ÌÁ¸Àç ½Ã Á÷Á¢ Å×ÀÌºí ¾÷µ¥ÀÌÆ® (select·Î °á°ú °ËÁõ)
         if (!cancelled) {
           let query = _sb.from('product_orders').update({ status: 'cancelled' }).eq('id', orderId).eq('user_id', session.id).eq('status', 'requested');
           if (productId) query = query.eq('product_id', productId);
           const { data: updated, error: upErr } = await query.select();
           if (upErr) throw upErr;
           if (!updated || updated.length === 0) {
-            throw new Error('ì·¨ì†Œí•  ìˆ˜ ìˆëŠ” ì£¼ë¬¸ì´ ì—†ìŠµë‹ˆë‹¤. ê¶Œí•œì´ ë¶€ì¡±í•˜ê±°ë‚˜ ì´ë¯¸ ì²˜ë¦¬ëœ ì£¼ë¬¸ì…ë‹ˆë‹¤.');
+            throw new Error('Ãë¼ÒÇÒ ¼ö ÀÖ´Â ÁÖ¹®ÀÌ ¾ø½À´Ï´Ù. ±ÇÇÑÀÌ ºÎÁ·ÇÏ°Å³ª ÀÌ¹Ì Ã³¸®µÈ ÁÖ¹®ÀÔ´Ï´Ù.');
           }
           cancelled = true;
         }
 
-        // 3) ì·¨ì†Œ í™•ì¸ í›„ ë‹¬ë€íŠ¸ ë°˜í™˜ ì²˜ë¦¬
+        // 3) Ãë¼Ò È®ÀÎ ÈÄ ´Ş¶õÆ® ¹İÈ¯ Ã³¸®
         const { data: prof } = await _sb.from('profiles').select('pending_talent').eq('id', session.id).single();
         const newPending = Math.max(0, ((prof && prof.pending_talent) || 0) - price);
         const { error: profErr } = await _sb.from('profiles').update({ pending_talent: newPending }).eq('id', session.id).select();
         if (profErr) {
-          await logWarn('ORDER_CANCEL_REFUND_FAIL', { orderId, ìƒí’ˆëª…: productName, ê¸ˆì•¡: price, ì˜¤ë¥˜: profErr.message });
+          await logWarn('ORDER_CANCEL_REFUND_FAIL', { orderId, »óÇ°¸í: productName, ±İ¾×: price, ¿À·ù: profErr.message });
         }
 
-        await logInfo('ORDER_CANCEL', { orderId, productId, ìƒí’ˆëª…: productName, ê¸ˆì•¡: price });
-        sendSlackNotify('purchase_status', { ìƒí’ˆëª…: productName, ì‹ ì²­ì: session.displayName || session.username, ì´ì „ìƒíƒœ: 'requested', ë³€ê²½ìƒíƒœ: 'cancelled', ì²˜ë¦¬ì: session.displayName || session.username });
-        alert('êµ¬ë§¤ê°€ ì·¨ì†Œë˜ì—ˆìŠµë‹ˆë‹¤.');
+        await logInfo('ORDER_CANCEL', { orderId, productId, »óÇ°¸í: productName, ±İ¾×: price });
+        alert('±¸¸Å°¡ Ãë¼ÒµÇ¾ú½À´Ï´Ù.');
         await loadOrders();
       } catch (e) {
-        alert('ì·¨ì†Œ ì‹¤íŒ¨: ' + tErr(e.message || e));
+        alert('Ãë¼Ò ½ÇÆĞ: ' + tErr(e.message || e));
       }
     }
   </script>
-  <script src="js/version.js?v=3.45.0"></script>
+  <script src="js/version.js?v=3.46.0"></script>
 </body>
 </html>

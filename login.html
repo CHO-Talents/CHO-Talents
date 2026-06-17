@@ -1,12 +1,12 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ë¡œê·¸ì¸ - ë‹¬ë€íŠ¸ ë§ˆì„</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>â­</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="css/admin.css?v=3.45.0" />
+  <title>·Î±×ÀÎ - ´Ş¶õÆ® ¸¶À»</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?</text></svg>" />
+  <link rel="stylesheet" href="css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="css/admin.css?v=3.46.0" />
   <style>
     .login-wrapper { background: linear-gradient(135deg, #f8f5ff 0%, #e8e0ff 50%, #fce4ec 100%); }
     .login-card { max-width: 400px; }
@@ -22,44 +22,44 @@
 <body class="admin-body">
   <div class="login-wrapper">
     <div class="login-card">
-      <div style="text-align:center;font-size:2.5rem;margin-bottom:0.5rem;">â­</div>
-      <div class="login-title">ë‹¬ë€íŠ¸ ë§ˆì„ ë¡œê·¸ì¸</div>
-      <p class="login-sub">ì•„ì´ë””ì™€ ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”</p>
+      <div style="text-align:center;font-size:2.5rem;margin-bottom:0.5rem;">?</div>
+      <div class="login-title">´Ş¶õÆ® ¸¶À» ·Î±×ÀÎ</div>
+      <p class="login-sub">¾ÆÀÌµğ¿Í ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä</p>
 
       <div class="form-error" id="errorMsg"></div>
 
       <form id="loginForm" onsubmit="return false;">
         <div class="form-group">
-          <label for="username">ì•„ì´ë””</label>
-          <input type="text" id="username" placeholder="ì•„ì´ë”” ì…ë ¥" autocomplete="username" required />
+          <label for="username">¾ÆÀÌµğ</label>
+          <input type="text" id="username" placeholder="¾ÆÀÌµğ ÀÔ·Â" autocomplete="username" required />
         </div>
         <div class="form-group">
-          <label for="password">ë¹„ë°€ë²ˆí˜¸</label>
-          <input type="password" id="password" placeholder="ë¹„ë°€ë²ˆí˜¸ ì…ë ¥" autocomplete="current-password" required />
+          <label for="password">ºñ¹Ğ¹øÈ£</label>
+          <input type="password" id="password" placeholder="ºñ¹Ğ¹øÈ£ ÀÔ·Â" autocomplete="current-password" required />
         </div>
         <div class="remember-row">
           <label class="remember-label" for="rememberUsername">
             <input type="checkbox" id="rememberUsername" />
-            <span>ì•„ì´ë”” ì €ì¥</span>
+            <span>¾ÆÀÌµğ ÀúÀå</span>
           </label>
         </div>
-        <button type="submit" class="btn-primary" id="btnLogin">ë¡œê·¸ì¸</button>
+        <button type="submit" class="btn-primary" id="btnLogin">·Î±×ÀÎ</button>
       </form>
 
       <div style="text-align:center;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--admin-border);">
-        <a href="register.html" style="display:inline-block;padding:0.5rem 1.5rem;background:linear-gradient(135deg,#51cf66,#40c057);color:#fff;border-radius:50px;text-decoration:none;font-weight:700;font-size:0.9rem;transition:all 0.2s;">ğŸ“ ê³„ì • ë“±ë¡ ì‹ ì²­</a>
-        <div style="font-size:0.75rem;color:var(--admin-text-muted);margin-top:0.5rem;">ê³„ì •ì´ ì—†ìœ¼ì‹ ê°€ìš”? ì‹ ì²­ í›„ ê´€ë¦¬ì ìŠ¹ì¸ì„ ë°›ìœ¼ë©´ ì´ìš© ê°€ëŠ¥í•©ë‹ˆë‹¤</div>
+        <a href="register.html" style="display:inline-block;padding:0.5rem 1.5rem;background:linear-gradient(135deg,#51cf66,#40c057);color:#fff;border-radius:50px;text-decoration:none;font-weight:700;font-size:0.9rem;transition:all 0.2s;">?? °èÁ¤ µî·Ï ½ÅÃ»</a>
+        <div style="font-size:0.75rem;color:var(--admin-text-muted);margin-top:0.5rem;">°èÁ¤ÀÌ ¾øÀ¸½Å°¡¿ä? ½ÅÃ» ÈÄ °ü¸®ÀÚ ½ÂÀÎÀ» ¹ŞÀ¸¸é ÀÌ¿ë °¡´ÉÇÕ´Ï´Ù</div>
       </div>
-      <a href="index.html" class="back-home">â† ë©”ì¸ í˜ì´ì§€ë¡œ ëŒì•„ê°€ê¸°</a>
+      <a href="index.html" class="back-home">¡ç ¸ŞÀÎ ÆäÀÌÁö·Î µ¹¾Æ°¡±â</a>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.45.0"></script>
-  <script src="js/supabase-config.js?v=3.45.0"></script>
-  <script src="js/activity-log.js?v=3.45.0"></script>
-  <script src="js/auth.js?v=3.45.0"></script>
-  <script src="js/theme.js?v=3.45.0"></script>
+  <script src="config/public-config.js?v=3.46.0"></script>
+  <script src="js/supabase-config.js?v=3.46.0"></script>
+  <script src="js/activity-log.js?v=3.46.0"></script>
+  <script src="js/auth.js?v=3.46.0"></script>
+  <script src="js/theme.js?v=3.46.0"></script>
   <script>
     const SAVED_USERNAME_KEY = 'cho_saved_username';
 
@@ -91,7 +91,7 @@
         const errEl = document.getElementById('errorMsg');
         errEl.classList.remove('show');
         btn.disabled = true;
-        btn.textContent = 'ë¡œê·¸ì¸ ì¤‘...';
+        btn.textContent = '·Î±×ÀÎ Áß...';
 
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
@@ -121,21 +121,21 @@
           } catch (e) { /* fallback */ }
 
           if (regStatus === 'pending') {
-            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#9203;</span><div><strong>ìŠ¹ì¸ ëŒ€ê¸° ì¤‘ì´ì—ìš”</strong><br><span style="font-size:0.8rem;color:#636e72;">ê´€ë¦¬ìê°€ ìŠ¹ì¸í•˜ë©´ ë¡œê·¸ì¸í•  ìˆ˜ ìˆì–´ìš”</span></div></div>';
+            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#9203;</span><div><strong>½ÂÀÎ ´ë±â ÁßÀÌ¿¡¿ä</strong><br><span style="font-size:0.8rem;color:#636e72;">°ü¸®ÀÚ°¡ ½ÂÀÎÇÏ¸é ·Î±×ÀÎÇÒ ¼ö ÀÖ¾î¿ä</span></div></div>';
           } else if (regStatus === 'rejected') {
-            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#10060;</span><div><strong>ê°€ì… ì‹ ì²­ì´ ê±°ë¶€ë˜ì—ˆì–´ìš”</strong><br><span style="font-size:0.8rem;color:#636e72;">ìì„¸í•œ ë‚´ìš©ì€ ê´€ë¦¬ìì—ê²Œ ë¬¸ì˜í•´ì£¼ì„¸ìš”</span></div></div>';
+            errEl.innerHTML = '<div style="display:flex;align-items:center;gap:0.6rem;justify-content:center;"><span style="font-size:1.6rem;">&#10060;</span><div><strong>°¡ÀÔ ½ÅÃ»ÀÌ °ÅºÎµÇ¾ú¾î¿ä</strong><br><span style="font-size:0.8rem;color:#636e72;">ÀÚ¼¼ÇÑ ³»¿ëÀº °ü¸®ÀÚ¿¡°Ô ¹®ÀÇÇØÁÖ¼¼¿ä</span></div></div>';
           } else if (regStatus === 'approved') {
-            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.';
+            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.';
           } else {
-            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> ì•„ì´ë”” ë˜ëŠ” ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.';
+            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> ¾ÆÀÌµğ ¶Ç´Â ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù.';
           }
           errEl.classList.add('show');
           btn.disabled = false;
-          btn.textContent = 'ë¡œê·¸ì¸';
+          btn.textContent = '·Î±×ÀÎ';
         }
       });
     })();
   </script>
-  <script src="js/version.js?v=3.45.0"></script>
+  <script src="js/version.js?v=3.46.0"></script>
 </body>
 </html>

@@ -642,6 +642,32 @@ async function updateNavOrderBadge() {
   if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
 }
 
+/* ===== Q&A Badge (nav "소개" group) ===== */
+
+async function getUnansweredQnaCount() {
+  if (!_sb) return 0;
+  try {
+    const { count, error } = await _sb
+      .from('qna')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'pending')
+      .eq('is_deleted', false);
+    if (error) return 0;
+    return count || 0;
+  } catch { return 0; }
+}
+
+async function updateQnaBadge() {
+  const badge = document.getElementById('navQnaBadge');
+  if (!badge) return;
+  try {
+    const cnt = await getUnansweredQnaCount();
+    if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
+    else { badge.classList.add('hidden'); }
+  } catch (e) {}
+  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+}
+
 async function deleteLogsByDateRange(dateFrom, dateTo, options = {}) {
   if (!_sb) return { error: 'Supabase not initialized', count: 0 };
   try {
