@@ -58,7 +58,7 @@ function hideEmptyDropdowns() {
     const items = menu.querySelectorAll('li');
     const hasVisible = Array.from(items).some(li => li.style.display !== 'none');
     const parentLi = menu.closest('.admin-nav-links > li, .top-nav-links > li');
-    if (parentLi && !parentLi.hasAttribute('data-min-perm')) {
+    if (parentLi && !parentLi.hasAttribute('data-min-perm') && !parentLi.hasAttribute('data-auth-only')) {
       if (!hasVisible) parentLi.style.display = 'none';
       else parentLi.style.display = '';
     }

@@ -18,9 +18,10 @@ const NAV_MENU = [
   {
     id: 'talent',
     label: '달란트',
+    authOnly: true,
     items: [
       { href: 'my-talents.html', label: '내 달란트', id: 'navMyTalent', authOnly: true },
-      { href: 'talent-receive.html', label: '달란트 수령' },
+      { href: 'talent-receive.html', label: '달란트 수령', authOnly: true },
       { href: 'admin/talents.html', label: '달란트 관리', minPerm: 40 },
       { href: 'admin/talent-items.html', label: '달란트 항목 관리', minPerm: 60 },
       { href: 'admin/talent-stats.html', label: '달란트 통계', minPerm: 60 },
@@ -115,6 +116,7 @@ function _navItemAttrs(item) {
   const attrs = [];
   if (item.minPerm) attrs.push(`data-min-perm="${item.minPerm}"`);
   if (item.id) attrs.push(`id="${item.id}"`);
+  if (item.authOnly) attrs.push('data-auth-only="true"');
   if (item.minPerm || item.authOnly) attrs.push('style="display:none;"');
   return attrs.length ? ' ' + attrs.join(' ') : '';
 }
@@ -138,8 +140,11 @@ function renderNav(containerId) {
 
   NAV_MENU.forEach(group => {
     const groupActive = _navGroupIsActive(group.items);
-    const permAttr = group.minPerm ? ` data-min-perm="${group.minPerm}" style="display:none;"` : '';
-    html += `<li${permAttr}>`;
+    const hideGroup = group.minPerm || group.authOnly;
+    const permAttr = group.minPerm ? ` data-min-perm="${group.minPerm}"` : '';
+    const authAttr = group.authOnly ? ' data-auth-only="true"' : '';
+    const styleAttr = hideGroup ? ' style="display:none;"' : '';
+    html += `<li${permAttr}${authAttr}${styleAttr}>`;
     html += `<button class="nav-dropdown-toggle${groupActive ? ' active' : ''}">${group.label}</button>`;
     html += `<ul class="nav-dropdown-menu">`;
     group.items.forEach(item => {
@@ -248,6 +253,10 @@ function navUpdateAuth(session) {
     if (navMyTalent) navMyTalent.style.display = '';
     if (navMyOrders) navMyOrders.style.display = '';
 
+    document.querySelectorAll('[data-auth-only]').forEach(el => {
+      el.style.display = '';
+    });
+
     const rank = session.permissionRank || 0;
     if (typeof applyPermNav === 'function') applyPermNav(rank);
 
@@ -263,6 +272,9 @@ function navUpdateAuth(session) {
     if (loginArea) loginArea.style.display = '';
     if (authArea) authArea.style.display = 'none';
     if (logoutBtn) logoutBtn.style.display = 'none';
+    document.querySelectorAll('[data-auth-only]').forEach(el => {
+      el.style.display = 'none';
+    });
   }
 }
 
