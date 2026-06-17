@@ -195,9 +195,31 @@
         const repeatType = qr.repeat_type || 'none';
         if (repeatType === 'none') {
           const { data: existing } = await _sb.from('talent_qr_scans')
-            .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id);
+            .select('id, scanned_at').eq('qr_code_id', qr.id).eq('user_id', session.id)
+            .order('scanned_at', { ascending: false }).limit(1);
           if (existing && existing.length > 0) {
-            showResult('fail', '이미 수령한 코드입니다.'); return;
+            const scanMs = new Date(existing[0].scanned_at).getTime();
+            let talentActuallyReceived = false;
+            try {
+              const { data: txn } = await _sb.from('talent_transactions')
+                .select('id').eq('user_id', session.id).eq('type', 'earn')
+                .eq('source', 'qr')
+                .gte('created_at', new Date(scanMs - 60000).toISOString())
+                .lte('created_at', new Date(scanMs + 60000).toISOString())
+                .limit(1);
+              talentActuallyReceived = !!(txn && txn.length > 0);
+            } catch (_) {
+              const { data: txn } = await _sb.from('talent_transactions')
+                .select('id').eq('user_id', session.id).eq('type', 'earn')
+                .eq('created_by', session.id)
+                .gte('created_at', new Date(scanMs - 60000).toISOString())
+                .lte('created_at', new Date(scanMs + 60000).toISOString())
+                .limit(1);
+              talentActuallyReceived = !!(txn && txn.length > 0);
+            }
+            if (talentActuallyReceived) {
+              showResult('fail', '이미 수령한 코드입니다.'); return;
+            }
           }
         } else {
           const canReceive = checkRepeatEligibility(qr);
