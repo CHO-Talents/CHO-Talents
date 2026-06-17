@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ÇĞ»ı ÀÏ°ı µî·Ï - °ü¸®ÀÚ</title>
+  <title>í•™ìƒ ì¼ê´„ ë“±ë¡ - ê´€ë¦¬ì</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
 </head>
@@ -11,41 +11,41 @@
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? ÇĞ»ı ÀÏ°ı µî·Ï</h2>
+    <h2 style="margin-bottom:1rem;">ğŸ“‹ í•™ìƒ ì¼ê´„ ë“±ë¡</h2>
 
     <div class="admin-table-wrap" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title">1. ¿¢¼¿ ¾ç½Ä ´Ù¿î·Îµå</div>
+        <div class="admin-table-title">1. ì—‘ì…€ ì–‘ì‹ ë‹¤ìš´ë¡œë“œ</div>
       </div>
       <div style="padding:1rem;">
         <p style="font-size:0.88rem;margin-bottom:0.8rem;color:var(--t-text-muted);">
-          ¾Æ·¡ ¹öÆ°À¸·Î ¾ç½Ä ÆÄÀÏÀ» ´Ù¿î·ÎµåÇÏ°í, ¾ç½Ä¿¡ ¸Â°Ô ÇĞ»ı Á¤º¸¸¦ ÀÔ·ÂÇÑ µÚ ¾÷·ÎµåÇÏ¼¼¿ä.
+          ì•„ë˜ ë²„íŠ¼ìœ¼ë¡œ ì–‘ì‹ íŒŒì¼ì„ ë‹¤ìš´ë¡œë“œí•˜ê³ , ì–‘ì‹ì— ë§ê²Œ í•™ìƒ ì •ë³´ë¥¼ ì…ë ¥í•œ ë’¤ ì—…ë¡œë“œí•˜ì„¸ìš”.
         </p>
-        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;padding:0.5rem 1rem;font-size:0.88rem;" onclick="downloadTemplate()">?? ¾ç½Ä ´Ù¿î·Îµå (.xlsx)</button>
+        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;padding:0.5rem 1rem;font-size:0.88rem;" onclick="downloadTemplate()">ğŸ“¥ ì–‘ì‹ ë‹¤ìš´ë¡œë“œ (.xlsx)</button>
       </div>
     </div>
 
     <div class="admin-table-wrap" style="margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title">2. ¿¢¼¿ ÆÄÀÏ ¾÷·Îµå</div>
+        <div class="admin-table-title">2. ì—‘ì…€ íŒŒì¼ ì—…ë¡œë“œ</div>
       </div>
       <div style="padding:1rem;">
         <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="handleFile(event)" />
         <div id="dropZone" style="border:2px dashed var(--t-border, #dee2e6);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;background:var(--t-subtle-surface, #f8f9fa);transition:border-color 0.2s;" onclick="document.getElementById('fileInput').click()">
-          <div style="font-size:2rem;margin-bottom:0.5rem;">??</div>
-          <div style="font-size:0.9rem;font-weight:600;color:var(--t-text);">Å¬¸¯ÇÏ°Å³ª ÆÄÀÏÀ» µå·¡±×ÇÏ¿© ¾÷·Îµå</div>
-          <div style="font-size:0.8rem;color:var(--t-text-muted);margin-top:0.3rem;">Áö¿ø Çü½Ä: .xlsx, .xls, .csv</div>
+          <div style="font-size:2rem;margin-bottom:0.5rem;">ğŸ“</div>
+          <div style="font-size:0.9rem;font-weight:600;color:var(--t-text);">í´ë¦­í•˜ê±°ë‚˜ íŒŒì¼ì„ ë“œë˜ê·¸í•˜ì—¬ ì—…ë¡œë“œ</div>
+          <div style="font-size:0.8rem;color:var(--t-text-muted);margin-top:0.3rem;">ì§€ì› í˜•ì‹: .xlsx, .xls, .csv</div>
         </div>
         <div id="fileInfo" style="display:none;margin-top:0.8rem;padding:0.6rem;background:var(--t-accent-surface, #f3f0ff);border-radius:8px;font-size:0.85rem;">
           <span id="fileName"></span>
-          <button onclick="clearFile()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">? ÃÊ±âÈ­</button>
+          <button onclick="clearFile()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">âœ• ì´ˆê¸°í™”</button>
         </div>
       </div>
     </div>
 
     <div class="admin-table-wrap" id="previewSection" style="display:none;margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="previewTitle">3. ¹Ì¸®º¸±â</div>
+        <div class="admin-table-title" id="previewTitle">3. ë¯¸ë¦¬ë³´ê¸°</div>
         <div style="display:flex;gap:0.5rem;align-items:center;">
           <span id="validCount" style="font-size:0.82rem;color:#2b8a3e;"></span>
           <span id="errorCount" style="font-size:0.82rem;color:#e03131;"></span>
@@ -54,25 +54,25 @@
       <div style="overflow-x:auto;">
         <table class="admin-table">
           <thead>
-            <tr><th>#</th><th>¾ÆÀÌµğ</th><th>ÀÌ¸§</th><th>ºÎ¼­</th><th>¹İ</th><th>»óÅÂ</th></tr>
+            <tr><th>#</th><th>ì•„ì´ë””</th><th>ì´ë¦„</th><th>ë¶€ì„œ</th><th>ë°˜</th><th>ìƒíƒœ</th></tr>
           </thead>
           <tbody id="previewBody"></tbody>
         </table>
       </div>
       <div style="padding:1rem;text-align:center;">
-        <button class="filter-btn" id="btnRegister" style="background:#2b8a3e;color:#fff;padding:0.6rem 2rem;font-size:0.95rem;font-weight:700;" onclick="startRegistration()" disabled>? ÀÏ°ı µî·Ï ½ÃÀÛ</button>
+        <button class="filter-btn" id="btnRegister" style="background:#2b8a3e;color:#fff;padding:0.6rem 2rem;font-size:0.95rem;font-weight:700;" onclick="startRegistration()" disabled>âœ… ì¼ê´„ ë“±ë¡ ì‹œì‘</button>
       </div>
     </div>
 
     <div class="admin-table-wrap" id="resultSection" style="display:none;margin-bottom:1.5rem;">
       <div class="admin-table-header">
-        <div class="admin-table-title">4. µî·Ï °á°ú</div>
+        <div class="admin-table-title">4. ë“±ë¡ ê²°ê³¼</div>
       </div>
       <div style="padding:1rem;">
         <div id="resultSummary" style="font-size:0.9rem;margin-bottom:0.8rem;"></div>
         <div style="overflow-x:auto;">
           <table class="admin-table">
-            <thead><tr><th>#</th><th>¾ÆÀÌµğ</th><th>ÀÌ¸§</th><th>°á°ú</th><th>»çÀ¯</th></tr></thead>
+            <thead><tr><th>#</th><th>ì•„ì´ë””</th><th>ì´ë¦„</th><th>ê²°ê³¼</th><th>ì‚¬ìœ </th></tr></thead>
             <tbody id="resultBody"></tbody>
           </table>
         </div>
@@ -129,13 +129,13 @@
     }
 
     function downloadTemplate() {
-      const header = [['¾ÆÀÌµğ', 'ÀÌ¸§', 'ºÎ¼­', '¹İ']];
-      const sample = [['student01', 'È«±æµ¿', '1ºÎ', '1'], ['student02', '±èÃ¶¼ö', '2ºÎ', '2']];
+      const header = [['ì•„ì´ë””', 'ì´ë¦„', 'ë¶€ì„œ', 'ë°˜']];
+      const sample = [['student01', 'í™ê¸¸ë™', '1ë¶€', '1'], ['student02', 'ê¹€ì² ìˆ˜', '2ë¶€', '2']];
       const ws = XLSX.utils.aoa_to_sheet([...header, ...sample]);
       ws['!cols'] = [{ wch: 15 }, { wch: 12 }, { wch: 10 }, { wch: 5 }];
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, 'ÇĞ»ı¸ñ·Ï');
-      XLSX.writeFile(wb, 'ÇĞ»ı_ÀÏ°ıµî·Ï_¾ç½Ä.xlsx');
+      XLSX.utils.book_append_sheet(wb, ws, 'í•™ìƒëª©ë¡');
+      XLSX.writeFile(wb, 'í•™ìƒ_ì¼ê´„ë“±ë¡_ì–‘ì‹.xlsx');
     }
 
     function handleFile(e) {
@@ -145,7 +145,7 @@
     }
 
     function processFile(file) {
-      document.getElementById('fileName').textContent = `?? ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      document.getElementById('fileName').textContent = `ğŸ“„ ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
       document.getElementById('fileInfo').style.display = '';
 
       const reader = new FileReader();
@@ -155,16 +155,16 @@
           const ws = wb.Sheets[wb.SheetNames[0]];
           const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-          if (rows.length < 2) { alert('µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù. ¾ç½ÄÀ» È®ÀÎÇØÁÖ¼¼¿ä.'); return; }
+          if (rows.length < 2) { alert('ë°ì´í„°ê°€ ì—†ìŠµë‹ˆë‹¤. ì–‘ì‹ì„ í™•ì¸í•´ì£¼ì„¸ìš”.'); return; }
 
           const header = rows[0].map(h => String(h || '').trim());
-          const idxId = header.findIndex(h => /¾ÆÀÌµğ|id|username/i.test(h));
-          const idxName = header.findIndex(h => /ÀÌ¸§|name|display/i.test(h));
-          const idxDept = header.findIndex(h => /ºÎ¼­|dept|department/i.test(h));
-          const idxClass = header.findIndex(h => /¹İ|class|¹øÈ£/i.test(h));
+          const idxId = header.findIndex(h => /ì•„ì´ë””|id|username/i.test(h));
+          const idxName = header.findIndex(h => /ì´ë¦„|name|display/i.test(h));
+          const idxDept = header.findIndex(h => /ë¶€ì„œ|dept|department/i.test(h));
+          const idxClass = header.findIndex(h => /ë°˜|class|ë²ˆí˜¸/i.test(h));
 
           if (idxId < 0 || idxName < 0) {
-            alert('ÇÊ¼ö ÄÃ·³(¾ÆÀÌµğ, ÀÌ¸§)À» Ã£À» ¼ö ¾ø½À´Ï´Ù.\n¾ç½ÄÀ» ´Ù¿î·ÎµåÇÏ¿© »ç¿ëÇØÁÖ¼¼¿ä.');
+            alert('í•„ìˆ˜ ì»¬ëŸ¼(ì•„ì´ë””, ì´ë¦„)ì„ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\nì–‘ì‹ì„ ë‹¤ìš´ë¡œë“œí•˜ì—¬ ì‚¬ìš©í•´ì£¼ì„¸ìš”.');
             return;
           }
 
@@ -178,12 +178,12 @@
             const classNum = r[idxClass] != null ? String(r[idxClass]).trim() : '';
 
             let error = '';
-            if (!username) error = '¾ÆÀÌµğ ´©¶ô';
-            else if (!/^[a-zA-Z0-9_-]+$/.test(username)) error = '¾ÆÀÌµğ: ¿µ¹®/¼ıÀÚ/_/- ¸¸ °¡´É';
-            if (!displayName) error = error ? error + ', ÀÌ¸§ ´©¶ô' : 'ÀÌ¸§ ´©¶ô';
+            if (!username) error = 'ì•„ì´ë”” ëˆ„ë½';
+            else if (!/^[a-zA-Z0-9_-]+$/.test(username)) error = 'ì•„ì´ë””: ì˜ë¬¸/ìˆ«ì/_/- ë§Œ ê°€ëŠ¥';
+            if (!displayName) error = error ? error + ', ì´ë¦„ ëˆ„ë½' : 'ì´ë¦„ ëˆ„ë½';
 
             const deptId = deptName ? (_deptMap[deptName] || _deptMap[deptName.replace(/\s/g, '')] || null) : null;
-            if (deptName && !deptId) error = error ? error + ', ºÎ¼­ ¾øÀ½' : `ºÎ¼­ "${deptName}" ¾øÀ½`;
+            if (deptName && !deptId) error = error ? error + ', ë¶€ì„œ ì—†ìŒ' : `ë¶€ì„œ "${deptName}" ì—†ìŒ`;
 
             _parsedRows.push({
               row: i + 1,
@@ -194,7 +194,7 @@
           }
           renderPreview();
         } catch (err) {
-          alert('ÆÄÀÏ ÀĞ±â ¿À·ù: ' + err.message);
+          alert('íŒŒì¼ ì½ê¸° ì˜¤ë¥˜: ' + err.message);
         }
       };
       reader.readAsArrayBuffer(file);
@@ -212,9 +212,9 @@
       const validRows = _parsedRows.filter(r => !r.error);
       const errorRows = _parsedRows.filter(r => r.error);
 
-      document.getElementById('previewTitle').textContent = `3. ¹Ì¸®º¸±â (ÃÑ ${_parsedRows.length}°Ç)`;
-      document.getElementById('validCount').textContent = `? Á¤»ó ${validRows.length}°Ç`;
-      document.getElementById('errorCount').textContent = errorRows.length > 0 ? `? ¿À·ù ${errorRows.length}°Ç` : '';
+      document.getElementById('previewTitle').textContent = `3. ë¯¸ë¦¬ë³´ê¸° (ì´ ${_parsedRows.length}ê±´)`;
+      document.getElementById('validCount').textContent = `âœ… ì •ìƒ ${validRows.length}ê±´`;
+      document.getElementById('errorCount').textContent = errorRows.length > 0 ? `âŒ ì˜¤ë¥˜ ${errorRows.length}ê±´` : '';
 
       const tbody = document.getElementById('previewBody');
       tbody.innerHTML = _parsedRows.map((r, i) => `<tr style="${r.error ? 'background:var(--t-subtle-surface, #fff5f5);' : ''}">
@@ -224,8 +224,8 @@
         <td>${r.deptName || '-'}</td>
         <td>${r.classNumber != null ? r.classNumber : '-'}</td>
         <td>${r.error
-          ? `<span style="color:#e03131;font-size:0.8rem;">? ${r.error}</span>`
-          : '<span style="color:#2b8a3e;font-size:0.8rem;">? Á¤»ó</span>'}</td>
+          ? `<span style="color:#e03131;font-size:0.8rem;">âŒ ${r.error}</span>`
+          : '<span style="color:#2b8a3e;font-size:0.8rem;">âœ… ì •ìƒ</span>'}</td>
       </tr>`).join('');
 
       document.getElementById('previewSection').style.display = '';
@@ -234,11 +234,11 @@
 
     async function startRegistration() {
       const validRows = _parsedRows.filter(r => !r.error);
-      if (validRows.length === 0) { alert('µî·Ï °¡´ÉÇÑ µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù.'); return; }
-      if (!confirm(`Á¤»ó µ¥ÀÌÅÍ ${validRows.length}°ÇÀ» ÀÏ°ı µî·ÏÇÕ´Ï´Ù.\nÃÊ±â ºñ¹Ğ¹øÈ£´Â "1234"ÀÔ´Ï´Ù.\n\n°è¼ÓÇÏ½Ã°Ú½À´Ï±î?`)) return;
+      if (validRows.length === 0) { alert('ë“±ë¡ ê°€ëŠ¥í•œ ë°ì´í„°ê°€ ì—†ìŠµë‹ˆë‹¤.'); return; }
+      if (!confirm(`ì •ìƒ ë°ì´í„° ${validRows.length}ê±´ì„ ì¼ê´„ ë“±ë¡í•©ë‹ˆë‹¤.\nì´ˆê¸° ë¹„ë°€ë²ˆí˜¸ëŠ” "1234"ì…ë‹ˆë‹¤.\n\nê³„ì†í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
 
       document.getElementById('btnRegister').disabled = true;
-      document.getElementById('btnRegister').textContent = '? µî·Ï Áß...';
+      document.getElementById('btnRegister').textContent = 'â³ ë“±ë¡ ì¤‘...';
 
       const results = [];
       let success = 0, fail = 0;
@@ -255,33 +255,33 @@
             classNumber: r.classNumber
           });
           if (error) {
-            results.push({ ...r, result: '½ÇÆĞ', reason: tErr(error) });
+            results.push({ ...r, result: 'ì‹¤íŒ¨', reason: tErr(error) });
             fail++;
           } else {
-            results.push({ ...r, result: '¼º°ø', reason: '' });
+            results.push({ ...r, result: 'ì„±ê³µ', reason: '' });
             success++;
           }
         } catch (e) {
-          results.push({ ...r, result: '½ÇÆĞ', reason: e.message || String(e) });
+          results.push({ ...r, result: 'ì‹¤íŒ¨', reason: e.message || String(e) });
           fail++;
         }
       }
 
-      await logInfo('BULK_REGISTER', { ÃÑ°Ç¼ö: validRows.length, ¼º°ø: success, ½ÇÆĞ: fail });
+      await logInfo('BULK_REGISTER', { ì´ê±´ìˆ˜: validRows.length, ì„±ê³µ: success, ì‹¤íŒ¨: fail });
 
       document.getElementById('resultSummary').innerHTML =
-        `<strong>µî·Ï ¿Ï·á</strong>: ÃÑ ${validRows.length}°Ç Áß <span style="color:#2b8a3e;">¼º°ø ${success}°Ç</span>, <span style="color:#e03131;">½ÇÆĞ ${fail}°Ç</span>`;
+        `<strong>ë“±ë¡ ì™„ë£Œ</strong>: ì´ ${validRows.length}ê±´ ì¤‘ <span style="color:#2b8a3e;">ì„±ê³µ ${success}ê±´</span>, <span style="color:#e03131;">ì‹¤íŒ¨ ${fail}ê±´</span>`;
 
-      document.getElementById('resultBody').innerHTML = results.map((r, i) => `<tr style="${r.result === '½ÇÆĞ' ? 'background:var(--t-subtle-surface, #fff5f5);' : ''}">
+      document.getElementById('resultBody').innerHTML = results.map((r, i) => `<tr style="${r.result === 'ì‹¤íŒ¨' ? 'background:var(--t-subtle-surface, #fff5f5);' : ''}">
         <td>${i + 1}</td>
         <td>${r.username}</td>
         <td>${r.displayName}</td>
-        <td style="color:${r.result === '¼º°ø' ? '#2b8a3e' : '#e03131'};font-weight:700;">${r.result === '¼º°ø' ? '? ¼º°ø' : '? ½ÇÆĞ'}</td>
+        <td style="color:${r.result === 'ì„±ê³µ' ? '#2b8a3e' : '#e03131'};font-weight:700;">${r.result === 'ì„±ê³µ' ? 'âœ… ì„±ê³µ' : 'âŒ ì‹¤íŒ¨'}</td>
         <td style="font-size:0.82rem;">${r.reason || '-'}</td>
       </tr>`).join('');
 
       document.getElementById('resultSection').style.display = '';
-      document.getElementById('btnRegister').textContent = '? µî·Ï ¿Ï·á';
+      document.getElementById('btnRegister').textContent = 'âœ… ë“±ë¡ ì™„ë£Œ';
     }
   </script>
 </body>

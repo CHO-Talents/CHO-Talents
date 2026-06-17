@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ºÎ¼­ °ü¸® - CHO Talents Admin</title>
+  <title>ë¶€ì„œ ê´€ë¦¬ - CHO Talents Admin</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
 </head>
@@ -11,40 +11,40 @@
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ºÎ¼­ °ü¸®</h2>
+    <h2 style="margin-bottom:1rem;">ë¶€ì„œ ê´€ë¦¬</h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">ºÎ¼­ ¸ñ·Ï</div>
-        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ ºÎ¼­ µî·Ï</button>
+        <div class="admin-table-title" id="tableTitle">ë¶€ì„œ ëª©ë¡</div>
+        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ ë¶€ì„œ ë“±ë¡</button>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ºÎ¼­¸í</th><th>¼³¸í</th><th>¹İ</th><th>ÀüÃ¼</th><th>±³»ç</th><th>ÇĞ»ı</th><th>°ü¸®</th></tr></thead>
-        <tbody id="deptList"><tr><td colspan="7" class="empty-state">·Îµù Áß...</td></tr></tbody>
+        <thead><tr><th>ë¶€ì„œëª…</th><th>ì„¤ëª…</th><th>ë°˜</th><th>ì „ì²´</th><th>êµì‚¬</th><th>í•™ìƒ</th><th>ê´€ë¦¬</th></tr></thead>
+        <tbody id="deptList"><tr><td colspan="7" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
       </table>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="deptModal">
     <div class="modal-box">
-      <h3 class="modal-title" id="modalTitle">ºÎ¼­ µî·Ï</h3>
+      <h3 class="modal-title" id="modalTitle">ë¶€ì„œ ë“±ë¡</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ºÎ¼­¸í</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë¶€ì„œëª…</label>
         <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¼³¸í</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì„¤ëª…</label>
         <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¹İ °³¼ö</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë°˜ ê°œìˆ˜</label>
         <input type="number" id="mClassCount" min="0" max="20" value="0" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
-        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">0 = ¹İ ±¸ºĞ ¾øÀ½</div>
+        <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">0 = ë°˜ êµ¬ë¶„ ì—†ìŒ</div>
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">Ãë¼Ò</button>
-        <button class="btn-confirm" onclick="saveDept()">ÀúÀå</button>
+        <button class="btn-cancel" onclick="closeModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" onclick="saveDept()">ì €ì¥</button>
       </div>
     </div>
   </div>
@@ -103,10 +103,10 @@
       }
 
       const tbody = document.getElementById('deptList');
-      document.getElementById('tableTitle').textContent = `ºÎ¼­ ¸ñ·Ï (${filteredDepts.length}°³)`;
+      document.getElementById('tableTitle').textContent = `ë¶€ì„œ ëª©ë¡ (${filteredDepts.length}ê°œ)`;
 
       if (filteredDepts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">µî·ÏµÈ ºÎ¼­°¡ ¾ø½À´Ï´Ù.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state">ë“±ë¡ëœ ë¶€ì„œê°€ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
         allDeptData = [];
         return;
       }
@@ -116,22 +116,22 @@
         const deptUsers = (users||[]).filter(u => u.department_id === d.id);
         const teachers = deptUsers.filter(u => u.user_type === 'teacher');
         const students = deptUsers.filter(u => u.user_type === 'student');
-        const classLabel = d.class_count > 0 ? d.class_count + '°³' : '¾øÀ½';
+        const classLabel = d.class_count > 0 ? d.class_count + 'ê°œ' : 'ì—†ìŒ';
 
         return `<tr>
           <td><strong>${d.name}</strong></td>
           <td>${d.description || '-'}</td>
           <td>${classLabel}</td>
-          <td style="font-weight:700;">${deptUsers.length}¸í</td>
-          <td>${teachers.length}¸í</td>
-          <td>${students.length}¸í</td>
+          <td style="font-weight:700;">${deptUsers.length}ëª…</td>
+          <td>${teachers.length}ëª…</td>
+          <td>${students.length}ëª…</td>
           <td>
             <div class="mgmt-dropdown">
-              <button class="filter-btn" onclick="toggleMgmt(event,this)">°ü¸® ?</button>
+              <button class="filter-btn" onclick="toggleMgmt(event,this)">ê´€ë¦¬ â–¾</button>
               <div class="mgmt-menu">
-                <a onclick="showMembers('${d.name}','${d.id}')">?? ¼Ò¼Óº¸±â</a>
-                ${(myRank >= 90 || d.id === myManagedDept) ? `<a onclick="openEditModal('${d.id}')">?? ¼öÁ¤</a>` : ''}
-                ${myRank >= 90 ? `<a onclick="confirmDelete('${d.id}','${d.name}')">??? »èÁ¦</a>` : ''}
+                <a onclick="showMembers('${d.name}','${d.id}')">ğŸ‘¥ ì†Œì†ë³´ê¸°</a>
+                ${(myRank >= 90 || d.id === myManagedDept) ? `<a onclick="openEditModal('${d.id}')">âœï¸ ìˆ˜ì •</a>` : ''}
+                ${myRank >= 90 ? `<a onclick="confirmDelete('${d.id}','${d.name}')">ğŸ—‘ï¸ ì‚­ì œ</a>` : ''}
               </div>
             </div>
           </td>
@@ -144,7 +144,7 @@
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = 'ºÎ¼­ µî·Ï';
+      document.getElementById('modalTitle').textContent = 'ë¶€ì„œ ë“±ë¡';
       document.getElementById('mName').value = '';
       document.getElementById('mDesc').value = '';
       document.getElementById('mClassCount').value = '0';
@@ -155,7 +155,7 @@
     function openEditModal(id) {
       editingId = id;
       const dept = allDeptData.find(d => d.id === id);
-      document.getElementById('modalTitle').textContent = 'ºÎ¼­ ¼öÁ¤';
+      document.getElementById('modalTitle').textContent = 'ë¶€ì„œ ìˆ˜ì •';
       document.getElementById('mName').value = dept ? dept.name : '';
       document.getElementById('mDesc').value = dept ? (dept.description || '') : '';
       document.getElementById('mClassCount').value = dept ? (dept.class_count || 0) : 0;
@@ -170,32 +170,32 @@
       const name = document.getElementById('mName').value.trim();
       const desc = document.getElementById('mDesc').value.trim();
       const classCount = parseInt(document.getElementById('mClassCount').value) || 0;
-      if (!name) { errEl.textContent = 'ºÎ¼­¸íÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!name) { errEl.textContent = 'ë¶€ì„œëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
 
       if (editingId) {
         const dept = allDeptData.find(d => d.id === editingId);
         const { error } = await updateDepartment(editingId, { name, description: desc || null, class_count: classCount });
-        if (error) { await logError('DEPT_UPDATE_FAIL', { id: editingId, ´ë»ó: name, ¿À·ù: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        const º¯°æParts = [];
+        if (error) { await logError('DEPT_UPDATE_FAIL', { id: editingId, ëŒ€ìƒ: name, ì˜¤ë¥˜: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        const ë³€ê²½Parts = [];
         if (dept) {
-          if (dept.name !== name) º¯°æParts.push(`ºÎ¼­¸í: ${dept.name} ¡æ ${name}`);
-          if ((dept.description || '') !== desc) º¯°æParts.push(`¼³¸í: ${dept.description || '-'} ¡æ ${desc || '-'}`);
-          if ((dept.class_count || 0) !== classCount) º¯°æParts.push(`¹İ ¼ö: ${dept.class_count || 0} ¡æ ${classCount}`);
+          if (dept.name !== name) ë³€ê²½Parts.push(`ë¶€ì„œëª…: ${dept.name} â†’ ${name}`);
+          if ((dept.description || '') !== desc) ë³€ê²½Parts.push(`ì„¤ëª…: ${dept.description || '-'} â†’ ${desc || '-'}`);
+          if ((dept.class_count || 0) !== classCount) ë³€ê²½Parts.push(`ë°˜ ìˆ˜: ${dept.class_count || 0} â†’ ${classCount}`);
         }
-        await logInfo('DEPT_UPDATE', { id: editingId, ´ë»ó: name, º¯°æ³»¿ª: º¯°æParts.length ? º¯°æParts.join(', ') : `ºÎ¼­¸í: ${name}` });
+        await logInfo('DEPT_UPDATE', { id: editingId, ëŒ€ìƒ: name, ë³€ê²½ë‚´ì—­: ë³€ê²½Parts.length ? ë³€ê²½Parts.join(', ') : `ë¶€ì„œëª…: ${name}` });
       } else {
         const { error } = await createDepartment(name, desc || null, classCount);
-        if (error) { await logError('DEPT_CREATE_FAIL', { ´ë»ó: name, ¿À·ù: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('DEPT_CREATE', { ´ë»ó: name, º¯°æ³»¿ª: `ºÎ¼­ µî·Ï: ${name}, ¹İ ¼ö: ${classCount}` });
+        if (error) { await logError('DEPT_CREATE_FAIL', { ëŒ€ìƒ: name, ì˜¤ë¥˜: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('DEPT_CREATE', { ëŒ€ìƒ: name, ë³€ê²½ë‚´ì—­: `ë¶€ì„œ ë“±ë¡: ${name}, ë°˜ ìˆ˜: ${classCount}` });
       }
       closeModal();
       await loadDepts();
     }
 
     async function confirmDelete(id, name) {
-      if (!confirm(`"${name}" ºÎ¼­¸¦ ºñÈ°¼ºÈ­ÇÏ½Ã°Ú½À´Ï±î?`)) return;
+      if (!confirm(`"${name}" ë¶€ì„œë¥¼ ë¹„í™œì„±í™”í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
       await deleteDepartment(id);
-      await logInfo('DEPT_DEACTIVATE', { id, ´ë»ó: name, º¯°æ³»¿ª: `ºÎ¼­ ºñÈ°¼ºÈ­: ${name}` });
+      await logInfo('DEPT_DEACTIVATE', { id, ëŒ€ìƒ: name, ë³€ê²½ë‚´ì—­: `ë¶€ì„œ ë¹„í™œì„±í™”: ${name}` });
       await loadDepts();
     }
 
@@ -210,23 +210,23 @@
       const isAdmin = (session.permissionRank || 0) >= 100;
 
       const nameMap = resolveDisplayNames(members);
-      let html = `<strong>${deptName}</strong> ¼Ò¼Ó ÀÎ¿ø (${members.length}¸í)<br/><br/>`;
+      let html = `<strong>${deptName}</strong> ì†Œì† ì¸ì› (${members.length}ëª…)<br/><br/>`;
       if (members.length === 0) {
-        html += '<div style="color:#636e72;">¼Ò¼Ó ÀÎ¿øÀÌ ¾ø½À´Ï´Ù.</div>';
+        html += '<div style="color:#636e72;">ì†Œì† ì¸ì›ì´ ì—†ìŠµë‹ˆë‹¤.</div>';
       } else {
-        html += `<table class="admin-table" id="memberTable" style="font-size:0.85rem;"><thead><tr><th data-sort-key="user_type">¿ªÇÒ</th><th data-sort-key="permission_level">±ÇÇÑ</th><th data-sort-key="display_name">ÀÌ¸§</th>${hasClasses ? '<th data-sort-key="class_number" data-sort-type="number">¹İ</th>' : ''}${isAdmin ? '<th data-sort-key="last_login_at" data-sort-type="date">¸¶Áö¸· ·Î±×ÀÎ</th>' : ''}</tr></thead><tbody>`;
+        html += `<table class="admin-table" id="memberTable" style="font-size:0.85rem;"><thead><tr><th data-sort-key="user_type">ì—­í• </th><th data-sort-key="permission_level">ê¶Œí•œ</th><th data-sort-key="display_name">ì´ë¦„</th>${hasClasses ? '<th data-sort-key="class_number" data-sort-type="number">ë°˜</th>' : ''}${isAdmin ? '<th data-sort-key="last_login_at" data-sort-type="date">ë§ˆì§€ë§‰ ë¡œê·¸ì¸</th>' : ''}</tr></thead><tbody>`;
         html += members.map(u => {
-          const typeLabel = u.user_type === 'student' ? '?? ÇĞ»ı' : '????? ±³»ç';
+          const typeLabel = u.user_type === 'student' ? 'ğŸ’ í•™ìƒ' : 'ğŸ‘©â€ğŸ« êµì‚¬';
           const permLabel = (PERMISSION_EMOJI[u.permission_level]||'') + ' ' + (PERMISSION_LABELS[u.permission_level]||u.permission_level);
           const dn = nameMap[u.id] || u.display_name || '-';
           const isSelf = u.id === session.id;
-          const classNum = u.class_number ? u.class_number + '¹İ' : '-';
+          const classNum = u.class_number ? u.class_number + 'ë°˜' : '-';
           return `<tr><td>${typeLabel}</td><td>${permLabel}</td><td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>${hasClasses ? '<td>' + classNum + '</td>' : ''}${isAdmin ? `<td>${u.last_login_at ? formatKSTShort(u.last_login_at) : '-'}</td>` : ''}</tr>`;
         }).join('');
         html += '</tbody></table>';
       }
 
-      document.getElementById('modalTitle').textContent = 'ºÎ¼­ ¼Ò¼Ó ÀÎ¿ø';
+      document.getElementById('modalTitle').textContent = 'ë¶€ì„œ ì†Œì† ì¸ì›';
       document.getElementById('mName').parentElement.style.display = 'none';
       document.getElementById('mDesc').parentElement.style.display = 'none';
       document.getElementById('mClassCount').parentElement.style.display = 'none';

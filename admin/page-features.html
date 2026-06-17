@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ÆäÀÌÁö ±â´É °ü¸® - ´Þ¶õÆ® ¸¶À»</title>
+  <title>íŽ˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬ - ë‹¬ëž€íŠ¸ ë§ˆì„</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
 </head>
@@ -11,15 +11,15 @@
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">?? ÆäÀÌÁö ±â´É °ü¸®</h2>
-    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">±ÇÇÑ µî±Þº°·Î °¢ ÆäÀÌÁö¿¡¼­ »ç¿ë °¡´ÉÇÑ ±â´ÉÀ» °ü¸®ÇÕ´Ï´Ù.</p>
+    <h2 style="margin-bottom:1rem;">âš™ï¸ íŽ˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬</h2>
+    <p style="font-size:0.85rem;color:var(--admin-text-muted);margin-bottom:1rem;">ê¶Œí•œ ë“±ê¸‰ë³„ë¡œ ê° íŽ˜ì´ì§€ì—ì„œ ì‚¬ìš© ê°€ëŠ¥í•œ ê¸°ëŠ¥ì„ ê´€ë¦¬í•©ë‹ˆë‹¤.</p>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title">±ÇÇÑº° ±â´É ¼³Á¤</div>
+        <div class="admin-table-title">ê¶Œí•œë³„ ê¸°ëŠ¥ ì„¤ì •</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>±¸ºÐ</th><th>À¯Çü</th><th>±ÇÇÑ</th><th>µî±Þ</th><th>¼³¸í</th><th>°ü¸®</th></tr></thead>
+        <thead><tr><th>êµ¬ë¶„</th><th>ìœ í˜•</th><th>ê¶Œí•œ</th><th>ë“±ê¸‰</th><th>ì„¤ëª…</th><th>ê´€ë¦¬</th></tr></thead>
         <tbody id="permList"></tbody>
       </table>
     </div>
@@ -27,12 +27,12 @@
 
   <div class="modal-overlay hidden" id="featureModal">
     <div class="modal-box" style="max-width:750px;max-height:85vh;overflow-y:auto;">
-      <h3 class="modal-title" id="featureTitle">ÆäÀÌÁö ±â´É ¼³Á¤</h3>
+      <h3 class="modal-title" id="featureTitle">íŽ˜ì´ì§€ ê¸°ëŠ¥ ì„¤ì •</h3>
       <div class="form-error" id="featureError"></div>
       <div id="featureBody"></div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="closeFeatureModal()">Ãë¼Ò</button>
-        <button class="btn-confirm" id="btnSaveFeature" onclick="saveFeatures()">ÀúÀå</button>
+        <button class="btn-cancel" onclick="closeFeatureModal()">ì·¨ì†Œ</button>
+        <button class="btn-confirm" id="btnSaveFeature" onclick="saveFeatures()">ì €ìž¥</button>
       </div>
     </div>
   </div>
@@ -51,92 +51,92 @@
     let editingPerm = null;
 
     const PERM_LIST = [
-      { key: 'super_admin', userType: 'teacher', perm: 'admin', label: 'ÃÖ°í °ü¸®ÀÚ', emoji: '??', rank: 110, desc: '¸ðµç ±â´É Á¢±Ù °¡´É (½Ã½ºÅÛ °ü¸®ÀÚ)', superOnly: true },
-      { key: 'admin', userType: 'teacher', perm: 'admin', label: '°ü¸®ÀÚ', emoji: '??', rank: 100, desc: 'ÀüÃ¼ ½Ã½ºÅÛ °ü¸®' },
-      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', label: 'Àüµµ»ç´Ô', emoji: '??', rank: 90, desc: '»ç¿ëÀÚ/ºÎ¼­/°ü¸®ÀÚ °ü¸®' },
-      { key: 'chief', userType: 'teacher', perm: 'chief', label: 'ºÎÀå ±³»ç', emoji: '??', rank: 80, desc: '´ã´ç ºÎ¼­ °ü¸® + Á¶È¸' },
-      { key: 'purchase_teacher', userType: 'teacher', perm: 'purchase_teacher', label: '±¸¸Å ´ã´ç ±³»ç', emoji: '??', rank: 70, desc: '±¸¸Å °ü¸® ÀüÃ¼ ºÎ¼­ ÁÖ¹® Ã³¸®' },
-      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', label: 'ºÎ¼­ ´ã´ç ±³»ç', emoji: '?????', rank: 60, desc: '´ã´ç ºÎ¼­ »ç¿ëÀÚ °ü¸®' },
-      { key: 'teacher', userType: 'teacher', perm: 'teacher', label: 'ÀÏ¹Ý ±³»ç', emoji: '?????', rank: 40, desc: '´Þ¶õÆ® Áö±Þ' },
-      { key: 'student', userType: 'student', perm: 'student', label: 'ÇÐ»ý', emoji: '??', rank: 20, desc: '³» ´Þ¶õÆ® Á¶È¸ / »óÁ¡ ÀÌ¿ë' }
+      { key: 'super_admin', userType: 'teacher', perm: 'admin', label: 'ìµœê³  ê´€ë¦¬ìž', emoji: 'ðŸ”’', rank: 110, desc: 'ëª¨ë“  ê¸°ëŠ¥ ì ‘ê·¼ ê°€ëŠ¥ (ì‹œìŠ¤í…œ ê´€ë¦¬ìž)', superOnly: true },
+      { key: 'admin', userType: 'teacher', perm: 'admin', label: 'ê´€ë¦¬ìž', emoji: 'ðŸ‘‘', rank: 100, desc: 'ì „ì²´ ì‹œìŠ¤í…œ ê´€ë¦¬' },
+      { key: 'evangelist', userType: 'teacher', perm: 'evangelist', label: 'ì „ë„ì‚¬ë‹˜', emoji: 'âœï¸', rank: 90, desc: 'ì‚¬ìš©ìž/ë¶€ì„œ/ê´€ë¦¬ìž ê´€ë¦¬' },
+      { key: 'chief', userType: 'teacher', perm: 'chief', label: 'ë¶€ìž¥ êµì‚¬', emoji: 'ðŸ“‹', rank: 80, desc: 'ë‹´ë‹¹ ë¶€ì„œ ê´€ë¦¬ + ì¡°íšŒ' },
+      { key: 'purchase_teacher', userType: 'teacher', perm: 'purchase_teacher', label: 'êµ¬ë§¤ ë‹´ë‹¹ êµì‚¬', emoji: 'ðŸ›’', rank: 70, desc: 'êµ¬ë§¤ ê´€ë¦¬ ì „ì²´ ë¶€ì„œ ì£¼ë¬¸ ì²˜ë¦¬' },
+      { key: 'dept_teacher', userType: 'teacher', perm: 'dept_teacher', label: 'ë¶€ì„œ ë‹´ë‹¹ êµì‚¬', emoji: 'ðŸ‘©â€ðŸ«', rank: 60, desc: 'ë‹´ë‹¹ ë¶€ì„œ ì‚¬ìš©ìž ê´€ë¦¬' },
+      { key: 'teacher', userType: 'teacher', perm: 'teacher', label: 'ì¼ë°˜ êµì‚¬', emoji: 'ðŸ‘¨â€ðŸ«', rank: 40, desc: 'ë‹¬ëž€íŠ¸ ì§€ê¸‰' },
+      { key: 'student', userType: 'student', perm: 'student', label: 'í•™ìƒ', emoji: 'ðŸŽ’', rank: 20, desc: 'ë‚´ ë‹¬ëž€íŠ¸ ì¡°íšŒ / ìƒì  ì´ìš©' }
     ];
 
     const PAGE_FEATURES = [
-      { id: 'admin-users', name: '»ç¿ëÀÚ °ü¸®', features: [
-        { key: 'user_create', label: '»ç¿ëÀÚ µî·Ï' },
-        { key: 'user_edit', label: '»ç¿ëÀÚ ¼öÁ¤' },
-        { key: 'user_delete', label: '»ç¿ëÀÚ »èÁ¦' },
-        { key: 'user_pw_reset', label: 'ºñ¹Ð¹øÈ£ ÃÊ±âÈ­' },
-        { key: 'user_detail', label: '»ó¼¼ Á¤º¸ Á¶È¸' },
-        { key: 'request_approve', label: '°¡ÀÔ ½ÅÃ» ½ÂÀÎ' },
-        { key: 'request_reject', label: '°¡ÀÔ ½ÅÃ» °ÅºÎ' },
-        { key: 'transfer_request', label: 'ºÎ¼­ ÀÌµ¿ ¿äÃ»' },
-        { key: 'transfer_approve', label: 'ºÎ¼­ ÀÌµ¿ ½ÂÀÎ' }
+      { id: 'admin-users', name: 'ì‚¬ìš©ìž ê´€ë¦¬', features: [
+        { key: 'user_create', label: 'ì‚¬ìš©ìž ë“±ë¡' },
+        { key: 'user_edit', label: 'ì‚¬ìš©ìž ìˆ˜ì •' },
+        { key: 'user_delete', label: 'ì‚¬ìš©ìž ì‚­ì œ' },
+        { key: 'user_pw_reset', label: 'ë¹„ë°€ë²ˆí˜¸ ì´ˆê¸°í™”' },
+        { key: 'user_detail', label: 'ìƒì„¸ ì •ë³´ ì¡°íšŒ' },
+        { key: 'request_approve', label: 'ê°€ìž… ì‹ ì²­ ìŠ¹ì¸' },
+        { key: 'request_reject', label: 'ê°€ìž… ì‹ ì²­ ê±°ë¶€' },
+        { key: 'transfer_request', label: 'ë¶€ì„œ ì´ë™ ìš”ì²­' },
+        { key: 'transfer_approve', label: 'ë¶€ì„œ ì´ë™ ìŠ¹ì¸' }
       ]},
-      { id: 'admin-departments', name: 'ºÎ¼­ °ü¸®', features: [
-        { key: 'dept_create', label: 'ºÎ¼­ µî·Ï' },
-        { key: 'dept_edit', label: 'ºÎ¼­ ¼öÁ¤' },
-        { key: 'dept_delete', label: 'ºÎ¼­ »èÁ¦' },
-        { key: 'dept_view_members', label: '¼Ò¼Ó º¸±â' }
+      { id: 'admin-departments', name: 'ë¶€ì„œ ê´€ë¦¬', features: [
+        { key: 'dept_create', label: 'ë¶€ì„œ ë“±ë¡' },
+        { key: 'dept_edit', label: 'ë¶€ì„œ ìˆ˜ì •' },
+        { key: 'dept_delete', label: 'ë¶€ì„œ ì‚­ì œ' },
+        { key: 'dept_view_members', label: 'ì†Œì† ë³´ê¸°' }
       ]},
-      { id: 'admin-managers', name: '°ü¸®ÀÚ °ü¸®', features: [
-        { key: 'mgr_register', label: '°ü¸®ÀÚ µî·Ï' },
-        { key: 'mgr_edit', label: '°ü¸®ÀÚ ¼öÁ¤' }
+      { id: 'admin-managers', name: 'ê´€ë¦¬ìž ê´€ë¦¬', features: [
+        { key: 'mgr_register', label: 'ê´€ë¦¬ìž ë“±ë¡' },
+        { key: 'mgr_edit', label: 'ê´€ë¦¬ìž ìˆ˜ì •' }
       ]},
-      { id: 'admin-talents', name: '´Þ¶õÆ® °ü¸®', features: [
-        { key: 'talent_give', label: '´Þ¶õÆ® Áö±Þ' },
-        { key: 'talent_use', label: '´Þ¶õÆ® »ç¿ë Ã³¸®' },
-        { key: 'talent_view_detail', label: '»ó¼¼ Á¶È¸' }
+      { id: 'admin-talents', name: 'ë‹¬ëž€íŠ¸ ê´€ë¦¬', features: [
+        { key: 'talent_give', label: 'ë‹¬ëž€íŠ¸ ì§€ê¸‰' },
+        { key: 'talent_use', label: 'ë‹¬ëž€íŠ¸ ì‚¬ìš© ì²˜ë¦¬' },
+        { key: 'talent_view_detail', label: 'ìƒì„¸ ì¡°íšŒ' }
       ]},
-      { id: 'admin-talent-stats', name: '´Þ¶õÆ® Åë°è', features: [
-        { key: 'stats_view', label: 'Åë°è Á¶È¸' },
-        { key: 'stats_filter', label: 'ÇÊÅÍ º¯°æ' }
+      { id: 'admin-talent-stats', name: 'ë‹¬ëž€íŠ¸ í†µê³„', features: [
+        { key: 'stats_view', label: 'í†µê³„ ì¡°íšŒ' },
+        { key: 'stats_filter', label: 'í•„í„° ë³€ê²½' }
       ]},
-      { id: 'admin-talent-qr', name: '´Þ¶õÆ® QR °ü¸®', features: [
-        { key: 'qr_create', label: 'QR ÄÚµå »ý¼º' },
-        { key: 'qr_edit', label: 'QR ÄÚµå ¼öÁ¤' },
-        { key: 'qr_deactivate', label: 'QR ÄÚµå ºñÈ°¼ºÈ­' },
-        { key: 'qr_print', label: 'QR ÄÚµå ÀÎ¼â' },
-        { key: 'qr_copy', label: 'QR ÄÚµå º¹»ç' }
+      { id: 'admin-talent-qr', name: 'ë‹¬ëž€íŠ¸ QR ê´€ë¦¬', features: [
+        { key: 'qr_create', label: 'QR ì½”ë“œ ìƒì„±' },
+        { key: 'qr_edit', label: 'QR ì½”ë“œ ìˆ˜ì •' },
+        { key: 'qr_deactivate', label: 'QR ì½”ë“œ ë¹„í™œì„±í™”' },
+        { key: 'qr_print', label: 'QR ì½”ë“œ ì¸ì‡„' },
+        { key: 'qr_copy', label: 'QR ì½”ë“œ ë³µì‚¬' }
       ]},
-      { id: 'admin-shop', name: '»óÇ° °ü¸®', features: [
-        { key: 'product_create', label: '»óÇ° µî·Ï' },
-        { key: 'product_edit', label: '»óÇ° ¼öÁ¤' },
-        { key: 'product_delete', label: '»óÇ° »èÁ¦' },
-        { key: 'product_toggle', label: 'È°¼º/ºñÈ°¼º ÀüÈ¯' }
+      { id: 'admin-shop', name: 'ìƒí’ˆ ê´€ë¦¬', features: [
+        { key: 'product_create', label: 'ìƒí’ˆ ë“±ë¡' },
+        { key: 'product_edit', label: 'ìƒí’ˆ ìˆ˜ì •' },
+        { key: 'product_delete', label: 'ìƒí’ˆ ì‚­ì œ' },
+        { key: 'product_toggle', label: 'í™œì„±/ë¹„í™œì„± ì „í™˜' }
       ]},
-      { id: 'admin-purchases', name: '±¸¸Å °ü¸®', features: [
-        { key: 'order_prepare', label: '»óÇ° ÁØºñ Ã³¸®' },
-        { key: 'order_purchase', label: '±¸¸Å È®Á¤ Ã³¸®' },
-        { key: 'order_deliver', label: 'Áö±Þ ¿Ï·á Ã³¸®' }
+      { id: 'admin-purchases', name: 'êµ¬ë§¤ ê´€ë¦¬', features: [
+        { key: 'order_prepare', label: 'ìƒí’ˆ ì¤€ë¹„ ì²˜ë¦¬' },
+        { key: 'order_purchase', label: 'êµ¬ë§¤ í™•ì • ì²˜ë¦¬' },
+        { key: 'order_deliver', label: 'ì§€ê¸‰ ì™„ë£Œ ì²˜ë¦¬' }
       ]},
-      { id: 'admin-dashboard', name: '´ë½Ãº¸µå', features: [
-        { key: 'view_stats', label: 'Åë°è Ä«µå Á¶È¸' },
-        { key: 'view_errors', label: '¿À·ù ·Î±× Á¶È¸' },
-        { key: 'view_shortcuts', label: '¹Ù·Î°¡±â ¸Þ´º' }
+      { id: 'admin-dashboard', name: 'ëŒ€ì‹œë³´ë“œ', features: [
+        { key: 'view_stats', label: 'í†µê³„ ì¹´ë“œ ì¡°íšŒ' },
+        { key: 'view_errors', label: 'ì˜¤ë¥˜ ë¡œê·¸ ì¡°íšŒ' },
+        { key: 'view_shortcuts', label: 'ë°”ë¡œê°€ê¸° ë©”ë‰´' }
       ]},
-      { id: 'admin-reports', name: 'º¸°í¼­', features: [
-        { key: 'report_create', label: 'º¸°í¼­ µî·Ï' },
-        { key: 'report_delete', label: 'º¸°í¼­ »èÁ¦' }
+      { id: 'admin-reports', name: 'ë³´ê³ ì„œ', features: [
+        { key: 'report_create', label: 'ë³´ê³ ì„œ ë“±ë¡' },
+        { key: 'report_delete', label: 'ë³´ê³ ì„œ ì‚­ì œ' }
       ]},
-      { id: 'admin-logs', name: '·Î±×', features: [
-        { key: 'log_delete', label: '·Î±× »èÁ¦' },
-        { key: 'log_acknowledge', label: '·Î±× È®ÀÎ Ã³¸®' }
+      { id: 'admin-logs', name: 'ë¡œê·¸', features: [
+        { key: 'log_delete', label: 'ë¡œê·¸ ì‚­ì œ' },
+        { key: 'log_acknowledge', label: 'ë¡œê·¸ í™•ì¸ ì²˜ë¦¬' }
       ]},
-      { id: 'admin-audit', name: 'ÀÛ¾÷ ÀÌ·Â', features: [
-        { key: 'audit_view', label: 'ÀÌ·Â Á¶È¸' },
-        { key: 'audit_filter', label: 'ÇÊÅÍ º¯°æ' }
+      { id: 'admin-audit', name: 'ìž‘ì—… ì´ë ¥', features: [
+        { key: 'audit_view', label: 'ì´ë ¥ ì¡°íšŒ' },
+        { key: 'audit_filter', label: 'í•„í„° ë³€ê²½' }
       ]},
-      { id: 'admin-talent-items', name: '´Þ¶õÆ® Ç×¸ñ °ü¸®', features: [
-        { key: 'item_create', label: 'Ç×¸ñ µî·Ï' },
-        { key: 'item_edit', label: 'Ç×¸ñ ¼öÁ¤' },
-        { key: 'item_delete', label: 'Ç×¸ñ »èÁ¦' }
+      { id: 'admin-talent-items', name: 'ë‹¬ëž€íŠ¸ í•­ëª© ê´€ë¦¬', features: [
+        { key: 'item_create', label: 'í•­ëª© ë“±ë¡' },
+        { key: 'item_edit', label: 'í•­ëª© ìˆ˜ì •' },
+        { key: 'item_delete', label: 'í•­ëª© ì‚­ì œ' }
       ]},
-      { id: 'admin-page-access', name: 'ÆäÀÌÁö Á¢±Ù °ü¸®', features: [
-        { key: 'access_edit', label: 'Á¢±Ù ¼³Á¤ ¼öÁ¤' }
+      { id: 'admin-page-access', name: 'íŽ˜ì´ì§€ ì ‘ê·¼ ê´€ë¦¬', features: [
+        { key: 'access_edit', label: 'ì ‘ê·¼ ì„¤ì • ìˆ˜ì •' }
       ]},
-      { id: 'admin-page-features', name: 'ÆäÀÌÁö ±â´É °ü¸®', features: [
-        { key: 'feature_edit', label: '±â´É ¼³Á¤ ¼öÁ¤' }
+      { id: 'admin-page-features', name: 'íŽ˜ì´ì§€ ê¸°ëŠ¥ ê´€ë¦¬', features: [
+        { key: 'feature_edit', label: 'ê¸°ëŠ¥ ì„¤ì • ìˆ˜ì •' }
       ]}
     ];
 
@@ -163,11 +163,11 @@
         .filter(p => !p.superOnly || isSA)
         .map(p => `<tr>
           <td><span class="level-badge">${p.emoji} ${p.label}</span></td>
-          <td>${p.userType === 'teacher' ? '±³»ç' : 'ÇÐ»ý'}</td>
+          <td>${p.userType === 'teacher' ? 'êµì‚¬' : 'í•™ìƒ'}</td>
           <td>${PERMISSION_LABELS[p.perm] || p.perm}</td>
           <td style="font-weight:700;">${p.rank}</td>
           <td style="font-size:0.82rem;color:var(--admin-text-muted);">${p.desc}</td>
-          <td><button class="filter-btn" onclick="openFeatureModal('${p.key}')">¼³Á¤</button></td>
+          <td><button class="filter-btn" onclick="openFeatureModal('${p.key}')">ì„¤ì •</button></td>
         </tr>`).join('');
     }
 
@@ -175,7 +175,7 @@
       editingPerm = permKey;
       const perm = PERM_LIST.find(p => p.key === permKey);
       if (!perm) return;
-      document.getElementById('featureTitle').textContent = `${perm.emoji} ${perm.label} - ÆäÀÌÁö ±â´É ¼³Á¤`;
+      document.getElementById('featureTitle').textContent = `${perm.emoji} ${perm.label} - íŽ˜ì´ì§€ ê¸°ëŠ¥ ì„¤ì •`;
 
       let saved = {};
       const { data } = await _sb.from('role_page_features').select('*').eq('permission_key', permKey);
@@ -228,14 +228,14 @@
       await _sb.from('role_page_features').delete().eq('permission_key', editingPerm);
       const { error } = await _sb.from('role_page_features').insert(rows);
       if (error) {
-        await logError('ROLE_FEATURE_UPDATE_FAIL', { ±ÇÇÑ: editingPerm, ¿À·ù: error.message });
-        errEl.textContent = 'ÀúÀå ½ÇÆÐ: ' + tErr(error.message);
+        await logError('ROLE_FEATURE_UPDATE_FAIL', { ê¶Œí•œ: editingPerm, ì˜¤ë¥˜: error.message });
+        errEl.textContent = 'ì €ìž¥ ì‹¤íŒ¨: ' + tErr(error.message);
         errEl.classList.add('show');
         return;
       }
-      await logInfo('ROLE_FEATURE_UPDATE', { ±ÇÇÑ: editingPerm });
+      await logInfo('ROLE_FEATURE_UPDATE', { ê¶Œí•œ: editingPerm });
       closeFeatureModal();
-      alert('ÀúÀåµÇ¾ú½À´Ï´Ù.');
+      alert('ì €ìž¥ë˜ì—ˆìŠµë‹ˆë‹¤.');
     }
 
     document.getElementById('featureModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeFeatureModal(); });

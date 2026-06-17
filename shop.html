@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>´Ş¶õÆ® »óÁ¡ - ´Ş¶õÆ® ¸¶À»</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>" />
+  <title>ë‹¬ë€íŠ¸ ìƒì  - ë‹¬ë€íŠ¸ ë§ˆì„</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ğŸ›’</text></svg>" />
   <link rel="stylesheet" href="css/themes.css?v=3.46.0" />
   <link rel="stylesheet" href="css/common.css?v=3.46.0" />
 </head>
@@ -13,58 +13,58 @@
 
 
   <div class="page-container">
-    <h1 class="page-title">?? ´Ş¶õÆ® »óÁ¡</h1>
-    <p class="page-sub" id="shopSub">´Ş¶õÆ®·Î ±³È¯ÇÒ ¼ö ÀÖ´Â »óÇ°µéÀÌ¿¡¿ä!</p>
+    <h1 class="page-title">ğŸ›’ ë‹¬ë€íŠ¸ ìƒì </h1>
+    <p class="page-sub" id="shopSub">ë‹¬ë€íŠ¸ë¡œ êµí™˜í•  ìˆ˜ ìˆëŠ” ìƒí’ˆë“¤ì´ì—ìš”!</p>
 
     <div id="tabArea" style="display:none;margin-bottom:1.5rem;gap:0.5rem;">
-      <button class="filter-btn" id="tabStudent" onclick="switchShopTab('student')">?? ÇĞ»ı¿ë</button>
-      <button class="filter-btn" id="tabTeacher" onclick="switchShopTab('teacher')">????? ±³»ç¿ë</button>
-      <button class="filter-btn" id="btnProxyBuy" data-min-perm="40" style="display:none;background:#e67700;color:#fff;" onclick="openProxyModal()">?? ´ë¸® ±¸¸Å</button>
+      <button class="filter-btn" id="tabStudent" onclick="switchShopTab('student')">ğŸ’ í•™ìƒìš©</button>
+      <button class="filter-btn" id="tabTeacher" onclick="switchShopTab('teacher')">ğŸ‘©â€ğŸ« êµì‚¬ìš©</button>
+      <button class="filter-btn" id="btnProxyBuy" data-min-perm="40" style="display:none;background:#e67700;color:#fff;" onclick="openProxyModal()">ğŸ¤ ëŒ€ë¦¬ êµ¬ë§¤</button>
     </div>
     <div id="shopFilterArea" style="display:none;margin-bottom:1rem;gap:0.5rem;flex-wrap:wrap;align-items:center;">
       <select id="shopCatFilter" onchange="renderShopProducts()" style="padding:0.4rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:0.84rem;">
-        <option value="">ÀüÃ¼ Ä«Å×°í¸®</option>
+        <option value="">ì „ì²´ ì¹´í…Œê³ ë¦¬</option>
       </select>
-      <input type="text" id="shopSearchInput" oninput="renderShopProducts()" placeholder="»óÇ°¸í/Ä«Å×°í¸® °Ë»ö..." style="padding:0.4rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:0.84rem;flex:1;min-width:140px;" />
+      <input type="text" id="shopSearchInput" oninput="renderShopProducts()" placeholder="ìƒí’ˆëª…/ì¹´í…Œê³ ë¦¬ ê²€ìƒ‰..." style="padding:0.4rem 0.8rem;border:1px solid #ddd;border-radius:8px;font-size:0.84rem;flex:1;min-width:140px;" />
     </div>
 
-    <!-- ´ë¸® ±¸¸Å ¸ğ´Ş -->
+    <!-- ëŒ€ë¦¬ êµ¬ë§¤ ëª¨ë‹¬ -->
     <div id="proxyModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;align-items:center;justify-content:center;">
       <div style="background:var(--t-card, #fff);border-radius:12px;padding:1.5rem;max-width:480px;width:90%;max-height:80vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.2);color:var(--t-text, #212529);">
-        <h3 style="margin:0 0 1rem;">?? ´ë¸® ±¸¸Å</h3>
+        <h3 style="margin:0 0 1rem;">ğŸ¤ ëŒ€ë¦¬ êµ¬ë§¤</h3>
         <div style="margin-bottom:0.8rem;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´ë»ó »ç¿ëÀÚ °Ë»ö</label>
-          <input type="text" id="proxySearch" placeholder="ÀÌ¸§ ¶Ç´Â ¾ÆÀÌµğ °Ë»ö..." style="width:100%;padding:0.6rem;border:1px solid var(--t-border, #ddd);border-radius:8px;font-size:0.88rem;background:var(--t-input-bg, #fff);color:var(--t-text, #212529);" oninput="onProxySearch()" autocomplete="off" />
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ëŒ€ìƒ ì‚¬ìš©ì ê²€ìƒ‰</label>
+          <input type="text" id="proxySearch" placeholder="ì´ë¦„ ë˜ëŠ” ì•„ì´ë”” ê²€ìƒ‰..." style="width:100%;padding:0.6rem;border:1px solid var(--t-border, #ddd);border-radius:8px;font-size:0.88rem;background:var(--t-input-bg, #fff);color:var(--t-text, #212529);" oninput="onProxySearch()" autocomplete="off" />
           <div id="proxyResults" style="display:none;max-height:180px;overflow-y:auto;border:1px solid var(--t-border, #ddd);border-top:none;border-radius:0 0 8px 8px;background:var(--t-card, #fff);"></div>
         </div>
         <div id="proxySelected" style="display:none;margin-bottom:0.8rem;padding:0.6rem;background:var(--t-accent-surface, #f3f0ff);border-radius:8px;font-size:0.88rem;color:var(--t-text, #212529);">
           <span id="proxySelectedInfo"></span>
-          <button onclick="clearProxy()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">?</button>
+          <button onclick="clearProxy()" style="float:right;background:none;border:none;cursor:pointer;color:#ff6b6b;font-weight:700;">âœ•</button>
         </div>
         <div id="proxyProductArea" style="display:none;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">±¸¸ÅÇÒ »óÇ°</label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">êµ¬ë§¤í•  ìƒí’ˆ</label>
           <select id="proxyProduct" style="width:100%;padding:0.6rem;border:1px solid var(--t-border, #ddd);border-radius:8px;font-size:0.88rem;background:var(--t-input-bg, #fff);color:var(--t-text, #212529);">
-            <option value="">»óÇ° ¼±ÅÃ</option>
+            <option value="">ìƒí’ˆ ì„ íƒ</option>
           </select>
           <p id="proxyBalanceInfo" style="font-size:0.82rem;color:#868e96;margin-top:0.3rem;"></p>
         </div>
         <div style="display:flex;gap:0.5rem;margin-top:1rem;justify-content:flex-end;">
-          <button onclick="closeProxyModal()" style="padding:0.5rem 1rem;border:1px solid var(--t-border, #ddd);border-radius:8px;background:var(--t-card, #fff);color:var(--t-text, #212529);cursor:pointer;">Ãë¼Ò</button>
-          <button id="btnProxyConfirm" onclick="confirmProxy()" style="padding:0.5rem 1rem;border:none;border-radius:8px;background:#228be6;color:#fff;font-weight:700;cursor:pointer;" disabled>±¸¸Å ½ÅÃ»</button>
+          <button onclick="closeProxyModal()" style="padding:0.5rem 1rem;border:1px solid var(--t-border, #ddd);border-radius:8px;background:var(--t-card, #fff);color:var(--t-text, #212529);cursor:pointer;">ì·¨ì†Œ</button>
+          <button id="btnProxyConfirm" onclick="confirmProxy()" style="padding:0.5rem 1rem;border:none;border-radius:8px;background:#228be6;color:#fff;font-weight:700;cursor:pointer;" disabled>êµ¬ë§¤ ì‹ ì²­</button>
         </div>
       </div>
     </div>
 
     <div id="productArea">
       <div class="empty-state">
-        <div class="empty-state-icon">?</div>
-        <p>»óÇ°À» ºÒ·¯¿À´Â Áß...</p>
+        <div class="empty-state-icon">â³</div>
+        <p>ìƒí’ˆì„ ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</p>
       </div>
     </div>
   </div>
 
   <footer class="page-footer">
-    <p>ÃÊµîºÎ ´Ş¶õÆ® °ü¸® &copy; 2026 CHO-Talents</p>
+    <p>ì´ˆë“±ë¶€ ë‹¬ë€íŠ¸ ê´€ë¦¬ &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -104,7 +104,7 @@
           const { data: p2 } = await _sb.from('profiles').select('talent_balance').eq('id', session.id).single();
           prof = p2;
           if (prof) { _userBalance = prof.talent_balance || 0; _userPending = 0; }
-          logWarn('SHOP_PROFILE_FALLBACK', { ¿À·ù: e1.message });
+          logWarn('SHOP_PROFILE_FALLBACK', { ì˜¤ë¥˜: e1.message });
         } else {
           prof = p1;
           if (prof) { _userBalance = prof.talent_balance || 0; _userPending = prof.pending_talent || 0; }
@@ -135,9 +135,9 @@
 
     function updateCategoryFilter() {
       const filtered = allShopProducts.filter(p => p.target_role === currentShopTab);
-      const cats = [...new Set(filtered.map(p => p.category || '±âÅ¸'))].sort();
+      const cats = [...new Set(filtered.map(p => p.category || 'ê¸°íƒ€'))].sort();
       const sel = document.getElementById('shopCatFilter');
-      sel.innerHTML = '<option value="">ÀüÃ¼ Ä«Å×°í¸®</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+      sel.innerHTML = '<option value="">ì „ì²´ ì¹´í…Œê³ ë¦¬</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
       document.getElementById('shopFilterArea').style.display = 'flex';
     }
 
@@ -145,19 +145,19 @@
       const catFilter = (document.getElementById('shopCatFilter') || {}).value || '';
       const searchText = ((document.getElementById('shopSearchInput') || {}).value || '').trim().toLowerCase();
       let filtered = allShopProducts.filter(p => p.target_role === currentShopTab);
-      if (catFilter) filtered = filtered.filter(p => (p.category || '±âÅ¸') === catFilter);
+      if (catFilter) filtered = filtered.filter(p => (p.category || 'ê¸°íƒ€') === catFilter);
       if (searchText) filtered = filtered.filter(p => (p.name || '').toLowerCase().includes(searchText) || (p.category || '').toLowerCase().includes(searchText));
       const area = document.getElementById('productArea');
-      const label = currentShopTab === 'student' ? 'ÇĞ»ı' : '±³»ç';
-      document.getElementById('shopSub').textContent = `${label} ´Ş¶õÆ® ±³È¯ »óÇ°ÀÔ´Ï´Ù`;
+      const label = currentShopTab === 'student' ? 'í•™ìƒ' : 'êµì‚¬';
+      document.getElementById('shopSub').textContent = `${label} ë‹¬ë€íŠ¸ êµí™˜ ìƒí’ˆì…ë‹ˆë‹¤`;
 
       if (filtered.length === 0) {
-        area.innerHTML = '<div class="empty-state"><div class="empty-state-icon">??</div><p>µî·ÏµÈ »óÇ°ÀÌ ¾ø½À´Ï´Ù.</p></div>';
+        area.innerHTML = '<div class="empty-state"><div class="empty-state-icon">ğŸ“¦</div><p>ë“±ë¡ëœ ìƒí’ˆì´ ì—†ìŠµë‹ˆë‹¤.</p></div>';
         return;
       }
 
       const categories = {};
-      filtered.forEach(p => { const cat = p.category || '±âÅ¸'; if (!categories[cat]) categories[cat] = []; categories[cat].push(p); });
+      filtered.forEach(p => { const cat = p.category || 'ê¸°íƒ€'; if (!categories[cat]) categories[cat] = []; categories[cat].push(p); });
       let html = '';
       for (const [cat, items] of Object.entries(categories)) {
         html += `<h2 class="section-title">${cat}</h2><div class="product-grid">`;
@@ -174,12 +174,12 @@
       const buyBtnHtml = _shopSession
         ? (isTeacherBuyingStudent
           ? ''
-          : `<button class="product-buy-btn" onclick="requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">?? ±¸¸Å ½ÅÃ»</button>`)
+          : `<button class="product-buy-btn" onclick="requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">ğŸ›’ êµ¬ë§¤ ì‹ ì²­</button>`)
         : '';
       return `<div class="product-card">
-        ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" class="product-img" />` : `<span class="product-emoji">${p.image_emoji || '??'}</span>`}
+        ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" class="product-img" />` : `<span class="product-emoji">${p.image_emoji || 'ğŸ'}</span>`}
         <div class="product-name">${p.name}</div>
-        <div class="product-price">${fmtNum(p.price)} <span class="unit">´Ş¶õÆ®</span></div>
+        <div class="product-price">${fmtNum(p.price)} <span class="unit">ë‹¬ë€íŠ¸</span></div>
         <div class="product-desc">${p.description || ''}</div>
         
         ${buyBtnHtml}
@@ -187,14 +187,14 @@
     }
 
     async function requestOrder(productId, productName, price) {
-      if (!_shopSession) { alert('·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.'); return; }
+      if (!_shopSession) { alert('ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.'); return; }
       const available = _userBalance - _userPending;
       if (available < price) {
-        logWarn('ORDER_INSUFFICIENT_BALANCE', { »óÇ°¸í: productName, ±İ¾×: price, balance: _userBalance, pending: _userPending, available });
-        alert(`»ç¿ë °¡´ÉÇÑ ´Ş¶õÆ®°¡ ºÎÁ·ÇÕ´Ï´Ù.\nÀÜ¿©: ${fmtNum(_userBalance)} / »ç¿ë ´ë±â: ${fmtNum(_userPending)} / »ç¿ë °¡´É: ${fmtNum(available)}`);
+        logWarn('ORDER_INSUFFICIENT_BALANCE', { ìƒí’ˆëª…: productName, ê¸ˆì•¡: price, balance: _userBalance, pending: _userPending, available });
+        alert(`ì‚¬ìš© ê°€ëŠ¥í•œ ë‹¬ë€íŠ¸ê°€ ë¶€ì¡±í•©ë‹ˆë‹¤.\nì”ì—¬: ${fmtNum(_userBalance)} / ì‚¬ìš© ëŒ€ê¸°: ${fmtNum(_userPending)} / ì‚¬ìš© ê°€ëŠ¥: ${fmtNum(available)}`);
         return;
       }
-      if (!confirm(`"${productName}"À»(¸¦) ±¸¸Å ½ÅÃ»ÇÏ½Ã°Ú½À´Ï±î?\n°¡°İ: ${fmtNum(price)} ´Ş¶õÆ®\n\n»ç¿ë °¡´É ´Ş¶õÆ®: ${fmtNum(available)}`)) return;
+      if (!confirm(`"${productName}"ì„(ë¥¼) êµ¬ë§¤ ì‹ ì²­í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\nê°€ê²©: ${fmtNum(price)} ë‹¬ë€íŠ¸\n\nì‚¬ìš© ê°€ëŠ¥ ë‹¬ë€íŠ¸: ${fmtNum(available)}`)) return;
 
       try {
         const { data, error } = await _sb.rpc('request_product_order', {
@@ -204,23 +204,23 @@
           p_price: price
         });
         if (error) {
-          await logError('ORDER_REQUEST_FAIL', { productId, »óÇ°¸í: productName, ±İ¾×: price, ¿À·ù: error.message });
-          alert('±¸¸Å ½ÅÃ» ½ÇÆĞ: ' + tErr(error.message));
+          await logError('ORDER_REQUEST_FAIL', { productId, ìƒí’ˆëª…: productName, ê¸ˆì•¡: price, ì˜¤ë¥˜: error.message });
+          alert('êµ¬ë§¤ ì‹ ì²­ ì‹¤íŒ¨: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('ORDER_REQUEST_DENIED', { »óÇ°¸í: productName, ±İ¾×: price, »çÀ¯: data.error });
+          await logWarn('ORDER_REQUEST_DENIED', { ìƒí’ˆëª…: productName, ê¸ˆì•¡: price, ì‚¬ìœ : data.error });
           alert(tErr(data.error));
           return;
         }
         _userPending += price;
-        await logInfo('ORDER_REQUEST_SUCCESS', { »óÇ°¸í: productName, ±İ¾×: price, orderId: data?.order_id });
-        sendSlackNotify('purchase_new', { ½ÅÃ»ÀÚ: _shopSession.displayName || _shopSession.username, »óÇ°¸í: productName, ±İ¾×: price, À¯Çü: 'ÀÏ¹İ ±¸¸Å', ºÎ¼­: _shopSession.departmentName || '' });
-        alert('? ±¸¸Å ½ÅÃ»ÀÌ ¿Ï·áµÇ¾ú½À´Ï´Ù!');
+        await logInfo('ORDER_REQUEST_SUCCESS', { ìƒí’ˆëª…: productName, ê¸ˆì•¡: price, orderId: data?.order_id });
+        sendSlackNotify('purchase_new', { ì‹ ì²­ì: _shopSession.displayName || _shopSession.username, ìƒí’ˆëª…: productName, ê¸ˆì•¡: price, ìœ í˜•: 'ì¼ë°˜ êµ¬ë§¤', ë¶€ì„œ: _shopSession.departmentName || '' });
+        alert('âœ… êµ¬ë§¤ ì‹ ì²­ì´ ì™„ë£Œë˜ì—ˆìŠµë‹ˆë‹¤!');
         renderShopProducts();
       } catch (err) {
-        await logError('ORDER_REQUEST_ERROR', { »óÇ°¸í: productName, ±İ¾×: price, ¿À·ù: String(err) });
-        alert('±¸¸Å ½ÅÃ» Áß ¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù: ' + tErr(err.message));
+        await logError('ORDER_REQUEST_ERROR', { ìƒí’ˆëª…: productName, ê¸ˆì•¡: price, ì˜¤ë¥˜: String(err) });
+        alert('êµ¬ë§¤ ì‹ ì²­ ì¤‘ ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤: ' + tErr(err.message));
       }
     }
     let _proxyUsers = [];
@@ -245,7 +245,7 @@
     async function loadProxyUsers() {
       const rank = _shopSession.permissionRank || 0;
       const resultsBox = document.getElementById('proxyResults');
-      resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">´ë»óÀÚ¸¦ ºÒ·¯¿À´Â Áß...</div>';
+      resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">ëŒ€ìƒìë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</div>';
       resultsBox.style.display = 'block';
 
       let users = [];
@@ -257,35 +257,35 @@
           const deptId = _shopSession.managedDeptId || _shopSession.departmentId;
           if (!deptId) {
             _proxyUsers = [];
-            resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">´ã´ç ºÎ¼­°¡ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù.</div>';
+            resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">ë‹´ë‹¹ ë¶€ì„œê°€ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.</div>';
             return;
           }
           opts.departmentId = deptId;
         } else if (rank === 40) {
           if (!_shopSession.departmentId || !_shopSession.classNumber) {
             _proxyUsers = [];
-            resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">´ã´ç ºÎ¼­/¹İÀÌ ¼³Á¤µÇÁö ¾Ê¾Ò½À´Ï´Ù.</div>';
+            resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">ë‹´ë‹¹ ë¶€ì„œ/ë°˜ì´ ì„¤ì •ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤.</div>';
             return;
           }
           opts.userType = 'student';
           opts.departmentId = _shopSession.departmentId;
         } else {
           _proxyUsers = [];
-          resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">´ë¸® ±¸¸Å ±ÇÇÑÀÌ ¾ø½À´Ï´Ù.</div>';
+          resultsBox.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">ëŒ€ë¦¬ êµ¬ë§¤ ê¶Œí•œì´ ì—†ìŠµë‹ˆë‹¤.</div>';
           return;
         }
 
         const { data, error } = await fetchUsers(opts);
         if (error) {
-          await logWarn('PROXY_USER_LOAD_FAIL', { ¿À·ù: error });
-          resultsBox.innerHTML = '<div style="padding:0.6rem;color:#e03131;font-size:0.85rem;">´ë»óÀÚ¸¦ ºÒ·¯¿ÀÁö ¸øÇß½À´Ï´Ù.</div>';
+          await logWarn('PROXY_USER_LOAD_FAIL', { ì˜¤ë¥˜: error });
+          resultsBox.innerHTML = '<div style="padding:0.6rem;color:#e03131;font-size:0.85rem;">ëŒ€ìƒìë¥¼ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.</div>';
           _proxyUsers = [];
           return;
         }
         users = data || [];
       } catch (err) {
-        await logError('PROXY_USER_LOAD_ERROR', { ¿À·ù: String(err) });
-        resultsBox.innerHTML = '<div style="padding:0.6rem;color:#e03131;font-size:0.85rem;">´ë»óÀÚ¸¦ ºÒ·¯¿ÀÁö ¸øÇß½À´Ï´Ù.</div>';
+        await logError('PROXY_USER_LOAD_ERROR', { ì˜¤ë¥˜: String(err) });
+        resultsBox.innerHTML = '<div style="padding:0.6rem;color:#e03131;font-size:0.85rem;">ëŒ€ìƒìë¥¼ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.</div>';
         _proxyUsers = [];
         return;
       }
@@ -316,12 +316,12 @@
           (u.display_name || '').toLowerCase().includes(q) || (u.username || '').toLowerCase().includes(q)
         ).slice(0, 10);
         if (matches.length === 0) {
-          box.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">°Ë»ö °á°ú°¡ ¾ø½À´Ï´Ù.</div>';
+          box.innerHTML = '<div style="padding:0.6rem;color:#868e96;font-size:0.85rem;">ê²€ìƒ‰ ê²°ê³¼ê°€ ì—†ìŠµë‹ˆë‹¤.</div>';
         } else {
           box.innerHTML = matches.map(u => {
             const dName = _proxyDeptMap[u.department_id] || '';
-            const cls = u.class_number ? u.class_number + '¹İ' : '';
-            const extra = [u.user_type === 'student' ? 'ÇĞ»ı' : '±³»ç', dName, cls].filter(Boolean).join(' ¡¤ ');
+            const cls = u.class_number ? u.class_number + 'ë°˜' : '';
+            const extra = [u.user_type === 'student' ? 'í•™ìƒ' : 'êµì‚¬', dName, cls].filter(Boolean).join(' Â· ');
             return `<div style="padding:0.5rem 0.8rem;cursor:pointer;border-bottom:1px solid var(--t-border, #f0f0f0);font-size:0.88rem;color:var(--t-text, #212529);" onmousedown="selectProxy('${u.id}')" onmouseover="this.style.background='var(--t-accent-surface, #f3f0ff)'" onmouseout="this.style.background=''">
             <strong>${u.display_name || u.username}</strong>
             <span style="margin-left:0.4rem;color:#868e96;font-size:0.78rem;">${extra}</span>
@@ -338,15 +338,15 @@
       _proxyTarget = u;
       document.getElementById('proxyResults').style.display = 'none';
       document.getElementById('proxySearch').style.display = 'none';
-      document.getElementById('proxySelectedInfo').innerHTML = `<strong>${u.display_name || u.username}</strong> (${u.user_type === 'student' ? 'ÇĞ»ı' : '±³»ç'})`;
+      document.getElementById('proxySelectedInfo').innerHTML = `<strong>${u.display_name || u.username}</strong> (${u.user_type === 'student' ? 'í•™ìƒ' : 'êµì‚¬'})`;
       document.getElementById('proxySelected').style.display = 'block';
 
       const bal = (u.talent_balance || 0) - (u.pending_talent || 0);
       const targetType = u.user_type === 'student' ? 'student' : 'teacher';
       const products = allShopProducts.filter(p => p.target_role === targetType && p.is_active);
-      document.getElementById('proxyProduct').innerHTML = '<option value="">»óÇ° ¼±ÅÃ</option>' +
-        products.map(p => `<option value="${p.id}" data-price="${p.price}" ${p.price > bal ? 'disabled' : ''}>${p.name} (${fmtNum(p.price)} ´Ş¶õÆ®)${p.price > bal ? ' - ÀÜ¾×ºÎÁ·' : ''}</option>`).join('');
-      document.getElementById('proxyBalanceInfo').textContent = `»ç¿ë °¡´É ´Ş¶õÆ®: ${fmtNum(bal)}`;
+      document.getElementById('proxyProduct').innerHTML = '<option value="">ìƒí’ˆ ì„ íƒ</option>' +
+        products.map(p => `<option value="${p.id}" data-price="${p.price}" ${p.price > bal ? 'disabled' : ''}>${p.name} (${fmtNum(p.price)} ë‹¬ë€íŠ¸)${p.price > bal ? ' - ì”ì•¡ë¶€ì¡±' : ''}</option>`).join('');
+      document.getElementById('proxyBalanceInfo').textContent = `ì‚¬ìš© ê°€ëŠ¥ ë‹¬ë€íŠ¸: ${fmtNum(bal)}`;
       document.getElementById('proxyProductArea').style.display = 'block';
       document.getElementById('proxyProduct').onchange = () => {
         document.getElementById('btnProxyConfirm').disabled = !document.getElementById('proxyProduct').value;
@@ -372,7 +372,7 @@
       const product = allShopProducts.find(p => p.id === productId);
       if (!product) return;
 
-      if (!confirm(`"${product.name}"À»(¸¦) ${_proxyTarget.display_name || _proxyTarget.username}´Ô ¸íÀÇ·Î ´ë¸® ±¸¸Å ½ÅÃ»ÇÏ½Ã°Ú½À´Ï±î?\n°¡°İ: ${price} ´Ş¶õÆ®`)) return;
+      if (!confirm(`"${product.name}"ì„(ë¥¼) ${_proxyTarget.display_name || _proxyTarget.username}ë‹˜ ëª…ì˜ë¡œ ëŒ€ë¦¬ êµ¬ë§¤ ì‹ ì²­í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\nê°€ê²©: ${price} ë‹¬ë€íŠ¸`)) return;
 
       try {
         const { data, error } = await _sb.rpc('request_product_order', {
@@ -382,22 +382,22 @@
           p_price: price
         });
         if (error) {
-          await logError('PROXY_ORDER_FAIL', { targetUser: _proxyTarget.id, »óÇ°¸í: product.name, ¿À·ù: error.message });
-          alert('´ë¸® ±¸¸Å ½ÇÆĞ: ' + tErr(error.message));
+          await logError('PROXY_ORDER_FAIL', { targetUser: _proxyTarget.id, ìƒí’ˆëª…: product.name, ì˜¤ë¥˜: error.message });
+          alert('ëŒ€ë¦¬ êµ¬ë§¤ ì‹¤íŒ¨: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('PROXY_ORDER_DENIED', { targetUser: _proxyTarget.id, »óÇ°¸í: product.name, »çÀ¯: data.error });
+          await logWarn('PROXY_ORDER_DENIED', { targetUser: _proxyTarget.id, ìƒí’ˆëª…: product.name, ì‚¬ìœ : data.error });
           alert(tErr(data.error));
           return;
         }
-        await logInfo('PROXY_ORDER_SUCCESS', { targetUser: _proxyTarget.id, ´ë»ó: _proxyTarget.display_name, »óÇ°¸í: product.name, ±İ¾×: price });
-        sendSlackNotify('purchase_new', { ½ÅÃ»ÀÚ: _proxyTarget.display_name || _proxyTarget.username, »óÇ°¸í: product.name, ±İ¾×: price, À¯Çü: '´ë¸® ±¸¸Å (' + (_shopSession.displayName || _shopSession.username) + ')', ºÎ¼­: _proxyDeptMap[_proxyTarget.department_id] || '' });
-        alert(`? ${_proxyTarget.display_name || _proxyTarget.username}´Ô ¸íÀÇ·Î ´ë¸® ±¸¸Å ½ÅÃ» ¿Ï·á!`);
+        await logInfo('PROXY_ORDER_SUCCESS', { targetUser: _proxyTarget.id, ëŒ€ìƒ: _proxyTarget.display_name, ìƒí’ˆëª…: product.name, ê¸ˆì•¡: price });
+        sendSlackNotify('purchase_new', { ì‹ ì²­ì: _proxyTarget.display_name || _proxyTarget.username, ìƒí’ˆëª…: product.name, ê¸ˆì•¡: price, ìœ í˜•: 'ëŒ€ë¦¬ êµ¬ë§¤ (' + (_shopSession.displayName || _shopSession.username) + ')', ë¶€ì„œ: _proxyDeptMap[_proxyTarget.department_id] || '' });
+        alert(`âœ… ${_proxyTarget.display_name || _proxyTarget.username}ë‹˜ ëª…ì˜ë¡œ ëŒ€ë¦¬ êµ¬ë§¤ ì‹ ì²­ ì™„ë£Œ!`);
         closeProxyModal();
       } catch (err) {
-        await logError('PROXY_ORDER_ERROR', { ¿À·ù: String(err) });
-        alert('´ë¸® ±¸¸Å Áß ¿À·ù: ' + tErr(err.message));
+        await logError('PROXY_ORDER_ERROR', { ì˜¤ë¥˜: String(err) });
+        alert('ëŒ€ë¦¬ êµ¬ë§¤ ì¤‘ ì˜¤ë¥˜: ' + tErr(err.message));
       }
     }
   </script>

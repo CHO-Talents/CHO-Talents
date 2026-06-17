@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>±¸¸Å Åë°è - °ü¸®ÀÚ</title>
+  <title>êµ¬ë§¤ í†µê³„ - ê´€ë¦¬ì</title>
   <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
   <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
   <style>
@@ -46,89 +46,89 @@
   <div id="nav-container"></div>
 
   <div class="admin-container" style="max-width:100%;padding:0 1rem;">
-    <h2>?? ±¸¸Å Åë°è</h2>
+    <h2>ğŸ“Š êµ¬ë§¤ í†µê³„</h2>
 
     <div class="filters" style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
-      <button class="filter-btn active" id="viewAll" onclick="switchView('all')">ÀüÃ¼</button>
-      <button class="filter-btn" id="viewDept" onclick="switchView('dept')">ºÎ¼­º°</button>
-      <button class="filter-btn" id="viewUser" onclick="switchView('user')">»ç¿ëÀÚº°</button>
-      <button class="filter-btn" id="viewType" onclick="switchView('type')">À¯Çüº°</button>
+      <button class="filter-btn active" id="viewAll" onclick="switchView('all')">ì „ì²´</button>
+      <button class="filter-btn" id="viewDept" onclick="switchView('dept')">ë¶€ì„œë³„</button>
+      <button class="filter-btn" id="viewUser" onclick="switchView('user')">ì‚¬ìš©ìë³„</button>
+      <button class="filter-btn" id="viewType" onclick="switchView('type')">ìœ í˜•ë³„</button>
       <select id="deptFilter" onchange="loadStats()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
-        <option value="">ÀüÃ¼ ºÎ¼­</option>
+        <option value="">ì „ì²´ ë¶€ì„œ</option>
       </select>
       <span class="radio-inline" id="userTypeRadio" style="gap:0.3rem;">
-        <label style="padding:0.3rem 0.7rem;border:2px solid var(--t-border,#dee2e6);border-radius:20px;transition:all 0.15s;background:var(--t-card,#fff);"><input type="radio" name="userType" value="" checked onchange="loadStats();styleTypeRadio()" style="display:none;" /> ?? ÀüÃ¼</label>
-        <label style="padding:0.3rem 0.7rem;border:2px solid var(--t-border,#dee2e6);border-radius:20px;transition:all 0.15s;background:var(--t-card,#fff);"><input type="radio" name="userType" value="student" onchange="loadStats();styleTypeRadio()" style="display:none;" /> ?? ÇĞ»ı</label>
-        <label style="padding:0.3rem 0.7rem;border:2px solid var(--t-border,#dee2e6);border-radius:20px;transition:all 0.15s;background:var(--t-card,#fff);"><input type="radio" name="userType" value="teacher" onchange="loadStats();styleTypeRadio()" style="display:none;" /> ????? ±³»ç</label>
+        <label style="padding:0.3rem 0.7rem;border:2px solid var(--t-border,#dee2e6);border-radius:20px;transition:all 0.15s;background:var(--t-card,#fff);"><input type="radio" name="userType" value="" checked onchange="loadStats();styleTypeRadio()" style="display:none;" /> ğŸ‘¥ ì „ì²´</label>
+        <label style="padding:0.3rem 0.7rem;border:2px solid var(--t-border,#dee2e6);border-radius:20px;transition:all 0.15s;background:var(--t-card,#fff);"><input type="radio" name="userType" value="student" onchange="loadStats();styleTypeRadio()" style="display:none;" /> ğŸ’ í•™ìƒ</label>
+        <label style="padding:0.3rem 0.7rem;border:2px solid var(--t-border,#dee2e6);border-radius:20px;transition:all 0.15s;background:var(--t-card,#fff);"><input type="radio" name="userType" value="teacher" onchange="loadStats();styleTypeRadio()" style="display:none;" /> ğŸ‘¨â€ğŸ« êµì‚¬</label>
       </span>
       <span style="margin-left:auto;display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
-        <label style="font-size:0.82rem;color:var(--admin-text-muted);">±â°£:</label>
+        <label style="font-size:0.82rem;color:var(--admin-text-muted);">ê¸°ê°„:</label>
         <input type="date" id="dateFrom" onchange="loadStats()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
         <span style="font-size:0.82rem;">~</span>
         <input type="date" id="dateTo" onchange="loadStats()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
         <span class="period-presets">
-          <button onclick="setPeriod('today')">¿À´Ã</button>
-          <button onclick="setPeriod('week')">1ÁÖ</button>
-          <button onclick="setPeriod('month')">1´Ş</button>
-          <button onclick="setPeriod('year')">1³â</button>
+          <button onclick="setPeriod('today')">ì˜¤ëŠ˜</button>
+          <button onclick="setPeriod('week')">1ì£¼</button>
+          <button onclick="setPeriod('month')">1ë‹¬</button>
+          <button onclick="setPeriod('year')">1ë…„</button>
         </span>
       </span>
     </div>
 
     <div class="kanban-board" id="statusCards">
-      <div class="kanban-card"><div class="kanban-card-top" style="background:#868e96;"></div><div class="kanban-card-body"><span class="kanban-label">?? ±¸¸Å ½ÅÃ»</span><span class="kanban-count" id="countRequested">0</span></div></div>
-      <div class="kanban-card"><div class="kanban-card-top" style="background:#e67700;"></div><div class="kanban-card-body"><span class="kanban-label">?? »óÇ° ÁØºñ</span><span class="kanban-count" id="countPreparing">0</span></div></div>
-      <div class="kanban-card"><div class="kanban-card-top" style="background:#1971c2;"></div><div class="kanban-card-body"><span class="kanban-label">?? »óÇ° ±¸¸Å</span><span class="kanban-count" id="countPurchased">0</span></div></div>
-      <div class="kanban-card"><div class="kanban-card-top" style="background:#2b8a3e;"></div><div class="kanban-card-body"><span class="kanban-label">? »óÇ° Áö±Ş</span><span class="kanban-count" id="countDelivered">0</span></div></div>
-      <div class="kanban-card"><div class="kanban-card-top" style="background:#e03131;"></div><div class="kanban-card-body"><span class="kanban-label">? ±¸¸Å Ãë¼Ò</span><span class="kanban-count" id="countCancelled">0</span></div></div>
+      <div class="kanban-card"><div class="kanban-card-top" style="background:#868e96;"></div><div class="kanban-card-body"><span class="kanban-label">ğŸ“‹ êµ¬ë§¤ ì‹ ì²­</span><span class="kanban-count" id="countRequested">0</span></div></div>
+      <div class="kanban-card"><div class="kanban-card-top" style="background:#e67700;"></div><div class="kanban-card-body"><span class="kanban-label">ğŸ“¦ ìƒí’ˆ ì¤€ë¹„</span><span class="kanban-count" id="countPreparing">0</span></div></div>
+      <div class="kanban-card"><div class="kanban-card-top" style="background:#1971c2;"></div><div class="kanban-card-body"><span class="kanban-label">ğŸ’³ ìƒí’ˆ êµ¬ë§¤</span><span class="kanban-count" id="countPurchased">0</span></div></div>
+      <div class="kanban-card"><div class="kanban-card-top" style="background:#2b8a3e;"></div><div class="kanban-card-body"><span class="kanban-label">âœ… ìƒí’ˆ ì§€ê¸‰</span><span class="kanban-count" id="countDelivered">0</span></div></div>
+      <div class="kanban-card"><div class="kanban-card-top" style="background:#e03131;"></div><div class="kanban-card-body"><span class="kanban-label">âŒ êµ¬ë§¤ ì·¨ì†Œ</span><span class="kanban-count" id="countCancelled">0</span></div></div>
     </div>
 
     <div id="statsContent" style="margin-top:1rem;">
-      <div style="text-align:center;color:var(--admin-text-muted);">ºÒ·¯¿À´Â Áß...</div>
+      <div style="text-align:center;color:var(--admin-text-muted);">ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</div>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="productDetailModal">
     <div class="modal-box" style="max-width:560px;">
-      <h3 class="modal-title" id="productDetailTitle">»óÇ° »ó¼¼</h3>
+      <h3 class="modal-title" id="productDetailTitle">ìƒí’ˆ ìƒì„¸</h3>
       <div class="admin-table-wrap" style="max-height:400px;overflow-y:auto;">
         <table class="stats-table">
-          <thead><tr><th>»óÅÂ</th><th style="text-align:right;">°³¼ö</th><th style="text-align:right;">ºñÀ²</th><th>±×·¡ÇÁ</th></tr></thead>
+          <thead><tr><th>ìƒíƒœ</th><th style="text-align:right;">ê°œìˆ˜</th><th style="text-align:right;">ë¹„ìœ¨</th><th>ê·¸ë˜í”„</th></tr></thead>
           <tbody id="productDetailItems"></tbody>
         </table>
       </div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="closeProductDetailModal()">´İ±â</button>
+        <button class="btn-cancel" onclick="closeProductDetailModal()">ë‹«ê¸°</button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="deptDetailModal">
     <div class="modal-box" style="max-width:640px;">
-      <h3 class="modal-title" id="deptDetailTitle">ºÎ¼­ »ó¼¼</h3>
+      <h3 class="modal-title" id="deptDetailTitle">ë¶€ì„œ ìƒì„¸</h3>
       <div class="admin-table-wrap" style="max-height:400px;overflow-y:auto;">
         <table class="stats-table">
-          <thead><tr><th>»óÇ°</th><th>»óÅÂ</th><th style="text-align:right;">°³¼ö</th><th style="text-align:right;">ºñÀ²</th></tr></thead>
+          <thead><tr><th>ìƒí’ˆ</th><th>ìƒíƒœ</th><th style="text-align:right;">ê°œìˆ˜</th><th style="text-align:right;">ë¹„ìœ¨</th></tr></thead>
           <tbody id="deptDetailItems"></tbody>
         </table>
       </div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="closeDeptDetailModal()">´İ±â</button>
+        <button class="btn-cancel" onclick="closeDeptDetailModal()">ë‹«ê¸°</button>
       </div>
     </div>
   </div>
 
   <div class="modal-overlay hidden" id="userDetailModal">
     <div class="modal-box" style="max-width:560px;">
-      <h3 class="modal-title" id="userDetailTitle">»ç¿ëÀÚ »ó¼¼</h3>
+      <h3 class="modal-title" id="userDetailTitle">ì‚¬ìš©ì ìƒì„¸</h3>
       <div class="admin-table-wrap" style="max-height:400px;overflow-y:auto;">
         <table class="stats-table">
-          <thead><tr><th>»óÇ°</th><th>»óÅÂ</th><th style="text-align:right;">°³¼ö</th><th style="text-align:right;">ºñÀ²</th></tr></thead>
+          <thead><tr><th>ìƒí’ˆ</th><th>ìƒíƒœ</th><th style="text-align:right;">ê°œìˆ˜</th><th style="text-align:right;">ë¹„ìœ¨</th></tr></thead>
           <tbody id="userDetailItems"></tbody>
         </table>
       </div>
       <div class="modal-actions" style="margin-top:1rem;">
-        <button class="btn-cancel" onclick="closeUserDetailModal()">´İ±â</button>
+        <button class="btn-cancel" onclick="closeUserDetailModal()">ë‹«ê¸°</button>
       </div>
     </div>
   </div>
@@ -149,13 +149,13 @@
     let currentView = 'all';
     let scopedDeptId = null;
 
-    const STATUS_LABEL = { requested:'±¸¸Å ½ÅÃ»', preparing:'»óÇ° ÁØºñ', purchased:'»óÇ° ±¸¸Å', delivered:'»óÇ° Áö±Ş', cancelled:'±¸¸Å Ãë¼Ò' };
+    const STATUS_LABEL = { requested:'êµ¬ë§¤ ì‹ ì²­', preparing:'ìƒí’ˆ ì¤€ë¹„', purchased:'ìƒí’ˆ êµ¬ë§¤', delivered:'ìƒí’ˆ ì§€ê¸‰', cancelled:'êµ¬ë§¤ ì·¨ì†Œ' };
     const STATUS_COLOR = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e', cancelled:'#e03131' };
-    const STATUS_EMOJI = { requested:'??', preparing:'??', purchased:'??', delivered:'?', cancelled:'?' };
+    const STATUS_EMOJI = { requested:'ğŸ“‹', preparing:'ğŸ“¦', purchased:'ğŸ’³', delivered:'âœ…', cancelled:'âŒ' };
     const STATUS_ORDER = ['requested', 'preparing', 'purchased', 'delivered', 'cancelled'];
     const TYPE_INFO = {
-      teacher: { label: '±³»ç', icon: '?????', barGrad: 'linear-gradient(90deg,#74c0fc,#339af0)' },
-      student: { label: 'ÇĞ»ı', icon: '??', barGrad: 'linear-gradient(90deg,#ffd43b,#fab005)' }
+      teacher: { label: 'êµì‚¬', icon: 'ğŸ‘¨â€ğŸ«', barGrad: 'linear-gradient(90deg,#74c0fc,#339af0)' },
+      student: { label: 'í•™ìƒ', icon: 'ğŸ’', barGrad: 'linear-gradient(90deg,#ffd43b,#fab005)' }
     };
 
     (async () => {
@@ -240,7 +240,7 @@
 
       allProfiles = profiles;
       allDepts.sort((a, b) => {
-        const order = ['1ºÎ', '2ºÎ', '3ºÎ', '4ºÎ', '5ºÎ', '¿¹¹èºÎ'];
+        const order = ['1ë¶€', '2ë¶€', '3ë¶€', '4ë¶€', '5ë¶€', 'ì˜ˆë°°ë¶€'];
         const ai = order.indexOf(a.name);
         const bi = order.indexOf(b.name);
         if (ai !== -1 && bi !== -1) return ai - bi;
@@ -252,7 +252,7 @@
       const sel = document.getElementById('deptFilter');
       if (myRank >= 80) {
         sel.style.display = '';
-        sel.innerHTML = '<option value="">ÀüÃ¼ ºÎ¼­</option>' + allDepts.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join('');
+        sel.innerHTML = '<option value="">ì „ì²´ ë¶€ì„œ</option>' + allDepts.map(d => `<option value="${d.id}">${esc(d.name)}</option>`).join('');
       } else {
         sel.style.display = 'none';
       }
@@ -340,7 +340,7 @@
     function renderOverallStats(orders, profMap) {
       const typeKeys = getVisibleTypeKeys();
       if (orders.length === 0) {
-        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">??</div><p>±¸¸Å µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù.</p></div>';
+        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">ğŸ“Š</div><p>êµ¬ë§¤ ë°ì´í„°ê°€ ì—†ìŠµë‹ˆë‹¤.</p></div>';
         return;
       }
       const groups = splitByUserType(orders, profMap);
@@ -350,15 +350,15 @@
         const total = typeOrders.length;
         const byProduct = {};
         typeOrders.forEach(o => {
-          const name = o.product_name || '¹ÌÁöÁ¤';
+          const name = o.product_name || 'ë¯¸ì§€ì •';
           if (!byProduct[name]) byProduct[name] = 0;
           byProduct[name]++;
         });
         const sorted = Object.entries(byProduct).sort((a, b) => b[1] - a[1]);
         const info = TYPE_INFO[typeKey];
-        let tableHtml = `<table class="stats-table"><thead><tr><th>»óÇ°¸í</th><th style="text-align:right;">°³¼ö</th><th style="text-align:right;">ºñÀ²</th><th>±×·¡ÇÁ</th><th>»ó¼¼</th></tr></thead><tbody>`;
+        let tableHtml = `<table class="stats-table"><thead><tr><th>ìƒí’ˆëª…</th><th style="text-align:right;">ê°œìˆ˜</th><th style="text-align:right;">ë¹„ìœ¨</th><th>ê·¸ë˜í”„</th><th>ìƒì„¸</th></tr></thead><tbody>`;
         if (sorted.length === 0) {
-          tableHtml += '<tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">µ¥ÀÌÅÍ ¾øÀ½</td></tr>';
+          tableHtml += '<tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">ë°ì´í„° ì—†ìŒ</td></tr>';
         } else {
           sorted.forEach(([name, count]) => {
             const pct = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
@@ -367,12 +367,12 @@
               <td class="num">${fmtNum(count)}</td>
               <td class="num">${pct}%</td>
               <td>${renderPctBar(pct, info.barGrad)}</td>
-              <td><button class="filter-btn" style="padding:0.25rem 0.5rem;font-size:0.75rem;" onclick="openProductDetail('${escAttr(name)}','${typeKey}')">»ó¼¼</button></td>
+              <td><button class="filter-btn" style="padding:0.25rem 0.5rem;font-size:0.75rem;" onclick="openProductDetail('${escAttr(name)}','${typeKey}')">ìƒì„¸</button></td>
             </tr>`;
           });
         }
         tableHtml += '</tbody></table>';
-        html += renderTypeSection(typeKey, '»óÇ°º° ±¸¸Å Åë°è', tableHtml);
+        html += renderTypeSection(typeKey, 'ìƒí’ˆë³„ êµ¬ë§¤ í†µê³„', tableHtml);
       });
       document.getElementById('statsContent').innerHTML = html;
     }
@@ -382,7 +382,7 @@
       allDepts.forEach(d => { deptMap[d.id] = d.name; });
       const typeKeys = getVisibleTypeKeys();
       if (orders.length === 0) {
-        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">??</div><p>±¸¸Å µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù.</p></div>';
+        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">ğŸ¢</div><p>êµ¬ë§¤ ë°ì´í„°ê°€ ì—†ìŠµë‹ˆë‹¤.</p></div>';
         return;
       }
       const groups = splitByUserType(orders, profMap);
@@ -393,16 +393,16 @@
         const byDept = {};
         typeOrders.forEach(o => {
           const prof = profMap[o.user_id];
-          const dName = prof && prof.department_id ? (deptMap[prof.department_id] || '¹Ì¹èÁ¤') : '¹Ì¹èÁ¤';
+          const dName = prof && prof.department_id ? (deptMap[prof.department_id] || 'ë¯¸ë°°ì •') : 'ë¯¸ë°°ì •';
           if (!byDept[dName]) byDept[dName] = { count: 0, users: new Set() };
           byDept[dName].count++;
           byDept[dName].users.add(o.user_id);
         });
         const sorted = Object.entries(byDept).sort((a, b) => b[1].count - a[1].count);
         const info = TYPE_INFO[typeKey];
-        let tableHtml = `<table class="stats-table"><thead><tr><th>ºÎ¼­</th><th style="text-align:right;">°³¼ö</th><th style="text-align:right;">ÀÎ¿ø</th><th class="hide-mobile" style="text-align:right;">1ÀÎ Æò±Õ</th><th style="text-align:right;">ºñÀ²</th><th class="hide-mobile">±×·¡ÇÁ</th><th>»ó¼¼</th></tr></thead><tbody>`;
+        let tableHtml = `<table class="stats-table"><thead><tr><th>ë¶€ì„œ</th><th style="text-align:right;">ê°œìˆ˜</th><th style="text-align:right;">ì¸ì›</th><th class="hide-mobile" style="text-align:right;">1ì¸ í‰ê· </th><th style="text-align:right;">ë¹„ìœ¨</th><th class="hide-mobile">ê·¸ë˜í”„</th><th>ìƒì„¸</th></tr></thead><tbody>`;
         if (sorted.length === 0) {
-          tableHtml += '<tr><td colspan="7" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">µ¥ÀÌÅÍ ¾øÀ½</td></tr>';
+          tableHtml += '<tr><td colspan="7" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">ë°ì´í„° ì—†ìŒ</td></tr>';
         } else {
           sorted.forEach(([name, v]) => {
             const pct = total > 0 ? ((v.count / total) * 100).toFixed(1) : 0;
@@ -410,16 +410,16 @@
             tableHtml += `<tr>
               <td style="font-weight:600;">${esc(name)}</td>
               <td class="num">${fmtNum(v.count)}</td>
-              <td class="num">${v.users.size}¸í</td>
+              <td class="num">${v.users.size}ëª…</td>
               <td class="num hide-mobile">${avg}</td>
               <td class="num">${pct}%</td>
               <td class="hide-mobile">${renderPctBar(pct, info.barGrad)}</td>
-              <td><button class="filter-btn" style="padding:0.25rem 0.5rem;font-size:0.75rem;" onclick="openDeptDetail('${escAttr(name)}','${typeKey}')">»ó¼¼</button></td>
+              <td><button class="filter-btn" style="padding:0.25rem 0.5rem;font-size:0.75rem;" onclick="openDeptDetail('${escAttr(name)}','${typeKey}')">ìƒì„¸</button></td>
             </tr>`;
           });
         }
         tableHtml += '</tbody></table>';
-        html += renderTypeSection(typeKey, 'ºÎ¼­º° ±¸¸Å Åë°è', tableHtml);
+        html += renderTypeSection(typeKey, 'ë¶€ì„œë³„ êµ¬ë§¤ í†µê³„', tableHtml);
       });
       document.getElementById('statsContent').innerHTML = html;
     }
@@ -429,7 +429,7 @@
       allDepts.forEach(d => { deptMap[d.id] = d.name; });
       const typeKeys = getVisibleTypeKeys();
       if (orders.length === 0) {
-        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">??</div><p>±¸¸Å µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù.</p></div>';
+        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">ğŸ‘¤</div><p>êµ¬ë§¤ ë°ì´í„°ê°€ ì—†ìŠµë‹ˆë‹¤.</p></div>';
         return;
       }
       const groups = splitByUserType(orders, profMap);
@@ -443,7 +443,7 @@
         typeOrders.forEach(o => {
           const prof = profMap[o.user_id];
           if (!prof) return;
-          const dName = prof.department_id ? (deptMap[prof.department_id] || '¹Ì¹èÁ¤') : '¹Ì¹èÁ¤';
+          const dName = prof.department_id ? (deptMap[prof.department_id] || 'ë¯¸ë°°ì •') : 'ë¯¸ë°°ì •';
           const uName = prof.display_name || prof.username || '-';
           const key = prof.id;
           if (!byUser[key]) byUser[key] = { id: prof.id, dept: dName, name: uName, classNum: prof.class_number || 0, permLevel: prof.permission_level || '', count: 0 };
@@ -456,9 +456,9 @@
           return a.name.localeCompare(b.name, 'ko');
         });
         const info = TYPE_INFO[typeKey];
-        let tableHtml = `<table class="stats-table"><thead><tr><th>ºÎ¼­</th><th>ÀÌ¸§</th><th style="text-align:right;">°³¼ö</th><th style="text-align:right;">ºñÀ²</th><th>±×·¡ÇÁ</th><th>»ó¼¼</th></tr></thead><tbody>`;
+        let tableHtml = `<table class="stats-table"><thead><tr><th>ë¶€ì„œ</th><th>ì´ë¦„</th><th style="text-align:right;">ê°œìˆ˜</th><th style="text-align:right;">ë¹„ìœ¨</th><th>ê·¸ë˜í”„</th><th>ìƒì„¸</th></tr></thead><tbody>`;
         if (users.length === 0) {
-          tableHtml += '<tr><td colspan="6" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">µ¥ÀÌÅÍ ¾øÀ½</td></tr>';
+          tableHtml += '<tr><td colspan="6" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">ë°ì´í„° ì—†ìŒ</td></tr>';
         } else {
           users.forEach(u => {
             const pct = total > 0 ? ((u.count / total) * 100).toFixed(1) : 0;
@@ -468,12 +468,12 @@
               <td class="num">${fmtNum(u.count)}</td>
               <td class="num">${pct}%</td>
               <td>${renderPctBar(pct, info.barGrad)}</td>
-              <td><button class="filter-btn" style="padding:0.25rem 0.5rem;font-size:0.75rem;" onclick="openUserDetail('${u.id}')">»ó¼¼</button></td>
+              <td><button class="filter-btn" style="padding:0.25rem 0.5rem;font-size:0.75rem;" onclick="openUserDetail('${u.id}')">ìƒì„¸</button></td>
             </tr>`;
           });
         }
         tableHtml += '</tbody></table>';
-        html += renderTypeSection(typeKey, '»ç¿ëÀÚº° ±¸¸Å Åë°è (' + users.length + '¸í)', tableHtml);
+        html += renderTypeSection(typeKey, 'ì‚¬ìš©ìë³„ êµ¬ë§¤ í†µê³„ (' + users.length + 'ëª…)', tableHtml);
       });
       document.getElementById('statsContent').innerHTML = html;
     }
@@ -481,7 +481,7 @@
     function renderTypeStats(orders, profMap) {
       const typeKeys = getVisibleTypeKeys();
       if (orders.length === 0) {
-        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">??</div><p>±¸¸Å µ¥ÀÌÅÍ°¡ ¾ø½À´Ï´Ù.</p></div>';
+        document.getElementById('statsContent').innerHTML = '<div class="empty-state"><div class="empty-state-icon">ğŸ“¦</div><p>êµ¬ë§¤ ë°ì´í„°ê°€ ì—†ìŠµë‹ˆë‹¤.</p></div>';
         return;
       }
       const groups = splitByUserType(orders, profMap);
@@ -491,7 +491,7 @@
         const total = typeOrders.length;
         const byProductStatus = {};
         typeOrders.forEach(o => {
-          const name = o.product_name || '¹ÌÁöÁ¤';
+          const name = o.product_name || 'ë¯¸ì§€ì •';
           const st = o.status || 'requested';
           const key = name + '\0' + st;
           if (!byProductStatus[key]) byProductStatus[key] = { product: name, status: st, count: 0 };
@@ -499,9 +499,9 @@
         });
         const sorted = Object.values(byProductStatus).sort((a, b) => b.count - a.count || a.product.localeCompare(b.product, 'ko'));
         const info = TYPE_INFO[typeKey];
-        let tableHtml = `<table class="stats-table"><thead><tr><th>»óÇ°</th><th>»óÅÂ</th><th style="text-align:right;">°³¼ö</th><th style="text-align:right;">ºñÀ²</th><th>±×·¡ÇÁ</th></tr></thead><tbody>`;
+        let tableHtml = `<table class="stats-table"><thead><tr><th>ìƒí’ˆ</th><th>ìƒíƒœ</th><th style="text-align:right;">ê°œìˆ˜</th><th style="text-align:right;">ë¹„ìœ¨</th><th>ê·¸ë˜í”„</th></tr></thead><tbody>`;
         if (sorted.length === 0) {
-          tableHtml += '<tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">µ¥ÀÌÅÍ ¾øÀ½</td></tr>';
+          tableHtml += '<tr><td colspan="5" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">ë°ì´í„° ì—†ìŒ</td></tr>';
         } else {
           sorted.forEach(row => {
             const pct = total > 0 ? ((row.count / total) * 100).toFixed(1) : 0;
@@ -517,21 +517,21 @@
           });
         }
         tableHtml += '</tbody></table>';
-        html += renderTypeSection(typeKey, 'À¯Çüº° ±¸¸Å Åë°è', tableHtml);
+        html += renderTypeSection(typeKey, 'ìœ í˜•ë³„ êµ¬ë§¤ í†µê³„', tableHtml);
       });
       document.getElementById('statsContent').innerHTML = html;
     }
 
     function getDeptName(userId, profMap) {
       const prof = profMap[userId];
-      if (!prof || !prof.department_id) return '¹Ì¹èÁ¤';
+      if (!prof || !prof.department_id) return 'ë¯¸ë°°ì •';
       const dept = allDepts.find(d => d.id === prof.department_id);
-      return dept ? dept.name : '¹Ì¹èÁ¤';
+      return dept ? dept.name : 'ë¯¸ë°°ì •';
     }
 
     function openProductDetail(productName, typeKey) {
       const { orders, profMap } = getFilteredData();
-      const productOrders = orders.filter(o => (o.product_name || '¹ÌÁöÁ¤') === productName && getUserTypeKey(o.user_id, profMap) === typeKey);
+      const productOrders = orders.filter(o => (o.product_name || 'ë¯¸ì§€ì •') === productName && getUserTypeKey(o.user_id, profMap) === typeKey);
       const total = productOrders.length;
       const byStatus = {};
       productOrders.forEach(o => {
@@ -539,7 +539,7 @@
         byStatus[st] = (byStatus[st] || 0) + 1;
       });
       const info = TYPE_INFO[typeKey];
-      document.getElementById('productDetailTitle').textContent = `${productName} ? ${info.label} »óÅÂº° »ó¼¼`;
+      document.getElementById('productDetailTitle').textContent = `${productName} â€” ${info.label} ìƒíƒœë³„ ìƒì„¸`;
       document.getElementById('productDetailItems').innerHTML = STATUS_ORDER.map(st => {
         const count = byStatus[st] || 0;
         if (count === 0) return '';
@@ -551,7 +551,7 @@
           <td class="num">${pct}%</td>
           <td>${renderPctBar(pct, `linear-gradient(90deg,${color},${color})`)}</td>
         </tr>`;
-      }).filter(Boolean).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">µ¥ÀÌÅÍ ¾øÀ½</td></tr>';
+      }).filter(Boolean).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">ë°ì´í„° ì—†ìŒ</td></tr>';
       document.getElementById('productDetailModal').classList.remove('hidden');
     }
 
@@ -565,7 +565,7 @@
       const total = deptOrders.length;
       const byKey = {};
       deptOrders.forEach(o => {
-        const name = o.product_name || '¹ÌÁöÁ¤';
+        const name = o.product_name || 'ë¯¸ì§€ì •';
         const st = o.status || 'requested';
         const key = name + '\0' + st;
         if (!byKey[key]) byKey[key] = { product: name, status: st, count: 0 };
@@ -573,7 +573,7 @@
       });
       const sorted = Object.values(byKey).sort((a, b) => b.count - a.count || a.product.localeCompare(b.product, 'ko'));
       const info = TYPE_INFO[typeKey];
-      document.getElementById('deptDetailTitle').textContent = `${deptName} ? ${info.label} »óÇ°¡¤»óÅÂ »ó¼¼`;
+      document.getElementById('deptDetailTitle').textContent = `${deptName} â€” ${info.label} ìƒí’ˆÂ·ìƒíƒœ ìƒì„¸`;
       document.getElementById('deptDetailItems').innerHTML = sorted.map(row => {
         const pct = total > 0 ? ((row.count / total) * 100).toFixed(1) : 0;
         const stLabel = STATUS_EMOJI[row.status] + ' ' + (STATUS_LABEL[row.status] || row.status);
@@ -584,7 +584,7 @@
           <td class="num">${fmtNum(row.count)}</td>
           <td class="num">${pct}%</td>
         </tr>`;
-      }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">µ¥ÀÌÅÍ ¾øÀ½</td></tr>';
+      }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">ë°ì´í„° ì—†ìŒ</td></tr>';
       document.getElementById('deptDetailModal').classList.remove('hidden');
     }
 
@@ -601,7 +601,7 @@
       const total = userOrders.length;
       const byKey = {};
       userOrders.forEach(o => {
-        const name = o.product_name || '¹ÌÁöÁ¤';
+        const name = o.product_name || 'ë¯¸ì§€ì •';
         const st = o.status || 'requested';
         const key = name + '\0' + st;
         if (!byKey[key]) byKey[key] = { product: name, status: st, count: 0 };
@@ -609,7 +609,7 @@
       });
       const sorted = Object.values(byKey).sort((a, b) => b.count - a.count || a.product.localeCompare(b.product, 'ko'));
       const info = TYPE_INFO[typeKey];
-      document.getElementById('userDetailTitle').textContent = `${uName} ? ${info.label} ±¸¸Å »ó¼¼`;
+      document.getElementById('userDetailTitle').textContent = `${uName} â€” ${info.label} êµ¬ë§¤ ìƒì„¸`;
       document.getElementById('userDetailItems').innerHTML = sorted.map(row => {
         const pct = total > 0 ? ((row.count / total) * 100).toFixed(1) : 0;
         const stLabel = STATUS_EMOJI[row.status] + ' ' + (STATUS_LABEL[row.status] || row.status);
@@ -620,7 +620,7 @@
           <td class="num">${fmtNum(row.count)}</td>
           <td class="num">${pct}%</td>
         </tr>`;
-      }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">µ¥ÀÌÅÍ ¾øÀ½</td></tr>';
+      }).join('') || '<tr><td colspan="4" style="text-align:center;color:var(--admin-text-muted);padding:1rem;">ë°ì´í„° ì—†ìŒ</td></tr>';
       document.getElementById('userDetailModal').classList.remove('hidden');
     }
 
