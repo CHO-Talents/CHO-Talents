@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-16 KST 현재 코드 기준 (v3.45.0)
+작성 기준: 2026-06-17 KST 현재 코드 기준 (v3.46.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -16,7 +16,7 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 | 승인 기반 계정 운영 | 신규 사용자는 신청 후 관리자 승인으로 계정이 생성된다. |
 | 부서 이동 관리 | 부서 변경은 요청→승인 흐름으로 처리한다 (90등급 이상은 즉시 이동). |
 | 운영 추적 | 로그인, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. (v3.40.0부터 PAGE_VIEW 비활성화) |
-| Slack 알림 | `#달란트-마을` 채널로 구매/가입/부서이동/WARN+ 로그/Q&A 등 6가지 운영 이벤트를 Edge Function 경유 전송한다. |
+| Slack 알림 | 부서별/유형별 채널로 구매/가입/부서이동/WARN+ 로그/Q&A 등 운영 이벤트를 Edge Function 경유 분리 전송한다. |
 | 에러 한글화 | 영문 DB/RPC 에러를 `tErr()` 함수로 한글 변환하여 사용자에게 표시한다. |
 | 보안 강화 | Supabase Auth, RLS, SECURITY DEFINER RPC로 민감 데이터 접근을 제한한다. |
 
@@ -36,7 +36,7 @@ flowchart LR
   Pages --> VersionJS["js/version.js<br/>버전 이력"]
 
   SlackJS --> EdgeFn["Supabase Edge Function<br/>slack-notify"]
-  EdgeFn --> Slack["Slack Webhook<br/>#달란트-마을"]
+  EdgeFn --> Slack["채널별 Slack Webhook<br/>(부서/상품관리/운영/Q&A)"]
 
   AuthJS --> Auth["Supabase Auth"]
   UserMgmt --> RPC["Supabase RPC"]
@@ -103,9 +103,9 @@ flowchart LR
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
-| `js/slack-notify.js` | Slack 알림 공통 유틸리티. `sendSlackNotify(type, data)`로 Edge Function `slack-notify` 호출. fire-and-forget, 동일 알림 5초 throttle |
-| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 자동 호출 포함), 페이지 크기(`page-size.js`), Slack 알림(`slack-notify.js`), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
-| `docs/edge-function-slack-notify.ts` | Supabase Edge Function `slack-notify` 배포용 소스. Slack Block Kit 메시지 포맷, `SLACK_WEBHOOK_URL` 환경변수로 Webhook 호출 |
+| `js/slack-notify.js` | Slack 알림 공통 유틸리티. `sendSlackNotify(type, data)`로 Edge Function `slack-notify` 호출. fire-and-forget, 동일 알림 5초 throttle. 부서/유형별 채널 라우팅은 Edge Function에서 수행 |
+| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 + Q&A 미답변 배지 자동 호출 포함), 페이지 크기(`page-size.js`), Slack 알림(`slack-notify.js`), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
+| `docs/edge-function-slack-notify.ts` | Supabase Edge Function `slack-notify` 배포용 소스. 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 메시지 포맷 |
 | `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서, Edge Function 소스 |
 
 ## 4. 권한 구조
@@ -450,32 +450,60 @@ flowchart TD
 flowchart LR
   Browser["브라우저<br/>(shop/register/users/purchases/qna/activity-log)"]
   SlackJS["js/slack-notify.js<br/>sendSlackNotify()"]
-  EdgeFn["Supabase Edge Function<br/>slack-notify"]
-  Webhook["Slack Incoming Webhook"]
-  Channel["Slack #달란트-마을"]
+  EdgeFn["Supabase Edge Function<br/>slack-notify<br/>(부서/유형별 라우팅)"]
+  
+  subgraph Webhooks["Slack Incoming Webhooks"]
+    Part1["1부 채널"]
+    Part2["2부 채널"]
+    Part3["3부 채널"]
+    Part4["4부 채널"]
+    Part5["5부 채널"]
+    Worship["예배부 채널"]
+    Product["상품 관리 채널"]
+    Ops["운영 채널"]
+    Answer["Q&A 채널"]
+  end
 
   Browser --> SlackJS
   SlackJS -->|"functions.invoke('slack-notify')"| EdgeFn
-  EdgeFn -->|"POST JSON (Block Kit)"| Webhook
-  Webhook --> Channel
+  EdgeFn -->|"부서별 라우팅"| Part1
+  EdgeFn --> Part2
+  EdgeFn --> Part3
+  EdgeFn --> Part4
+  EdgeFn --> Part5
+  EdgeFn --> Worship
+  EdgeFn -->|"purchase_status"| Product
+  EdgeFn -->|"log_alert"| Ops
+  EdgeFn -->|"qna_new"| Answer
 ```
 
-알림 유형과 호출 위치:
+채널 라우팅 규칙:
 
-| type | 설명 | 호출 파일 |
+| 알림 유형 | 라우팅 기준 | 대상 채널 |
 |---|---|---|
-| `purchase_new` | 신규 구매 신청 (일반/대리) | `shop.html` |
-| `purchase_status` | 구매 상태 변경/되돌리기/취소/일괄 처리 | `admin/purchases.html`, `my-orders.html` |
-| `user_register` | 계정 등록 신청 | `register.html` |
-| `dept_transfer` | 부서 이동 요청 생성 | `admin/users.html` |
-| `log_alert` | WARN/ERROR/FATAL/CRITICAL 로그 | `js/activity-log.js` (`writeLog()`) |
-| `qna_new` | Q&A 새 질문 등록 | `qna.html` |
+| `user_register` | 신청 부서명 (data.부서) | 해당 부서 채널 |
+| `dept_transfer` | 이동 대상 부서명 (data.이동부서) | 해당 부서 채널 |
+| `purchase_new` | 신청자 소속 부서명 (data.부서) | 해당 부서 채널 |
+| `purchase_status` | requested→preparing 전환만 | 상품 관리 채널 |
+| `log_alert` | WARN/ERROR/FATAL/CRITICAL | 운영 채널 |
+| `qna_new` | 항상 | Q&A 채널 |
+
+Edge Function Secrets:
+
+| Secret Name | 용도 |
+|---|---|
+| `SLACK_WEBHOOK_PART1` ~ `PART5` | 1부~5부 부서별 |
+| `SLACK_WEBHOOK_WORSHIP` | 예배부 |
+| `SLACK_WEBHOOK_PRODUCT_MANAGEMENT` | 상품 관리 |
+| `SLACK_WEBHOOK_OPERATIONS` | 운영 로그 |
+| `SLACK_WEBHOOK_ANSWER` | Q&A |
 
 구현 메모:
 
 - `js/slack-notify.js`: Supabase 클라이언트(`_sb`)가 초기화된 페이지에서만 동작. 실패 시 콘솔 경고만 출력하고 사용자 흐름은 차단하지 않음
-- `docs/edge-function-slack-notify.ts`: Supabase Dashboard > Edge Functions에 배포. `SLACK_WEBHOOK_URL` 시크릿 설정 필요
-- Edge Function은 type별 Slack Block Kit 메시지를 생성해 Incoming Webhook으로 POST
+- `docs/edge-function-slack-notify.ts`: Supabase Dashboard > Edge Functions에 배포. 9개 Webhook Secret 설정 필요 (기존 `SLACK_WEBHOOK_URL`은 제거)
+- Edge Function은 type + data(부서명) 기반으로 적절한 Webhook Secret을 선택하여 POST
+- 부서명이 매핑되지 않거나 Secret이 미설정인 경우 알림은 스킵됨 (에러 아님)
 
 ## 14. 에러 처리 흐름
 
@@ -565,9 +593,9 @@ flowchart TD
 | 1 | `README.md` | 현재 구조, 페이지 연결, 권한, 운영 흐름 요약 |
 | 2 | `docs/PROJECT_ARCHITECTURE_FLOW.md` | 상세 구성도와 프로세스 흐름 |
 | 3 | `js/auth.js` | 권한 등급, 리디렉트, 세션, tErr() 에러 번역 |
-| 4 | `js/activity-log.js` | 로그 기록, ACTION_LABELS 한글 매핑, writeLog() 자동 라벨, WARN+ Slack 알림 연동, 세션 캐시, 소프트 삭제 |
-| 4a | `js/slack-notify.js` | Slack 알림 공통 유틸리티, Edge Function slack-notify 호출 |
-| 4b | `docs/edge-function-slack-notify.ts` | Edge Function 배포 소스, Slack Block Kit 포맷 |
+| 4 | `js/activity-log.js` | 로그 기록, ACTION_LABELS 한글 매핑, writeLog() 자동 라벨, WARN+ Slack 알림 연동, Q&A 미답변 배지, 세션 캐시, 소프트 삭제 |
+| 4a | `js/slack-notify.js` | Slack 알림 공통 유틸리티, Edge Function slack-notify 호출, 채널 라우팅은 Edge Function 측 |
+| 4b | `docs/edge-function-slack-notify.ts` | Edge Function 배포 소스, 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 포맷 |
 | 5 | `js/user-mgmt.js` | 사용자/부서 관리 RPC |
 | 6 | `js/talent.js` | 달란트 지급/사용/반환 |
 | 7 | `js/product.js` | 상품 조회/관리 |

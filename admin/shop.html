@@ -1,43 +1,43 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ìƒí’ˆ ê´€ë¦¬ - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.45.0" />
+  <title>»óÇ° °ü¸® - CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ğŸ“¦ ìƒí’ˆ ê´€ë¦¬</h2>
+    <h2 style="margin-bottom:1rem;">?? »óÇ° °ü¸®</h2>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">ìƒí’ˆ ëª©ë¡</div>
+        <div class="admin-table-title" id="tableTitle">»óÇ° ¸ñ·Ï</div>
         <div class="filters">
-          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ ìƒí’ˆ ë“±ë¡</button>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ »óÇ° µî·Ï</button>
         </div>
       </div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin:1rem 0 0.5rem;border-bottom:2px solid #fab005;padding-bottom:0.3rem;">
-        <h3 style="font-size:0.95rem;margin:0;" id="teacherTitle">ğŸ‘©â€ğŸ« êµì‚¬ìš© ìƒí’ˆ (0ê±´)</h3>
+        <h3 style="font-size:0.95rem;margin:0;" id="teacherTitle">????? ±³»ç¿ë »óÇ° (0°Ç)</h3>
         <span id="teacherPageSizeWrap"></span>
       </div>
       <table class="admin-table" id="teacherProductTable">
-        <thead><tr><th data-sort-key="category">ì¹´í…Œê³ ë¦¬</th><th></th><th data-sort-key="name">ìƒí’ˆëª…</th><th data-sort-key="price" data-sort-type="number">ê°€ê²©</th><th>ê´€ë¦¬</th></tr></thead>
-        <tbody id="teacherProducts"><tr><td colspan="5" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <thead><tr><th data-sort-key="category">Ä«Å×°í¸®</th><th></th><th data-sort-key="name">»óÇ°¸í</th><th data-sort-key="price" data-sort-type="number">°¡°İ</th><th>°ü¸®</th></tr></thead>
+        <tbody id="teacherProducts"><tr><td colspan="5" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
       <div id="teacherPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin:1.5rem 0 0.5rem;border-bottom:2px solid #51cf66;padding-bottom:0.3rem;">
-        <h3 style="font-size:0.95rem;margin:0;" id="studentTitle">ğŸ’ í•™ìƒìš© ìƒí’ˆ (0ê±´)</h3>
+        <h3 style="font-size:0.95rem;margin:0;" id="studentTitle">?? ÇĞ»ı¿ë »óÇ° (0°Ç)</h3>
         <span id="studentPageSizeWrap"></span>
       </div>
       <table class="admin-table" id="studentProductTable">
-        <thead><tr><th data-sort-key="category">ì¹´í…Œê³ ë¦¬</th><th></th><th data-sort-key="name">ìƒí’ˆëª…</th><th data-sort-key="price" data-sort-type="number">ê°€ê²©</th><th>ê´€ë¦¬</th></tr></thead>
-        <tbody id="studentProducts"><tr><td colspan="5" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <thead><tr><th data-sort-key="category">Ä«Å×°í¸®</th><th></th><th data-sort-key="name">»óÇ°¸í</th><th data-sort-key="price" data-sort-type="number">°¡°İ</th><th>°ü¸®</th></tr></thead>
+        <tbody id="studentProducts"><tr><td colspan="5" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
       <div id="studentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
@@ -45,47 +45,47 @@
 
   <div class="modal-overlay hidden" id="productModal">
     <div class="modal-box" style="max-width:480px;">
-      <h3 class="modal-title" id="modalTitle">ìƒí’ˆ ë“±ë¡</h3>
+      <h3 class="modal-title" id="modalTitle">»óÇ° µî·Ï</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ìƒí’ˆëª…</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">»óÇ°¸í</label>
         <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ëŒ€ìƒ</label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´ë»ó</label>
           <select id="mTarget" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-            <option value="student">í•™ìƒ</option>
-            <option value="teacher">êµì‚¬</option>
+            <option value="student">ÇĞ»ı</option>
+            <option value="teacher">±³»ç</option>
           </select>
         </div>
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì¹´í…Œê³ ë¦¬</label>
-          <input type="text" id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ì˜ˆ: í•™ìš©í’ˆ" />
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Ä«Å×°í¸®</label>
+          <input type="text" id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="¿¹: ÇĞ¿ëÇ°" />
         </div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ê°€ê²© (ë‹¬ë€íŠ¸)</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">°¡°İ (´Ş¶õÆ®)</label>
         <input type="number" id="mPrice" min="1" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì´ëª¨ì§€</label>
-        <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ğŸ" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ÀÌ¸ğÁö</label>
+        <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="??" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ìƒí’ˆ ì´ë¯¸ì§€</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">»óÇ° ÀÌ¹ÌÁö</label>
         <div id="dropZone" style="border:2px dashed var(--admin-border);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:#fafafa;">
           <div id="dropContent">
-            <div style="font-size:2rem;margin-bottom:0.3rem;">ğŸ“·</div>
-            <div style="font-size:0.85rem;color:#636e72;">í´ë¦­í•˜ê±°ë‚˜ ì´ë¯¸ì§€ë¥¼ ë“œë˜ê·¸í•´ì„œ ë†“ìœ¼ì„¸ìš”</div>
-            <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">JPG, PNG, GIF, WebP (ìµœëŒ€ 5MB)</div>
+            <div style="font-size:2rem;margin-bottom:0.3rem;">??</div>
+            <div style="font-size:0.85rem;color:#636e72;">Å¬¸¯ÇÏ°Å³ª ÀÌ¹ÌÁö¸¦ µå·¡±×ÇØ¼­ ³õÀ¸¼¼¿ä</div>
+            <div style="font-size:0.75rem;color:#b2bec3;margin-top:0.2rem;">JPG, PNG, GIF, WebP (ÃÖ´ë 5MB)</div>
           </div>
           <div id="imgPreview" style="display:none;"></div>
         </div>
         <input type="file" id="mImageFile" accept="image/*" style="display:none;" />
         <input type="hidden" id="mImageUrl" />
         <div style="margin-top:0.4rem;">
-          <button type="button" id="btnUrlToggle" onclick="toggleUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL ì§ì ‘ ì…ë ¥</button>
+          <button type="button" id="btnUrlToggle" onclick="toggleUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL Á÷Á¢ ÀÔ·Â</button>
           <div id="urlInputWrap" style="display:none;margin-top:0.4rem;">
             <input type="text" id="mImageUrlText" style="width:100%;padding:0.5rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;" placeholder="https://example.com/image.jpg" />
           </div>
@@ -93,38 +93,38 @@
         <div id="uploadStatus" style="margin-top:0.3rem;font-size:0.8rem;text-align:center;"></div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì„¤ëª…</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">¼³¸í</label>
         <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:0.8rem;" id="activeWrap">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ìƒí’ˆ ìƒíƒœ</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">»óÇ° »óÅÂ</label>
         <div style="display:flex;align-items:center;gap:1rem;">
           <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
             <input type="radio" name="mIsActive" value="true" checked />
-            <span class="level-badge INFO">í™œì„±</span>
+            <span class="level-badge INFO">È°¼º</span>
           </label>
           <label style="display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
             <input type="radio" name="mIsActive" value="false" />
-            <span class="level-badge FATAL">ë¹„í™œì„±</span>
+            <span class="level-badge FATAL">ºñÈ°¼º</span>
           </label>
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">ì·¨ì†Œ</button>
-        <button class="btn-confirm" onclick="saveProduct()">ì €ì¥</button>
+        <button class="btn-cancel" onclick="closeModal()">Ãë¼Ò</button>
+        <button class="btn-confirm" onclick="saveProduct()">ÀúÀå</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.45.0"></script>
-  <script src="../js/supabase-config.js?v=3.45.0"></script>
-  <script src="../js/activity-log.js?v=3.45.0"></script>
-  <script src="../js/auth.js?v=3.45.0"></script>
-  <script src="../js/theme.js?v=3.45.0"></script>
-  <script src="../js/nav.js?v=3.45.0"></script>
-  <script src="../js/page-size.js?v=3.45.0"></script>
-  <script src="../js/table-sort.js?v=3.45.0"></script>
+  <script src="../config/public-config.js?v=3.46.0"></script>
+  <script src="../js/supabase-config.js?v=3.46.0"></script>
+  <script src="../js/activity-log.js?v=3.46.0"></script>
+  <script src="../js/auth.js?v=3.46.0"></script>
+  <script src="../js/theme.js?v=3.46.0"></script>
+  <script src="../js/nav.js?v=3.46.0"></script>
+  <script src="../js/page-size.js?v=3.46.0"></script>
+  <script src="../js/table-sort.js?v=3.46.0"></script>
   <script src="../js/product.js"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
@@ -180,11 +180,11 @@
     function renderProducts() {
       _shopTeachers = sortShopProducts(allProducts.filter(p => p.target_role === 'teacher'));
       _shopStudents = sortShopProducts(allProducts.filter(p => p.target_role === 'student'));
-      document.getElementById('tableTitle').textContent = `ìƒí’ˆ ëª©ë¡ (${allProducts.length}ê±´)`;
-      renderShopGroup(_shopTeachers, 'teacher', 'teacherProducts', 'teacherPaging', 'teacherTitle', 'ğŸ‘©â€ğŸ« êµì‚¬ìš© ìƒí’ˆ');
-      renderShopGroup(_shopStudents, 'student', 'studentProducts', 'studentPaging', 'studentTitle', 'ğŸ’ í•™ìƒìš© ìƒí’ˆ');
-      initSortableHeaders('teacherProductTable', function(){ return _shopTeachers; }, function(d){ _shopTeachers = d; shopPages.teacher = 1; renderShopGroup(d,'teacher','teacherProducts','teacherPaging','teacherTitle','ğŸ‘©â€ğŸ« êµì‚¬ìš© ìƒí’ˆ'); });
-      initSortableHeaders('studentProductTable', function(){ return _shopStudents; }, function(d){ _shopStudents = d; shopPages.student = 1; renderShopGroup(d,'student','studentProducts','studentPaging','studentTitle','ğŸ’ í•™ìƒìš© ìƒí’ˆ'); });
+      document.getElementById('tableTitle').textContent = `»óÇ° ¸ñ·Ï (${allProducts.length}°Ç)`;
+      renderShopGroup(_shopTeachers, 'teacher', 'teacherProducts', 'teacherPaging', 'teacherTitle', '????? ±³»ç¿ë »óÇ°');
+      renderShopGroup(_shopStudents, 'student', 'studentProducts', 'studentPaging', 'studentTitle', '?? ÇĞ»ı¿ë »óÇ°');
+      initSortableHeaders('teacherProductTable', function(){ return _shopTeachers; }, function(d){ _shopTeachers = d; shopPages.teacher = 1; renderShopGroup(d,'teacher','teacherProducts','teacherPaging','teacherTitle','????? ±³»ç¿ë »óÇ°'); });
+      initSortableHeaders('studentProductTable', function(){ return _shopStudents; }, function(d){ _shopStudents = d; shopPages.student = 1; renderShopGroup(d,'student','studentProducts','studentPaging','studentTitle','?? ÇĞ»ı¿ë »óÇ°'); });
     }
 
     function renderShopGroup(list, groupKey, tbodyId, pagingId, titleId, titleLabel) {
@@ -193,10 +193,10 @@
       const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
       if (page > totalPages) shopPages[groupKey] = totalPages;
       const currentPage = shopPages[groupKey] || 1;
-      document.getElementById(titleId).textContent = `${titleLabel} (${list.length}ê±´)`;
+      document.getElementById(titleId).textContent = `${titleLabel} (${list.length}°Ç)`;
       const tbody = document.getElementById(tbodyId);
       if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">ë“±ë¡ëœ ìƒí’ˆì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">µî·ÏµÈ »óÇ°ÀÌ ¾ø½À´Ï´Ù.</td></tr>';
         document.getElementById(pagingId).innerHTML = '';
         return;
       }
@@ -204,16 +204,16 @@
       const pageList = list.slice(startIdx, startIdx + pageSize);
       const myRank = session.permissionRank || 0;
       tbody.innerHTML = pageList.map(p => {
-        const items = [`<a onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>âœï¸ ìˆ˜ì •</a>`];
-        if (myRank >= 90) items.push(`<a onclick="confirmDelete('${p.id}','${p.name.replace(/'/g,"\\'")}')">ğŸ—‘ï¸ ì‚­ì œ</a>`);
+        const items = [`<a onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>?? ¼öÁ¤</a>`];
+        if (myRank >= 90) items.push(`<a onclick="confirmDelete('${p.id}','${p.name.replace(/'/g,"\\'")}')">??? »èÁ¦</a>`);
         return `<tr>
         <td>${p.category || '-'}</td>
-        <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || 'ğŸ'}</span>`}</td>
+        <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '??'}</span>`}</td>
         <td><strong>${p.name}</strong><br><small style="color:var(--admin-text-muted);">${p.description || ''}</small></td>
         <td style="font-weight:700;">${fmtNum(p.price)}</td>
         <td>
           <div class="mgmt-dropdown">
-            <button class="filter-btn" onclick="toggleMgmt(event,this)">ê´€ë¦¬ â–¾</button>
+            <button class="filter-btn" onclick="toggleMgmt(event,this)">°ü¸® ?</button>
             <div class="mgmt-menu">${items.join('')}</div>
           </div>
         </td>
@@ -255,7 +255,7 @@
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = 'ìƒí’ˆ ë“±ë¡';
+      document.getElementById('modalTitle').textContent = '»óÇ° µî·Ï';
       ['mName','mCategory','mEmoji','mImageUrlText','mDesc'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('mTarget').value = 'student';
       document.getElementById('mPrice').value = '';
@@ -270,7 +270,7 @@
 
     function openEditModal(p) {
       editingId = p.id;
-      document.getElementById('modalTitle').textContent = 'ìƒí’ˆ ìˆ˜ì •';
+      document.getElementById('modalTitle').textContent = '»óÇ° ¼öÁ¤';
       document.getElementById('mName').value = p.name;
       document.getElementById('mTarget').value = p.target_role;
       document.getElementById('mCategory').value = p.category || '';
@@ -293,16 +293,16 @@
       const errEl = document.getElementById('modalError');
       const name = document.getElementById('mName').value.trim();
       const price = parseInt(document.getElementById('mPrice').value);
-      if (!name) { errEl.textContent = 'ìƒí’ˆëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
-      if (!price || price <= 0) { errEl.textContent = 'ìœ íš¨í•œ ê°€ê²©ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+      if (!name) { errEl.textContent = '»óÇ°¸íÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!price || price <= 0) { errEl.textContent = 'À¯È¿ÇÑ °¡°İÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
 
       const fileInput = document.getElementById('mImageFile');
       let imageUrl = document.getElementById('mImageUrl').value.trim() || null;
       if (fileInput.files.length > 0) {
         const statusEl = document.getElementById('uploadStatus');
-        statusEl.innerHTML = '<span style="color:var(--admin-primary);">â³ ì´ë¯¸ì§€ ì—…ë¡œë“œ ì¤‘...</span>';
+        statusEl.innerHTML = '<span style="color:var(--admin-primary);">? ÀÌ¹ÌÁö ¾÷·Îµå Áß...</span>';
         const { url, error: uploadErr } = await uploadProductImage(fileInput.files[0]);
-        if (uploadErr) { statusEl.innerHTML = `<span style="color:#ff6b6b;">ì—…ë¡œë“œ ì‹¤íŒ¨: ${uploadErr}</span>`; return; }
+        if (uploadErr) { statusEl.innerHTML = `<span style="color:#ff6b6b;">¾÷·Îµå ½ÇÆĞ: ${uploadErr}</span>`; return; }
         imageUrl = url; statusEl.innerHTML = '';
       }
       const urlText = document.getElementById('mImageUrlText').value.trim();
@@ -312,7 +312,7 @@
         name, target_role: document.getElementById('mTarget').value,
         category: document.getElementById('mCategory').value.trim() || null,
         price,
-        image_emoji: document.getElementById('mEmoji').value.trim() || 'ğŸ',
+        image_emoji: document.getElementById('mEmoji').value.trim() || '??',
         image_url: imageUrl, description: document.getElementById('mDesc').value.trim() || null
       };
 
@@ -320,27 +320,27 @@
 
       if (editingId) {
         const { error } = await updateProduct(editingId, row);
-        if (error) { await logError('PRODUCT_UPDATE_FAIL', { id: editingId, ìƒí’ˆëª…: name, ì˜¤ë¥˜: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('PRODUCT_UPDATE', { id: editingId, ìƒí’ˆëª…: name });
+        if (error) { await logError('PRODUCT_UPDATE_FAIL', { id: editingId, »óÇ°¸í: name, ¿À·ù: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('PRODUCT_UPDATE', { id: editingId, »óÇ°¸í: name });
       } else {
         row.created_by = session.id;
         const { error } = await createProduct(row);
-        if (error) { await logError('PRODUCT_CREATE_FAIL', { ìƒí’ˆëª…: name, ì˜¤ë¥˜: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('PRODUCT_CREATE', { ìƒí’ˆëª…: name, ê¸ˆì•¡: price });
+        if (error) { await logError('PRODUCT_CREATE_FAIL', { »óÇ°¸í: name, ¿À·ù: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        await logInfo('PRODUCT_CREATE', { »óÇ°¸í: name, ±İ¾×: price });
       }
       closeModal();
       await loadProducts();
     }
 
     async function confirmDelete(id, name) {
-      if (!confirm(`"${name}" ìƒí’ˆì„ ì‚­ì œ ëŒ€ê¸° ìƒíƒœë¡œ ë³€ê²½í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\n(ëª©ë¡ì—ì„œ ìˆ¨ê²¨ì§€ë©° DBì—ëŠ” ìœ ì§€ë©ë‹ˆë‹¤)`)) return;
+      if (!confirm(`"${name}" »óÇ°À» »èÁ¦ ´ë±â »óÅÂ·Î º¯°æÇÏ½Ã°Ú½À´Ï±î?\n(¸ñ·Ï¿¡¼­ ¼û°ÜÁö¸ç DB¿¡´Â À¯ÁöµË´Ï´Ù)`)) return;
       const result = await deactivateProduct(id);
       if (result.error) {
-        alert('ì‚­ì œ ëŒ€ê¸° ì²˜ë¦¬ ì‹¤íŒ¨: ' + result.error);
+        alert('»èÁ¦ ´ë±â Ã³¸® ½ÇÆĞ: ' + result.error);
         return;
       }
-      await logInfo('PRODUCT_SOFT_DELETE', { id, ìƒí’ˆëª…: name });
-      alert(`"${name}" ìƒí’ˆì´ ì‚­ì œ ëŒ€ê¸° ìƒíƒœë¡œ ë³€ê²½ë˜ì—ˆìŠµë‹ˆë‹¤.`);
+      await logInfo('PRODUCT_SOFT_DELETE', { id, »óÇ°¸í: name });
+      alert(`"${name}" »óÇ°ÀÌ »èÁ¦ ´ë±â »óÅÂ·Î º¯°æµÇ¾ú½À´Ï´Ù.`);
       await loadProducts();
     }
 
@@ -349,7 +349,7 @@
       const preview = document.getElementById('imgPreview');
       preview.style.display = 'block';
       preview.innerHTML = `<img src="${src}" style="max-width:160px;max-height:120px;border-radius:8px;" onerror="resetImgPreview()" />
-        <div style="margin-top:0.3rem;"><button type="button" onclick="removeImage(event)" style="background:#ff6b6b;color:#fff;border:none;padding:0.2rem 0.8rem;border-radius:6px;cursor:pointer;font-size:0.8rem;">ì´ë¯¸ì§€ ì‚­ì œ</button></div>`;
+        <div style="margin-top:0.3rem;"><button type="button" onclick="removeImage(event)" style="background:#ff6b6b;color:#fff;border:none;padding:0.2rem 0.8rem;border-radius:6px;cursor:pointer;font-size:0.8rem;">ÀÌ¹ÌÁö »èÁ¦</button></div>`;
     }
     function resetImgPreview() { document.getElementById('dropContent').style.display = 'block'; const p = document.getElementById('imgPreview'); p.style.display = 'none'; p.innerHTML = ''; }
     function removeImage(e) { e.stopPropagation(); document.getElementById('mImageUrl').value = ''; document.getElementById('mImageFile').value = ''; document.getElementById('mImageUrlText').value = ''; resetImgPreview(); }
@@ -363,14 +363,14 @@
     dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--admin-border)'; dropZone.style.background = '#fafafa'; const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) handleFileSelect(f); });
     fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFileSelect(fileInput.files[0]); });
     function handleFileSelect(file) {
-      if (file.size > 5*1024*1024) { document.getElementById('uploadStatus').innerHTML = '<span style="color:#ff6b6b;">5MB ì´í•˜ íŒŒì¼ë§Œ ì—…ë¡œë“œ ê°€ëŠ¥í•©ë‹ˆë‹¤</span>'; return; }
+      if (file.size > 5*1024*1024) { document.getElementById('uploadStatus').innerHTML = '<span style="color:#ff6b6b;">5MB ÀÌÇÏ ÆÄÀÏ¸¸ ¾÷·Îµå °¡´ÉÇÕ´Ï´Ù</span>'; return; }
       const dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files;
       const reader = new FileReader(); reader.onload = e => showImgPreview(e.target.result); reader.readAsDataURL(file);
-      document.getElementById('uploadStatus').innerHTML = `<span style="color:#636e72;">ğŸ“ ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;
+      document.getElementById('uploadStatus').innerHTML = `<span style="color:#636e72;">?? ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;
     }
     document.getElementById('mImageUrlText').addEventListener('input', function() { const u = this.value.trim(); if (u) { document.getElementById('mImageFile').value = ''; showImgPreview(u); } else resetImgPreview(); });
     document.getElementById('productModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.45.0"></script>
+  <script src="../js/version.js?v=3.46.0"></script>
 </body>
 </html>

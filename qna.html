@@ -1,12 +1,12 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Q & A - ë‹¬ë€íŠ¸ ë§ˆì„</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>â­</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.45.0" />
+  <title>Q & A - ´Ş¶õÆ® ¸¶À»</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>?</text></svg>" />
+  <link rel="stylesheet" href="css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.46.0" />
   <style>
     .qna-container { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
     .qna-hero { text-align: center; margin-bottom: 2rem; }
@@ -17,7 +17,7 @@
     .faq-q { padding: 0.8rem 1rem; font-weight: 600; font-size: 0.9rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 0.15s; }
     .faq-q:hover { background: #f8f5ff; }
     .faq-q::after { content: '+'; font-size: 1.2rem; color: var(--c-primary); transition: transform 0.2s; }
-    .faq-item.open .faq-q::after { content: 'âˆ’'; }
+    .faq-item.open .faq-q::after { content: '?'; }
     .faq-a { display: none; padding: 0 1rem 0.8rem; font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.6; border-top: 1px solid var(--c-border); padding-top: 0.8rem; margin-top: 0; }
     .faq-item.open .faq-a { display: block; }
     .qna-card { background: #fff; border: 1px solid var(--c-border); border-radius: 10px; padding: 1rem; margin-bottom: 0.8rem; }
@@ -49,50 +49,50 @@
 
   <div class="qna-container">
     <div class="qna-hero">
-      <h1>ğŸ’¬ Q & A</h1>
-      <p>ê¶ê¸ˆí•œ ì ì„ ì§ˆë¬¸í•˜ê³  ë‹µë³€ì„ í™•ì¸í•˜ì„¸ìš”</p>
+      <h1>?? Q & A</h1>
+      <p>±Ã±İÇÑ Á¡À» Áú¹®ÇÏ°í ´äº¯À» È®ÀÎÇÏ¼¼¿ä</p>
     </div>
 
     <div id="faqAdminWrap" style="display:none;margin-bottom:1rem;">
-      <button type="button" onclick="toggleFaqForm()" style="padding:0.45rem 1rem;background:#51cf66;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;">FAQ ì§ì ‘ ë“±ë¡</button>
+      <button type="button" onclick="toggleFaqForm()" style="padding:0.45rem 1rem;background:#51cf66;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:0.85rem;">FAQ Á÷Á¢ µî·Ï</button>
       <div id="faqForm" class="ask-form" style="display:none;margin-top:0.6rem;">
-        <h3>â­ FAQ ì§ì ‘ ë“±ë¡</h3>
-        <input type="text" id="faqQuestion" placeholder="ì§ˆë¬¸ì„ ì…ë ¥í•˜ì„¸ìš”" style="width:100%;padding:0.5rem;border:1px solid var(--c-border);border-radius:8px;font-size:0.9rem;margin-bottom:0.4rem;" />
-        <textarea id="faqAnswer" placeholder="ë‹µë³€ì„ ì…ë ¥í•˜ì„¸ìš”..." style="width:100%;min-height:80px;border:1px solid var(--c-border);border-radius:8px;padding:0.6rem;font-size:0.9rem;resize:vertical;"></textarea>
-        <button type="button" onclick="submitFAQ()">FAQ ë“±ë¡</button>
+        <h3>? FAQ Á÷Á¢ µî·Ï</h3>
+        <input type="text" id="faqQuestion" placeholder="Áú¹®À» ÀÔ·ÂÇÏ¼¼¿ä" style="width:100%;padding:0.5rem;border:1px solid var(--c-border);border-radius:8px;font-size:0.9rem;margin-bottom:0.4rem;" />
+        <textarea id="faqAnswer" placeholder="´äº¯À» ÀÔ·ÂÇÏ¼¼¿ä..." style="width:100%;min-height:80px;border:1px solid var(--c-border);border-radius:8px;padding:0.6rem;font-size:0.9rem;resize:vertical;"></textarea>
+        <button type="button" onclick="submitFAQ()">FAQ µî·Ï</button>
         <div class="form-error" id="faqError" style="margin-top:0.5rem;"></div>
       </div>
     </div>
 
-    <div class="qna-section-title">â­ ìì£¼ ë¬»ëŠ” ì§ˆë¬¸</div>
-    <div id="faqList"><div class="empty-state">ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</div></div>
+    <div class="qna-section-title">? ÀÚÁÖ ¹¯´Â Áú¹®</div>
+    <div id="faqList"><div class="empty-state">ºÒ·¯¿À´Â Áß...</div></div>
 
-    <div class="qna-section-title">ğŸ“ ì§ˆë¬¸ ê²Œì‹œíŒ</div>
-    <div id="qnaList"><div class="empty-state">ë¶ˆëŸ¬ì˜¤ëŠ” ì¤‘...</div></div>
+    <div class="qna-section-title">?? Áú¹® °Ô½ÃÆÇ</div>
+    <div id="qnaList"><div class="empty-state">ºÒ·¯¿À´Â Áß...</div></div>
 
     <div class="ask-form" id="askForm">
-      <h3>âœ‹ ì§ˆë¬¸í•˜ê¸°</h3>
+      <h3>? Áú¹®ÇÏ±â</h3>
       <div id="nameFieldWrap" style="margin-bottom:0.5rem;">
-        <input type="text" id="askName" placeholder="ì´ë¦„ì„ ì…ë ¥í•˜ì„¸ìš”" style="width:100%;padding:0.5rem;border:1px solid var(--c-border);border-radius:8px;font-size:0.9rem;margin-bottom:0.4rem;" />
+        <input type="text" id="askName" placeholder="ÀÌ¸§À» ÀÔ·ÂÇÏ¼¼¿ä" style="width:100%;padding:0.5rem;border:1px solid var(--c-border);border-radius:8px;font-size:0.9rem;margin-bottom:0.4rem;" />
       </div>
-      <textarea id="askQuestion" placeholder="ê¶ê¸ˆí•œ ì ì„ ì…ë ¥í•´ì£¼ì„¸ìš”..."></textarea>
-      <button type="button" onclick="submitQuestion()">ì§ˆë¬¸ ë“±ë¡</button>
+      <textarea id="askQuestion" placeholder="±Ã±İÇÑ Á¡À» ÀÔ·ÂÇØÁÖ¼¼¿ä..."></textarea>
+      <button type="button" onclick="submitQuestion()">Áú¹® µî·Ï</button>
       <div class="form-error" id="askError" style="margin-top:0.5rem;"></div>
     </div>
   </div>
 
   <footer class="page-footer">
-    <p>ì´ˆë“±ë¶€ ë‹¬ë€íŠ¸ ê´€ë¦¬ &copy; 2026 CHO-Talents</p>
+    <p>ÃÊµîºÎ ´Ş¶õÆ® °ü¸® &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.45.0"></script>
-  <script src="js/supabase-config.js?v=3.45.0"></script>
-  <script src="js/activity-log.js?v=3.45.0"></script>
-  <script src="js/auth.js?v=3.45.0"></script>
-  <script src="js/theme.js?v=3.45.0"></script>
-  <script src="js/nav.js?v=3.45.0"></script>
-  <script src="js/slack-notify.js?v=3.45.0"></script>
+  <script src="config/public-config.js?v=3.46.0"></script>
+  <script src="js/supabase-config.js?v=3.46.0"></script>
+  <script src="js/activity-log.js?v=3.46.0"></script>
+  <script src="js/auth.js?v=3.46.0"></script>
+  <script src="js/theme.js?v=3.46.0"></script>
+  <script src="js/nav.js?v=3.46.0"></script>
+  <script src="js/slack-notify.js?v=3.46.0"></script>
   <script>
     initSupabase();
     let _session = null;
@@ -127,13 +127,13 @@
       const container = document.getElementById('faqList');
       const { data, error } = await _sb.from('qna').select('*').eq('is_faq', true).eq('is_deleted', false).order('created_at');
       if (error || !data || data.length === 0) {
-        container.innerHTML = '<div class="empty-state">ë“±ë¡ëœ FAQê°€ ì—†ìŠµë‹ˆë‹¤.</div>';
+        container.innerHTML = '<div class="empty-state">µî·ÏµÈ FAQ°¡ ¾ø½À´Ï´Ù.</div>';
         return;
       }
       container.innerHTML = data.map(q => `
         <div class="faq-item" onclick="this.classList.toggle('open')">
           <div class="faq-q">Q. ${escHtml(q.question)}</div>
-          <div class="faq-a">A. ${escHtml(q.answer || 'ë‹µë³€ ì¤€ë¹„ ì¤‘')}</div>
+          <div class="faq-a">A. ${escHtml(q.answer || '´äº¯ ÁØºñ Áß')}</div>
         </div>`).join('');
     }
 
@@ -141,12 +141,12 @@
       const container = document.getElementById('qnaList');
       const { data, error } = await _sb.from('qna').select('*').eq('is_faq', false).order('created_at', { ascending: false });
       if (error) {
-        container.innerHTML = '<div class="empty-state">ì§ˆë¬¸ì„ ë¶ˆëŸ¬ì˜¤ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.</div>';
+        container.innerHTML = '<div class="empty-state">Áú¹®À» ºÒ·¯¿ÀÁö ¸øÇß½À´Ï´Ù.</div>';
         return;
       }
       const filtered = (data || []).filter(q => !q.is_deleted);
       if (filtered.length === 0) {
-        container.innerHTML = '<div class="empty-state">ë“±ë¡ëœ ì§ˆë¬¸ì´ ì—†ìŠµë‹ˆë‹¤.</div>';
+        container.innerHTML = '<div class="empty-state">µî·ÏµÈ Áú¹®ÀÌ ¾ø½À´Ï´Ù.</div>';
         return;
       }
 
@@ -174,19 +174,19 @@
     function renderQuestionCard(q, comments) {
       const hasComments = comments.length > 0;
       const statusClass = hasComments ? 'answered' : 'pending';
-      const statusText = hasComments ? 'ë‹µë³€ì™„ë£Œ' : 'ëŒ€ê¸°ì¤‘';
+      const statusText = hasComments ? '´äº¯¿Ï·á' : '´ë±âÁß';
       const askerDisplay = renderAskerName(q);
       const dateStr = formatDateTime(q.created_at);
       const threadHtml = hasComments
         ? comments.map(c => renderCommentItem(c)).join('')
-        : '<div class="a-text" style="color:#adb5bd;">ì•„ì§ ë‹µë³€ì´ ì—†ì–´ìš”</div>';
+        : '<div class="a-text" style="color:#adb5bd;">¾ÆÁ÷ ´äº¯ÀÌ ¾ø¾î¿ä</div>';
       const adminBtns = [];
-      if (_isAdmin && hasComments) adminBtns.push(`<button class="faq-btn" onclick="markAsFaq('${q.id}')">FAQ ë“±ë¡</button>`);
-      if (_canDelete) adminBtns.push(`<button style="background:#ff6b6b;color:#fff;border-color:#ff6b6b;" onclick="deleteQuestion('${q.id}')">ì‚­ì œ</button>`);
+      if (_isAdmin && hasComments) adminBtns.push(`<button class="faq-btn" onclick="markAsFaq('${q.id}')">FAQ µî·Ï</button>`);
+      if (_canDelete) adminBtns.push(`<button style="background:#ff6b6b;color:#fff;border-color:#ff6b6b;" onclick="deleteQuestion('${q.id}')">»èÁ¦</button>`);
       const canComment = !!_session;
       return `<div class="qna-card">
         <div class="q-text"><span class="qna-status ${statusClass}">${statusText}</span> ${escHtml(q.question)}</div>
-        <div class="meta">${askerDisplay} Â· ì§ˆë¬¸ ${dateStr}</div>
+        <div class="meta">${askerDisplay} ¡¤ Áú¹® ${dateStr}</div>
         <div style="margin-top:0.6rem;">${threadHtml}</div>
         ${canComment ? renderCommentForm(q.id) : ''}
         ${adminBtns.length ? `<div class="btn-row" style="margin-top:0.5rem;">${adminBtns.join('')}</div>` : ''}
@@ -197,13 +197,13 @@
       const commenter = renderCommenterName(c);
       const dateStr = formatDateTime(c.created_at);
       return `<div class="a-text" style="margin-bottom:0.4rem;">
-        ğŸ’¬ ${escHtml(c.content)}
-        <span style="display:block;margin-top:0.3rem;font-size:0.75rem;color:#868e96;">â€” ${commenter} Â· ${dateStr}</span>
+        ?? ${escHtml(c.content)}
+        <span style="display:block;margin-top:0.3rem;font-size:0.75rem;color:#868e96;">? ${commenter} ¡¤ ${dateStr}</span>
       </div>`;
     }
 
     function renderCommenterName(c) {
-      const name = c.commented_by_name || 'ê´€ë¦¬ì';
+      const name = c.commented_by_name || '°ü¸®ÀÚ';
       if (_isSuperAdmin && c.commented_by) {
         const username = _usernameMap[c.commented_by] || '';
         if (username) {
@@ -214,7 +214,7 @@
     }
 
     function renderAskerName(q) {
-      const name = q.asked_by_name || 'ìµëª…';
+      const name = q.asked_by_name || 'ÀÍ¸í';
       if (_isSuperAdmin && q.asked_by) {
         const username = _usernameMap[q.asked_by] || '';
         if (username) {
@@ -226,10 +226,10 @@
 
     function renderCommentForm(id) {
       return `<div class="admin-answer">
-        <textarea id="cmt_${id}" placeholder="ë‹µë³€(ëŒ“ê¸€)ì„ ì…ë ¥í•˜ì„¸ìš”..."></textarea>
+        <textarea id="cmt_${id}" placeholder="´äº¯(´ñ±Û)À» ÀÔ·ÂÇÏ¼¼¿ä..."></textarea>
         <div class="btn-row">
-          <button class="primary" onclick="submitComment('${id}')">ë‹µë³€ ë“±ë¡</button>
-          ${_isAdmin ? `<button class="faq-btn" onclick="submitComment('${id}', true)">ë‹µë³€ + FAQ ë“±ë¡</button>` : ''}
+          <button class="primary" onclick="submitComment('${id}')">´äº¯ µî·Ï</button>
+          ${_isAdmin ? `<button class="faq-btn" onclick="submitComment('${id}', true)">´äº¯ + FAQ µî·Ï</button>` : ''}
         </div>
       </div>`;
     }
@@ -238,7 +238,7 @@
       const errEl = document.getElementById('askError');
       const text = document.getElementById('askQuestion').value.trim();
       errEl.classList.remove('show');
-      if (!text) { errEl.textContent = 'ì§ˆë¬¸ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+      if (!text) { errEl.textContent = 'Áú¹®À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
 
       if (_session) {
         const { error } = await _sb.from('qna').insert({
@@ -249,13 +249,13 @@
         if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
       } else {
         const name = (document.getElementById('askName').value || '').trim();
-        if (!name) { errEl.textContent = 'ì´ë¦„ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+        if (!name) { errEl.textContent = 'ÀÌ¸§À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
         const { error } = await _sb.rpc('submit_anonymous_question', { p_question: text, p_name: name });
         if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
       }
-      await logInfo('QNA_CREATE', { ì œëª©: text });
-      var qnaName = _session ? (_session.displayName || _session.username) : ((document.getElementById('askName') || {}).value || 'ìµëª…');
-      sendSlackNotify('qna_new', { ë“±ë¡ì: qnaName, ì§ˆë¬¸: text });
+      await logInfo('QNA_CREATE', { Á¦¸ñ: text });
+      var qnaName = _session ? (_session.displayName || _session.username) : ((document.getElementById('askName') || {}).value || 'ÀÍ¸í');
+      sendSlackNotify('qna_new', { µî·ÏÀÚ: qnaName, Áú¹®: text });
       document.getElementById('askQuestion').value = '';
       await loadQuestions();
     }
@@ -265,7 +265,7 @@
       const textarea = document.getElementById('cmt_' + questionId);
       if (!textarea) return;
       const content = textarea.value.trim();
-      if (!content) { alert('ë‹µë³€ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'); return; }
+      if (!content) { alert('´äº¯À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'); return; }
 
       const commenterName = _session.displayName || _session.username;
       const { error: cErr } = await _sb.from('qna_comments').insert({
@@ -275,7 +275,7 @@
         commented_by_name: commenterName
       });
       if (cErr) { alert(tErr(cErr)); return; }
-      await logInfo('QNA_COMMENT', { ì§ˆë¬¸ID: questionId });
+      await logInfo('QNA_COMMENT', { Áú¹®ID: questionId });
 
       const updates = {
         status: 'answered',
@@ -290,8 +290,8 @@
       }
       const { error: uErr } = await _sb.from('qna').update(updates).eq('id', questionId);
       if (uErr) { alert(tErr(uErr)); return; }
-      await logInfo('QNA_ANSWER', { ì§ˆë¬¸ID: questionId, ë‹µë³€ì: commenterName });
-      if (asFaq) await logInfo('QNA_FAQ_SET', { ì§ˆë¬¸ID: questionId, FAQì—¬ë¶€: true });
+      await logInfo('QNA_ANSWER', { Áú¹®ID: questionId, ´äº¯ÀÚ: commenterName });
+      if (asFaq) await logInfo('QNA_FAQ_SET', { Áú¹®ID: questionId, FAQ¿©ºÎ: true });
 
       if (asFaq) await loadFAQ();
       await loadQuestions();
@@ -303,8 +303,8 @@
       const question = document.getElementById('faqQuestion').value.trim();
       const answer = document.getElementById('faqAnswer').value.trim();
       errEl.classList.remove('show');
-      if (!question) { errEl.textContent = 'ì§ˆë¬¸ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
-      if (!answer) { errEl.textContent = 'ë‹µë³€ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
+      if (!question) { errEl.textContent = 'Áú¹®À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!answer) { errEl.textContent = '´äº¯À» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
 
       const adminName = _session.displayName || _session.username;
       const { error } = await _sb.from('qna').insert({
@@ -319,7 +319,7 @@
         answered_at: new Date().toISOString()
       });
       if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-      await logInfo('QNA_CREATE', { ì œëª©: question });
+      await logInfo('QNA_CREATE', { Á¦¸ñ: question });
 
       document.getElementById('faqQuestion').value = '';
       document.getElementById('faqAnswer').value = '';
@@ -329,24 +329,24 @@
 
     async function markAsFaq(id) {
       if (!_isAdmin) return;
-      if (!confirm('ì´ ì§ˆë¬¸ì„ FAQë¡œ ë“±ë¡í•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
+      if (!confirm('ÀÌ Áú¹®À» FAQ·Î µî·ÏÇÏ½Ã°Ú½À´Ï±î?')) return;
       const { data: latest } = await _sb.from('qna_comments').select('content').eq('qna_id', id).order('created_at', { ascending: false }).limit(1).maybeSingle();
       const updates = { is_faq: true, status: 'faq' };
       if (latest && latest.content) updates.answer = latest.content;
       const { error } = await _sb.from('qna').update(updates).eq('id', id);
       if (error) { alert(tErr(error)); return; }
-      await logInfo('QNA_FAQ_SET', { ì§ˆë¬¸ID: id, FAQì—¬ë¶€: true });
+      await logInfo('QNA_FAQ_SET', { Áú¹®ID: id, FAQ¿©ºÎ: true });
       await loadFAQ();
       await loadQuestions();
     }
 
     async function deleteQuestion(id) {
       if (!_canDelete) return;
-      if (!confirm('ì´ ì§ˆë¬¸ì„ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) return;
+      if (!confirm('ÀÌ Áú¹®À» »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?')) return;
       const { data: qRow } = await _sb.from('qna').select('question').eq('id', id).single();
       const { error } = await _sb.rpc('admin_soft_delete_qna', { p_qna_id: id });
-      if (error) { alert('ì‚­ì œ ì‹¤íŒ¨: ' + tErr(error.message)); return; }
-      await logInfo('QNA_DELETE', { ì§ˆë¬¸ID: id, ì œëª©: qRow?.question || '' });
+      if (error) { alert('»èÁ¦ ½ÇÆĞ: ' + tErr(error.message)); return; }
+      await logInfo('QNA_DELETE', { Áú¹®ID: id, Á¦¸ñ: qRow?.question || '' });
       await loadQuestions();
     }
 
@@ -357,6 +357,6 @@
       return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
     }
   </script>
-  <script src="js/version.js?v=3.45.0"></script>
+  <script src="js/version.js?v=3.46.0"></script>
 </body>
 </html>

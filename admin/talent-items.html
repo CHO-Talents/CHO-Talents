@@ -1,33 +1,33 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ë‹¬ë€íŠ¸ í•­ëª© ê´€ë¦¬ - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.45.0" />
+  <title>´Ş¶õÆ® Ç×¸ñ °ü¸® - CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ğŸ¯ ë‹¬ë€íŠ¸ ì§€ê¸‰ í•­ëª© ê´€ë¦¬</h2>
-    <p style="color:var(--admin-text-muted);margin-bottom:1.5rem;">ë‹¬ë€íŠ¸ ì§€ê¸‰ ì‹œ ì„ íƒí•  ìˆ˜ ìˆëŠ” í•­ëª©ì„ ê´€ë¦¬í•©ë‹ˆë‹¤. í•™ìƒì€ í•­ëª©ë‹¹ ì£¼ 1íšŒë§Œ ì§€ê¸‰ ê°€ëŠ¥í•©ë‹ˆë‹¤.</p>
+    <h2 style="margin-bottom:1rem;">?? ´Ş¶õÆ® Áö±Ş Ç×¸ñ °ü¸®</h2>
+    <p style="color:var(--admin-text-muted);margin-bottom:1.5rem;">´Ş¶õÆ® Áö±Ş ½Ã ¼±ÅÃÇÒ ¼ö ÀÖ´Â Ç×¸ñÀ» °ü¸®ÇÕ´Ï´Ù. ÇĞ»ıÀº Ç×¸ñ´ç ÁÖ 1È¸¸¸ Áö±Ş °¡´ÉÇÕ´Ï´Ù.</p>
 
     <div class="filters" style="margin-bottom:1rem;">
-      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">ğŸ’ í•™ìƒìš©</button>
-      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">ğŸ‘©â€ğŸ« êµì‚¬ìš©</button>
+      <button class="filter-btn active" id="tabStudent" onclick="switchTab('student')">?? ÇĞ»ı¿ë</button>
+      <button class="filter-btn" id="tabTeacher" onclick="switchTab('teacher')">????? ±³»ç¿ë</button>
       <span style="margin-left:auto;"></span>
-      <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ í•­ëª© ì¶”ê°€</button>
+      <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ Ç×¸ñ Ãß°¡</button>
     </div>
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">í•™ìƒìš© í•­ëª©</div>
+        <div class="admin-table-title" id="tableTitle">ÇĞ»ı¿ë Ç×¸ñ</div>
       </div>
       <table class="admin-table">
-        <thead><tr><th>ìˆœì„œ</th><th>í•­ëª©ëª…</th><th>ì§€ê¸‰ ë‹¬ë€íŠ¸</th><th>ìƒíƒœ</th><th>ê´€ë¦¬</th></tr></thead>
-        <tbody id="itemList"><tr><td colspan="5" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <thead><tr><th>¼ø¼­</th><th>Ç×¸ñ¸í</th><th>Áö±Ş ´Ş¶õÆ®</th><th>»óÅÂ</th><th>°ü¸®</th></tr></thead>
+        <tbody id="itemList"><tr><td colspan="5" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
       <div id="itemPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
@@ -35,53 +35,53 @@
 
   <div class="modal-overlay hidden" id="itemModal">
     <div class="modal-box" style="max-width:400px;">
-      <h3 class="modal-title" id="modalTitle">í•­ëª© ì¶”ê°€</h3>
+      <h3 class="modal-title" id="modalTitle">Ç×¸ñ Ãß°¡</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">í•­ëª©ëª…</label>
-        <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ì˜ˆ: ì¶œì„, ì„±ê²½ ì½ê¸°" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Ç×¸ñ¸í</label>
+        <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="¿¹: Ãâ¼®, ¼º°æ ÀĞ±â" />
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì§€ê¸‰ ë‹¬ë€íŠ¸</label>
-          <input type="number" id="mAmount" min="1" max="100" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ìµœëŒ€ 100" />
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Áö±Ş ´Ş¶õÆ®</label>
+          <input type="number" id="mAmount" min="1" max="100" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ÃÖ´ë 100" />
         </div>
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ì •ë ¬ ìˆœì„œ</label>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">Á¤·Ä ¼ø¼­</label>
           <input type="number" id="mSort" min="0" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" value="0" />
         </div>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ëŒ€ìƒ</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´ë»ó</label>
         <select id="mTarget" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
-          <option value="student">í•™ìƒ</option>
-          <option value="teacher">êµì‚¬</option>
+          <option value="student">ÇĞ»ı</option>
+          <option value="teacher">±³»ç</option>
         </select>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë‹¬ë€íŠ¸ ì§€ê¸‰ ê·œì¹™</label>
-        <input type="text" id="mGivingRule" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="ì˜ˆ: ë§¤ì£¼ ì¶œì„ ì‹œ ì§€ê¸‰" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´Ş¶õÆ® Áö±Ş ±ÔÄ¢</label>
+        <input type="text" id="mGivingRule" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="¿¹: ¸ÅÁÖ Ãâ¼® ½Ã Áö±Ş" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">ë‹¬ë€íŠ¸ ì§€ê¸‰ ì„¤ëª…</label>
-        <textarea id="mGivingDesc" rows="3" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;" placeholder="ì˜ˆ: ë§¤ì£¼ ì£¼ì¼ ì˜ˆë°° ì¶œì„ ì‹œ ë‹´ë‹¹ êµì‚¬ê°€ ì§€ê¸‰í•©ë‹ˆë‹¤."></textarea>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">´Ş¶õÆ® Áö±Ş ¼³¸í</label>
+        <textarea id="mGivingDesc" rows="3" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;" placeholder="¿¹: ¸ÅÁÖ ÁÖÀÏ ¿¹¹è Ãâ¼® ½Ã ´ã´ç ±³»ç°¡ Áö±ŞÇÕ´Ï´Ù."></textarea>
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">ì·¨ì†Œ</button>
-        <button class="btn-confirm" onclick="saveItem()">ì €ì¥</button>
+        <button class="btn-cancel" onclick="closeModal()">Ãë¼Ò</button>
+        <button class="btn-confirm" onclick="saveItem()">ÀúÀå</button>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.45.0"></script>
-  <script src="../js/supabase-config.js?v=3.45.0"></script>
-  <script src="../js/activity-log.js?v=3.45.0"></script>
-  <script src="../js/auth.js?v=3.45.0"></script>
-  <script src="../js/theme.js?v=3.45.0"></script>
-  <script src="../js/page-size.js?v=3.45.0"></script>
-  <script src="../js/nav.js?v=3.45.0"></script>
-  <script src="../js/talent.js?v=3.45.0"></script>
+  <script src="../config/public-config.js?v=3.46.0"></script>
+  <script src="../js/supabase-config.js?v=3.46.0"></script>
+  <script src="../js/activity-log.js?v=3.46.0"></script>
+  <script src="../js/auth.js?v=3.46.0"></script>
+  <script src="../js/theme.js?v=3.46.0"></script>
+  <script src="../js/page-size.js?v=3.46.0"></script>
+  <script src="../js/nav.js?v=3.46.0"></script>
+  <script src="../js/talent.js?v=3.46.0"></script>
   <script>
     initSupabase();
     let session;
@@ -119,12 +119,12 @@
 
     function renderItems() {
       const list = allItems.filter(i => i.target_type === currentTab);
-      const label = currentTab === 'student' ? 'í•™ìƒìš©' : 'êµì‚¬ìš©';
-      document.getElementById('tableTitle').textContent = `${label} í•­ëª© (${list.length}ê°œ)`;
+      const label = currentTab === 'student' ? 'ÇĞ»ı¿ë' : '±³»ç¿ë';
+      document.getElementById('tableTitle').textContent = `${label} Ç×¸ñ (${list.length}°³)`;
       const tbody = document.getElementById('itemList');
 
       if (list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">ë“±ë¡ëœ í•­ëª©ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">µî·ÏµÈ Ç×¸ñÀÌ ¾ø½À´Ï´Ù.</td></tr>`;
         document.getElementById('itemPaging').innerHTML = '';
         return;
       }
@@ -139,13 +139,13 @@
         const isQuick = i.is_quick_button === true;
         return `<tr${!i.is_active ? ' style="opacity:0.5;"' : ''}>
         <td>${i.sort_order}</td>
-        <td><strong>${i.name}</strong>${isQuick ? ' <span style="font-size:0.7rem;background:#e7f5ff;color:#1971c2;padding:0.1rem 0.4rem;border-radius:4px;">âš¡í€µ</span>' : ''}</td>
+        <td><strong>${i.name}</strong>${isQuick ? ' <span style="font-size:0.7rem;background:#e7f5ff;color:#1971c2;padding:0.1rem 0.4rem;border-radius:4px;">?Äü</span>' : ''}</td>
         <td style="font-weight:700;color:#2b8a3e;">+${i.talent_amount}</td>
-        <td>${i.is_active ? '<span class="level-badge INFO">í™œì„±</span>' : '<span class="level-badge FATAL">ë¹„í™œì„±</span>'}</td>
+        <td>${i.is_active ? '<span class="level-badge INFO">È°¼º</span>' : '<span class="level-badge FATAL">ºñÈ°¼º</span>'}</td>
         <td>
-          <button class="filter-btn" onclick='openEditModal(${JSON.stringify(i).replace(/'/g,"&#39;")})'>ìˆ˜ì •</button>
-          <button class="filter-btn" onclick="toggleActive('${i.id}', ${i.is_active})">${i.is_active ? 'ë¹„í™œì„±í™”' : 'í™œì„±í™”'}</button>
-          ${i.is_active && (session.permissionRank || 0) >= 80 ? `<button class="filter-btn" style="${isQuick ? 'background:#1971c2;color:#fff;' : ''}" onclick="setQuickButton('${i.id}')">${isQuick ? 'âš¡í€µ í•´ì œ' : 'âš¡í€µ ì§€ì •'}</button>` : ''}
+          <button class="filter-btn" onclick='openEditModal(${JSON.stringify(i).replace(/'/g,"&#39;")})'>¼öÁ¤</button>
+          <button class="filter-btn" onclick="toggleActive('${i.id}', ${i.is_active})">${i.is_active ? 'ºñÈ°¼ºÈ­' : 'È°¼ºÈ­'}</button>
+          ${i.is_active && (session.permissionRank || 0) >= 80 ? `<button class="filter-btn" style="${isQuick ? 'background:#1971c2;color:#fff;' : ''}" onclick="setQuickButton('${i.id}')">${isQuick ? '?Äü ÇØÁ¦' : '?Äü ÁöÁ¤'}</button>` : ''}
         </td>
       </tr>`;
       }).join('');
@@ -159,7 +159,7 @@
 
     function openAddModal() {
       editingId = null;
-      document.getElementById('modalTitle').textContent = 'í•­ëª© ì¶”ê°€';
+      document.getElementById('modalTitle').textContent = 'Ç×¸ñ Ãß°¡';
       document.getElementById('mName').value = '';
       document.getElementById('mAmount').value = '';
       document.getElementById('mSort').value = '0';
@@ -172,7 +172,7 @@
 
     function openEditModal(item) {
       editingId = item.id;
-      document.getElementById('modalTitle').textContent = 'í•­ëª© ìˆ˜ì •';
+      document.getElementById('modalTitle').textContent = 'Ç×¸ñ ¼öÁ¤';
       document.getElementById('mName').value = item.name;
       document.getElementById('mAmount').value = item.talent_amount;
       document.getElementById('mSort').value = item.sort_order;
@@ -192,9 +192,9 @@
       const sortOrder = parseInt(document.getElementById('mSort').value) || 0;
       const targetType = document.getElementById('mTarget').value;
 
-      if (!name) { errEl.textContent = 'í•­ëª©ëª…ì„ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
-      if (!amount || amount <= 0) { errEl.textContent = 'ìœ íš¨í•œ ë‹¬ë€íŠ¸ ìˆ˜ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.'; errEl.classList.add('show'); return; }
-      if (amount > 100) { errEl.textContent = 'ë‹¬ë€íŠ¸ëŠ” ìµœëŒ€ 100ê¹Œì§€ë§Œ ì„¤ì •í•  ìˆ˜ ìˆìŠµë‹ˆë‹¤.'; errEl.classList.add('show'); return; }
+      if (!name) { errEl.textContent = 'Ç×¸ñ¸íÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (!amount || amount <= 0) { errEl.textContent = 'À¯È¿ÇÑ ´Ş¶õÆ® ¼ö¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.'; errEl.classList.add('show'); return; }
+      if (amount > 100) { errEl.textContent = '´Ş¶õÆ®´Â ÃÖ´ë 100±îÁö¸¸ ¼³Á¤ÇÒ ¼ö ÀÖ½À´Ï´Ù.'; errEl.classList.add('show'); return; }
 
       const row = { name, talent_amount: amount, sort_order: sortOrder, target_type: targetType,
         giving_rule: document.getElementById('mGivingRule').value.trim() || null,
@@ -205,30 +205,30 @@
         const oldItem = allItems.find(i => i.id === editingId);
         const changes = [];
         if (oldItem) {
-          if (oldItem.name !== name) changes.push(`í•­ëª©ëª…: ${oldItem.name} â†’ ${name}`);
-          if (oldItem.talent_amount !== amount) changes.push(`ë‹¬ë€íŠ¸: ${oldItem.talent_amount} â†’ ${amount}`);
-          if (oldItem.sort_order !== sortOrder) changes.push(`ìˆœì„œ: ${oldItem.sort_order} â†’ ${sortOrder}`);
-          if (oldItem.target_type !== targetType) changes.push(`ëŒ€ìƒ: ${oldItem.target_type} â†’ ${targetType}`);
+          if (oldItem.name !== name) changes.push(`Ç×¸ñ¸í: ${oldItem.name} ¡æ ${name}`);
+          if (oldItem.talent_amount !== amount) changes.push(`´Ş¶õÆ®: ${oldItem.talent_amount} ¡æ ${amount}`);
+          if (oldItem.sort_order !== sortOrder) changes.push(`¼ø¼­: ${oldItem.sort_order} ¡æ ${sortOrder}`);
+          if (oldItem.target_type !== targetType) changes.push(`´ë»ó: ${oldItem.target_type} ¡æ ${targetType}`);
         }
         const { error } = await _sb.from('talent_items').update(row).eq('id', editingId);
-        if (error) { await logError('TALENT_ITEM_UPDATE_FAIL', { í•­ëª©ID: editingId, ì˜¤ë¥˜: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
-        await logInfo('TALENT_ITEM_UPDATE', { í•­ëª©ëª…: name, ë³€ê²½ë‚´ì—­: changes.join(', ') || 'ë³€ê²½ ì—†ìŒ' });
+        if (error) { await logError('TALENT_ITEM_UPDATE_FAIL', { Ç×¸ñID: editingId, ¿À·ù: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
+        await logInfo('TALENT_ITEM_UPDATE', { Ç×¸ñ¸í: name, º¯°æ³»¿ª: changes.join(', ') || 'º¯°æ ¾øÀ½' });
       } else {
         row.created_by = session.id;
         const { error } = await _sb.from('talent_items').insert(row);
-        if (error) { await logError('TALENT_ITEM_CREATE_FAIL', { í•­ëª©ëª…: name, ì˜¤ë¥˜: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
-        await logInfo('TALENT_ITEM_CREATE', { í•­ëª©ëª…: name, ê¸ˆì•¡: amount });
+        if (error) { await logError('TALENT_ITEM_CREATE_FAIL', { Ç×¸ñ¸í: name, ¿À·ù: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
+        await logInfo('TALENT_ITEM_CREATE', { Ç×¸ñ¸í: name, ±İ¾×: amount });
       }
       closeModal();
       await loadItems();
     }
 
     async function toggleActive(id, currentActive) {
-      const action = currentActive ? 'ë¹„í™œì„±í™”' : 'í™œì„±í™”';
-      if (!confirm(`ì´ í•­ëª©ì„ ${action}í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      const action = currentActive ? 'ºñÈ°¼ºÈ­' : 'È°¼ºÈ­';
+      if (!confirm(`ÀÌ Ç×¸ñÀ» ${action}ÇÏ½Ã°Ú½À´Ï±î?`)) return;
       const item = allItems.find(i => i.id === id);
       await _sb.from('talent_items').update({ is_active: !currentActive }).eq('id', id);
-      await logInfo('TALENT_ITEM_TOGGLE', { í•­ëª©ëª…: item?.name || id, í™œì„±ì—¬ë¶€: !currentActive });
+      await logInfo('TALENT_ITEM_TOGGLE', { Ç×¸ñ¸í: item?.name || id, È°¼º¿©ºÎ: !currentActive });
       await loadItems();
     }
 
@@ -246,20 +246,20 @@
           const { error: e2 } = await _sb.from('talent_items').update({ is_quick_button: true }).eq('id', id);
           if (e2) throw e2;
         }
-        await logInfo('TALENT_ITEM_QUICKBTN', { í•­ëª©ëª…: item.name });
+        await logInfo('TALENT_ITEM_QUICKBTN', { Ç×¸ñ¸í: item.name });
         await loadItems();
       } catch (err) {
         const msg = (err && err.message) || String(err);
         if (/column.*does not exist|schema cache/i.test(msg)) {
-          alert('âš¡ í€µ ë²„íŠ¼ ê¸°ëŠ¥ì„ ì‚¬ìš©í•˜ë ¤ë©´ DBì— is_quick_button ì»¬ëŸ¼ì„ ì¶”ê°€í•´ì•¼ í•©ë‹ˆë‹¤.\n\ndocs/TASK-039_quick_button.sql íŒŒì¼ì˜ SQLì„ ì‹¤í–‰í•´ì£¼ì„¸ìš”.');
+          alert('? Äü ¹öÆ° ±â´ÉÀ» »ç¿ëÇÏ·Á¸é DB¿¡ is_quick_button ÄÃ·³À» Ãß°¡ÇØ¾ß ÇÕ´Ï´Ù.\n\ndocs/TASK-039_quick_button.sql ÆÄÀÏÀÇ SQLÀ» ½ÇÇàÇØÁÖ¼¼¿ä.');
         } else {
-          alert('í€µ ë²„íŠ¼ ì„¤ì • ì‹¤íŒ¨: ' + tErr(msg));
+          alert('Äü ¹öÆ° ¼³Á¤ ½ÇÆĞ: ' + tErr(msg));
         }
       }
     }
 
     document.getElementById('itemModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.45.0"></script>
+  <script src="../js/version.js?v=3.46.0"></script>
 </body>
 </html>

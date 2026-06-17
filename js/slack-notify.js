@@ -1,6 +1,12 @@
 /**
  * Slack Notification Module
  * Supabase Edge Function 'slack-notify'를 호출하여 Slack 채널에 알림을 전송하는 공통 유틸리티
+ *
+ * 채널 라우팅:
+ *   purchase_new, user_register, dept_transfer → 부서별 채널 (data.부서/이동부서 기준)
+ *   purchase_status (requested→preparing) → 상품 관리 채널
+ *   log_alert (WARN+) → 운영 채널
+ *   qna_new → Q&A 채널
  */
 
 const _slackNotifyState = {

@@ -1,11 +1,11 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ë²„ì „ ì´ë ¥ - ê´€ë¦¬ì</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.45.0" />
+  <title>¹öÀü ÀÌ·Â - °ü¸®ÀÚ</title>
+  <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
   <style>
     .ver-current {
       background: linear-gradient(135deg, #f3f0ff, #e8f5e9);
@@ -56,27 +56,27 @@
       font-size: 0.88rem; color: #495057; line-height: 1.8;
       list-style: none; position: relative; padding-left: 0.5rem;
     }
-    .ver-changes li::before { content: 'âœ“'; position: absolute; left: -1rem; color: var(--admin-primary); font-weight: 700; }
+    .ver-changes li::before { content: '?'; position: absolute; left: -1rem; color: var(--admin-primary); font-weight: 700; }
   </style>
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ğŸ“‹ ë²„ì „ ì´ë ¥ ê´€ë¦¬</h2>
+    <h2 style="margin-bottom:1rem;">?? ¹öÀü ÀÌ·Â °ü¸®</h2>
 
     <div class="ver-current" id="currentVersion"></div>
     <div class="ver-timeline" id="timeline"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.45.0"></script>
-  <script src="../js/supabase-config.js?v=3.45.0"></script>
-  <script src="../js/activity-log.js?v=3.45.0"></script>
-  <script src="../js/auth.js?v=3.45.0"></script>
-  <script src="../js/theme.js?v=3.45.0"></script>
-  <script src="../js/nav.js?v=3.45.0"></script>
-  <script src="../js/version.js?v=3.45.0"></script>
+  <script src="../config/public-config.js?v=3.46.0"></script>
+  <script src="../js/supabase-config.js?v=3.46.0"></script>
+  <script src="../js/activity-log.js?v=3.46.0"></script>
+  <script src="../js/auth.js?v=3.46.0"></script>
+  <script src="../js/theme.js?v=3.46.0"></script>
+  <script src="../js/nav.js?v=3.46.0"></script>
+  <script src="../js/version.js?v=3.46.0"></script>
   <script>
     initSupabase();
     let session;
@@ -102,7 +102,7 @@
         <div class="ver-current-badge">v${current.version}</div>
         <div class="ver-current-info">
           <h3>${current.title}</h3>
-          <p>ìµœì¢… ì—…ë°ì´íŠ¸: ${current.date} | ì „ì²´ ${history.length}ê°œ ë²„ì „</p>
+          <p>ÃÖÁ¾ ¾÷µ¥ÀÌÆ®: ${current.date} | ÀüÃ¼ ${history.length}°³ ¹öÀü</p>
         </div>
       `;
 

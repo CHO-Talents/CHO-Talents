@@ -1,12 +1,12 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ë‹¬ë€íŠ¸ ìˆ˜ë ¹ - ë‹¬ë€íŠ¸ ë§ˆì„</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ğŸ“±</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.45.0" />
+  <title>´Ş¶õÆ® ¼ö·É - ´Ş¶õÆ® ¸¶À»</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>" />
+  <link rel="stylesheet" href="css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.46.0" />
   <style>
     .qr-hero { text-align: center; margin-bottom: 1.5rem; }
     .qr-hero h1 { font-size: 1.6rem; color: var(--c-primary); }
@@ -45,15 +45,15 @@
 
   <div class="qr-container">
     <div class="qr-hero">
-      <h1>ğŸ“± ë‹¬ë€íŠ¸ ìˆ˜ë ¹</h1>
-      <p>QR ì½”ë“œë¥¼ ìŠ¤ìº”í•˜ê±°ë‚˜ ì½”ë“œë¥¼ ì…ë ¥í•˜ì—¬ ë‹¬ë€íŠ¸ë¥¼ ìˆ˜ë ¹í•˜ì„¸ìš”</p>
+      <h1>?? ´Ş¶õÆ® ¼ö·É</h1>
+      <p>QR ÄÚµå¸¦ ½ºÄµÇÏ°Å³ª ÄÚµå¸¦ ÀÔ·ÂÇÏ¿© ´Ş¶õÆ®¸¦ ¼ö·ÉÇÏ¼¼¿ä</p>
     </div>
 
     <div class="qr-input-area" id="qrArea">
       <div id="adminInputWrap" style="display:none;">
-        <input type="text" class="qr-input" id="qrInput" placeholder="QR ì½”ë“œ ì…ë ¥" maxlength="30" autocomplete="off" />
+        <input type="text" class="qr-input" id="qrInput" placeholder="QR ÄÚµå ÀÔ·Â" maxlength="30" autocomplete="off" />
         <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-top:0.5rem;">
-          <button class="btn-scan" id="btnScan" onclick="scanCode()">ğŸ” ì½”ë“œ í™•ì¸</button>
+          <button class="btn-scan" id="btnScan" onclick="scanCode()">?? ÄÚµå È®ÀÎ</button>
         </div>
       </div>
 
@@ -63,33 +63,33 @@
         <div class="scan-overlay">
           <div class="scan-frame"></div>
         </div>
-        <div class="scan-status" id="scanStatus">QR ì½”ë“œë¥¼ ì¹´ë©”ë¼ì— ë¹„ì¶°ì£¼ì„¸ìš”</div>
+        <div class="scan-status" id="scanStatus">QR ÄÚµå¸¦ Ä«¸Ş¶ó¿¡ ºñÃçÁÖ¼¼¿ä</div>
       </div>
 
-      <button class="btn-scan" id="btnCamera" onclick="toggleCamera()" style="background:#868e96;">ğŸ“· ì¹´ë©”ë¼</button>
+      <button class="btn-scan" id="btnCamera" onclick="toggleCamera()" style="background:#868e96;">?? Ä«¸Ş¶ó</button>
       <div class="qr-result" id="qrResult"></div>
     </div>
     <div id="qrCodeListSection" style="margin-top:1.5rem;"></div>
 
     <div class="scan-history" id="historySection" style="display:none;">
-      <h3>ğŸ“‹ ìµœê·¼ ìˆ˜ë ¹ ë‚´ì—­</h3>
+      <h3>?? ÃÖ±Ù ¼ö·É ³»¿ª</h3>
       <div id="historyList"></div>
     </div>
   </div>
 
   <footer class="page-footer">
-    <p>ì´ˆë“±ë¶€ ë‹¬ë€íŠ¸ ê´€ë¦¬ &copy; 2026 CHO-Talents</p>
+    <p>ÃÊµîºÎ ´Ş¶õÆ® °ü¸® &copy; 2026 CHO-Talents</p>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-  <script src="config/public-config.js?v=3.45.0"></script>
-  <script src="js/supabase-config.js?v=3.45.0"></script>
-  <script src="js/activity-log.js?v=3.45.0"></script>
-  <script src="js/auth.js?v=3.45.0"></script>
-  <script src="js/theme.js?v=3.45.0"></script>
-  <script src="js/nav.js?v=3.45.0"></script>
-  <script src="js/page-size.js?v=3.45.0"></script>
+  <script src="config/public-config.js?v=3.46.0"></script>
+  <script src="js/supabase-config.js?v=3.46.0"></script>
+  <script src="js/activity-log.js?v=3.46.0"></script>
+  <script src="js/auth.js?v=3.46.0"></script>
+  <script src="js/theme.js?v=3.46.0"></script>
+  <script src="js/nav.js?v=3.46.0"></script>
+  <script src="js/page-size.js?v=3.46.0"></script>
   <script>
     initSupabase();
     let session;
@@ -118,53 +118,53 @@
 
     async function scanCode() {
       const code = document.getElementById('qrInput').value.trim();
-      if (!code) { showResult('fail', 'ì½”ë“œë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.'); return; }
+      if (!code) { showResult('fail', 'ÄÚµå¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.'); return; }
       const btn = document.getElementById('btnScan');
       btn.disabled = true;
-      btn.textContent = 'í™•ì¸ ì¤‘...';
+      btn.textContent = 'È®ÀÎ Áß...';
       try {
         const { data: qr, error } = await _sb.from('talent_qr_codes')
           .select('*').eq('code', code).eq('is_active', true).single();
-        if (error || !qr) { showResult('fail', 'ìœ íš¨í•˜ì§€ ì•Šì€ ì½”ë“œì…ë‹ˆë‹¤.'); return; }
+        if (error || !qr) { showResult('fail', 'À¯È¿ÇÏÁö ¾ÊÀº ÄÚµåÀÔ´Ï´Ù.'); return; }
 
         const now = new Date();
         if (qr.valid_from && new Date(qr.valid_from) > now) {
-          showResult('fail', 'ì•„ì§ ìœ íš¨í•˜ì§€ ì•Šì€ ì½”ë“œì…ë‹ˆë‹¤.'); return;
+          showResult('fail', '¾ÆÁ÷ À¯È¿ÇÏÁö ¾ÊÀº ÄÚµåÀÔ´Ï´Ù.'); return;
         }
         if (qr.valid_until && new Date(qr.valid_until) < now) {
-          showResult('fail', 'ë§Œë£Œëœ ì½”ë“œì…ë‹ˆë‹¤.'); return;
+          showResult('fail', '¸¸·áµÈ ÄÚµåÀÔ´Ï´Ù.'); return;
         }
         if (qr.expires_at && new Date(qr.expires_at) < now) {
-          showResult('fail', 'ë§Œë£Œëœ ì½”ë“œì…ë‹ˆë‹¤.'); return;
+          showResult('fail', '¸¸·áµÈ ÄÚµåÀÔ´Ï´Ù.'); return;
         }
         if (qr.max_uses > 0 && (qr.used_count || 0) >= qr.max_uses) {
-          showResult('fail', 'ì‚¬ìš© íšŸìˆ˜ê°€ ì´ˆê³¼ëœ ì½”ë“œì…ë‹ˆë‹¤.'); return;
+          showResult('fail', '»ç¿ë È½¼ö°¡ ÃÊ°úµÈ ÄÚµåÀÔ´Ï´Ù.'); return;
         }
 
         const { data: myProfile } = await _sb.from('profiles').select('user_type').eq('id', session.id).single();
         const myType = myProfile?.user_type || 'student';
         if (qr.target_type && qr.target_type !== myType) {
-          const targetLabel = qr.target_type === 'teacher' ? 'êµì‚¬' : 'í•™ìƒ';
-          showResult('fail', 'âš ï¸ ì´ QR ì½”ë“œëŠ” ' + targetLabel + ' ì „ìš©ì…ë‹ˆë‹¤.\ní˜„ì¬ ê³„ì • ìœ í˜•ì´ ì¼ì¹˜í•˜ì§€ ì•Šì•„ ìˆ˜ë ¹í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.');
+          const targetLabel = qr.target_type === 'teacher' ? '±³»ç' : 'ÇĞ»ı';
+          showResult('fail', '?? ÀÌ QR ÄÚµå´Â ' + targetLabel + ' Àü¿ëÀÔ´Ï´Ù.\nÇöÀç °èÁ¤ À¯ÇüÀÌ ÀÏÄ¡ÇÏÁö ¾Ê¾Æ ¼ö·ÉÇÒ ¼ö ¾ø½À´Ï´Ù.');
           return;
         }
 
         if (qr.location_lat && qr.location_lng && qr.location_radius) {
           try {
             const pos = await new Promise((resolve, reject) => {
-              if (!navigator.geolocation) { reject(new Error('ìœ„ì¹˜ ì„œë¹„ìŠ¤ë¥¼ ì§€ì›í•˜ì§€ ì•ŠëŠ” ë¸Œë¼ìš°ì €ì…ë‹ˆë‹¤.')); return; }
+              if (!navigator.geolocation) { reject(new Error('À§Ä¡ ¼­ºñ½º¸¦ Áö¿øÇÏÁö ¾Ê´Â ºê¶ó¿ìÀúÀÔ´Ï´Ù.')); return; }
               navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 });
             });
             const dist = haversineDistance(pos.coords.latitude, pos.coords.longitude, qr.location_lat, qr.location_lng);
             if (dist > qr.location_radius) {
               const radiusText = qr.location_radius >= 1000 ? (qr.location_radius/1000) + 'km' : qr.location_radius + 'm';
-              const locName = qr.location_name || 'ì§€ì • ìœ„ì¹˜';
-              showResult('fail', 'ğŸ“ ìœ„ì¹˜ ì œí•œ ì½”ë“œì…ë‹ˆë‹¤.\nğŸ“Œ ' + locName + '\në°˜ê²½ ' + radiusText + ' ì´ë‚´ì—ì„œë§Œ ìˆ˜ë ¹ ê°€ëŠ¥í•©ë‹ˆë‹¤.\ní˜„ì¬ ê±°ë¦¬: ì•½ ' + Math.round(dist) + 'm');
+              const locName = qr.location_name || 'ÁöÁ¤ À§Ä¡';
+              showResult('fail', '?? À§Ä¡ Á¦ÇÑ ÄÚµåÀÔ´Ï´Ù.\n?? ' + locName + '\n¹İ°æ ' + radiusText + ' ÀÌ³»¿¡¼­¸¸ ¼ö·É °¡´ÉÇÕ´Ï´Ù.\nÇöÀç °Å¸®: ¾à ' + Math.round(dist) + 'm');
               return;
             }
           } catch (geoErr) {
             const locName = qr.location_name ? ' (' + qr.location_name + ')' : '';
-            showResult('fail', 'ğŸ“ ìœ„ì¹˜ í™•ì¸ì´ í•„ìš”í•œ ì½”ë“œì…ë‹ˆë‹¤.' + locName + '\nìœ„ì¹˜ ê¶Œí•œì„ í—ˆìš©í•´ì£¼ì„¸ìš”.\n(' + (geoErr.message || geoErr) + ')');
+            showResult('fail', '?? À§Ä¡ È®ÀÎÀÌ ÇÊ¿äÇÑ ÄÚµåÀÔ´Ï´Ù.' + locName + '\nÀ§Ä¡ ±ÇÇÑÀ» Çã¿ëÇØÁÖ¼¼¿ä.\n(' + (geoErr.message || geoErr) + ')');
             return;
           }
         }
@@ -174,7 +174,7 @@
           const { data: existing } = await _sb.from('talent_qr_scans')
             .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id);
           if (existing && existing.length > 0) {
-            showResult('fail', 'ì´ë¯¸ ìˆ˜ë ¹í•œ ì½”ë“œì…ë‹ˆë‹¤.'); return;
+            showResult('fail', 'ÀÌ¹Ì ¼ö·ÉÇÑ ÄÚµåÀÔ´Ï´Ù.'); return;
           }
         } else {
           const canReceive = checkRepeatEligibility(qr);
@@ -187,7 +187,7 @@
             .select('id').eq('qr_code_id', qr.id).eq('user_id', session.id)
             .gte('scanned_at', todayStart).lte('scanned_at', todayEnd);
           if (todayScans && todayScans.length > 0) {
-            showResult('fail', 'ì˜¤ëŠ˜ì€ ì´ë¯¸ ìˆ˜ë ¹í•œ ì½”ë“œì…ë‹ˆë‹¤.\n(ë§¤ì¼ 00:00ì— ì´ˆê¸°í™”ë©ë‹ˆë‹¤)'); return;
+            showResult('fail', '¿À´ÃÀº ÀÌ¹Ì ¼ö·ÉÇÑ ÄÚµåÀÔ´Ï´Ù.\n(¸ÅÀÏ 00:00¿¡ ÃÊ±âÈ­µË´Ï´Ù)'); return;
           }
         }
 
@@ -205,7 +205,7 @@
 
         await _sb.from('talent_transactions').insert({
           user_id: session.id, type: 'earn', amount: qr.amount,
-          description: qr.description || 'QR ë‹¬ë€íŠ¸',
+          description: qr.description || 'QR ´Ş¶õÆ®',
           talent_item_id: qr.talent_item_id || null,
           balance_after: newBalance,
           created_by: session.id,
@@ -219,16 +219,16 @@
         session.talentBalance = newBalance;
         setSession(session);
 
-        const itemName = qr.description || 'QR ë‹¬ë€íŠ¸';
-        await logInfo('qr_scan', { í•­ëª©ëª…: itemName, ê¸ˆì•¡: qr.amount });
-        showResult('ok', `âœ… ${qr.amount} ë‹¬ë€íŠ¸ë¥¼ ìˆ˜ë ¹í–ˆìŠµë‹ˆë‹¤! (${qr.description || 'QR ë‹¬ë€íŠ¸'})`);
+        const itemName = qr.description || 'QR ´Ş¶õÆ®';
+        await logInfo('qr_scan', { Ç×¸ñ¸í: itemName, ±İ¾×: qr.amount });
+        showResult('ok', `? ${qr.amount} ´Ş¶õÆ®¸¦ ¼ö·ÉÇß½À´Ï´Ù! (${qr.description || 'QR ´Ş¶õÆ®'})`);
         document.getElementById('qrInput').value = '';
         loadHistory();
       } catch (e) {
-        showResult('fail', 'ì˜¤ë¥˜ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤: ' + (e.message || e));
+        showResult('fail', '¿À·ù°¡ ¹ß»ıÇß½À´Ï´Ù: ' + (e.message || e));
       } finally {
         btn.disabled = false;
-        btn.textContent = 'ğŸ” ì½”ë“œ í™•ì¸';
+        btn.textContent = '?? ÄÚµå È®ÀÎ';
         scanPaused = false;
       }
     }
@@ -253,8 +253,8 @@
       if (rt === 'weekday') {
         const days = qr.repeat_days || [];
         if (!days.includes(today)) {
-          const DAY_N = ['ì¼','ì›”','í™”','ìˆ˜','ëª©','ê¸ˆ','í† '];
-          return { ok: false, msg: 'ì˜¤ëŠ˜ì€ ìˆ˜ë ¹ ê°€ëŠ¥í•œ ìš”ì¼ì´ ì•„ë‹™ë‹ˆë‹¤.\nìˆ˜ë ¹ ê°€ëŠ¥: ' + days.map(d => DAY_N[d]).join(', ') };
+          const DAY_N = ['ÀÏ','¿ù','È­','¼ö','¸ñ','±İ','Åä'];
+          return { ok: false, msg: '¿À´ÃÀº ¼ö·É °¡´ÉÇÑ ¿äÀÏÀÌ ¾Æ´Õ´Ï´Ù.\n¼ö·É °¡´É: ' + days.map(d => DAY_N[d]).join(', ') };
         }
         return { ok: true };
       }
@@ -263,11 +263,11 @@
         const weeks = qr.repeat_weeks || [];
         const weekNum = getWeekOfMonth(now);
         if (!weeks.includes(weekNum)) {
-          return { ok: false, msg: 'ì´ë²ˆ ì£¼ëŠ” ìˆ˜ë ¹ ê°€ëŠ¥í•œ ì£¼ì°¨ê°€ ì•„ë‹™ë‹ˆë‹¤.\nìˆ˜ë ¹ ê°€ëŠ¥: ' + weeks.map(w => w + 'ì£¼ì°¨').join(', ') };
+          return { ok: false, msg: 'ÀÌ¹ø ÁÖ´Â ¼ö·É °¡´ÉÇÑ ÁÖÂ÷°¡ ¾Æ´Õ´Ï´Ù.\n¼ö·É °¡´É: ' + weeks.map(w => w + 'ÁÖÂ÷').join(', ') };
         }
         if (!days.includes(today)) {
-          const DAY_N = ['ì¼','ì›”','í™”','ìˆ˜','ëª©','ê¸ˆ','í† '];
-          return { ok: false, msg: 'ì˜¤ëŠ˜ì€ ìˆ˜ë ¹ ê°€ëŠ¥í•œ ìš”ì¼ì´ ì•„ë‹™ë‹ˆë‹¤.\nìˆ˜ë ¹ ê°€ëŠ¥: ' + days.map(d => DAY_N[d]).join(', ') };
+          const DAY_N = ['ÀÏ','¿ù','È­','¼ö','¸ñ','±İ','Åä'];
+          return { ok: false, msg: '¿À´ÃÀº ¼ö·É °¡´ÉÇÑ ¿äÀÏÀÌ ¾Æ´Õ´Ï´Ù.\n¼ö·É °¡´É: ' + days.map(d => DAY_N[d]).join(', ') };
         }
         return { ok: true };
       }
@@ -307,7 +307,7 @@
           const qr = s.talent_qr_codes || {};
           const dt = new Date(s.scanned_at);
           const dateStr = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
-          return `<div class="scan-item"><span>${dateStr} - ${qr.description || qr.code || '-'}</span><span class="amt">+${qr.amount || 0} ë‹¬ë€íŠ¸</span></div>`;
+          return `<div class="scan-item"><span>${dateStr} - ${qr.description || qr.code || '-'}</span><span class="amt">+${qr.amount || 0} ´Ş¶õÆ®</span></div>`;
         }).join('');
       } catch (e) { /* table may not exist yet */ }
     }
@@ -323,7 +323,7 @@
       }
 
       try {
-        btn.textContent = 'ì¹´ë©”ë¼ ì‹œì‘ ì¤‘...';
+        btn.textContent = 'Ä«¸Ş¶ó ½ÃÀÛ Áß...';
         btn.disabled = true;
 
         cameraStream = await navigator.mediaDevices.getUserMedia({
@@ -337,17 +337,17 @@
         video.muted = true;
         await video.play();
 
-        btn.textContent = 'ğŸ“· ì¹´ë©”ë¼ ë„ê¸°';
+        btn.textContent = '?? Ä«¸Ş¶ó ²ô±â';
         btn.style.background = '#e03131';
         btn.disabled = false;
         startQRScan();
       } catch (e) {
         wrap.style.display = 'none';
-        btn.textContent = 'ğŸ“· ì¹´ë©”ë¼';
+        btn.textContent = '?? Ä«¸Ş¶ó';
         btn.style.background = '#868e96';
         btn.disabled = false;
         if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
-        alert('ì¹´ë©”ë¼ë¥¼ ì‚¬ìš©í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤: ' + (e.message || e));
+        alert('Ä«¸Ş¶ó¸¦ »ç¿ëÇÒ ¼ö ¾ø½À´Ï´Ù: ' + (e.message || e));
       }
     }
 
@@ -358,7 +358,7 @@
       video.srcObject = null;
       document.getElementById('cameraWrap').style.display = 'none';
       const btn = document.getElementById('btnCamera');
-      btn.textContent = 'ğŸ“· ì¹´ë©”ë¼';
+      btn.textContent = '?? Ä«¸Ş¶ó';
       btn.style.background = '#868e96';
     }
 
@@ -379,14 +379,14 @@
 
           if (qrResult && qrResult.data) {
             scanPaused = true;
-            statusEl.textContent = 'âœ… QR ì½”ë“œ ê°ì§€ë¨';
+            statusEl.textContent = '? QR ÄÚµå °¨ÁöµÊ';
             document.getElementById('cameraWrap').classList.add('scan-detected');
             setTimeout(() => document.getElementById('cameraWrap').classList.remove('scan-detected'), 300);
 
             document.getElementById('qrInput').value = qrResult.data;
             scanCode();
           } else {
-            statusEl.textContent = 'QR ì½”ë“œë¥¼ ì¹´ë©”ë¼ì— ë¹„ì¶°ì£¼ì„¸ìš”';
+            statusEl.textContent = 'QR ÄÚµå¸¦ Ä«¸Ş¶ó¿¡ ºñÃçÁÖ¼¼¿ä';
           }
         }
         scanAnimFrame = requestAnimationFrame(tick);
@@ -430,9 +430,9 @@
         return 0;
       });
       let html = '';
-      if (studentCodes.length > 0) html += renderQRGroup('ğŸ’ í•™ìƒ ëŒ€ìƒ', studentCodes, 'student', now);
-      if (teacherCodes.length > 0) html += renderQRGroup('ğŸ‘©â€ğŸ« êµì‚¬ ëŒ€ìƒ', teacherCodes, 'teacher', now);
-      if (!html) html = '<p style="text-align:center;color:var(--c-text-muted);font-size:0.85rem;">í˜„ì¬ í™œì„± QR ì½”ë“œê°€ ì—†ìŠµë‹ˆë‹¤.</p>';
+      if (studentCodes.length > 0) html += renderQRGroup('?? ÇĞ»ı ´ë»ó', studentCodes, 'student', now);
+      if (teacherCodes.length > 0) html += renderQRGroup('????? ±³»ç ´ë»ó', teacherCodes, 'teacher', now);
+      if (!html) html = '<p style="text-align:center;color:var(--c-text-muted);font-size:0.85rem;">ÇöÀç È°¼º QR ÄÚµå°¡ ¾ø½À´Ï´Ù.</p>';
       sec.innerHTML = html;
     }
 
@@ -442,19 +442,19 @@
       const start = (page - 1) * QR_PAGE_SIZE;
       const slice = codes.slice(start, start + QR_PAGE_SIZE);
       const pageSizeHtml = codes.length > 0 ? renderPageSizeSelector('talent_receive', QR_PAGE_SIZE, "onQRPageSizeChange(this.value)") : '';
-      let html = '<div style="margin-bottom:1.5rem;"><div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid '+(groupKey==='student'?'#51cf66':'#4dabf7')+';padding-bottom:0.3rem;margin-bottom:0.5rem;"><h3 style="font-size:0.95rem;margin:0;">'+title+' <span style="font-size:0.8rem;color:var(--c-text-muted);">('+codes.length+'ê°œ)</span></h3><span>'+pageSizeHtml+'</span></div>';
+      let html = '<div style="margin-bottom:1.5rem;"><div style="display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid '+(groupKey==='student'?'#51cf66':'#4dabf7')+';padding-bottom:0.3rem;margin-bottom:0.5rem;"><h3 style="font-size:0.95rem;margin:0;">'+title+' <span style="font-size:0.8rem;color:var(--c-text-muted);">('+codes.length+'°³)</span></h3><span>'+pageSizeHtml+'</span></div>';
       slice.forEach(q => {
         const expired = (q.valid_until && new Date(q.valid_until) < now) || (q.expires_at && new Date(q.expires_at) < now);
         const bg = expired ? '#f8f9fa' : '#fff';
         const opacity = expired ? '0.6' : '1';
-        const badge = expired ? '<span style="background:#e03131;color:#fff;font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:4px;">ë§Œë£Œ</span>' : '<span style="background:#2b8a3e;color:#fff;font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:4px;">í™œì„±</span>';
+        const badge = expired ? '<span style="background:#e03131;color:#fff;font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:4px;">¸¸·á</span>' : '<span style="background:#2b8a3e;color:#fff;font-size:0.7rem;padding:0.1rem 0.4rem;border-radius:4px;">È°¼º</span>';
         html += '<div style="background:'+bg+';opacity:'+opacity+';border:1px solid var(--c-border);border-radius:8px;padding:0.6rem 0.8rem;margin-bottom:0.4rem;display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;">';
-        html += '<div><strong>'+((q.description||'QR ë‹¬ë€íŠ¸'))+'</strong> <span style="color:#2b8a3e;font-weight:700;">+'+q.amount+'</span> '+badge+'</div>';
+        html += '<div><strong>'+((q.description||'QR ´Ş¶õÆ®'))+'</strong> <span style="color:#2b8a3e;font-weight:700;">+'+q.amount+'</span> '+badge+'</div>';
         if (q.valid_until || q.expires_at) {
           const exp = new Date(q.valid_until || q.expires_at);
           html += '<span style="font-size:0.75rem;color:var(--c-text-muted);">~'+exp.getFullYear()+'-'+String(exp.getMonth()+1).padStart(2,'0')+'-'+String(exp.getDate()).padStart(2,'0')+'</span>';
         } else {
-          html += '<span style="font-size:0.75rem;color:var(--c-text-muted);">ë¬´ê¸°í•œ</span>';
+          html += '<span style="font-size:0.75rem;color:var(--c-text-muted);">¹«±âÇÑ</span>';
         }
         html += '</div>';
       });
@@ -482,6 +482,6 @@
       renderQRList();
     }
   </script>
-  <script src="js/version.js?v=3.45.0"></script>
+  <script src="js/version.js?v=3.46.0"></script>
 </body>
 </html>

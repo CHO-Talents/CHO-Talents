@@ -1,10 +1,28 @@
 // Supabase Edge Function: slack-notify
 // 이 파일을 Supabase Dashboard > Edge Functions > Create new edge function에 붙여넣어 배포하세요.
 // Function name: slack-notify
+//
+// 필수 Edge Function Secrets:
+//   SLACK_WEBHOOK_PART1           - 1부 채널 (Type: HumanResources, Group: Part1)
+//   SLACK_WEBHOOK_PART2           - 2부 채널 (Type: HumanResources, Group: Part2)
+//   SLACK_WEBHOOK_PART3           - 3부 채널 (Type: HumanResources, Group: Part3)
+//   SLACK_WEBHOOK_PART4           - 4부 채널 (Type: HumanResources, Group: Part4)
+//   SLACK_WEBHOOK_PART5           - 5부 채널 (Type: HumanResources, Group: Part5)
+//   SLACK_WEBHOOK_WORSHIP         - 예배부 채널 (Type: HumanResources, Group: Worship)
+//   SLACK_WEBHOOK_PRODUCT_MANAGEMENT - 상품 관리 채널 (Type: Product, Group: Management)
+//   SLACK_WEBHOOK_OPERATIONS      - 운영 로그 채널 (Type: Operations, Group: Management)
+//   SLACK_WEBHOOK_ANSWER          - Q&A 채널 (Type: Answer, Group: Management)
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-const SLACK_WEBHOOK_URL = Deno.env.get("SLACK_WEBHOOK_URL");
+const DEPT_WEBHOOK_MAP: Record<string, string> = {
+  "1부": "SLACK_WEBHOOK_PART1",
+  "2부": "SLACK_WEBHOOK_PART2",
+  "3부": "SLACK_WEBHOOK_PART3",
+  "4부": "SLACK_WEBHOOK_PART4",
+  "5부": "SLACK_WEBHOOK_PART5",
+  "예배부": "SLACK_WEBHOOK_WORSHIP",
+};
 
 const STATUS_LABELS: Record<string, string> = {
   requested: "📋 구매 신청",
@@ -28,6 +46,37 @@ interface SlackBlock {
   fields?: Array<{ type: string; text: string }>;
 }
 
+function resolveWebhookUrl(type: string, data: Record<string, unknown>): string | null {
+  switch (type) {
+    case "user_register": {
+      const dept = String(data["부서"] || "");
+      const secretName = DEPT_WEBHOOK_MAP[dept];
+      return secretName ? (Deno.env.get(secretName) || null) : null;
+    }
+    case "dept_transfer": {
+      const dept = String(data["이동부서"] || "");
+      const secretName = DEPT_WEBHOOK_MAP[dept];
+      return secretName ? (Deno.env.get(secretName) || null) : null;
+    }
+    case "purchase_new": {
+      const dept = String(data["부서"] || "");
+      const secretName = DEPT_WEBHOOK_MAP[dept];
+      return secretName ? (Deno.env.get(secretName) || null) : null;
+    }
+    case "purchase_status": {
+      return Deno.env.get("SLACK_WEBHOOK_PRODUCT_MANAGEMENT") || null;
+    }
+    case "log_alert": {
+      return Deno.env.get("SLACK_WEBHOOK_OPERATIONS") || null;
+    }
+    case "qna_new": {
+      return Deno.env.get("SLACK_WEBHOOK_ANSWER") || null;
+    }
+    default:
+      return null;
+  }
+}
+
 function formatMessage(type: string, data: Record<string, unknown>): { text: string; blocks: SlackBlock[] } {
   const now = new Date().toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
 
@@ -47,6 +96,10 @@ function formatMessage(type: string, data: Record<string, unknown>): { text: str
               { type: "mrkdwn", text: `*유형:*\n${data["유형"] || "일반 구매"}` },
             ],
           },
+          ...(data["부서"] ? [{
+            type: "context" as const,
+            elements: [{ type: "mrkdwn" as const, text: `🏢 소속: ${data["부서"]}` }],
+          }] : []),
           { type: "context", elements: [{ type: "mrkdwn", text: `📅 ${now}` }] },
         ],
       };
@@ -215,13 +268,6 @@ Deno.serve(async (req) => {
     });
   }
 
-  if (!SLACK_WEBHOOK_URL) {
-    return new Response(JSON.stringify({ error: "SLACK_WEBHOOK_URL not configured" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-    });
-  }
-
   try {
     const { type, data } = await req.json();
     if (!type) {
@@ -231,9 +277,17 @@ Deno.serve(async (req) => {
       });
     }
 
+    const webhookUrl = resolveWebhookUrl(type, data || {});
+    if (!webhookUrl) {
+      return new Response(JSON.stringify({ error: "No webhook configured for this notification type/department", type, data }), {
+        status: 200,
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
+      });
+    }
+
     const payload = formatMessage(type, data || {});
 
-    const slackRes = await fetch(SLACK_WEBHOOK_URL, {
+    const slackRes = await fetch(webhookUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),

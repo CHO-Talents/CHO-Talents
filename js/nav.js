@@ -12,7 +12,7 @@ const NAV_MENU = [
       { href: 'teacher-guide.html', label: '교사 가이드', minPerm: 40 },
       { href: 'admin-guide.html', label: '관리자 가이드', minPerm: 60 },
       { href: 'earn-talents.html', label: '달란트 적립' },
-      { href: 'qna.html', label: 'Q & A' }
+      { href: 'qna.html', label: 'Q & A', badgeId: 'navQnaBadge' }
     ]
   },
   {
@@ -254,6 +254,7 @@ function navUpdateAuth(session) {
     if (rank >= 60) {
       if (typeof updatePendingBadge === 'function') updatePendingBadge();
       if (typeof updateNavOrderBadge === 'function') updateNavOrderBadge();
+      if (typeof updateQnaBadge === 'function') updateQnaBadge();
     }
     if (rank >= 80) {
       if (typeof updateLogBadge === 'function') updateLogBadge();

@@ -1,58 +1,58 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>êµ¬ë§¤ ê´€ë¦¬ - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.45.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.45.0" />
+  <title>±¸¸Å °ü¸® - CHO Talents Admin</title>
+  <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
 
   <div class="admin-container">
-    <h2 style="margin-bottom:1rem;">ğŸ›’ êµ¬ë§¤ ê´€ë¦¬</h2>
+    <h2 style="margin-bottom:1rem;">?? ±¸¸Å °ü¸®</h2>
 
     <div class="kanban-board">
       <div class="kanban-card active" id="tabAll" data-status="all" onclick="switchPurchaseTab('all')">
         <div class="kanban-card-top" style="background:#6c5ce7;"></div>
         <div class="kanban-card-body">
-          <span class="kanban-label">ğŸ“Š ì „ì²´</span>
+          <span class="kanban-label">?? ÀüÃ¼</span>
           <span class="kanban-count" id="countAll">0</span>
         </div>
       </div>
       <div class="kanban-card" id="tabRequested" data-status="requested" onclick="switchPurchaseTab('requested')">
         <div class="kanban-card-top" style="background:#868e96;"></div>
         <div class="kanban-card-body">
-          <span class="kanban-label">ğŸ“‹ êµ¬ë§¤ ì‹ ì²­</span>
+          <span class="kanban-label">?? ±¸¸Å ½ÅÃ»</span>
           <span class="kanban-count" id="countRequested">0</span>
         </div>
       </div>
       <div class="kanban-card" id="tabPreparing" data-status="preparing" onclick="switchPurchaseTab('preparing')">
         <div class="kanban-card-top" style="background:#e67700;"></div>
         <div class="kanban-card-body">
-          <span class="kanban-label">ğŸ“¦ ìƒí’ˆ ì¤€ë¹„</span>
+          <span class="kanban-label">?? »óÇ° ÁØºñ</span>
           <span class="kanban-count" id="countPreparing">0</span>
         </div>
       </div>
       <div class="kanban-card" id="tabPurchased" data-status="purchased" onclick="switchPurchaseTab('purchased')">
         <div class="kanban-card-top" style="background:#1971c2;"></div>
         <div class="kanban-card-body">
-          <span class="kanban-label">ğŸ’³ ìƒí’ˆ êµ¬ë§¤</span>
+          <span class="kanban-label">?? »óÇ° ±¸¸Å</span>
           <span class="kanban-count" id="countPurchased">0</span>
         </div>
       </div>
       <div class="kanban-card" id="tabDelivered" data-status="delivered" onclick="switchPurchaseTab('delivered')">
         <div class="kanban-card-top" style="background:#2b8a3e;"></div>
         <div class="kanban-card-body">
-          <span class="kanban-label">âœ… ìƒí’ˆ ì§€ê¸‰</span>
+          <span class="kanban-label">? »óÇ° Áö±Ş</span>
           <span class="kanban-count" id="countDelivered">0</span>
         </div>
       </div>
       <div class="kanban-card" id="tabCancelled" data-status="cancelled" onclick="switchPurchaseTab('cancelled')">
         <div class="kanban-card-top" style="background:#e03131;"></div>
         <div class="kanban-card-body">
-          <span class="kanban-label">âŒ êµ¬ë§¤ ì·¨ì†Œ</span>
+          <span class="kanban-label">? ±¸¸Å Ãë¼Ò</span>
           <span class="kanban-count" id="countCancelled">0</span>
         </div>
       </div>
@@ -60,25 +60,25 @@
 
     <div id="statusFilterWrap" style="margin-bottom:0.8rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
       <select id="statusFilter" onchange="orderPage=1;renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
-        <option value="">ì „ì²´ ìƒíƒœ</option>
-        <option value="requested">ğŸ“‹ êµ¬ë§¤ ì‹ ì²­</option>
-        <option value="preparing">ğŸ“¦ ìƒí’ˆ ì¤€ë¹„</option>
-        <option value="purchased">ğŸ’³ ìƒí’ˆ êµ¬ë§¤</option>
-        <option value="delivered">âœ… ìƒí’ˆ ì§€ê¸‰</option>
-        <option value="cancelled">âŒ êµ¬ë§¤ ì·¨ì†Œ</option>
+        <option value="">ÀüÃ¼ »óÅÂ</option>
+        <option value="requested">?? ±¸¸Å ½ÅÃ»</option>
+        <option value="preparing">?? »óÇ° ÁØºñ</option>
+        <option value="purchased">?? »óÇ° ±¸¸Å</option>
+        <option value="delivered">? »óÇ° Áö±Ş</option>
+        <option value="cancelled">? ±¸¸Å Ãë¼Ò</option>
       </select>
       <select id="deptFilter" onchange="orderPage=1;renderOrders()" style="padding:0.4rem 0.8rem;border:1px solid var(--admin-border);border-radius:8px;font-size:0.85rem;">
-        <option value="">ì „ì²´ ë¶€ì„œ</option>
+        <option value="">ÀüÃ¼ ºÎ¼­</option>
       </select>
-      <span style="margin-left:0.3rem;font-size:0.82rem;color:var(--admin-text-muted);">ê¸°ê°„:</span>
+      <span style="margin-left:0.3rem;font-size:0.82rem;color:var(--admin-text-muted);">±â°£:</span>
       <input type="date" id="dateFrom" onchange="orderPage=1;renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="font-size:0.82rem;">~</span>
       <input type="date" id="dateTo" onchange="orderPage=1;renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="display:inline-flex;gap:0.2rem;">
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">ì˜¤ëŠ˜</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1ì£¼</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('month')">1ë‹¬</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('year')">1ë…„</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">¿À´Ã</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1ÁÖ</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('month')">1´Ş</button>
+        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('year')">1³â</button>
       </span>
     </div>
 
@@ -86,13 +86,13 @@
 
     <div class="admin-table-wrap">
       <div class="admin-table-header">
-        <div class="admin-table-title" id="tableTitle">ì „ì²´ ëª©ë¡</div>
+        <div class="admin-table-title" id="tableTitle">ÀüÃ¼ ¸ñ·Ï</div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
           <span id="orderPageSizeWrap"></span>
         <div id="bulkActions" style="display:none;">
-          <button class="btn-confirm" id="btnBulkPrepare" onclick="bulkPrepare()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">ğŸ“¦ ì¼ê´„ ìƒí’ˆ ì¤€ë¹„</button>
-          <button class="btn-confirm" id="btnBulkPurchase" onclick="bulkPurchase()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">ğŸ’³ ì¼ê´„ êµ¬ë§¤ í™•ì •</button>
-          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">âœ… ì„ íƒ ì§€ê¸‰ ì™„ë£Œ</button>
+          <button class="btn-confirm" id="btnBulkPrepare" onclick="bulkPrepare()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">?? ÀÏ°ı »óÇ° ÁØºñ</button>
+          <button class="btn-confirm" id="btnBulkPurchase" onclick="bulkPurchase()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">?? ÀÏ°ı ±¸¸Å È®Á¤</button>
+          <button class="btn-confirm" id="btnBulkDeliver" onclick="bulkDeliver()" style="display:none;padding:0.4rem 1rem;font-size:0.85rem;">? ¼±ÅÃ Áö±Ş ¿Ï·á</button>
         </div>
         </div>
       </div>
@@ -100,7 +100,7 @@
         <thead>
           <tr id="tableHead"></tr>
         </thead>
-        <tbody id="orderList"><tr><td colspan="7" class="empty-state">ë¡œë”© ì¤‘...</td></tr></tbody>
+        <tbody id="orderList"><tr><td colspan="7" class="empty-state">·Îµù Áß...</td></tr></tbody>
       </table>
       <div id="orderPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
@@ -121,16 +121,16 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.45.0"></script>
-  <script src="../js/supabase-config.js?v=3.45.0"></script>
-  <script src="../js/activity-log.js?v=3.45.0"></script>
-  <script src="../js/auth.js?v=3.45.0"></script>
-  <script src="../js/theme.js?v=3.45.0"></script>
-  <script src="../js/nav.js?v=3.45.0"></script>
-  <script src="../js/page-size.js?v=3.45.0"></script>
-  <script src="../js/user-mgmt.js?v=3.45.0"></script>
-  <script src="../js/table-sort.js?v=3.45.0"></script>
-  <script src="../js/slack-notify.js?v=3.45.0"></script>
+  <script src="../config/public-config.js?v=3.46.0"></script>
+  <script src="../js/supabase-config.js?v=3.46.0"></script>
+  <script src="../js/activity-log.js?v=3.46.0"></script>
+  <script src="../js/auth.js?v=3.46.0"></script>
+  <script src="../js/theme.js?v=3.46.0"></script>
+  <script src="../js/nav.js?v=3.46.0"></script>
+  <script src="../js/page-size.js?v=3.46.0"></script>
+  <script src="../js/user-mgmt.js?v=3.46.0"></script>
+  <script src="../js/table-sort.js?v=3.46.0"></script>
+  <script src="../js/slack-notify.js?v=3.46.0"></script>
   <script>
     initSupabase();
     let session;
@@ -145,7 +145,7 @@
     }
     let orderPage = 1;
 
-    const STATUS_LABEL = { requested:'êµ¬ë§¤ ì‹ ì²­', preparing:'ìƒí’ˆ ì¤€ë¹„', purchased:'ìƒí’ˆ êµ¬ë§¤', delivered:'ìƒí’ˆ ì§€ê¸‰', cancelled:'êµ¬ë§¤ ì·¨ì†Œ' };
+    const STATUS_LABEL = { requested:'±¸¸Å ½ÅÃ»', preparing:'»óÇ° ÁØºñ', purchased:'»óÇ° ±¸¸Å', delivered:'»óÇ° Áö±Ş', cancelled:'±¸¸Å Ãë¼Ò' };
     const STATUS_COLOR = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e', cancelled:'#e03131' };
     const TAB_IDS = ['all','requested','preparing','purchased','delivered','cancelled'];
 
@@ -190,8 +190,8 @@
     async function loadOrders() {
       const { data, error } = await _sb.from('product_orders').select('*').order('created_at', { ascending: false });
       if (error) {
-        logError('PURCHASE_LOAD_FAIL', { ì˜¤ë¥˜: error.message });
-        document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">ë°ì´í„° ì¡°íšŒ ì‹¤íŒ¨</td></tr>';
+        logError('PURCHASE_LOAD_FAIL', { ¿À·ù: error.message });
+        document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">µ¥ÀÌÅÍ Á¶È¸ ½ÇÆĞ</td></tr>';
         return;
       }
       allOrders = data || [];
@@ -211,7 +211,7 @@
       if (scopedDeptId) {
         const { data: users, error: userErr } = await fetchUsers({ departmentId: scopedDeptId });
         if (userErr) {
-          await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopedDeptId, ì˜¤ë¥˜: userErr });
+          await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopedDeptId, ¿À·ù: userErr });
           allOrders = [];
         } else {
           scopedUsers = users || [];
@@ -259,7 +259,7 @@
 
       const deptSel = document.getElementById('deptFilter');
       const deptNames = [...new Set(allOrders.map(o => o._deptName).filter(d => d && d !== '-'))].sort();
-      deptSel.innerHTML = '<option value="">ì „ì²´ ë¶€ì„œ</option>' + deptNames.map(d => `<option value="${d}">${d}</option>`).join('');
+      deptSel.innerHTML = '<option value="">ÀüÃ¼ ºÎ¼­</option>' + deptNames.map(d => `<option value="${d}">${d}</option>`).join('');
 
       renderOrders();
       updateOrderBadge();
@@ -308,11 +308,11 @@
     function getProcessorInfo(order, stage) {
       let byField, atField, label;
       if (stage === 'preparing') {
-        byField = order.prepared_by; atField = order.prepared_at; label = 'ì¤€ë¹„';
+        byField = order.prepared_by; atField = order.prepared_at; label = 'ÁØºñ';
       } else if (stage === 'purchased') {
-        byField = order.purchased_by; atField = order.purchased_at; label = 'êµ¬ë§¤';
+        byField = order.purchased_by; atField = order.purchased_at; label = '±¸¸Å';
       } else if (stage === 'delivered') {
-        byField = order.delivered_by; atField = order.delivered_at; label = 'ì§€ê¸‰';
+        byField = order.delivered_by; atField = order.delivered_at; label = 'Áö±Ş';
       }
       if (!byField) return '';
       const name = processorMap[byField] || '-';
@@ -341,30 +341,30 @@
         return;
       }
       el.style.display = '';
-      el.innerHTML = `<div style="font-size:0.85rem;font-weight:600;margin-bottom:0.4rem;">ìƒí’ˆë³„ í•©ê³„</div>
+      el.innerHTML = `<div style="font-size:0.85rem;font-weight:600;margin-bottom:0.4rem;">»óÇ°º° ÇÕ°è</div>
         <table class="admin-table" style="margin-bottom:0;font-size:0.82rem;">
-          <thead><tr><th>ìƒí’ˆëª…</th><th>ìˆ˜ëŸ‰ í•©ê³„</th><th>ê¸ˆì•¡ í•©ê³„</th></tr></thead>
+          <thead><tr><th>»óÇ°¸í</th><th>¼ö·® ÇÕ°è</th><th>±İ¾× ÇÕ°è</th></tr></thead>
           <tbody>${rows.map(([name, v]) => `<tr><td>${name}</td><td>${v.qty}</td><td>${fmtNum(v.amount)}</td></tr>`).join('')}</tbody>
         </table>`;
     }
 
     function buildMgmtMenu(o, canProc, isAllTab) {
       const items = [];
-      if (isAllTab) items.push(`<a onclick="showOrderDetail('${o.id}')">ğŸ“‹ ìƒì„¸</a>`);
+      if (isAllTab) items.push(`<a onclick="showOrderDetail('${o.id}')">?? »ó¼¼</a>`);
       if (o.status === 'requested' && canProc) {
-        items.push(`<a onclick="updateStatus('${o.id}','preparing')">ğŸ“¦ ìƒí’ˆ ì¤€ë¹„</a>`);
+        items.push(`<a onclick="updateStatus('${o.id}','preparing')">?? »óÇ° ÁØºñ</a>`);
       } else if (o.status === 'preparing' && canProc) {
-        items.push(`<a onclick="confirmPurchase('${o.id}')">ğŸ’³ êµ¬ë§¤ í™•ì •</a>`);
-        items.push(`<a onclick="revertStatus('${o.id}','requested')">â†© ë˜ëŒë¦¬ê¸°</a>`);
+        items.push(`<a onclick="confirmPurchase('${o.id}')">?? ±¸¸Å È®Á¤</a>`);
+        items.push(`<a onclick="revertStatus('${o.id}','requested')">? µÇµ¹¸®±â</a>`);
       } else if (o.status === 'purchased' && canProc) {
-        items.push(`<a onclick="updateStatus('${o.id}','delivered')">âœ… ì§€ê¸‰ ì™„ë£Œ</a>`);
-        items.push(`<a onclick="revertStatus('${o.id}','preparing')">â†© ë˜ëŒë¦¬ê¸°</a>`);
+        items.push(`<a onclick="updateStatus('${o.id}','delivered')">? Áö±Ş ¿Ï·á</a>`);
+        items.push(`<a onclick="revertStatus('${o.id}','preparing')">? µÇµ¹¸®±â</a>`);
       } else if (o.status === 'delivered' && canProc) {
-        items.push(`<a onclick="revertStatus('${o.id}','purchased')">â†© ë˜ëŒë¦¬ê¸°</a>`);
+        items.push(`<a onclick="revertStatus('${o.id}','purchased')">? µÇµ¹¸®±â</a>`);
       }
       if (items.length === 0) return '-';
       return `<div class="mgmt-dropdown">
-        <button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="toggleMgmt(event, this)">ê´€ë¦¬ â–¾</button>
+        <button class="filter-btn" style="font-size:0.78rem;padding:0.3rem 0.6rem;" onclick="toggleMgmt(event, this)">°ü¸® ?</button>
         <div class="mgmt-menu">${items.join('')}</div>
       </div>`;
     }
@@ -395,8 +395,8 @@
       const tbody = document.getElementById('orderList');
       const title = document.getElementById('tableTitle');
       const isAllTab = currentPTab === 'all';
-      const tabLabel = isAllTab ? 'ì „ì²´' : STATUS_LABEL[currentPTab];
-      title.textContent = `${tabLabel} ëª©ë¡ (${orders.length}ê±´)`;
+      const tabLabel = isAllTab ? 'ÀüÃ¼' : STATUS_LABEL[currentPTab];
+      title.textContent = `${tabLabel} ¸ñ·Ï (${orders.length}°Ç)`;
 
       renderProductSummary(orders);
 
@@ -417,19 +417,19 @@
 
       let headCols = '';
       if (showBulk) headCols += '<th style="width:30px;"><input type="checkbox" onchange="toggleAllOrders(this)"></th>';
-      if (isAllTab) headCols += '<th data-sort-key="status">ìƒíƒœ</th>';
-      headCols += '<th data-sort-key="created_at" data-sort-type="date">ì‹ ì²­ì¼</th><th data-sort-key="product_name">ìƒí’ˆëª…</th><th data-sort-key="price" data-sort-type="number">ê°€ê²©</th><th data-sort-key="_userName">ì‹ ì²­ì</th><th data-sort-key="_deptName">ë¶€ì„œ</th>';
+      if (isAllTab) headCols += '<th data-sort-key="status">»óÅÂ</th>';
+      headCols += '<th data-sort-key="created_at" data-sort-type="date">½ÅÃ»ÀÏ</th><th data-sort-key="product_name">»óÇ°¸í</th><th data-sort-key="price" data-sort-type="number">°¡°İ</th><th data-sort-key="_userName">½ÅÃ»ÀÚ</th><th data-sort-key="_deptName">ºÎ¼­</th>';
 
-      if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>ì´ì „ ì²˜ë¦¬</th>';
-      else if (currentPTab === 'purchased') headCols += '<th>ì¤€ë¹„ ì²˜ë¦¬</th>';
-      else if (currentPTab === 'delivered') headCols += '<th>êµ¬ë§¤ ì²˜ë¦¬</th>';
+      if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>ÀÌÀü Ã³¸®</th>';
+      else if (currentPTab === 'purchased') headCols += '<th>ÁØºñ Ã³¸®</th>';
+      else if (currentPTab === 'delivered') headCols += '<th>±¸¸Å Ã³¸®</th>';
 
-      headCols += '<th>ê´€ë¦¬</th>';
+      headCols += '<th>°ü¸®</th>';
       document.getElementById('tableHead').innerHTML = headCols;
 
       const colCount = document.getElementById('tableHead').children.length;
       if (orders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">í•´ë‹¹ ìƒíƒœì˜ ì£¼ë¬¸ì´ ì—†ìŠµë‹ˆë‹¤.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">ÇØ´ç »óÅÂÀÇ ÁÖ¹®ÀÌ ¾ø½À´Ï´Ù.</td></tr>`;
         renderOrderPaging(1);
         return;
       }
@@ -504,23 +504,25 @@
 
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
-          await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, ë³€ê²½ìƒíƒœ: newStatus, ì˜¤ë¥˜: error.message });
-          alert('ìƒíƒœ ë³€ê²½ ì‹¤íŒ¨: ' + tErr(error.message));
+          await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, º¯°æ»óÅÂ: newStatus, ¿À·ù: error.message });
+          alert('»óÅÂ º¯°æ ½ÇÆĞ: ' + tErr(error.message));
           return;
         }
         const o = allOrders.find(x => x.id === orderId);
-        await logInfo('ORDER_STATUS_CHANGE', { orderId, ë³€ê²½ìƒíƒœ: newStatus });
-        sendSlackNotify('purchase_status', { ìƒí’ˆëª…: o ? o.product_name : '-', ì‹ ì²­ì: o ? (o._userName || '-') : '-', ì´ì „ìƒíƒœ: o ? o.status : '', ë³€ê²½ìƒíƒœ: newStatus, ì²˜ë¦¬ì: session.displayName || session.username });
+        await logInfo('ORDER_STATUS_CHANGE', { orderId, º¯°æ»óÅÂ: newStatus });
+        if (o && o.status === 'requested' && newStatus === 'preparing') {
+          sendSlackNotify('purchase_status', { »óÇ°¸í: o.product_name || '-', ½ÅÃ»ÀÚ: o._userName || '-', ÀÌÀü»óÅÂ: 'requested', º¯°æ»óÅÂ: 'preparing', Ã³¸®ÀÚ: session.displayName || session.username });
+        }
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, ë³€ê²½ìƒíƒœ: newStatus, ì˜¤ë¥˜: String(err) });
-        alert('ìƒíƒœ ë³€ê²½ ì¤‘ ì˜¤ë¥˜: ' + tErr(err.message));
+        await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, º¯°æ»óÅÂ: newStatus, ¿À·ù: String(err) });
+        alert('»óÅÂ º¯°æ Áß ¿À·ù: ' + tErr(err.message));
       }
     }
 
     async function revertStatus(orderId, prevStatus) {
-      const PREV_LABELS = { requested: 'êµ¬ë§¤ ì‹ ì²­', preparing: 'ìƒí’ˆ ì¤€ë¹„', purchased: 'ìƒí’ˆ êµ¬ë§¤' };
-      if (!confirm(`"${PREV_LABELS[prevStatus]}" ë‹¨ê³„ë¡œ ë˜ëŒë¦¬ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      const PREV_LABELS = { requested: '±¸¸Å ½ÅÃ»', preparing: '»óÇ° ÁØºñ', purchased: '»óÇ° ±¸¸Å' };
+      if (!confirm(`"${PREV_LABELS[prevStatus]}" ´Ü°è·Î µÇµ¹¸®½Ã°Ú½À´Ï±î?`)) return;
       try {
         const updateFields = { status: prevStatus };
         if (prevStatus === 'requested') { updateFields.prepared_at = null; updateFields.prepared_by = null; }
@@ -528,17 +530,16 @@
         if (prevStatus === 'purchased') { updateFields.delivered_at = null; updateFields.delivered_by = null; }
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         if (error) {
-          await logError('ORDER_REVERT_FAIL', { orderId, ë³€ê²½ìƒíƒœ: prevStatus, ì˜¤ë¥˜: error.message });
-          alert('ë˜ëŒë¦¬ê¸° ì‹¤íŒ¨: ' + tErr(error.message));
+          await logError('ORDER_REVERT_FAIL', { orderId, º¯°æ»óÅÂ: prevStatus, ¿À·ù: error.message });
+          alert('µÇµ¹¸®±â ½ÇÆĞ: ' + tErr(error.message));
           return;
         }
         const ro = allOrders.find(x => x.id === orderId);
-        await logInfo('ORDER_REVERT', { orderId, ë³€ê²½ìƒíƒœ: prevStatus });
-        sendSlackNotify('purchase_status', { ìƒí’ˆëª…: ro ? ro.product_name : '-', ì‹ ì²­ì: ro ? (ro._userName || '-') : '-', ì´ì „ìƒíƒœ: ro ? ro.status : '', ë³€ê²½ìƒíƒœ: prevStatus, ì²˜ë¦¬ì: session.displayName || session.username });
+        await logInfo('ORDER_REVERT', { orderId, º¯°æ»óÅÂ: prevStatus });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_REVERT_ERROR', { orderId, ë³€ê²½ìƒíƒœ: prevStatus, ì˜¤ë¥˜: String(err) });
-        alert('ë˜ëŒë¦¬ê¸° ì¤‘ ì˜¤ë¥˜: ' + tErr(err.message));
+        await logError('ORDER_REVERT_ERROR', { orderId, º¯°æ»óÅÂ: prevStatus, ¿À·ù: String(err) });
+        alert('µÇµ¹¸®±â Áß ¿À·ù: ' + tErr(err.message));
       }
     }
 
@@ -549,42 +550,41 @@
       const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.82rem;background:${STATUS_COLOR[o.status]}22;color:${STATUS_COLOR[o.status]};font-weight:600;">${STATUS_LABEL[o.status]}</span>`;
       const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="this.remove()">
         <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
-          <h3 style="margin:0 0 0.8rem;">ğŸ“‹ ì£¼ë¬¸ ìƒì„¸</h3>
-          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} ë‹¬ë€íŠ¸</div>
-          <div style="font-size:0.85rem;margin-bottom:0.5rem;">ì‹ ì²­ì: ${o._userName} | ë¶€ì„œ: ${o._deptName}</div>
-          <div style="font-size:0.85rem;margin-bottom:0.8rem;">ìƒíƒœ: ${statusBadge}</div>
-          <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">ì²˜ë¦¬ ì´ë ¥</div>
-          <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">ì²˜ë¦¬ ì´ë ¥ ì—†ìŒ</span>'}</div>
-          <div style="text-align:right;margin-top:1rem;"><button onclick="this.closest('[style*=fixed]').remove()" style="padding:0.4rem 1rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;">ë‹«ê¸°</button></div>
+          <h3 style="margin:0 0 0.8rem;">?? ÁÖ¹® »ó¼¼</h3>
+          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} ´Ş¶õÆ®</div>
+          <div style="font-size:0.85rem;margin-bottom:0.5rem;">½ÅÃ»ÀÚ: ${o._userName} | ºÎ¼­: ${o._deptName}</div>
+          <div style="font-size:0.85rem;margin-bottom:0.8rem;">»óÅÂ: ${statusBadge}</div>
+          <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">Ã³¸® ÀÌ·Â</div>
+          <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">Ã³¸® ÀÌ·Â ¾øÀ½</span>'}</div>
+          <div style="text-align:right;margin-top:1rem;"><button onclick="this.closest('[style*=fixed]').remove()" style="padding:0.4rem 1rem;border:1px solid #ddd;border-radius:8px;background:#fff;cursor:pointer;">´İ±â</button></div>
         </div>
       </div>`;
       document.body.insertAdjacentHTML('beforeend', html);
     }
 
     async function confirmPurchase(orderId) {
-      if (!confirm('ìƒí’ˆ êµ¬ë§¤ë¥¼ í™•ì •í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\në‹¬ë€íŠ¸ê°€ ì‹¤ì œ ì°¨ê°ë©ë‹ˆë‹¤.')) return;
+      if (!confirm('»óÇ° ±¸¸Å¸¦ È®Á¤ÇÏ½Ã°Ú½À´Ï±î?\n´Ş¶õÆ®°¡ ½ÇÁ¦ Â÷°¨µË´Ï´Ù.')) return;
       try {
         const { data, error } = await _sb.rpc('confirm_product_purchase', {
           p_order_id: orderId,
           p_admin_id: session.id
         });
         if (error) {
-          await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, ì˜¤ë¥˜: error.message });
-          alert('êµ¬ë§¤ í™•ì • ì‹¤íŒ¨: ' + tErr(error.message));
+          await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, ¿À·ù: error.message });
+          alert('±¸¸Å È®Á¤ ½ÇÆĞ: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('ORDER_PURCHASE_CONFIRM_DENIED', { orderId, ì‚¬ìœ : data.error });
+          await logWarn('ORDER_PURCHASE_CONFIRM_DENIED', { orderId, »çÀ¯: data.error });
           alert(tErr(data.error));
           return;
         }
         const co = allOrders.find(x => x.id === orderId);
         await logInfo('ORDER_PURCHASE_CONFIRM', { orderId });
-        sendSlackNotify('purchase_status', { ìƒí’ˆëª…: co ? co.product_name : '-', ì‹ ì²­ì: co ? (co._userName || '-') : '-', ì´ì „ìƒíƒœ: 'preparing', ë³€ê²½ìƒíƒœ: 'purchased', ì²˜ë¦¬ì: session.displayName || session.username });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, ì˜¤ë¥˜: String(err) });
-        alert('êµ¬ë§¤ í™•ì • ì¤‘ ì˜¤ë¥˜: ' + tErr(err.message));
+        await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, ¿À·ù: String(err) });
+        alert('±¸¸Å È®Á¤ Áß ¿À·ù: ' + tErr(err.message));
       }
     }
 
@@ -601,8 +601,8 @@
 
     async function bulkPrepare() {
       const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
-      if (ids.length === 0) { alert('ìƒí’ˆ ì¤€ë¹„ ì²˜ë¦¬í•  í•­ëª©ì„ ì„ íƒí•´ì£¼ì„¸ìš”.'); return; }
-      if (!confirm(`${ids.length}ê±´ì„ ìƒí’ˆ ì¤€ë¹„ ì²˜ë¦¬í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      if (ids.length === 0) { alert('»óÇ° ÁØºñ Ã³¸®ÇÒ Ç×¸ñÀ» ¼±ÅÃÇØÁÖ¼¼¿ä.'); return; }
+      if (!confirm(`${ids.length}°ÇÀ» »óÇ° ÁØºñ Ã³¸®ÇÏ½Ã°Ú½À´Ï±î?`)) return;
 
       let failCount = 0;
       for (const id of ids) {
@@ -611,18 +611,18 @@
           prepared_at: new Date().toISOString(),
           prepared_by: session.id
         }).eq('id', id);
-        if (error) { failCount++; await logError('ORDER_BULK_PREPARE_ITEM_FAIL', { orderId: id, ì˜¤ë¥˜: error.message }); }
+        if (error) { failCount++; await logError('ORDER_BULK_PREPARE_ITEM_FAIL', { orderId: id, ¿À·ù: error.message }); }
       }
-      if (failCount > 0) alert(`${failCount}ê±´ ì²˜ë¦¬ ì‹¤íŒ¨. ë¡œê·¸ë¥¼ í™•ì¸í•´ì£¼ì„¸ìš”.`);
-      await logInfo('ORDER_BULK_PREPARE', { ê±´ìˆ˜: ids.length, ì‹¤íŒ¨ê±´ìˆ˜: failCount });
-      sendSlackNotify('purchase_status', { ìƒí’ˆëª…: 'ì¼ê´„ ì²˜ë¦¬', ì´ì „ìƒíƒœ: 'requested', ë³€ê²½ìƒíƒœ: 'preparing', ì²˜ë¦¬ì: session.displayName || session.username, ê±´ìˆ˜: ids.length, ì‹¤íŒ¨ê±´ìˆ˜: failCount });
+      if (failCount > 0) alert(`${failCount}°Ç Ã³¸® ½ÇÆĞ. ·Î±×¸¦ È®ÀÎÇØÁÖ¼¼¿ä.`);
+      await logInfo('ORDER_BULK_PREPARE', { °Ç¼ö: ids.length, ½ÇÆĞ°Ç¼ö: failCount });
+      sendSlackNotify('purchase_status', { »óÇ°¸í: 'ÀÏ°ı Ã³¸®', ÀÌÀü»óÅÂ: 'requested', º¯°æ»óÅÂ: 'preparing', Ã³¸®ÀÚ: session.displayName || session.username, °Ç¼ö: ids.length, ½ÇÆĞ°Ç¼ö: failCount });
       await loadOrders();
     }
 
     async function bulkPurchase() {
       const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
-      if (ids.length === 0) { alert('êµ¬ë§¤ í™•ì •í•  í•­ëª©ì„ ì„ íƒí•´ì£¼ì„¸ìš”.'); return; }
-      if (!confirm(`${ids.length}ê±´ì„ êµ¬ë§¤ í™•ì •í•˜ì‹œê² ìŠµë‹ˆê¹Œ?\në‹¬ë€íŠ¸ê°€ ì‹¤ì œ ì°¨ê°ë©ë‹ˆë‹¤.`)) return;
+      if (ids.length === 0) { alert('±¸¸Å È®Á¤ÇÒ Ç×¸ñÀ» ¼±ÅÃÇØÁÖ¼¼¿ä.'); return; }
+      if (!confirm(`${ids.length}°ÇÀ» ±¸¸Å È®Á¤ÇÏ½Ã°Ú½À´Ï±î?\n´Ş¶õÆ®°¡ ½ÇÁ¦ Â÷°¨µË´Ï´Ù.`)) return;
 
       let failCount = 0;
       for (const id of ids) {
@@ -632,22 +632,21 @@
         });
         if (error) {
           failCount++;
-          await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', { orderId: id, ì˜¤ë¥˜: error.message });
+          await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', { orderId: id, ¿À·ù: error.message });
         } else if (data && data.success === false) {
           failCount++;
-          await logWarn('ORDER_BULK_PURCHASE_DENIED', { orderId: id, ì‚¬ìœ : data.error });
+          await logWarn('ORDER_BULK_PURCHASE_DENIED', { orderId: id, »çÀ¯: data.error });
         }
       }
-      if (failCount > 0) alert(`${failCount}ê±´ ì²˜ë¦¬ ì‹¤íŒ¨. ì”ì•¡ ë¶€ì¡± ë“±ì˜ ì‚¬ìœ ì¼ ìˆ˜ ìˆìŠµë‹ˆë‹¤.`);
-      await logInfo('ORDER_BULK_PURCHASE', { ê±´ìˆ˜: ids.length, ì‹¤íŒ¨ê±´ìˆ˜: failCount });
-      sendSlackNotify('purchase_status', { ìƒí’ˆëª…: 'ì¼ê´„ ì²˜ë¦¬', ì´ì „ìƒíƒœ: 'preparing', ë³€ê²½ìƒíƒœ: 'purchased', ì²˜ë¦¬ì: session.displayName || session.username, ê±´ìˆ˜: ids.length, ì‹¤íŒ¨ê±´ìˆ˜: failCount });
+      if (failCount > 0) alert(`${failCount}°Ç Ã³¸® ½ÇÆĞ. ÀÜ¾× ºÎÁ· µîÀÇ »çÀ¯ÀÏ ¼ö ÀÖ½À´Ï´Ù.`);
+      await logInfo('ORDER_BULK_PURCHASE', { °Ç¼ö: ids.length, ½ÇÆĞ°Ç¼ö: failCount });
       await loadOrders();
     }
 
     async function bulkDeliver() {
       const ids = [...document.querySelectorAll('.order-chk:checked')].map(c => c.value);
-      if (ids.length === 0) { alert('ì§€ê¸‰ ì™„ë£Œ ì²˜ë¦¬í•  í•­ëª©ì„ ì„ íƒí•´ì£¼ì„¸ìš”.'); return; }
-      if (!confirm(`${ids.length}ê±´ì„ ì§€ê¸‰ ì™„ë£Œ ì²˜ë¦¬í•˜ì‹œê² ìŠµë‹ˆê¹Œ?`)) return;
+      if (ids.length === 0) { alert('Áö±Ş ¿Ï·á Ã³¸®ÇÒ Ç×¸ñÀ» ¼±ÅÃÇØÁÖ¼¼¿ä.'); return; }
+      if (!confirm(`${ids.length}°ÇÀ» Áö±Ş ¿Ï·á Ã³¸®ÇÏ½Ã°Ú½À´Ï±î?`)) return;
 
       let failCount = 0;
       for (const id of ids) {
@@ -656,11 +655,10 @@
           delivered_at: new Date().toISOString(),
           delivered_by: session.id
         }).eq('id', id);
-        if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, ì˜¤ë¥˜: error.message }); }
+        if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, ¿À·ù: error.message }); }
       }
-      if (failCount > 0) alert(`${failCount}ê±´ ì²˜ë¦¬ ì‹¤íŒ¨. ë¡œê·¸ë¥¼ í™•ì¸í•´ì£¼ì„¸ìš”.`);
-      await logInfo('ORDER_BULK_DELIVER', { ê±´ìˆ˜: ids.length, ì‹¤íŒ¨ê±´ìˆ˜: failCount });
-      sendSlackNotify('purchase_status', { ìƒí’ˆëª…: 'ì¼ê´„ ì²˜ë¦¬', ì´ì „ìƒíƒœ: 'purchased', ë³€ê²½ìƒíƒœ: 'delivered', ì²˜ë¦¬ì: session.displayName || session.username, ê±´ìˆ˜: ids.length, ì‹¤íŒ¨ê±´ìˆ˜: failCount });
+      if (failCount > 0) alert(`${failCount}°Ç Ã³¸® ½ÇÆĞ. ·Î±×¸¦ È®ÀÎÇØÁÖ¼¼¿ä.`);
+      await logInfo('ORDER_BULK_DELIVER', { °Ç¼ö: ids.length, ½ÇÆĞ°Ç¼ö: failCount });
       await loadOrders();
     }
 
@@ -697,6 +695,6 @@
       return `${m}-${day} ${h}:${min}`;
     }
   </script>
-  <script src="../js/version.js?v=3.45.0"></script>
+  <script src="../js/version.js?v=3.46.0"></script>
 </body>
 </html>
