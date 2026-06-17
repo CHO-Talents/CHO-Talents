@@ -9,6 +9,25 @@ const SLACK_ALERT_LEVELS = ['WARN', 'ERROR', 'FATAL', 'CRITICAL'];
 
 let _clientInfo = null;
 let _clientIp = null;
+let _logAlertLastSent = {};
+const _LOG_ALERT_THROTTLE_MS = 5000;
+
+function _sendLogAlertDirect(level, action, page, details) {
+  if (!_sb) return;
+  var key = 'log_alert_' + level + '_' + action;
+  var now = Date.now();
+  if (_logAlertLastSent[key] && now - _logAlertLastSent[key] < _LOG_ALERT_THROTTLE_MS) return;
+  _logAlertLastSent[key] = now;
+  var safeDetails = {};
+  if (details) {
+    Object.keys(details).forEach(function(k) { if (!k.startsWith('_')) safeDetails[k] = details[k]; });
+  }
+  _sb.functions.invoke('slack-notify', {
+    body: { type: 'log_alert', data: { '레벨': level, '액션': action, '페이지': page || window.location.pathname, '상세': safeDetails } }
+  }).catch(function(err) {
+    console.warn('[LogAlert] Slack notify failed:', err);
+  });
+}
 
 const ACTION_LABELS = {
   PAGE_VIEW: '페이지 조회',
@@ -330,12 +349,8 @@ async function writeLog(level, action, page, details) {
     is_acknowledged: !ERROR_LEVELS.includes(level)
   };
   var result = await _insertActivityLogRow(row);
-  if (SLACK_ALERT_LEVELS.includes(level) && typeof sendSlackNotify === 'function') {
-    var safeDetails = {};
-    if (details) {
-      Object.keys(details).forEach(function(k) { if (!k.startsWith('_')) safeDetails[k] = details[k]; });
-    }
-    sendSlackNotify('log_alert', { 레벨: level, 액션: action, 페이지: page || window.location.pathname, 상세: safeDetails });
+  if (SLACK_ALERT_LEVELS.includes(level)) {
+    _sendLogAlertDirect(level, action, page || window.location.pathname, details);
   }
   return result;
 }
