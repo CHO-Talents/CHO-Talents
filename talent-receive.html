@@ -171,13 +171,24 @@
 
         if (qr.talent_item_id) {
           const wkStart = _getWeekStartKST();
-          const { data: adminEarns } = await _sb.from('talent_transactions')
-            .select('id').eq('user_id', session.id)
-            .eq('talent_item_id', qr.talent_item_id)
-            .eq('type', 'earn').eq('source', 'admin')
-            .gte('created_at', wkStart.toISOString());
-          if (adminEarns && adminEarns.length > 0) {
-            showResult('fail', '이번 주에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
+          try {
+            const { data: adminEarns } = await _sb.from('talent_transactions')
+              .select('id').eq('user_id', session.id)
+              .eq('talent_item_id', qr.talent_item_id)
+              .eq('type', 'earn').eq('source', 'admin')
+              .gte('created_at', wkStart.toISOString());
+            if (adminEarns && adminEarns.length > 0) {
+              showResult('fail', '이번 주에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
+            }
+          } catch (srcErr) {
+            const { data: allEarns } = await _sb.from('talent_transactions')
+              .select('id, created_by').eq('user_id', session.id)
+              .eq('talent_item_id', qr.talent_item_id)
+              .eq('type', 'earn')
+              .gte('created_at', wkStart.toISOString());
+            if (allEarns && allEarns.some(e => e.created_by !== session.id)) {
+              showResult('fail', '이번 주에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
+            }
           }
         }
 
@@ -203,9 +214,13 @@
           }
         }
 
-        await _sb.from('talent_qr_scans').insert({
-          qr_code_id: qr.id, user_id: session.id, scanned_at: new Date().toISOString()
-        });
+        const scanTime = new Date().toISOString();
+        const { data: scanRow, error: scanErr } = await _sb.from('talent_qr_scans').insert({
+          qr_code_id: qr.id, user_id: session.id, scanned_at: scanTime
+        }).select('id').single();
+        if (scanErr) throw scanErr;
+        const scanId = scanRow.id;
+
         await _sb.from('talent_qr_codes').update({
           used_count: (qr.used_count || 0) + 1
         }).eq('id', qr.id);
@@ -215,15 +230,25 @@
         const currentBalance = profile?.talent_balance || 0;
         const newBalance = currentBalance + qr.amount;
 
-        await _sb.from('talent_transactions').insert({
+        const txnRow = {
           user_id: session.id, type: 'earn', amount: qr.amount,
           description: qr.description || 'QR 달란트',
           talent_item_id: qr.talent_item_id || null,
           balance_after: newBalance,
           created_by: session.id,
           source: 'qr',
-          created_at: new Date().toISOString()
-        });
+          created_at: scanTime
+        };
+        let txnResult = await _sb.from('talent_transactions').insert(txnRow);
+        if (txnResult.error) {
+          delete txnRow.source;
+          txnResult = await _sb.from('talent_transactions').insert(txnRow);
+        }
+        if (txnResult.error) {
+          await _sb.from('talent_qr_scans').delete().eq('id', scanId);
+          await _sb.from('talent_qr_codes').update({ used_count: Math.max((qr.used_count || 0), 0) }).eq('id', qr.id);
+          throw txnResult.error;
+        }
 
         await _sb.from('profiles').update({
           talent_balance: newBalance
