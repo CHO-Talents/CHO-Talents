@@ -40,6 +40,26 @@ WHERE tt.user_id = qs.user_id
                         AND qs.scanned_at + interval '5 seconds';
 
 -- ============================================================
--- 3. 스키마 캐시 리로드
+-- 3. 고아 레코드 정리: talent_qr_scans에는 있지만 talent_transactions에 없는 경우
+--    (source 컬럼 추가 전 코드 배포로 인해 INSERT 실패한 스캔 기록)
+-- ============================================================
+DELETE FROM public.talent_qr_scans qs
+WHERE NOT EXISTS (
+  SELECT 1 FROM public.talent_transactions tt
+  WHERE tt.user_id = qs.user_id
+    AND tt.type = 'earn'
+    AND tt.created_at BETWEEN qs.scanned_at - interval '10 seconds'
+                          AND qs.scanned_at + interval '10 seconds'
+);
+
+-- 고아 삭제 후 used_count 재계산
+UPDATE public.talent_qr_codes qc
+SET used_count = (
+  SELECT COUNT(*) FROM public.talent_qr_scans qs
+  WHERE qs.qr_code_id = qc.id
+);
+
+-- ============================================================
+-- 4. 스키마 캐시 리로드
 -- ============================================================
 NOTIFY pgrst, 'reload schema';
