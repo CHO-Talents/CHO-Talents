@@ -47,7 +47,16 @@ VALUES
   ('production', 'GITHUB_PAT', 'env:GITHUB_PAT', true, false, '비밀 원문 저장 금지. 로컬 .env.local 또는 Edge Function 환경변수에 저장'),
   ('production', 'SUPABASE_ACCESS_TOKEN', 'env:SUPABASE_ACCESS_TOKEN', true, false, '비밀 원문 저장 금지. Supabase CLI/Management API 실행 환경변수에 저장'),
   ('production', 'SUPABASE_SERVICE_ROLE_KEY', 'env:SUPABASE_SERVICE_ROLE_KEY', true, false, '서버 전용 키. Edge Function/서버 환경변수 또는 Supabase Vault에 저장'),
-  ('production', 'SUPABASE_DB_CONNECTION_STRING', 'env:SUPABASE_DB_CONNECTION_STRING', true, false, 'DB 관리/마이그레이션 전용. 로컬/CI 비밀 저장소에서만 사용');
+  ('production', 'SUPABASE_DB_CONNECTION_STRING', 'env:SUPABASE_DB_CONNECTION_STRING', true, false, 'DB 관리/마이그레이션 전용. 로컬/CI 비밀 저장소에서만 사용'),
+  ('production', 'SLACK_WEBHOOK_PART1', 'env:SLACK_WEBHOOK_PART1', true, false, 'Slack 1부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('production', 'SLACK_WEBHOOK_PART2', 'env:SLACK_WEBHOOK_PART2', true, false, 'Slack 2부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('production', 'SLACK_WEBHOOK_PART3', 'env:SLACK_WEBHOOK_PART3', true, false, 'Slack 3부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('production', 'SLACK_WEBHOOK_PART4', 'env:SLACK_WEBHOOK_PART4', true, false, 'Slack 4부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('production', 'SLACK_WEBHOOK_PART5', 'env:SLACK_WEBHOOK_PART5', true, false, 'Slack 5부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('production', 'SLACK_WEBHOOK_WORSHIP', 'env:SLACK_WEBHOOK_WORSHIP', true, false, 'Slack 예배부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('production', 'SLACK_WEBHOOK_PRODUCT_MANAGEMENT', 'env:SLACK_WEBHOOK_PRODUCT_MANAGEMENT', true, false, 'Slack 상품 관리 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('production', 'SLACK_WEBHOOK_OPERATIONS', 'env:SLACK_WEBHOOK_OPERATIONS', true, false, 'Slack 운영 로그 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('production', 'SLACK_WEBHOOK_ANSWER', 'env:SLACK_WEBHOOK_ANSWER', true, false, 'Slack Q&A 채널 Webhook. Edge Function Secret에 원문 저장');
 
 -- ============================================================
 -- 1. Core Tables
@@ -141,6 +150,7 @@ CREATE TABLE IF NOT EXISTS public.talent_transactions (
   description text,
   created_by uuid REFERENCES public.profiles(id),
   talent_item_id uuid REFERENCES public.talent_items(id),
+  source text DEFAULT 'admin',
   created_at timestamptz DEFAULT now()
 );
 
@@ -276,6 +286,7 @@ CREATE TABLE IF NOT EXISTS public.user_preferences (
   user_id uuid PRIMARY KEY REFERENCES public.profiles(id) ON DELETE CASCADE,
   favorite_shortcuts jsonb DEFAULT '["earn-talents","shop","my-talents"]'::jsonb,
   theme text DEFAULT 'default' CHECK (theme IN ('default', 'dark', 'spring', 'summer', 'autumn', 'winter')),
+  page_sizes jsonb DEFAULT '{}'::jsonb,
   updated_at timestamptz DEFAULT now()
 );
 
@@ -1031,6 +1042,47 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.cancel_product_order(
+  p_order_id uuid,
+  p_user_id uuid
+)
+RETURNS json
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_order record;
+  v_current_pending integer;
+BEGIN
+  SELECT * INTO v_order
+  FROM public.product_orders
+  WHERE id = p_order_id
+    AND user_id = p_user_id
+    AND status = 'requested'
+  FOR UPDATE;
+
+  IF v_order IS NULL THEN
+    RETURN json_build_object('success', false, 'error', 'No cancellable order found');
+  END IF;
+
+  UPDATE public.product_orders
+  SET status = 'cancelled'
+  WHERE id = p_order_id;
+
+  SELECT COALESCE(pending_talent, 0) INTO v_current_pending
+  FROM public.profiles
+  WHERE id = p_user_id
+  FOR UPDATE;
+
+  UPDATE public.profiles
+  SET pending_talent = GREATEST(0, v_current_pending - v_order.price)
+  WHERE id = p_user_id;
+
+  RETURN json_build_object('success', true, 'refunded', v_order.price);
+END;
+$$;
+
 CREATE OR REPLACE FUNCTION public.confirm_product_purchase(
   p_order_id uuid,
   p_admin_id uuid
@@ -1076,6 +1128,98 @@ BEGIN
   WHERE id = v_order.user_id;
 
   RETURN json_build_object('success', true, 'balance', (v_result->>'balance')::integer);
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.scan_qr_talent(
+  p_qr_code_id uuid,
+  p_user_id uuid
+)
+RETURNS json
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_qr record;
+  v_new_balance integer;
+  v_txn_id uuid;
+  v_scan_id uuid;
+  v_existing_scan uuid;
+  v_existing_txn uuid;
+BEGIN
+  SELECT * INTO v_qr
+  FROM public.talent_qr_codes
+  WHERE id = p_qr_code_id
+    AND is_active = true;
+
+  IF v_qr IS NULL THEN
+    RETURN json_build_object('success', false, 'error', 'Invalid QR code');
+  END IF;
+
+  SELECT id INTO v_existing_scan
+  FROM public.talent_qr_scans
+  WHERE qr_code_id = p_qr_code_id
+    AND user_id = p_user_id
+  LIMIT 1;
+
+  IF v_existing_scan IS NOT NULL THEN
+    SELECT id INTO v_existing_txn
+    FROM public.talent_transactions
+    WHERE user_id = p_user_id
+      AND type = 'earn'
+      AND (
+        (talent_item_id = v_qr.talent_item_id AND v_qr.talent_item_id IS NOT NULL)
+        OR (
+          created_at BETWEEN
+            (SELECT scanned_at FROM public.talent_qr_scans WHERE id = v_existing_scan) - interval '2 minutes'
+            AND
+            (SELECT scanned_at FROM public.talent_qr_scans WHERE id = v_existing_scan) + interval '2 minutes'
+        )
+      )
+    LIMIT 1;
+
+    IF v_existing_txn IS NOT NULL THEN
+      RETURN json_build_object('success', false, 'error', 'Already received');
+    END IF;
+
+    UPDATE public.talent_qr_scans
+    SET scanned_at = now()
+    WHERE id = v_existing_scan;
+
+    v_scan_id := v_existing_scan;
+  ELSE
+    INSERT INTO public.talent_qr_scans (qr_code_id, user_id, scanned_at)
+    VALUES (p_qr_code_id, p_user_id, now())
+    RETURNING id INTO v_scan_id;
+
+    UPDATE public.talent_qr_codes
+    SET used_count = COALESCE(used_count, 0) + 1
+    WHERE id = p_qr_code_id;
+  END IF;
+
+  UPDATE public.profiles
+  SET talent_balance = COALESCE(talent_balance, 0) + v_qr.amount
+  WHERE id = p_user_id
+  RETURNING talent_balance INTO v_new_balance;
+
+  INSERT INTO public.talent_transactions (
+    user_id, type, amount, balance_after, description,
+    created_by, talent_item_id, source
+  ) VALUES (
+    p_user_id, 'earn', v_qr.amount, v_new_balance,
+    COALESCE(v_qr.description, 'QR 달란트'),
+    p_user_id, v_qr.talent_item_id, 'qr'
+  )
+  RETURNING id INTO v_txn_id;
+
+  RETURN json_build_object(
+    'success', true,
+    'balance', v_new_balance,
+    'amount', v_qr.amount,
+    'txn_id', v_txn_id,
+    'scan_id', v_scan_id
+  );
 END;
 $$;
 
@@ -1243,6 +1387,10 @@ CREATE POLICY "Users can create orders" ON public.product_orders FOR INSERT TO a
 DROP POLICY IF EXISTS "Staff can update orders" ON public.product_orders;
 CREATE POLICY "Staff can update orders" ON public.product_orders FOR UPDATE TO authenticated
   USING (public.get_permission_rank(auth.uid()) >= 60);
+DROP POLICY IF EXISTS "Users can cancel own requested orders" ON public.product_orders;
+CREATE POLICY "Users can cancel own requested orders" ON public.product_orders FOR UPDATE TO authenticated
+  USING (user_id = auth.uid() AND status = 'requested')
+  WITH CHECK (user_id = auth.uid() AND status = 'cancelled');
 
 -- Q&A
 DROP POLICY IF EXISTS qna_select_all ON public.qna;
@@ -1388,7 +1536,9 @@ REVOKE EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid) F
 GRANT EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.use_talent(uuid, integer, text, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.request_product_order(uuid, uuid, text, integer) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.cancel_product_order(uuid, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.confirm_product_purchase(uuid, uuid) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.scan_qr_talent(uuid, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.submit_anonymous_question(text, text) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.admin_soft_delete_qna(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_public_app_config(text) TO anon, authenticated;
@@ -1545,11 +1695,16 @@ pages(page_key, min_view_rank, min_manage_rank) AS (
     ('departments', 60, 80),
     ('managers', 80, 80),
     ('talents', 40, 40),
+    ('talent_stats', 60, 60),
+    ('talent_qr', 90, 90),
     ('talent_items', 90, 90),
     ('shop', 60, 60),
     ('purchases', 60, 60),
+    ('purchase_stats', 60, 60),
     ('reports', 80, 80),
     ('logs', 100, 100),
+    ('audit', 100, 100),
+    ('slack_rules', 80, 80),
     ('versions', 80, 80),
     ('page_permissions', 100, 100)
 )

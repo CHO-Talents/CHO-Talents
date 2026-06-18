@@ -114,7 +114,16 @@ $configRows = @(
   [pscustomobject]@{ Key = 'GITHUB_PAT'; Value = 'env:GITHUB_PAT'; IsSecret = $true; UseYn = $false; Description = 'Secret reference only. Store the real value in local, CI, server, or Edge Function environment variables.' },
   [pscustomobject]@{ Key = 'SUPABASE_ACCESS_TOKEN'; Value = 'env:SUPABASE_ACCESS_TOKEN'; IsSecret = $true; UseYn = $false; Description = 'Secret reference only. Used by Supabase CLI or Management API automation.' },
   [pscustomobject]@{ Key = 'SUPABASE_SERVICE_ROLE_KEY'; Value = 'env:SUPABASE_SERVICE_ROLE_KEY'; IsSecret = $true; UseYn = $false; Description = 'Server-only key. Never expose this value to browser code.' },
-  [pscustomobject]@{ Key = 'SUPABASE_DB_CONNECTION_STRING'; Value = 'env:SUPABASE_DB_CONNECTION_STRING'; IsSecret = $true; UseYn = $false; Description = 'Database migration/admin connection string reference.' }
+  [pscustomobject]@{ Key = 'SUPABASE_DB_CONNECTION_STRING'; Value = 'env:SUPABASE_DB_CONNECTION_STRING'; IsSecret = $true; UseYn = $false; Description = 'Database migration/admin connection string reference.' },
+  [pscustomobject]@{ Key = 'SLACK_WEBHOOK_PART1'; Value = 'env:SLACK_WEBHOOK_PART1'; IsSecret = $true; UseYn = $false; Description = 'Slack Part 1 channel webhook. Store the real value as an Edge Function secret.' },
+  [pscustomobject]@{ Key = 'SLACK_WEBHOOK_PART2'; Value = 'env:SLACK_WEBHOOK_PART2'; IsSecret = $true; UseYn = $false; Description = 'Slack Part 2 channel webhook. Store the real value as an Edge Function secret.' },
+  [pscustomobject]@{ Key = 'SLACK_WEBHOOK_PART3'; Value = 'env:SLACK_WEBHOOK_PART3'; IsSecret = $true; UseYn = $false; Description = 'Slack Part 3 channel webhook. Store the real value as an Edge Function secret.' },
+  [pscustomobject]@{ Key = 'SLACK_WEBHOOK_PART4'; Value = 'env:SLACK_WEBHOOK_PART4'; IsSecret = $true; UseYn = $false; Description = 'Slack Part 4 channel webhook. Store the real value as an Edge Function secret.' },
+  [pscustomobject]@{ Key = 'SLACK_WEBHOOK_PART5'; Value = 'env:SLACK_WEBHOOK_PART5'; IsSecret = $true; UseYn = $false; Description = 'Slack Part 5 channel webhook. Store the real value as an Edge Function secret.' },
+  [pscustomobject]@{ Key = 'SLACK_WEBHOOK_WORSHIP'; Value = 'env:SLACK_WEBHOOK_WORSHIP'; IsSecret = $true; UseYn = $false; Description = 'Slack worship department channel webhook. Store the real value as an Edge Function secret.' },
+  [pscustomobject]@{ Key = 'SLACK_WEBHOOK_PRODUCT_MANAGEMENT'; Value = 'env:SLACK_WEBHOOK_PRODUCT_MANAGEMENT'; IsSecret = $true; UseYn = $false; Description = 'Slack product management channel webhook. Store the real value as an Edge Function secret.' },
+  [pscustomobject]@{ Key = 'SLACK_WEBHOOK_OPERATIONS'; Value = 'env:SLACK_WEBHOOK_OPERATIONS'; IsSecret = $true; UseYn = $false; Description = 'Slack operations log channel webhook. Store the real value as an Edge Function secret.' },
+  [pscustomobject]@{ Key = 'SLACK_WEBHOOK_ANSWER'; Value = 'env:SLACK_WEBHOOK_ANSWER'; IsSecret = $true; UseYn = $false; Description = 'Slack Q&A channel webhook. Store the real value as an Edge Function secret.' }
 )
 
 $envSql = Sql-Literal $AppConfigEnv

@@ -23,7 +23,10 @@
 | `scripts/install-supabase-database.ps1` | 추적 | 새 Supabase DB에 전체 설치 SQL을 적용하거나 설치 SQL을 생성 |
 | `docs/INITIAL_DATABASE_SETUP.sql` | 추적 | 빈 Supabase DB에 현재 테이블/RPC/RLS/Storage/기본 데이터를 한 번에 설치 |
 | `docs/INITIAL_DATABASE_SETUP.md` | 추적 | SQL Editor 실행 순서와 PowerShell 자동 설치 방법 |
+| `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 추적 | 다른 Supabase 프로젝트에서 새로 시작하는 설치 절차 |
 | `docs/TASK-041_app_config.sql` | 추적 | Supabase `app_config` 테이블, RLS, 공개 설정 RPC, 초기 데이터 |
+| `docs/edge-function-slack-notify.ts` | 추적 | Slack 알림 Edge Function 배포용 소스 |
+| `docs/SLACK_NOTIFICATION_RULES.md` | 추적 | Slack 알림 type, 라우팅, Secret 기준 |
 
 ## 3. 공개 설정
 
@@ -76,6 +79,11 @@ Supabase `app_config` 테이블에는 비밀 원문을 넣지 않는다. 대신 
 | `SUPABASE_ACCESS_TOKEN` | `env:SUPABASE_ACCESS_TOKEN` | 로컬 `.env.local`, CI secret |
 | `SUPABASE_SERVICE_ROLE_KEY` | `env:SUPABASE_SERVICE_ROLE_KEY` | 서버/Edge Function 환경변수 또는 Supabase Vault |
 | `SUPABASE_DB_CONNECTION_STRING` | `env:SUPABASE_DB_CONNECTION_STRING` | 로컬/CI 비밀 저장소 |
+| `SLACK_WEBHOOK_PART1` ~ `SLACK_WEBHOOK_PART5` | `env:SLACK_WEBHOOK_PART1` 등 | Supabase Edge Function Secret |
+| `SLACK_WEBHOOK_WORSHIP` | `env:SLACK_WEBHOOK_WORSHIP` | Supabase Edge Function Secret |
+| `SLACK_WEBHOOK_PRODUCT_MANAGEMENT` | `env:SLACK_WEBHOOK_PRODUCT_MANAGEMENT` | Supabase Edge Function Secret |
+| `SLACK_WEBHOOK_OPERATIONS` | `env:SLACK_WEBHOOK_OPERATIONS` | Supabase Edge Function Secret |
+| `SLACK_WEBHOOK_ANSWER` | `env:SLACK_WEBHOOK_ANSWER` | Supabase Edge Function Secret |
 
 ## 5. Supabase app_config 적용
 
@@ -83,7 +91,7 @@ Supabase `app_config` 테이블에는 비밀 원문을 넣지 않는다. 대신 
 
 공개 설정만 기존 DB에 보강하거나 점검할 때는 Supabase SQL Editor 또는 Management API에서 `docs/TASK-041_app_config.sql`을 실행한다.
 
-로컬에서 DB 접속 문자열을 사용할 수 있으면 `scripts/install-supabase-database.ps1`로 설치 SQL 생성 또는 실행을 자동화할 수 있다.
+로컬에서 DB 접속 문자열을 사용할 수 있으면 `scripts/install-supabase-database.ps1`로 설치 SQL 생성 또는 실행을 자동화할 수 있다. 새 프로젝트 전체 설치 절차는 `docs/SUPABASE_NEW_PROJECT_SETUP.md`를 함께 확인한다.
 
 적용 후 브라우저에서는 아래 흐름으로 설정을 읽는다.
 
@@ -97,7 +105,23 @@ Supabase `app_config` 테이블에는 비밀 원문을 넣지 않는다. 대신 
 
 주의: publishable/anon key는 브라우저에 공개 가능한 키이지만 비밀키가 아니다. 서비스 롤 키, DB connection string, Supabase access token은 `.env.local`, CI secret, 서버/Edge Function 환경변수, Vault 같은 비공개 위치에서만 사용한다.
 
-## 6. 추가로 필요한 Supabase 정보
+## 6. Slack Edge Function 설정
+
+Slack 알림은 브라우저에서 Webhook URL을 직접 호출하지 않는다. 화면은 `sendSlackNotify(type, data)`로 Supabase Edge Function `slack-notify`를 호출하고, Edge Function이 Secret으로 저장된 Webhook URL을 선택해 Slack으로 전송한다.
+
+필수 Secret:
+
+| Secret | 채널 |
+|---|---|
+| `SLACK_WEBHOOK_PART1` ~ `SLACK_WEBHOOK_PART5` | 1부~5부 |
+| `SLACK_WEBHOOK_WORSHIP` | 예배부 |
+| `SLACK_WEBHOOK_PRODUCT_MANAGEMENT` | 상품 관리 |
+| `SLACK_WEBHOOK_OPERATIONS` | 운영 로그 |
+| `SLACK_WEBHOOK_ANSWER` | Q&A |
+
+정적 파일, `config/public-config.js`, `app_config`에는 Webhook 원문을 넣지 않는다. `app_config`에는 `env:SLACK_WEBHOOK_...` 참조값만 기록할 수 있다.
+
+## 7. 추가로 필요한 Supabase 정보
 
 제공된 Supabase access token만으로는 브라우저 앱에서 DB CRUD를 직접 수행하는 용도로 쓰지 않는다. DB 관리 자동화 목적이라면 다음 중 하나가 추가로 필요하다.
 
@@ -107,10 +131,11 @@ Supabase `app_config` 테이블에는 비밀 원문을 넣지 않는다. 대신 
 | SQL 실행, 마이그레이션, 백업 | `SUPABASE_DB_CONNECTION_STRING` 또는 DB password |
 | Supabase CLI 프로젝트 연결 | `SUPABASE_ACCESS_TOKEN` + `SUPABASE_PROJECT_REF` |
 
-## 7. 보안 원칙
+## 8. 보안 원칙
 
 - GitHub PAT와 Supabase access token은 정적 HTML/JS에 넣지 않는다.
 - `app_config`에 비밀값 원문을 평문 저장하지 않는다.
 - 서비스 롤 키는 브라우저에서 사용하지 않는다.
+- Slack Webhook URL은 브라우저에서 사용하지 않고 Supabase Edge Function Secret으로만 관리한다.
 - 브라우저 앱은 publishable/anon key와 RLS/RPC로 제한된 작업만 수행한다.
 - 로컬 자동화나 배포 스크립트는 `.env.local`을 읽어 실행한다.

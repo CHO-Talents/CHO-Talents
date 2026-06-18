@@ -17,7 +17,7 @@
 
 ## 소스 확인 기준 핵심 흐름
 
-프로젝트는 `index.html`, `login.html`, `register.html`, `guide.html`, `earn-talents.html`, `qna.html`, `my-talents.html`, `talent-receive.html`, `shop.html`, `my-orders.html` 중심의 학생 화면으로 구성되어 있습니다.
+프로젝트는 `index.html`, `login.html`, `register.html`, `guide.html`, `earn-talents.html`, `qna.html`, `my-talents.html`, `talent-receive.html`, `shop.html`, `my-orders.html` 중심의 학생 화면으로 구성되어 있습니다. 운영 권한자는 소개 메뉴에서 별도의 역할별 가이드(`teacher-guide.html`, `dept-teacher-guide.html`, `purchase-teacher-guide.html`, `chief-teacher-guide.html`, `evangelist-guide.html`, `admin-guide.html`)를 볼 수 있습니다.
 
 데이터는 Supabase에 저장됩니다.
 
@@ -48,7 +48,7 @@
 - 상품 구매
 - 내 달란트
 
-오른쪽 위에는 **학생 가이드**와 **로그인** 버튼이 있습니다.
+상단 소개 메뉴에는 **학생 가이드**와 **달란트 적립**, **Q & A**가 보이고, 로그인한 권한에 따라 교사/운영자 가이드가 추가로 보일 수 있습니다.
 
 ### 학생에게 설명하기
 
