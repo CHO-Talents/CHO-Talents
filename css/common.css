@@ -596,10 +596,13 @@ table.data-table tr:hover { background: #fafbfc; }
     overflow-y: visible;
     white-space: normal;
     justify-content: flex-start;
+    align-items: center;
   }
   .admin-nav-brand,
-  .top-nav-brand { order: 1; }
-  .nav-header-actions { order: 2; gap: 0.3rem; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; }
+  .top-nav-brand { order: 1; font-size: 0.85rem; }
+  .top-nav-brand .brand-icon,
+  .admin-nav-brand .brand-icon { font-size: 1.1rem; }
+  .nav-header-actions { order: 2; gap: 0.3rem; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; margin-left: auto; }
   .top-nav-hamburger,
   .nav-hamburger { display: block; order: 3; }
   .top-nav-links,
