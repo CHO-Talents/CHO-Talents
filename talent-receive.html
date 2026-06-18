@@ -193,35 +193,7 @@
         }
 
         const repeatType = qr.repeat_type || 'none';
-        if (repeatType === 'none') {
-          const { data: existing } = await _sb.from('talent_qr_scans')
-            .select('id, scanned_at').eq('qr_code_id', qr.id).eq('user_id', session.id)
-            .order('scanned_at', { ascending: false }).limit(1);
-          if (existing && existing.length > 0) {
-            const scanMs = new Date(existing[0].scanned_at).getTime();
-            let talentActuallyReceived = false;
-            try {
-              const { data: txn } = await _sb.from('talent_transactions')
-                .select('id').eq('user_id', session.id).eq('type', 'earn')
-                .eq('source', 'qr')
-                .gte('created_at', new Date(scanMs - 60000).toISOString())
-                .lte('created_at', new Date(scanMs + 60000).toISOString())
-                .limit(1);
-              talentActuallyReceived = !!(txn && txn.length > 0);
-            } catch (_) {
-              const { data: txn } = await _sb.from('talent_transactions')
-                .select('id').eq('user_id', session.id).eq('type', 'earn')
-                .eq('created_by', session.id)
-                .gte('created_at', new Date(scanMs - 60000).toISOString())
-                .lte('created_at', new Date(scanMs + 60000).toISOString())
-                .limit(1);
-              talentActuallyReceived = !!(txn && txn.length > 0);
-            }
-            if (talentActuallyReceived) {
-              showResult('fail', '이미 수령한 코드입니다.'); return;
-            }
-          }
-        } else {
+        if (repeatType !== 'none') {
           const canReceive = checkRepeatEligibility(qr);
           if (!canReceive.ok) {
             showResult('fail', canReceive.msg); return;
@@ -236,55 +208,35 @@
           }
         }
 
-        const scanTime = new Date().toISOString();
-        const { data: scanRow, error: scanErr } = await _sb.from('talent_qr_scans').insert({
-          qr_code_id: qr.id, user_id: session.id, scanned_at: scanTime
-        }).select('id').single();
-        if (scanErr) throw scanErr;
-        const scanId = scanRow.id;
+        const { data: rpcResult, error: rpcErr } = await _sb.rpc('scan_qr_talent', {
+          p_qr_code_id: qr.id,
+          p_user_id: session.id
+        });
 
-        await _sb.from('talent_qr_codes').update({
-          used_count: (qr.used_count || 0) + 1
-        }).eq('id', qr.id);
-
-        const { data: profile } = await _sb.from('profiles')
-          .select('talent_balance').eq('id', session.id).single();
-        const currentBalance = profile?.talent_balance || 0;
-        const newBalance = currentBalance + qr.amount;
-
-        const txnRow = {
-          user_id: session.id, type: 'earn', amount: qr.amount,
-          description: qr.description || 'QR 달란트',
-          talent_item_id: qr.talent_item_id || null,
-          balance_after: newBalance,
-          created_by: session.id,
-          source: 'qr',
-          created_at: scanTime
-        };
-        let txnResult = await _sb.from('talent_transactions').insert(txnRow);
-        if (txnResult.error) {
-          delete txnRow.source;
-          txnResult = await _sb.from('talent_transactions').insert(txnRow);
+        if (rpcErr) {
+          console.error('[QR-SCAN] RPC error:', rpcErr);
+          showResult('fail', '수령 처리 중 오류: ' + (rpcErr.message || rpcErr));
+          return;
         }
-        if (txnResult.error) {
-          await _sb.from('talent_qr_scans').delete().eq('id', scanId);
-          await _sb.from('talent_qr_codes').update({ used_count: Math.max((qr.used_count || 0), 0) }).eq('id', qr.id);
-          throw txnResult.error;
+        if (rpcResult && rpcResult.success === false) {
+          if (rpcResult.error === 'Already received') {
+            showResult('fail', '이미 수령한 코드입니다.');
+          } else {
+            showResult('fail', '수령 실패: ' + rpcResult.error);
+          }
+          return;
         }
 
-        await _sb.from('profiles').update({
-          talent_balance: newBalance
-        }).eq('id', session.id);
-
-        session.talentBalance = newBalance;
+        session.talentBalance = rpcResult.balance;
         setSession(session);
 
         const itemName = qr.description || 'QR 달란트';
-        await logInfo('qr_scan', { 항목명: itemName, 금액: qr.amount });
-        showResult('ok', `✅ ${qr.amount} 달란트를 수령했습니다! (${qr.description || 'QR 달란트'})`);
+        await logInfo('qr_scan', { 항목명: itemName, 금액: rpcResult.amount });
+        showResult('ok', `✅ ${rpcResult.amount} 달란트를 수령했습니다! (${itemName})`);
         document.getElementById('qrInput').value = '';
         loadHistory();
       } catch (e) {
+        console.error('[QR-SCAN] Exception:', e);
         showResult('fail', '오류가 발생했습니다: ' + (e.message || e));
       } finally {
         btn.disabled = false;
