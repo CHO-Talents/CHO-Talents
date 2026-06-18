@@ -1,46 +1,54 @@
 ---
-description: CHO-Talents 권한별 페이지 구조 맵핑 규칙 - 역할별 중복 페이지 관리 가이드
+description: CHO-Talents 권한별 페이지 구조 매핑 규칙 - permission_level 기반 페이지/메뉴 관리 가이드
 globs: **/*.html
 alwaysApply: false
 ---
 
-# 권한별 페이지 구조 맵핑
+# 권한별 페이지 구조 매핑
 
 ## 원칙
-- admin과 dept_manager는 `/admin/` 폴더를 공유하며, `data-role` 속성과 `applyRoleNav()` 함수로 역할별 메뉴를 분기한다
-- teacher, student는 각 역할 전용 폴더를 사용한다
-- `/manager/` 폴더는 TASK-012에서 삭제되어 더 이상 존재하지 않는다
 
-## 폴더별 역할 및 네비게이션
+- 현재 프로젝트는 `role`/`dept_manager`가 아니라 `user_type` + `permission_level` + `permissionRank` 체계를 사용한다.
+- 화면 접근은 `initPage(minRank, loginPath)`, 메뉴 노출은 `data-min-perm`과 `applyPermNav(rank)`로 제어한다.
+- 관리 화면은 `/admin/` 폴더를 공유한다. 별도 `/teacher/`, `/student/`, `/manager/` 폴더는 사용하지 않는다.
+- 신규 페이지는 `js/nav.js`의 `NAV_MENU`, `js/auth.js`의 `detectCurrentPageId()`, 필요 시 `admin/page-access.html`의 `PAGE_LIST`를 함께 업데이트한다.
 
-| 폴더 | 역할 | 네비게이션 항목 |
-|------|------|----------------|
-| `/admin/` | admin | 메인, 대시보드, 사용자관리, 부서관리, 관리자관리, 달란트관리, 물품관리, 상점관리, 보고서, 로그, 버전 |
-| `/admin/` | dept_manager | 메인, 대시보드, 사용자관리, 달란트관리, 물품관리 |
-| `/teacher/` | teacher | 메인, 내 달란트, 교사상점 |
-| `/student/` | student | 메인, 내 달란트, 학생상점 |
+## 권한 등급
 
-## admin/ 페이지별 역할 접근
+| 권한 | 코드 | rank | 대표 역할 |
+|---|---|---:|---|
+| 최고 관리자 | `admin` + `is_super_admin=true` | 110 | 모든 사용자/설정 관리 |
+| 관리자 | `admin` | 100 | 로그, 작업 이력, 페이지 접근/기능 설정 |
+| 전도사님 | `evangelist` | 90 | QR, 달란트 항목, 상품 삭제, Q&A 삭제 |
+| 부장 교사 | `chief` | 80 | 학생 일괄 등록, 보고서, 버전, 달란트 반환 |
+| 구매 담당 교사 | `purchase_teacher` | 70 | 전체 부서 구매 처리 |
+| 부서 담당 교사 | `dept_teacher` | 60 | 담당 부서 사용자/달란트/상품/구매 관리 |
+| 일반 교사 | `teacher` | 40 | 담당 부서/반 학생 달란트 지급, 대리 구매 |
+| 학생 | `student` | 20 | 내 달란트, 상품 구매, Q&A |
 
-| 페이지 | admin | dept_manager | 비고 |
-|--------|-------|-------------|------|
-| `admin/index.html` | ✅ 전체 대시보드 | ✅ 부서 스코프 대시보드 | 역할별 통계/바로가기 분기 |
-| `admin/users.html` | ✅ 전체 사용자 CRUD | ✅ 부서 사용자 조회 전용 | 가입승인/등록/삭제 admin only |
-| `admin/talents.html` | ✅ 전체 학생+교사 달란트 | ✅ 부서 학생+교사 달란트 | 탭으로 학생/교사 전환 |
-| `admin/products.html` | ✅ 전체 상품 CRUD | ✅ 전체 상품 CRUD | 동일 기능 |
-| `admin/departments.html` | ✅ | ❌ | admin 전용 |
-| `admin/managers.html` | ✅ | ❌ | admin 전용 |
-| `admin/shop.html` | ✅ | ❌ | admin 전용 |
-| `admin/reports.html` | ✅ | ❌ | admin 전용 |
-| `admin/logs.html` | ✅ | ❌ | admin 전용 |
-| `admin/versions.html` | ✅ | ❌ | admin 전용 |
+## 주요 페이지 접근
 
-## 역할 분기 구현 방식
-- HTML: `<li data-role="admin">` 속성으로 admin 전용 네비게이션 항목 표시
-- JS: `applyRoleNav(session.role)` 호출로 현재 역할에 맞지 않는 `data-role` 요소 숨김
-- `initPage(['admin', 'dept_manager'])`: 공유 페이지에서 두 역할 모두 허용
+| 페이지 | 최소 권한 | 비고 |
+|---|---:|---|
+| `guide.html` | 공개 | 학생 가이드 |
+| `teacher-guide.html` | 40 | 교사 가이드 |
+| `dept-teacher-guide.html` | 60 | 부서 담당 교사 가이드 |
+| `purchase-teacher-guide.html` | 70 | 구매 담당 교사 가이드 |
+| `chief-teacher-guide.html` | 80 | 부장 교사 가이드 |
+| `evangelist-guide.html` | 90 | 전도사님 가이드 |
+| `admin-guide.html` | 60 | 운영 권한 전체 요약 |
+| `admin/talents.html` | 40 | 일반 교사 이상, 권한별 부서/반 스코핑 |
+| `admin/index.html`, `admin/users.html`, `admin/departments.html` | 60 | 부서 담당 교사 이상 |
+| `admin/shop.html`, `admin/purchases.html`, `admin/purchase-stats.html` | 60 | 구매 담당 교사는 전체 부서 주문 처리 |
+| `admin/bulk-register.html`, `admin/managers.html`, `admin/reports.html`, `admin/versions.html` | 80 | 부장 교사 이상 |
+| `docs/page-permission-rules.html`, `admin/log-rules.html`, `admin/slack-rules.html`, `admin/audit-rules.html` | 80 | 운영 룰 문서, 부장 교사 이상 열람 |
+| `admin/talent-qr.html` | 90 | 전도사님 이상 |
+| `admin/page-access.html`, `admin/page-features.html`, `admin/audit.html`, `admin/logs.html`, `admin/page-permissions.html` | 100 | 관리자 이상 |
 
 ## 작업 시 체크리스트
-1. 새 admin 페이지 추가 시: `initPage` 역할 목록 확인, 네비게이션에 `data-role` 속성 적용
-2. 공유 페이지 수정 시: admin/dept_manager 양쪽 동작 확인
-3. dept_manager 접근 불가 페이지: `initPage(['admin'])` 유지
+
+1. 새 HTML 페이지를 추가하면 `NAV_MENU`에 메뉴를 추가하고 `minPerm`이 실제 `initPage()`와 일치하는지 확인한다.
+2. 보호 페이지는 `initPage(minRank, loginPath)`를 사용하고, 루트 페이지는 `loginPath`를 `login.html`, admin/docs 페이지는 `../login.html`로 맞춘다.
+3. DB 기반 접근 설정과 연동되어야 하면 `detectCurrentPageId()`와 `admin/page-access.html`의 `PAGE_LIST`에 같은 `page_id`를 추가한다.
+4. 운영 룰 페이지는 부장 교사 이상 열람(`80+`)이 기본이며, 실제 로그/권한 설정 변경은 관리자 권한을 유지한다.
+5. 캐시 버스팅 버전(`?v=`)과 `js/version.js`의 `APP_VERSION.current`를 같이 업데이트한다.

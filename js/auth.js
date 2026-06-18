@@ -281,6 +281,7 @@ function detectCurrentPageId() {
   const path = window.location.pathname;
   if (path.includes('admin/index.html') || path.endsWith('admin/')) return 'admin-dashboard';
   if (path.includes('admin/users.html')) return 'admin-users';
+  if (path.includes('admin/bulk-register.html')) return 'admin-bulk-register';
   if (path.includes('admin/departments.html')) return 'admin-departments';
   if (path.includes('admin/managers.html')) return 'admin-managers';
   if (path.includes('admin/talents.html')) return 'admin-talents';
@@ -292,6 +293,7 @@ function detectCurrentPageId() {
   if (path.includes('admin/reports.html')) return 'admin-reports';
   if (path.includes('admin/logs.html')) return 'admin-logs';
   if (path.includes('admin/log-rules.html')) return 'admin-log-rules';
+  if (path.includes('admin/slack-rules.html')) return 'admin-slack-rules';
   if (path.includes('admin/versions.html')) return 'admin-versions';
   if (path.includes('admin/talent-items.html')) return 'admin-talent-items';
   if (path.includes('admin/page-access.html')) return 'admin-page-access';
@@ -303,6 +305,10 @@ function detectCurrentPageId() {
   if (path.includes('talent-receive.html')) return 'talent-receive';
   if (path.includes('my-talents.html')) return 'my-talents';
   if (path.includes('my-orders.html')) return 'my-orders';
+  if (path.includes('dept-teacher-guide.html')) return 'dept-teacher-guide';
+  if (path.includes('purchase-teacher-guide.html')) return 'purchase-teacher-guide';
+  if (path.includes('chief-teacher-guide.html')) return 'chief-teacher-guide';
+  if (path.includes('evangelist-guide.html')) return 'evangelist-guide';
   if (path.includes('earn-talents.html')) return 'earn-talents';
   if (path.includes('shop.html')) return 'shop';
   if (path.includes('login.html')) return 'login';

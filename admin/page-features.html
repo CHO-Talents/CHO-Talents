@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>페이지 기능 관리 - 달란트 마을</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.47.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.47.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -38,13 +38,13 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.46.0"></script>
-  <script src="../js/supabase-config.js?v=3.46.0"></script>
-  <script src="../js/activity-log.js?v=3.46.0"></script>
-  <script src="../js/auth.js?v=3.46.0"></script>
-  <script src="../js/theme.js?v=3.46.0"></script>
-  <script src="../js/nav.js?v=3.46.0"></script>
-  <script src="../js/user-mgmt.js?v=3.46.0"></script>
+  <script src="../config/public-config.js?v=3.47.0"></script>
+  <script src="../js/supabase-config.js?v=3.47.0"></script>
+  <script src="../js/activity-log.js?v=3.47.0"></script>
+  <script src="../js/auth.js?v=3.47.0"></script>
+  <script src="../js/theme.js?v=3.47.0"></script>
+  <script src="../js/nav.js?v=3.47.0"></script>
+  <script src="../js/user-mgmt.js?v=3.47.0"></script>
   <script>
     initSupabase();
     let session;
@@ -72,6 +72,11 @@
         { key: 'request_reject', label: '가입 신청 거부' },
         { key: 'transfer_request', label: '부서 이동 요청' },
         { key: 'transfer_approve', label: '부서 이동 승인' }
+      ]},
+      { id: 'admin-bulk-register', name: '학생 일괄 등록', features: [
+        { key: 'bulk_template_download', label: '양식 다운로드' },
+        { key: 'bulk_preview', label: '엑셀 미리보기' },
+        { key: 'bulk_create', label: '학생 일괄 생성' }
       ]},
       { id: 'admin-departments', name: '부서 관리', features: [
         { key: 'dept_create', label: '부서 등록' },
@@ -109,6 +114,11 @@
         { key: 'order_prepare', label: '상품 준비 처리' },
         { key: 'order_purchase', label: '구매 확정 처리' },
         { key: 'order_deliver', label: '지급 완료 처리' }
+      ]},
+      { id: 'admin-purchase-stats', name: '구매 통계', features: [
+        { key: 'purchase_stats_view', label: '통계 조회' },
+        { key: 'purchase_stats_filter', label: '필터 변경' },
+        { key: 'purchase_stats_detail', label: '상세 드릴다운' }
       ]},
       { id: 'admin-dashboard', name: '대시보드', features: [
         { key: 'view_stats', label: '통계 카드 조회' },
@@ -240,6 +250,6 @@
 
     document.getElementById('featureModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeFeatureModal(); });
   </script>
-  <script src="../js/version.js?v=3.46.0"></script>
+  <script src="../js/version.js?v=3.47.0"></script>
 </body>
 </html>

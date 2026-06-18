@@ -12,12 +12,18 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.46.0` (`js/version.js` 기준, 2026-06-17) |
+| 현재 버전 | `v3.47.0` (`js/version.js` 기준, 2026-06-18) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.46.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.47.0`으로 갱신되어 있습니다.
+- **v3.47.0 주요 변경 사항**:
+  - 소개 메뉴에 역할별 가이드 4종 추가: 부서 담당 교사, 구매 담당 교사, 부장 교사, 전도사님
+  - 신규 페이지: `admin/slack-rules.html` Slack 알림 룰 문서 (부장 교사 80+ 이상 접근)
+  - 문서: 역할별 Markdown 가이드와 `docs/SLACK_NOTIFICATION_RULES.md`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` 추가
+  - 새 Supabase 설치 SQL 보강: `user_preferences.page_sizes`, `cancel_product_order`, `scan_qr_talent`, `talent_transactions.source`, Slack Secret 참조값 통합
+  - 권한 문서 최신화: `docs/page-permission-rules.html`, `.cursor/rules/page-role-mapping.mdc`, 페이지 접근/기능 설정 목록 갱신
 - **v3.46.0 주요 변경 사항**:
   - Q&A: 네비게이션 "소개" 그룹 및 "Q & A" 항목에 미답변 질문 수 배지 표시 (관리자 rank 60+)
   - Slack: 알림을 부서별/유형별 채널로 분리 라우팅 (기존 단일 Webhook 제거)
@@ -307,6 +313,12 @@ CHO-Talents/
 ├── login.html                     # 통합 로그인
 ├── register.html                  # 계정 등록 신청
 ├── guide.html                     # 학생 가이드
+├── teacher-guide.html             # 교사 가이드
+├── dept-teacher-guide.html        # 부서 담당 교사 가이드
+├── purchase-teacher-guide.html    # 구매 담당 교사 가이드
+├── chief-teacher-guide.html       # 부장 교사 가이드
+├── evangelist-guide.html          # 전도사님 가이드
+├── admin-guide.html               # 관리자 가이드
 ├── qna.html                       # Q&A / FAQ / 질문 관리
 ├── earn-talents.html              # 달란트 적립 방법 안내
 ├── shop.html                      # 달란트 상점 조회 + 구매 신청 + 대리 구매
@@ -323,6 +335,9 @@ CHO-Talents/
 │   ├── purchases.html             # 구매 관리 (4단계 구매 흐름)
 │   ├── reports.html               # 작업 보고서 조회 + JS 시더
 │   ├── logs.html                  # 활동 로그 조회/확인/삭제 대기
+│   ├── log-rules.html             # 로그 작성 룰 문서 (80+)
+│   ├── slack-rules.html           # Slack 알림 룰 문서 (80+)
+│   ├── audit-rules.html           # 작업 이력 작성 룰 문서 (80+)
 │   ├── versions.html              # 버전 이력
 │   ├── page-access.html           # 권한별 페이지 접근/요소 가시성 관리 (100+)
 │   ├── page-features.html         # 권한별 페이지 기능 설정 관리 (100+)
@@ -345,7 +360,7 @@ CHO-Talents/
 │   ├── talent.js                  # 달란트 잔액/내역/지급/사용/반환
 │   ├── product.js                 # 상품 조회/등록/수정/삭제/비활성화/이미지 업로드
 │   └── version.js                 # 버전 정보와 변경 이력
-└── docs/                          # 작업 보고서, SQL, 구성 문서, 사용자 안내서
+└── docs/                          # 작업 보고서, SQL, 구성 문서, 사용자 안내서, 역할별 가이드
 ```
 
 ## 기술 스택

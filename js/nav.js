@@ -10,6 +10,10 @@ const NAV_MENU = [
     items: [
       { href: 'guide.html', label: '학생 가이드' },
       { href: 'teacher-guide.html', label: '교사 가이드', minPerm: 40 },
+      { href: 'dept-teacher-guide.html', label: '부서 담당 교사 가이드', minPerm: 60 },
+      { href: 'purchase-teacher-guide.html', label: '구매 담당 교사 가이드', minPerm: 70 },
+      { href: 'chief-teacher-guide.html', label: '부장 교사 가이드', minPerm: 80 },
+      { href: 'evangelist-guide.html', label: '전도사님 가이드', minPerm: 90 },
       { href: 'admin-guide.html', label: '관리자 가이드', minPerm: 60 },
       { href: 'earn-talents.html', label: '달란트 적립' },
       { href: 'qna.html', label: 'Q & A', badgeId: 'navQnaBadge' }
@@ -60,6 +64,7 @@ const NAV_MENU = [
       { href: 'admin/page-features.html', label: '페이지 기능', minPerm: 100 },
       { href: 'docs/page-permission-rules.html', label: '페이지 권한 룰', minPerm: 80 },
       { href: 'admin/log-rules.html', label: '로그 작성 룰', minPerm: 80 },
+      { href: 'admin/slack-rules.html', label: 'Slack 알림 룰', minPerm: 80 },
       { href: 'admin/audit-rules.html', label: '작업 이력 작성 룰', minPerm: 80 },
       { href: 'admin/versions.html', label: '버전', minPerm: 80 },
       { href: 'admin/reports.html', label: '보고서', minPerm: 80 },

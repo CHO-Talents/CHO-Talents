@@ -1,12 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로그 작성 룰 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
-  <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.47.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.47.0" />
   <style>
     .rule-section { background: var(--admin-card); border-radius: var(--admin-radius); box-shadow: var(--admin-shadow); padding: 1.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
     .rule-section h2 { font-size: 1.1rem; font-weight: 700; color: var(--admin-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -167,6 +167,9 @@
       <div class="note-box">
         <strong>PAGE_VIEW:</strong> v3.40.0부터 페이지 조회 로그(PAGE_VIEW) 기록이 비활성화되었습니다. autoLogPageView() 호출은 유지되지만 activity_logs에 저장되지 않습니다.
       </div>
+      <div class="note-box">
+        <strong>Slack 알림:</strong> WARN, ERROR, FATAL, CRITICAL 로그는 <code>js/activity-log.js</code>에서 <code>log_alert</code>로 Edge Function <code>slack-notify</code>를 호출합니다. 자세한 라우팅은 <a href="slack-rules.html" style="color:var(--admin-primary);">운영 &gt; Slack 알림 룰</a>에서 확인합니다.
+      </div>
     </div>
 
     <!-- writeLog 함수 사용법 -->
@@ -274,6 +277,20 @@
       </table>
     </div>
 
+    <div class="rule-section">
+      <h2>🔔 Slack 알림 연동</h2>
+      <p style="font-size:0.88rem;color:var(--admin-text-muted);margin-bottom:1rem;">로그 알림은 사용자 흐름을 막지 않는 비동기 알림입니다.</p>
+      <table class="rule-table">
+        <thead><tr><th>대상 로그</th><th>호출 type</th><th>대상 채널</th><th>포함 정보</th></tr></thead>
+        <tbody>
+          <tr><td>WARN / ERROR / FATAL / CRITICAL</td><td><code>log_alert</code></td><td>운영 채널</td><td>레벨, 액션, 페이지, 상세 정보</td></tr>
+        </tbody>
+      </table>
+      <div class="note-box">
+        Slack Webhook URL은 브라우저 코드에 넣지 않고 Supabase Edge Function Secret(<code>SLACK_WEBHOOK_OPERATIONS</code>)으로 관리합니다.
+      </div>
+    </div>
+
     <!-- 참고 사항 -->
     <div class="rule-section">
       <h2>📝 참고 사항</h2>
@@ -292,16 +309,19 @@
       <div class="note-box">
         <strong>로그 관리 페이지:</strong> <a href="logs.html" style="color:var(--admin-primary);">운영 &gt; 로그</a>에서 조회/확인 처리/삭제 가능
       </div>
+      <div class="note-box">
+        <strong>Slack 알림 룰:</strong> <a href="slack-rules.html" style="color:var(--admin-primary);">운영 &gt; Slack 알림 룰</a>에서 구매/가입/부서 이동/Q&amp;A/로그 알림 라우팅을 확인 가능
+      </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.46.0"></script>
-  <script src="../js/supabase-config.js?v=3.46.0"></script>
-  <script src="../js/activity-log.js?v=3.46.0"></script>
-  <script src="../js/auth.js?v=3.46.0"></script>
-  <script src="../js/theme.js?v=3.46.0"></script>
-  <script src="../js/nav.js?v=3.46.0"></script>
+  <script src="../config/public-config.js?v=3.47.0"></script>
+  <script src="../js/supabase-config.js?v=3.47.0"></script>
+  <script src="../js/activity-log.js?v=3.47.0"></script>
+  <script src="../js/auth.js?v=3.47.0"></script>
+  <script src="../js/theme.js?v=3.47.0"></script>
+  <script src="../js/nav.js?v=3.47.0"></script>
   <script>
     initSupabase();
     (async () => {

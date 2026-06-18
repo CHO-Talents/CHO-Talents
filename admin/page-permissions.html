@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>페이지 권한 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.46.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.46.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.47.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.47.0" />
   <style>
     .perm-matrix { width:100%; border-collapse:collapse; }
     .perm-matrix th, .perm-matrix td { padding:0.6rem 0.8rem; text-align:center; border:1px solid var(--admin-border); font-size:0.85rem; }
@@ -31,7 +31,7 @@
     <div class="admin-table-wrap" style="overflow-x:auto;">
       <table class="perm-matrix" id="permMatrix">
         <thead id="matrixHead"></thead>
-        <tbody id="matrixBody"><tr><td colspan="13" class="empty-state">로딩 중...</td></tr></tbody>
+        <tbody id="matrixBody"><tr><td colspan="15" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
     </div>
 
@@ -42,29 +42,34 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.46.0"></script>
-  <script src="../js/supabase-config.js?v=3.46.0"></script>
-  <script src="../js/activity-log.js?v=3.46.0"></script>
-  <script src="../js/auth.js?v=3.46.0"></script>
-  <script src="../js/theme.js?v=3.46.0"></script>
-  <script src="../js/nav.js?v=3.46.0"></script>
+  <script src="../config/public-config.js?v=3.47.0"></script>
+  <script src="../js/supabase-config.js?v=3.47.0"></script>
+  <script src="../js/activity-log.js?v=3.47.0"></script>
+  <script src="../js/auth.js?v=3.47.0"></script>
+  <script src="../js/theme.js?v=3.47.0"></script>
+  <script src="../js/nav.js?v=3.47.0"></script>
   <script>
     initSupabase();
     let session;
     let permData = [];
-    const LEVELS = ['admin','evangelist','chief','dept_teacher','teacher','student'];
-    const LEVEL_LABELS = { admin:'관리자', evangelist:'전도사님', chief:'부장 교사', dept_teacher:'부서 담당 교사', teacher:'일반교사', student:'학생' };
+    const LEVELS = ['admin','evangelist','chief','purchase_teacher','dept_teacher','teacher','student'];
+    const LEVEL_LABELS = { admin:'관리자', evangelist:'전도사님', chief:'부장 교사', purchase_teacher:'구매 담당 교사', dept_teacher:'부서 담당 교사', teacher:'일반교사', student:'학생' };
     const PAGES = [
       { key:'dashboard', label:'대시보드' },
       { key:'users', label:'사용자 관리' },
       { key:'departments', label:'부서 관리' },
       { key:'managers', label:'관리자 관리' },
       { key:'talents', label:'달란트 관리' },
+      { key:'talent_stats', label:'달란트 통계' },
+      { key:'talent_qr', label:'달란트 QR' },
       { key:'talent_items', label:'달란트 항목' },
       { key:'shop', label:'상품 관리' },
       { key:'purchases', label:'구매 관리' },
+      { key:'purchase_stats', label:'구매 통계' },
       { key:'reports', label:'보고서' },
       { key:'logs', label:'로그' },
+      { key:'audit', label:'작업 이력' },
+      { key:'slack_rules', label:'Slack 알림 룰' },
       { key:'versions', label:'버전' },
       { key:'page_permissions', label:'권한 관리' }
     ];
@@ -163,6 +168,6 @@
       await loadPermissions();
     }
   </script>
-  <script src="../js/version.js?v=3.46.0"></script>
+  <script src="../js/version.js?v=3.47.0"></script>
 </body>
 </html>

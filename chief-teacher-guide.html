@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="default">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>부장 교사 가이드 - 달란트 마을</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
+  <link rel="stylesheet" href="css/themes.css?v=3.47.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.47.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.47.0" />
+</head>
+<body class="page-body">
+  <div id="nav-container"></div>
+
+  <main class="guide-container">
+    <section class="guide-hero">
+      <div class="guide-kicker">부장 교사 · 80등급</div>
+      <h1>부장 교사 가이드</h1>
+      <p>전체 운영 현황을 확인하고 담당 관리 부서 중심으로 승인, 보고서, 버전 확인, 달란트 반환을 수행하는 권한자용 안내입니다.</p>
+    </section>
+
+    <div class="guide-switcher">
+      <a href="guide.html">학생 가이드</a>
+      <a href="teacher-guide.html">교사 가이드</a>
+      <a href="dept-teacher-guide.html">부서 담당 교사 가이드</a>
+      <a href="purchase-teacher-guide.html">구매 담당 교사 가이드</a>
+      <a href="chief-teacher-guide.html" class="active">부장 교사 가이드</a>
+      <a href="evangelist-guide.html">전도사님 가이드</a>
+      <a href="admin-guide.html">관리자 가이드</a>
+    </div>
+
+    <section class="guide-section">
+      <h2>🔑 특별 권한</h2>
+      <div class="guide-table-wrap">
+        <table class="guide-table">
+          <thead><tr><th>권한</th><th>할 수 있는 일</th><th>주의</th></tr></thead>
+          <tbody>
+            <tr><td>학생 일괄 등록</td><td>엑셀 양식으로 학생 계정을 한 번에 등록합니다.</td><td>초기 비밀번호는 1234입니다.</td></tr>
+            <tr><td>달란트 반환</td><td>잘못 지급된 달란트를 사유 입력 후 반환합니다.</td><td>거래 ID 기준 1회만 처리됩니다.</td></tr>
+            <tr><td>관리자 관리 조회</td><td>운영 권한자를 확인하고 담당 부서 범위를 점검합니다.</td><td>부장 교사는 본인보다 낮은 권한만 관리 가능하며, 일부 화면은 조회 중심입니다.</td></tr>
+            <tr><td>보고서/버전</td><td>작업 보고서와 버전 이력을 확인합니다.</td><td>시스템 로그/작업 이력 상세는 관리자 권한입니다.</td></tr>
+            <tr><td>운영 룰 문서</td><td>페이지 권한 룰, 로그 작성 룰, Slack 알림 룰, 작업 이력 룰을 확인합니다.</td><td>설정 변경은 관리자 권한에서 처리합니다.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>📋 자주 하는 작업</h2>
+      <ol class="guide-steps">
+        <li><strong>관리 &gt; 학생 일괄 등록</strong>에서 새 학기 또는 새 부서 학생을 엑셀로 등록합니다.</li>
+        <li><strong>관리 &gt; 사용자 관리</strong>에서 가입 신청과 부서 이동 요청을 확인합니다.</li>
+        <li><strong>달란트 &gt; 달란트 관리</strong> 상세 화면에서 잘못 지급된 달란트를 반환합니다.</li>
+        <li><strong>상품 &gt; 구매 통계</strong>에서 부서별 주문 흐름과 지연 상태를 확인합니다.</li>
+        <li><strong>운영 &gt; 보고서</strong>와 <strong>운영 &gt; 버전</strong>에서 최근 변경 사항을 확인합니다.</li>
+      </ol>
+    </section>
+
+    <section class="guide-section">
+      <h2>🧭 권한 범위 이해</h2>
+      <div class="guide-card">
+        <ul class="guide-list">
+          <li>부장 교사는 전체 현황을 볼 수 있지만, 사용자/관리자 수정은 담당 관리 부서와 권한 순위 조건을 따릅니다.</li>
+          <li>구매 담당 교사가 아닌 부장 교사는 구매 처리에서 담당 관리 부서 범위가 적용될 수 있습니다.</li>
+          <li>달란트 항목 관리의 퀵 버튼 설정은 가능하지만, 항목 CRUD와 QR 관리는 전도사님 이상 권한 기준을 따릅니다.</li>
+          <li>로그/작업 이력 화면 직접 조회와 페이지 접근/기능 설정 변경은 관리자 권한입니다.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <p>초등부 달란트 관리 &copy; 2026 CHO-Talents</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config/public-config.js?v=3.47.0"></script>
+  <script src="js/supabase-config.js?v=3.47.0"></script>
+  <script src="js/activity-log.js?v=3.47.0"></script>
+  <script src="js/auth.js?v=3.47.0"></script>
+  <script src="js/theme.js?v=3.47.0"></script>
+  <script src="js/nav.js?v=3.47.0"></script>
+  <script>
+    initSupabase();
+    (async () => {
+      await navInit();
+      const session = await loadAuthSession();
+      if (!session || (session.permissionRank || 0) < 80) {
+        location.href = session && (session.permissionRank || 0) >= 70 ? 'purchase-teacher-guide.html' : 'dept-teacher-guide.html';
+        return;
+      }
+      navUpdateAuth(session);
+      await initTheme();
+      const rank = session.permissionRank || 0;
+      document.querySelectorAll('.guide-switcher a').forEach(a => {
+        if (a.href.includes('evangelist-guide') && rank < 90) a.style.display = 'none';
+      });
+      autoLogPageView();
+    })();
+  </script>
+  <script src="js/version.js?v=3.47.0"></script>
+</body>
+</html>

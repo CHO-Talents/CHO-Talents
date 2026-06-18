@@ -12,12 +12,13 @@
 2. 새 프로젝트의 `Project URL`, `publishable/anon key`, DB connection string을 확인한다.
 3. 아래 수동 또는 자동 방식 중 하나로 DB 설치를 실행한다.
 4. Storage에 `Talents_Items` 버킷이 생성되었는지 확인한다.
-5. 사이트 설정 파일의 Supabase URL/anon key를 새 프로젝트 값으로 바꾼다.
+5. Slack 알림을 사용할 경우 Edge Function `slack-notify`를 배포하고 Webhook Secret을 등록한다.
+6. 사이트 설정 파일의 Supabase URL/anon key를 새 프로젝트 값으로 바꾼다.
    - `config/public-config.js`
    - 필요 시 `.env.local`
-6. `admin_user / 1234`로 로그인한다.
-7. 최초 로그인 후 비밀번호를 변경한다.
-8. 부서, 사용자, 상품을 실제 운영 기준으로 새로 등록한다.
+7. `admin_user / 1234`로 로그인한다.
+8. 최초 로그인 후 비밀번호를 변경한다.
+9. 부서, 사용자, 상품을 실제 운영 기준으로 새로 등록한다.
 
 ## 실행 방법 A: SQL Editor
 
@@ -76,10 +77,10 @@ SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
 | `page_permissions` | 권한별 페이지 매트릭스 | 기본 권한표 |
 | `role_page_access` | 역할별 페이지 접근/요소 숨김 설정 | 비움, 기본 허용 |
 | `role_page_features` | 역할별 페이지 기능 설정 | 비움, 기본 허용 |
-| `user_preferences` | 사용자별 즐겨찾기 바로가기와 테마 설정 | 비움 |
+| `user_preferences` | 사용자별 즐겨찾기 바로가기, 테마, 페이지당 항목 수(`page_sizes`) 설정 | 비움 |
 | `talent_qr_codes` | 달란트 QR 코드 | 비움 |
 | `talent_qr_scans` | QR 수령 이력 | 비움 |
-| `app_config` | 공개 설정/비밀 참조 설정 | 공개 설정 7개, 비밀 참조 4개 |
+| `app_config` | 공개 설정/비밀 참조 설정 | 공개 설정 7개, 비밀 참조 및 Slack Secret 참조 |
 
 ## 권한 요약
 
@@ -105,6 +106,7 @@ SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
 | 달란트 이력 | 본인 또는 60+ | RPC/시스템 | 직접 수정 없음 | 직접 삭제 없음 |
 | 상품 | 모두 | 60+ | 60+ | 90+ |
 | 구매 주문 | 본인 또는 60+ | 본인/RPC | 60+ | 직접 삭제 없음 |
+| 구매 취소 | 본인 요청 상태 주문 | `cancel_product_order()` | 요청 상태에서 취소 | 직접 삭제 없음 |
 | Q&A | FAQ/본인/60+ | 인증 사용자 또는 익명 RPC | 인증 사용자 | 100+ |
 | 보고서 | 80+ | 80+ | 80+ | 80+ |
 | 로그 | 100+ | 모두 | 100+ | 100+ |
@@ -116,6 +118,34 @@ SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
 | app_config | 직접 조회 차단 | 서버/SQL | 서버/SQL | 서버/SQL |
 
 `app_config`의 공개값은 `get_public_app_config()` RPC로만 조회한다. 비밀 토큰 원문은 DB에 넣지 않고 `env:GITHUB_PAT` 같은 참조값만 둔다.
+
+## 주요 RPC
+
+새 DB 설치 SQL에는 현재 운영 화면에서 호출하는 주요 RPC가 포함된다.
+
+| RPC | 용도 |
+|---|---|
+| `get_my_profile`, `update_last_login`, `change_my_password` | 로그인 세션/프로필/비밀번호 관리 |
+| `admin_list_users`, `admin_create_user`, `admin_update_user`, `admin_delete_user`, `admin_reset_password` | 사용자와 권한 관리 |
+| `give_talent`, `use_talent` | 달란트 적립/사용/반환 |
+| `request_product_order`, `confirm_product_purchase`, `cancel_product_order` | 구매 신청, 구매 확정, 구매 신청 취소 |
+| `scan_qr_talent` | QR 수령 처리와 `talent_transactions.source='qr'` 기록 |
+| `submit_anonymous_question`, `admin_soft_delete_qna` | Q&A 익명 질문과 소프트 삭제 |
+| `get_public_app_config` | 브라우저 공개 설정 조회 |
+
+## Slack Edge Function 설정
+
+DB SQL은 Slack Webhook 원문을 저장하지 않고 `app_config`에 `env:SLACK_WEBHOOK_...` 참조값만 기록한다. 실제 알림을 사용하려면 새 Supabase 프로젝트에 Edge Function `slack-notify`를 배포하고 아래 Secret을 등록해야 한다.
+
+| Secret | 대상 |
+|---|---|
+| `SLACK_WEBHOOK_PART1` ~ `SLACK_WEBHOOK_PART5` | 1부~5부 채널 |
+| `SLACK_WEBHOOK_WORSHIP` | 예배부 채널 |
+| `SLACK_WEBHOOK_PRODUCT_MANAGEMENT` | 상품 관리 채널 |
+| `SLACK_WEBHOOK_OPERATIONS` | 운영 로그 채널 |
+| `SLACK_WEBHOOK_ANSWER` | Q&A 채널 |
+
+배포용 소스는 `docs/edge-function-slack-notify.ts`, 운영 룰 문서는 `docs/SLACK_NOTIFICATION_RULES.md`와 `admin/slack-rules.html`이다.
 
 ## 기본 데이터 설명
 
@@ -135,7 +165,7 @@ FAQ
 : `admin/page-permissions.html`에서 기본 권한표가 보이도록 넣는다. 실제 페이지 접근 차단은 `role_page_access`에서 별도로 설정할 수 있다.
 
 `app_config`
-: 브라우저 공개 설정과 비밀 설정 참조값을 분리해 관리한다. 새 Supabase 프로젝트를 만들면 `SUPABASE_URL`, `SUPABASE_ANON_KEY`는 새 프로젝트 값으로 바꿔야 한다.
+: 브라우저 공개 설정과 비밀 설정 참조값을 분리해 관리한다. 새 Supabase 프로젝트를 만들면 `SUPABASE_URL`, `SUPABASE_ANON_KEY`는 새 프로젝트 값으로 바꿔야 한다. Slack Webhook은 원문이 아니라 `env:SLACK_WEBHOOK_...` 참조값만 둔다.
 
 ## 비워두는 데이터
 
@@ -157,3 +187,4 @@ FAQ
 - GitHub PAT, Supabase access token, service role key는 `app_config`에 원문으로 저장하지 않는다.
 - 상품 이미지를 사용하려면 `Talents_Items` Storage 버킷이 필요하다. SQL에서 자동 생성한다.
 - 새 프로젝트 URL과 anon key가 바뀌면 프론트 설정도 반드시 바꿔야 한다.
+- QR 수령, 구매 취소, 페이지당 항목 수 설정은 최신 SQL에 통합되어 있으므로 별도 TASK SQL을 추가 실행하지 않아도 된다.

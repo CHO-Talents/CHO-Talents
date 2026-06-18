@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-17 KST 현재 코드 기준 (v3.46.0)
+작성 기준: 2026-06-18 KST 현재 코드 기준 (v3.47.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -77,7 +77,11 @@ flowchart LR
 | `register.html` | 계정 등록 신청. 영문/숫자/`_`/`-` 아이디 중복확인 후 승인 대기 등록 |
 | `guide.html` | 학생 가이드. 사이트 이용 흐름을 카드/스텝 중심으로 안내 |
 | `teacher-guide.html` | 교사 가이드. 일반 교사(40+) 이상만 접근 가능, 미만 시 학생 가이드로 리다이렉트 |
-| `admin-guide.html` | 관리자 가이드. 부서 담당 교사(60+) 이상만 접근 가능, 미만 시 교사/학생 가이드로 리다이렉트 |
+| `dept-teacher-guide.html` | 부서 담당 교사 가이드. 담당 부서 사용자/달란트/상품/구매/Q&A 관리와 일반 교사가 없는 부서에서 해야 할 일 안내 |
+| `purchase-teacher-guide.html` | 구매 담당 교사 가이드. 전체 부서 구매 주문 처리, 구매 통계, Slack 구매 알림 기준 안내 |
+| `chief-teacher-guide.html` | 부장 교사 가이드. 학생 일괄 등록, 보고서/버전, 달란트 반환, 운영 룰 문서 열람 안내 |
+| `evangelist-guide.html` | 전도사님 가이드. 달란트 항목, QR, 상품 삭제, Q&A 삭제, 부서 비활성화 안내 |
+| `admin-guide.html` | 관리자 가이드. 부서 담당 교사(60+) 이상만 접근 가능, 운영 권한 전체 요약 |
 | `qna.html` | Q&A/FAQ. 공개 FAQ 조회, 관리자 FAQ 직접 등록, 로그인 사용자 질문/답변 등록, 60등급 이상 답변+FAQ 등록, 90등급 이상 삭제 |
 | `earn-talents.html` | 달란트 적립 방법 안내. 항목 카드 그리드(모바일 3열, PC 5열)와 `talent_items` 활성 항목 지급 수량 배지 표시 |
 | `shop.html` | 상점 조회 + 구매 신청 + 대리 구매. 비로그인은 학생용, 교사는 교사용 기본 필터 |
@@ -106,6 +110,9 @@ flowchart LR
 | `js/slack-notify.js` | Slack 알림 공통 유틸리티. `sendSlackNotify(type, data)`로 Edge Function `slack-notify` 호출. fire-and-forget, 동일 알림 5초 throttle. 부서/유형별 채널 라우팅은 Edge Function에서 수행 |
 | `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 + Q&A 미답변 배지 자동 호출 포함), 페이지 크기(`page-size.js`), Slack 알림(`slack-notify.js`), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
 | `docs/edge-function-slack-notify.ts` | Supabase Edge Function `slack-notify` 배포용 소스. 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 메시지 포맷 |
+| `admin/slack-rules.html` | 80등급 이상 Slack 알림 룰 문서. 구매/가입/부서이동/Q&A/WARN+ 로그 알림 type과 채널 라우팅 설명 |
+| `docs/SLACK_NOTIFICATION_RULES.md` | Slack 알림 type, 라우팅, Secret 기준 문서 |
+| `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 다른 Supabase 프로젝트에서 새로 시작하기 위한 설치 절차 |
 | `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서, Edge Function 소스 |
 
 ## 4. 권한 구조
@@ -150,6 +157,12 @@ flowchart LR
 flowchart TD
   Public["공개 영역"] --> Home["index.html"]
   Public --> Guide["guide.html"]
+  Public --> TeacherGuide["teacher-guide.html<br/>40+"]
+  Public --> DeptGuide["dept-teacher-guide.html<br/>60+"]
+  Public --> PurchaseGuide["purchase-teacher-guide.html<br/>70+"]
+  Public --> ChiefGuide["chief-teacher-guide.html<br/>80+"]
+  Public --> EvangelistGuide["evangelist-guide.html<br/>90+"]
+  Public --> AdminGuide["admin-guide.html<br/>60+"]
   Public --> QNA["qna.html"]
   Public --> Earn["earn-talents.html"]
   Public --> Shop["shop.html"]
@@ -561,6 +574,11 @@ flowchart TD
 | `use_talent` | 달란트 사용 및 반환 사유 기록 |
 | `request_product_order` | 상품 구매 신청 (사용 대기 달란트 관리) |
 | `confirm_product_purchase` | 상품 구매 확정 (실제 달란트 차감) |
+| `cancel_product_order` | 구매 신청 상태 주문 취소와 사용 대기 달란트 복원 |
+| `scan_qr_talent` | QR 수령 처리, 스캔 기록, `talent_transactions.source='qr'` 기록 |
+| `submit_anonymous_question` | 비로그인 Q&A 질문 등록 |
+| `admin_soft_delete_qna` | 전도사님 이상 Q&A 소프트 삭제 |
+| `get_public_app_config` | 공개 런타임 설정 조회 |
 
 ## 17. 빠른 검증 체크리스트
 
@@ -581,10 +599,12 @@ flowchart TD
 15. 60등급 이상이 `admin/users.html`, `admin/shop.html`, `admin/purchases.html`을 사용할 수 있는지 확인한다.
 16. 60등급 이상이 대시보드를, 80등급 이상이 관리자, 보고서, 버전 화면을 사용할 수 있는지 확인한다.
 17. 100등급 이상만 `admin/page-access.html`, `admin/page-features.html`, `admin/audit.html`, `admin/logs.html`에 접근 가능한지 확인한다.
-18. `qna.html`에서 공개 FAQ, 로그인 질문 등록, 60등급 이상 댓글(답변)/FAQ 등록/직접 FAQ 추가, 90등급 이상 삭제가 동작하는지 확인한다.
-19. 아이디가 관리자에게만 표시되고 일반 사용자는 본인 것만 보이는지 확인한다.
-20. 에러 메시지가 한글로 변환되어 표시되는지 확인한다.
-21. 주요 기능의 성공/실패/거부가 활동 로그에 기록되는지 확인하고, DB insert 실패가 콘솔 오류로 노출되는지 확인한다.
+18. 80등급 이상이 `docs/page-permission-rules.html`, `admin/log-rules.html`, `admin/slack-rules.html`, `admin/audit-rules.html`에 접근 가능한지 확인한다.
+19. 소개 메뉴에서 권한별 가이드가 `교사 -> 부서 담당 -> 구매 담당 -> 부장 -> 전도사님 -> 관리자` 순서로 표시되는지 확인한다.
+20. `qna.html`에서 공개 FAQ, 로그인 질문 등록, 60등급 이상 댓글(답변)/FAQ 등록/직접 FAQ 추가, 90등급 이상 삭제가 동작하는지 확인한다.
+21. 아이디가 관리자에게만 표시되고 일반 사용자는 본인 것만 보이는지 확인한다.
+22. 에러 메시지가 한글로 변환되어 표시되는지 확인한다.
+23. 주요 기능의 성공/실패/거부가 활동 로그에 기록되는지 확인하고, DB insert 실패가 콘솔 오류로 노출되는지 확인한다.
 
 ## 18. 다음 작업자가 먼저 볼 파일
 
@@ -596,6 +616,7 @@ flowchart TD
 | 4 | `js/activity-log.js` | 로그 기록, ACTION_LABELS 한글 매핑, writeLog() 자동 라벨, WARN+ Slack 알림 연동, Q&A 미답변 배지, 세션 캐시, 소프트 삭제 |
 | 4a | `js/slack-notify.js` | Slack 알림 공통 유틸리티, Edge Function slack-notify 호출, 채널 라우팅은 Edge Function 측 |
 | 4b | `docs/edge-function-slack-notify.ts` | Edge Function 배포 소스, 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 포맷 |
+| 4c | `docs/SLACK_NOTIFICATION_RULES.md`, `admin/slack-rules.html` | Slack 알림 type과 채널 라우팅 운영 문서 |
 | 5 | `js/user-mgmt.js` | 사용자/부서 관리 RPC |
 | 6 | `js/talent.js` | 달란트 지급/사용/반환 |
 | 7 | `js/product.js` | 상품 조회/관리 |
@@ -609,6 +630,7 @@ flowchart TD
 | 15 | `docs/TASK-049_schema.sql` | v3.37.0: profiles.last_login_at, update_last_login RPC |
 | 16 | `docs/TASK-041_page_sizes.sql` | v3.40.0: user_preferences.page_sizes JSONB 컬럼 |
 | 17 | `docs/TASK-052_super_admin_update_fix.sql` | v3.45.0: admin_update_user RPC에서 is_super_admin 호출자 rank 110 처리 |
+| 18 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
 
 ## 19. 개발 주의사항
 
