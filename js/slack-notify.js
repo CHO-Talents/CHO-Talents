@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Slack Notification Module
  * Supabase Edge Function 'slack-notify'를 호출하여 Slack 채널에 알림을 전송하는 공통 유틸리티
  *

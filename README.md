@@ -12,12 +12,24 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.47.0` (`js/version.js` 기준, 2026-06-18) |
+| 현재 버전 | `v3.48.0` (`js/version.js` 기준, 2026-06-19) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.47.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.48.0`으로 갱신되어 있습니다.
+- **v3.48.0 주요 변경 사항**:
+  - 달란트 반환: 반환을 사용과 별도 구분 표시 (내 달란트, 관리자 상세, QR 수령자)
+  - 달란트 반환: 내 달란트 페이지에 반환 달란트 요약 박스 추가
+  - 달란트 반환: 관리자 상세 팝업에 누적적립/총사용/총반환/잔여 4칸 표시
+  - 달란트 반환: QR 수령자 목록에 반환된 달란트 "반환" 배지 표시
+  - 달란트 반환: 달란트 내역 유형 적립/사용/반환 3종 구분
+  - 모바일 네비: 우측 배치 테마스위치 → 햄버거 → 로그아웃 → (권한이모지)이름 순, 좌측 ⭐ 달란트 마을 유지
+  - 세션 관리: 24시간 유휴 타임아웃 설정
+  - 세션 관리: 타임아웃 만료 시 자동 로그아웃 → 로그인 페이지 이동
+  - 세션 관리: 페이지 조회/클릭/스크롤/키보드 이벤트 시 타이머 초기화
+  - 세션 관리: 멀티탭 localStorage 기반 활동 시간 동기화
+  - 세션 관리: 탭 전환(visibilitychange) 시 세션 만료 재검증
 - **v3.47.0 주요 변경 사항**:
   - 소개 메뉴에 역할별 가이드 4종 추가: 부서 담당 교사, 구매 담당 교사, 부장 교사, 전도사님
   - 신규 페이지: `admin/slack-rules.html` Slack 알림 룰 문서 (부장 교사 80+ 이상 접근)
@@ -353,7 +365,7 @@ CHO-Talents/
 │   ├── app.js                     # 메인 화면 효과/연결 상태 확인
 │   ├── activity-log.js            # 활동 로그, 세션 캐시, 소프트 삭제
 │   ├── page-size.js               # 그리드별 페이지당 항목 수 설정 (user_preferences.page_sizes)
-│   ├── auth.js                    # 로그인, 세션, 권한, 비밀번호 변경, tErr() 에러 번역
+│   ├── auth.js                    # 로그인, 세션(24시간 유휴 타임아웃), 권한, 비밀번호 변경, tErr() 에러 번역
 │   ├── user-mgmt.js               # 사용자/부서 관리 RPC 래퍼
 │   ├── table-sort.js              # 그리드 헤더 클릭 정렬 공통 유틸리티
 │   ├── slack-notify.js            # Slack 알림 공통 유틸리티 (Edge Function slack-notify 호출)
@@ -368,7 +380,7 @@ CHO-Talents/
 - **Frontend:** HTML / CSS / Vanilla JavaScript
 - **Backend:** Supabase (PostgreSQL, Auth, REST, RPC, RLS, Storage)
 - **Hosting:** GitHub Pages
-- **Auth:** Supabase email/password Auth. 화면에서는 `아이디 + @cho-talents.app` 형태로 로그인 처리
+- **Auth:** Supabase email/password Auth. 화면에서는 `아이디 + @cho-talents.app` 형태로 로그인 처리. 24시간 유휴 시 자동 로그아웃
 - **Security:** RLS 정책과 `SECURITY DEFINER` RPC로 사용자/달란트/로그 등 민감 데이터 접근 제어
 - **에러 처리:** `tErr()` 함수로 영문 DB 에러를 한글로 자동 변환, 전체 기능에 `logError`/`logWarn`/`logInfo` 로깅
 - **Slack 알림:** 부서별/유형별 채널 분리 라우팅. 브라우저에서 `js/slack-notify.js` → Supabase Edge Function `slack-notify` → 채널별 Slack Webhook 경로로 전송
@@ -480,7 +492,7 @@ flowchart TD
 | `qna.html` | 메인, 학생 가이드 | FAQ 공개 조회, 로그인 사용자 질문 등록, 60등급 이상 답변/FAQ 등록 |
 | `earn-talents.html` | 메인, 상점, 내 달란트 | 달란트 적립 방법 안내. `talent_items` 활성 항목의 지급 수량을 카드별 `+N 달란트` 배지로 표시 |
 | `shop.html` | 메인, 적립 안내, 내 달란트, 내 구매 상품 | 학생용 상품 공개 조회. 교사/60등급 이상은 교사용 탭. 로그인 시 구매 신청, 40등급 이상은 대리 구매 가능 |
-| `my-talents.html` | 로그인 필요 | 누적 적립/사용 완료/사용 대기/사용 가능 잔액, 달란트 내역, 구매 내역 조회 |
+| `my-talents.html` | 로그인 필요 | 누적 적립/반환/사용 완료/사용 대기/사용 가능 잔액, 달란트 내역(적립/사용/반환 구분), 구매 내역 조회 |
 | `my-orders.html` | 로그인 필요 | 본인 구매 신청 내역과 4단계 진행 상태 조회 |
 
 ### 관리 화면
@@ -491,9 +503,9 @@ flowchart TD
 | `admin/users.html` | 60 | 사용자 목록, 권한 범위 내 수정/삭제/비밀번호 초기화, 가입 신청 처리, 부서 이동 요청/승인 |
 | `admin/departments.html` | 60 | 부서 등록/수정/비활성화, 반 개수 관리, 부서별 인원/담당자 확인 |
 | `admin/managers.html` | 80 | 기존 사용자를 관리자 계열 권한으로 승격/수정, 담당 부서 지정 |
-| `admin/talents.html` | 40 | 학생/교사 탭별 달란트 체크박스 선택+일괄 지급, 수동 적립/사용, 반환(80+). 일반 교사는 담당 부서/반 제한 |
+| `admin/talents.html` | 40 | 학생/교사 탭별 달란트 체크박스 선택+일괄 지급, 수동 적립/사용, 반환(80+). 상세 팝업에 누적적립/총사용/총반환/잔여 표시. 일반 교사는 담당 부서/반 제한 |
 | `admin/talent-items.html` | 60 | 달란트 지급 항목 등록/수정/활성화, 지급 규칙/설명 관리. 학생 항목은 주 1회 지급 규칙과 연동, 퀵 버튼 설정은 80등급 이상 |
-| `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), 수정(새 코드 재생성), 비활성화. 기간(from~to datetime) 설정 |
+| `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), 수정(새 코드 재생성), 비활성화. 기간(from~to datetime) 설정. 수령자 목록에 반환된 달란트 "반환" 배지 표시 |
 | `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
 | `admin/purchases.html` | 60 | 구매 관리: 4단계 처리, 모든 상태 탭에 부서/기간 필터(기본 오늘) + 기간 프리셋, 구매 확정 시 달란트 차감 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록/수정, 선택 삭제 |
@@ -522,6 +534,9 @@ flowchart TD
 ```
 
 - 모든 보호 페이지는 `initPage()`에서 세션을 확인합니다.
+- **24시간 유휴 타임아웃:** 페이지 조회/클릭/스크롤/키보드 이벤트 시 활동 타이머가 초기화됩니다. 24시간 동안 활동이 없으면 자동 로그아웃 후 `login.html`로 이동합니다.
+- **멀티탭 동기화:** `localStorage`에 마지막 활동 시간을 저장하여 여러 탭 간 세션 상태를 공유합니다.
+- **탭 전환 재검증:** `visibilitychange` 이벤트 시 세션 만료 여부를 다시 확인합니다.
 - 최초 로그인 사용자는 `change-password.html` 외 화면에 접근하려 하면 비밀번호 변경 화면으로 이동합니다.
 - 일반 로그인 성공 후에는 모든 권한이 `index.html`로 이동하고, 상단 메뉴에서 권한에 맞는 기능만 표시됩니다.
 - 권한이 부족한 보호 페이지에 접근하면 현재 통합 기본 화면인 `index.html`로 이동합니다.
@@ -629,7 +644,7 @@ flowchart TD
 | 부서 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | 가입 신청 | `registration_requests` | 계정 신청과 승인/거부 상태 |
 | 부서 이동 | `department_transfer_requests` | 부서 이동 요청, 승인/거부, 처리 기록 |
-| 달란트 | `talent_transactions` | 적립/사용 거래 내역 |
+| 달란트 | `talent_transactions` | 적립/사용/반환 거래 내역 |
 | 달란트 항목 | `talent_items` | 지급 항목, 달란트 금액, 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
 | 상품 | `products` | 상점 상품, 가격, 대상, 이미지, 활성 상태 |
 | 상품 주문 | `product_orders` | 구매 신청, 4단계 상태 관리, 담당자 기록 |

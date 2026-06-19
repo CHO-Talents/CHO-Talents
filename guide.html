@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>학생 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.47.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.47.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.47.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.48.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.48.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.48.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -41,7 +41,7 @@
         <div class="guide-mini-card">
           <div class="icon">💰</div>
           <h3>내 달란트 확인</h3>
-          <p>로그인하면 받은 달란트, 사용한 달란트, 수령 대기 상품수, 구매 신청으로 묶여 있는 달란트를 확인할 수 있습니다.</p>
+          <p>로그인하면 사용 가능·사용 대기·사용 완료·반환·누적 적립 달란트와 적립/사용/반환 내역을 확인할 수 있습니다.</p>
         </div>
         <div class="guide-mini-card">
           <div class="icon">🛒</div>
@@ -82,7 +82,7 @@
           <tbody>
             <tr><td>달란트 적립</td><td>달란트를 받을 수 있는 활동과 각 활동의 현재 지급 수량, 지급 규칙, 설명을 확인합니다.</td></tr>
             <tr><td>상품 구매</td><td>달란트로 살 수 있는 상품을 보고 구매를 신청합니다.</td></tr>
-            <tr><td>내 달란트</td><td>사용 가능 달란트, 적립/사용 내역, 구매 진행 상태를 확인합니다.</td></tr>
+            <tr><td>내 달란트</td><td>요약 박스(사용 가능·수령 대기·사용 대기·사용 완료·반환·누적 적립)와 적립/사용/반환 내역, 구매 진행 상태를 확인합니다.</td></tr>
             <tr><td>내 구매 상품</td><td>신청한 상품의 진행 단계를 확인하고, 신청 단계에서 취소할 수 있습니다.</td></tr>
             <tr><td>Q &amp; A</td><td>자주 묻는 질문을 보거나, 궁금한 점을 질문합니다.</td></tr>
           </tbody>
@@ -112,6 +112,33 @@
     </section>
 
     <section class="guide-section">
+      <h2>📱 모바일에서 사용하기</h2>
+      <div class="guide-card">
+        <h3>상단 메뉴 배치</h3>
+        <p>스마트폰 등 좁은 화면에서는 상단 우측에 아래 순서로 버튼이 표시됩니다.</p>
+        <ol class="guide-steps" style="margin-top:0.75rem;">
+          <li><strong>테마 스위치</strong> — 일반/다크 모드 전환</li>
+          <li><strong>☰ 메뉴</strong> — 햄버거 버튼을 눌러 전체 메뉴 열기</li>
+          <li><strong>로그아웃</strong> — 현재 계정에서 로그아웃</li>
+          <li><strong>이름</strong> — 권한 이모지와 함께 로그인한 사용자 이름 표시</li>
+        </ol>
+        <div class="guide-note" style="margin-top:0.75rem;">PC 화면보다 메뉴가 접혀 있으므로, 원하는 메뉴는 ☰ 버튼을 눌러 확인하세요.</div>
+      </div>
+    </section>
+
+    <section class="guide-section">
+      <h2>⏱️ 세션 관리 (자동 로그아웃)</h2>
+      <div class="guide-card">
+        <h3>24시간 유휴 타임아웃</h3>
+        <p>로그인한 뒤 <strong>24시간 동안 사이트를 사용하지 않으면</strong> 세션이 만료되어 자동으로 로그아웃됩니다. 만료 시 안내 메시지가 표시되고 로그인 화면으로 이동합니다.</p>
+      </div>
+      <div class="guide-card">
+        <h3>활동 시 시간 초기화</h3>
+        <p>페이지 조회, 클릭, 스크롤, 키 입력 등 사이트를 사용하는 활동이 있으면 24시간 타이머가 <strong>처음부터 다시</strong> 시작됩니다. 여러 탭을 열어 두어도 활동 시간은 공유됩니다.</p>
+      </div>
+    </section>
+
+    <section class="guide-section">
       <h2>🛒 상품 구매 흐름</h2>
       <ol class="guide-steps">
         <li><strong>상품 구매</strong>에서 원하는 상품을 고릅니다.</li>
@@ -132,15 +159,25 @@
         <table class="guide-table">
           <thead><tr><th>항목</th><th>뜻</th></tr></thead>
           <tbody>
-            <tr><td>사용 가능 달란트</td><td>지금 바로 상품 구매에 사용할 수 있는 달란트입니다.</td></tr>
-            <tr><td>상품 수령 예정</td><td>구매가 진행 중이고 아직 상품을 받지 않은 건수입니다.</td></tr>
-            <tr><td>사용 대기 달란트</td><td>구매 신청은 했지만 아직 달란트가 차감되지 않은 금액입니다.</td></tr>
-            <tr><td>사용 완료 달란트</td><td>상품 구매가 확정되어 실제로 차감된 달란트입니다.</td></tr>
-            <tr><td>누적 적립 달란트</td><td>지금까지 받은 달란트의 총 합계입니다.</td></tr>
+            <tr><td>사용 가능 달란트 ⭐</td><td>지금 바로 상품 구매에 사용할 수 있는 달란트입니다.</td></tr>
+            <tr><td>수령 대기 상품수 🎁</td><td>구매가 진행 중이고 아직 상품을 받지 않은 건수입니다.</td></tr>
+            <tr><td>사용 대기 달란트 ⏳</td><td>구매 신청은 했지만 아직 달란트가 차감되지 않은 금액입니다.</td></tr>
+            <tr><td>사용 완료 달란트 📉</td><td><strong>실제 상품 구매에 사용된</strong> 달란트만 표시됩니다. 교사가 잘못 지급한 달란트를 돌려받은 금액(반환)은 포함되지 않습니다.</td></tr>
+            <tr><td>반환 달란트 ↩️</td><td>분홍색 요약 박스로 표시됩니다. 교사가 잘못 지급한 달란트를 돌려받은 총액입니다.</td></tr>
+            <tr><td>누적 적립 달란트 📈</td><td>지금까지 받은 달란트의 총 합계입니다.</td></tr>
           </tbody>
         </table>
       </div>
-      <div class="guide-note">지급 취소 이력의 달란트 트랜잭션 ID는 표시되지 않습니다.</div>
+      <div class="guide-card">
+        <h3>달란트 내역 유형</h3>
+        <p>하단 <strong>달란트 내역</strong> 테이블에서는 각 건마다 유형 배지로 구분됩니다.</p>
+        <ul class="guide-list" style="margin-top:0.5rem;">
+          <li><strong>적립</strong> — 활동·QR 등으로 달란트를 받은 경우</li>
+          <li><strong>사용</strong> — 상품 구매 등으로 달란트가 차감된 경우</li>
+          <li><strong>반환</strong> — 교사가 잘못 지급한 달란트를 돌려받은 경우 (사용과 별도 표시)</li>
+        </ul>
+      </div>
+      <div class="guide-note">지급 취소(반환) 이력의 내부 트랜잭션 ID는 설명란에 표시되지 않습니다.</div>
       <div class="guide-card">
         <h3>상품 구매 진행 흐름</h3>
         <p><span class="guide-badge badge-student">구매 신청</span> → <span class="guide-badge badge-teacher">상품 준비</span> → <span class="guide-badge badge-oper">상품 구매</span> → <span class="guide-badge badge-admin">상품 지급</span></p>
@@ -172,6 +209,14 @@
           <h3>화면 색이 달라졌어요</h3>
           <p>상단 테마 스위치에서 일반/다크 모드를 바꿀 수 있습니다. 로그인 상태에서는 선택한 테마가 계정에 저장됩니다.</p>
         </div>
+        <div class="guide-card">
+          <h3>갑자기 로그아웃됐어요</h3>
+          <p>24시간 동안 사이트를 사용하지 않으면 세션이 만료되어 자동 로그아웃됩니다. 다시 로그인하면 됩니다. 사용 중에는 활동할 때마다 타이머가 초기화됩니다.</p>
+        </div>
+        <div class="guide-card">
+          <h3>반환 달란트가 뭐예요?</h3>
+          <p>선생님이 실수로 지급한 달란트를 되돌린 금액입니다. 내 달란트 화면의 분홍색 ↩️ 박스와 내역의 <strong>반환</strong> 배지로 확인할 수 있습니다.</p>
+        </div>
       </div>
     </section>
   </main>
@@ -181,12 +226,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.47.0"></script>
-  <script src="js/supabase-config.js?v=3.47.0"></script>
-  <script src="js/activity-log.js?v=3.47.0"></script>
-  <script src="js/auth.js?v=3.47.0"></script>
-  <script src="js/theme.js?v=3.47.0"></script>
-  <script src="js/nav.js?v=3.47.0"></script>
+  <script src="config/public-config.js?v=3.48.0"></script>
+  <script src="js/supabase-config.js?v=3.48.0"></script>
+  <script src="js/activity-log.js?v=3.48.0"></script>
+  <script src="js/auth.js?v=3.48.0"></script>
+  <script src="js/theme.js?v=3.48.0"></script>
+  <script src="js/nav.js?v=3.48.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -207,6 +252,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.47.0"></script>
+  <script src="js/version.js?v=3.48.0"></script>
 </body>
 </html>

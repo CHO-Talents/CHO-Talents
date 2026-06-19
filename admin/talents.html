@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.47.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.47.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.48.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.48.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -130,16 +130,16 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.47.0"></script>
-  <script src="../js/supabase-config.js?v=3.47.0"></script>
-  <script src="../js/activity-log.js?v=3.47.0"></script>
-  <script src="../js/auth.js?v=3.47.0"></script>
-  <script src="../js/theme.js?v=3.47.0"></script>
-  <script src="../js/nav.js?v=3.47.0"></script>
-  <script src="../js/page-size.js?v=3.47.0"></script>
-  <script src="../js/user-mgmt.js?v=3.47.0"></script>
-  <script src="../js/table-sort.js?v=3.47.0"></script>
-  <script src="../js/talent.js?v=3.47.0"></script>
+  <script src="../config/public-config.js?v=3.48.0"></script>
+  <script src="../js/supabase-config.js?v=3.48.0"></script>
+  <script src="../js/activity-log.js?v=3.48.0"></script>
+  <script src="../js/auth.js?v=3.48.0"></script>
+  <script src="../js/theme.js?v=3.48.0"></script>
+  <script src="../js/nav.js?v=3.48.0"></script>
+  <script src="../js/page-size.js?v=3.48.0"></script>
+  <script src="../js/user-mgmt.js?v=3.48.0"></script>
+  <script src="../js/table-sort.js?v=3.48.0"></script>
+  <script src="../js/talent.js?v=3.48.0"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
     @media(max-width:768px){.hide-mobile{display:none!important;}}
@@ -293,7 +293,7 @@
       talentUserList = sortUserList(data, getDeptName);
       talentUserList.forEach(u => {
         u._deptName = getDeptName(u.department_id);
-        const sm = talentSummaryMap[u.id] || { earned: 0, used: 0 };
+        const sm = talentSummaryMap[u.id] || { earned: 0, used: 0, returned: 0 };
         u._usedTalent = sm.used; u._totalTalent = sm.earned;
       });
       renderTalentTable();
@@ -316,7 +316,7 @@
         const dn = nameMap[u.id] || u.display_name || '-';
         const isSelf = u.id === session.id;
         const classLabel = u.class_number ? u.class_number + '반' : '-';
-        const sm = talentSummaryMap[u.id] || { earned: 0, used: 0 };
+        const sm = talentSummaryMap[u.id] || { earned: 0, used: 0, returned: 0 };
         const attendDone = _attendanceGivenThisWeek.has(u.id);
         const attendBtn = canGiveTalent(u)
           ? `<button class="filter-btn" style="background:${attendDone?'#e03131':'#51cf66'};color:#fff;border-color:${attendDone?'#e03131':'#51cf66'};" onclick="${attendDone ? `cancelAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')` : `giveAttendance('${u.id}','${dn.replace(/'/g,"\\'")}')` }">${attendDone?'✓출석 취소':'출석'}</button>`
@@ -369,12 +369,17 @@
 
     async function loadBatchSummary(userIds) {
       if (!_sb || userIds.length === 0) return;
-      const { data: txns } = await _sb.from('talent_transactions').select('user_id,type,amount').in('user_id', userIds);
+      const { data: txns } = await _sb.from('talent_transactions').select('user_id,type,amount,description').in('user_id', userIds);
       talentSummaryMap = {};
       (txns || []).forEach(t => {
-        if (!talentSummaryMap[t.user_id]) talentSummaryMap[t.user_id] = { earned: 0, used: 0 };
-        if (t.type === 'earn') talentSummaryMap[t.user_id].earned += t.amount;
-        else talentSummaryMap[t.user_id].used += t.amount;
+        if (!talentSummaryMap[t.user_id]) talentSummaryMap[t.user_id] = { earned: 0, used: 0, returned: 0 };
+        if (t.type === 'earn') {
+          talentSummaryMap[t.user_id].earned += t.amount;
+        } else if (t.description && t.description.startsWith('반환:')) {
+          talentSummaryMap[t.user_id].returned += t.amount;
+        } else {
+          talentSummaryMap[t.user_id].used += t.amount;
+        }
       });
     }
 
@@ -476,6 +481,10 @@
           <div style="font-size:0.8rem;color:#868e96;">총 사용</div>
           <div style="font-size:1.5rem;font-weight:800;color:#e03131;">-${summary.used}</div>
         </div>
+        <div style="flex:1;text-align:center;padding:0.8rem;background:#fff0f6;border-radius:8px;">
+          <div style="font-size:0.8rem;color:#868e96;">총 반환</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#c2255c;">-${summary.returned}</div>
+        </div>
         <div style="flex:1;text-align:center;padding:0.8rem;background:#e7f5ff;border-radius:8px;">
           <div style="font-size:0.8rem;color:#868e96;">잔여</div>
           <div style="font-size:1.5rem;font-weight:800;color:#1971c2;">${summary.balance}</div>
@@ -499,15 +508,19 @@
         const allReturnedIds = new Set([...returnedTxnIds, ...returnDescTxnIds]);
         tbody.innerHTML = history.map(t => {
           const creatorName = t.created_by ? (creatorMap[t.created_by] || '-') : '-';
-          const isReturn = t.description && t.description.startsWith('반환:');
+          const isReturn = t.type === 'use' && t.description && t.description.startsWith('반환:');
           const alreadyReturned = allReturnedIds.has(t.id);
-          const returnBtn = (canReturn && t.type === 'earn' && !isReturn && !alreadyReturned)
+          const returnBtn = (canReturn && t.type === 'earn' && !alreadyReturned)
             ? `<button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="openReturnModal('${userId}','${t.id}','${t.amount}','${(t.description||'').replace(/'/g,"\\'")}')">반환</button>`
-            : (alreadyReturned && t.type === 'earn' && !isReturn ? '<span style="font-size:0.7rem;color:#868e96;">반환됨</span>' : '');
+            : (alreadyReturned && t.type === 'earn' ? '<span style="font-size:0.7rem;color:#868e96;">반환됨</span>' : '');
+          let typeBg, typeColor, typeLabel;
+          if (isReturn) { typeBg = '#fff0f6'; typeColor = '#c2255c'; typeLabel = '반환'; }
+          else if (t.type === 'earn') { typeBg = '#e6fcf5'; typeColor = '#2b8a3e'; typeLabel = '적립'; }
+          else { typeBg = '#fff5f5'; typeColor = '#e03131'; typeLabel = '사용'; }
           return `<tr>
           <td>${formatKSTShort(t.created_at)}</td>
-          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${t.type==='earn'?'#e6fcf5':'#fff5f5'};color:${t.type==='earn'?'#2b8a3e':'#e03131'};">${t.type==='earn'?(isReturn?'반환':'적립'):'사용'}</span>${t.type==='earn' && t.source==='qr' ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;">QR</span>' : ''}</td>
-          <td style="font-weight:700;color:${t.type==='earn'?'#2b8a3e':'#e03131'}">${t.type==='earn'?'+':'-'}${t.amount}</td>
+          <td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.8rem;background:${typeBg};color:${typeColor};">${typeLabel}</span>${t.type==='earn' && t.source==='qr' ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;">QR</span>' : ''}</td>
+          <td style="font-weight:700;color:${typeColor}">${t.type==='earn'?'+':'-'}${t.amount}</td>
           <td>${maskTalentDesc(t.description)}</td>
           <td style="font-size:0.78rem;">${creatorName}</td>
           <td>${t.balance_after != null ? t.balance_after : '-'}</td>
@@ -790,6 +803,6 @@
     document.getElementById('detailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDetailModal(); });
     document.getElementById('returnModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeReturnModal(); });
   </script>
-  <script src="../js/version.js?v=3.47.0"></script>
+  <script src="../js/version.js?v=3.48.0"></script>
 </body>
 </html>

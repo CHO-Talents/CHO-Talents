@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-18 KST 현재 코드 기준 (v3.47.0)
+작성 기준: 2026-06-19 KST 현재 코드 기준 (v3.48.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -26,7 +26,7 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 flowchart LR
   User["사용자 브라우저"] --> Pages["GitHub Pages 정적 화면<br/>HTML/CSS/Vanilla JS"]
 
-  Pages --> AuthJS["js/auth.js<br/>로그인/세션/권한/tErr()/fmtNum()"]
+  Pages --> AuthJS["js/auth.js<br/>로그인/세션/24h 타임아웃/권한/tErr()/fmtNum()"]
   Pages --> LogJS["js/activity-log.js<br/>로그/ACTION_LABELS/세션 캐시/소프트 삭제"]
   Pages --> UserMgmt["js/user-mgmt.js<br/>사용자/부서 관리"]
   Pages --> TalentJS["js/talent.js<br/>달란트 조회/지급/사용/반환"]
@@ -85,7 +85,7 @@ flowchart LR
 | `qna.html` | Q&A/FAQ. 공개 FAQ 조회, 관리자 FAQ 직접 등록, 로그인 사용자 질문/답변 등록, 60등급 이상 답변+FAQ 등록, 90등급 이상 삭제 |
 | `earn-talents.html` | 달란트 적립 방법 안내. 항목 카드 그리드(모바일 3열, PC 5열)와 `talent_items` 활성 항목 지급 수량 배지 표시 |
 | `shop.html` | 상점 조회 + 구매 신청 + 대리 구매. 비로그인은 학생용, 교사는 교사용 기본 필터 |
-| `my-talents.html` | 로그인 사용자 본인의 사용 가능 달란트/상품 수령 예정/사용 대기/사용 완료/누적 적립 달란트, 달란트 내역, 구매 내역. 지급 취소 이력의 트랜잭션 ID는 숨김 |
+| `my-talents.html` | 로그인 사용자 본인의 사용 가능 달란트/상품 수령 예정/사용 대기/사용 완료/반환/누적 적립 달란트, 달란트 내역(적립·사용·반환 3종 배지), 구매 내역. `fetchTalentSummary()`의 `returned` 필드로 반환 요약 표시. 지급 취소 이력의 트랜잭션 ID는 숨김 |
 | `my-orders.html` | 로그인 사용자 본인의 구매 신청 내역과 4단계 상태 조회. 공통 페이징(PC 20/모바일 10) |
 | `admin/index.html` | 60등급 이상 대시보드. 사용자/부서/보고서/가입대기 요약. 미확인 ERROR+ 카드는 100등급 이상만 표시(클릭→로그). 바로가기에 달란트 통계/QR 관리 포함 |
 | `admin/users.html` | 60등급 이상 사용자 관리. 교사/학생 그룹별 분리(학생은 권한 열 제거). 관리 드롭다운. 통계 카드 모바일 3개씩 반응형. 가입 신청/부서 이동 요청/승인 처리. 공통 페이징(PC 20/모바일 10) |
@@ -108,7 +108,7 @@ flowchart LR
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
 | `js/slack-notify.js` | Slack 알림 공통 유틸리티. `sendSlackNotify(type, data)`로 Edge Function `slack-notify` 호출. fire-and-forget, 동일 알림 5초 throttle. 부서/유형별 채널 라우팅은 Edge Function에서 수행 |
-| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - 처리 가능 건수 배지 + Q&A 미답변 배지 자동 호출 포함), 페이지 크기(`page-size.js`), Slack 알림(`slack-notify.js`), Supabase 설정, 인증/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
+| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - `#navHeaderActions` 내부 햄버거·테마·로그인/로그아웃, 처리 가능 건수 배지 + Q&A 미답변 배지 자동 호출 포함), 페이지 크기(`page-size.js`), Slack 알림(`slack-notify.js`), Supabase 설정, 인증/24h 세션 타임아웃/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
 | `docs/edge-function-slack-notify.ts` | Supabase Edge Function `slack-notify` 배포용 소스. 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 메시지 포맷 |
 | `admin/slack-rules.html` | 80등급 이상 Slack 알림 룰 문서. 구매/가입/부서이동/Q&A/WARN+ 로그 알림 type과 채널 라우팅 설명 |
 | `docs/SLACK_NOTIFICATION_RULES.md` | Slack 알림 type, 라우팅, Secret 기준 문서 |
@@ -150,6 +150,30 @@ flowchart LR
 | 관리 배지 | 관리 > 사용자 관리 | 60+ | 해당 계정이 처리 가능한 가입 신청 + 부서 이동 요청 수 |
 | 상품 배지 | 상품 > 구매 관리 | 60+ | 해당 계정이 처리 가능한 구매 건수. 구매 담당 교사는 전체 부서 주문 포함 |
 | 운영 배지 | 운영 > 로그 | 80+ 호출, 로그 화면 접근은 100+ | 미확인 ERROR/FATAL/CRITICAL 로그 수 |
+
+### 네비게이션 DOM 구조 (v3.48.0)
+
+`js/nav.js`의 `renderNav()`가 생성하는 헤더 액션 영역 구조:
+
+| 순서 | 요소 | ID/클래스 | 역할 |
+|---:|---|---|---|
+| 1 | 브랜드 | `.admin-nav-brand` | `index.html` 링크 |
+| 2 | 헤더 액션 | `#navHeaderActions` | 테마·햄버거·로그인/로그아웃·사용자명 |
+| 2a | 테마 피커 | `#navThemePicker` | 다크/라이트 전환 |
+| 2b | 햄버거 | `#navHamburger` | 모바일 메뉴 토글 (`navLinks.nav-open`) |
+| 2c | 로그아웃 | `#navLogoutBtn` | 로그인 시 표시 |
+| 2d | 로그인/사용자 | `#navLoginArea`, `#navAuthArea` | 비로그인/로그인 영역 |
+| 3 | 메뉴 링크 | `#navLinks` | 드롭다운 메뉴 그룹 |
+
+v3.48.0부터 햄버거 버튼(`.nav-hamburger`)은 `#navHeaderActions` **내부**에 렌더링된다. 이전처럼 네비게이션 최상위 형제가 아니라, 테마 스위치·로그아웃·사용자명과 같은 액션 묶음에 포함된다.
+
+모바일(`max-width: 768px`) CSS `order` 배치 (`css/common.css`):
+
+| order | 요소 |
+|---:|---|
+| 1 | `.admin-nav-brand` |
+| 2 | `#navHeaderActions` (테마 → 햄버거 → 로그아웃 → 사용자명) |
+| 3 | `#navLinks` (햄버거 클릭 시 `.nav-open` 토글) |
 
 ## 5. 화면 연결 구조
 
@@ -222,6 +246,40 @@ flowchart TD
 4. 최소 권한 미달이면 `index.html`로 이동
 5. `role_page_access` 확인: 페이지 최소 등급 통과 후 보조 접근/요소 숨김 설정 적용
 6. 통과 시 `auth-ready` 적용, 역할 배지/메뉴/페이지 데이터 로드
+7. `startSessionTimer()` 호출 — 24시간 유휴 세션 타임아웃 시작 (v3.48.0)
+
+### 24시간 세션 타임아웃 (v3.48.0)
+
+`js/auth.js`에 세션 타이머 모듈이 포함되어 있다. DB 스키마 변경 없이 클라이언트 `localStorage`로 마지막 활동 시각을 추적한다.
+
+```mermaid
+flowchart TD
+  Init["initPage() 통과"] --> Start["startSessionTimer()"]
+  Start --> Expired{"cho_last_activity<br/>24h 초과?"}
+  Expired -->|예| ForceLogout["clearSession() + login.html 이동"]
+  Expired -->|아니오| Touch["_touchActivity() + _resetSessionTimer()"]
+  Touch --> Listen["click/keydown/scroll/mousemove/touchstart<br/>(60초 디바운스)"]
+  Listen --> Update["localStorage cho_last_activity 갱신"]
+  Update --> Reset["24h setTimeout 재설정"]
+  Reset --> Alert["만료 시 alert + logout()"]
+
+  TabBack["visibilitychange<br/>(탭 복귀)"] --> ReCheck{"만료?"}
+  ReCheck -->|예| Alert
+  ReCheck -->|아니오| Touch
+
+  Storage["storage 이벤트<br/>(cho_last_activity)"] --> Sync["_resetSessionTimer()<br/>멀티탭 동기화"]
+```
+
+| 항목 | 값/동작 |
+|---|---|
+| 상수 | `SESSION_TIMEOUT_MS = 24 * 60 * 60 * 1000` (24시간) |
+| 저장 키 | `localStorage` `cho_last_activity` (Unix ms) |
+| 시작 시점 | `initPage()` 성공 후 `auth-ready` 적용 직후 |
+| 활동 이벤트 | `click`, `keydown`, `scroll`, `mousemove`, `touchstart` |
+| 디바운스 | 60초 — 연속 이벤트 폭주 방지 |
+| 탭 복귀 | `visibilitychange`에서 만료 재검증, 미만료 시 활동 갱신 |
+| 멀티탭 | `storage` 이벤트로 다른 탭의 활동 갱신 시 타이머 동기화 |
+| 만료 처리 | alert 안내 후 `logout()` → 로그인 페이지 이동 |
 
 ### 메인 페이지 즐겨찾기 흐름
 
@@ -349,6 +407,32 @@ flowchart TD
   Return --> ReturnRPC["use_talent RPC<br/>(반환 사유 기록)"]
   ReturnRPC --> Tx
 ```
+
+### 달란트 반환 구분 (v3.48.0)
+
+반환 트랜잭션은 DB상 `type='use'`로 저장되며, `description`이 `반환:`으로 시작한다. `fetchTalentSummary()`가 `used`와 `returned`를 프론트엔드에서 분리 집계한다. **DB 스키마/RPC 변경 없음.**
+
+```mermaid
+flowchart LR
+  UseQuery["talent_transactions<br/>type = use"] --> Filter{"description<br/>.startsWith('반환:')?"}
+  Filter -->|예| Returned["returned += amount"]
+  Filter -->|아니오| Used["used += amount"]
+  EarnQuery["type = earn"] --> Earned["earned 합산"]
+  Returned --> Summary["fetchTalentSummary()<br/>{ earned, used, returned, balance }"]
+  Used --> Summary
+  Earned --> Summary
+  Summary --> MyTalents["my-talents.html<br/>반환 요약 박스 + 3종 배지"]
+  Summary --> AdminDetail["admin/talents.html<br/>상세: 누적적립/총사용/총반환/잔여"]
+  Summary --> QRScan["admin/talent-qr.html<br/>수령자 목록 반환 배지"]
+```
+
+| 화면 | 반환 표시 |
+|---|---|
+| `my-talents.html` | 반환 요약 박스, 내역 테이블 `반환` 배지, 사용 완료는 실제 상품 구매만 |
+| `admin/talents.html` | 상세 모달 4칸(누적적립/총사용/총반환/잔여) |
+| `admin/talent-qr.html` | 수령자 목록 `반환` 배지 |
+
+반환 기록 시 `use_talent` RPC의 `p_description`은 `'반환: ' + description` 형식으로 저장한다.
 
 달란트 지급 규칙:
 
@@ -605,6 +689,9 @@ flowchart TD
 21. 아이디가 관리자에게만 표시되고 일반 사용자는 본인 것만 보이는지 확인한다.
 22. 에러 메시지가 한글로 변환되어 표시되는지 확인한다.
 23. 주요 기능의 성공/실패/거부가 활동 로그에 기록되는지 확인하고, DB insert 실패가 콘솔 오류로 노출되는지 확인한다.
+24. `my-talents.html`에서 반환 달란트 요약과 적립/사용/반환 3종 배지가 올바르게 표시되는지 확인한다.
+25. 24시간 유휴 후(또는 `cho_last_activity` 수동 조작) 세션 만료 시 alert와 로그아웃 리다이렉트가 동작하는지 확인한다.
+26. 모바일 뷰에서 `#navHeaderActions` 내부 햄버거가 테마·로그아웃·사용자명과 함께 우측에 배치되는지 확인한다.
 
 ## 18. 다음 작업자가 먼저 볼 파일
 
@@ -612,13 +699,13 @@ flowchart TD
 |---:|---|---|
 | 1 | `README.md` | 현재 구조, 페이지 연결, 권한, 운영 흐름 요약 |
 | 2 | `docs/PROJECT_ARCHITECTURE_FLOW.md` | 상세 구성도와 프로세스 흐름 |
-| 3 | `js/auth.js` | 권한 등급, 리디렉트, 세션, tErr() 에러 번역 |
+| 3 | `js/auth.js` | 권한 등급, 리디렉트, Supabase 세션, 24h 유휴 타임아웃(`startSessionTimer`), tErr() 에러 번역 |
 | 4 | `js/activity-log.js` | 로그 기록, ACTION_LABELS 한글 매핑, writeLog() 자동 라벨, WARN+ Slack 알림 연동, Q&A 미답변 배지, 세션 캐시, 소프트 삭제 |
 | 4a | `js/slack-notify.js` | Slack 알림 공통 유틸리티, Edge Function slack-notify 호출, 채널 라우팅은 Edge Function 측 |
 | 4b | `docs/edge-function-slack-notify.ts` | Edge Function 배포 소스, 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 포맷 |
 | 4c | `docs/SLACK_NOTIFICATION_RULES.md`, `admin/slack-rules.html` | Slack 알림 type과 채널 라우팅 운영 문서 |
 | 5 | `js/user-mgmt.js` | 사용자/부서 관리 RPC |
-| 6 | `js/talent.js` | 달란트 지급/사용/반환 |
+| 6 | `js/talent.js` | 달란트 지급/사용/반환, `fetchTalentSummary()` earned/used/returned 분리 집계 |
 | 7 | `js/product.js` | 상품 조회/관리 |
 | 8 | `admin/*.html` | 각 관리 화면의 실제 접근 권한과 UI 동작 |
 | 9 | `docs/TASK-026_schema.sql` | 구매 시스템 DB 스키마 및 RPC |
