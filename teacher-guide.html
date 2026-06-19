@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>교사 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.48.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.48.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.48.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.49.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -54,7 +54,7 @@
             <tr><td>구매 관리</td><td>부서 담당 교사 이상은 칸반보드 형태의 상태별 카드로 현황을 파악하고 권한 범위 안의 주문을 처리합니다. 구매 담당 교사는 모든 부서 주문을 처리할 수 있습니다.</td></tr>
             <tr><td>구매 통계</td><td>부서 담당 교사 이상은 전체/부서별/사용자별/유형별 구매 통계를 확인합니다. 교사/학생 분리 표시, 상세 드릴다운 제공.</td></tr>
             <tr><td>내 달란트</td><td>사용 가능 달란트, 수령 대기 상품수, 사용 완료·반환 달란트 요약, 적립/사용/반환 내역, 상품 수령 예정 현황을 확인합니다.</td></tr>
-            <tr><td>대시보드</td><td>부서 담당 교사(60+) 이상 권한이면 관리 대시보드에 접근할 수 있습니다. 전체 현황과 바로가기를 확인합니다.</td></tr>
+            <tr><td>대시보드</td><td>부서 담당 교사(60+) 이상 권한이면 관리 대시보드에 접근할 수 있습니다. 통계 카드와 이슈 로그 테이블을 확인합니다.</td></tr>
           </tbody>
         </table>
       </div>
@@ -169,6 +169,7 @@
             <li><strong>우측(왼쪽부터):</strong> 테마 스위치 → 햄버거 메뉴(☰) → 로그아웃 → (권한 이모지) 이름</li>
           </ul>
           <p style="margin-top:0.75rem;">햄버거 메뉴를 누르면 소개·달란트·상품·관리·운영 그룹이 아래로 펼쳐집니다. 모바일에서는 hover로 메뉴가 열리지 않으며, 그룹 이름을 탭해야 하위 메뉴를 볼 수 있습니다.</p>
+          <p style="margin-top:0.75rem;">v3.49.0부터 관리(<strong>/admin/</strong>) 페이지에서도 동일한 모바일 상단 배치가 적용됩니다.</p>
         </div>
       </div>
     </section>
@@ -208,12 +209,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.48.0"></script>
-  <script src="js/supabase-config.js?v=3.48.0"></script>
-  <script src="js/activity-log.js?v=3.48.0"></script>
-  <script src="js/auth.js?v=3.48.0"></script>
-  <script src="js/theme.js?v=3.48.0"></script>
-  <script src="js/nav.js?v=3.48.0"></script>
+  <script src="config/public-config.js?v=3.49.0"></script>
+  <script src="js/supabase-config.js?v=3.49.0"></script>
+  <script src="js/activity-log.js?v=3.49.0"></script>
+  <script src="js/auth.js?v=3.49.0"></script>
+  <script src="js/theme.js?v=3.49.0"></script>
+  <script src="js/nav.js?v=3.49.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -237,6 +238,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.48.0"></script>
+  <script src="js/version.js?v=3.49.0"></script>
 </body>
 </html>

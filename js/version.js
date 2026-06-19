@@ -2,9 +2,24 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.48.0',
+  current: '3.49.0',
   date: '2026-06-19',
   history: [
+    {
+      version: '3.49.0',
+      date: '2026-06-19',
+      title: 'admin 모바일 네비 수정 + QR 수령자 페이징 + 대시보드 정리 + 사용자 필터',
+      changes: [
+        'admin.css 모바일 네비: 테마→햄버거→로그아웃→이름 순서 admin 페이지에도 일괄 적용',
+        'QR 수령자: 반환 감지를 QR별 개별 스캔 단위로 정확 매칭 (talent_item_id + 시간 근접)',
+        'QR 수령자: 페이징 추가 (기존 admin 페이지 페이징 스타일 동일)',
+        'QR 수령자: 표시 개수 설정 콤보박스 + 사용자별 DB 저장 (qr_scan_list 키)',
+        '대시보드: 바로가기 박스(quickLinks) 제거',
+        '사용자 관리: 통계 카드 클릭 필터 (전체/관리자/부서 담당/교사/학생)',
+        '사용자 관리: 관리자 카드 = admin+evangelist+chief, 부서 담당 = purchase_teacher+dept_teacher',
+        '사용자 관리: 활성 필터 카드 강조 표시 (box-shadow + transform)'
+      ]
+    },
     {
       version: '3.48.0',
       date: '2026-06-19',

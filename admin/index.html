@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 대시보드 - CHO Talents</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.48.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.48.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -61,8 +61,6 @@
       </a>
     </div>
 
-    <div id="quickLinks" style="display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;margin-bottom:1.5rem;"></div>
-
     <div class="admin-table-wrap" data-min-perm="100">
       <div class="admin-table-header">
         <div class="admin-table-title">최근 이슈 로그</div>
@@ -75,12 +73,12 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.48.0"></script>
-  <script src="../js/supabase-config.js?v=3.48.0"></script>
-  <script src="../js/activity-log.js?v=3.48.0"></script>
-  <script src="../js/auth.js?v=3.48.0"></script>
-  <script src="../js/theme.js?v=3.48.0"></script>
-  <script src="../js/nav.js?v=3.48.0"></script>
+  <script src="../config/public-config.js?v=3.49.0"></script>
+  <script src="../js/supabase-config.js?v=3.49.0"></script>
+  <script src="../js/activity-log.js?v=3.49.0"></script>
+  <script src="../js/auth.js?v=3.49.0"></script>
+  <script src="../js/theme.js?v=3.49.0"></script>
+  <script src="../js/nav.js?v=3.49.0"></script>
   <script>
     initSupabase();
     let session;
@@ -97,31 +95,7 @@
 
     })();
 
-    function buildQuickLinks() {
-      const links = [
-        { href: 'users.html', emoji: '👥', label: '사용자 관리', bg: '#e8e0ff', color: 'var(--admin-primary)', minRank: 60 },
-        { href: 'bulk-register.html', emoji: '📋', label: '학생 일괄 등록', bg: '#e8f5e9', color: '#2b8a3e', minRank: 80 },
-        { href: 'departments.html', emoji: '🏢', label: '부서 관리', bg: '#f3f0ff', color: '#7048c6', minRank: 80 },
-        { href: 'managers.html', emoji: '👑', label: '관리자 관리', bg: '#fff9db', color: '#e67700', minRank: 80 },
-        { href: 'talents.html', emoji: '💰', label: '달란트 관리', bg: '#fff5f5', color: '#e03131', minRank: 40 },
-        { href: 'talent-items.html', emoji: '🎯', label: '달란트 항목', bg: '#f0fff4', color: '#2b8a3e', minRank: 90 },
-        { href: 'shop.html', emoji: '📦', label: '상품 관리', bg: '#f0f9ff', color: '#1971c2', minRank: 60 },
-        { href: 'purchases.html', emoji: '🛒', label: '구매 관리', bg: '#e7f5ff', color: '#1864ab', minRank: 60 },
-        { href: 'purchase-stats.html', emoji: '📈', label: '구매 통계', bg: '#f3f0ff', color: '#6c5ce7', minRank: 60 },
-        { href: 'talent-stats.html', emoji: '📊', label: '달란트 통계', bg: '#f0fff4', color: '#2b8a3e', minRank: 60 },
-        { href: 'talent-qr.html', emoji: '📱', label: '달란트 QR 관리', bg: '#fff0f6', color: '#c2255c', minRank: 90 },
-      ];
-      const rank = session.permissionRank || 0;
-      document.getElementById('quickLinks').innerHTML = links
-        .filter(l => rank >= l.minRank)
-        .map(l => `<a href="${l.href}" style="display:block;padding:1rem;background:${l.bg};border-radius:12px;text-decoration:none;text-align:center;">
-          <div style="font-size:1.8rem;">${l.emoji}</div>
-          <div style="font-weight:700;color:${l.color};">${l.label}</div>
-        </a>`).join('');
-    }
-
     async function loadDashboard() {
-      buildQuickLinks();
       const myRank = session.permissionRank || 0;
       const deptId = session.managedDeptId;
       const isScoped = myRank < 80 && deptId;
@@ -199,6 +173,6 @@
       }
     }
   </script>
-  <script src="../js/version.js?v=3.48.0"></script>
+  <script src="../js/version.js?v=3.49.0"></script>
 </body>
 </html>

@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>사용자 관리 - 관리자</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.48.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.48.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -14,13 +14,13 @@
     <h2 style="margin-bottom:1rem;">👥 사용자 관리</h2>
 
     <div class="cards-grid" style="margin-bottom:1.5rem;grid-template-columns:repeat(5,1fr);">
-      <div class="stat-card"><div class="stat-card-label">전체</div><div class="stat-card-value" id="cntAll">-</div></div>
-      <div class="stat-card" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
-      <div class="stat-card" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">📋 부서 담당</div><div class="stat-card-value" id="cntMgr">-</div></div>
-      <div class="stat-card" style="border-left-color:#4dabf7;"><div class="stat-card-label">👩‍🏫 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
-      <div class="stat-card" style="border-left-color:#51cf66;"><div class="stat-card-label">🎒 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
+      <div class="stat-card stat-filter active" data-filter="all" onclick="setUserFilter('all')"><div class="stat-card-label">전체</div><div class="stat-card-value" id="cntAll">-</div></div>
+      <div class="stat-card stat-filter" data-filter="admin" onclick="setUserFilter('admin')" style="border-left-color:#e03131;" data-min-perm="80"><div class="stat-card-label">👑 관리자</div><div class="stat-card-value" id="cntAdmin">-</div></div>
+      <div class="stat-card stat-filter" data-filter="dept_mgr" onclick="setUserFilter('dept_mgr')" style="border-left-color:#cc5de8;" data-min-perm="80"><div class="stat-card-label">📋 부서 담당</div><div class="stat-card-value" id="cntMgr">-</div></div>
+      <div class="stat-card stat-filter" data-filter="teacher" onclick="setUserFilter('teacher')" style="border-left-color:#4dabf7;"><div class="stat-card-label">👩‍🏫 교사</div><div class="stat-card-value" id="cntTeacher">-</div></div>
+      <div class="stat-card stat-filter" data-filter="student" onclick="setUserFilter('student')" style="border-left-color:#51cf66;"><div class="stat-card-label">🎒 학생</div><div class="stat-card-value" id="cntStudent">-</div></div>
     </div>
-    <style>.cards-grid{display:grid;gap:0.6rem;}@media(max-width:768px){.cards-grid{grid-template-columns:repeat(3,1fr)!important;}.cards-grid .stat-card{padding:0.7rem 0.5rem;}.cards-grid .stat-card-value{font-size:1.3rem;}}</style>
+    <style>.cards-grid{display:grid;gap:0.6rem;}.stat-filter{cursor:pointer;transition:box-shadow 0.15s,transform 0.15s;}.stat-filter:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.1);}.stat-filter.active{box-shadow:0 0 0 2px var(--admin-primary,#6c5ce7);transform:translateY(-2px);}@media(max-width:768px){.cards-grid{grid-template-columns:repeat(3,1fr)!important;}.cards-grid .stat-card{padding:0.7rem 0.5rem;}.cards-grid .stat-card-value{font-size:1.3rem;}}</style>
 
     <!-- 가입 신청 내역 -->
     <div class="admin-table-wrap" id="reqSection" style="margin-bottom:1.5rem;">
@@ -187,17 +187,17 @@
   </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.48.0"></script>
-  <script src="../js/supabase-config.js?v=3.48.0"></script>
-  <script src="../js/activity-log.js?v=3.48.0"></script>
-  <script src="../js/auth.js?v=3.48.0"></script>
-  <script src="../js/theme.js?v=3.48.0"></script>
-  <script src="../js/nav.js?v=3.48.0"></script>
-  <script src="../js/page-size.js?v=3.48.0"></script>
-  <script src="../js/user-mgmt.js?v=3.48.0"></script>
-  <script src="../js/table-sort.js?v=3.48.0"></script>
-  <script src="../js/slack-notify.js?v=3.48.0"></script>
-  <script src="../js/version.js?v=3.48.0"></script>
+  <script src="../config/public-config.js?v=3.49.0"></script>
+  <script src="../js/supabase-config.js?v=3.49.0"></script>
+  <script src="../js/activity-log.js?v=3.49.0"></script>
+  <script src="../js/auth.js?v=3.49.0"></script>
+  <script src="../js/theme.js?v=3.49.0"></script>
+  <script src="../js/nav.js?v=3.49.0"></script>
+  <script src="../js/page-size.js?v=3.49.0"></script>
+  <script src="../js/user-mgmt.js?v=3.49.0"></script>
+  <script src="../js/table-sort.js?v=3.49.0"></script>
+  <script src="../js/slack-notify.js?v=3.49.0"></script>
+  <script src="../js/version.js?v=3.49.0"></script>
   <script>
     initSupabase();
     let session;
@@ -320,20 +320,31 @@
         .join('');
     }
 
+    const ADMIN_LEVELS = ['admin', 'evangelist', 'chief'];
+    const DEPT_MGR_FILTER_LEVELS = ['purchase_teacher', 'dept_teacher'];
+
     function updateStats() {
       document.getElementById('cntAll').textContent = allUsers.length;
-      document.getElementById('cntAdmin').textContent = allUsers.filter(u => ['admin','evangelist'].includes(u.permission_level)).length;
-      document.getElementById('cntMgr').textContent = allUsers.filter(u => ['chief','purchase_teacher','dept_teacher'].includes(u.permission_level)).length;
+      document.getElementById('cntAdmin').textContent = allUsers.filter(u => ADMIN_LEVELS.includes(u.permission_level)).length;
+      document.getElementById('cntMgr').textContent = allUsers.filter(u => DEPT_MGR_FILTER_LEVELS.includes(u.permission_level)).length;
       document.getElementById('cntTeacher').textContent = allUsers.filter(u => u.user_type === 'teacher').length;
       document.getElementById('cntStudent').textContent = allUsers.filter(u => u.user_type === 'student').length;
     }
 
     function userMatchesFilter(u, filter) {
-      if (filter === 'admin') return u.permission_level === 'admin';
-      if (filter === 'dept_manager') return DEPT_MGR_LEVELS.includes(u.permission_level);
+      if (filter === 'all') return true;
+      if (filter === 'admin') return ADMIN_LEVELS.includes(u.permission_level);
+      if (filter === 'dept_mgr') return DEPT_MGR_FILTER_LEVELS.includes(u.permission_level);
       if (filter === 'teacher') return u.user_type === 'teacher';
       if (filter === 'student') return u.user_type === 'student';
-      return u.user_type === filter || u.permission_level === filter;
+      return true;
+    }
+
+    function setUserFilter(filter) {
+      currentFilter = filter;
+      groupPages = { teacher: 1, student: 1 };
+      document.querySelectorAll('.stat-filter').forEach(el => el.classList.toggle('active', el.dataset.filter === filter));
+      renderUsers();
     }
 
     function badgeKeyForUser(u) {
@@ -409,6 +420,7 @@
     function renderUsers() {
       let list = allUsers;
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter);
+      if (currentFilter && currentFilter !== 'all') list = list.filter(u => userMatchesFilter(u, currentFilter));
       _currentTeachers = sortUserList(list.filter(u => u.user_type === 'teacher'), getDeptName);
       _currentStudents = sortUserList(list.filter(u => u.user_type === 'student'), getDeptName);
       document.getElementById('tableTitle').textContent = `사용자 목록 (${list.length}명)`;

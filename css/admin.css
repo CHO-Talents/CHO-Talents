@@ -773,9 +773,9 @@ table.admin-table tr:hover { background: #fafbfc; }
   }
   .admin-nav-brand { order: 1; font-size: 0.78rem; flex-shrink: 1; min-width: 0; }
   .admin-nav-brand .brand-icon { font-size: 0.95rem; }
-  .nav-header-actions { order: 2; gap: 0.25rem; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; margin-left: auto; margin-right: 0.3rem; flex-shrink: 1; min-width: 0; align-items: center; }
-  .nav-hamburger { display: block; order: 3; flex-shrink: 0; font-size: 1.3rem; padding: 0.2rem; }
-  .admin-nav-links { order: 4; }
+  .nav-header-actions { order: 2; gap: 0.25rem; display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; margin-left: auto; flex-shrink: 1; min-width: 0; align-items: center; }
+  .nav-header-actions .nav-hamburger { display: block; flex-shrink: 0; font-size: 1.3rem; padding: 0.2rem; }
+  .admin-nav-links { order: 3; }
   .nav-header-actions .nav-user { max-width: 5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.68rem; }
   .nav-header-logout { font-size: 0.68rem; padding: 0.15rem 0.4rem; }
   .nav-header-login { font-size: 0.7rem; padding: 0.2rem 0.5rem; }
@@ -875,7 +875,6 @@ table.admin-table tr:hover { background: #fafbfc; }
 }
 
 @media (max-width: 640px) {
-  #quickLinks { grid-template-columns: repeat(3, 1fr) !important; }
   #detailSummary { grid-template-columns: 1fr !important; }
 }
 
@@ -885,7 +884,6 @@ table.admin-table tr:hover { background: #fafbfc; }
   .admin-nav-brand { font-size: 0.88rem; }
   .filter-btn { font-size: 0.68rem; padding: 0.2rem 0.4rem; }
   .modal-title { font-size: 0.95rem; }
-  #quickLinks { grid-template-columns: repeat(3, 1fr) !important; }
   table.admin-table th, table.admin-table td { font-size: 0.7rem; padding: 0.25rem 0.2rem; }
 }
 

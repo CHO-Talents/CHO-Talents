@@ -12,12 +12,21 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.48.0` (`js/version.js` 기준, 2026-06-19) |
+| 현재 버전 | `v3.49.0` (`js/version.js` 기준, 2026-06-19) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.48.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.49.0`으로 갱신되어 있습니다.
+- **v3.49.0 주요 변경 사항**:
+  - admin.css 모바일 네비: 테마→햄버거→로그아웃→이름 순서를 admin 페이지에도 일괄 적용
+  - QR 수령자: 반환 감지를 QR별 개별 스캔 단위로 정확 매칭 (talent_item_id + 시간 근접)
+  - QR 수령자: 수령자 팝업에 페이징 추가 (기존 admin 페이지와 동일 스타일)
+  - QR 수령자: 표시 개수 설정 콤보박스 + 사용자별 DB 저장 (`qr_scan_list` 키)
+  - 대시보드: 바로가기 박스(quickLinks) 제거 — 통계 카드와 이슈 로그만 표시
+  - 사용자 관리: 통계 카드 클릭 시 사용자 목록 필터 (전체/관리자/부서 담당/교사/학생)
+  - 사용자 관리: 관리자 카드 = admin+evangelist+chief, 부서 담당 = purchase_teacher+dept_teacher
+  - 사용자 관리: 활성 필터 카드 강조 표시 (box-shadow + transform)
 - **v3.48.0 주요 변경 사항**:
   - 달란트 반환: 반환을 사용과 별도 구분 표시 (내 달란트, 관리자 상세, QR 수령자)
   - 달란트 반환: 내 달란트 페이지에 반환 달란트 요약 박스 추가
