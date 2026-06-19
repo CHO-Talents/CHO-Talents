@@ -615,15 +615,14 @@ table.data-table tr:hover { background: #fafbfc; }
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     margin-left: auto;
-    margin-right: 0.3rem;
     flex-shrink: 1;
     min-width: 0;
     align-items: center;
   }
-  .top-nav-hamburger,
-  .nav-hamburger { display: block; order: 3; flex-shrink: 0; font-size: 1.3rem; padding: 0.2rem; }
+  .nav-header-actions .nav-hamburger { display: block; flex-shrink: 0; font-size: 1.3rem; padding: 0.2rem; }
+  .top-nav-hamburger { display: block; order: 3; flex-shrink: 0; font-size: 1.3rem; padding: 0.2rem; }
   .top-nav-links,
-  .admin-nav-links { order: 4; }
+  .admin-nav-links { order: 3; }
   .nav-header-actions .nav-user {
     max-width: 5rem;
     overflow: hidden;

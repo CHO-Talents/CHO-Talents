@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 달란트 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.47.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.47.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.48.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.48.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -19,12 +19,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.47.0"></script>
-  <script src="js/supabase-config.js?v=3.47.0"></script>
-  <script src="js/activity-log.js?v=3.47.0"></script>
-  <script src="js/auth.js?v=3.47.0"></script>
-  <script src="js/theme.js?v=3.47.0"></script>
-  <script src="js/nav.js?v=3.47.0"></script>
+  <script src="config/public-config.js?v=3.48.0"></script>
+  <script src="js/supabase-config.js?v=3.48.0"></script>
+  <script src="js/activity-log.js?v=3.48.0"></script>
+  <script src="js/auth.js?v=3.48.0"></script>
+  <script src="js/theme.js?v=3.48.0"></script>
+  <script src="js/nav.js?v=3.48.0"></script>
   <script src="js/talent.js"></script>
   <script>
     initSupabase();
@@ -86,6 +86,11 @@
             <div class="summary-card-label">사용 완료 달란트</div>
             <div class="summary-card-value">${fmtNum(summary.used)}</div>
           </div>
+          <div class="summary-card" style="background:#fff0f6;">
+            <div class="summary-card-icon">↩️</div>
+            <div class="summary-card-label">반환 달란트</div>
+            <div class="summary-card-value" style="color:#c2255c;">${fmtNum(summary.returned)}</div>
+          </div>
           <div class="summary-card earn">
             <div class="summary-card-icon">📈</div>
             <div class="summary-card-label">누적 적립 달란트</div>
@@ -103,12 +108,22 @@
         html += '<tr><td colspan="5" class="empty-state">아직 달란트 내역이 없습니다.</td></tr>';
       } else {
         html += history.map(t => {
+          const isReturn = t.type === 'use' && t.description && t.description.startsWith('반환:');
           const srcBadge = t.type === 'earn' && t.source === 'qr' ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;">QR</span>' : '';
+          let typeLabel, typeClass, amtColor, amtPrefix;
+          if (isReturn) {
+            typeLabel = '반환'; typeClass = 'return'; amtColor = '#c2255c'; amtPrefix = '-';
+          } else if (t.type === 'earn') {
+            typeLabel = '적립'; typeClass = 'earn'; amtColor = '#2b8a3e'; amtPrefix = '+';
+          } else {
+            typeLabel = '사용'; typeClass = 'use'; amtColor = '#e03131'; amtPrefix = '-';
+          }
+          const desc = (t.description || '-').replace(/\[[0-9a-f-]{36}\]\s*/gi, '').replace(/^반환:\s*/, '');
           return `<tr>
             <td>${formatKSTShort(t.created_at)}</td>
-            <td><span class="type-badge ${t.type}">${t.type === 'earn' ? '적립' : '사용'}</span>${srcBadge}</td>
-            <td style="font-weight:700;color:${t.type === 'earn' ? '#2b8a3e' : '#e03131'}">${t.type === 'earn' ? '+' : '-'}${fmtNum(t.amount)}</td>
-            <td>${(t.description || '-').replace(/\[[0-9a-f-]{36}\]\s*/gi, '')}</td>
+            <td><span class="type-badge ${typeClass}" ${isReturn ? 'style="background:#fff0f6;color:#c2255c;"' : ''}>${typeLabel}</span>${srcBadge}</td>
+            <td style="font-weight:700;color:${amtColor}">${amtPrefix}${fmtNum(t.amount)}</td>
+            <td>${desc}</td>
             <td>${fmtNum(t.balance_after)}</td>
           </tr>`;
         }).join('');
@@ -169,6 +184,6 @@
         }).join('') + `</div></div>`;
     }
   </script>
-  <script src="js/version.js?v=3.47.0"></script>
+  <script src="js/version.js?v=3.48.0"></script>
 </body>
 </html>

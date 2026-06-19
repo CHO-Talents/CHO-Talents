@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Supabase Configuration & Global Utilities
  */
 const DEFAULT_PUBLIC_CONFIG = Object.freeze({

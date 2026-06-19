@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Talent Module - 달란트 조회/적립/사용 공통 모듈
  * profiles 테이블 기반 (admin_users 사용 안 함)
  */
@@ -32,18 +32,25 @@ async function fetchTalentHistory(userId, options = {}) {
 }
 
 async function fetchTalentSummary(userId) {
-  if (!_sb) return { earned: 0, used: 0, balance: 0 };
+  if (!_sb) return { earned: 0, used: 0, returned: 0, balance: 0 };
 
   const [balanceRes, earnRes, useRes] = await Promise.all([
     fetchTalentBalance(userId),
     _sb.from('talent_transactions').select('amount').eq('user_id', userId).eq('type', 'earn'),
-    _sb.from('talent_transactions').select('amount').eq('user_id', userId).eq('type', 'use')
+    _sb.from('talent_transactions').select('amount, description').eq('user_id', userId).eq('type', 'use')
   ]);
 
   const earned = (earnRes.data || []).reduce((s, r) => s + r.amount, 0);
-  const used = (useRes.data || []).reduce((s, r) => s + r.amount, 0);
+  let used = 0, returned = 0;
+  (useRes.data || []).forEach(r => {
+    if (r.description && r.description.startsWith('반환:')) {
+      returned += r.amount;
+    } else {
+      used += r.amount;
+    }
+  });
 
-  return { earned, used, balance: balanceRes };
+  return { earned, used, returned, balance: balanceRes };
 }
 
 async function giveTalent(userId, amount, description, createdBy) {

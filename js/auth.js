@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Authentication Module
  * Supabase Auth 기반 인증 (유형 + 6단계 권한 체계)
  */
@@ -145,6 +145,7 @@ async function login(username, password) {
 
     await logInfo('LOGIN_SUCCESS', { 대상: username, permissionLevel: perm });
     try { await _sb.rpc('update_last_login'); } catch(e) {}
+    _touchActivity();
     return { success: true, data: profile };
   } catch (err) {
     await logError('LOGIN_ERROR', { 대상: username, 오류: String(err) });
@@ -174,6 +175,8 @@ async function logout(loginPath) {
     await _sb.auth.signOut();
   }
   clearSession();
+  if (_sessionTimer) { clearTimeout(_sessionTimer); _sessionTimer = null; }
+  try { localStorage.removeItem(SESSION_ACTIVITY_KEY); } catch (e) {}
   if (typeof applyTheme === 'function') applyTheme('default');
   window.location.href = loginPath || '../login.html';
 }
@@ -248,6 +251,7 @@ async function initPage(allowedRolesOrMinRank, loginPath) {
   }
 
   document.body.classList.add('auth-ready');
+  if (typeof startSessionTimer === 'function') startSessionTimer();
 
   if (typeof _sb !== 'undefined' && _sb) {
     try {
@@ -392,3 +396,76 @@ function tErr(msg) {
 }
 
 document.addEventListener('DOMContentLoaded', () => { if (typeof hideEmptyDropdowns === 'function') hideEmptyDropdowns(); });
+
+/* ===== Session Timeout (24h idle timer) ===== */
+const SESSION_TIMEOUT_MS = 24 * 60 * 60 * 1000;
+const SESSION_ACTIVITY_KEY = 'cho_last_activity';
+let _sessionTimer = null;
+let _activityDebounce = null;
+
+function _touchActivity() {
+  try { localStorage.setItem(SESSION_ACTIVITY_KEY, String(Date.now())); } catch (e) {}
+}
+
+function _checkSessionExpiry() {
+  const last = parseInt(localStorage.getItem(SESSION_ACTIVITY_KEY) || '0', 10);
+  if (last > 0 && Date.now() - last > SESSION_TIMEOUT_MS) {
+    return true;
+  }
+  return false;
+}
+
+function _onUserActivity() {
+  if (_activityDebounce) return;
+  _activityDebounce = setTimeout(() => { _activityDebounce = null; }, 60000);
+  _touchActivity();
+  _resetSessionTimer();
+}
+
+function _resetSessionTimer() {
+  if (_sessionTimer) clearTimeout(_sessionTimer);
+  _sessionTimer = setTimeout(() => {
+    const s = typeof getSession === 'function' ? getSession() : null;
+    if (!s) return;
+    alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+    if (typeof logout === 'function') {
+      const loginPath = window.location.pathname.includes('/admin/') || window.location.pathname.includes('/docs/') ? '../login.html' : 'login.html';
+      logout(loginPath);
+    }
+  }, SESSION_TIMEOUT_MS);
+}
+
+function startSessionTimer() {
+  if (_checkSessionExpiry()) {
+    clearSession();
+    const loginPath = window.location.pathname.includes('/admin/') || window.location.pathname.includes('/docs/') ? '../login.html' : 'login.html';
+    if (!window.location.pathname.includes('login.html') && !window.location.pathname.includes('register.html')) {
+      window.location.href = loginPath;
+    }
+    return;
+  }
+  _touchActivity();
+  _resetSessionTimer();
+  ['click', 'keydown', 'scroll', 'mousemove', 'touchstart'].forEach(evt => {
+    document.addEventListener(evt, _onUserActivity, { passive: true });
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      if (_checkSessionExpiry()) {
+        const s = typeof getSession === 'function' ? getSession() : null;
+        if (s) {
+          alert('세션이 만료되었습니다. 다시 로그인해주세요.');
+          const loginPath = window.location.pathname.includes('/admin/') || window.location.pathname.includes('/docs/') ? '../login.html' : 'login.html';
+          if (typeof logout === 'function') logout(loginPath);
+        }
+      } else {
+        _onUserActivity();
+      }
+    }
+  });
+  window.addEventListener('storage', (e) => {
+    if (e.key === SESSION_ACTIVITY_KEY && e.newValue) {
+      _resetSessionTimer();
+    }
+  });
+}

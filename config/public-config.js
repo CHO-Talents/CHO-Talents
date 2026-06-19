@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Public runtime configuration for the browser app.
  *
  * Keep only browser-safe values in this file. Do not put GitHub tokens,

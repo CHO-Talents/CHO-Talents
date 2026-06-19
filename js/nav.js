@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Centralized Navigation Module
  * Generates and manages navigation for all pages
  */
@@ -134,13 +134,12 @@ function renderNav(containerId) {
   html += `<a href="${_navResolveHref('index.html')}" class="admin-nav-brand"><span class="brand-icon">⭐</span> 달란트 마을</a>`;
 
   html += `<div class="nav-header-actions" id="navHeaderActions">`;
+  html += `<div id="navThemePicker"></div>`;
+  html += `<button class="nav-hamburger" id="navHamburger" aria-label="메뉴 열기">&#9776;</button>`;
+  html += `<button class="nav-header-logout" id="navLogoutBtn" style="display:none;">로그아웃</button>`;
   html += `<span id="navLoginArea"><a href="${_navResolveHref('login.html')}" class="nav-header-login">로그인</a></span>`;
   html += `<span id="navAuthArea" style="display:none;"><span class="nav-user" id="navUser"></span></span>`;
-  html += `<button class="nav-header-logout" id="navLogoutBtn" style="display:none;">로그아웃</button>`;
-  html += `<div id="navThemePicker"></div>`;
   html += `</div>`;
-
-  html += `<button class="nav-hamburger" id="navHamburger" aria-label="메뉴 열기">&#9776;</button>`;
   html += `<ul class="admin-nav-links" id="navLinks">`;
 
   NAV_MENU.forEach(group => {

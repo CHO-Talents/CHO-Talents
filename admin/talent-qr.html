@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.47.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.47.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.48.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.48.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
@@ -435,14 +435,14 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../config/public-config.js?v=3.47.0"></script>
-  <script src="../js/supabase-config.js?v=3.47.0"></script>
-  <script src="../js/activity-log.js?v=3.47.0"></script>
-  <script src="../js/auth.js?v=3.47.0"></script>
-  <script src="../js/theme.js?v=3.47.0"></script>
-  <script src="../js/page-size.js?v=3.47.0"></script>
-  <script src="../js/nav.js?v=3.47.0"></script>
-  <script src="../js/talent.js?v=3.47.0"></script>
+  <script src="../config/public-config.js?v=3.48.0"></script>
+  <script src="../js/supabase-config.js?v=3.48.0"></script>
+  <script src="../js/activity-log.js?v=3.48.0"></script>
+  <script src="../js/auth.js?v=3.48.0"></script>
+  <script src="../js/theme.js?v=3.48.0"></script>
+  <script src="../js/page-size.js?v=3.48.0"></script>
+  <script src="../js/nav.js?v=3.48.0"></script>
+  <script src="../js/talent.js?v=3.48.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -1160,17 +1160,38 @@
           const { data: depts } = await _sb.from('departments').select('id, name').in('id', deptIds);
           (depts || []).forEach(d => { deptMap[d.id] = d.name; });
         }
+
+        const { data: earnTxns } = await _sb.from('talent_transactions')
+          .select('id, user_id').in('user_id', userIds).eq('type', 'earn').eq('source', 'qr');
+        const earnTxnIds = new Set((earnTxns || []).map(t => t.id));
+        const { data: returnTxns } = await _sb.from('talent_transactions')
+          .select('description').in('user_id', userIds).eq('type', 'use').like('description', '반환:%');
+        const returnedEarnIds = new Set();
+        (returnTxns || []).forEach(r => {
+          const m = r.description.match(/\[([a-f0-9-]+)\]/);
+          if (m && earnTxnIds.has(m[1])) returnedEarnIds.add(m[1]);
+        });
+        const earnByUser = {};
+        (earnTxns || []).forEach(t => { if (!earnByUser[t.user_id]) earnByUser[t.user_id] = []; earnByUser[t.user_id].push(t.id); });
+        const returnedUsers = new Set();
+        Object.entries(earnByUser).forEach(([uid, ids]) => {
+          if (ids.every(id => returnedEarnIds.has(id))) returnedUsers.add(uid);
+        });
+
         const isAdmin = (session.permissionRank || 0) >= 100;
-        let html = '<table class="scan-list-table"><thead><tr><th>#</th><th>이름</th>' + (isAdmin ? '<th>아이디</th>' : '') + '<th>부서</th><th>수령 시간</th></tr></thead><tbody>';
+        let html = '<table class="scan-list-table"><thead><tr><th>#</th><th>이름</th>' + (isAdmin ? '<th>아이디</th>' : '') + '<th>부서</th><th>수령 시간</th><th>상태</th></tr></thead><tbody>';
         scans.forEach((s, i) => {
           const p = profileMap[s.user_id] || {};
           const dt = new Date(s.scanned_at);
           const ts = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0')
             + ' ' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
-          html += '<tr><td>' + (i+1) + '</td><td>' + (p.display_name||'-') + '</td>' + (isAdmin ? '<td>' + (p.username||'-') + '</td>' : '') + '<td>' + (deptMap[p.department_id]||'-') + '</td><td>' + ts + '</td></tr>';
+          const isReturned = returnedUsers.has(s.user_id);
+          const statusBadge = isReturned ? '<span style="padding:0.1rem 0.4rem;border-radius:4px;font-size:0.75rem;background:#fff0f6;color:#c2255c;font-weight:600;">반환</span>' : '<span style="font-size:0.75rem;color:#2b8a3e;">수령</span>';
+          html += '<tr><td>' + (i+1) + '</td><td>' + (p.display_name||'-') + '</td>' + (isAdmin ? '<td>' + (p.username||'-') + '</td>' : '') + '<td>' + (deptMap[p.department_id]||'-') + '</td><td>' + ts + '</td><td>' + statusBadge + '</td></tr>';
         });
         html += '</tbody></table>';
-        html += '<div style="margin-top:0.5rem;font-size:0.82rem;color:var(--admin-text-muted);">총 ' + scans.length + '명 수령</div>';
+        const returnedCount = scans.filter(s => returnedUsers.has(s.user_id)).length;
+        html += '<div style="margin-top:0.5rem;font-size:0.82rem;color:var(--admin-text-muted);">총 ' + scans.length + '명 수령' + (returnedCount > 0 ? ' (반환 ' + returnedCount + '명)' : '') + '</div>';
         document.getElementById('scanListContent').innerHTML = html;
       } catch (e) {
         document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">조회 실패: ' + (e.message || e) + '</div>';
@@ -1276,6 +1297,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.47.0"></script>
+  <script src="../js/version.js?v=3.48.0"></script>
 </body>
 </html>

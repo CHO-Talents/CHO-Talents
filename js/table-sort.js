@@ -1,4 +1,4 @@
-/* table-sort.js – 공통 헤더 클릭 정렬 유틸리티
+﻿/* table-sort.js – 공통 헤더 클릭 정렬 유틸리티
  * initSortableHeaders(tableId, getDataFn, renderFn)
  *   tableId  : <table> 요소의 id
  *   getDataFn: 현재 표시 중인 데이터 배열을 반환하는 함수

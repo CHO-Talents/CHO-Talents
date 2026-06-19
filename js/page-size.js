@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
   let _pageSizes = null;
   let _saveTimer = null;
 
