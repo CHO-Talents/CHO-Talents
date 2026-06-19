@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -87,15 +87,16 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.49.0"></script>
-  <script src="../js/supabase-config.js?v=3.49.0"></script>
-  <script src="../js/activity-log.js?v=3.49.0"></script>
-  <script src="../js/auth.js?v=3.49.0"></script>
-  <script src="../js/theme.js?v=3.49.0"></script>
-  <script src="../js/nav.js?v=3.49.0"></script>
-  <script src="../js/page-size.js?v=3.49.0"></script>
-  <script src="../js/user-mgmt.js?v=3.49.0"></script>
-  <script src="../js/table-sort.js?v=3.49.0"></script>
+  <script src="../config/public-config.js?v=3.50.0"></script>
+  <script src="../js/supabase-config.js?v=3.50.0"></script>
+  <script src="../js/activity-log.js?v=3.50.0"></script>
+  <script src="../js/codes.js?v=3.50.0"></script>
+  <script src="../js/auth.js?v=3.50.0"></script>
+  <script src="../js/theme.js?v=3.50.0"></script>
+  <script src="../js/nav.js?v=3.50.0"></script>
+  <script src="../js/page-size.js?v=3.50.0"></script>
+  <script src="../js/user-mgmt.js?v=3.50.0"></script>
+  <script src="../js/table-sort.js?v=3.50.0"></script>
   <script>
     initSupabase();
     let session;
@@ -129,13 +130,17 @@
     }
 
     const MGMT_LEVELS = ['purchase_teacher','dept_teacher','chief','evangelist','admin'];
-    const PERM_LEVELS = [
-      { value: 'dept_teacher', label: '부서 담당 교사', rank: 60 },
-      { value: 'purchase_teacher', label: '구매 담당 교사', rank: 70 },
-      { value: 'chief', label: '부장 교사', rank: 80 },
-      { value: 'evangelist', label: '전도사님', rank: 90 },
-      { value: 'admin', label: '관리자', rank: 100 }
-    ];
+    const PERM_LEVELS = (typeof getCodeItems === 'function')
+      ? getCodeItems('profiles.permission_level')
+          .filter(i => ['dept_teacher', 'purchase_teacher', 'chief', 'evangelist', 'admin'].includes(i.key))
+          .map(i => ({ value: i.key, label: i.value, rank: getCodeRank('profiles.permission_level', i.key, 0) }))
+      : [
+        { value: 'dept_teacher', label: '부서 담당 교사', rank: 60 },
+        { value: 'purchase_teacher', label: '구매 담당 교사', rank: 70 },
+        { value: 'chief', label: '부장 교사', rank: 80 },
+        { value: 'evangelist', label: '전도사님', rank: 90 },
+        { value: 'admin', label: '관리자', rank: 100 }
+      ];
     function buildMgrPermOptions(maxRank, selectedValue) {
       return PERM_LEVELS.filter(l => l.rank < maxRank || l.value === selectedValue)
         .map(l => `<option value="${l.value}" ${l.value === selectedValue ? 'selected' : ''}>${PERMISSION_EMOJI[l.value]||''} ${l.label}</option>`)
@@ -233,13 +238,15 @@
       const startIdx = (mgrPage - 1) * pageSize;
       const pageData = list.slice(startIdx, startIdx + pageSize);
 
-      const ROLE_BADGE = {
-        admin: { emoji: '👑', label: '관리자', cls: 'ERROR' },
-        evangelist: { emoji: '✝️', label: '전도사님', cls: 'WARN' },
-        chief: { emoji: '📋', label: '부장 교사', cls: 'WARN' },
-        purchase_teacher: { emoji: '🛒', label: '구매 담당 교사', cls: 'INFO' },
-        dept_teacher: { emoji: '👩‍🏫', label: '부서 담당', cls: 'INFO' }
-      };
+      const ROLE_BADGE = {};
+      PERM_LEVELS.forEach(l => {
+        ROLE_BADGE[l.value] = {
+          emoji: PERMISSION_EMOJI[l.value] || '',
+          label: PERMISSION_LABELS[l.value] || l.label,
+          cls: (typeof getCodeItem === 'function' && getCodeItem('profiles.permission_level', l.value)?.badgeClass) || (l.rank >= 80 ? 'WARN' : 'INFO')
+        };
+      });
+      if (ROLE_BADGE.admin) ROLE_BADGE.admin.cls = 'ERROR';
 
       const nameMap = resolveDisplayNames(allManagers);
       const myRank = session.permissionRank || 0;
@@ -438,6 +445,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.49.0"></script>
+  <script src="../js/version.js?v=3.50.0"></script>
 </body>
 </html>

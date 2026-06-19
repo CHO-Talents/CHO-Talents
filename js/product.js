@@ -15,6 +15,40 @@ async function fetchProducts(targetRole, options = {}) {
   return await query;
 }
 
+function getProductTargetLabel(targetRole) {
+  return (typeof getCodeLabel === 'function')
+    ? getCodeLabel('products.target_role', targetRole, targetRole)
+    : (targetRole === 'teacher' ? '교사' : targetRole === 'student' ? '학생' : targetRole);
+}
+
+function getProductCategoryLabel(category) {
+  if (!category) return '기타';
+  return (typeof getCodeLabel === 'function')
+    ? getCodeLabel('products.category', category, category)
+    : category;
+}
+
+function renderProductCategoryOptions(selectedValue) {
+  const selected = selectedValue || 'etc';
+  if (typeof renderCodeOptions === 'function') {
+    const base = renderCodeOptions('products.category', { selected });
+    if (selected && typeof getCodeItem === 'function' && !getCodeItem('products.category', selected)) {
+      return `<option value="${selected}" selected>${selected}</option>` + base;
+    }
+    return base;
+  }
+  const fallback = [
+    ['stationery', '학용품'],
+    ['snack', '간식'],
+    ['toy', '장난감'],
+    ['book', '도서'],
+    ['gift', '선물'],
+    ['etc', '기타']
+  ];
+  const base = fallback.map(([value, label]) => `<option value="${value}" ${value === selected ? 'selected' : ''}>${label}</option>`).join('');
+  return fallback.some(([value]) => value === selected) ? base : `<option value="${selected}" selected>${selected}</option>` + base;
+}
+
 async function createProduct(productData) {
   if (!_sb) return { data: null, error: 'Supabase not initialized' };
   try {

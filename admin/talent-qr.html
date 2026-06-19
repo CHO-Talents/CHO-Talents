@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
@@ -437,14 +437,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../config/public-config.js?v=3.49.0"></script>
-  <script src="../js/supabase-config.js?v=3.49.0"></script>
-  <script src="../js/activity-log.js?v=3.49.0"></script>
-  <script src="../js/auth.js?v=3.49.0"></script>
-  <script src="../js/theme.js?v=3.49.0"></script>
-  <script src="../js/page-size.js?v=3.49.0"></script>
-  <script src="../js/nav.js?v=3.49.0"></script>
-  <script src="../js/talent.js?v=3.49.0"></script>
+  <script src="../config/public-config.js?v=3.50.0"></script>
+  <script src="../js/supabase-config.js?v=3.50.0"></script>
+  <script src="../js/activity-log.js?v=3.50.0"></script>
+  <script src="../js/codes.js?v=3.50.0"></script>
+  <script src="../js/auth.js?v=3.50.0"></script>
+  <script src="../js/theme.js?v=3.50.0"></script>
+  <script src="../js/page-size.js?v=3.50.0"></script>
+  <script src="../js/nav.js?v=3.50.0"></script>
+  <script src="../js/talent.js?v=3.50.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -967,7 +968,7 @@
       return '선착순 ' + q.max_uses.toLocaleString() + '명';
     }
     function getTargetText(q) {
-      return q.target_type === 'teacher' ? '교사' : '학생';
+      return getCodeLabel('talent_items.target_type', q.target_type || 'student', q.target_type === 'teacher' ? '교사' : '학생');
     }
     function getLocationText(q) {
       if (!q.location_lat || !q.location_lng) return '제한 없음';
@@ -986,8 +987,7 @@
 
     function getRepeatText(q) {
       const rt = q.repeat_type || 'none';
-      if (rt === 'none') return '1회';
-      if (rt === 'daily') return '매일';
+      if (rt === 'none' || rt === 'daily') return getCodeLabel('talent_qr_codes.repeat_type', rt, rt === 'daily' ? '매일' : '1회');
       if (rt === 'weekday') {
         const days = (q.repeat_days || []).map(d => DAY_NAMES[d]).join(',');
         return '매주 ' + (days || '-');
@@ -997,7 +997,7 @@
         const days = (q.repeat_days || []).map(d => DAY_NAMES[d]).join(',');
         return weeks + ' ' + (days || '-');
       }
-      return '-';
+      return getCodeLabel('talent_qr_codes.repeat_type', rt, '-');
     }
 
     function applyQRFilters(items) {
@@ -1336,6 +1336,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.49.0"></script>
+  <script src="../js/version.js?v=3.50.0"></script>
 </body>
 </html>

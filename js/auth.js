@@ -5,22 +5,35 @@
 
 function fmtNum(n) { return n == null ? '0' : Number(n).toLocaleString(); }
 
-const PERMISSION_RANK = {
-  admin: 100, evangelist: 90, chief: 80,
-  purchase_teacher: 70, dept_teacher: 60, teacher: 40, student: 20
+const _PERMISSION_FALLBACK = {
+  admin: { rank: 100, label: '관리자', emoji: '👑' },
+  evangelist: { rank: 90, label: '전도사님', emoji: '✝️' },
+  chief: { rank: 80, label: '부장 교사', emoji: '📋' },
+  purchase_teacher: { rank: 70, label: '구매 담당 교사', emoji: '🛒' },
+  dept_teacher: { rank: 60, label: '부서 담당 교사', emoji: '👩‍🏫' },
+  teacher: { rank: 40, label: '일반 교사', emoji: '👨‍🏫' },
+  student: { rank: 20, label: '학생', emoji: '🎒' },
+  super_admin: { rank: 110, label: '최고 관리자', emoji: '⭐' }
 };
 
-const PERMISSION_LABELS = {
-  admin: '관리자', evangelist: '전도사님', chief: '부장 교사',
-  purchase_teacher: '구매 담당 교사', dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
-};
+const PERMISSION_RANK = Object.fromEntries(Object.entries(_PERMISSION_FALLBACK).map(([k, v]) => [
+  k,
+  (typeof getCodeRank === 'function') ? getCodeRank('profiles.permission_level', k, v.rank) : v.rank
+]));
 
-const PERMISSION_EMOJI = {
-  admin: '👑', evangelist: '✝️', chief: '📋',
-  purchase_teacher: '🛒', dept_teacher: '👩‍🏫', teacher: '👨‍🏫', student: '🎒'
-};
+const PERMISSION_LABELS = Object.fromEntries(Object.entries(_PERMISSION_FALLBACK).map(([k, v]) => [
+  k,
+  (typeof getCodeLabel === 'function') ? getCodeLabel('profiles.permission_level', k, v.label) : v.label
+]));
 
-const TYPE_LABELS = { teacher: '교사', student: '학생' };
+const PERMISSION_EMOJI = Object.fromEntries(Object.entries(_PERMISSION_FALLBACK).map(([k, v]) => [
+  k,
+  (typeof getCodeEmoji === 'function') ? getCodeEmoji('profiles.permission_level', k, v.emoji) : v.emoji
+]));
+
+const TYPE_LABELS = (typeof codeMap === 'function')
+  ? codeMap('profiles.user_type', 'value')
+  : { teacher: '교사', student: '학생' };
 
 const PERMISSION_REDIRECT = {
   admin: 'index.html',
@@ -41,6 +54,7 @@ const ROLE_REDIRECT = {
 
 function getPermRank(level, isSuperAdmin) {
   if (isSuperAdmin && level === 'admin') return 110;
+  if (typeof getCodeRank === 'function') return getCodeRank('profiles.permission_level', level, PERMISSION_RANK[level] || 0);
   return PERMISSION_RANK[level] || 0;
 }
 

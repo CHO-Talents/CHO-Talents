@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.49.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.50.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.50.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -44,6 +44,7 @@
           </tbody>
         </table>
       </div>
+      <div class="guide-note">권한명, 사용자 유형, 상품 대상/카테고리, 구매 상태, 로그/작업 유형은 공통 코드북과 DB 코드 마스터 기준으로 표시됩니다. 같은 값을 바꿀 때는 개별 페이지 문구를 수정하기보다 코드 마스터 기준을 먼저 확인합니다.</div>
     </section>
 
     <section class="guide-section">
@@ -138,7 +139,7 @@
           <h3>상품 관리</h3>
           <ul class="guide-list">
             <li>교사용/학생용 그룹별로 상품이 분리 표시됩니다(모바일 10개/PC 20개 페이징). 테이블 헤더를 클릭하면 카테고리, 상품명, 가격 기준으로 정렬할 수 있습니다.</li>
-            <li>상품명, 카테고리, 가격, 설명, 이미지 또는 이모지를 입력합니다.</li>
+            <li>상품명, 코드 마스터 기준 카테고리, 가격, 설명, 이미지 또는 이모지를 입력합니다.</li>
             <li>관리 드롭다운에서 수정 또는 삭제를 선택합니다.</li>
           </ul>
         </div>
@@ -146,6 +147,7 @@
           <h3>구매 관리</h3>
           <ul class="guide-list">
             <li>칸반보드 형태의 상태별 카드에 개수가 실시간 표시되며, 클릭 시 해당 상태로 필터됩니다.</li>
+            <li>상태명, 색상, 정렬 순서는 <code>product_orders.status</code> 코드 기준으로 상점/내 구매 상품/구매 통계와 동일하게 표시됩니다.</li>
             <li>부서와 기간 필터로 필요한 주문만 조회합니다.</li>
             <li>구매 담당 교사는 전체 부서 주문을 조회하고 처리하며, 상품 메뉴 배지도 전체 범위로 집계됩니다.</li>
             <li>관리 드롭다운에서 상태 변경이나 되돌리기를 선택합니다.</li>
@@ -163,7 +165,7 @@
           <tbody>
             <tr><td>달란트 통계</td><td>전체, 부서별, 사용자별, 유형별 적립 현황을 기간과 부서, 사용자 유형으로 필터링해 확인합니다.</td></tr>
             <tr><td>구매 통계</td><td>전체, 부서별, 사용자별, 유형별 구매 현황을 교사/학생별로 분리 표시합니다. 상태별 칸반 카드, 상세 드릴다운, 부서·유형·기간 필터 제공. 부서 담당 교사는 담당 부서만, 부장 교사 이상 전체 조회 가능합니다.</td></tr>
-            <tr><td>대시보드</td><td>사용자·부서·보고서·가입 대기 통계 카드와 최근 이슈 로그 테이블을 확인합니다. v3.49.0부터 바로가기(단축 링크) 박스는 제거되었습니다.</td></tr>
+            <tr><td>대시보드</td><td>사용자·부서·보고서·가입 대기 통계 카드와 최근 이슈 로그 테이블을 확인합니다. v3.50.0부터 바로가기(단축 링크) 박스는 제거되었습니다.</td></tr>
             <tr><td>보고서</td><td>작업 계획, 테스트 결과, 보안 보고서, 수정 보고서를 확인하거나 등록합니다.</td></tr>
             <tr><td>버전</td><td>배포된 기능 변경 이력을 확인합니다.</td></tr>
             <tr><td>Q &amp; A</td><td>질문에 답변을 남기고, 필요한 항목을 FAQ로 등록합니다.</td></tr>
@@ -197,7 +199,7 @@
             <div class="step"><span class="step-num">2</span> 액션 열에 한글 라벨이 표시되며, 영문 키는 작은 글씨로 병기됩니다.</div>
             <div class="step"><span class="step-num">3</span> 상세 내역의 키도 한글로 표시됩니다 (대상, 변경내역, 오류 등). 적재 실패는 브라우저 콘솔 오류로 확인할 수 있습니다.</div>
           </div>
-          <p style="margin-top:0.75rem;font-size:0.85rem;">미확인 ERROR 이상 로그는 확인 완료 처리를 남겨야 합니다. 삭제는 삭제 대기 방식으로 처리됩니다. v3.40.0부터 페이지 조회(PAGE_VIEW) 로그는 기록되지 않습니다.</p>
+          <p style="margin-top:0.75rem;font-size:0.85rem;">미확인 ERROR 이상 로그는 확인 완료 처리를 남겨야 합니다. 삭제는 삭제 대기 방식으로 처리됩니다. v3.40.0부터 페이지 조회(PAGE_VIEW) 로그는 기록되지 않습니다. 액션 라벨은 코드 마스터와 <code>details._actionLabel</code>을 기준으로 표시됩니다.</p>
         </div>
         <div class="guide-card">
           <h3>📋 작업 이력 (개편)</h3>
@@ -205,7 +207,7 @@
           <div class="guide-steps">
             <div class="step"><span class="step-num">1</span> <strong>운영 → 작업 이력</strong>에서 10개 카테고리 필터로 조회합니다.</div>
             <div class="step"><span class="step-num">2</span> 필터: 사용자/등록/부서/달란트/상품·주문/Q&amp;A/인증/로그관리/권한·설정</div>
-            <div class="step"><span class="step-num">3</span> 작업 이력은 활동 로그 중 관리 작업만 필터링하며, 각 작업의 <strong>변경내역</strong>이 한글로 상세히 기록됩니다.</div>
+            <div class="step"><span class="step-num">3</span> 작업 이력은 활동 로그 중 코드북/AUDIT_ACTIONS에 등록된 관리 작업만 필터링하며, 각 작업의 <strong>변경내역</strong>이 한글로 상세히 기록됩니다.</div>
           </div>
         </div>
         <div class="guide-card">
@@ -233,7 +235,7 @@
     </section>
 
     <section class="guide-section">
-      <h2>⏱️ 세션 관리 · 📱 모바일 네비게이션 (v3.48.0~v3.49.0)</h2>
+      <h2>⏱️ 세션 관리 · 📱 모바일 네비게이션 (v3.48.0~v3.50.0)</h2>
       <div class="guide-grid">
         <div class="guide-card">
           <h3>24시간 유휴 자동 로그아웃</h3>
@@ -246,7 +248,7 @@
             <li>테마 스위치 → 햄버거 메뉴(☰) → 로그아웃 → (권한 이모지) 이름</li>
           </ul>
           <p style="margin-top:0.75rem;">햄버거 메뉴를 누르면 소개·달란트·상품·관리·운영 그룹이 아래로 펼쳐집니다.</p>
-          <p style="margin-top:0.75rem;">v3.49.0부터 이 배치(테마 → 햄버거 → 로그아웃 → 이름)는 공개 페이지뿐 아니라 <strong>/admin/</strong> 관리 페이지 전체에도 동일하게 적용됩니다.</p>
+          <p style="margin-top:0.75rem;">v3.50.0부터 이 배치(테마 → 햄버거 → 로그아웃 → 이름)는 공개 페이지뿐 아니라 <strong>/admin/</strong> 관리 페이지 전체에도 동일하게 적용됩니다.</p>
         </div>
       </div>
     </section>
@@ -261,6 +263,7 @@
           <li>권한이 낮은 계정은 일부 버튼이 보이지 않거나, 보이더라도 처리 권한이 제한될 수 있습니다.</li>
           <li>삭제 대기 처리된 로그나 상품은 일반 목록에서 숨겨지지만 기록은 남습니다.</li>
           <li>작업 이력은 별도 저장소가 아니라 활동 로그 중 관리 작업만 필터링해서 보여줍니다.</li>
+          <li>새 권한/상태/카테고리/로그 유형을 추가할 때는 <code>js/codes.js</code> 기본값과 DB <code>code_items</code> 마스터를 함께 확인합니다.</li>
           <li>QR 위치 제한을 쓰려면 사용자가 수령할 때 브라우저 위치 권한을 허용해야 합니다.</li>
           <li>목록형 화면은 공통 페이징 규칙을 사용합니다. PC 20개, 모바일 10개씩 표시되며 현재 페이지가 강조됩니다. 페이지가 7개를 초과하면 말줄임표(...)로 축약됩니다. 각 그리드의 <strong>페이지당 항목 수</strong> 콤보 박스(3~30개)로 개인 설정이 가능하며 DB에 저장됩니다.</li>
           <li>대부분의 테이블 헤더를 클릭하면 해당 열 기준으로 오름차순/내림차순 정렬이 토글됩니다. 정렬 중인 열에는 ▲/▼ 화살표가 표시됩니다.</li>
@@ -274,12 +277,13 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.49.0"></script>
-  <script src="js/supabase-config.js?v=3.49.0"></script>
-  <script src="js/activity-log.js?v=3.49.0"></script>
-  <script src="js/auth.js?v=3.49.0"></script>
-  <script src="js/theme.js?v=3.49.0"></script>
-  <script src="js/nav.js?v=3.49.0"></script>
+  <script src="config/public-config.js?v=3.50.0"></script>
+  <script src="js/supabase-config.js?v=3.50.0"></script>
+  <script src="js/activity-log.js?v=3.50.0"></script>
+  <script src="js/codes.js?v=3.50.0"></script>
+  <script src="js/auth.js?v=3.50.0"></script>
+  <script src="js/theme.js?v=3.50.0"></script>
+  <script src="js/nav.js?v=3.50.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -301,6 +305,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.49.0"></script>
+  <script src="js/version.js?v=3.50.0"></script>
 </body>
 </html>

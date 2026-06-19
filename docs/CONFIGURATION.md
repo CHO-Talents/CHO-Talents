@@ -24,6 +24,7 @@
 | `docs/INITIAL_DATABASE_SETUP.sql` | 추적 | 빈 Supabase DB에 현재 테이블/RPC/RLS/Storage/기본 데이터를 한 번에 설치 |
 | `docs/INITIAL_DATABASE_SETUP.md` | 추적 | SQL Editor 실행 순서와 PowerShell 자동 설치 방법 |
 | `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 추적 | 다른 Supabase 프로젝트에서 새로 시작하는 설치 절차 |
+| `docs/TASK-057_code_master.sql` | 추적 | `code_groups`/`code_items` 코드 마스터와 코드 컬럼 검증 트리거 |
 | `docs/TASK-041_app_config.sql` | 추적 | Supabase `app_config` 테이블, RLS, 공개 설정 RPC, 초기 데이터 |
 | `docs/edge-function-slack-notify.ts` | 추적 | Slack 알림 Edge Function 배포용 소스 |
 | `docs/SLACK_NOTIFICATION_RULES.md` | 추적 | Slack 알림 type, 라우팅, Secret 기준 |
@@ -87,11 +88,11 @@ Supabase `app_config` 테이블에는 비밀 원문을 넣지 않는다. 대신 
 
 ## 5. Supabase app_config 적용
 
-새 Supabase Database를 완전히 비어 있는 상태에서 구성할 때는 먼저 `docs/INITIAL_DATABASE_SETUP.sql`을 Supabase SQL Editor에서 실행한다. 이 파일은 테이블, 함수/RPC, RLS 정책, Storage 버킷, 기본 권한 데이터를 포함한다.
+새 Supabase Database를 완전히 비어 있는 상태에서 구성할 때는 먼저 `docs/INITIAL_DATABASE_SETUP.sql`을 Supabase SQL Editor에서 실행한 뒤 `docs/TASK-057_code_master.sql`을 이어서 실행한다. 기본 설치 SQL은 테이블, 함수/RPC, RLS 정책, Storage 버킷, 기본 권한 데이터를 포함하고, `TASK-057`은 권한/유형/상태/카테고리/로그 액션 코드 마스터를 추가한다.
 
 공개 설정만 기존 DB에 보강하거나 점검할 때는 Supabase SQL Editor 또는 Management API에서 `docs/TASK-041_app_config.sql`을 실행한다.
 
-로컬에서 DB 접속 문자열을 사용할 수 있으면 `scripts/install-supabase-database.ps1`로 설치 SQL 생성 또는 실행을 자동화할 수 있다. 새 프로젝트 전체 설치 절차는 `docs/SUPABASE_NEW_PROJECT_SETUP.md`를 함께 확인한다.
+로컬에서 DB 접속 문자열을 사용할 수 있으면 `scripts/install-supabase-database.ps1`로 설치 SQL 생성 또는 실행을 자동화할 수 있다. 이 스크립트는 기본으로 `docs/TASK-057_code_master.sql`을 합본에 포함한다. 새 프로젝트 전체 설치 절차는 `docs/SUPABASE_NEW_PROJECT_SETUP.md`를 함께 확인한다.
 
 적용 후 브라우저에서는 아래 흐름으로 설정을 읽는다.
 

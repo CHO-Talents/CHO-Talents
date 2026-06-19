@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>작업 이력 - 달란트 마을</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -66,14 +66,15 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.49.0"></script>
-  <script src="../js/supabase-config.js?v=3.49.0"></script>
-  <script src="../js/activity-log.js?v=3.49.0"></script>
-  <script src="../js/auth.js?v=3.49.0"></script>
-  <script src="../js/theme.js?v=3.49.0"></script>
-  <script src="../js/nav.js?v=3.49.0"></script>
-  <script src="../js/page-size.js?v=3.49.0"></script>
-  <script src="../js/user-mgmt.js?v=3.49.0"></script>
+  <script src="../config/public-config.js?v=3.50.0"></script>
+  <script src="../js/supabase-config.js?v=3.50.0"></script>
+  <script src="../js/activity-log.js?v=3.50.0"></script>
+  <script src="../js/codes.js?v=3.50.0"></script>
+  <script src="../js/auth.js?v=3.50.0"></script>
+  <script src="../js/theme.js?v=3.50.0"></script>
+  <script src="../js/nav.js?v=3.50.0"></script>
+  <script src="../js/page-size.js?v=3.50.0"></script>
+  <script src="../js/user-mgmt.js?v=3.50.0"></script>
   <script>
     initSupabase();
     let session, allAuditLogs = [], currentFilter = 'all';
@@ -161,10 +162,10 @@
       REPORT_SEED: { label: '보고서 시드 등록', category: 'PERM', emoji: '🌱' },
     };
 
-    const AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
-    const PERM_KEY_LABELS = {
+    let AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
+    const PERM_KEY_LABELS = (typeof codeMap === 'function') ? codeMap('profiles.permission_level', 'value') : {
       super_admin: '최고 관리자', admin: '관리자', evangelist: '전도사님',
-      chief: '부장 교사', dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
+      chief: '부장 교사', purchase_teacher: '구매 담당 교사', dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
     };
     const DETAIL_KEY_LABELS = {
       targetName: '대상', displayName: '표시 이름', name: '이름', username: '아이디',
@@ -191,6 +192,11 @@
       if (!session) return;
       navUpdateAuth(session);
       autoLogPageView();
+      if (typeof loadCodeItems === 'function') {
+        await loadCodeItems(['activity_logs.action', 'profiles.permission_level']);
+        Object.assign(AUDIT_ACTIONS, getAuditActions());
+        AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
+      }
       updatePendingBadge();
       updateNavOrderBadge();
       updateLogBadge();
@@ -410,6 +416,6 @@
       if (e.target.classList.contains('modal-overlay')) closeDetailModal();
     });
   </script>
-  <script src="../js/version.js?v=3.49.0"></script>
+  <script src="../js/version.js?v=3.50.0"></script>
 </body>
 </html>

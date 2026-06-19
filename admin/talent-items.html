@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 항목 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -74,14 +74,15 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.49.0"></script>
-  <script src="../js/supabase-config.js?v=3.49.0"></script>
-  <script src="../js/activity-log.js?v=3.49.0"></script>
-  <script src="../js/auth.js?v=3.49.0"></script>
-  <script src="../js/theme.js?v=3.49.0"></script>
-  <script src="../js/page-size.js?v=3.49.0"></script>
-  <script src="../js/nav.js?v=3.49.0"></script>
-  <script src="../js/talent.js?v=3.49.0"></script>
+  <script src="../config/public-config.js?v=3.50.0"></script>
+  <script src="../js/supabase-config.js?v=3.50.0"></script>
+  <script src="../js/activity-log.js?v=3.50.0"></script>
+  <script src="../js/codes.js?v=3.50.0"></script>
+  <script src="../js/auth.js?v=3.50.0"></script>
+  <script src="../js/theme.js?v=3.50.0"></script>
+  <script src="../js/page-size.js?v=3.50.0"></script>
+  <script src="../js/nav.js?v=3.50.0"></script>
+  <script src="../js/talent.js?v=3.50.0"></script>
   <script>
     initSupabase();
     let session;
@@ -119,7 +120,7 @@
 
     function renderItems() {
       const list = allItems.filter(i => i.target_type === currentTab);
-      const label = currentTab === 'student' ? '학생용' : '교사용';
+      const label = getCodeLabel('talent_items.target_type', currentTab, currentTab === 'student' ? '학생' : '교사') + '용';
       document.getElementById('tableTitle').textContent = `${label} 항목 (${list.length}개)`;
       const tbody = document.getElementById('itemList');
 
@@ -208,7 +209,7 @@
           if (oldItem.name !== name) changes.push(`항목명: ${oldItem.name} → ${name}`);
           if (oldItem.talent_amount !== amount) changes.push(`달란트: ${oldItem.talent_amount} → ${amount}`);
           if (oldItem.sort_order !== sortOrder) changes.push(`순서: ${oldItem.sort_order} → ${sortOrder}`);
-          if (oldItem.target_type !== targetType) changes.push(`대상: ${oldItem.target_type} → ${targetType}`);
+          if (oldItem.target_type !== targetType) changes.push(`대상: ${getCodeLabel('talent_items.target_type', oldItem.target_type, oldItem.target_type)} → ${getCodeLabel('talent_items.target_type', targetType, targetType)}`);
         }
         const { error } = await _sb.from('talent_items').update(row).eq('id', editingId);
         if (error) { await logError('TALENT_ITEM_UPDATE_FAIL', { 항목ID: editingId, 오류: error.message }); errEl.textContent = tErr(error.message); errEl.classList.add('show'); return; }
@@ -260,6 +261,6 @@
 
     document.getElementById('itemModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.49.0"></script>
+  <script src="../js/version.js?v=3.50.0"></script>
 </body>
 </html>

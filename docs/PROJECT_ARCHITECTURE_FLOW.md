@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-06-19 KST 현재 코드 기준 (v3.49.0)
+작성 기준: 2026-06-19 KST 현재 코드 기준 (v3.50.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -17,6 +17,7 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 | 부서 이동 관리 | 부서 변경은 요청→승인 흐름으로 처리한다 (90등급 이상은 즉시 이동). |
 | 운영 추적 | 로그인, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. (v3.40.0부터 PAGE_VIEW 비활성화) |
 | Slack 알림 | 부서별/유형별 채널로 구매/가입/부서이동/WARN+ 로그/Q&A 등 운영 이벤트를 Edge Function 경유 분리 전송한다. |
+| 코드 마스터 | 권한/유형/상태/카테고리/로그 액션 같은 구분값을 `code_groups`, `code_items`, `js/codes.js`로 통합 관리한다. |
 | 에러 한글화 | 영문 DB/RPC 에러를 `tErr()` 함수로 한글 변환하여 사용자에게 표시한다. |
 | 보안 강화 | Supabase Auth, RLS, SECURITY DEFINER RPC로 민감 데이터 접근을 제한한다. |
 
@@ -27,7 +28,8 @@ flowchart LR
   User["사용자 브라우저"] --> Pages["GitHub Pages 정적 화면<br/>HTML/CSS/Vanilla JS"]
 
   Pages --> AuthJS["js/auth.js<br/>로그인/세션/24h 타임아웃/권한/tErr()/fmtNum()"]
-  Pages --> LogJS["js/activity-log.js<br/>로그/ACTION_LABELS/세션 캐시/소프트 삭제"]
+  Pages --> LogJS["js/activity-log.js<br/>로그/action 라벨/세션 캐시/소프트 삭제"]
+  Pages --> CodesJS["js/codes.js<br/>공통 코드북/라벨/정렬/옵션"]
   Pages --> UserMgmt["js/user-mgmt.js<br/>사용자/부서 관리"]
   Pages --> TalentJS["js/talent.js<br/>달란트 조회/지급/사용/반환"]
   Pages --> ProductJS["js/product.js<br/>상품 조회/관리"]
@@ -43,12 +45,14 @@ flowchart LR
   TalentJS --> RPC
   ProductJS --> Rest["Supabase REST / Storage"]
   LogJS --> Rest
+  CodesJS --> Rest
 
   Auth --> DB["Supabase PostgreSQL"]
   RPC --> DB
   Rest --> DB
 
   DB --> Profiles["profiles"]
+  DB --> Codes["code_groups / code_items"]
   DB --> Departments["departments"]
   DB --> Products["products"]
   DB --> Orders["product_orders"]
@@ -107,8 +111,9 @@ flowchart LR
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
+| `js/codes.js` | 권한/유형/상태/카테고리/로그 액션 공통 코드북. DB `code_items`가 있으면 활성 코드의 라벨, 정렬, 색상, 이모지, rank 메타를 우선 적용 |
 | `js/slack-notify.js` | Slack 알림 공통 유틸리티. `sendSlackNotify(type, data)`로 Edge Function `slack-notify` 호출. fire-and-forget, 동일 알림 5초 throttle. 부서/유형별 채널 라우팅은 Edge Function에서 수행 |
-| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - `#navHeaderActions` 내부 햄버거·테마·로그인/로그아웃, 처리 가능 건수 배지 + Q&A 미답변 배지 자동 호출 포함), 페이지 크기(`page-size.js`), Slack 알림(`slack-notify.js`), Supabase 설정, 인증/24h 세션 타임아웃/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
+| `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - `#navHeaderActions` 내부 햄버거·테마·로그인/로그아웃, 처리 가능 건수 배지 + Q&A 미답변 배지 자동 호출 포함), 코드북(`codes.js`), 페이지 크기(`page-size.js`), Slack 알림(`slack-notify.js`), Supabase 설정, 인증/24h 세션 타임아웃/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
 | `docs/edge-function-slack-notify.ts` | Supabase Edge Function `slack-notify` 배포용 소스. 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 메시지 포맷 |
 | `admin/slack-rules.html` | 80등급 이상 Slack 알림 룰 문서. 구매/가입/부서이동/Q&A/WARN+ 로그 알림 type과 채널 라우팅 설명 |
 | `docs/SLACK_NOTIFICATION_RULES.md` | Slack 알림 type, 라우팅, Secret 기준 문서 |
@@ -117,7 +122,7 @@ flowchart LR
 
 ## 4. 권한 구조
 
-현재 권한은 `permission_level`을 숫자 등급으로 환산해 비교한다. `user_type`은 학생/교사 구분이고, 실제 화면 접근은 `permission_level`이 결정한다.
+현재 권한은 `permission_level`을 숫자 등급으로 환산해 비교한다. `user_type`은 학생/교사 구분이고, 실제 화면 접근은 `permission_level`이 결정한다. v3.50.0부터 권한 라벨과 rank 메타는 `profiles.permission_level`, 사용자 유형 라벨은 `profiles.user_type` 코드 그룹을 기준으로 관리한다.
 
 | 권한 | 코드 | 등급 | 기본 이동 | 설명 |
 |---|---|---:|---|---|
@@ -137,7 +142,7 @@ flowchart LR
 |---|---|---|
 | 페이지 진입 | `initPage(minRank, loginPath)` | 로그인, 최초 비밀번호 변경, 최소 등급을 확인 |
 | 메뉴 노출 | `data-min-perm`, `applyPermNav()` | 현재 등급보다 높은 메뉴는 숨김 |
-| 권한 비교 | `PERMISSION_RANK` | `super_admin:110`부터 `student:20`까지 숫자 비교 |
+| 권한 비교 | `js/codes.js`, `PERMISSION_RANK`, `get_permission_rank()` | DB `code_items.meta.rank` 우선, 미설치 DB에서는 기본 코드북/폴백으로 `super_admin:110`부터 `student:20`까지 숫자 비교 |
 | 사용자 관리 | `admin_update_user`, `admin_delete_user` 등 RPC | 상위 권한자/최고관리자 보호 |
 | 페이지 접근 | `role_page_access` | `initPage()`에서 보조 확인. 페이지 최소 등급을 통과한 뒤 요소 숨김 설정을 적용 |
 | 페이지 기능 | `role_page_features` | 권한별 기능 설정값 관리 테이블. 현재 공통 런타임 차단은 `data-min-perm`, 직접 rank 체크, RLS/RPC가 담당 |
@@ -472,6 +477,8 @@ flowchart TD
   ConfirmRPC --> Delivered["✅ 상품 지급 (status: delivered)<br/>일괄 처리 가능"]
 ```
 
+상품 구매 흐름에서 `products.target_role`, `products.category`, `product_orders.status`는 코드 마스터 기준으로 표시한다. 상점, 상품 관리, 내 구매 상품, 구매 관리, 구매 통계는 같은 `products.category`와 `product_orders.status` 코드 그룹을 사용하므로 라벨, 색상, 정렬 순서가 동일하다.
+
 구매 관리 권한:
 
 | 권한 | 조회 범위 | 처리 범위 |
@@ -498,7 +505,7 @@ flowchart TD
 ```mermaid
 flowchart TD
   Event["로그인/오류/관리 작업"] --> WriteLog["writeLog() → activity_logs INSERT<br/>반환 error 감지 + 호환 재시도"]
-  WriteLog --> ActionLabel["ACTION_LABELS 한글 매핑 (~150개)<br/>details._actionLabel 자동 저장"]
+  WriteLog --> ActionLabel["activity_logs.action 코드 라벨<br/>details._actionLabel 자동 저장"]
   ActionLabel --> Logs["admin/logs.html (100등급+)"]
   Logs --> Filter["레벨/기간 필터"]
   Logs --> KoLabel["action 열 한글 라벨 표시<br/>(getActionLabel, 영문 키 병기)"]
@@ -514,8 +521,8 @@ flowchart TD
 로그 레벨: `TRACE`, `DEBUG`, `INFO`, `WARN`, `ERROR`, `FATAL`, `CRITICAL`
 
 - v3.40.0부터 `autoLogPageView()`는 no-op이며 PAGE_VIEW 로그를 기록하지 않는다 (함수 호출은 각 페이지에 유지)
-- `activity-log.js`의 `ACTION_LABELS`에 약 150개 action 키의 한글 라벨이 정의되어 있다
-- `writeLog()`는 기록 시 `ACTION_LABELS[action]`이 있으면 `details._actionLabel`에 한글 라벨을 자동 저장한다
+- `activity-log.js`의 `getActionLabel()`은 `js/codes.js`/DB `activity_logs.action` 코드 그룹을 우선 사용하고, 기존 로그의 `details._actionLabel`을 하위호환 라벨로 함께 사용한다
+- `writeLog()`는 기록 시 action 라벨이 있으면 `details._actionLabel`에 한글 라벨을 자동 저장한다
 - `writeLog()`는 Supabase insert 결과의 `error`를 확인하고, 구버전 DB 스키마에서 `user_name`/`is_acknowledged` 컬럼 오류가 나면 해당 선택 컬럼을 제거해 재시도한다
 - `admin/logs.html`은 `getActionLabel()`로 action 열에 한글 라벨을 표시한다 (영문 키 병기)
 - `ERROR`, `FATAL`, `CRITICAL`은 기본적으로 미확인 상태로 저장
@@ -532,11 +539,11 @@ flowchart TD
   AdminAction["관리 작업 수행"] --> AuditLog["writeLog() → activity_logs<br/>details._actionLabel 한글 라벨"]
   AuditLog --> AuditPage["admin/audit.html (100등급+)"]
   AuditPage --> CategoryFilter["10개 카테고리 필터<br/>사용자/등록/부서/달란트/상품·주문/Q&A/인증/로그관리/권한·설정"]
-  AuditPage --> KoType["작업 유형 한글 라벨 표시<br/>(AUDIT_ACTIONS + ACTION_LABELS)"]
+  AuditPage --> KoType["작업 유형 한글 라벨 표시<br/>(AUDIT_ACTIONS + 코드북)"]
   AuditPage --> ActorInfo["작업자 이름(ID) 표시<br/>관리자는 ID도 표시"]
 ```
 
-- `AUDIT_ACTIONS`에 70개 이상 관리 작업 action 키와 한글 라벨/카테고리가 정의되어 있다
+- `AUDIT_ACTIONS`는 기본 정의와 `activity_logs.action` 코드 그룹을 함께 사용해 70개 이상 관리 작업 action 키와 한글 라벨/카테고리를 표시한다
 - 작업 이력 화면은 10개 카테고리 필터(전체 + 9개 그룹)로 조회 범위를 좁힌다
 - 작업 이력은 별도 테이블이 아니라 `activity_logs`에서 `AUDIT_ACTIONS` 키에 해당하는 로그만 필터링한다
 - 상세 내역은 `writeLog()`가 저장한 `details._actionLabel` 및 한글화된 details 키를 표시한다
@@ -620,6 +627,7 @@ flowchart TD
 
 | 리소스 | 용도 |
 |---|---|
+| `code_groups`, `code_items` | 권한/유형/상태/카테고리/로그 액션 등 코드 마스터. `code_items.meta`에 rank, color, emoji, category 같은 표시/검증 메타 저장 |
 | `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`), 마지막 로그인(`last_login_at`) |
 | `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB), 테마(`theme`), 그리드별 페이지 크기(`page_sizes` JSONB), RLS 적용 |
 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
@@ -627,14 +635,14 @@ flowchart TD
 | `department_transfer_requests` | 부서 이동 요청/승인/거부 |
 | `talent_items` | 달란트 지급 항목 (학생용/교사용 구분), 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
 | `talent_transactions` | 달란트 적립/사용/반환 내역. `created_by`로 지급자 추적 |
-| `products` | 상점 상품 (학생용/교사용 구분) |
-| `product_orders` | 구매 신청/4단계 상태 관리/담당자 기록 |
+| `products` | 상점 상품. `target_role`, `category`는 코드 마스터 기준 구분값 |
+| `product_orders` | 구매 신청/4단계 상태 관리/담당자 기록. `status`는 코드 마스터 기준 |
 | `qna` | FAQ, 사용자 질문, 답변, 공개 여부, 소프트 삭제 |
 | `qna_comments` | Q&A 질문별 댓글(답변) 스레드 |
 | `reports` | 작업 보고서 |
 | `talent_qr_codes` | QR 코드 생성/관리. `target_type`(학생/교사), `valid_from`/`valid_until` 기간, `max_uses` (0=무제한, N=선착순), `location_*` 위치 제한, `repeat_type`(none/daily/weekday/week_weekday), `repeat_days` INT[], `repeat_weeks` INT[] |
 | `talent_qr_scans` | QR 코드 스캔 이력. 반복 수령 시 오늘 기준 중복 체크 |
-| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록, `details._actionLabel` 한글 라벨. 작업 이력도 이 테이블을 필터링해 표시 |
+| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록, `action` 코드 라벨과 `details._actionLabel` 한글 라벨. 작업 이력도 이 테이블을 필터링해 표시 |
 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
 | `role_page_features` | 권한 등급별 페이지 기능 설정값 |
 | `page_permissions` | 페이지 권한 설정 (레거시) |
@@ -699,25 +707,27 @@ flowchart TD
 |---:|---|---|
 | 1 | `README.md` | 현재 구조, 페이지 연결, 권한, 운영 흐름 요약 |
 | 2 | `docs/PROJECT_ARCHITECTURE_FLOW.md` | 상세 구성도와 프로세스 흐름 |
-| 3 | `js/auth.js` | 권한 등급, 리디렉트, Supabase 세션, 24h 유휴 타임아웃(`startSessionTimer`), tErr() 에러 번역 |
-| 4 | `js/activity-log.js` | 로그 기록, ACTION_LABELS 한글 매핑, writeLog() 자동 라벨, WARN+ Slack 알림 연동, Q&A 미답변 배지, 세션 캐시, 소프트 삭제 |
-| 4a | `js/slack-notify.js` | Slack 알림 공통 유틸리티, Edge Function slack-notify 호출, 채널 라우팅은 Edge Function 측 |
-| 4b | `docs/edge-function-slack-notify.ts` | Edge Function 배포 소스, 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 포맷 |
-| 4c | `docs/SLACK_NOTIFICATION_RULES.md`, `admin/slack-rules.html` | Slack 알림 type과 채널 라우팅 운영 문서 |
-| 5 | `js/user-mgmt.js` | 사용자/부서 관리 RPC |
-| 6 | `js/talent.js` | 달란트 지급/사용/반환, `fetchTalentSummary()` earned/used/returned 분리 집계 |
-| 7 | `js/product.js` | 상품 조회/관리 |
-| 8 | `admin/*.html` | 각 관리 화면의 실제 접근 권한과 UI 동작 |
-| 9 | `docs/TASK-026_schema.sql` | 구매 시스템 DB 스키마 및 RPC |
-| 10 | `docs/TASK-032_fixes.sql` | Q&A 테이블/RLS와 미승인 로그인 안내 RPC |
-| 11 | `docs/TASK-035_qna_comments.sql` | Q&A 댓글 테이블/RLS 및 삭제 권한 수정 |
-| 12 | `docs/TASK-039_user_preferences.sql` | `user_preferences` 테이블 (즐겨찾기 DB 저장), RLS 정책 |
-| 13 | `docs/TASK-047_activity_logs_grants.sql` | 운영 DB `activity_logs` INSERT 권한/정책 복구 SQL |
-| 14 | `docs/TASK-048_schema.sql` | v3.36.0: talent_items 컬럼, purchase_teacher CHECK 제약 |
-| 15 | `docs/TASK-049_schema.sql` | v3.37.0: profiles.last_login_at, update_last_login RPC |
-| 16 | `docs/TASK-041_page_sizes.sql` | v3.40.0: user_preferences.page_sizes JSONB 컬럼 |
-| 17 | `docs/TASK-052_super_admin_update_fix.sql` | v3.45.0: admin_update_user RPC에서 is_super_admin 호출자 rank 110 처리 |
-| 18 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
+| 3 | `js/codes.js` | 권한/유형/상태/카테고리/로그 액션 코드북, DB `code_items` 로드, 라벨/정렬/옵션 공통 함수 |
+| 4 | `js/auth.js` | 권한 등급, 리디렉트, Supabase 세션, 24h 유휴 타임아웃(`startSessionTimer`), tErr() 에러 번역 |
+| 5 | `js/activity-log.js` | 로그 기록, action 한글 라벨, writeLog() 자동 라벨, WARN+ Slack 알림 연동, Q&A 미답변 배지, 세션 캐시, 소프트 삭제 |
+| 5a | `js/slack-notify.js` | Slack 알림 공통 유틸리티, Edge Function slack-notify 호출, 채널 라우팅은 Edge Function 측 |
+| 5b | `docs/edge-function-slack-notify.ts` | Edge Function 배포 소스, 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 포맷 |
+| 5c | `docs/SLACK_NOTIFICATION_RULES.md`, `admin/slack-rules.html` | Slack 알림 type과 채널 라우팅 운영 문서 |
+| 6 | `js/user-mgmt.js` | 사용자/부서 관리 RPC |
+| 7 | `js/talent.js` | 달란트 지급/사용/반환, `fetchTalentSummary()` earned/used/returned 분리 집계 |
+| 8 | `js/product.js` | 상품 조회/관리, 상품 대상/카테고리 코드 라벨 |
+| 9 | `admin/*.html` | 각 관리 화면의 실제 접근 권한과 UI 동작 |
+| 10 | `docs/TASK-026_schema.sql` | 구매 시스템 DB 스키마 및 RPC |
+| 11 | `docs/TASK-032_fixes.sql` | Q&A 테이블/RLS와 미승인 로그인 안내 RPC |
+| 12 | `docs/TASK-035_qna_comments.sql` | Q&A 댓글 테이블/RLS 및 삭제 권한 수정 |
+| 13 | `docs/TASK-039_user_preferences.sql` | `user_preferences` 테이블 (즐겨찾기 DB 저장), RLS 정책 |
+| 14 | `docs/TASK-047_activity_logs_grants.sql` | 운영 DB `activity_logs` INSERT 권한/정책 복구 SQL |
+| 15 | `docs/TASK-048_schema.sql` | v3.36.0: talent_items 컬럼, purchase_teacher CHECK 제약 |
+| 16 | `docs/TASK-049_schema.sql` | v3.37.0: profiles.last_login_at, update_last_login RPC |
+| 17 | `docs/TASK-041_page_sizes.sql` | v3.40.0: user_preferences.page_sizes JSONB 컬럼 |
+| 18 | `docs/TASK-052_super_admin_update_fix.sql` | v3.45.0: admin_update_user RPC에서 is_super_admin 호출자 rank 110 처리 |
+| 19 | `docs/TASK-057_code_master.sql` | v3.50.0: `code_groups`/`code_items`, 코드 컬럼 검증 트리거, `get_permission_rank()` 코드화 |
+| 20 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
 
 ## 19. 개발 주의사항
 
@@ -738,6 +748,7 @@ flowchart TD
 <script src="../config/public-config.js?v=VERSION"></script>
 <script src="../js/supabase-config.js?v=VERSION"></script>
 <script src="../js/activity-log.js?v=VERSION"></script>   <!-- auth.js보다 먼저! -->
+<script src="../js/codes.js?v=VERSION"></script>          <!-- 권한/상태/라벨 코드북 -->
 <script src="../js/auth.js?v=VERSION"></script>
 <script src="../js/theme.js?v=VERSION"></script>
 <script src="../js/nav.js?v=VERSION"></script>
@@ -750,4 +761,5 @@ flowchart TD
 | Supabase CDN | `window.supabase` 미정의 → initSupabase 실패 |
 | public-config.js | Supabase URL/Key 로드 불가 |
 | activity-log.js 순서 | loadAuthSession 미정의 → initPage 에러 |
+| codes.js 순서 | 권한/상태/카테고리 라벨 폴백 누락 → 하드코딩 라벨만 표시 |
 | initSupabase() | _sb=null → 세션 인식 불가 → 리다이렉트 |

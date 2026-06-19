@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>상품 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -61,7 +61,7 @@
         </div>
         <div style="flex:1;">
           <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">카테고리</label>
-          <input type="text" id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="예: 학용품" />
+          <select id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;"></select>
         </div>
       </div>
       <div style="margin-bottom:0.8rem;">
@@ -117,15 +117,16 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.49.0"></script>
-  <script src="../js/supabase-config.js?v=3.49.0"></script>
-  <script src="../js/activity-log.js?v=3.49.0"></script>
-  <script src="../js/auth.js?v=3.49.0"></script>
-  <script src="../js/theme.js?v=3.49.0"></script>
-  <script src="../js/nav.js?v=3.49.0"></script>
-  <script src="../js/page-size.js?v=3.49.0"></script>
-  <script src="../js/table-sort.js?v=3.49.0"></script>
-  <script src="../js/product.js"></script>
+  <script src="../config/public-config.js?v=3.50.0"></script>
+  <script src="../js/supabase-config.js?v=3.50.0"></script>
+  <script src="../js/activity-log.js?v=3.50.0"></script>
+  <script src="../js/codes.js?v=3.50.0"></script>
+  <script src="../js/auth.js?v=3.50.0"></script>
+  <script src="../js/theme.js?v=3.50.0"></script>
+  <script src="../js/nav.js?v=3.50.0"></script>
+  <script src="../js/page-size.js?v=3.50.0"></script>
+  <script src="../js/table-sort.js?v=3.50.0"></script>
+  <script src="../js/product.js?v=3.50.0"></script>
   <style>
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
   </style>
@@ -168,7 +169,7 @@
 
     function sortShopProducts(list) {
       return list.sort((a, b) => {
-        const cCmp = (a.category || '').localeCompare(b.category || '', 'ko');
+        const cCmp = getProductCategoryLabel(a.category || 'etc').localeCompare(getProductCategoryLabel(b.category || 'etc'), 'ko');
         if (cCmp !== 0) return cCmp;
         const nCmp = (a.name || '').localeCompare(b.name || '', 'ko');
         if (nCmp !== 0) return nCmp;
@@ -207,7 +208,7 @@
         const items = [`<a onclick='openEditModal(${JSON.stringify(p).replace(/'/g,"&#39;")})'>✏️ 수정</a>`];
         if (myRank >= 90) items.push(`<a onclick="confirmDelete('${p.id}','${p.name.replace(/'/g,"\\'")}')">🗑️ 삭제</a>`);
         return `<tr>
-        <td>${p.category || '-'}</td>
+        <td>${getProductCategoryLabel(p.category)}</td>
         <td>${p.image_url ? `<img src="${p.image_url}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;" />` : `<span style="font-size:1.5rem;">${p.image_emoji || '🎁'}</span>`}</td>
         <td><strong>${p.name}</strong><br><small style="color:var(--admin-text-muted);">${p.description || ''}</small></td>
         <td style="font-weight:700;">${fmtNum(p.price)}</td>
@@ -257,6 +258,7 @@
       editingId = null;
       document.getElementById('modalTitle').textContent = '상품 등록';
       ['mName','mCategory','mEmoji','mImageUrlText','mDesc'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('mCategory').innerHTML = renderProductCategoryOptions('etc');
       document.getElementById('mTarget').value = 'student';
       document.getElementById('mPrice').value = '';
       document.getElementById('mImageUrl').value = '';
@@ -273,7 +275,8 @@
       document.getElementById('modalTitle').textContent = '상품 수정';
       document.getElementById('mName').value = p.name;
       document.getElementById('mTarget').value = p.target_role;
-      document.getElementById('mCategory').value = p.category || '';
+      document.getElementById('mCategory').innerHTML = renderProductCategoryOptions(p.category || 'etc');
+      document.getElementById('mCategory').value = p.category || 'etc';
       document.getElementById('mPrice').value = p.price;
       document.getElementById('mEmoji').value = p.image_emoji || '';
       document.getElementById('mImageUrl').value = p.image_url || '';
@@ -310,7 +313,7 @@
 
       const row = {
         name, target_role: document.getElementById('mTarget').value,
-        category: document.getElementById('mCategory').value.trim() || null,
+        category: document.getElementById('mCategory').value || 'etc',
         price,
         image_emoji: document.getElementById('mEmoji').value.trim() || '🎁',
         image_url: imageUrl, description: document.getElementById('mDesc').value.trim() || null
@@ -371,6 +374,6 @@
     document.getElementById('mImageUrlText').addEventListener('input', function() { const u = this.value.trim(); if (u) { document.getElementById('mImageFile').value = ''; showImgPreview(u); } else resetImgPreview(); });
     document.getElementById('productModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.49.0"></script>
+  <script src="../js/version.js?v=3.50.0"></script>
 </body>
 </html>

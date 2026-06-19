@@ -2,9 +2,23 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.49.0',
+  current: '3.50.0',
   date: '2026-06-19',
   history: [
+    {
+      version: '3.50.0',
+      date: '2026-06-19',
+      title: '공통 코드북 + DB 코드 마스터 + 상품/주문 상태 공통화',
+      changes: [
+        '공통 코드북 js/codes.js 추가: 권한, 사용자 유형, 주문 상태, 상품 대상/카테고리, 로그 액션 라벨을 한 곳에서 관리',
+        '프론트 공통화: auth.js, activity-log.js, user-mgmt.js, product.js가 코드북 라벨/랭크/정렬/색상을 우선 사용',
+        '구매 관리/구매 통계/내 구매 상품: product_orders.status 라벨·색상·이모지 중복 맵 제거',
+        '상품 관리/상점: products.category를 코드 선택값으로 저장하고 표시 라벨은 코드북에서 조회',
+        '작업 이력: activity_logs.action 코드 마스터를 불러와 작업 라벨/카테고리/이모지 확장 가능',
+        'DB: docs/TASK-057_code_master.sql 추가 (code_groups/code_items, 코드 검증 트리거, get_permission_rank 코드 마스터 연동)',
+        '설치 스크립트: 신규 Supabase 설치 시 TASK-057 코드 마스터 SQL을 기본 추가 적용'
+      ]
+    },
     {
       version: '3.49.0',
       date: '2026-06-19',

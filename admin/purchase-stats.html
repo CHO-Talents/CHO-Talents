@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>구매 통계 - 관리자</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
   <style>
     .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.6rem; margin-bottom: 1.2rem; }
     .kanban-board { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
@@ -134,24 +134,26 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.49.0"></script>
-  <script src="../js/supabase-config.js?v=3.49.0"></script>
-  <script src="../js/activity-log.js?v=3.49.0"></script>
-  <script src="../js/auth.js?v=3.49.0"></script>
-  <script src="../js/theme.js?v=3.49.0"></script>
-  <script src="../js/nav.js?v=3.49.0"></script>
-  <script src="../js/page-size.js?v=3.49.0"></script>
-  <script src="../js/user-mgmt.js?v=3.49.0"></script>
-  <script src="../js/slack-notify.js?v=3.49.0"></script>
+  <script src="../config/public-config.js?v=3.50.0"></script>
+  <script src="../js/supabase-config.js?v=3.50.0"></script>
+  <script src="../js/activity-log.js?v=3.50.0"></script>
+  <script src="../js/codes.js?v=3.50.0"></script>
+  <script src="../js/auth.js?v=3.50.0"></script>
+  <script src="../js/theme.js?v=3.50.0"></script>
+  <script src="../js/nav.js?v=3.50.0"></script>
+  <script src="../js/page-size.js?v=3.50.0"></script>
+  <script src="../js/user-mgmt.js?v=3.50.0"></script>
+  <script src="../js/slack-notify.js?v=3.50.0"></script>
   <script>
     initSupabase();
     let session, allOrders = [], allProfiles = [], allDepts = [];
     let currentView = 'all';
     let scopedDeptId = null;
 
-    const STATUS_LABEL = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급', cancelled:'구매 취소' };
-    const STATUS_COLOR = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e', cancelled:'#e03131' };
-    const STATUS_EMOJI = { requested:'📋', preparing:'📦', purchased:'💳', delivered:'✅', cancelled:'❌' };
+    const ORDER_STATUS_GROUP = 'product_orders.status';
+    const STATUS_LABEL = (typeof codeMap === 'function') ? codeMap(ORDER_STATUS_GROUP, 'value') : { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급', cancelled:'구매 취소' };
+    const STATUS_COLOR = (typeof codeMap === 'function') ? codeMap(ORDER_STATUS_GROUP, 'color') : { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e', cancelled:'#e03131' };
+    const STATUS_EMOJI = (typeof codeMap === 'function') ? codeMap(ORDER_STATUS_GROUP, 'emoji') : { requested:'📋', preparing:'📦', purchased:'💳', delivered:'✅', cancelled:'❌' };
     const STATUS_ORDER = ['requested', 'preparing', 'purchased', 'delivered', 'cancelled'];
     const TYPE_INFO = {
       teacher: { label: '교사', icon: '👨‍🏫', barGrad: 'linear-gradient(90deg,#74c0fc,#339af0)' },
@@ -641,6 +643,6 @@
     document.getElementById('deptDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDeptDetailModal(); });
     document.getElementById('userDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeUserDetailModal(); });
   </script>
-  <script src="../js/version.js?v=3.49.0"></script>
+  <script src="../js/version.js?v=3.50.0"></script>
 </body>
 </html>

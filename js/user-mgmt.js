@@ -32,12 +32,12 @@ const _TYPE_SORT_RANK = { teacher:1, student:2 };
 function sortUserList(list, getDeptNameFn) {
   return list.sort((a, b) => {
     // 1) 유형: teacher → student
-    const tA = _TYPE_SORT_RANK[a.user_type] || 99;
-    const tB = _TYPE_SORT_RANK[b.user_type] || 99;
+    const tA = (typeof getCodeOrder === 'function') ? getCodeOrder('profiles.user_type', a.user_type, _TYPE_SORT_RANK[a.user_type] || 99) : (_TYPE_SORT_RANK[a.user_type] || 99);
+    const tB = (typeof getCodeOrder === 'function') ? getCodeOrder('profiles.user_type', b.user_type, _TYPE_SORT_RANK[b.user_type] || 99) : (_TYPE_SORT_RANK[b.user_type] || 99);
     if (tA !== tB) return tA - tB;
     // 2) 권한: 내림차순 (admin 먼저)
-    const rA = _PERM_SORT_RANK[a.permission_level] || 0;
-    const rB = _PERM_SORT_RANK[b.permission_level] || 0;
+    const rA = (typeof getCodeRank === 'function') ? getCodeRank('profiles.permission_level', a.permission_level, _PERM_SORT_RANK[a.permission_level] || 0) : (_PERM_SORT_RANK[a.permission_level] || 0);
+    const rB = (typeof getCodeRank === 'function') ? getCodeRank('profiles.permission_level', b.permission_level, _PERM_SORT_RANK[b.permission_level] || 0) : (_PERM_SORT_RANK[b.permission_level] || 0);
     if (rA !== rB) return rB - rA;
     // 3) 부서: 오름차순
     const dA = (getDeptNameFn ? getDeptNameFn(a.department_id) : a._deptName) || '';

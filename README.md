@@ -12,12 +12,20 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.49.0` (`js/version.js` 기준, 2026-06-19) |
+| 현재 버전 | `v3.50.0` (`js/version.js` 기준, 2026-06-19) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.49.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.50.0`으로 갱신되어 있습니다.
+- **v3.50.0 주요 변경 사항**:
+  - `js/codes.js` 공통 코드북 추가: 권한, 사용자 유형, 구매 상태, 상품 대상/카테고리, 로그 액션, QR 반복 유형 등 공통 라벨/정렬/색상/이모지 관리
+  - `auth.js`, `activity-log.js`, `user-mgmt.js`, `product.js`가 하드코딩 라벨 대신 공통 코드북을 사용하도록 정리
+  - 구매 관리/구매 통계/내 구매 상품의 주문 상태 라벨, 색상, 이모지, 정렬 순서를 `product_orders.status` 기준으로 통합
+  - 상품 관리의 카테고리를 자유 텍스트 입력에서 코드 마스터 기반 선택값으로 변경하고, 기존 카테고리는 마이그레이션에서 보존
+  - 작업 이력/로그 액션 라벨을 `activity_logs.action` 코드 마스터와 `details._actionLabel` 기반으로 확장 가능하게 정리
+  - DB 코드 마스터 SQL 추가: `docs/TASK-057_code_master.sql` (`code_groups`, `code_items`, 코드 컬럼 검증 트리거, `get_permission_rank()` 코드화)
+  - 새 DB 설치 스크립트가 기본으로 `TASK-057_code_master.sql`을 합본 SQL에 포함하도록 개선
 - **v3.49.0 주요 변경 사항**:
   - admin.css 모바일 네비: 테마→햄버거→로그아웃→이름 순서를 admin 페이지에도 일괄 적용
   - QR 수령자: 반환 감지를 QR별 개별 스캔 단위로 정확 매칭 (talent_item_id + 시간 근접)
@@ -372,6 +380,7 @@ CHO-Talents/
 ├── js/
 │   ├── supabase-config.js         # Supabase 설정, Auth 도메인, 공통 CRUD 유틸
 │   ├── app.js                     # 메인 화면 효과/연결 상태 확인
+│   ├── codes.js                   # 공통 코드북/DB 코드 마스터 라벨·정렬·옵션 유틸리티
 │   ├── activity-log.js            # 활동 로그, 세션 캐시, 소프트 삭제
 │   ├── page-size.js               # 그리드별 페이지당 항목 수 설정 (user_preferences.page_sizes)
 │   ├── auth.js                    # 로그인, 세션(24시간 유휴 타임아웃), 권한, 비밀번호 변경, tErr() 에러 번역
@@ -393,6 +402,7 @@ CHO-Talents/
 - **Security:** RLS 정책과 `SECURITY DEFINER` RPC로 사용자/달란트/로그 등 민감 데이터 접근 제어
 - **에러 처리:** `tErr()` 함수로 영문 DB 에러를 한글로 자동 변환, 전체 기능에 `logError`/`logWarn`/`logInfo` 로깅
 - **Slack 알림:** 부서별/유형별 채널 분리 라우팅. 브라우저에서 `js/slack-notify.js` → Supabase Edge Function `slack-notify` → 채널별 Slack Webhook 경로로 전송
+- **공통 코드 관리:** 브라우저는 `js/codes.js`의 기본 코드북을 우선 사용하고, DB에 `code_items`가 있으면 활성 코드/라벨/정렬/색상 값을 불러와 덮어씁니다.
 
 ## Slack 알림 연동
 
@@ -436,6 +446,7 @@ CHO-Talents/
 
 - `user_type`: `student` 또는 `teacher`
 - `permission_level`: 실제 접근 권한. 숫자 등급으로 비교합니다.
+- 권한명, 권한 등급, 사용자 유형 라벨은 `profiles.permission_level`, `profiles.user_type` 코드 그룹으로 관리합니다. 런타임은 `js/codes.js`를 기본값으로 사용하고 DB `code_items`가 있으면 해당 값을 우선합니다.
 
 | 권한 | 코드 | 등급 | 기본 이동 | 주요 권한 |
 |---|---|---:|---|---|
@@ -649,18 +660,19 @@ flowchart TD
 | 구분 | 리소스 | 용도 |
 |---|---|---|
 | 사용자 | `profiles` | 사용자 정보, 유형, 권한, 부서, 반, 잔액, 사용 대기 달란트, 마지막 로그인(`last_login_at`) |
+| 코드 마스터 | `code_groups`, `code_items` | 권한/유형/상태/카테고리/로그 액션 같은 구분값의 코드, 표시명, 정렬, 색상, 이모지, rank 메타 관리 |
 | 사용자 설정 | `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB), 테마(`theme`), 그리드별 페이지 크기(`page_sizes` JSONB) |
 | 부서 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | 가입 신청 | `registration_requests` | 계정 신청과 승인/거부 상태 |
 | 부서 이동 | `department_transfer_requests` | 부서 이동 요청, 승인/거부, 처리 기록 |
 | 달란트 | `talent_transactions` | 적립/사용/반환 거래 내역 |
 | 달란트 항목 | `talent_items` | 지급 항목, 달란트 금액, 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
-| 상품 | `products` | 상점 상품, 가격, 대상, 이미지, 활성 상태 |
-| 상품 주문 | `product_orders` | 구매 신청, 4단계 상태 관리, 담당자 기록 |
+| 상품 | `products` | 상점 상품, 가격, 대상(`products.target_role`), 카테고리(`products.category`), 이미지, 활성 상태 |
+| 상품 주문 | `product_orders` | 구매 신청, 코드화된 4단계 상태(`product_orders.status`) 관리, 담당자 기록 |
 | Q&A | `qna` | FAQ, 사용자 질문, 답변, 공개 여부 |
 | QR 코드 | `talent_qr_codes` | QR 코드 생성/유효기간(`valid_from`/`valid_until`)/1회 사용 관리 |
 | QR 스캔 | `talent_qr_scans` | QR 코드 스캔 이력 (중복 수령 방지) |
-| 로그 | `activity_logs` | 페이지/오류/운영 활동 기록, 소프트 삭제 |
+| 로그 | `activity_logs` | 오류/운영 활동 기록, 소프트 삭제, `activity_logs.action` 코드 라벨과 `details._actionLabel` 저장 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
 | 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |
 | 권한별 접근 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
@@ -704,7 +716,9 @@ flowchart TD
 |---|---|
 | `docs/INITIAL_DATABASE_SETUP.sql` | 현재 테이블, RPC, RLS, Storage 버킷, 기본 데이터를 새 DB에 설치 |
 | `docs/INITIAL_DATABASE_SETUP.md` | SQL Editor 방식과 PowerShell/psql 자동 설치 방법 |
-| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트 |
+| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트. 기본 실행 시 `docs/TASK-057_code_master.sql`도 합본에 포함 |
+
+SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실행 후 `docs/TASK-057_code_master.sql`을 이어서 실행합니다. PowerShell 설치 스크립트와 `-GenerateOnly` 합본 SQL은 `TASK-057_code_master.sql`을 기본 포함합니다.
 
 아래 SQL 파일들은 과거 작업별 변경 이력이며, 빈 새 DB에는 위 단일 설치 SQL을 우선 사용합니다:
 
@@ -719,6 +733,7 @@ flowchart TD
 | `docs/TASK-048_schema.sql` | v3.36.0: `talent_items` giving_rule/giving_description 컬럼, `purchase_teacher` 권한 CHECK 제약, `get_permission_rank` 갱신 |
 | `docs/TASK-049_schema.sql` | v3.37.0: `profiles.last_login_at` 컬럼, `update_last_login()` RPC |
 | `docs/TASK-041_page_sizes.sql` | v3.40.0: `user_preferences.page_sizes` JSONB 컬럼 추가 |
+| `docs/TASK-057_code_master.sql` | v3.50.0: `code_groups`/`code_items` 코드 마스터, 텍스트 CHECK 제약 완화, 코드 컬럼 검증 트리거, `get_permission_rank()` 코드 기반 조회 |
 
 ## 관련 문서
 

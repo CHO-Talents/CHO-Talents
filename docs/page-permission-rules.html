@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CHO-Talents 페이지별 권한 설정 정리</title>
-<link rel="stylesheet" href="../css/themes.css?v=3.49.0">
-<link rel="stylesheet" href="../css/admin.css?v=3.49.0">
+<link rel="stylesheet" href="../css/themes.css?v=3.50.0">
+<link rel="stylesheet" href="../css/admin.css?v=3.50.0">
 <style>
   body.permission-rules-body { padding-top:54px; }
   .container { max-width:1080px; margin:0 auto; padding:2rem 1.5rem 4rem; }
@@ -37,7 +37,7 @@
 <div id="nav-container"></div>
 <div class="container">
   <h1>CHO-Talents 페이지별 권한 설정 정리</h1>
-  <p class="subtitle">작성 기준: v3.49.0 / 2026-06-19. 실제 소스의 <code>PERMISSION_RANK</code>, <code>initPage()</code>, <code>data-min-perm</code>, <code>role_page_access</code> 기준으로 정리합니다.</p>
+  <p class="subtitle">작성 기준: v3.50.0 / 2026-06-19. 실제 소스의 <code>js/codes.js</code>, <code>PERMISSION_RANK</code>, <code>initPage()</code>, <code>data-min-perm</code>, <code>role_page_access</code> 기준으로 정리합니다.</p>
 
   <h2>1. 권한 등급 체계</h2>
   <div class="rank-strip">
@@ -52,6 +52,9 @@
     <span class="rank-chip"><span class="num">110</span> 최고 관리자</span>
   </div>
   <p class="note">최고 관리자는 <code>permission_level='admin'</code>이면서 <code>is_super_admin=true</code>인 계정이며, 클라이언트에서는 rank 110으로 계산합니다.</p>
+  <div class="rule-card">
+    <p class="note" style="margin:0;">권한 라벨과 rank 메타는 v3.50.0부터 <code>profiles.permission_level</code> 코드 그룹 기준으로 관리합니다. 프론트엔드는 <code>js/codes.js</code> 기본 코드북을 사용하고, DB <code>code_items.meta.rank</code>가 있으면 해당 값을 우선합니다.</p>
+  </div>
 
   <h2>2. 소개 메뉴 가이드 페이지</h2>
   <div class="rule-card">
@@ -101,8 +104,8 @@
       <thead><tr><th>파일</th><th>페이지명</th><th>최소 권한</th><th>핵심 스코핑</th></tr></thead>
       <tbody>
         <tr><td><code>admin/talents.html</code></td><td>달란트 관리</td><td><span class="badge b-40">40</span></td><td>일반 교사는 같은 부서+반, 부서 담당은 담당 부서, 80+는 더 넓은 조회. v3.48.0: 상세 팝업 상단에 <strong>누적적립·총사용·총반환·잔여</strong> 4칸 요약 표시</td></tr>
-        <tr><td><code>admin/index.html</code></td><td>대시보드</td><td><span class="badge b-60">60</span></td><td>통계 카드와 이슈 로그 테이블만 표시. v3.49.0: 바로가기(quickLinks) 박스 제거. 최근 이슈 로그는 100+만 표시</td></tr>
-        <tr><td><code>admin/users.html</code></td><td>사용자 관리</td><td><span class="badge b-60">60</span></td><td>60+는 담당 부서 중심, 80+는 요청 처리 범위 확대, 90+ 전체 처리. v3.49.0: 상단 통계 카드(전체·관리자·부서 담당·교사·학생) 클릭 필터 — 관리자=admin+evangelist+chief, 부서 담당=purchase_teacher+dept_teacher</td></tr>
+        <tr><td><code>admin/index.html</code></td><td>대시보드</td><td><span class="badge b-60">60</span></td><td>통계 카드와 이슈 로그 테이블만 표시. v3.50.0: 바로가기(quickLinks) 박스 제거. 최근 이슈 로그는 100+만 표시</td></tr>
+        <tr><td><code>admin/users.html</code></td><td>사용자 관리</td><td><span class="badge b-60">60</span></td><td>60+는 담당 부서 중심, 80+는 요청 처리 범위 확대, 90+ 전체 처리. v3.50.0: 상단 통계 카드(전체·관리자·부서 담당·교사·학생) 클릭 필터 — 관리자=admin+evangelist+chief, 부서 담당=purchase_teacher+dept_teacher</td></tr>
         <tr><td><code>admin/departments.html</code></td><td>부서 관리</td><td><span class="badge b-60">60</span></td><td>생성/수정 80+, 삭제/비활성화 90+ 성격</td></tr>
         <tr><td><code>admin/shop.html</code></td><td>상품 관리</td><td><span class="badge b-60">60</span></td><td>상품 삭제는 90+</td></tr>
         <tr><td><code>admin/purchases.html</code></td><td>구매 관리</td><td><span class="badge b-60">60</span></td><td>구매 담당 교사는 전체 부서, 60~89 일반 운영자는 담당 부서 중심</td></tr>
@@ -113,7 +116,7 @@
         <tr><td><code>admin/reports.html</code></td><td>보고서</td><td><span class="badge b-80">80</span></td><td>보고서 조회/등록/수정/삭제</td></tr>
         <tr><td><code>admin/versions.html</code></td><td>버전</td><td><span class="badge b-80">80</span></td><td>읽기 전용 버전 이력</td></tr>
         <tr><td><code>admin/slack-rules.html</code></td><td>Slack 알림 룰</td><td><span class="badge b-80">80</span></td><td>알림 라우팅 문서 열람</td></tr>
-        <tr><td><code>admin/talent-qr.html</code></td><td>달란트 QR 관리</td><td><span class="badge b-90">90</span></td><td>QR 생성/수정/비활성화. v3.48.0: 수령자 목록 <strong>반환</strong> 배지. v3.49.0: 수령자 팝업 페이징·페이지당 항목 수 콤보(3~30, 계정별 DB 저장)·스캔 건별 반환 매칭 개선</td></tr>
+        <tr><td><code>admin/talent-qr.html</code></td><td>달란트 QR 관리</td><td><span class="badge b-90">90</span></td><td>QR 생성/수정/비활성화. v3.48.0: 수령자 목록 <strong>반환</strong> 배지. v3.50.0: 수령자 팝업 페이징·페이지당 항목 수 콤보(3~30, 계정별 DB 저장)·스캔 건별 반환 매칭 개선</td></tr>
         <tr><td><code>admin/page-access.html</code></td><td>페이지 접근</td><td><span class="badge b-100">100</span></td><td>role_page_access 관리</td></tr>
         <tr><td><code>admin/page-features.html</code></td><td>페이지 기능</td><td><span class="badge b-100">100</span></td><td>role_page_features 관리</td></tr>
         <tr><td><code>admin/audit.html</code></td><td>작업 이력</td><td><span class="badge b-100">100</span></td><td>activity_logs 중 감사 액션 조회</td></tr>
@@ -145,33 +148,35 @@
         <tr><td><code>role_page_access</code></td><td>권한별 페이지 접근과 요소 숨김</td><td><code>initPage()</code> 통과 후 현재 page_id를 조회해 접근 보조 제한과 hidden_elements를 적용합니다.</td></tr>
         <tr><td><code>role_page_features</code></td><td>권한별 기능 설정값</td><td>운영 설정 화면에서 관리합니다. 실제 실행 차단은 개별 화면의 rank 체크와 RLS/RPC가 우선입니다.</td></tr>
         <tr><td><code>page_permissions</code></td><td>레거시 권한 매트릭스</td><td><code>admin/page-permissions.html</code>에서 관리합니다. 신규 구현은 <code>role_page_access</code>를 우선합니다.</td></tr>
+        <tr><td><code>code_groups</code>, <code>code_items</code></td><td>권한/사용자 유형 코드 마스터</td><td><code>profiles.permission_level</code>과 <code>profiles.user_type</code>의 라벨, 정렬, rank 메타를 관리합니다.</td></tr>
       </tbody>
     </table>
   </div>
 
-  <h2>8. v3.49.0 변경 요약</h2>
+  <h2>8. v3.50.0 변경 요약</h2>
   <div class="rule-card">
     <table>
       <thead><tr><th>대상</th><th>변경 내용</th></tr></thead>
       <tbody>
-        <tr><td><code>css/admin.css</code> 모바일 네비</td><td>768px 이하 상단 우측 배치(테마 → 햄버거 → 로그아웃 → 이름)가 공개 페이지뿐 아니라 <strong>/admin/</strong> 관리 페이지 전체에 적용</td></tr>
-        <tr><td><code>admin/index.html</code></td><td>바로가기(quickLinks) 단축 박스 제거 — 통계 카드와 이슈 로그 테이블만 유지</td></tr>
-        <tr><td><code>admin/users.html</code></td><td>상단 통계 카드 클릭 필터(전체·관리자·부서 담당·교사·학생) 및 활성 강조. 관리자=admin+evangelist+chief, 부서 담당=purchase_teacher+dept_teacher</td></tr>
-        <tr><td><code>admin/talent-qr.html</code></td><td>QR 수령자 팝업 페이징, 페이지당 항목 수 콤보(3~30, 계정별 DB 저장), 스캔 건별 반환 매칭 개선</td></tr>
+        <tr><td><code>js/codes.js</code></td><td>권한, 사용자 유형, 구매 상태, 상품 카테고리, 로그 액션 라벨을 공통 코드북으로 관리</td></tr>
+        <tr><td><code>code_groups</code>, <code>code_items</code></td><td>DB 코드 마스터 추가. <code>profiles.permission_level</code> rank/라벨은 <code>code_items.meta</code> 우선</td></tr>
+        <tr><td><code>js/auth.js</code></td><td><code>getCodeRank('profiles.permission_level')</code> 기반 권한 비교 폴백 추가</td></tr>
+        <tr><td><code>admin/users.html</code>, <code>admin/managers.html</code></td><td>권한 옵션과 역할 배지를 코드북 기준으로 렌더링</td></tr>
       </tbody>
     </table>
   </div>
 
-  <p class="note" style="text-align:center;margin-top:2rem;">CHO-Talents v3.49.0 · 실제 소스 코드 기준 권한 설정 · 2026-06-19 작성</p>
+  <p class="note" style="text-align:center;margin-top:2rem;">CHO-Talents v3.50.0 · 실제 소스 코드 기준 권한 설정 · 2026-06-19 작성</p>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../config/public-config.js?v=3.49.0"></script>
-<script src="../js/supabase-config.js?v=3.49.0"></script>
-<script src="../js/activity-log.js?v=3.49.0"></script>
-<script src="../js/auth.js?v=3.49.0"></script>
-<script src="../js/theme.js?v=3.49.0"></script>
-<script src="../js/nav.js?v=3.49.0"></script>
+<script src="../config/public-config.js?v=3.50.0"></script>
+<script src="../js/supabase-config.js?v=3.50.0"></script>
+<script src="../js/activity-log.js?v=3.50.0"></script>
+  <script src="../js/codes.js?v=3.50.0"></script>
+<script src="../js/auth.js?v=3.50.0"></script>
+<script src="../js/theme.js?v=3.50.0"></script>
+<script src="../js/nav.js?v=3.50.0"></script>
 <script>
 initSupabase();
 (async () => {
@@ -183,6 +188,6 @@ initSupabase();
   autoLogPageView();
 })();
 </script>
-<script src="../js/version.js?v=3.49.0"></script>
+<script src="../js/version.js?v=3.50.0"></script>
 </body>
 </html>

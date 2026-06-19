@@ -4,13 +4,15 @@
 
 실행 SQL: `docs/INITIAL_DATABASE_SETUP.sql`
 
+추가 코드 마스터 SQL: `docs/TASK-057_code_master.sql`
+
 자동 실행 스크립트: `scripts/install-supabase-database.ps1`
 
 ## 실행 순서
 
 1. 새 Supabase 프로젝트를 만든다.
 2. 새 프로젝트의 `Project URL`, `publishable/anon key`, DB connection string을 확인한다.
-3. 아래 수동 또는 자동 방식 중 하나로 DB 설치를 실행한다.
+3. 아래 수동 또는 자동 방식 중 하나로 DB 설치를 실행한다. SQL Editor 수동 방식이면 `INITIAL_DATABASE_SETUP.sql` 실행 후 `TASK-057_code_master.sql`을 이어서 실행한다.
 4. Storage에 `Talents_Items` 버킷이 생성되었는지 확인한다.
 5. Slack 알림을 사용할 경우 Edge Function `slack-notify`를 배포하고 Webhook Secret을 등록한다.
 6. 사이트 설정 파일의 Supabase URL/anon key를 새 프로젝트 값으로 바꾼다.
@@ -22,7 +24,7 @@
 
 ## 실행 방법 A: SQL Editor
 
-Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql`을 열고, 상단 `0. Target Project Runtime Config` 블록의 공개 설정값을 새 프로젝트 기준으로 수정한 뒤 전체를 실행한다.
+Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql`을 열고, 상단 `0. Target Project Runtime Config` 블록의 공개 설정값을 새 프로젝트 기준으로 수정한 뒤 전체를 실행한다. 이어서 `docs/TASK-057_code_master.sql`을 실행해 `code_groups`, `code_items`, 코드 컬럼 검증 트리거를 추가한다.
 
 ```sql
 ('production', 'SUPABASE_URL', 'https://YOUR_PROJECT_REF.supabase.co', false, true, ...),
@@ -57,10 +59,13 @@ SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
   -SupabaseAnonKey "YOUR_PUBLISHABLE_OR_ANON_KEY"
 ```
 
+`scripts/install-supabase-database.ps1`는 기본으로 `docs/TASK-057_code_master.sql`을 합본에 포함한다. 별도 마이그레이션을 추가로 합치려면 `-ExtraSqlPaths`에 경로를 넘긴다.
+
 ## 필수 테이블
 
 | 테이블 | 용도 | 새 DB 기본 데이터 |
 |---|---|---|
+| `code_groups`, `code_items` | 권한/유형/상태/카테고리/로그 액션 코드 마스터 | 기본 코드 그룹과 활성 코드값 |
 | `departments` | 부서/반 관리 | `기본 부서` 1개 |
 | `profiles` | Supabase Auth 사용자 프로필, 권한, 달란트 잔액, 마지막 로그인 | `admin_user` 최고 관리자 1명 |
 | `registration_requests` | 가입 신청 | 비움 |
@@ -115,6 +120,7 @@ SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
 | 사용자 설정 | 본인 | 본인 | 본인 | 본인 |
 | QR 코드 | 인증 사용자 | 90+ | 90+ | 90+ |
 | QR 스캔 | 인증 사용자 | 인증 사용자 | 직접 수정 없음 | 직접 삭제 없음 |
+| 코드 마스터 | 공개/인증 조회 | 100+ | 100+ | 100+ |
 | app_config | 직접 조회 차단 | 서버/SQL | 서버/SQL | 서버/SQL |
 
 `app_config`의 공개값은 `get_public_app_config()` RPC로만 조회한다. 비밀 토큰 원문은 DB에 넣지 않고 `env:GITHUB_PAT` 같은 참조값만 둔다.
@@ -164,6 +170,9 @@ FAQ
 페이지 권한 매트릭스
 : `admin/page-permissions.html`에서 기본 권한표가 보이도록 넣는다. 실제 페이지 접근 차단은 `role_page_access`에서 별도로 설정할 수 있다.
 
+코드 마스터
+: `profiles.permission_level`, `profiles.user_type`, `product_orders.status`, `products.target_role`, `products.category`, `activity_logs.action` 등 구분값의 코드/명칭/정렬/색상/이모지/rank 메타를 `code_items`에 넣는다. 프론트엔드는 `js/codes.js` 기본값을 먼저 쓰고, DB 코드가 있으면 DB 값을 우선한다.
+
 `app_config`
 : 브라우저 공개 설정과 비밀 설정 참조값을 분리해 관리한다. 새 Supabase 프로젝트를 만들면 `SUPABASE_URL`, `SUPABASE_ANON_KEY`는 새 프로젝트 값으로 바꿔야 한다. Slack Webhook은 원문이 아니라 `env:SLACK_WEBHOOK_...` 참조값만 둔다.
 
@@ -187,4 +196,4 @@ FAQ
 - GitHub PAT, Supabase access token, service role key는 `app_config`에 원문으로 저장하지 않는다.
 - 상품 이미지를 사용하려면 `Talents_Items` Storage 버킷이 필요하다. SQL에서 자동 생성한다.
 - 새 프로젝트 URL과 anon key가 바뀌면 프론트 설정도 반드시 바꿔야 한다.
-- QR 수령, 구매 취소, 페이지당 항목 수 설정은 최신 SQL에 통합되어 있으므로 별도 TASK SQL을 추가 실행하지 않아도 된다.
+- QR 수령, 구매 취소, 페이지당 항목 수 설정은 기본 설치 SQL에 통합되어 있다. 코드 마스터는 SQL Editor 수동 설치 시 `docs/TASK-057_code_master.sql`을 추가 실행하고, 자동 설치 스크립트 사용 시 기본 합본에 포함된다.
