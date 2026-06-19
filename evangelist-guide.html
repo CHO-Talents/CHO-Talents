@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>전도사님 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.48.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.48.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.48.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.49.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -54,7 +54,7 @@
         <li>무제한/선착순, 지정일/기간/무기한, 반복 수령 여부를 설정합니다.</li>
         <li>위치 제한이 필요하면 카카오맵 검색으로 장소와 반경을 지정합니다.</li>
         <li>생성 후 QR 이미지를 인쇄하거나 화면으로 공유합니다.</li>
-        <li>운영이 끝난 QR은 비활성화하고 수령자 목록을 점검합니다. 반환된 달란트는 수령자 이름 옆에 <strong>반환</strong> 배지가 표시되며, 목록 상단에는 <strong>총 N명 수령 (반환 M명)</strong> 형식으로 집계됩니다.</li>
+        <li>운영이 끝난 QR은 비활성화하고 수령자 목록을 점검합니다. 수령자 팝업은 페이징과 <strong>페이지당 항목 수</strong> 콤보 박스(3~30개, 계정별 DB 저장)를 지원하며, 스캔 건별 반환 매칭이 개선되었습니다. 반환된 달란트는 수령자 이름 옆에 <strong>반환</strong> 배지가 표시되며, 목록 상단에는 <strong>총 N명 수령 (반환 M명)</strong> 형식으로 집계됩니다.</li>
       </ol>
       <div class="guide-note">QR 수정은 기존 코드를 바꾸는 것이 아니라 새 QR 코드를 만드는 방식입니다. 이미 배포한 QR을 바꾸면 새 코드로 다시 안내해야 합니다.</div>
     </section>
@@ -102,12 +102,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.48.0"></script>
-  <script src="js/supabase-config.js?v=3.48.0"></script>
-  <script src="js/activity-log.js?v=3.48.0"></script>
-  <script src="js/auth.js?v=3.48.0"></script>
-  <script src="js/theme.js?v=3.48.0"></script>
-  <script src="js/nav.js?v=3.48.0"></script>
+  <script src="config/public-config.js?v=3.49.0"></script>
+  <script src="js/supabase-config.js?v=3.49.0"></script>
+  <script src="js/activity-log.js?v=3.49.0"></script>
+  <script src="js/auth.js?v=3.49.0"></script>
+  <script src="js/theme.js?v=3.49.0"></script>
+  <script src="js/nav.js?v=3.49.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -122,6 +122,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.48.0"></script>
+  <script src="js/version.js?v=3.49.0"></script>
 </body>
 </html>

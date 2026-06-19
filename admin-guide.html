@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.48.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.48.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.48.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.49.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -50,6 +50,7 @@
       <h2>👥 사용자 관리</h2>
       <ol class="guide-steps">
         <li><strong>관리 &gt; 사용자 관리</strong>로 이동합니다.</li>
+        <li>상단 통계 카드(전체·관리자·부서 담당·교사·학생)를 클릭하면 해당 유형으로 목록을 필터링할 수 있으며, 선택된 카드는 강조 표시됩니다. <strong>관리자</strong>는 admin·전도사·부장 교사, <strong>부서 담당</strong>은 구매 담당·부서 담당 교사를 포함합니다.</li>
         <li>사용자 목록은 교사/학생 그룹별로 분리되어 표시됩니다 (각 그룹 PC 20명, 모바일 10명씩 페이징). 테이블 헤더를 클릭하면 해당 열 기준으로 정렬할 수 있습니다.</li>
         <li>가입 신청이 있으면 신청자의 이름, 부서, 신청 사유를 확인합니다.</li>
         <li>사용자 유형과 권한을 선택한 뒤 승인하거나, 사유를 입력해 거부합니다.</li>
@@ -125,7 +126,7 @@
         <li>지급 제한 없음 또는 선착순 지급 인원을 선택합니다.</li>
         <li>유효 기간을 지정일, 기간, 무기한 중에서 선택합니다.</li>
         <li>필요하면 위치 제한을 켜고 카카오맵 주소 검색으로 장소와 반경을 지정합니다.</li>
-        <li>QR 코드를 생성한 뒤 인쇄하거나, 수령자 목록을 확인합니다. 반환된 달란트는 수령자 이름 옆에 <strong>반환</strong> 배지가 표시되며, 목록 상단에는 <strong>총 N명 수령 (반환 M명)</strong> 형식으로 집계됩니다.</li>
+        <li>QR 코드를 생성한 뒤 인쇄하거나, 수령자 목록을 확인합니다. 수령자 팝업은 페이징과 <strong>페이지당 항목 수</strong> 콤보 박스(3~30개, 계정별 DB 저장)를 지원하며, 스캔 건별 반환 매칭이 개선되었습니다. 반환된 달란트는 수령자 이름 옆에 <strong>반환</strong> 배지가 표시되며, 목록 상단에는 <strong>총 N명 수령 (반환 M명)</strong> 형식으로 집계됩니다.</li>
       </ol>
       <div class="guide-note">QR을 수정하면 기존 코드 값을 그대로 고치는 것이 아니라 새 QR 코드가 만들어집니다. 이미 배포한 QR을 바꿀 때는 새 코드로 다시 안내하세요.</div>
     </section>
@@ -162,7 +163,7 @@
           <tbody>
             <tr><td>달란트 통계</td><td>전체, 부서별, 사용자별, 유형별 적립 현황을 기간과 부서, 사용자 유형으로 필터링해 확인합니다.</td></tr>
             <tr><td>구매 통계</td><td>전체, 부서별, 사용자별, 유형별 구매 현황을 교사/학생별로 분리 표시합니다. 상태별 칸반 카드, 상세 드릴다운, 부서·유형·기간 필터 제공. 부서 담당 교사는 담당 부서만, 부장 교사 이상 전체 조회 가능합니다.</td></tr>
-            <tr><td>대시보드</td><td>사용자 수, 부서 수, 보고서 수, 가입 대기자, 바로가기를 확인합니다.</td></tr>
+            <tr><td>대시보드</td><td>사용자·부서·보고서·가입 대기 통계 카드와 최근 이슈 로그 테이블을 확인합니다. v3.49.0부터 바로가기(단축 링크) 박스는 제거되었습니다.</td></tr>
             <tr><td>보고서</td><td>작업 계획, 테스트 결과, 보안 보고서, 수정 보고서를 확인하거나 등록합니다.</td></tr>
             <tr><td>버전</td><td>배포된 기능 변경 이력을 확인합니다.</td></tr>
             <tr><td>Q &amp; A</td><td>질문에 답변을 남기고, 필요한 항목을 FAQ로 등록합니다.</td></tr>
@@ -232,7 +233,7 @@
     </section>
 
     <section class="guide-section">
-      <h2>⏱️ 세션 관리 · 📱 모바일 네비게이션 (v3.48.0)</h2>
+      <h2>⏱️ 세션 관리 · 📱 모바일 네비게이션 (v3.48.0~v3.49.0)</h2>
       <div class="guide-grid">
         <div class="guide-card">
           <h3>24시간 유휴 자동 로그아웃</h3>
@@ -245,6 +246,7 @@
             <li>테마 스위치 → 햄버거 메뉴(☰) → 로그아웃 → (권한 이모지) 이름</li>
           </ul>
           <p style="margin-top:0.75rem;">햄버거 메뉴를 누르면 소개·달란트·상품·관리·운영 그룹이 아래로 펼쳐집니다.</p>
+          <p style="margin-top:0.75rem;">v3.49.0부터 이 배치(테마 → 햄버거 → 로그아웃 → 이름)는 공개 페이지뿐 아니라 <strong>/admin/</strong> 관리 페이지 전체에도 동일하게 적용됩니다.</p>
         </div>
       </div>
     </section>
@@ -272,12 +274,12 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.48.0"></script>
-  <script src="js/supabase-config.js?v=3.48.0"></script>
-  <script src="js/activity-log.js?v=3.48.0"></script>
-  <script src="js/auth.js?v=3.48.0"></script>
-  <script src="js/theme.js?v=3.48.0"></script>
-  <script src="js/nav.js?v=3.48.0"></script>
+  <script src="config/public-config.js?v=3.49.0"></script>
+  <script src="js/supabase-config.js?v=3.49.0"></script>
+  <script src="js/activity-log.js?v=3.49.0"></script>
+  <script src="js/auth.js?v=3.49.0"></script>
+  <script src="js/theme.js?v=3.49.0"></script>
+  <script src="js/nav.js?v=3.49.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -299,6 +301,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.48.0"></script>
+  <script src="js/version.js?v=3.49.0"></script>
 </body>
 </html>

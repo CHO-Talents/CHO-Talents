@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko" data-theme="default">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.48.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.48.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
@@ -426,7 +426,9 @@
   <div class="modal-overlay" id="scanListModal">
     <div class="modal-box wide">
       <h3>👥 수령자 목록 <span id="scanListTitle" style="font-size:0.85rem;font-weight:400;color:var(--admin-text-muted);"></span></h3>
+      <div id="scanListPageSizeWrap" style="margin-bottom:0.5rem;"></div>
       <div id="scanListContent"><div class="scan-empty">불러오는 중...</div></div>
+      <div id="scanListPaging" style="margin-top:0.5rem;"></div>
       <div class="modal-actions">
         <button class="admin-btn" onclick="closeScanListModal()">닫기</button>
       </div>
@@ -435,14 +437,14 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../config/public-config.js?v=3.48.0"></script>
-  <script src="../js/supabase-config.js?v=3.48.0"></script>
-  <script src="../js/activity-log.js?v=3.48.0"></script>
-  <script src="../js/auth.js?v=3.48.0"></script>
-  <script src="../js/theme.js?v=3.48.0"></script>
-  <script src="../js/page-size.js?v=3.48.0"></script>
-  <script src="../js/nav.js?v=3.48.0"></script>
-  <script src="../js/talent.js?v=3.48.0"></script>
+  <script src="../config/public-config.js?v=3.49.0"></script>
+  <script src="../js/supabase-config.js?v=3.49.0"></script>
+  <script src="../js/activity-log.js?v=3.49.0"></script>
+  <script src="../js/auth.js?v=3.49.0"></script>
+  <script src="../js/theme.js?v=3.49.0"></script>
+  <script src="../js/page-size.js?v=3.49.0"></script>
+  <script src="../js/nav.js?v=3.49.0"></script>
+  <script src="../js/talent.js?v=3.49.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -1138,10 +1140,17 @@
     }
 
     /* ── Scan List Modal ── */
+    let _scanListData = [], _scanProfileMap = {}, _scanDeptMap = {}, _scanReturnedSet = new Set();
+    let _scanListPage = 1, _scanListPageSize = 10;
+
     async function openScanListModal(qrId, desc) {
       document.getElementById('scanListModal').classList.add('show');
       document.getElementById('scanListTitle').textContent = desc ? ' - ' + desc : '';
       document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">불러오는 중...</div>';
+      document.getElementById('scanListPaging').innerHTML = '';
+      document.getElementById('scanListPageSizeWrap').innerHTML = '';
+      _scanListPage = 1;
+      _scanListPageSize = await loadPageSize('qr_scan_list', 10);
       try {
         const { data: scans } = await _sb.from('talent_qr_scans')
           .select('*').eq('qr_code_id', qrId).order('scanned_at', { ascending: false });
@@ -1149,54 +1158,84 @@
           document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">수령자가 없습니다.</div>';
           return;
         }
+        _scanListData = scans;
         const userIds = [...new Set(scans.map(s => s.user_id))];
         const { data: profiles } = await _sb.from('profiles')
           .select('id, display_name, username, department_id').in('id', userIds);
-        const profileMap = {};
-        (profiles || []).forEach(p => { profileMap[p.id] = p; });
-        let deptIds = [...new Set((profiles || []).map(p => p.department_id).filter(Boolean))];
-        let deptMap = {};
+        _scanProfileMap = {};
+        (profiles || []).forEach(p => { _scanProfileMap[p.id] = p; });
+        const deptIds = [...new Set((profiles || []).map(p => p.department_id).filter(Boolean))];
+        _scanDeptMap = {};
         if (deptIds.length > 0) {
           const { data: depts } = await _sb.from('departments').select('id, name').in('id', deptIds);
-          (depts || []).forEach(d => { deptMap[d.id] = d.name; });
+          (depts || []).forEach(d => { _scanDeptMap[d.id] = d.name; });
         }
 
-        const { data: earnTxns } = await _sb.from('talent_transactions')
-          .select('id, user_id').in('user_id', userIds).eq('type', 'earn').eq('source', 'qr');
-        const earnTxnIds = new Set((earnTxns || []).map(t => t.id));
+        const qr = allQR.find(x => x.id === qrId);
+        let earnQuery = _sb.from('talent_transactions')
+          .select('id, user_id, created_at').in('user_id', userIds).eq('type', 'earn').eq('source', 'qr');
+        if (qr && qr.talent_item_id) earnQuery = earnQuery.eq('talent_item_id', qr.talent_item_id);
+        const { data: earnTxns } = await earnQuery;
+
         const { data: returnTxns } = await _sb.from('talent_transactions')
-          .select('description').in('user_id', userIds).eq('type', 'use').like('description', '반환:%');
+          .select('description, user_id').in('user_id', userIds).eq('type', 'use').like('description', '반환:%');
         const returnedEarnIds = new Set();
         (returnTxns || []).forEach(r => {
-          const m = r.description.match(/\[([a-f0-9-]+)\]/);
-          if (m && earnTxnIds.has(m[1])) returnedEarnIds.add(m[1]);
-        });
-        const earnByUser = {};
-        (earnTxns || []).forEach(t => { if (!earnByUser[t.user_id]) earnByUser[t.user_id] = []; earnByUser[t.user_id].push(t.id); });
-        const returnedUsers = new Set();
-        Object.entries(earnByUser).forEach(([uid, ids]) => {
-          if (ids.every(id => returnedEarnIds.has(id))) returnedUsers.add(uid);
+          const m = (r.description || '').match(/\[([a-f0-9-]+)\]/);
+          if (m) returnedEarnIds.add(m[1]);
         });
 
-        const isAdmin = (session.permissionRank || 0) >= 100;
-        let html = '<table class="scan-list-table"><thead><tr><th>#</th><th>이름</th>' + (isAdmin ? '<th>아이디</th>' : '') + '<th>부서</th><th>수령 시간</th><th>상태</th></tr></thead><tbody>';
-        scans.forEach((s, i) => {
-          const p = profileMap[s.user_id] || {};
-          const dt = new Date(s.scanned_at);
-          const ts = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0')
-            + ' ' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
-          const isReturned = returnedUsers.has(s.user_id);
-          const statusBadge = isReturned ? '<span style="padding:0.1rem 0.4rem;border-radius:4px;font-size:0.75rem;background:#fff0f6;color:#c2255c;font-weight:600;">반환</span>' : '<span style="font-size:0.75rem;color:#2b8a3e;">수령</span>';
-          html += '<tr><td>' + (i+1) + '</td><td>' + (p.display_name||'-') + '</td>' + (isAdmin ? '<td>' + (p.username||'-') + '</td>' : '') + '<td>' + (deptMap[p.department_id]||'-') + '</td><td>' + ts + '</td><td>' + statusBadge + '</td></tr>';
+        _scanReturnedSet = new Set();
+        scans.forEach(s => {
+          const scanTime = new Date(s.scanned_at).getTime();
+          const userEarns = (earnTxns || []).filter(t => t.user_id === s.user_id);
+          const matched = userEarns.find(t => Math.abs(new Date(t.created_at).getTime() - scanTime) < 120000);
+          if (matched && returnedEarnIds.has(matched.id)) _scanReturnedSet.add(s.id);
         });
-        html += '</tbody></table>';
-        const returnedCount = scans.filter(s => returnedUsers.has(s.user_id)).length;
-        html += '<div style="margin-top:0.5rem;font-size:0.82rem;color:var(--admin-text-muted);">총 ' + scans.length + '명 수령' + (returnedCount > 0 ? ' (반환 ' + returnedCount + '명)' : '') + '</div>';
-        document.getElementById('scanListContent').innerHTML = html;
+
+        renderScanListPage();
       } catch (e) {
         document.getElementById('scanListContent').innerHTML = '<div class="scan-empty">조회 실패: ' + (e.message || e) + '</div>';
       }
     }
+
+    function renderScanListPage() {
+      const scans = _scanListData;
+      const totalPages = Math.max(1, Math.ceil(scans.length / _scanListPageSize));
+      if (_scanListPage > totalPages) _scanListPage = totalPages;
+      const start = (_scanListPage - 1) * _scanListPageSize;
+      const pageScans = scans.slice(start, start + _scanListPageSize);
+      const isAdmin = (session.permissionRank || 0) >= 100;
+
+      let html = '<table class="scan-list-table"><thead><tr><th>#</th><th>이름</th>' + (isAdmin ? '<th>아이디</th>' : '') + '<th>부서</th><th>수령 시간</th><th>상태</th></tr></thead><tbody>';
+      pageScans.forEach((s, i) => {
+        const p = _scanProfileMap[s.user_id] || {};
+        const dt = new Date(s.scanned_at);
+        const ts = dt.getFullYear() + '-' + String(dt.getMonth()+1).padStart(2,'0') + '-' + String(dt.getDate()).padStart(2,'0')
+          + ' ' + String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
+        const isReturned = _scanReturnedSet.has(s.id);
+        const statusBadge = isReturned
+          ? '<span style="padding:0.1rem 0.4rem;border-radius:4px;font-size:0.75rem;background:#fff0f6;color:#c2255c;font-weight:600;">반환</span>'
+          : '<span style="font-size:0.75rem;color:#2b8a3e;">수령</span>';
+        html += '<tr><td>' + (start + i + 1) + '</td><td>' + (p.display_name||'-') + '</td>' + (isAdmin ? '<td>' + (p.username||'-') + '</td>' : '') + '<td>' + (_scanDeptMap[p.department_id]||'-') + '</td><td>' + ts + '</td><td>' + statusBadge + '</td></tr>';
+      });
+      html += '</tbody></table>';
+      const returnedCount = scans.filter(s => _scanReturnedSet.has(s.id)).length;
+      html += '<div style="margin-top:0.5rem;font-size:0.82rem;color:var(--admin-text-muted);">총 ' + scans.length + '명 수령' + (returnedCount > 0 ? ' (반환 ' + returnedCount + '명)' : '') + '</div>';
+      document.getElementById('scanListContent').innerHTML = html;
+      document.getElementById('scanListPaging').innerHTML = buildPagingButtons(_scanListPage, totalPages, 'goScanListPage(__PAGE__)');
+      document.getElementById('scanListPageSizeWrap').innerHTML = renderPageSizeSelector('qr_scan_list', _scanListPageSize, 'onScanListPageSizeChange(this.value)');
+    }
+
+    function goScanListPage(p) { _scanListPage = p; renderScanListPage(); }
+
+    async function onScanListPageSizeChange(val) {
+      _scanListPageSize = parseInt(val) || 10;
+      _scanListPage = 1;
+      await savePageSize('qr_scan_list', _scanListPageSize);
+      renderScanListPage();
+    }
+
     function closeScanListModal() { document.getElementById('scanListModal').classList.remove('show'); }
 
     /* ── Edit Modal ── */
@@ -1297,6 +1336,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.48.0"></script>
+  <script src="../js/version.js?v=3.49.0"></script>
 </body>
 </html>
