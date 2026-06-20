@@ -39,7 +39,7 @@
 - Kakao JavaScript key
 - GitHub 저장소 owner/repo/branch 같은 비밀이 아닌 메타데이터
 
-`TARGET_ENV` 값으로 `production` 또는 `development` 설정을 선택한다. 현재 production 부트스트랩 설정은 `https://rabakjtjtkelpskptnvi.supabase.co` 프로젝트를 바라본다.
+`TARGET_ENV` 값으로 `PROD` 또는 `DEV` 설정을 선택한다. 이 값은 Supabase `app_config.env`와 같아야 한다. 현재 `PROD` 부트스트랩 설정은 `https://rabakjtjtkelpskptnvi.supabase.co` 프로젝트를 바라본다.
 
 Supabase 접속 이후에는 `app_config` 테이블의 공개 설정을 `get_public_app_config()` RPC로 조회한다. 브라우저는 테이블을 직접 조회하지 않고 RPC 결과만 사용한다.
 
@@ -92,13 +92,13 @@ Supabase `app_config` 테이블에는 비밀 원문을 넣지 않는다. 대신 
 
 공개 설정만 기존 DB에 보강하거나 점검할 때는 Supabase SQL Editor 또는 Management API에서 `docs/TASK-041_app_config.sql`을 실행한다.
 
-로컬에서 DB 접속 문자열을 사용할 수 있으면 `scripts/install-supabase-database.ps1`로 설치 SQL 생성 또는 실행을 자동화할 수 있다. 이 스크립트는 기본으로 `docs/TASK-057_code_master.sql`을 합본에 포함한다. 새 프로젝트 전체 설치 절차는 `docs/SUPABASE_NEW_PROJECT_SETUP.md`를 함께 확인한다.
+로컬에서 DB 접속 문자열을 사용할 수 있으면 `scripts/install-supabase-database.ps1` 또는 `scripts/install-supabase-database.sh`로 설치 SQL 생성 또는 실행을 자동화할 수 있다. 이 스크립트들은 기본으로 `docs/TASK-057_code_master.sql`을 합본에 포함하고, 적용 후 `scripts/verify-task-057-code-master.sql`로 검증한다. 새 프로젝트 전체 설치 절차는 `docs/SUPABASE_NEW_PROJECT_SETUP.md`를 함께 확인한다.
 
 적용 후 브라우저에서는 아래 흐름으로 설정을 읽는다.
 
 1. `config/public-config.js`에서 Supabase 접속용 최소 공개값을 읽는다.
 2. `initSupabase()`가 Supabase 클라이언트를 만든다.
-3. `loadRemotePublicConfig()`가 `get_public_app_config('production')` RPC를 호출한다.
+3. `loadRemotePublicConfig()`가 `get_public_app_config(TARGET_ENV)` RPC를 호출한다. 예: `DEV`, `PROD`.
 4. 공개 설정만 `window.CHO_TALENTS_REMOTE_CONFIG`에 저장한다.
 5. 코드에서는 `getPublicConfigValue(keyName, fallback)`로 공개 설정을 조회할 수 있다.
 

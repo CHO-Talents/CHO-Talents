@@ -35,6 +35,8 @@ param(
   [string]$PsqlPath = 'psql',
   [string[]]$ExtraSqlPaths,
   [string]$OutputSqlPath,
+  [string]$VerifySqlPath,
+  [switch]$SkipVerify,
   [switch]$GenerateOnly
 )
 
@@ -83,7 +85,20 @@ function Sql-Bool {
   return 'false'
 }
 
-$AppConfigEnv = Use-Default $AppConfigEnv 'production'
+function Get-PublicConfigTargetEnv {
+  $publicConfigPath = Join-Path $ScriptRoot '..\config\public-config.js'
+
+  if (Test-Path -LiteralPath $publicConfigPath) {
+    $publicConfig = Get-Content -LiteralPath $publicConfigPath -Raw -Encoding UTF8
+    if ($publicConfig -match "const\s+TARGET_ENV\s*=\s*['""]([^'""]+)['""]") {
+      return $Matches[1]
+    }
+  }
+
+  return 'PROD'
+}
+
+$AppConfigEnv = Use-Default $AppConfigEnv (Get-PublicConfigTargetEnv)
 $AuthEmailDomain = Use-Default $AuthEmailDomain '@cho-talents.app'
 $GithubOwner = Use-Default $GithubOwner 'CHO-Talents'
 $GithubRepo = Use-Default $GithubRepo 'CHO-Talents'
@@ -109,6 +124,10 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   if (Test-Path -LiteralPath $defaultCodeMasterSql) {
     $ExtraSqlPaths = @($defaultCodeMasterSql)
   }
+}
+
+if ([string]::IsNullOrWhiteSpace($VerifySqlPath)) {
+  $VerifySqlPath = Join-Path $ScriptRoot 'verify-task-057-code-master.sql'
 }
 
 $extraSqlBlocks = @()
@@ -226,6 +245,20 @@ Write-Host "Applying SQL to Supabase database..."
 
 if ($LASTEXITCODE -ne 0) {
   throw "psql failed with exit code $LASTEXITCODE."
+}
+
+if (-not $SkipVerify) {
+  if (Test-Path -LiteralPath $VerifySqlPath) {
+    $resolvedVerifySqlPath = (Resolve-Path -LiteralPath $VerifySqlPath).Path
+    Write-Host "Verifying TASK-057 code master..."
+    & $PsqlPath $ConnectionString -v ON_ERROR_STOP=1 -f $resolvedVerifySqlPath
+
+    if ($LASTEXITCODE -ne 0) {
+      throw "TASK-057 verification failed with exit code $LASTEXITCODE."
+    }
+  } else {
+    Write-Warning "Verification SQL not found: $VerifySqlPath"
+  }
 }
 
 Write-Host 'Supabase database setup completed.'
