@@ -214,7 +214,10 @@ const ACTION_LABELS = {
 };
 
 function getActionLabel(action) {
-  return ACTION_LABELS[action] || action;
+  const fallback = ACTION_LABELS[action] || action;
+  return (typeof getCodeLabel === 'function')
+    ? getCodeLabel('activity_logs.action', action, fallback)
+    : fallback;
 }
 
 function _getLogErrorMessage(error) {
@@ -334,9 +337,10 @@ async function writeLog(level, action, page, details) {
   const session = getSession();
   const ci = getClientInfo();
   const userName = session ? (session.displayName || session.username || null) : null;
-  if (ACTION_LABELS[action]) {
+  const actionLabel = getActionLabel(action);
+  if (actionLabel && actionLabel !== action) {
     if (!details) details = {};
-    details._actionLabel = ACTION_LABELS[action];
+    details._actionLabel = actionLabel;
   }
   const merged = details ? Object.assign({}, details, { _client: ci, _userName: userName }) : { _client: ci, _userName: userName };
   const row = {
@@ -558,7 +562,7 @@ async function loadAuthSession() {
     displayName: data.display_name,
     userType: data.user_type || 'teacher',
     permissionLevel: perm,
-    permissionRank: (typeof getPermRank === 'function') ? getPermRank(perm, _isSA) : ((_isSA && perm === 'admin') ? 110 : ({ admin: 100, evangelist: 90, chief: 80, dept_teacher: 60, teacher: 40, student: 20 }[perm] || 0)),
+    permissionRank: (typeof getPermRank === 'function') ? getPermRank(perm, _isSA) : ((_isSA && perm === 'admin') ? 110 : ({ admin: 100, evangelist: 90, chief: 80, purchase_teacher: 70, dept_teacher: 60, teacher: 40, student: 20 }[perm] || 0)),
     isSuperAdmin: _isSA,
     isFirstLogin: data.is_first_login,
     departmentId: data.department_id,

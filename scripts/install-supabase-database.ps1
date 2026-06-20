@@ -33,6 +33,7 @@ param(
   [string]$GithubRepo = $env:GITHUB_REPO,
   [string]$GithubBranch = $env:GITHUB_BRANCH,
   [string]$PsqlPath = 'psql',
+  [string[]]$ExtraSqlPaths,
   [string]$OutputSqlPath,
   [switch]$GenerateOnly
 )
@@ -103,6 +104,19 @@ if (-not (Test-Path -LiteralPath $SqlPath)) {
 $resolvedSqlPath = (Resolve-Path -LiteralPath $SqlPath).Path
 $baseSql = Get-Content -LiteralPath $resolvedSqlPath -Raw -Encoding UTF8
 
+if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
+  $defaultCodeMasterSql = Join-Path $ScriptRoot '..\docs\TASK-057_code_master.sql'
+  if (Test-Path -LiteralPath $defaultCodeMasterSql) {
+    $ExtraSqlPaths = @($defaultCodeMasterSql)
+  }
+}
+
+$extraSqlBlocks = @()
+foreach ($extraPath in ($ExtraSqlPaths | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })) {
+  $resolvedExtraPath = (Resolve-Path -LiteralPath $extraPath).Path
+  $extraSqlBlocks += Get-Content -LiteralPath $resolvedExtraPath -Raw -Encoding UTF8
+}
+
 $configRows = @(
   [pscustomobject]@{ Key = 'SUPABASE_URL'; Value = $SupabaseUrl; IsSecret = $false; UseYn = $true; Description = 'Browser Supabase client bootstrap URL' },
   [pscustomobject]@{ Key = 'SUPABASE_ANON_KEY'; Value = $SupabaseAnonKey; IsSecret = $false; UseYn = $true; Description = 'Browser publishable/anon key. Access is restricted by RLS/RPC.' },
@@ -160,7 +174,7 @@ SET key_value = EXCLUDED.key_value,
 NOTIFY pgrst, 'reload schema';
 "@
 
-$combinedSql = $baseSql.TrimEnd() + "`r`n" + $appConfigPatch + "`r`n"
+$combinedSql = ($baseSql.TrimEnd(), $extraSqlBlocks, $appConfigPatch) -join "`r`n`r`n"
 $writtenOutputPath = $null
 
 if ($GenerateOnly -and [string]::IsNullOrWhiteSpace($OutputSqlPath)) {

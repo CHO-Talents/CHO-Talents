@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 구매 상품 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.50.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -21,14 +21,15 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.49.0"></script>
-  <script src="js/supabase-config.js?v=3.49.0"></script>
-  <script src="js/activity-log.js?v=3.49.0"></script>
-  <script src="js/auth.js?v=3.49.0"></script>
-  <script src="js/theme.js?v=3.49.0"></script>
-  <script src="js/page-size.js?v=3.49.0"></script>
-  <script src="js/nav.js?v=3.49.0"></script>
-  <script src="js/slack-notify.js?v=3.49.0"></script>
+  <script src="config/public-config.js?v=3.50.0"></script>
+  <script src="js/supabase-config.js?v=3.50.0"></script>
+  <script src="js/activity-log.js?v=3.50.0"></script>
+  <script src="js/codes.js?v=3.50.0"></script>
+  <script src="js/auth.js?v=3.50.0"></script>
+  <script src="js/theme.js?v=3.50.0"></script>
+  <script src="js/page-size.js?v=3.50.0"></script>
+  <script src="js/nav.js?v=3.50.0"></script>
+  <script src="js/slack-notify.js?v=3.50.0"></script>
   <script>
     initSupabase();
     let session;
@@ -64,9 +65,9 @@
     function renderMyOrders() {
       const main = document.getElementById('mainContent');
       const orders = myOrders;
-      const statusMap = { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
-      const statusColor = { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
-      const statusEmoji = { requested:'🛒', preparing:'📦', purchased:'💳', delivered:'✅' };
+      const statusMap = (typeof codeMap === 'function') ? codeMap('product_orders.status', 'value') : { requested:'구매 신청', preparing:'상품 준비', purchased:'상품 구매', delivered:'상품 지급' };
+      const statusColor = (typeof codeMap === 'function') ? codeMap('product_orders.status', 'color') : { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e' };
+      const statusEmoji = (typeof codeMap === 'function') ? codeMap('product_orders.status', 'emoji') : { requested:'🛒', preparing:'📦', purchased:'💳', delivered:'✅' };
 
       let html = `<h1 class="page-title">🛒 내 구매 상품</h1>
         <p class="page-sub">${session.displayName || session.username}님의 구매 내역입니다</p>`;
@@ -166,6 +167,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.49.0"></script>
+  <script src="js/version.js?v=3.50.0"></script>
 </body>
 </html>

@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>작업 이력 작성 룰 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>" />
-  <link rel="stylesheet" href="../css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.49.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
   <style>
     .rule-section { background: var(--admin-card); border-radius: var(--admin-radius); box-shadow: var(--admin-shadow); padding: 1.5rem; margin-bottom: 1.5rem; overflow-x: auto; }
     .rule-section h2 { font-size: 1.1rem; font-weight: 700; color: var(--admin-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
@@ -50,7 +50,7 @@
         <strong>작업 이력 (admin/audit.html):</strong> 관리 작업만 필터링한 감사 기록 — 카테고리별 필터링
       </div>
       <div class="note-box">
-        두 기능은 동일한 <code>activity_logs</code> 테이블을 사용합니다. 작업 이력은 <code>AUDIT_ACTIONS</code>에 등록된 액션만 표시합니다.
+        두 기능은 동일한 <code>activity_logs</code> 테이블을 사용합니다. 작업 이력은 기본 <code>AUDIT_ACTIONS</code>와 <code>activity_logs.action</code> 코드 마스터에 등록된 관리 액션을 표시합니다.
       </div>
       <div class="note-box">
         <strong>DB 권한 확인:</strong> 작업 이력이 비어 있고 로그도 쌓이지 않으면 <code>docs/TASK-047_activity_logs_grants.sql</code>을 적용해 <code>activity_logs</code> INSERT 권한과 RLS 정책을 복구합니다.
@@ -63,7 +63,7 @@
       <table class="rule-table">
         <thead><tr><th>기준</th><th>설명</th></tr></thead>
         <tbody>
-          <tr><td>AUDIT_ACTIONS 등록</td><td>admin/audit.html의 AUDIT_ACTIONS 객체에 키가 등록된 액션만 작업 이력에 표시됩니다</td></tr>
+          <tr><td>AUDIT_ACTIONS/코드 마스터 등록</td><td><code>admin/audit.html</code>의 기본 <code>AUDIT_ACTIONS</code> 또는 DB <code>activity_logs.action</code> 코드 그룹에 키가 등록된 액션이 작업 이력에 표시됩니다</td></tr>
           <tr><td>관리 작업 중심</td><td>사용자/부서/달란트/상품/주문 등의 CRUD 작업이 주 대상</td></tr>
           <tr><td>시스템 자동 이벤트 제외</td><td>PAGE_VIEW, JS_ERROR, PROMISE_REJECTION 등은 포함되지 않음</td></tr>
           <tr><td>실패/거부도 일부 포함</td><td>로그인 실패 등 보안 관련은 작업 이력에도 포함될 수 있음</td></tr>
@@ -188,7 +188,7 @@
         <tbody>
           <tr><td>시간</td><td><code>created_at</code></td><td>KST 변환 표시</td></tr>
           <tr><td>작업자</td><td><code>user_name</code> / <code>details._userName</code></td><td>작업 실행자 이름</td></tr>
-          <tr><td>작업 유형</td><td><code>AUDIT_ACTIONS[action].label</code></td><td>한글 라벨 + 이모지</td></tr>
+          <tr><td>작업 유형</td><td><code>AUDIT_ACTIONS[action].label</code> 또는 <code>code_items</code> 라벨</td><td>한글 라벨 + 이모지</td></tr>
           <tr><td>대상</td><td><code>details</code>에서 추출</td><td>대상 사용자명, 상품명, 변경 내역 등</td></tr>
           <tr><td>상세</td><td><code>details</code> 전체</td><td>모달에서 JSON 전체 표시 (한글 키 매핑)</td></tr>
         </tbody>
@@ -211,7 +211,7 @@
     <div class="rule-section">
       <h2>📝 참고 사항</h2>
       <div class="note-box">
-        <strong>새 작업 이력 추가 방법:</strong> 기존 <code>logInfo()</code>로 기록하되, <code>admin/audit.html</code>의 <code>AUDIT_ACTIONS</code> 객체에 해당 액션 키를 등록하면 작업 이력에 표시됩니다.
+        <strong>새 작업 이력 추가 방법:</strong> 기존 <code>logInfo()</code>로 기록하되, <code>admin/audit.html</code>의 기본 <code>AUDIT_ACTIONS</code> 또는 DB <code>activity_logs.action</code> 코드 마스터에 해당 액션 키와 라벨/카테고리를 등록하면 작업 이력에 표시됩니다.
       </div>
       <div class="note-box">
         <strong>작업 이력 조회:</strong> <a href="audit.html" style="color:var(--admin-primary);">운영 &gt; 작업 이력</a>에서 카테고리별, 날짜별, 텍스트 검색으로 조회 가능
@@ -226,12 +226,13 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.49.0"></script>
-  <script src="../js/supabase-config.js?v=3.49.0"></script>
-  <script src="../js/activity-log.js?v=3.49.0"></script>
-  <script src="../js/auth.js?v=3.49.0"></script>
-  <script src="../js/theme.js?v=3.49.0"></script>
-  <script src="../js/nav.js?v=3.49.0"></script>
+  <script src="../config/public-config.js?v=3.50.0"></script>
+  <script src="../js/supabase-config.js?v=3.50.0"></script>
+  <script src="../js/activity-log.js?v=3.50.0"></script>
+  <script src="../js/codes.js?v=3.50.0"></script>
+  <script src="../js/auth.js?v=3.50.0"></script>
+  <script src="../js/theme.js?v=3.50.0"></script>
+  <script src="../js/nav.js?v=3.50.0"></script>
   <script>
     initSupabase();
     (async () => {

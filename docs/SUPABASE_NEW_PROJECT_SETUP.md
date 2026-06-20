@@ -19,7 +19,8 @@
 1. Supabase Dashboard에서 새 프로젝트를 만든다.
 2. `docs/INITIAL_DATABASE_SETUP.sql`의 `0. Target Project Runtime Config` 값을 새 프로젝트 기준으로 바꾼다.
 3. SQL Editor에서 전체 실행한다.
-4. `admin_user / 1234`로 로그인하고 비밀번호를 바꾼다.
+4. `docs/TASK-057_code_master.sql`을 SQL Editor에서 이어서 실행한다.
+5. `admin_user / 1234`로 로그인하고 비밀번호를 바꾼다.
 
 ### PowerShell/psql
 
@@ -27,6 +28,8 @@
 . .\scripts\load-env.ps1
 .\scripts\install-supabase-database.ps1
 ```
+
+PowerShell 설치 스크립트는 기본으로 `docs/TASK-057_code_master.sql`을 함께 적용한다.
 
 SQL 파일만 생성할 수도 있다.
 
@@ -37,6 +40,8 @@ SQL 파일만 생성할 수도 있다.
   -SupabaseUrl "https://YOUR_PROJECT_REF.supabase.co" `
   -SupabaseAnonKey "YOUR_PUBLISHABLE_OR_ANON_KEY"
 ```
+
+생성된 합본 SQL에도 코드 마스터(`code_groups`, `code_items`)가 포함된다.
 
 ## Slack Edge Function
 

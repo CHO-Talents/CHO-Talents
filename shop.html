@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 상점 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.50.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -68,15 +68,16 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.49.0"></script>
-  <script src="js/supabase-config.js?v=3.49.0"></script>
-  <script src="js/activity-log.js?v=3.49.0"></script>
-  <script src="js/auth.js?v=3.49.0"></script>
-  <script src="js/theme.js?v=3.49.0"></script>
-  <script src="js/nav.js?v=3.49.0"></script>
-  <script src="js/product.js"></script>
-  <script src="js/user-mgmt.js?v=3.49.0"></script>
-  <script src="js/slack-notify.js?v=3.49.0"></script>
+  <script src="config/public-config.js?v=3.50.0"></script>
+  <script src="js/supabase-config.js?v=3.50.0"></script>
+  <script src="js/activity-log.js?v=3.50.0"></script>
+  <script src="js/codes.js?v=3.50.0"></script>
+  <script src="js/auth.js?v=3.50.0"></script>
+  <script src="js/theme.js?v=3.50.0"></script>
+  <script src="js/nav.js?v=3.50.0"></script>
+  <script src="js/product.js?v=3.50.0"></script>
+  <script src="js/user-mgmt.js?v=3.50.0"></script>
+  <script src="js/slack-notify.js?v=3.50.0"></script>
   <script>
     initSupabase();
     let currentShopTab = 'student';
@@ -135,9 +136,11 @@
 
     function updateCategoryFilter() {
       const filtered = allShopProducts.filter(p => p.target_role === currentShopTab);
-      const cats = [...new Set(filtered.map(p => p.category || '기타'))].sort();
+      const cats = [...new Set(filtered.map(p => p.category || 'etc'))].sort((a, b) =>
+        getProductCategoryLabel(a).localeCompare(getProductCategoryLabel(b), 'ko')
+      );
       const sel = document.getElementById('shopCatFilter');
-      sel.innerHTML = '<option value="">전체 카테고리</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+      sel.innerHTML = '<option value="">전체 카테고리</option>' + cats.map(c => `<option value="${c}">${getProductCategoryLabel(c)}</option>`).join('');
       document.getElementById('shopFilterArea').style.display = 'flex';
     }
 
@@ -145,8 +148,12 @@
       const catFilter = (document.getElementById('shopCatFilter') || {}).value || '';
       const searchText = ((document.getElementById('shopSearchInput') || {}).value || '').trim().toLowerCase();
       let filtered = allShopProducts.filter(p => p.target_role === currentShopTab);
-      if (catFilter) filtered = filtered.filter(p => (p.category || '기타') === catFilter);
-      if (searchText) filtered = filtered.filter(p => (p.name || '').toLowerCase().includes(searchText) || (p.category || '').toLowerCase().includes(searchText));
+      if (catFilter) filtered = filtered.filter(p => (p.category || 'etc') === catFilter);
+      if (searchText) filtered = filtered.filter(p =>
+        (p.name || '').toLowerCase().includes(searchText) ||
+        (p.category || '').toLowerCase().includes(searchText) ||
+        getProductCategoryLabel(p.category || 'etc').toLowerCase().includes(searchText)
+      );
       const area = document.getElementById('productArea');
       const label = currentShopTab === 'student' ? '학생' : '교사';
       document.getElementById('shopSub').textContent = `${label} 달란트 교환 상품입니다`;
@@ -157,10 +164,10 @@
       }
 
       const categories = {};
-      filtered.forEach(p => { const cat = p.category || '기타'; if (!categories[cat]) categories[cat] = []; categories[cat].push(p); });
+      filtered.forEach(p => { const cat = p.category || 'etc'; if (!categories[cat]) categories[cat] = []; categories[cat].push(p); });
       let html = '';
       for (const [cat, items] of Object.entries(categories)) {
-        html += `<h2 class="section-title">${cat}</h2><div class="product-grid">`;
+        html += `<h2 class="section-title">${getProductCategoryLabel(cat)}</h2><div class="product-grid">`;
         html += items.map(p => renderProductCard(p)).join('');
         html += '</div>';
       }
@@ -401,6 +408,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.49.0"></script>
+  <script src="js/version.js?v=3.50.0"></script>
 </body>
 </html>

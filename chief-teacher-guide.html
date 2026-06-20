@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>부장 교사 가이드 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.49.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.49.0" />
-  <link rel="stylesheet" href="css/guide.css?v=3.49.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.50.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.50.0" />
+  <link rel="stylesheet" href="css/guide.css?v=3.50.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -39,7 +39,7 @@
             <tr><td>달란트 반환</td><td>달란트 관리 상세 팝업에서 잘못 지급된 달란트를 사유 입력 후 반환합니다. 반환 건은 <strong>총반환</strong>에 집계되고 <strong>총사용</strong>에서 제외됩니다.</td><td>거래 ID 기준 1회만 처리됩니다.</td></tr>
             <tr><td>관리자 관리 조회</td><td>운영 권한자를 확인하고 담당 부서 범위를 점검합니다.</td><td>부장 교사는 본인보다 낮은 권한만 관리 가능하며, 일부 화면은 조회 중심입니다.</td></tr>
             <tr><td>보고서/버전</td><td>작업 보고서와 버전 이력을 확인합니다.</td><td>시스템 로그/작업 이력 상세는 관리자 권한입니다.</td></tr>
-            <tr><td>운영 룰 문서</td><td>페이지 권한 룰, 로그 작성 룰, Slack 알림 룰, 작업 이력 룰을 확인합니다.</td><td>설정 변경은 관리자 권한에서 처리합니다.</td></tr>
+            <tr><td>운영 룰 문서</td><td>페이지 권한 룰, 로그 작성 룰, Slack 알림 룰, 작업 이력 룰과 코드 마스터 기준을 확인합니다.</td><td>설정 변경은 관리자 권한에서 처리합니다.</td></tr>
           </tbody>
         </table>
       </div>
@@ -104,6 +104,7 @@
           <li>구매 담당 교사가 아닌 부장 교사는 구매 처리에서 담당 관리 부서 범위가 적용될 수 있습니다.</li>
           <li>달란트 항목 관리의 퀵 버튼 설정은 가능하지만, 항목 CRUD와 QR 관리는 전도사님 이상 권한 기준을 따릅니다.</li>
           <li>로그/작업 이력 화면 직접 조회와 페이지 접근/기능 설정 변경은 관리자 권한입니다.</li>
+          <li>권한명, 구매 상태, 상품 카테고리, 로그/작업 유형은 공통 코드 기준으로 표시됩니다. 명칭 변경은 개별 화면이 아니라 코드 마스터 기준을 확인합니다.</li>
         </ul>
       </div>
     </section>
@@ -114,12 +115,13 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.49.0"></script>
-  <script src="js/supabase-config.js?v=3.49.0"></script>
-  <script src="js/activity-log.js?v=3.49.0"></script>
-  <script src="js/auth.js?v=3.49.0"></script>
-  <script src="js/theme.js?v=3.49.0"></script>
-  <script src="js/nav.js?v=3.49.0"></script>
+  <script src="config/public-config.js?v=3.50.0"></script>
+  <script src="js/supabase-config.js?v=3.50.0"></script>
+  <script src="js/activity-log.js?v=3.50.0"></script>
+  <script src="js/codes.js?v=3.50.0"></script>
+  <script src="js/auth.js?v=3.50.0"></script>
+  <script src="js/theme.js?v=3.50.0"></script>
+  <script src="js/nav.js?v=3.50.0"></script>
   <script>
     initSupabase();
     (async () => {
@@ -138,6 +140,6 @@
       autoLogPageView();
     })();
   </script>
-  <script src="js/version.js?v=3.49.0"></script>
+  <script src="js/version.js?v=3.50.0"></script>
 </body>
 </html>
