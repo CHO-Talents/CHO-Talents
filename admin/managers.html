@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>관리자 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.51.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.51.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -87,16 +87,16 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.50.0"></script>
-  <script src="../js/supabase-config.js?v=3.50.0"></script>
-  <script src="../js/activity-log.js?v=3.50.0"></script>
-  <script src="../js/codes.js?v=3.50.0"></script>
-  <script src="../js/auth.js?v=3.50.0"></script>
-  <script src="../js/theme.js?v=3.50.0"></script>
-  <script src="../js/nav.js?v=3.50.0"></script>
-  <script src="../js/page-size.js?v=3.50.0"></script>
-  <script src="../js/user-mgmt.js?v=3.50.0"></script>
-  <script src="../js/table-sort.js?v=3.50.0"></script>
+  <script src="../config/public-config.js?v=3.51.0"></script>
+  <script src="../js/supabase-config.js?v=3.51.0"></script>
+  <script src="../js/activity-log.js?v=3.51.0"></script>
+  <script src="../js/codes.js?v=3.51.0"></script>
+  <script src="../js/auth.js?v=3.51.0"></script>
+  <script src="../js/theme.js?v=3.51.0"></script>
+  <script src="../js/nav.js?v=3.51.0"></script>
+  <script src="../js/page-size.js?v=3.51.0"></script>
+  <script src="../js/user-mgmt.js?v=3.51.0"></script>
+  <script src="../js/table-sort.js?v=3.51.0"></script>
   <script>
     initSupabase();
     let session;
@@ -215,13 +215,26 @@
     const _isAdmin = () => isAdminLevel(session);
 
     function _mgrDeptName(id) { const d = deptList.find(d => d.id === id); return d ? d.name : '-'; }
+    function sortManagerList(list) {
+      return list.sort((a, b) => {
+        const rA = getPermRank(a.permission_level, a.is_super_admin);
+        const rB = getPermRank(b.permission_level, b.is_super_admin);
+        if (rA !== rB) return rB - rA;
+        const dCmp = (a._ownDeptName || '').localeCompare(b._ownDeptName || '', 'ko');
+        if (dCmp !== 0) return dCmp;
+        const nA = a.display_name || a.username || '';
+        const nB = b.display_name || b.username || '';
+        return nA.localeCompare(nB, 'ko');
+      });
+    }
 
     let _currentMgrList = [];
     function renderManagers() {
       let list = currentFilter === 'all' ? allManagers : allManagers.filter(u => managerMatchesFilter(u, currentFilter));
       if (currentDeptFilter) list = list.filter(u => u.department_id === currentDeptFilter || u.managed_dept_id === currentDeptFilter);
-      list = sortUserList([...list], _mgrDeptName);
+      list = [...list];
       list.forEach(u => { u._ownDeptName = _mgrDeptName(u.department_id); u._mgrDeptName = _mgrDeptName(u.managed_dept_id); });
+      list = sortManagerList(list);
       _currentMgrList = list;
       const tbody = document.getElementById('mgrList');
       document.getElementById('tableTitle').textContent = `관리자 목록 (${list.length}명)`;
@@ -445,6 +458,6 @@
 
     document.getElementById('mgrModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.50.0"></script>
+  <script src="../js/version.js?v=3.51.0"></script>
 </body>
 </html>

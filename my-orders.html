@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>내 구매 상품 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.50.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.50.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.51.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.51.0" />
 </head>
 <body class="page-body">
   <div id="nav-container"></div>
@@ -21,20 +21,21 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.50.0"></script>
-  <script src="js/supabase-config.js?v=3.50.0"></script>
-  <script src="js/activity-log.js?v=3.50.0"></script>
-  <script src="js/codes.js?v=3.50.0"></script>
-  <script src="js/auth.js?v=3.50.0"></script>
-  <script src="js/theme.js?v=3.50.0"></script>
-  <script src="js/page-size.js?v=3.50.0"></script>
-  <script src="js/nav.js?v=3.50.0"></script>
-  <script src="js/slack-notify.js?v=3.50.0"></script>
+  <script src="config/public-config.js?v=3.51.0"></script>
+  <script src="js/supabase-config.js?v=3.51.0"></script>
+  <script src="js/activity-log.js?v=3.51.0"></script>
+  <script src="js/codes.js?v=3.51.0"></script>
+  <script src="js/auth.js?v=3.51.0"></script>
+  <script src="js/theme.js?v=3.51.0"></script>
+  <script src="js/page-size.js?v=3.51.0"></script>
+  <script src="js/nav.js?v=3.51.0"></script>
+  <script src="js/slack-notify.js?v=3.51.0"></script>
   <script>
     initSupabase();
     let session;
     let myOrders = [];
-    function getMyOrderPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    let myOrderPageSize = null;
+    function getMyOrderPageSize() { return myOrderPageSize || (window.innerWidth <= 768 ? 10 : 20); }
     let myOrderPage = 1;
 
     function formatKSTShort(isoStr) {
@@ -50,6 +51,7 @@
       navUpdateAuth(session);
       autoLogPageView();
       updateNavOrderBadge();
+      myOrderPageSize = await loadPageSize('my_orders', window.innerWidth <= 768 ? 10 : 20);
       await loadOrders();
     })();
 
@@ -82,7 +84,7 @@
         const pageOrders = orders.slice(startIdx, startIdx + pageSize);
 
         html += `<div class="data-table-wrap">
-          <div class="data-table-header"><div class="data-table-title">구매 내역 (${orders.length}건)</div></div>
+          <div class="data-table-header"><div class="data-table-title">구매 내역 (${orders.length}건)</div><span id="myOrderPageSizeWrap" style="margin-left:auto;"></span></div>
           <table class="data-table">
             <thead><tr><th>날짜</th><th>상품명</th><th>가격</th><th>현재 상태</th></tr></thead>
             <tbody>` + pageOrders.map(o => `<tr>
@@ -108,10 +110,19 @@
       const wrap = document.getElementById('myOrderPaging');
       if (!wrap) return;
       wrap.innerHTML = buildPagingButtons(myOrderPage, totalPages, 'goMyOrderPage(__PAGE__)');
+      const sizeWrap = document.getElementById('myOrderPageSizeWrap');
+      if (sizeWrap) sizeWrap.innerHTML = renderPageSizeSelector('my_orders', getMyOrderPageSize(), 'onMyOrderPageSizeChange(this.value)');
     }
 
     function goMyOrderPage(p) {
       myOrderPage = p;
+      renderMyOrders();
+    }
+
+    async function onMyOrderPageSizeChange(val) {
+      myOrderPageSize = parseInt(val, 10) || 20;
+      myOrderPage = 1;
+      await savePageSize('my_orders', myOrderPageSize);
       renderMyOrders();
     }
 
@@ -167,6 +178,6 @@
       }
     }
   </script>
-  <script src="js/version.js?v=3.50.0"></script>
+  <script src="js/version.js?v=3.51.0"></script>
 </body>
 </html>

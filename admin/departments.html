@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>부서 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.51.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.51.0" />
 </head>
 <body class="admin-body">
   <div id="nav-container"></div>
@@ -16,12 +16,16 @@
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">부서 목록</div>
-        <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 부서 등록</button>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-left:auto;">
+          <span id="deptPageSizeWrap"></span>
+          <button class="filter-btn" style="background:var(--admin-primary);color:#fff;" onclick="openAddModal()">+ 부서 등록</button>
+        </div>
       </div>
       <table class="admin-table">
         <thead><tr><th>부서명</th><th>설명</th><th>반</th><th>전체</th><th>교사</th><th>학생</th><th>관리</th></tr></thead>
         <tbody id="deptList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
+      <div id="deptPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -53,21 +57,24 @@
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:120px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.50.0"></script>
-  <script src="../js/supabase-config.js?v=3.50.0"></script>
-  <script src="../js/activity-log.js?v=3.50.0"></script>
-  <script src="../js/codes.js?v=3.50.0"></script>
-  <script src="../js/auth.js?v=3.50.0"></script>
-  <script src="../js/theme.js?v=3.50.0"></script>
-  <script src="../js/nav.js?v=3.50.0"></script>
-  <script src="../js/user-mgmt.js?v=3.50.0"></script>
-  <script src="../js/table-sort.js?v=3.50.0"></script>
+  <script src="../config/public-config.js?v=3.51.0"></script>
+  <script src="../js/supabase-config.js?v=3.51.0"></script>
+  <script src="../js/activity-log.js?v=3.51.0"></script>
+  <script src="../js/codes.js?v=3.51.0"></script>
+  <script src="../js/auth.js?v=3.51.0"></script>
+  <script src="../js/theme.js?v=3.51.0"></script>
+  <script src="../js/nav.js?v=3.51.0"></script>
+  <script src="../js/page-size.js?v=3.51.0"></script>
+  <script src="../js/user-mgmt.js?v=3.51.0"></script>
+  <script src="../js/table-sort.js?v=3.51.0"></script>
   <script>
     initSupabase();
     let session;
     let editingId = null;
     let allUsers = [];
     let allDeptData = [];
+    let deptPage = 1;
+    let deptPageSize = null;
     (async () => {
       await navInit();
       session = await initPage(60, '../login.html');
@@ -77,6 +84,7 @@
       updatePendingBadge();
       updateNavOrderBadge();
       updateBadge();
+      deptPageSize = await loadPageSize('departments', window.innerWidth <= 768 ? 10 : 20);
       const myRank = session.permissionRank || 0;
       if (myRank < 90) {
         document.querySelector('.filter-btn[onclick="openAddModal()"]').style.display = 'none';
@@ -103,18 +111,38 @@
         filteredDepts = myManagedDept ? filteredDepts.filter(d => d.id === myManagedDept) : [];
       }
 
-      const tbody = document.getElementById('deptList');
-      document.getElementById('tableTitle').textContent = `부서 목록 (${filteredDepts.length}개)`;
+      allDeptData = (filteredDepts || []).sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ko'));
+      renderDeptTable();
+    }
 
-      if (filteredDepts.length === 0) {
+    function getDeptPageSize() {
+      return deptPageSize || (window.innerWidth <= 768 ? 10 : 20);
+    }
+
+    function renderDeptTable() {
+      const tbody = document.getElementById('deptList');
+      const list = allDeptData || [];
+      document.getElementById('tableTitle').textContent = `부서 목록 (${list.length}개)`;
+
+      const sizeWrap = document.getElementById('deptPageSizeWrap');
+      if (sizeWrap) sizeWrap.innerHTML = renderPageSizeSelector('departments', getDeptPageSize(), 'onDeptPageSizeChange(this.value)');
+
+      if (list.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" class="empty-state">등록된 부서가 없습니다.</td></tr>';
-        allDeptData = [];
+        document.getElementById('deptPaging').innerHTML = '';
         return;
       }
 
-      allDeptData = filteredDepts;
-      tbody.innerHTML = filteredDepts.map(d => {
-        const deptUsers = (users||[]).filter(u => u.department_id === d.id);
+      const pageSize = getDeptPageSize();
+      const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
+      if (deptPage > totalPages) deptPage = totalPages;
+      const startIdx = (deptPage - 1) * pageSize;
+      const pageList = list.slice(startIdx, startIdx + pageSize);
+      const myRank = session.permissionRank || 0;
+      const myManagedDept = session.managedDeptId || session.departmentId;
+
+      tbody.innerHTML = pageList.map(d => {
+        const deptUsers = (allUsers || []).filter(u => u.department_id === d.id);
         const teachers = deptUsers.filter(u => u.user_type === 'teacher');
         const students = deptUsers.filter(u => u.user_type === 'student');
         const classLabel = d.class_count > 0 ? d.class_count + '개' : '없음';
@@ -138,6 +166,19 @@
           </td>
         </tr>`;
       }).join('');
+      document.getElementById('deptPaging').innerHTML = buildPagingButtons(deptPage, totalPages, 'goDeptPage(__PAGE__)');
+    }
+
+    function goDeptPage(page) {
+      deptPage = page;
+      renderDeptTable();
+    }
+
+    async function onDeptPageSizeChange(val) {
+      deptPageSize = parseInt(val, 10) || 20;
+      deptPage = 1;
+      await savePageSize('departments', deptPageSize);
+      renderDeptTable();
     }
 
     function toggleMgmt(e,btn){e.stopPropagation();document.querySelectorAll('.mgmt-menu.show').forEach(m=>{if(m!==btn.nextElementSibling)m.classList.remove('show');});btn.nextElementSibling.classList.toggle('show');}
@@ -256,6 +297,6 @@
 
     document.getElementById('deptModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
-  <script src="../js/version.js?v=3.50.0"></script>
+  <script src="../js/version.js?v=3.51.0"></script>
 </body>
 </html>

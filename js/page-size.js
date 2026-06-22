@@ -60,6 +60,8 @@
     if (tot <= 7) {
       pages = [];
       for (var i = 1; i <= tot; i++) pages.push(i);
+    } else if (tot === 8 && cur === 4) {
+      pages = [1, '…', 3, 4, 5, 6, 7, 8];
     } else {
       var s = cur - 2, e = cur + 2;
       if (s < 2) { e += (2 - s); s = 2; }

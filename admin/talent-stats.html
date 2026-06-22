@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 통계 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.51.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.51.0" />
   <style>
     .stats-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.8rem; margin-bottom: 1.5rem; }
     .stat-card { background: linear-gradient(135deg, var(--t-subtle-surface, #f8f9fa) 0%, var(--t-card, #fff) 100%); border: 1px solid var(--t-border, #e9ecef); border-radius: 14px; padding: 1rem 1.2rem; text-align: center; transition: transform 0.15s, box-shadow 0.15s; }
@@ -113,15 +113,15 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../config/public-config.js?v=3.50.0"></script>
-  <script src="../js/supabase-config.js?v=3.50.0"></script>
-  <script src="../js/activity-log.js?v=3.50.0"></script>
-  <script src="../js/codes.js?v=3.50.0"></script>
-  <script src="../js/auth.js?v=3.50.0"></script>
-  <script src="../js/theme.js?v=3.50.0"></script>
-  <script src="../js/nav.js?v=3.50.0"></script>
-  <script src="../js/page-size.js?v=3.50.0"></script>
-  <script src="../js/table-sort.js?v=3.50.0"></script>
+  <script src="../config/public-config.js?v=3.51.0"></script>
+  <script src="../js/supabase-config.js?v=3.51.0"></script>
+  <script src="../js/activity-log.js?v=3.51.0"></script>
+  <script src="../js/codes.js?v=3.51.0"></script>
+  <script src="../js/auth.js?v=3.51.0"></script>
+  <script src="../js/theme.js?v=3.51.0"></script>
+  <script src="../js/nav.js?v=3.51.0"></script>
+  <script src="../js/page-size.js?v=3.51.0"></script>
+  <script src="../js/table-sort.js?v=3.51.0"></script>
   <script>
     initSupabase();
     let session, allTxns = [], allProfiles = [], allDepts = [];
@@ -173,13 +173,64 @@
     }
     setTimeout(styleTypeRadio, 0);
 
+    function isReturnTxn(t) {
+      return t && t.type === 'use' && String(t.description || '').startsWith('반환:');
+    }
+
+    function extractReturnedTxnId(desc) {
+      const m = String(desc || '').match(/\[([0-9a-f-]{36})\]/i);
+      return m ? m[1] : null;
+    }
+
+    function normalizeReturnDesc(desc) {
+      return String(desc || '')
+        .replace(/^반환:\s*/, '')
+        .replace(/^\[[0-9a-f-]{36}\]\s*/i, '')
+        .replace(/^반환:\s*/, '')
+        .trim();
+    }
+
+    function applyReturnAdjustments(earnTxns, returnTxns) {
+      const rows = (earnTxns || []).map(t => ({ ...t, amount: Number(t.amount || 0) }));
+      const byId = {};
+      const legacyBuckets = {};
+      rows.forEach(t => {
+        if (t.id) byId[t.id] = t;
+        const key = [t.user_id || '', Number(t.amount || 0), t.description || ''].join('|');
+        if (!legacyBuckets[key]) legacyBuckets[key] = [];
+        legacyBuckets[key].push(t);
+      });
+
+      (returnTxns || []).forEach(r => {
+        const returnAmount = Number(r.amount || 0);
+        if (returnAmount <= 0) return;
+        const txnId = extractReturnedTxnId(r.description);
+        const target = txnId ? byId[txnId] : null;
+        if (target) {
+          target.amount = Math.max(0, Number(target.amount || 0) - returnAmount);
+          return;
+        }
+
+        const key = [r.user_id || '', returnAmount, normalizeReturnDesc(r.description)].join('|');
+        const candidates = legacyBuckets[key] || [];
+        const legacyTarget = candidates.find(t => Number(t.amount || 0) > 0);
+        if (legacyTarget) legacyTarget.amount = Math.max(0, Number(legacyTarget.amount || 0) - returnAmount);
+      });
+
+      return rows.filter(t => Number(t.amount || 0) > 0);
+    }
+
     async function loadData() {
       const [txnRes, profRes, deptRes] = await Promise.all([
-        _sb.from('talent_transactions').select('user_id, amount, description, talent_item_id, created_at').eq('type', 'earn'),
+        _sb.from('talent_transactions').select('id, user_id, type, amount, description, talent_item_id, created_at').in('type', ['earn', 'use']),
         _sb.from('profiles').select('id, display_name, username, user_type, department_id, class_number, is_super_admin'),
         _sb.from('departments').select('id, name')
       ]);
-      allTxns = txnRes.data || [];
+      const rawTxns = txnRes.data || [];
+      allTxns = applyReturnAdjustments(
+        rawTxns.filter(t => t.type === 'earn'),
+        rawTxns.filter(isReturnTxn)
+      );
       allProfiles = profRes.data || [];
       if (!session.isSuperAdmin) {
         const saIds = new Set(allProfiles.filter(p => p.is_super_admin).map(p => p.id));
@@ -282,7 +333,12 @@
         if (!byDept[dName]) byDept[dName] = { amount: 0, count: 0, users: new Set() };
         byDept[dName].amount += t.amount || 0; byDept[dName].count++; byDept[dName].users.add(t.user_id);
       });
-      const sorted = Object.entries(byDept).sort((a, b) => b[1].amount - a[1].amount);
+      const sorted = Object.entries(byDept).sort((a, b) =>
+        (b[1].amount - a[1].amount) ||
+        (a[1].users.size - b[1].users.size) ||
+        (a[1].count - b[1].count) ||
+        a[0].localeCompare(b[0], 'ko')
+      );
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
       const totalUsers = new Set(txns.map(t => t.user_id)).size;
 
@@ -370,11 +426,10 @@
         byUser[key].items[desc] = (byUser[key].items[desc] || 0) + (t.amount || 0);
       });
       const allUsers = Object.values(byUser);
-      const _permRank = { admin:100, evangelist:90, chief:80, purchase_teacher:70, dept_teacher:60, teacher:40, student:20 };
       const _sortStatUsers = (arr) => arr.sort((a, b) => {
+        if (a.amount !== b.amount) return b.amount - a.amount;
+        if (a.count !== b.count) return a.count - b.count;
         const d = a.dept.localeCompare(b.dept, 'ko'); if (d !== 0) return d;
-        if (a.classNum !== b.classNum) return a.classNum - b.classNum;
-        const pr = (_permRank[b.permLevel]||0) - (_permRank[a.permLevel]||0); if (pr !== 0) return pr;
         return a.name.localeCompare(b.name, 'ko');
       });
       const teachers = _sortStatUsers(allUsers.filter(u => u.type === 'teacher'));
@@ -527,6 +582,6 @@
     document.getElementById('deptDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeDeptDetailModal(); });
     document.getElementById('userDetailModal').addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) closeUserDetailModal(); });
   </script>
-  <script src="../js/version.js?v=3.50.0"></script>
+  <script src="../js/version.js?v=3.51.0"></script>
 </body>
 </html>
