@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.50.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.50.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.51.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.51.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
@@ -190,7 +190,9 @@
         </div>
         <div id="validityDesignated" class="period-row">
           <input type="date" id="qrValidDate" class="form-input" style="max-width:200px;" />
-          <span style="font-size:0.78rem;color:var(--admin-text-muted);margin-left:0.3rem;">(해당 일자 00:00 ~ 23:59 유효)</span>
+          <input type="time" id="qrValidStartTime" class="form-input" style="max-width:120px;" value="00:00" />
+          <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
+          <input type="time" id="qrValidEndTime" class="form-input" style="max-width:120px;" value="23:59" />
         </div>
         <div id="validityPeriod" class="period-row" style="display:none;">
           <input type="datetime-local" id="qrValidFrom" class="form-input" />
@@ -217,8 +219,12 @@
             </div>
             <div>
               <select id="qrLocationRadius" class="form-input" style="width:auto;">
-                <option value="500">500m</option>
-                <option value="1000" selected>1km</option>
+                <option value="100">100m</option>
+                <option value="200">200m</option>
+                <option value="300">300m</option>
+                <option value="400">400m</option>
+                <option value="500" selected>500m</option>
+                <option value="1000">1km</option>
                 <option value="1500">1.5km</option>
                 <option value="2000">2km</option>
                 <option value="2500">2.5km</option>
@@ -245,7 +251,8 @@
     <div class="qr-tabs">
       <button class="filter-btn active" id="tabActive" onclick="switchTab('active')">활성 코드</button>
       <button class="filter-btn" id="tabAll" onclick="switchTab('all')">전체</button>
-      <span id="qrCount" style="margin-left:auto;font-size:0.82rem;color:var(--admin-text-muted);"></span>
+      <span id="qrPageSizeWrap" style="margin-left:auto;"></span>
+      <span id="qrCount" style="font-size:0.82rem;color:var(--admin-text-muted);"></span>
     </div>
     <div class="filter-bar">
       <input type="text" id="qrSearchInput" placeholder="🔍 검색 (설명, 코드)" oninput="onQRFilterChange()" />
@@ -337,6 +344,9 @@
           </div>
           <div id="editValidityDesignated" class="period-row">
             <input type="date" id="editValidDate" class="form-input" style="max-width:200px;" />
+            <input type="time" id="editValidStartTime" class="form-input" style="max-width:120px;" value="00:00" />
+            <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
+            <input type="time" id="editValidEndTime" class="form-input" style="max-width:120px;" value="23:59" />
           </div>
           <div id="editValidityPeriod" class="period-row" style="display:none;">
             <input type="datetime-local" id="editValidFrom" class="form-input" />
@@ -398,8 +408,12 @@
             <div style="display:flex;gap:0.4rem;align-items:center;flex-wrap:wrap;">
               <input type="text" id="editLocationName" class="form-input" placeholder="선택된 주소" oninput="clearLocationCoordsFor('edit')" style="flex:1;" />
               <select id="editLocationRadius" class="form-input" style="width:auto;">
-                <option value="500">500m</option>
-                <option value="1000" selected>1km</option>
+                <option value="100">100m</option>
+                <option value="200">200m</option>
+                <option value="300">300m</option>
+                <option value="400">400m</option>
+                <option value="500" selected>500m</option>
+                <option value="1000">1km</option>
                 <option value="1500">1.5km</option>
                 <option value="2000">2km</option>
                 <option value="2500">2.5km</option>
@@ -437,19 +451,20 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../config/public-config.js?v=3.50.0"></script>
-  <script src="../js/supabase-config.js?v=3.50.0"></script>
-  <script src="../js/activity-log.js?v=3.50.0"></script>
-  <script src="../js/codes.js?v=3.50.0"></script>
-  <script src="../js/auth.js?v=3.50.0"></script>
-  <script src="../js/theme.js?v=3.50.0"></script>
-  <script src="../js/page-size.js?v=3.50.0"></script>
-  <script src="../js/nav.js?v=3.50.0"></script>
-  <script src="../js/talent.js?v=3.50.0"></script>
+  <script src="../config/public-config.js?v=3.51.0"></script>
+  <script src="../js/supabase-config.js?v=3.51.0"></script>
+  <script src="../js/activity-log.js?v=3.51.0"></script>
+  <script src="../js/codes.js?v=3.51.0"></script>
+  <script src="../js/auth.js?v=3.51.0"></script>
+  <script src="../js/theme.js?v=3.51.0"></script>
+  <script src="../js/page-size.js?v=3.51.0"></script>
+  <script src="../js/nav.js?v=3.51.0"></script>
+  <script src="../js/talent.js?v=3.51.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
-    function getQRPageSize() { return window.innerWidth <= 768 ? 10 : 20; }
+    let qrPageSize = null;
+    function getQRPageSize() { return qrPageSize || (window.innerWidth <= 768 ? 10 : 20); }
     let qrListPage = 1;
     let talentItems = [];
     let isAdmin = false;
@@ -466,6 +481,7 @@
       updateNavOrderBadge();
       updateLogBadge();
       isAdmin = (session.permissionRank || 0) >= 100;
+      qrPageSize = await loadPageSize('qr_list', window.innerWidth <= 768 ? 10 : 20);
       initDefaults();
       initQRDateFilter();
       await loadTalentItems();
@@ -711,6 +727,8 @@
 
     function initDefaults() {
       document.getElementById('qrValidDate').value = toDateStr(nowKST());
+      document.getElementById('qrValidStartTime').value = '00:00';
+      document.getElementById('qrValidEndTime').value = '23:59';
       const now = nowKST();
       const later = new Date(now.getTime() + 3600000);
       document.getElementById('qrValidFrom').value = toLocalInput(now);
@@ -759,7 +777,13 @@
       let validFrom = null, validTo = null;
       if (validityType === 'designated') {
         const d = document.getElementById(isCreate ? 'qrValidDate' : 'editValidDate').value;
-        if (d) { validFrom = d + 'T00:00:00'; validTo = d + 'T23:59:59'; }
+        const startTime = document.getElementById(isCreate ? 'qrValidStartTime' : 'editValidStartTime').value || '00:00';
+        const endTime = document.getElementById(isCreate ? 'qrValidEndTime' : 'editValidEndTime').value || '23:59';
+        if (d) {
+          if (startTime > endTime) return { error: '유효 시간 시작은 종료보다 늦을 수 없습니다.' };
+          validFrom = d + 'T' + startTime + ':00';
+          validTo = d + 'T' + endTime + ':59';
+        }
       } else if (validityType === 'period') {
         validFrom = document.getElementById(isCreate ? 'qrValidFrom' : 'editValidFrom').value || null;
         validTo = document.getElementById(isCreate ? 'qrValidTo' : 'editValidTo').value || null;
@@ -772,7 +796,7 @@
         if (!locationLat || !locationLng || isNaN(locationLat) || isNaN(locationLng))
           return { error: '위치 제한이 "특정 위치"인 경우 주소를 검색하여 선택해야 합니다.\n위도/경도 값이 없으면 QR 코드를 생성할 수 없습니다.' };
         locationName = document.getElementById(locPrefix + 'LocationName').value;
-        locationRadius = parseInt(document.getElementById(locPrefix + 'LocationRadius').value) || 1000;
+        locationRadius = parseInt(document.getElementById(locPrefix + 'LocationRadius').value) || 500;
       }
 
       let repeatType = 'none', repeatDays = null, repeatWeeks = null;
@@ -1057,6 +1081,8 @@
       let items = currentTab === 'active' ? allQR.filter(q => q.is_active) : allQR;
       items = applyQRFilters(items);
       document.getElementById('qrCount').textContent = items.length + '개';
+      const sizeWrap = document.getElementById('qrPageSizeWrap');
+      if (sizeWrap) sizeWrap.innerHTML = renderPageSizeSelector('qr_list', getQRPageSize(), 'onQRListPageSizeChange(this.value)');
       if (items.length === 0) {
         list.innerHTML = '<div style="text-align:center;color:var(--admin-text-muted);padding:2rem;">QR 코드가 없습니다.</div>';
         document.getElementById('qrListPaging').innerHTML = '';
@@ -1110,8 +1136,16 @@
 
     function renderQRPaging(totalPages) {
       document.getElementById('qrListPaging').innerHTML = buildPagingButtons(qrListPage, totalPages, 'goQRPage(__PAGE__)');
+      const sizeWrap = document.getElementById('qrPageSizeWrap');
+      if (sizeWrap) sizeWrap.innerHTML = renderPageSizeSelector('qr_list', getQRPageSize(), 'onQRListPageSizeChange(this.value)');
     }
     function goQRPage(p) { qrListPage = p; renderQRList(); }
+    async function onQRListPageSizeChange(val) {
+      qrPageSize = parseInt(val, 10) || 20;
+      await savePageSize('qr_list', qrPageSize);
+      qrListPage = 1;
+      renderQRList();
+    }
 
     /* ── Copy / Print ── */
     function copyCode(code) {
@@ -1243,6 +1277,8 @@
       const q = allQR.find(x => x.id === id);
       if (!q) return;
       document.getElementById('editId').value = id;
+      document.getElementById('editValidStartTime').value = '00:00';
+      document.getElementById('editValidEndTime').value = '23:59';
 
       const tt = q.target_type || 'student';
       document.querySelector('input[name="editTargetType"][value="' + tt + '"]').checked = true;
@@ -1271,9 +1307,11 @@
         document.querySelector('input[name="editValidityType"][value="unlimited"]').checked = true;
       } else if (q.valid_from && q.valid_until) {
         const f = new Date(q.valid_from), u = new Date(q.valid_until);
-        if (f.toDateString() === u.toDateString() && f.getHours() === 0 && f.getMinutes() === 0 && u.getHours() === 23 && u.getMinutes() === 59) {
+        if (f.toDateString() === u.toDateString()) {
           document.querySelector('input[name="editValidityType"][value="designated"]').checked = true;
           document.getElementById('editValidDate').value = toDateStr(f);
+          document.getElementById('editValidStartTime').value = String(f.getHours()).padStart(2,'0') + ':' + String(f.getMinutes()).padStart(2,'0');
+          document.getElementById('editValidEndTime').value = String(u.getHours()).padStart(2,'0') + ':' + String(u.getMinutes()).padStart(2,'0');
         } else {
           document.querySelector('input[name="editValidityType"][value="period"]').checked = true;
           document.getElementById('editValidFrom').value = toLocalInput(f);
@@ -1316,7 +1354,7 @@
         document.getElementById('editLocationName').value = q.location_name || '';
         document.getElementById('editLocationLat').value = q.location_lat;
         document.getElementById('editLocationLng').value = q.location_lng;
-        document.getElementById('editLocationRadius').value = q.location_radius || 1000;
+        document.getElementById('editLocationRadius').value = q.location_radius || 500;
       } else {
         document.querySelector('input[name="editLocationType"][value="none"]').checked = true;
         document.getElementById('editLocationName').value = '';
@@ -1336,6 +1374,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.50.0"></script>
+  <script src="../js/version.js?v=3.51.0"></script>
 </body>
 </html>

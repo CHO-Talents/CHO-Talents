@@ -23,40 +23,9 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
 -- ============================================================
 -- 0. Target Project Runtime Config
 -- ============================================================
--- 새 Supabase 프로젝트에 실행하기 전에 아래 공개 설정값을 새 프로젝트 기준으로 수정하세요.
+-- 새 Supabase 프로젝트에 실행하기 전에 파일 하단의
+-- "공개 런타임 설정과 비밀 참조값" VALUES 블록을 새 프로젝트 기준으로 수정하세요.
 -- 비밀 토큰 원문은 넣지 말고 env:... 참조값만 유지합니다.
-
-CREATE TEMP TABLE cho_install_runtime_config (
-  env text NOT NULL,
-  key_name text NOT NULL,
-  key_value text,
-  is_secret boolean NOT NULL DEFAULT false,
-  use_yn boolean NOT NULL DEFAULT true,
-  description text
-) ON COMMIT DROP;
-
-INSERT INTO cho_install_runtime_config (env, key_name, key_value, is_secret, use_yn, description)
-VALUES
-  ('production', 'SUPABASE_URL', 'https://YOUR_PROJECT_REF.supabase.co', false, true, '브라우저 Supabase 클라이언트 부트스트랩 URL'),
-  ('production', 'SUPABASE_ANON_KEY', 'YOUR_PUBLISHABLE_OR_ANON_KEY', false, true, '브라우저 공개 publishable/anon key. RLS/RPC로 권한 제한'),
-  ('production', 'SUPABASE_AUTH_EMAIL_DOMAIN', '@cho-talents.app', false, true, '아이디 로그인용 내부 이메일 도메인'),
-  ('production', 'KAKAO_MAP_KEY', 'YOUR_KAKAO_MAP_JAVASCRIPT_KEY', false, true, '카카오 지도 JavaScript 공개 키'),
-  ('production', 'GITHUB_OWNER', 'CHO-Talents', false, true, 'GitHub 저장소 owner 메타데이터'),
-  ('production', 'GITHUB_REPO', 'CHO-Talents', false, true, 'GitHub 저장소 이름 메타데이터'),
-  ('production', 'GITHUB_BRANCH', 'develop', false, true, '기본 배포/형상관리 브랜치 메타데이터'),
-  ('production', 'GITHUB_PAT', 'env:GITHUB_PAT', true, false, '비밀 원문 저장 금지. 로컬 .env.local 또는 Edge Function 환경변수에 저장'),
-  ('production', 'SUPABASE_ACCESS_TOKEN', 'env:SUPABASE_ACCESS_TOKEN', true, false, '비밀 원문 저장 금지. Supabase CLI/Management API 실행 환경변수에 저장'),
-  ('production', 'SUPABASE_SERVICE_ROLE_KEY', 'env:SUPABASE_SERVICE_ROLE_KEY', true, false, '서버 전용 키. Edge Function/서버 환경변수 또는 Supabase Vault에 저장'),
-  ('production', 'SUPABASE_DB_CONNECTION_STRING', 'env:SUPABASE_DB_CONNECTION_STRING', true, false, 'DB 관리/마이그레이션 전용. 로컬/CI 비밀 저장소에서만 사용'),
-  ('production', 'SLACK_WEBHOOK_PART1', 'env:SLACK_WEBHOOK_PART1', true, false, 'Slack 1부 채널 Webhook. Edge Function Secret에 원문 저장'),
-  ('production', 'SLACK_WEBHOOK_PART2', 'env:SLACK_WEBHOOK_PART2', true, false, 'Slack 2부 채널 Webhook. Edge Function Secret에 원문 저장'),
-  ('production', 'SLACK_WEBHOOK_PART3', 'env:SLACK_WEBHOOK_PART3', true, false, 'Slack 3부 채널 Webhook. Edge Function Secret에 원문 저장'),
-  ('production', 'SLACK_WEBHOOK_PART4', 'env:SLACK_WEBHOOK_PART4', true, false, 'Slack 4부 채널 Webhook. Edge Function Secret에 원문 저장'),
-  ('production', 'SLACK_WEBHOOK_PART5', 'env:SLACK_WEBHOOK_PART5', true, false, 'Slack 5부 채널 Webhook. Edge Function Secret에 원문 저장'),
-  ('production', 'SLACK_WEBHOOK_WORSHIP', 'env:SLACK_WEBHOOK_WORSHIP', true, false, 'Slack 예배부 채널 Webhook. Edge Function Secret에 원문 저장'),
-  ('production', 'SLACK_WEBHOOK_PRODUCT_MANAGEMENT', 'env:SLACK_WEBHOOK_PRODUCT_MANAGEMENT', true, false, 'Slack 상품 관리 채널 Webhook. Edge Function Secret에 원문 저장'),
-  ('production', 'SLACK_WEBHOOK_OPERATIONS', 'env:SLACK_WEBHOOK_OPERATIONS', true, false, 'Slack 운영 로그 채널 Webhook. Edge Function Secret에 원문 저장'),
-  ('production', 'SLACK_WEBHOOK_ANSWER', 'env:SLACK_WEBHOOK_ANSWER', true, false, 'Slack Q&A 채널 Webhook. Edge Function Secret에 원문 저장');
 
 -- ============================================================
 -- 1. Core Tables
@@ -335,7 +304,7 @@ CREATE TABLE IF NOT EXISTS public.talent_qr_scans (
 
 CREATE TABLE IF NOT EXISTS public.app_config (
   id uuid PRIMARY KEY DEFAULT extensions.gen_random_uuid(),
-  env text NOT NULL DEFAULT 'production',
+  env text NOT NULL DEFAULT 'PROD',
   key_name text NOT NULL,
   key_value text,
   is_secret boolean NOT NULL DEFAULT false,
@@ -1260,7 +1229,7 @@ BEGIN
 END;
 $$;
 
-CREATE OR REPLACE FUNCTION public.get_public_app_config(p_env text DEFAULT 'production')
+CREATE OR REPLACE FUNCTION public.get_public_app_config(p_env text DEFAULT 'PROD')
 RETURNS TABLE (
   key_name text,
   key_value text,
@@ -1722,9 +1691,29 @@ SET can_view = EXCLUDED.can_view,
     updated_at = now();
 
 -- 공개 런타임 설정과 비밀 참조값
+-- env 값은 config/public-config.js의 TARGET_ENV와 같아야 합니다. DEV 검증이면 'DEV'를 사용하세요.
 INSERT INTO public.app_config (env, key_name, key_value, is_secret, use_yn, description)
-SELECT env, key_name, key_value, is_secret, use_yn, description
-FROM cho_install_runtime_config
+VALUES
+  ('PROD', 'SUPABASE_URL', 'https://YOUR_PROJECT_REF.supabase.co', false, true, '브라우저 Supabase 클라이언트 부트스트랩 URL'),
+  ('PROD', 'SUPABASE_ANON_KEY', 'YOUR_PUBLISHABLE_OR_ANON_KEY', false, true, '브라우저 공개 publishable/anon key. RLS/RPC로 권한 제한'),
+  ('PROD', 'SUPABASE_AUTH_EMAIL_DOMAIN', '@cho-talents.app', false, true, '아이디 로그인용 내부 이메일 도메인'),
+  ('PROD', 'KAKAO_MAP_KEY', 'YOUR_KAKAO_MAP_JAVASCRIPT_KEY', false, true, '카카오 지도 JavaScript 공개 키'),
+  ('PROD', 'GITHUB_OWNER', 'CHO-Talents', false, true, 'GitHub 저장소 owner 메타데이터'),
+  ('PROD', 'GITHUB_REPO', 'CHO-Talents', false, true, 'GitHub 저장소 이름 메타데이터'),
+  ('PROD', 'GITHUB_BRANCH', 'develop', false, true, '기본 배포/형상관리 브랜치 메타데이터'),
+  ('PROD', 'GITHUB_PAT', 'env:GITHUB_PAT', true, false, '비밀 원문 저장 금지. 로컬 .env.local 또는 Edge Function 환경변수에 저장'),
+  ('PROD', 'SUPABASE_ACCESS_TOKEN', 'env:SUPABASE_ACCESS_TOKEN', true, false, '비밀 원문 저장 금지. Supabase CLI/Management API 실행 환경변수에 저장'),
+  ('PROD', 'SUPABASE_SERVICE_ROLE_KEY', 'env:SUPABASE_SERVICE_ROLE_KEY', true, false, '서버 전용 키. Edge Function/서버 환경변수 또는 Supabase Vault에 저장'),
+  ('PROD', 'SUPABASE_DB_CONNECTION_STRING', 'env:SUPABASE_DB_CONNECTION_STRING', true, false, 'DB 관리/마이그레이션 전용. 로컬/CI 비밀 저장소에서만 사용'),
+  ('PROD', 'SLACK_WEBHOOK_PART1', 'env:SLACK_WEBHOOK_PART1', true, false, 'Slack 1부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('PROD', 'SLACK_WEBHOOK_PART2', 'env:SLACK_WEBHOOK_PART2', true, false, 'Slack 2부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('PROD', 'SLACK_WEBHOOK_PART3', 'env:SLACK_WEBHOOK_PART3', true, false, 'Slack 3부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('PROD', 'SLACK_WEBHOOK_PART4', 'env:SLACK_WEBHOOK_PART4', true, false, 'Slack 4부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('PROD', 'SLACK_WEBHOOK_PART5', 'env:SLACK_WEBHOOK_PART5', true, false, 'Slack 5부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('PROD', 'SLACK_WEBHOOK_WORSHIP', 'env:SLACK_WEBHOOK_WORSHIP', true, false, 'Slack 예배부 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('PROD', 'SLACK_WEBHOOK_PRODUCT_MANAGEMENT', 'env:SLACK_WEBHOOK_PRODUCT_MANAGEMENT', true, false, 'Slack 상품 관리 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('PROD', 'SLACK_WEBHOOK_OPERATIONS', 'env:SLACK_WEBHOOK_OPERATIONS', true, false, 'Slack 운영 로그 채널 Webhook. Edge Function Secret에 원문 저장'),
+  ('PROD', 'SLACK_WEBHOOK_ANSWER', 'env:SLACK_WEBHOOK_ANSWER', true, false, 'Slack Q&A 채널 Webhook. Edge Function Secret에 원문 저장')
 ON CONFLICT (env, key_name) DO UPDATE
 SET key_value = EXCLUDED.key_value,
     is_secret = EXCLUDED.is_secret,

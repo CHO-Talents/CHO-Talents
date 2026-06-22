@@ -8,13 +8,7 @@ const NAV_MENU = [
     id: 'intro',
     label: '소개',
     items: [
-      { href: 'guide.html', label: '학생 가이드' },
-      { href: 'teacher-guide.html', label: '교사 가이드', minPerm: 40 },
-      { href: 'dept-teacher-guide.html', label: '부서 담당 교사 가이드', minPerm: 60 },
-      { href: 'purchase-teacher-guide.html', label: '구매 담당 교사 가이드', minPerm: 70 },
-      { href: 'chief-teacher-guide.html', label: '부장 교사 가이드', minPerm: 80 },
-      { href: 'evangelist-guide.html', label: '전도사님 가이드', minPerm: 90 },
-      { href: 'admin-guide.html', label: '관리자 가이드', minPerm: 60 },
+      { href: 'guide.html', label: '가이드', guide: true },
       { href: 'earn-talents.html', label: '달란트 적립' },
       { href: 'qna.html', label: 'Q & A', badgeId: 'navQnaBadge' }
     ]
@@ -74,6 +68,16 @@ const NAV_MENU = [
   }
 ];
 
+const GUIDE_HREFS = [
+  'guide.html',
+  'teacher-guide.html',
+  'dept-teacher-guide.html',
+  'purchase-teacher-guide.html',
+  'chief-teacher-guide.html',
+  'evangelist-guide.html',
+  'admin-guide.html'
+];
+
 function _navBasePath() {
   const path = window.location.pathname;
   if (path.includes('/admin/') || path.endsWith('/admin') ||
@@ -114,7 +118,7 @@ function _navIsActive(href) {
 }
 
 function _navGroupIsActive(items) {
-  return items.some(item => _navIsActive(item.href));
+  return items.some(item => item.guide ? GUIDE_HREFS.some(_navIsActive) : _navIsActive(item.href));
 }
 
 function _navItemAttrs(item) {
@@ -122,8 +126,29 @@ function _navItemAttrs(item) {
   if (item.minPerm) attrs.push(`data-min-perm="${item.minPerm}"`);
   if (item.id) attrs.push(`id="${item.id}"`);
   if (item.authOnly) attrs.push('data-auth-only="true"');
+  if (item.guide) attrs.push('data-guide-link="true"');
   if (item.minPerm || item.authOnly) attrs.push('style="display:none;"');
   return attrs.length ? ' ' + attrs.join(' ') : '';
+}
+
+function _navGuideHrefForSession(session) {
+  if (!session) return 'guide.html';
+  if (session.isSuperAdmin || session.permissionLevel === 'admin') return 'admin-guide.html';
+  if (session.permissionLevel === 'evangelist') return 'evangelist-guide.html';
+  if (session.permissionLevel === 'chief') return 'chief-teacher-guide.html';
+  if (session.permissionLevel === 'purchase_teacher') return 'purchase-teacher-guide.html';
+  if (session.permissionLevel === 'dept_teacher') return 'dept-teacher-guide.html';
+  if (session.permissionLevel === 'teacher') return 'teacher-guide.html';
+  return 'guide.html';
+}
+
+function _navUpdateGuideHref(session) {
+  const guideItem = document.querySelector('[data-guide-link="true"]');
+  const link = guideItem ? guideItem.querySelector('a') : null;
+  if (!link) return;
+  const href = _navGuideHrefForSession(session);
+  link.href = _navResolveHref(href);
+  link.classList.toggle('active', _navIsActive(href));
 }
 
 function renderNav(containerId) {
@@ -245,6 +270,7 @@ function navUpdateAuth(session) {
   const navMyOrders = document.getElementById('navMyOrders');
 
   if (session) {
+    _navUpdateGuideHref(session);
     if (loginArea) loginArea.style.display = 'none';
     if (authArea) authArea.style.display = '';
     if (logoutBtn) logoutBtn.style.display = '';
@@ -273,6 +299,7 @@ function navUpdateAuth(session) {
       if (typeof updateLogBadge === 'function') updateLogBadge();
     }
   } else {
+    _navUpdateGuideHref(null);
     if (loginArea) loginArea.style.display = '';
     if (authArea) authArea.style.display = 'none';
     if (logoutBtn) logoutBtn.style.display = 'none';
@@ -288,6 +315,7 @@ async function navInit() {
     await initTheme();
   }
   const session = typeof getSession === 'function' ? getSession() : null;
+  _navUpdateGuideHref(session);
   if (session) {
     navUpdateAuth(session);
   }

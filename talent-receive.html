@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 수령 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📱</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.50.0" />
-  <link rel="stylesheet" href="css/common.css?v=3.50.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.51.0" />
+  <link rel="stylesheet" href="css/common.css?v=3.51.0" />
   <style>
     .qr-hero { text-align: center; margin-bottom: 1.5rem; }
     .qr-hero h1 { font-size: 1.6rem; color: var(--c-primary); }
@@ -24,7 +24,7 @@
     .qr-result.ok { background: #d3f9d8; color: #2b8a3e; }
     .qr-result.fail { background: #ffe3e3; color: #e03131; }
     .scan-history { margin-top: 2rem; }
-    .scan-history h3 { font-size: 1rem; margin-bottom: 0.8rem; }
+    .scan-history h3 { font-size: 1rem; margin: 0; }
     .scan-item { display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0.8rem; background: #f8f9fa; border-radius: 8px; margin-bottom: 0.4rem; font-size: 0.85rem; }
     .scan-item .amt { font-weight: 700; color: #2b8a3e; }
     #cameraWrap { display: none; width: 100%; max-width: 360px; margin: 1rem auto; position: relative; border-radius: 12px; overflow: hidden; border: 3px solid var(--c-primary); }
@@ -72,8 +72,12 @@
     <div id="qrCodeListSection" style="margin-top:1.5rem;"></div>
 
     <div class="scan-history" id="historySection" style="display:none;">
-      <h3>📋 최근 수령 내역</h3>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;margin-bottom:0.8rem;">
+        <h3>📋 최근 수령 내역</h3>
+        <span id="historyPageSizeWrap"></span>
+      </div>
       <div id="historyList"></div>
+      <div id="historyPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
   </div>
 
@@ -83,23 +87,30 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-  <script src="config/public-config.js?v=3.50.0"></script>
-  <script src="js/supabase-config.js?v=3.50.0"></script>
-  <script src="js/activity-log.js?v=3.50.0"></script>
-  <script src="js/codes.js?v=3.50.0"></script>
-  <script src="js/auth.js?v=3.50.0"></script>
-  <script src="js/theme.js?v=3.50.0"></script>
-  <script src="js/nav.js?v=3.50.0"></script>
-  <script src="js/page-size.js?v=3.50.0"></script>
+  <script src="config/public-config.js?v=3.51.0"></script>
+  <script src="js/supabase-config.js?v=3.51.0"></script>
+  <script src="js/activity-log.js?v=3.51.0"></script>
+  <script src="js/codes.js?v=3.51.0"></script>
+  <script src="js/auth.js?v=3.51.0"></script>
+  <script src="js/theme.js?v=3.51.0"></script>
+  <script src="js/nav.js?v=3.51.0"></script>
+  <script src="js/page-size.js?v=3.51.0"></script>
   <script>
     initSupabase();
     let session;
     let cameraStream = null;
     let scanAnimFrame = null;
     let scanPaused = false;
+    let scanProcessing = false;
+    let scanCooldownUntil = 0;
+    let scanCooldownTimer = null;
+    const SCAN_COOLDOWN_MS = 5000;
     let QR_PAGE_SIZE = 5;
     let allQRCodes = [];
     let qrPages = { student: 1, teacher: 1 };
+    let historyItems = [];
+    let historyPage = 1;
+    let historyPageSize = null;
 
     (async () => {
       await navInit();
@@ -112,14 +123,46 @@
       }
       autoLogPageView();
       QR_PAGE_SIZE = await loadPageSize('talent_receive', 5);
+      historyPageSize = await loadPageSize('talent_receive_history', 5);
       updateNavOrderBadge();
       loadHistory();
       loadQRList();
     })();
 
-    async function scanCode() {
+    function isScanCoolingDown() {
+      return Date.now() < scanCooldownUntil;
+    }
+
+    function startScanCooldown() {
+      const statusEl = document.getElementById('scanStatus');
+      scanPaused = true;
+      scanCooldownUntil = Date.now() + SCAN_COOLDOWN_MS;
+      if (statusEl) statusEl.textContent = '처리 중입니다. 5초 후 다시 스캔할 수 있습니다';
+
+      if (scanCooldownTimer) clearTimeout(scanCooldownTimer);
+      scanCooldownTimer = setTimeout(() => {
+        scanCooldownTimer = null;
+        scanCooldownUntil = 0;
+        scanPaused = false;
+        if (cameraStream && statusEl) statusEl.textContent = 'QR 코드를 카메라에 비춰주세요';
+      }, SCAN_COOLDOWN_MS);
+    }
+
+    function clearScanCooldown() {
+      if (scanCooldownTimer) {
+        clearTimeout(scanCooldownTimer);
+        scanCooldownTimer = null;
+      }
+      scanCooldownUntil = 0;
+      scanPaused = false;
+    }
+
+    async function scanCode(options = {}) {
+      const fromCamera = options.fromCamera === true;
       const code = document.getElementById('qrInput').value.trim();
       if (!code) { showResult('fail', '코드를 입력해주세요.'); return; }
+      if (scanProcessing) return;
+      scanProcessing = true;
       const btn = document.getElementById('btnScan');
       btn.disabled = true;
       btn.textContent = '확인 중...';
@@ -240,9 +283,10 @@
         console.error('[QR-SCAN] Exception:', e);
         showResult('fail', '오류가 발생했습니다: ' + (e.message || e));
       } finally {
+        scanProcessing = false;
         btn.disabled = false;
         btn.textContent = '🔍 코드 확인';
-        scanPaused = false;
+        if (!fromCamera && !isScanCoolingDown()) scanPaused = false;
       }
     }
 
@@ -321,12 +365,36 @@
         const { data } = await _sb.from('talent_transactions')
           .select('*')
           .eq('user_id', session.id).eq('type', 'earn')
-          .order('created_at', { ascending: false }).limit(20);
-        if (!data || data.length === 0) return;
-        const sec = document.getElementById('historySection');
-        sec.style.display = '';
-        const list = document.getElementById('historyList');
-        list.innerHTML = data.map(t => {
+          .order('created_at', { ascending: false }).limit(100);
+        historyItems = data || [];
+        historyPage = 1;
+        renderHistory();
+      } catch (e) { /* column may not exist yet */ }
+    }
+
+    function getHistoryPageSize() {
+      return historyPageSize || 5;
+    }
+
+    function renderHistory() {
+      const sec = document.getElementById('historySection');
+      const list = document.getElementById('historyList');
+      const sizeWrap = document.getElementById('historyPageSizeWrap');
+      const paging = document.getElementById('historyPaging');
+      if (!historyItems.length) {
+        sec.style.display = 'none';
+        if (list) list.innerHTML = '';
+        if (sizeWrap) sizeWrap.innerHTML = '';
+        if (paging) paging.innerHTML = '';
+        return;
+      }
+      sec.style.display = '';
+      const pageSize = getHistoryPageSize();
+      const totalPages = Math.max(1, Math.ceil(historyItems.length / pageSize));
+      if (historyPage > totalPages) historyPage = totalPages;
+      const startIdx = (historyPage - 1) * pageSize;
+      const pageItems = historyItems.slice(startIdx, startIdx + pageSize);
+      list.innerHTML = pageItems.map(t => {
           const dt = new Date(t.created_at);
           const dateStr = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
           const srcLabel = t.source === 'qr'
@@ -335,7 +403,20 @@
           const desc = (t.description || '-').replace(/\[[0-9a-f-]{36}\]\s*/gi, '');
           return `<div class="scan-item">${srcLabel}<span>${dateStr} - ${desc}</span><span class="amt">+${t.amount || 0} 달란트</span></div>`;
         }).join('');
-      } catch (e) { /* column may not exist yet */ }
+      if (sizeWrap) sizeWrap.innerHTML = renderPageSizeSelector('talent_receive_history', pageSize, 'onHistoryPageSizeChange(this.value)');
+      if (paging) paging.innerHTML = buildPagingButtons(historyPage, totalPages, 'goHistoryPage(__PAGE__)');
+    }
+
+    function goHistoryPage(page) {
+      historyPage = page;
+      renderHistory();
+    }
+
+    async function onHistoryPageSizeChange(val) {
+      historyPageSize = parseInt(val, 10) || 5;
+      historyPage = 1;
+      await savePageSize('talent_receive_history', historyPageSize);
+      renderHistory();
     }
 
     async function toggleCamera() {
@@ -379,6 +460,7 @@
 
     function stopCamera() {
       if (scanAnimFrame) { cancelAnimationFrame(scanAnimFrame); scanAnimFrame = null; }
+      clearScanCooldown();
       if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
       const video = document.getElementById('cameraVideo');
       video.srcObject = null;
@@ -396,7 +478,7 @@
 
       function tick() {
         if (!cameraStream) return;
-        if (video.readyState === video.HAVE_ENOUGH_DATA && !scanPaused) {
+        if (video.readyState === video.HAVE_ENOUGH_DATA && !scanPaused && !scanProcessing && !isScanCoolingDown()) {
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -404,13 +486,13 @@
           const qrResult = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
 
           if (qrResult && qrResult.data) {
-            scanPaused = true;
             statusEl.textContent = '✅ QR 코드 감지됨';
             document.getElementById('cameraWrap').classList.add('scan-detected');
             setTimeout(() => document.getElementById('cameraWrap').classList.remove('scan-detected'), 300);
 
             document.getElementById('qrInput').value = qrResult.data;
-            scanCode();
+            startScanCooldown();
+            scanCode({ fromCamera: true });
           } else {
             statusEl.textContent = 'QR 코드를 카메라에 비춰주세요';
           }
@@ -463,8 +545,9 @@
     }
 
     function renderQRGroup(title, codes, groupKey, now) {
-      const page = qrPages[groupKey] || 1;
       const total = Math.ceil(codes.length / QR_PAGE_SIZE);
+      if ((qrPages[groupKey] || 1) > total) qrPages[groupKey] = total;
+      const page = qrPages[groupKey] || 1;
       const start = (page - 1) * QR_PAGE_SIZE;
       const slice = codes.slice(start, start + QR_PAGE_SIZE);
       const pageSizeHtml = codes.length > 0 ? renderPageSizeSelector('talent_receive', QR_PAGE_SIZE, "onQRPageSizeChange(this.value)") : '';
@@ -485,12 +568,8 @@
         html += '</div>';
       });
       if (total > 1) {
-        html += '<div style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;">';
-        for (let i = 1; i <= total; i++) {
-          const active = i === page ? 'background:var(--c-primary);color:#fff;' : 'background:#e9ecef;';
-          html += '<button onclick="goQRPage(\''+groupKey+'\','+i+')" style="border:none;padding:0.3rem 0.6rem;border-radius:4px;cursor:pointer;font-size:0.8rem;'+active+'">'+i+'</button>';
-        }
-        html += '</div>';
+        html += '<div style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;">'
+          + buildPagingButtons(page, total, "goQRPage('" + groupKey + "',__PAGE__)") + '</div>';
       }
       html += '</div>';
       return html;
@@ -508,6 +587,6 @@
       renderQRList();
     }
   </script>
-  <script src="js/version.js?v=3.50.0"></script>
+  <script src="js/version.js?v=3.51.0"></script>
 </body>
 </html>

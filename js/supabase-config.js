@@ -18,7 +18,7 @@ const DEFAULT_PUBLIC_CONFIG = Object.freeze({
 });
 
 const CHO_TALENTS_CONFIG = window.CHO_TALENTS_CONFIG || {};
-const APP_CONFIG_ENV = CHO_TALENTS_CONFIG.env || 'production';
+const APP_CONFIG_ENV = CHO_TALENTS_CONFIG.env || 'PROD';
 
 function getNestedConfigValue(source, path, fallback) {
   let value = source;

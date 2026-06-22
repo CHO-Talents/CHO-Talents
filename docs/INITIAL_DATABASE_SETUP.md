@@ -6,7 +6,7 @@
 
 추가 코드 마스터 SQL: `docs/TASK-057_code_master.sql`
 
-자동 실행 스크립트: `scripts/install-supabase-database.ps1`
+자동 실행 스크립트: `scripts/install-supabase-database.ps1`, `scripts/install-supabase-database.sh`
 
 ## 실행 순서
 
@@ -24,13 +24,40 @@
 
 ## 실행 방법 A: SQL Editor
 
-Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql`을 열고, 상단 `0. Target Project Runtime Config` 블록의 공개 설정값을 새 프로젝트 기준으로 수정한 뒤 전체를 실행한다. 이어서 `docs/TASK-057_code_master.sql`을 실행해 `code_groups`, `code_items`, 코드 컬럼 검증 트리거를 추가한다.
+Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql`을 열고, 하단 `공개 런타임 설정과 비밀 참조값` 블록의 공개 설정값을 새 프로젝트 기준으로 수정한 뒤 전체를 실행한다. 이어서 `docs/TASK-057_code_master.sql`을 실행해 `code_groups`, `code_items`, 코드 컬럼 검증 트리거를 추가한다.
 
 ```sql
-('production', 'SUPABASE_URL', 'https://YOUR_PROJECT_REF.supabase.co', false, true, ...),
-('production', 'SUPABASE_ANON_KEY', 'YOUR_PUBLISHABLE_OR_ANON_KEY', false, true, ...),
-('production', 'KAKAO_MAP_KEY', 'YOUR_KAKAO_MAP_JAVASCRIPT_KEY', false, true, ...)
+('PROD', 'SUPABASE_URL', 'https://YOUR_PROJECT_REF.supabase.co', false, true, ...),
+('PROD', 'SUPABASE_ANON_KEY', 'YOUR_PUBLISHABLE_OR_ANON_KEY', false, true, ...),
+('PROD', 'KAKAO_MAP_KEY', 'YOUR_KAKAO_MAP_JAVASCRIPT_KEY', false, true, ...)
 ```
+
+`env` 값은 `config/public-config.js`의 `TARGET_ENV`와 반드시 같아야 한다. DEV 검증 DB라면 `PROD` 대신 `DEV`로 넣는다.
+
+### 실행 중 `cho_install_runtime_config` 오류가 난 경우
+
+이전 버전의 초기 SQL은 임시 설정 테이블을 사용했다. Supabase SQL Editor 실행 방식에 따라 아래 오류가 날 수 있다.
+
+```text
+ERROR: 42P01: relation "cho_install_runtime_config" does not exist
+```
+
+테이블과 함수가 이미 만들어진 상태라면 전체 초기 SQL을 반복 실행하지 말고, 아래 순서로 복구한다.
+
+1. `app_config` 보강 SQL을 실행한다.
+2. TASK-057 선행 스키마 보강 SQL을 실행한다.
+3. `docs/TASK-057_code_master.sql`을 실행한다.
+4. `scripts/verify-task-057-code-master.sql`을 실행한다.
+
+전체 초기화부터 다시 할 수 있는 빈 DB라면 수정된 `docs/INITIAL_DATABASE_SETUP.sql`을 새로 실행한다.
+
+선행 스키마 보강이 필요한 대표 오류는 아래와 같다.
+
+```text
+ERROR: 42703: column "source" of relation "talent_transactions" does not exist
+```
+
+이 경우 `docs/FIX_TASK057_PREREQUISITES.sql`을 먼저 실행하고 `docs/TASK-057_code_master.sql`을 다시 실행한다.
 
 ## 실행 방법 B: PowerShell/psql
 
@@ -47,6 +74,7 @@ Supabase Dashboard의 SQL Editor에서 `docs/INITIAL_DATABASE_SETUP.sql`을 열�
 SUPABASE_DB_CONNECTION_STRING=postgresql://postgres:...
 SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 SUPABASE_ANON_KEY=YOUR_PUBLISHABLE_OR_ANON_KEY
+APP_CONFIG_ENV=DEV
 ```
 
 SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
@@ -55,11 +83,34 @@ SQL Editor에 붙여넣을 합본 SQL만 만들 수도 있다.
 .\scripts\install-supabase-database.ps1 `
   -GenerateOnly `
   -OutputSqlPath .\docs\INITIAL_DATABASE_SETUP.generated.sql `
+  -AppConfigEnv DEV `
   -SupabaseUrl "https://YOUR_PROJECT_REF.supabase.co" `
   -SupabaseAnonKey "YOUR_PUBLISHABLE_OR_ANON_KEY"
 ```
 
-`scripts/install-supabase-database.ps1`는 기본으로 `docs/TASK-057_code_master.sql`을 합본에 포함한다. 별도 마이그레이션을 추가로 합치려면 `-ExtraSqlPaths`에 경로를 넘긴다.
+## 실행 방법 C: macOS/Linux bash/psql
+
+macOS나 Linux에서는 같은 동작을 하는 셸 스크립트를 사용할 수 있다.
+
+```bash
+scripts/install-supabase-database.sh \
+  --app-config-env DEV \
+  --supabase-url "https://YOUR_PROJECT_REF.supabase.co" \
+  --supabase-anon-key "YOUR_PUBLISHABLE_OR_ANON_KEY"
+```
+
+SQL Editor에 붙여넣을 합본 SQL만 만들 때는 아래처럼 실행한다.
+
+```bash
+scripts/install-supabase-database.sh \
+  --generate-only \
+  --output-sql-path docs/INITIAL_DATABASE_SETUP.generated.sql \
+  --app-config-env DEV \
+  --supabase-url "https://YOUR_PROJECT_REF.supabase.co" \
+  --supabase-anon-key "YOUR_PUBLISHABLE_OR_ANON_KEY"
+```
+
+`scripts/install-supabase-database.ps1`와 `scripts/install-supabase-database.sh`는 기본으로 `docs/TASK-057_code_master.sql`을 합본에 포함하고, 적용 후 `scripts/verify-task-057-code-master.sql`로 코드 마스터를 검증한다. 별도 마이그레이션을 추가로 합치려면 `-ExtraSqlPaths` 또는 `--extra-sql-path`에 경로를 넘긴다.
 
 ## 필수 테이블
 
