@@ -674,3 +674,11 @@
   font-weight: 700;
   color: var(--t-text-muted);
 }
+
+/* Guest Guide Banner - Dark Theme */
+[data-theme="dark"] .guest-guide-inner {
+  background: linear-gradient(135deg, rgba(108, 92, 231, 0.15) 0%, rgba(162, 155, 254, 0.1) 100%);
+  border-color: rgba(162, 155, 254, 0.3);
+}
+[data-theme="dark"] .guest-guide-text strong { color: #dfe6e9; }
+[data-theme="dark"] .guest-guide-text span { color: #b2bec3; }

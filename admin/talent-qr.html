@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>달란트 QR 관리 - CHO Talents Admin</title>
-  <link rel="stylesheet" href="../css/themes.css?v=3.51.0" />
-  <link rel="stylesheet" href="../css/admin.css?v=3.51.0" />
+  <link rel="stylesheet" href="../css/themes.css?v=3.52.0" />
+  <link rel="stylesheet" href="../css/admin.css?v=3.52.0" />
   <style>
     .qr-tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
     .qr-item-card { background: #fff; border: 1px solid var(--admin-border); border-radius: 12px; padding: 1rem; margin-bottom: 0.8rem; display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
@@ -86,6 +86,32 @@
       .filter-bar input[type="text"] { min-width: 100px; }
       .filter-bar input[type="date"] { width: 120px; }
     }
+    /* Dark Theme */
+    [data-theme="dark"] .create-form { background: #1e1e2e; border: 1px solid #333; }
+    [data-theme="dark"] .form-section { background: #2a2a3e; border-color: #444; }
+    [data-theme="dark"] .section-label { color: #ccc; }
+    [data-theme="dark"] .qr-item-card { background: #2a2a3e; border-color: #444; }
+    [data-theme="dark"] .qr-actions button { background: #2a2a3e; color: #ccc; border-color: #555; }
+    [data-theme="dark"] .qr-actions button.primary { background: var(--admin-primary); color: #fff; }
+    [data-theme="dark"] .qr-actions button.danger { background: transparent; }
+    [data-theme="dark"] .qr-actions button.edit { background: transparent; }
+    [data-theme="dark"] .qr-actions button.info { background: rgba(25, 113, 194, 0.15); }
+    [data-theme="dark"] .btn-create-qr { background: #5a4fcf; border-color: #5a4fcf; color: #fff; }
+    [data-theme="dark"] .btn-create-qr:hover { background: #4a3fbf; }
+    [data-theme="dark"] .modal-box { background: #1e1e2e; border: 1px solid #444; }
+    [data-theme="dark"] .item-info-box { background: rgba(25, 113, 194, 0.15); color: #a0cfff; }
+    [data-theme="dark"] .location-results { background: #2a2a3e; border-color: #444; }
+    [data-theme="dark"] .loc-result-item { border-color: #444; }
+    [data-theme="dark"] .loc-result-item:hover { background: #333; }
+    [data-theme="dark"] .repeat-sub { background: rgba(112, 72, 232, 0.1); border-color: rgba(112, 72, 232, 0.3); }
+    [data-theme="dark"] .day-checks label, [data-theme="dark"] .week-checks label { background: #333; border-color: #555; color: #ccc; }
+    [data-theme="dark"] .day-checks label:has(input:checked), [data-theme="dark"] .week-checks label:has(input:checked) { background: rgba(132, 94, 247, 0.3); border-color: #845ef7; }
+    [data-theme="dark"] .scan-list-table th { background: #2a2a3e; color: #aaa; }
+    [data-theme="dark"] .scan-list-table td { border-color: #444; }
+    [data-theme="dark"] .scan-list-table tr:hover td { background: #333; }
+    [data-theme="dark"] .filter-bar input, [data-theme="dark"] .filter-bar select { background: #2a2a3e; border-color: #444; color: #ddd; }
+    [data-theme="dark"] .form-input, [data-theme="dark"] .form-grid input, [data-theme="dark"] .form-grid select { background: #1e1e2e; border-color: #444; color: #ddd; }
+    [data-theme="dark"] .period-row input { background: #1e1e2e; border-color: #444; color: #ddd; }
   </style>
 </head>
 <body class="admin-body">
@@ -190,14 +216,24 @@
         </div>
         <div id="validityDesignated" class="period-row">
           <input type="date" id="qrValidDate" class="form-input" style="max-width:200px;" />
-          <input type="time" id="qrValidStartTime" class="form-input" style="max-width:120px;" value="00:00" />
-          <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
-          <input type="time" id="qrValidEndTime" class="form-input" style="max-width:120px;" value="23:59" />
         </div>
         <div id="validityPeriod" class="period-row" style="display:none;">
-          <input type="datetime-local" id="qrValidFrom" class="form-input" />
+          <input type="date" id="qrValidFromDate" class="form-input" />
           <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
-          <input type="datetime-local" id="qrValidTo" class="form-input" />
+          <input type="date" id="qrValidToDate" class="form-input" />
+        </div>
+      </div>
+
+      <div class="form-section">
+        <label class="section-label">유효 시간</label>
+        <div class="radio-row radio-inline" style="margin-bottom:0.4rem;">
+          <label><input type="radio" name="validityTimeType" value="unlimited" checked onchange="onValidityTimeTypeChange()" /> 🕐 시간 제한 없음</label>
+          <label><input type="radio" name="validityTimeType" value="limited" onchange="onValidityTimeTypeChange()" /> ⏰ 시간 제한</label>
+        </div>
+        <div id="validityTimeFields" class="period-row" style="display:none;">
+          <input type="time" id="qrValidStartTime" class="form-input" style="max-width:140px;" value="00:00" />
+          <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
+          <input type="time" id="qrValidEndTime" class="form-input" style="max-width:140px;" value="23:59" />
         </div>
       </div>
 
@@ -344,14 +380,23 @@
           </div>
           <div id="editValidityDesignated" class="period-row">
             <input type="date" id="editValidDate" class="form-input" style="max-width:200px;" />
-            <input type="time" id="editValidStartTime" class="form-input" style="max-width:120px;" value="00:00" />
-            <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
-            <input type="time" id="editValidEndTime" class="form-input" style="max-width:120px;" value="23:59" />
           </div>
           <div id="editValidityPeriod" class="period-row" style="display:none;">
-            <input type="datetime-local" id="editValidFrom" class="form-input" />
+            <input type="date" id="editValidFromDate" class="form-input" />
             <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
-            <input type="datetime-local" id="editValidTo" class="form-input" />
+            <input type="date" id="editValidToDate" class="form-input" />
+          </div>
+        </div>
+        <div style="grid-column:1/-1;">
+          <label>유효 시간</label>
+          <div class="radio-row radio-inline" style="margin-bottom:0.4rem;">
+            <label><input type="radio" name="editValidityTimeType" value="unlimited" checked onchange="onEditValidityTimeTypeChange()" /> 시간 제한 없음</label>
+            <label><input type="radio" name="editValidityTimeType" value="limited" onchange="onEditValidityTimeTypeChange()" /> 시간 제한</label>
+          </div>
+          <div id="editValidityTimeFields" class="period-row" style="display:none;">
+            <input type="time" id="editValidStartTime" class="form-input" style="max-width:140px;" value="00:00" />
+            <span style="font-size:0.85rem;color:var(--admin-text-muted);">~</span>
+            <input type="time" id="editValidEndTime" class="form-input" style="max-width:140px;" value="23:59" />
           </div>
         </div>
         <div style="grid-column:1/-1;">
@@ -451,15 +496,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="../config/public-config.js?v=3.51.0"></script>
-  <script src="../js/supabase-config.js?v=3.51.0"></script>
-  <script src="../js/activity-log.js?v=3.51.0"></script>
-  <script src="../js/codes.js?v=3.51.0"></script>
-  <script src="../js/auth.js?v=3.51.0"></script>
-  <script src="../js/theme.js?v=3.51.0"></script>
-  <script src="../js/page-size.js?v=3.51.0"></script>
-  <script src="../js/nav.js?v=3.51.0"></script>
-  <script src="../js/talent.js?v=3.51.0"></script>
+  <script src="../config/public-config.js?v=3.52.0"></script>
+  <script src="../js/supabase-config.js?v=3.52.0"></script>
+  <script src="../js/activity-log.js?v=3.52.0"></script>
+  <script src="../js/codes.js?v=3.52.0"></script>
+  <script src="../js/auth.js?v=3.52.0"></script>
+  <script src="../js/theme.js?v=3.52.0"></script>
+  <script src="../js/page-size.js?v=3.52.0"></script>
+  <script src="../js/nav.js?v=3.52.0"></script>
+  <script src="../js/talent.js?v=3.52.0"></script>
   <script>
     initSupabase();
     let session, allQR = [], currentTab = 'active';
@@ -665,6 +710,16 @@
       document.getElementById('editValidityPeriod').style.display = type === 'period' ? '' : 'none';
     }
 
+    /* ── Validity Time Type ── */
+    function onValidityTimeTypeChange() {
+      const type = document.querySelector('input[name="validityTimeType"]:checked').value;
+      document.getElementById('validityTimeFields').style.display = type === 'limited' ? '' : 'none';
+    }
+    function onEditValidityTimeTypeChange() {
+      const type = document.querySelector('input[name="editValidityTimeType"]:checked').value;
+      document.getElementById('editValidityTimeFields').style.display = type === 'limited' ? '' : 'none';
+    }
+
     /* ── Location Type ── */
     function onLocationTypeChange() {
       document.getElementById('locationFields').style.display =
@@ -730,9 +785,9 @@
       document.getElementById('qrValidStartTime').value = '00:00';
       document.getElementById('qrValidEndTime').value = '23:59';
       const now = nowKST();
-      const later = new Date(now.getTime() + 3600000);
-      document.getElementById('qrValidFrom').value = toLocalInput(now);
-      document.getElementById('qrValidTo').value = toLocalInput(later);
+      const later = new Date(now.getTime() + 86400000);
+      document.getElementById('qrValidFromDate').value = toDateStr(now);
+      document.getElementById('qrValidToDate').value = toDateStr(later);
     }
 
     function generateCode() {
@@ -775,18 +830,26 @@
         return { error: '선착순 인원은 1~100,000 사이여야 합니다.' };
 
       let validFrom = null, validTo = null;
+      const timeType = document.querySelector('input[name="' + (isCreate ? 'validityTimeType' : 'editValidityTimeType') + '"]:checked').value;
+      const startTime = timeType === 'limited'
+        ? (document.getElementById(isCreate ? 'qrValidStartTime' : 'editValidStartTime').value || '00:00')
+        : '00:00';
+      const endTime = timeType === 'limited'
+        ? (document.getElementById(isCreate ? 'qrValidEndTime' : 'editValidEndTime').value || '23:59')
+        : '23:59';
+      if (timeType === 'limited' && startTime > endTime) return { error: '유효 시간 시작은 종료보다 늦을 수 없습니다.' };
+
       if (validityType === 'designated') {
         const d = document.getElementById(isCreate ? 'qrValidDate' : 'editValidDate').value;
-        const startTime = document.getElementById(isCreate ? 'qrValidStartTime' : 'editValidStartTime').value || '00:00';
-        const endTime = document.getElementById(isCreate ? 'qrValidEndTime' : 'editValidEndTime').value || '23:59';
         if (d) {
-          if (startTime > endTime) return { error: '유효 시간 시작은 종료보다 늦을 수 없습니다.' };
           validFrom = d + 'T' + startTime + ':00';
           validTo = d + 'T' + endTime + ':59';
         }
       } else if (validityType === 'period') {
-        validFrom = document.getElementById(isCreate ? 'qrValidFrom' : 'editValidFrom').value || null;
-        validTo = document.getElementById(isCreate ? 'qrValidTo' : 'editValidTo').value || null;
+        const fromDate = document.getElementById(isCreate ? 'qrValidFromDate' : 'editValidFromDate').value;
+        const toDate = document.getElementById(isCreate ? 'qrValidToDate' : 'editValidToDate').value;
+        if (fromDate) validFrom = fromDate + 'T' + startTime + ':00';
+        if (toDate) validTo = toDate + 'T' + endTime + ':59';
       }
 
       let locationLat = null, locationLng = null, locationName = null, locationRadius = null;
@@ -1277,9 +1340,6 @@
       const q = allQR.find(x => x.id === id);
       if (!q) return;
       document.getElementById('editId').value = id;
-      document.getElementById('editValidStartTime').value = '00:00';
-      document.getElementById('editValidEndTime').value = '23:59';
-
       const tt = q.target_type || 'student';
       document.querySelector('input[name="editTargetType"][value="' + tt + '"]').checked = true;
       populateItemSelect('editItemSelect', tt);
@@ -1305,24 +1365,33 @@
 
       if (!q.valid_from && !q.valid_until) {
         document.querySelector('input[name="editValidityType"][value="unlimited"]').checked = true;
+        document.querySelector('input[name="editValidityTimeType"][value="unlimited"]').checked = true;
       } else if (q.valid_from && q.valid_until) {
         const f = new Date(q.valid_from), u = new Date(q.valid_until);
-        if (f.toDateString() === u.toDateString()) {
-          document.querySelector('input[name="editValidityType"][value="designated"]').checked = true;
-          document.getElementById('editValidDate').value = toDateStr(f);
+        const hasTimeLimit = !(f.getHours() === 0 && f.getMinutes() === 0 && u.getHours() === 23 && u.getMinutes() === 59);
+        if (hasTimeLimit) {
+          document.querySelector('input[name="editValidityTimeType"][value="limited"]').checked = true;
           document.getElementById('editValidStartTime').value = String(f.getHours()).padStart(2,'0') + ':' + String(f.getMinutes()).padStart(2,'0');
           document.getElementById('editValidEndTime').value = String(u.getHours()).padStart(2,'0') + ':' + String(u.getMinutes()).padStart(2,'0');
         } else {
+          document.querySelector('input[name="editValidityTimeType"][value="unlimited"]').checked = true;
+        }
+        if (f.toDateString() === u.toDateString()) {
+          document.querySelector('input[name="editValidityType"][value="designated"]').checked = true;
+          document.getElementById('editValidDate').value = toDateStr(f);
+        } else {
           document.querySelector('input[name="editValidityType"][value="period"]').checked = true;
-          document.getElementById('editValidFrom').value = toLocalInput(f);
-          document.getElementById('editValidTo').value = toLocalInput(u);
+          document.getElementById('editValidFromDate').value = toDateStr(f);
+          document.getElementById('editValidToDate').value = toDateStr(u);
         }
       } else {
         document.querySelector('input[name="editValidityType"][value="period"]').checked = true;
-        if (q.valid_from) document.getElementById('editValidFrom').value = toLocalInput(new Date(q.valid_from));
-        if (q.valid_until) document.getElementById('editValidTo').value = toLocalInput(new Date(q.valid_until));
+        document.querySelector('input[name="editValidityTimeType"][value="unlimited"]').checked = true;
+        if (q.valid_from) document.getElementById('editValidFromDate').value = toDateStr(new Date(q.valid_from));
+        if (q.valid_until) document.getElementById('editValidToDate').value = toDateStr(new Date(q.valid_until));
       }
       onEditValidityTypeChange();
+      onEditValidityTimeTypeChange();
 
       const rt = q.repeat_type || 'none';
       if (rt !== 'none') {
@@ -1374,6 +1443,6 @@
     document.getElementById('editModal').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
     document.getElementById('scanListModal').addEventListener('click', function(e) { if (e.target === this) closeScanListModal(); });
   </script>
-  <script src="../js/version.js?v=3.51.0"></script>
+  <script src="../js/version.js?v=3.52.0"></script>
 </body>
 </html>

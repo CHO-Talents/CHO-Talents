@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>로그인 - 달란트 마을</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>" />
-  <link rel="stylesheet" href="css/themes.css?v=3.51.0" />
-  <link rel="stylesheet" href="css/admin.css?v=3.51.0" />
+  <link rel="stylesheet" href="css/themes.css?v=3.52.0" />
+  <link rel="stylesheet" href="css/admin.css?v=3.52.0" />
   <style>
     .login-wrapper { background: linear-gradient(135deg, #f8f5ff 0%, #e8e0ff 50%, #fce4ec 100%); }
     .login-card { max-width: 400px; }
@@ -50,17 +50,20 @@
         <a href="register.html" style="display:inline-block;padding:0.5rem 1.5rem;background:linear-gradient(135deg,#51cf66,#40c057);color:#fff;border-radius:50px;text-decoration:none;font-weight:700;font-size:0.9rem;transition:all 0.2s;">📝 계정 등록 신청</a>
         <div style="font-size:0.75rem;color:var(--admin-text-muted);margin-top:0.5rem;">계정이 없으신가요? 신청 후 관리자 승인을 받으면 이용 가능합니다</div>
       </div>
-      <a href="index.html" class="back-home">← 메인 페이지로 돌아가기</a>
+      <div style="display:flex;justify-content:center;gap:1.2rem;margin-top:1rem;font-size:0.85rem;">
+        <a href="index.html" class="back-home" style="margin:0;">← 메인 페이지</a>
+        <a href="guide.html" class="back-home" style="margin:0;">📖 사용 가이드</a>
+      </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config/public-config.js?v=3.51.0"></script>
-  <script src="js/supabase-config.js?v=3.51.0"></script>
-  <script src="js/activity-log.js?v=3.51.0"></script>
-  <script src="js/codes.js?v=3.51.0"></script>
-  <script src="js/auth.js?v=3.51.0"></script>
-  <script src="js/theme.js?v=3.51.0"></script>
+  <script src="config/public-config.js?v=3.52.0"></script>
+  <script src="js/supabase-config.js?v=3.52.0"></script>
+  <script src="js/activity-log.js?v=3.52.0"></script>
+  <script src="js/codes.js?v=3.52.0"></script>
+  <script src="js/auth.js?v=3.52.0"></script>
+  <script src="js/theme.js?v=3.52.0"></script>
   <script>
     const SAVED_USERNAME_KEY = 'cho_saved_username';
 
@@ -137,6 +140,6 @@
       });
     })();
   </script>
-  <script src="js/version.js?v=3.51.0"></script>
+  <script src="js/version.js?v=3.52.0"></script>
 </body>
 </html>
