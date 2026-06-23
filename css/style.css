@@ -540,6 +540,50 @@ body {
   .fav-setting-btn { font-size: 0.78rem; padding: 0.35rem 0.8rem; }
 }
 
+/* Guest Guide Banner */
+.guest-guide-banner {
+  margin: 1.5rem auto 0;
+  max-width: 600px;
+  animation: fadeSlideUp 0.5s ease-out;
+}
+.guest-guide-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: linear-gradient(135deg, #f8f5ff 0%, #e8e0ff 100%);
+  border: 1px solid rgba(108, 92, 231, 0.2);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 15px rgba(108, 92, 231, 0.1);
+}
+.guest-guide-icon { font-size: 2rem; flex-shrink: 0; }
+.guest-guide-text { flex: 1; line-height: 1.5; }
+.guest-guide-text strong { display: block; font-size: 0.95rem; color: #2d3436; margin-bottom: 0.1rem; }
+.guest-guide-text span { font-size: 0.82rem; color: #636e72; }
+.guest-guide-btn {
+  flex-shrink: 0;
+  padding: 0.55rem 1.2rem;
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  color: #fff;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.guest-guide-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 768px) {
+  .guest-guide-inner { flex-direction: column; text-align: center; padding: 1.2rem 1rem; }
+  .guest-guide-text strong { font-size: 0.9rem; }
+}
+
 @media (max-width: 480px) {
   .hero-title { font-size: 2rem; }
   .hero-sub { font-size: 0.88rem; margin-bottom: 1.5rem; }
