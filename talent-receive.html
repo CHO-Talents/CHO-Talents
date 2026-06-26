@@ -181,6 +181,19 @@
         if (qr.expires_at && new Date(qr.expires_at) < now) {
           showResult('fail', '만료된 코드입니다.'); return;
         }
+        if (qr.valid_start_time || qr.valid_end_time) {
+          const nowKST = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }));
+          const currentTime =
+            String(nowKST.getHours()).padStart(2, '0') + ':' +
+            String(nowKST.getMinutes()).padStart(2, '0') + ':' +
+            String(nowKST.getSeconds()).padStart(2, '0');
+          const startTime = qr.valid_start_time ? String(qr.valid_start_time).slice(0, 8) : '00:00:00';
+          const endTime = qr.valid_end_time ? String(qr.valid_end_time).slice(0, 8) : '23:59:59';
+          if (currentTime < startTime || currentTime > endTime) {
+            showResult('fail', '현재는 수령 가능한 시간이 아닙니다.\n수령 가능 시간: ' + startTime.slice(0, 5) + ' ~ ' + endTime.slice(0, 5));
+            return;
+          }
+        }
         if (qr.max_uses > 0 && (qr.used_count || 0) >= qr.max_uses) {
           showResult('fail', '사용 횟수가 초과된 코드입니다.'); return;
         }
@@ -509,7 +522,7 @@
     async function loadQRList() {
       try {
         const { data } = await _sb.from('talent_qr_codes')
-          .select('id, code, description, amount, target_type, valid_from, valid_until, expires_at, is_active, max_uses, used_count, talent_item_id')
+          .select('id, code, description, amount, target_type, valid_from, valid_until, valid_start_time, valid_end_time, expires_at, is_active, max_uses, used_count, talent_item_id')
           .eq('is_active', true).order('created_at', { ascending: false });
         allQRCodes = (data || []).filter(q => {
           const now = new Date();
