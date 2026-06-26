@@ -830,26 +830,31 @@
         return { error: '선착순 인원은 1~100,000 사이여야 합니다.' };
 
       let validFrom = null, validTo = null;
+      let validStartTime = null, validEndTime = null;
       const timeType = document.querySelector('input[name="' + (isCreate ? 'validityTimeType' : 'editValidityTimeType') + '"]:checked').value;
       const startTime = timeType === 'limited'
         ? (document.getElementById(isCreate ? 'qrValidStartTime' : 'editValidStartTime').value || '00:00')
-        : '00:00';
+        : null;
       const endTime = timeType === 'limited'
         ? (document.getElementById(isCreate ? 'qrValidEndTime' : 'editValidEndTime').value || '23:59')
-        : '23:59';
+        : null;
       if (timeType === 'limited' && startTime > endTime) return { error: '유효 시간 시작은 종료보다 늦을 수 없습니다.' };
+      if (timeType === 'limited') {
+        validStartTime = startTime + ':00';
+        validEndTime = endTime + ':59';
+      }
 
       if (validityType === 'designated') {
         const d = document.getElementById(isCreate ? 'qrValidDate' : 'editValidDate').value;
         if (d) {
-          validFrom = d + 'T' + startTime + ':00';
-          validTo = d + 'T' + endTime + ':59';
+          validFrom = d + 'T00:00:00';
+          validTo = d + 'T23:59:59';
         }
       } else if (validityType === 'period') {
         const fromDate = document.getElementById(isCreate ? 'qrValidFromDate' : 'editValidFromDate').value;
         const toDate = document.getElementById(isCreate ? 'qrValidToDate' : 'editValidToDate').value;
-        if (fromDate) validFrom = fromDate + 'T' + startTime + ':00';
-        if (toDate) validTo = toDate + 'T' + endTime + ':59';
+        if (fromDate) validFrom = fromDate + 'T00:00:00';
+        if (toDate) validTo = toDate + 'T23:59:59';
       }
 
       let locationLat = null, locationLng = null, locationName = null, locationRadius = null;
@@ -880,8 +885,13 @@
       }
 
       return { targetType, desc, amount, talentItemId, maxUses, validFrom, validTo,
+               validStartTime, validEndTime,
                locationLat, locationLng, locationName, locationRadius,
                repeatType, repeatDays, repeatWeeks };
+    }
+
+    function kstDateTimeToIso(value) {
+      return new Date(value + '+09:00').toISOString();
     }
 
     function buildRow(code, v) {
@@ -897,8 +907,10 @@
         if (v.repeatDays) row.repeat_days = v.repeatDays;
         if (v.repeatWeeks) row.repeat_weeks = v.repeatWeeks;
       }
-      if (v.validFrom) row.valid_from = new Date(v.validFrom).toISOString();
-      if (v.validTo) row.valid_until = new Date(v.validTo).toISOString();
+      if (v.validFrom) row.valid_from = kstDateTimeToIso(v.validFrom);
+      if (v.validTo) row.valid_until = kstDateTimeToIso(v.validTo);
+      row.valid_start_time = v.validStartTime || null;
+      row.valid_end_time = v.validEndTime || null;
       if (v.locationLat) {
         row.location_lat = v.locationLat;
         row.location_lng = v.locationLng;
@@ -985,8 +997,10 @@
         description: v.desc, amount: v.amount,
         talent_item_id: v.talentItemId, max_uses: v.maxUses,
         target_type: v.targetType,
-        valid_from: v.validFrom ? new Date(v.validFrom).toISOString() : null,
-        valid_until: v.validTo ? new Date(v.validTo).toISOString() : null,
+        valid_from: v.validFrom ? kstDateTimeToIso(v.validFrom) : null,
+        valid_until: v.validTo ? kstDateTimeToIso(v.validTo) : null,
+        valid_start_time: v.validStartTime || null,
+        valid_end_time: v.validEndTime || null,
         location_lat: v.locationLat, location_lng: v.locationLng,
         location_name: v.locationName, location_radius: v.locationRadius
       };
@@ -1042,9 +1056,26 @@
         + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
     }
 
+    function getQrTimeWindow(q) {
+      const start = q.valid_start_time ? String(q.valid_start_time).slice(0, 5) : '';
+      const end = q.valid_end_time ? String(q.valid_end_time).slice(0, 5) : '';
+      return start && end ? { start, end } : null;
+    }
+
     function getPeriodText(q) {
       const from = q.valid_from ? fmtDateTime(q.valid_from) : '';
       const to = q.valid_until ? fmtDateTime(q.valid_until) : '';
+      const timeWindow = getQrTimeWindow(q);
+      if (timeWindow) {
+        const fromDate = q.valid_from ? fmtDate(q.valid_from) : '';
+        const toDate = q.valid_until ? fmtDate(q.valid_until) : '';
+        let dateText;
+        if (!fromDate && !toDate) dateText = '무기한';
+        else if (fromDate && toDate) dateText = fromDate + ' ~ ' + toDate;
+        else if (fromDate) dateText = fromDate + ' ~';
+        else dateText = '~ ' + toDate;
+        return dateText + ' ' + timeWindow.start + '~' + timeWindow.end;
+      }
       if (!from && !to) return '무기한';
       if (from && to) return from + ' ~ ' + to;
       if (from) return from + ' ~';
@@ -1363,16 +1394,23 @@
         document.getElementById('editMaxUsesCount').disabled = true;
       }
 
+      const storedTimeWindow = getQrTimeWindow(q);
       if (!q.valid_from && !q.valid_until) {
         document.querySelector('input[name="editValidityType"][value="unlimited"]').checked = true;
-        document.querySelector('input[name="editValidityTimeType"][value="unlimited"]').checked = true;
+        if (storedTimeWindow) {
+          document.querySelector('input[name="editValidityTimeType"][value="limited"]').checked = true;
+          document.getElementById('editValidStartTime').value = storedTimeWindow.start;
+          document.getElementById('editValidEndTime').value = storedTimeWindow.end;
+        } else {
+          document.querySelector('input[name="editValidityTimeType"][value="unlimited"]').checked = true;
+        }
       } else if (q.valid_from && q.valid_until) {
         const f = new Date(q.valid_from), u = new Date(q.valid_until);
-        const hasTimeLimit = !(f.getHours() === 0 && f.getMinutes() === 0 && u.getHours() === 23 && u.getMinutes() === 59);
+        const hasTimeLimit = storedTimeWindow || !(f.getHours() === 0 && f.getMinutes() === 0 && u.getHours() === 23 && u.getMinutes() === 59);
         if (hasTimeLimit) {
           document.querySelector('input[name="editValidityTimeType"][value="limited"]').checked = true;
-          document.getElementById('editValidStartTime').value = String(f.getHours()).padStart(2,'0') + ':' + String(f.getMinutes()).padStart(2,'0');
-          document.getElementById('editValidEndTime').value = String(u.getHours()).padStart(2,'0') + ':' + String(u.getMinutes()).padStart(2,'0');
+          document.getElementById('editValidStartTime').value = storedTimeWindow ? storedTimeWindow.start : String(f.getHours()).padStart(2,'0') + ':' + String(f.getMinutes()).padStart(2,'0');
+          document.getElementById('editValidEndTime').value = storedTimeWindow ? storedTimeWindow.end : String(u.getHours()).padStart(2,'0') + ':' + String(u.getMinutes()).padStart(2,'0');
         } else {
           document.querySelector('input[name="editValidityTimeType"][value="unlimited"]').checked = true;
         }
@@ -1386,7 +1424,13 @@
         }
       } else {
         document.querySelector('input[name="editValidityType"][value="period"]').checked = true;
-        document.querySelector('input[name="editValidityTimeType"][value="unlimited"]').checked = true;
+        if (storedTimeWindow) {
+          document.querySelector('input[name="editValidityTimeType"][value="limited"]').checked = true;
+          document.getElementById('editValidStartTime').value = storedTimeWindow.start;
+          document.getElementById('editValidEndTime').value = storedTimeWindow.end;
+        } else {
+          document.querySelector('input[name="editValidityTimeType"][value="unlimited"]').checked = true;
+        }
         if (q.valid_from) document.getElementById('editValidFromDate').value = toDateStr(new Date(q.valid_from));
         if (q.valid_until) document.getElementById('editValidToDate').value = toDateStr(new Date(q.valid_until));
       }
