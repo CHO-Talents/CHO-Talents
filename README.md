@@ -12,12 +12,15 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.54.0` (`js/version.js` 기준, 2026-06-29) |
+| 현재 버전 | `v3.55.0` (`js/version.js` 기준, 2026-06-29) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.54.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.55.0`으로 갱신되어 있습니다.
+- **v3.55.0 주요 변경 사항**:
+  - `config/public-config.js`에서 `TARGET_ENV='DEV'`일 때 DEV Kakao Map Key(`f880c1746c4cd81e2fa54df45ebea41d`), `TARGET_ENV='PROD'`일 때 PROD Kakao Map Key(`0ef8925b28135eeac474bc411c456170`)를 사용하도록 분기했습니다.
+  - 전체 HTML 캐시 버스팅 참조를 v3.55.0으로 갱신했습니다.
 - **v3.54.0 주요 변경 사항**:
   - 상품 등록/수정 모달에서 카테고리 선택 옆 `+ 추가` 버튼으로 새 상품 카테고리를 바로 등록할 수 있습니다.
   - 새 카테고리명과 이모지를 `products.category` 코드 마스터에 저장하고, 저장 성공 시 선택박스에 즉시 반영해 방금 만든 카테고리로 상품을 저장할 수 있습니다.
