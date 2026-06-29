@@ -242,6 +242,7 @@ VALUES
   ('activity_logs.action', 'qr_toggle', 'QR 코드 토글', 4160, '{"category":"TALENT","emoji":"🔘"}'),
   ('activity_logs.action', 'qr_scan', 'QR 달란트 수령', 4170, '{"category":"TALENT","emoji":"📱"}'),
   ('activity_logs.action', 'PRODUCT_CREATE', '상품 등록', 5010, '{"category":"ORDER","emoji":"🛍️"}'),
+  ('activity_logs.action', 'PRODUCT_CATEGORY_CREATE', '상품 카테고리 등록', 5015, '{"category":"ORDER","emoji":"🏷️"}'),
   ('activity_logs.action', 'PRODUCT_UPDATE', '상품 수정', 5020, '{"category":"ORDER","emoji":"✏️"}'),
   ('activity_logs.action', 'PRODUCT_DELETE', '상품 삭제', 5030, '{"category":"ORDER","emoji":"🗑️"}'),
   ('activity_logs.action', 'PRODUCT_DEACTIVATE', '상품 비활성화', 5040, '{"category":"ORDER","emoji":"🚫"}'),

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Product Module - 달란트 상품 조회/관리 모듈
  */
 
@@ -81,7 +81,9 @@ function makeProductCategoryKey(label) {
     .replace(/[^a-z0-9]+/g, '_')
     .replace(/^_+|_+$/g, '')
     .slice(0, 40);
-  const base = asciiKey.length >= 2 ? asciiKey : `custom_${Date.now().toString(36)}`;
+  const base = asciiKey.length >= 2
+    ? asciiKey
+    : `custom_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 5)}`;
   const existing = new Set(getProductCategoryItems({ includeInactive: true }).map(item => item.key));
   let key = base;
   let seq = 2;

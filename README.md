@@ -12,12 +12,18 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.53.0` (`js/version.js` 기준, 2026-06-29) |
+| 현재 버전 | `v3.54.0` (`js/version.js` 기준, 2026-06-29) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.53.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.54.0`으로 갱신되어 있습니다.
+- **v3.54.0 주요 변경 사항**:
+  - 상품 등록/수정 모달에서 카테고리 선택 옆 `+ 추가` 버튼으로 새 상품 카테고리를 바로 등록할 수 있습니다.
+  - 새 카테고리명과 이모지를 `products.category` 코드 마스터에 저장하고, 저장 성공 시 선택박스에 즉시 반영해 방금 만든 카테고리로 상품을 저장할 수 있습니다.
+  - 이미 등록된 카테고리명을 입력하면 중복 생성 대신 기존 카테고리를 자동 선택합니다.
+  - 카테고리 추가 패널과 상품 이미지 드롭존을 다크 테마 배경/입력 색상에 맞게 보정했습니다.
+  - `PRODUCT_CATEGORY_CREATE` 로그/작업 이력 액션과 60등급 이상 상품 카테고리 INSERT 정책 SQL(`docs/TASK-058_product_category_policy.sql`)을 추가했습니다.
 - **v3.53.0 주요 변경 사항**:
   - 인증/권한 리디렉트 진단 로그 강화: `AUTH_SESSION_MISSING`, `AUTH_PROFILE_LOAD_FAIL`, `AUTH_REDIRECT`, `AUTH_PAGE_ACCESS_CHECK_FAIL` 액션 추가
   - 보호 페이지 진입 실패 시 세션 없음/만료, 첫 로그인 비밀번호 변경, 권한 등급 부족, 허용 권한 불일치, DB 페이지 접근 차단 사유와 page_id, 필요/실제 권한, 이동 대상을 로그에 기록
@@ -411,7 +417,7 @@ CHO-Talents/
 │   ├── table-sort.js              # 그리드 헤더 클릭 정렬 공통 유틸리티
 │   ├── slack-notify.js            # Slack 알림 공통 유틸리티 (Edge Function slack-notify 호출)
 │   ├── talent.js                  # 달란트 잔액/내역/지급/사용/반환
-│   ├── product.js                 # 상품 조회/등록/수정/삭제/비활성화/이미지 업로드
+│   ├── product.js                 # 상품 조회/등록/수정/삭제/비활성화/이미지 업로드/카테고리 추가
 │   └── version.js                 # 버전 정보와 변경 이력
 └── docs/                          # 작업 보고서, SQL, 구성 문서, 사용자 안내서, 역할별 가이드
 ```
@@ -550,7 +556,7 @@ flowchart TD
 | `admin/talents.html` | 40 | 학생/교사 탭별 달란트 체크박스 선택+일괄 지급, 수동 적립/사용, 반환(80+). 상세 팝업에 누적적립/총사용/총반환/잔여와 이력 페이징/페이지당 항목 수 설정 표시. 일반 교사는 담당 부서/반 제한 |
 | `admin/talent-items.html` | 60 | 달란트 지급 항목 등록/수정/활성화, 지급 규칙/설명 관리. 학생 항목은 주 1회 지급 규칙과 연동, 퀵 버튼 설정은 80등급 이상 |
 | `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), 수정(새 코드 재생성), 비활성화. 지정일 날짜+시간 또는 기간(from~to datetime) 설정, 위치 반경 100m~5km(기본 500m). 수령자 목록에 반환된 달란트 "반환" 배지 표시 |
-| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
+| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드, 상품 카테고리 추가. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
 | `admin/purchases.html` | 60 | 구매 관리: 4단계 처리, 모든 상태 탭에 부서/기간 필터(기본 오늘) + 기간 프리셋, 구매 확정 시 달란트 차감 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록/수정, 선택 삭제 |
 | `admin/logs.html` | 100 | 활동 로그 필터링(기본 1년) + 기간 프리셋, 상세 보기, 한글 액션 라벨 표시, 오류 로그 확인 처리, 소프트 삭제(삭제 대기) |
@@ -742,9 +748,9 @@ flowchart TD
 |---|---|
 | `docs/INITIAL_DATABASE_SETUP.sql` | 현재 테이블, RPC, RLS, Storage 버킷, 기본 데이터를 새 DB에 설치 |
 | `docs/INITIAL_DATABASE_SETUP.md` | SQL Editor 방식과 PowerShell/psql 자동 설치 방법 |
-| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트. 기본 실행 시 `docs/TASK-057_code_master.sql`도 합본에 포함 |
+| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트. 기본 실행 시 `docs/TASK-057_code_master.sql`과 `docs/TASK-058_product_category_policy.sql`도 합본에 포함 |
 
-SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실행 후 `docs/TASK-057_code_master.sql`을 이어서 실행합니다. PowerShell 설치 스크립트와 `-GenerateOnly` 합본 SQL은 `TASK-057_code_master.sql`을 기본 포함합니다.
+SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실행 후 `docs/TASK-057_code_master.sql`, `docs/TASK-058_product_category_policy.sql`을 이어서 실행합니다. PowerShell/Bash 설치 스크립트와 `-GenerateOnly` 합본 SQL은 두 파일을 기본 포함합니다.
 
 아래 SQL 파일들은 과거 작업별 변경 이력이며, 빈 새 DB에는 위 단일 설치 SQL을 우선 사용합니다:
 
@@ -760,6 +766,7 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-049_schema.sql` | v3.37.0: `profiles.last_login_at` 컬럼, `update_last_login()` RPC |
 | `docs/TASK-041_page_sizes.sql` | v3.40.0: `user_preferences.page_sizes` JSONB 컬럼 추가 |
 | `docs/TASK-057_code_master.sql` | v3.50.0: `code_groups`/`code_items` 코드 마스터, 텍스트 CHECK 제약 완화, 코드 컬럼 검증 트리거, `get_permission_rank()` 코드 기반 조회 |
+| `docs/TASK-058_product_category_policy.sql` | v3.54.0: 60등급 이상 상품 관리자가 상품 등록 모달에서 `products.category` 코드 항목을 추가할 수 있도록 RLS INSERT 정책 보강 |
 
 ## 관련 문서
 
