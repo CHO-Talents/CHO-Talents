@@ -518,6 +518,14 @@ CREATE POLICY code_items_manage ON public.code_items
   USING (public.get_permission_rank(public.get_my_role()) >= 100)
   WITH CHECK (public.get_permission_rank(public.get_my_role()) >= 100);
 
+DROP POLICY IF EXISTS code_items_product_category_insert ON public.code_items;
+CREATE POLICY code_items_product_category_insert ON public.code_items
+  FOR INSERT TO authenticated
+  WITH CHECK (
+    group_key = 'products.category'
+    AND public.get_permission_rank(public.get_my_role()) >= 60
+  );
+
 GRANT SELECT ON public.code_groups, public.code_items TO anon, authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.code_groups, public.code_items TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_code_value(text, text) TO anon, authenticated;
