@@ -2,9 +2,18 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.54.0',
+  current: '3.55.0',
   date: '2026-06-29',
   history: [
+    {
+      version: '3.55.0',
+      date: '2026-06-29',
+      title: '환경별 Kakao Map Key 분기',
+      changes: [
+        'public-config.js에서 TARGET_ENV가 DEV이면 DEV Kakao Map Key를, PROD이면 PROD Kakao Map Key를 사용하도록 분기',
+        '전체 HTML 캐시 버스팅 참조를 v3.55.0으로 갱신'
+      ]
+    },
     {
       version: '3.54.0',
       date: '2026-06-29',

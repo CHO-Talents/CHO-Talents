@@ -40,7 +40,7 @@
 - Kakao JavaScript key
 - GitHub 저장소 owner/repo/branch 같은 비밀이 아닌 메타데이터
 
-`TARGET_ENV` 값으로 `PROD` 또는 `DEV` 설정을 선택한다. 이 값은 Supabase `app_config.env`와 같아야 한다. 현재 `PROD` 부트스트랩 설정은 `https://rabakjtjtkelpskptnvi.supabase.co` 프로젝트를 바라본다.
+`TARGET_ENV` 값으로 `PROD` 또는 `DEV` 설정을 선택한다. 이 값은 Supabase `app_config.env`와 같아야 한다. 현재 `PROD` 부트스트랩 설정은 `https://rabakjtjtkelpskptnvi.supabase.co` 프로젝트를 바라본다. Kakao Maps JavaScript 키도 같은 `TARGET_ENV` 기준으로 선택하며, DEV는 `f880c1746c4cd81e2fa54df45ebea41d`, PROD는 `0ef8925b28135eeac474bc411c456170`을 사용한다.
 
 Supabase 접속 이후에는 `app_config` 테이블의 공개 설정을 `get_public_app_config()` RPC로 조회한다. 브라우저는 테이블을 직접 조회하지 않고 RPC 결과만 사용한다.
 
