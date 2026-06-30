@@ -2,9 +2,29 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.55.0',
+  current: '3.57.0',
   date: '2026-06-29',
   history: [
+    {
+      version: '3.57.0',
+      date: '2026-06-29',
+      title: 'Announcement management and login popup',
+      changes: [
+        'admin/notices.html added for evangelist-or-higher announcement create, edit, view, and active toggle workflows',
+        'index.html now shows active announcements after login and stores per-account "do not open again" dismissals',
+        'announcements and announcement_dismissals schema/RLS SQL added with audit/log action labels and documentation updates'
+      ]
+    },
+    {
+      version: '3.56.0',
+      date: '2026-06-29',
+      title: 'Kakao Map SDK key precedence fix',
+      changes: [
+        'supabase-config.js: keep the Kakao Map Key from public-config.js when it is explicitly set for the current environment',
+        'DEV app_config seed SQL now uses the DEV Kakao Map Key',
+        'admin/talent-qr.html cache-busting references updated to v3.56.0'
+      ]
+    },
     {
       version: '3.55.0',
       date: '2026-06-29',
