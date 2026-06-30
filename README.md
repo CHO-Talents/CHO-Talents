@@ -1,6 +1,6 @@
 # CHO-Talents
 
-초등부 달란트 운영을 위한 정적 웹 기반 관리 사이트입니다. 학생과 교사는 달란트 잔액과 상점 상품, 구매 내역, Q&A를 확인하고 구매 신청을 하며, 부서 담당 교사 이상 권한자는 권한 범위 안에서 달란트, 사용자, 상품, 구매, 부서, 질문, 보고서, 로그를 관리합니다.
+초등부 달란트 운영을 위한 정적 웹 기반 관리 사이트입니다. 학생과 교사는 달란트 잔액과 상점 상품, 구매 내역, Q&A를 확인하고 구매 신청을 하며, 부서 담당 교사 이상 권한자는 권한 범위 안에서 달란트, 사용자, 상품, 구매, 부서, 질문, 공지, 보고서, 로그를 관리합니다.
 
 **Live:** https://cho-talents.github.io/CHO-Talents/
 
@@ -12,12 +12,20 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.55.0` (`js/version.js` 기준, 2026-06-29) |
+| 현재 버전 | `v3.57.0` (`js/version.js` 기준, 2026-06-29) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.55.0`으로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.57.0`으로 갱신되어 있습니다.
+- **v3.57.0 주요 변경 사항**:
+  - `admin/notices.html` 공지 관리 화면을 추가해 전도사님(90+) 이상이 공지 제목/내용을 등록, 조회, 수정하고 활성 토글을 관리할 수 있습니다.
+  - 활성 공지는 로그인 후 메인 화면에서 팝업으로 표시되며, 사용자가 `다시 열지 않음`을 누르면 해당 계정에는 같은 공지가 다시 표시되지 않습니다.
+  - `announcements`, `announcement_dismissals` 테이블/RLS SQL(`docs/TASK-059_announcements.sql`)과 공지 로그/작업 이력 액션 라벨을 추가했습니다.
+- **v3.56.0 주요 변경 사항**:
+  - `public-config.js`에 명시된 환경별 Kakao Map Key가 Supabase `app_config`의 오래된 값으로 덮어써지지 않도록 수정했습니다.
+  - DEV `app_config` 초기 SQL의 `KAKAO_MAP_KEY`를 DEV JavaScript 키(`f880c1746c4cd81e2fa54df45ebea41d`)로 갱신했습니다.
+  - QR 관리 페이지의 캐시 버스팅 참조를 v3.56.0으로 갱신했습니다.
 - **v3.55.0 주요 변경 사항**:
   - `config/public-config.js`에서 `TARGET_ENV='DEV'`일 때 DEV Kakao Map Key(`f880c1746c4cd81e2fa54df45ebea41d`), `TARGET_ENV='PROD'`일 때 PROD Kakao Map Key(`0ef8925b28135eeac474bc411c456170`)를 사용하도록 분기했습니다.
   - 전체 HTML 캐시 버스팅 참조를 v3.55.0으로 갱신했습니다.
@@ -399,6 +407,7 @@ CHO-Talents/
 │   ├── log-rules.html             # 로그 작성 룰 문서 (80+)
 │   ├── slack-rules.html           # Slack 알림 룰 문서 (80+)
 │   ├── audit-rules.html           # 작업 이력 작성 룰 문서 (80+)
+│   ├── notices.html               # 공지 관리 (90+)
 │   ├── versions.html              # 버전 이력
 │   ├── page-access.html           # 권한별 페이지 접근/요소 가시성 관리 (100+)
 │   ├── page-features.html         # 권한별 페이지 기능 설정 관리 (100+)
@@ -484,7 +493,7 @@ CHO-Talents/
 |---|---|---:|---|---|
 | 최고 관리자 | `admin` + `is_super_admin` | 110 | `index.html` | 관리자 포함 전체 사용자 관리, 보고서 초기화, 페이지 접근/기능/감사/로그 관리 |
 | 관리자 | `admin` | 100 | `index.html` | 전체 관리, 페이지 접근/기능/감사/로그 관리, 로그 삭제 대기 처리 |
-| 전도사님 | `evangelist` | 90 | `index.html` | 달란트 항목 관리, 상품 삭제, 부서 즉시 이동, 전체 구매 처리 |
+| 전도사님 | `evangelist` | 90 | `index.html` | 달란트 항목 관리, QR/공지 관리, 상품 삭제, 부서 즉시 이동, 전체 구매 처리 |
 | 부장 교사 | `chief` | 80 | `index.html` | 대시보드, 부서/관리자/보고서/버전, 달란트 반환 처리 (사용자/관리자 관리는 조회 전용) |
 | 구매 담당 교사 | `purchase_teacher` | 70 | `index.html` | 부서 담당 교사와 동일 접근, 구매 관리에서 전체 부서 주문 처리 |
 | 부서 담당 교사 | `dept_teacher` | 60 | `index.html` | 담당 부서 중심 사용자/부서/달란트/상품/구매/Q&A 답변 관리 |
@@ -525,6 +534,7 @@ flowchart TD
   Home --> AdminShop["admin/shop.html<br/>60+"]
   Home --> Purchases["admin/purchases.html<br/>60+"]
   Home --> Reports["admin/reports.html<br/>80+"]
+  Home --> Notices["admin/notices.html<br/>90+"]
   Home --> Versions["admin/versions.html<br/>80+"]
   Home --> PageAccess["admin/page-access.html<br/>100+"]
   Home --> PageFeatures["admin/page-features.html<br/>100+"]
@@ -561,6 +571,7 @@ flowchart TD
 | `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), 수정(새 코드 재생성), 비활성화. 지정일 날짜+시간 또는 기간(from~to datetime) 설정, 위치 반경 100m~5km(기본 500m). 수령자 목록에 반환된 달란트 "반환" 배지 표시 |
 | `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드, 상품 카테고리 추가. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
 | `admin/purchases.html` | 60 | 구매 관리: 4단계 처리, 모든 상태 탭에 부서/기간 필터(기본 오늘) + 기간 프리셋, 구매 확정 시 달란트 차감 |
+| `admin/notices.html` | 90 | 공지 등록/조회/수정, 공지 활성 토글. 활성 공지는 로그인 후 메인 화면에 팝업 표시되고 계정별 다시 열지 않음 상태를 저장 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록/수정, 선택 삭제 |
 | `admin/logs.html` | 100 | 활동 로그 필터링(기본 1년) + 기간 프리셋, 상세 보기, 한글 액션 라벨 표시, 오류 로그 확인 처리, 소프트 삭제(삭제 대기) |
 | `admin/versions.html` | 80 | 배포 버전과 변경 이력 확인 |
@@ -594,6 +605,7 @@ flowchart TD
 - **탭 전환 재검증:** `visibilitychange` 이벤트 시 세션 만료 여부를 다시 확인합니다.
 - 최초 로그인 사용자는 `change-password.html` 외 화면에 접근하려 하면 비밀번호 변경 화면으로 이동합니다.
 - 일반 로그인 성공 후에는 모든 권한이 `index.html`로 이동하고, 상단 메뉴에서 권한에 맞는 기능만 표시됩니다.
+- 로그인 후 활성 공지가 있으면 `index.html`에서 공지 팝업을 표시합니다. `다시 열지 않음`을 선택하면 `announcement_dismissals`에 계정별 숨김 상태가 저장됩니다.
 - 권한이 부족한 보호 페이지에 접근하면 현재 통합 기본 화면인 `index.html`로 이동합니다.
 - 승인 대기 계정 로그인 시 "승인 대기 중" 안내, 거부 계정은 "거부됨" 안내를 구분 표시합니다.
 
@@ -707,6 +719,8 @@ flowchart TD
 | Q&A | `qna` | FAQ, 사용자 질문, 답변, 공개 여부 |
 | QR 코드 | `talent_qr_codes` | QR 코드 생성/유효기간(`valid_from`/`valid_until`, 지정일 시간 범위 포함)/1회·반복·위치 제한 관리 |
 | QR 스캔 | `talent_qr_scans` | QR 코드 스캔 이력 (중복 수령 방지) |
+| 공지 | `announcements` | 운영자가 등록한 공지 제목/내용, 활성 여부, 작성/수정자 기록 |
+| 공지 숨김 | `announcement_dismissals` | 사용자별 공지 다시 열지 않음 상태 |
 | 로그 | `activity_logs` | 오류/운영 활동 기록, 소프트 삭제, `activity_logs.action` 코드 라벨과 `details._actionLabel` 저장 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
 | 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |
@@ -738,6 +752,7 @@ flowchart TD
 - 아이디(`username`)는 관리자에게 전체 표시되고, 비관리자는 본인 아이디만 볼 수 있습니다. 동명이인은 표시명에 번호를 붙여 구분합니다.
 - 소속 부서/반 변경은 부서 이동 요청/승인 흐름으로 처리합니다 (수정 모달에서 부서 변경 불가).
 - 상품 삭제와 달란트 항목 관리는 90등급 이상에 제한됩니다.
+- 공지 등록/수정/활성 토글은 90등급 이상만 가능하며, 활성 공지는 로그인 사용자에게 읽기 허용됩니다.
 - 페이지 접근/페이지 기능/작업 이력/로그 화면은 100등급 이상만 접근합니다.
 - 교사가 `shop.html`에 접근하면 기본 필터가 교사용으로 자동 설정됩니다.
 - 영문 DB/RPC 에러는 `tErr()` 함수를 통해 한글로 변환되어 사용자에게 표시됩니다.
@@ -770,6 +785,7 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-041_page_sizes.sql` | v3.40.0: `user_preferences.page_sizes` JSONB 컬럼 추가 |
 | `docs/TASK-057_code_master.sql` | v3.50.0: `code_groups`/`code_items` 코드 마스터, 텍스트 CHECK 제약 완화, 코드 컬럼 검증 트리거, `get_permission_rank()` 코드 기반 조회 |
 | `docs/TASK-058_product_category_policy.sql` | v3.54.0: 60등급 이상 상품 관리자가 상품 등록 모달에서 `products.category` 코드 항목을 추가할 수 있도록 RLS INSERT 정책 보강 |
+| `docs/TASK-059_announcements.sql` | v3.57.0: 공지 관리용 `announcements`, `announcement_dismissals` 테이블과 RLS, 공지 로그 액션 코드 |
 
 ## 관련 문서
 
