@@ -120,7 +120,30 @@ CREATE TABLE IF NOT EXISTS public.talent_transactions (
   created_by uuid REFERENCES public.profiles(id),
   talent_item_id uuid REFERENCES public.talent_items(id),
   source text DEFAULT 'admin',
+  override_week_limit boolean DEFAULT false,
+  override_reason text,
   created_at timestamptz DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public.talent_exception_requests (
+  id uuid PRIMARY KEY DEFAULT extensions.gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  user_display_name text,
+  department_id uuid REFERENCES public.departments(id),
+  talent_item_id uuid NOT NULL REFERENCES public.talent_items(id),
+  talent_item_name text,
+  amount integer NOT NULL CHECK (amount > 0),
+  description text,
+  override_reason text NOT NULL,
+  status text NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
+  requested_by uuid REFERENCES public.profiles(id),
+  requested_by_name text,
+  requested_at timestamptz NOT NULL DEFAULT now(),
+  reviewed_by uuid REFERENCES public.profiles(id),
+  reviewed_by_name text,
+  reviewed_at timestamptz,
+  review_note text,
+  approved_transaction_id uuid REFERENCES public.talent_transactions(id)
 );
 
 CREATE TABLE IF NOT EXISTS public.products (
@@ -354,6 +377,15 @@ CREATE INDEX IF NOT EXISTS idx_department_transfer_requests_user_id
   ON public.department_transfer_requests(user_id);
 CREATE INDEX IF NOT EXISTS idx_talent_transactions_user ON public.talent_transactions(user_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_talent_transactions_item ON public.talent_transactions(talent_item_id);
+CREATE INDEX IF NOT EXISTS idx_talent_exception_requests_status
+  ON public.talent_exception_requests(status, requested_at DESC);
+CREATE INDEX IF NOT EXISTS idx_talent_exception_requests_user
+  ON public.talent_exception_requests(user_id, requested_at DESC);
+CREATE INDEX IF NOT EXISTS idx_talent_exception_requests_dept
+  ON public.talent_exception_requests(department_id, requested_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_talent_exception_requests_pending_item
+  ON public.talent_exception_requests(user_id, talent_item_id)
+  WHERE status = 'pending';
 CREATE INDEX IF NOT EXISTS idx_products_active_target ON public.products(is_active, target_role);
 CREATE INDEX IF NOT EXISTS idx_product_orders_user_status ON public.product_orders(user_id, status);
 CREATE INDEX IF NOT EXISTS idx_product_orders_status ON public.product_orders(status, created_at DESC);
@@ -833,7 +865,9 @@ CREATE OR REPLACE FUNCTION public.give_talent(
   p_amount integer DEFAULT 0,
   p_description text DEFAULT '',
   p_created_by uuid DEFAULT NULL,
-  p_talent_item_id uuid DEFAULT NULL
+  p_talent_item_id uuid DEFAULT NULL,
+  p_override_week_limit boolean DEFAULT false,
+  p_override_reason text DEFAULT NULL
 )
 RETURNS json
 LANGUAGE plpgsql
@@ -855,6 +889,7 @@ DECLARE
   v_actual_amount integer;
   v_actual_desc text;
   v_week_count integer;
+  v_override_week_limit boolean;
 BEGIN
   SELECT permission_level, department_id, class_number, managed_dept_id
   INTO v_caller_perm, v_caller_dept, v_caller_class, v_caller_managed_dept
@@ -864,6 +899,10 @@ BEGIN
   v_caller_rank := public.get_permission_rank(v_caller_perm);
   IF v_caller_perm IS NULL OR v_caller_rank < 40 THEN
     RETURN json_build_object('success', false, 'error', 'Unauthorized');
+  END IF;
+  v_override_week_limit := COALESCE(p_override_week_limit, false);
+  IF v_override_week_limit AND v_caller_rank < 90 THEN
+    RETURN json_build_object('success', false, 'error', '예외 지급은 전도사님 이상만 가능합니다');
   END IF;
 
   SELECT user_type, department_id, class_number
@@ -914,7 +953,7 @@ BEGIN
       AND created_at >= date_trunc('week', now() AT TIME ZONE 'Asia/Seoul')
       AND created_at < date_trunc('week', now() AT TIME ZONE 'Asia/Seoul') + interval '7 days';
 
-    IF v_week_count > 0 THEN
+    IF v_week_count > 0 AND NOT v_override_week_limit THEN
       RETURN json_build_object('success', false, 'error', 'Already given this item this week: ' || v_item.name);
     END IF;
   ELSE
@@ -923,6 +962,9 @@ BEGIN
     END IF;
     v_actual_amount := p_amount;
     v_actual_desc := COALESCE(NULLIF(p_description, ''), 'Manual');
+  END IF;
+  IF v_override_week_limit AND (p_override_reason IS NULL OR btrim(p_override_reason) = '') THEN
+    RETURN json_build_object('success', false, 'error', '예외 지급 사유를 입력해주세요');
   END IF;
 
   IF v_actual_amount > 100 THEN
@@ -935,10 +977,10 @@ BEGIN
   RETURNING talent_balance INTO v_new_balance;
 
   INSERT INTO public.talent_transactions (
-    user_id, type, amount, balance_after, description, created_by, talent_item_id
+    user_id, type, amount, balance_after, description, created_by, talent_item_id, override_week_limit, override_reason
   ) VALUES (
     p_user_id, 'earn', v_actual_amount, v_new_balance, v_actual_desc,
-    COALESCE(p_created_by, auth.uid()), p_talent_item_id
+    COALESCE(p_created_by, auth.uid()), p_talent_item_id, v_override_week_limit, p_override_reason
   )
   RETURNING id INTO v_txn_id;
 
@@ -1450,6 +1492,7 @@ ALTER TABLE public.registration_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.department_transfer_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.talent_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.talent_transactions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.talent_exception_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.product_orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.qna ENABLE ROW LEVEL SECURITY;
@@ -1529,6 +1572,45 @@ CREATE POLICY tt_select_perm ON public.talent_transactions FOR SELECT
   USING (auth.uid() = user_id OR public.get_permission_rank(public.get_my_role()) >= 60);
 DROP POLICY IF EXISTS tt_insert_system ON public.talent_transactions;
 CREATE POLICY tt_insert_system ON public.talent_transactions FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS talent_exception_requests_select ON public.talent_exception_requests;
+CREATE POLICY talent_exception_requests_select ON public.talent_exception_requests
+  FOR SELECT TO authenticated
+  USING (
+    public.get_permission_rank(auth.uid()) >= 80
+    OR (
+      public.get_permission_rank(auth.uid()) >= 60
+      AND (
+        requested_by = auth.uid()
+        OR department_id = (
+          SELECT COALESCE(p.managed_dept_id, p.department_id)
+          FROM public.profiles p
+          WHERE p.id = auth.uid()
+        )
+      )
+    )
+  );
+DROP POLICY IF EXISTS talent_exception_requests_insert ON public.talent_exception_requests;
+CREATE POLICY talent_exception_requests_insert ON public.talent_exception_requests
+  FOR INSERT TO authenticated
+  WITH CHECK (
+    public.get_permission_rank(auth.uid()) >= 60
+    AND status = 'pending'
+    AND requested_by = auth.uid()
+    AND (
+      public.get_permission_rank(auth.uid()) >= 80
+      OR department_id = (
+        SELECT COALESCE(p.managed_dept_id, p.department_id)
+        FROM public.profiles p
+        WHERE p.id = auth.uid()
+      )
+    )
+  );
+DROP POLICY IF EXISTS talent_exception_requests_update ON public.talent_exception_requests;
+CREATE POLICY talent_exception_requests_update ON public.talent_exception_requests
+  FOR UPDATE TO authenticated
+  USING (public.get_permission_rank(auth.uid()) >= 90)
+  WITH CHECK (public.get_permission_rank(auth.uid()) >= 90);
 
 -- products / orders
 DROP POLICY IF EXISTS products_select_public ON public.products;
@@ -1722,9 +1804,9 @@ GRANT EXECUTE ON FUNCTION public.admin_create_user(text, text, text, uuid, uuid,
 GRANT EXECUTE ON FUNCTION public.admin_update_user(uuid, text, uuid, uuid, text, text, integer) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.admin_delete_user(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.admin_reset_password(uuid, text) TO authenticated;
-REVOKE EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid) FROM PUBLIC;
-REVOKE EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid) FROM anon;
-GRANT EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid) TO authenticated;
+REVOKE EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid, boolean, text) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid, boolean, text) FROM anon;
+GRANT EXECUTE ON FUNCTION public.give_talent(uuid, integer, text, uuid, uuid, boolean, text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.use_talent(uuid, integer, text, uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.request_product_order(uuid, uuid, text, integer) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.cancel_product_order(uuid, uuid) TO authenticated;

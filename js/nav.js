@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Centralized Navigation Module
  * Generates and manages navigation for all pages
  */
@@ -8,6 +8,7 @@ const NAV_MENU = [
     id: 'intro',
     label: '소개',
     items: [
+      { href: 'admin/notices.html', label: '공지 사항', minPerm: 40 },
       { href: 'guide.html', label: '가이드', guide: true },
       { href: 'earn-talents.html', label: '달란트 적립' },
       { href: 'qna.html', label: 'Q & A', badgeId: 'navQnaBadge' }
@@ -21,6 +22,7 @@ const NAV_MENU = [
       { href: 'my-talents.html', label: '내 달란트', id: 'navMyTalent', authOnly: true },
       { href: 'talent-receive.html', label: '달란트 수령', authOnly: true },
       { href: 'admin/talents.html', label: '달란트 관리', minPerm: 40 },
+      { href: 'admin/talent-adjustments.html', label: '예외 지급/반환 관리', minPerm: 60 },
       { href: 'admin/talent-items.html', label: '달란트 항목 관리', minPerm: 60 },
       { href: 'admin/talent-stats.html', label: '달란트 통계', minPerm: 60 },
       { href: 'admin/talent-qr.html', label: '달란트 QR 관리', minPerm: 90 }
@@ -60,7 +62,6 @@ const NAV_MENU = [
       { href: 'admin/log-rules.html', label: '로그 작성 룰', minPerm: 80 },
       { href: 'admin/slack-rules.html', label: 'Slack 알림 룰', minPerm: 80 },
       { href: 'admin/audit-rules.html', label: '작업 이력 작성 룰', minPerm: 80 },
-      { href: 'admin/notices.html', label: '공지 관리', minPerm: 90 },
       { href: 'admin/versions.html', label: '버전', minPerm: 80 },
       { href: 'admin/reports.html', label: '보고서', minPerm: 80 },
       { href: 'admin/audit.html', label: '작업 이력', minPerm: 100 },
