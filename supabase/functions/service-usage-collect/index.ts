@@ -62,8 +62,8 @@ async function authorize(req: Request): Promise<{ ok: boolean; userId: string | 
     .select("permission_level,is_super_admin")
     .eq("id", userData.user.id)
     .single();
-  if (profileError || permissionRank(profile?.permission_level, !!profile?.is_super_admin) < 80) {
-    return { ok: false, userId: userData.user.id, trigger: "manual", error: "chief permission required" };
+  if (profileError || permissionRank(profile?.permission_level, !!profile?.is_super_admin) < 100) {
+    return { ok: false, userId: userData.user.id, trigger: "manual", error: "admin permission required" };
   }
   return { ok: true, userId: userData.user.id, trigger: "manual" };
 }
