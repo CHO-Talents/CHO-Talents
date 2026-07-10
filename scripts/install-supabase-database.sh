@@ -50,8 +50,10 @@ Options:
   -h, --help                 Show this help.
 
 The script automatically appends docs/TASK-057_code_master.sql,
-docs/TASK-058_product_category_policy.sql, and
-docs/TASK-068_product_category_page_and_sort_order.sql when no --extra-sql-path is provided.
+docs/TASK-058_product_category_policy.sql,
+docs/TASK-068_product_category_page_and_sort_order.sql, and
+docs/TASK-069_product_detail_image.sql, and
+docs/TASK-070_service_usage_monitoring.sql when no --extra-sql-path is provided.
 USAGE
 }
 
@@ -153,7 +155,7 @@ SQL
   emit_config_row 'GITHUB_REPO' "$GITHUB_REPO_VALUE" false true 'GitHub repository name metadata'
   emit_config_row 'GITHUB_BRANCH' "$GITHUB_BRANCH_VALUE" false true 'Default deployment/source branch metadata'
   emit_config_row 'GITHUB_PAT' 'env:GITHUB_PAT' true false 'Secret reference only. Store the real value in local, CI, server, or Edge Function environment variables.'
-  emit_config_row 'SUPABASE_ACCESS_TOKEN' 'env:SUPABASE_ACCESS_TOKEN' true false 'Secret reference only. Used by Supabase CLI or Management API automation.'
+  emit_config_row 'SB_MANAGEMENT_ACCESS_TOKEN' 'env:SB_MANAGEMENT_ACCESS_TOKEN' true false 'Secret reference only. Used by Supabase Management API automation.'
   emit_config_row 'SUPABASE_SERVICE_ROLE_KEY' 'env:SUPABASE_SERVICE_ROLE_KEY' true false 'Server-only key. Never expose this value to browser code.'
   emit_config_row 'SUPABASE_DB_CONNECTION_STRING' 'env:SUPABASE_DB_CONNECTION_STRING' true false 'Database migration/admin connection string reference.'
   emit_config_row 'SLACK_WEBHOOK_PART1' 'env:SLACK_WEBHOOK_PART1' true false 'Slack Part 1 channel webhook. Store the real value as an Edge Function secret.'
@@ -257,6 +259,14 @@ if [ "${#EXTRA_SQL_PATHS[@]}" -eq 0 ]; then
   DEFAULT_PRODUCT_CATEGORY_PAGE_SQL="$ROOT_DIR/docs/TASK-068_product_category_page_and_sort_order.sql"
   if [ -f "$DEFAULT_PRODUCT_CATEGORY_PAGE_SQL" ]; then
     EXTRA_SQL_PATHS+=("$DEFAULT_PRODUCT_CATEGORY_PAGE_SQL")
+  fi
+  DEFAULT_PRODUCT_DETAIL_IMAGE_SQL="$ROOT_DIR/docs/TASK-069_product_detail_image.sql"
+  if [ -f "$DEFAULT_PRODUCT_DETAIL_IMAGE_SQL" ]; then
+    EXTRA_SQL_PATHS+=("$DEFAULT_PRODUCT_DETAIL_IMAGE_SQL")
+  fi
+  DEFAULT_SERVICE_USAGE_SQL="$ROOT_DIR/docs/TASK-070_service_usage_monitoring.sql"
+  if [ -f "$DEFAULT_SERVICE_USAGE_SQL" ]; then
+    EXTRA_SQL_PATHS+=("$DEFAULT_SERVICE_USAGE_SQL")
   fi
 fi
 
