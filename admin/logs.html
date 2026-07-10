@@ -204,10 +204,9 @@
     })();
 
     function setLogPeriod(type) {
-      const today = new Date();
-      const todayStr = today.toISOString().slice(0, 10);
+      const todayStr = formatKSTDateInput();
       let fromStr = todayStr;
-      if (type === 'week') { const d = new Date(today); d.setDate(d.getDate() - 6); fromStr = d.toISOString().slice(0, 10); }
+      if (type === 'week') { fromStr = addDateInputDays(todayStr, -6); }
       else if (type === 'month') { fromStr = todayStr.slice(0, 8) + '01'; }
       else if (type === 'year') { fromStr = todayStr.slice(0, 4) + '-01-01'; }
       document.getElementById('dateFrom').value = fromStr;
