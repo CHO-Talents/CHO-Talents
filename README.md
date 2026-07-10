@@ -12,12 +12,31 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.67.0` (`js/version.js` 기준, 2026-07-08) |
+| 현재 버전 | `v3.70.0` (`js/version.js` 기준, 2026-07-10) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.67.0`로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.70.0`로 갱신되어 있습니다.
+- **v3.70.0 주요 변경 사항**:
+  - `운영 > 로그` 아래에 부장 교사(80+) 이상 전용 `서비스 통계` 페이지를 추가했습니다.
+  - GitHub, Supabase, Kakao Developers, Slack의 무료 할당량, 현재/남은 값과 사용률, 기간 종료 예상 사용률, 30일 추이를 표시합니다.
+  - 공식 관리 API·Database 직접값·프로젝트 호출 계측을 6시간마다 병합하고, 70%·85%·95% 도달 시 운영관리 Slack 채널에 단계별 알림을 보냅니다.
+  - 페이지 트래픽, Supabase 요청/응답량, Kakao 지도 SDK/장소 검색, Slack Webhook 성공·실패를 개인정보 없이 누적합니다.
+  - TASK-070 서비스 통계 스키마/RLS/RPC, Edge Function, Cron/Vault 설정 SQL과 Secret 설정 문서를 추가했습니다.
+- **v3.69.0 주요 변경 사항**:
+  - `공지 사항` 열람 현황의 확인자/미확인자 스위치를 `전체/확인자/미확인자` 콤보박스 필터로 변경했습니다.
+  - `상품 관리` 이미지를 구매 카드용 썸네일과 상세 모달 설명 아래에 표시되는 상세 설명 이미지로 분리했습니다. DB에는 `products.detail_image_url` 컬럼을 추가합니다.
+  - 사용자/관리자/부서/달란트/달란트 항목/달란트 통계/QR 관리 주요 그리드에서 로우 클릭으로 상세 또는 수정 모달이 열리도록 정리했습니다.
+  - `달란트 수령` 최근 수령 내역의 지급자 표시는 실제 지급자 이름을 사용하며, 관리자 권한에서는 이름 옆에 아이디도 표시합니다.
+  - `달란트 QR 관리` 수령자 모달을 사용자별 묶음 목록으로 바꾸고 사용자 유형, 부서, 이름/아이디 검색 필터와 지급 항목 상세 영역을 추가했습니다.
+  - `로그 작성 룰`에 페이지별 발생 조건, 로그 항목, 데이터 참조 위치, Slack 알림 항목 표를 추가했습니다.
+- **v3.68.0 주요 변경 사항**:
+  - `공지 사항` 열람 현황 모달 상단에 공지 등록일시와 등록자 정보를 표시하고, 그리드 맨 왼쪽에 사용자 유형 열을 추가했습니다.
+  - 공지 열람 현황에서 확인자/미확인자를 스위치 필터로 나누어 조회할 수 있습니다.
+  - `상품 카테고리 관리` 그리드에서 코드 열을 숨기고, 카테고리 로우 클릭 시 수정 모달이 열리도록 개선했습니다.
+  - `상품 구매` 최초 로드 정렬을 카테고리 순번 그룹화 후 상품 정렬 순번 → 상품명 기준으로 보정했습니다.
+  - `js/version.js`에 v3.60.0 이하 과거 버전 이력을 병합해 버전 이력 페이지가 전체 운영 변경 내역을 표시하도록 복구했습니다.
 - **v3.67.0 주요 변경 사항**:
   - `예외 지급/반환 관리` 요약 카드 색상과 다크 모드 그리드 hover 대비를 각 그리드 색상 기준으로 개선했습니다.
   - `상품 관리`에서 카테고리 관리 패널을 제거하고 구매 담당 교사(70+) 이상 전용 `상품 카테고리 관리` 페이지를 추가했습니다.
@@ -450,6 +469,7 @@ CHO-Talents/
 │   ├── purchases.html             # 구매 관리 (4단계 구매 흐름)
 │   ├── reports.html               # 작업 보고서 조회 + JS 시더
 │   ├── logs.html                  # 활동 로그 조회/확인/삭제 대기
+│   ├── service-stats.html         # 외부 서비스 무료 할당량/사용량 통계 (80+)
 │   ├── log-rules.html             # 로그 작성 룰 문서 (80+)
 │   ├── slack-rules.html           # Slack 알림 룰 문서 (80+)
 │   ├── audit-rules.html           # 작업 이력 작성 룰 문서 (80+)
@@ -490,6 +510,7 @@ CHO-Talents/
 - **Security:** RLS 정책과 `SECURITY DEFINER` RPC로 사용자/달란트/로그 등 민감 데이터 접근 제어
 - **에러 처리:** `tErr()` 함수로 영문 DB 에러를 한글로 자동 변환, 전체 기능에 `logError`/`logWarn`/`logInfo` 로깅
 - **Slack 알림:** 부서별/유형별 채널 분리 라우팅. 브라우저에서 `js/slack-notify.js` → Supabase Edge Function `slack-notify` → 채널별 Slack Webhook 경로로 전송
+- **서비스 통계:** 브라우저 계측 + Database 직접 집계 + `service-usage-collect` Edge Function의 GitHub/Supabase 공식 API 조회를 병합. 6시간 주기 수집과 70/85/95% 운영 채널 알림
 - **공통 코드 관리:** 브라우저는 `js/codes.js`의 기본 코드북을 우선 사용하고, DB에 `code_items`가 있으면 활성 코드/라벨/정렬/색상 값을 불러와 덮어씁니다.
 - **버전 관리:** 모든 페이지는 고정 `?v=` 쿼리 대신 `js/version.js`가 최신 버전을 조회하고, 구버전 자산/세션을 감지하면 자산 재검증 또는 재로그인을 유도합니다.
 
@@ -526,7 +547,8 @@ CHO-Talents/
 
 - **클라이언트:** `js/slack-notify.js`의 `sendSlackNotify(type, data)` — fire-and-forget 방식, 동일 알림 5초 throttle
 - **서버:** Supabase Edge Function `slack-notify` — 부서/유형 기반 Webhook Secret 동적 선택, Slack Block Kit 메시지 포맷
-- **배포 참고:** Edge Function 소스는 `docs/edge-function-slack-notify.ts`에 포함
+- **배포 참고:** Edge Function 진입점은 `supabase/functions/slack-notify/index.ts`, 공통 구현은 `supabase/functions/_shared/slack-notify.ts`
+- **사용량 수집:** `supabase/functions/service-usage-collect/index.ts`가 GitHub/Supabase API와 프로젝트 계측값을 수집하고 할당량 단계별 알림을 운영 채널에 전송
 - **부서 매핑:** Edge Function 내부에서 부서명(1부~5부, 예배부)을 Secret Name으로 변환하여 라우팅
 
 ## 사용자 권한 체계
@@ -590,6 +612,7 @@ flowchart TD
   Home --> PageFeatures["admin/page-features.html<br/>100+"]
   Home --> Audit["admin/audit.html<br/>100+"]
   Home --> Logs["admin/logs.html<br/>100+"]
+  Home --> ServiceStats["admin/service-stats.html<br/>80+"]
   Home -.-> PagePerms["admin/page-permissions.html<br/>100+ 직접 주소 접근"]
 ```
 
@@ -603,8 +626,8 @@ flowchart TD
 | `guide.html` | 메인, Q&A, 상점, 내 달란트 | 사이트 이용 방법을 카드/스텝 형태로 안내 |
 | `qna.html` | 메인, 학생 가이드 | FAQ 공개 조회, 로그인 사용자 질문 등록, 60등급 이상 답변/FAQ 등록 |
 | `earn-talents.html` | 메인, 상점, 내 달란트 | 달란트 적립 방법 안내. `talent_items` 활성 항목의 지급 수량을 카드별 `+N 달란트` 배지로 표시 |
-| `shop.html` | 메인, 적립 안내, 내 달란트, 내 구매 상품 | 학생용 상품 공개 조회. 교사/60등급 이상은 교사용 탭. 로그인 시 구매 신청, 40등급 이상은 대리 구매 가능 |
-| `talent-receive.html` | 로그인 필요 | QR 코드 카메라 스캔/코드 입력 수령. 결과 메시지는 카메라 영역 위에 표시되며, 위치 제한 QR에서 기기/브라우저 위치 권한이 차단되면 알림창과 화면 메시지를 표시 |
+| `shop.html` | 메인, 적립 안내, 내 달란트, 내 구매 상품 | 학생용 상품 공개 조회. 교사/60등급 이상은 교사용 탭. 로그인 시 구매 신청, 40등급 이상은 대리 구매 가능. 상품 상세 모달은 설명을 먼저 보여 주고, 상세 설명 이미지(`products.detail_image_url`)가 있으면 설명 아래에 표시 |
+| `talent-receive.html` | 로그인 필요 | QR 코드 카메라 스캔/코드 입력 수령. 결과 메시지는 카메라 영역 위에 표시되며, 위치 제한 QR에서 기기/브라우저 위치 권한이 차단되면 알림창과 화면 메시지를 표시. 최근 수령 내역은 실제 지급자 이름을 표시하고, 관리자 권한은 지급자 아이디도 함께 표시 |
 | `my-talents.html` | 로그인 필요 | 누적 적립/예외 지급/반환/사용 완료/사용 대기/사용 가능 잔액, 달란트 내역(적립/예외/사용/반환 구분), 구매 내역 조회 |
 | `my-orders.html` | 로그인 필요 | 본인 구매 신청 내역과 4단계 진행 상태 조회 |
 
@@ -613,20 +636,21 @@ flowchart TD
 | 페이지 | 최소 등급 | 주요 기능 |
 |---|---:|---|
 | `admin/index.html` | 60 | 사용자/부서/보고서 요약, 가입 대기자 수. 미확인 ERROR+ 카드/알림/최근 이슈 로그는 100등급 이상(클릭 시 로그 이동). 바로가기에 달란트 통계/QR 관리 포함 |
-| `admin/users.html` | 60 | 사용자 목록, 권한 범위 내 수정/삭제/비밀번호 초기화, 가입 신청 처리, 부서 이동 요청/승인 |
-| `admin/departments.html` | 60 | 부서 등록/수정/비활성화, 반 개수 관리, 부서별 인원/담당자 확인 |
-| `admin/managers.html` | 80 | 기존 사용자를 관리자 계열 권한으로 승격/수정, 담당 부서 지정 |
-| `admin/talents.html` | 40 | 학생/교사 탭별 달란트 체크박스 선택+일괄 지급, 전도사님(90+) 예외 지급, 수동 적립/사용, 반환(80+). 상세 팝업에 누적적립/총사용/총반환/잔여와 이력 페이징/페이지당 항목 수 설정 표시. 일반 교사는 담당 부서/반 제한 |
+| `admin/users.html` | 60 | 사용자 목록, 교사/학생 로우 클릭 상세 모달, 권한 범위 내 수정/삭제/비밀번호 초기화, 가입 신청 처리, 부서 이동 요청/승인. 관리자 권한은 가입 신청 이름 옆에 아이디 표시 |
+| `admin/departments.html` | 60 | 부서 등록/수정/비활성화, 반 개수 관리, 부서별 인원/담당자 확인. 부서 로우 클릭 시 소속보기 모달 열림 |
+| `admin/managers.html` | 80 | 기존 사용자를 관리자 계열 권한으로 승격/수정, 담당 부서 지정. 로우 클릭 시 수정 모달 열림 |
+| `admin/talents.html` | 40 | 학생/교사 탭별 달란트 체크박스 선택+일괄 지급, 로우 클릭 사용자 상세 모달, 전도사님(90+) 예외 지급, 수동 적립/사용, 반환(80+). 상세 팝업에 누적적립/총사용/총반환/잔여와 이력 페이징/페이지당 항목 수 설정 표시. 일반 교사는 담당 부서/반 제한 |
 | `admin/talent-adjustments.html` | 60 | 예외 지급 요청, 예외 지급 내역, 달란트 반환 내역, 전체 처리 순으로 조회. 부서 담당 교사는 담당 부서만, 부장 교사 이상은 전체 부서 이력 조회. 전도사님(90+) 이상은 예외 지급 요청 승인/거부와 네비게이션 배지를 확인. 처리자/대상자/사유/원본 지급 참조/처리 시각을 페이징으로 확인 |
-| `admin/talent-items.html` | 60 | 달란트 지급 항목 등록/수정/활성화, 지급 규칙/설명 관리, 총/이번 주/예외 지급 통계 표시. 학생 항목은 주 1회 지급 규칙과 연동, 퀵 버튼 설정은 80등급 이상 |
-| `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), 수정(새 코드 재생성), 비활성화. 지정일 날짜+시간 또는 기간(from~to datetime) 설정, 위치 반경 100m~5km(기본 500m). 수령자 목록에 반환된 달란트 "반환" 배지 표시 |
-| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 이미지 업로드, 정렬 순번 관리. 목록은 카테고리 순번과 상품 순번 기준으로 기본 정렬되며 로우 클릭 시 수정 창이 열림. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
-| `admin/product-categories.html` | 70 | 상품 카테고리 등록, 수정, 삭제(비활성화), 카테고리 정렬 순번 관리. 사용 중인 카테고리와 기본 `etc` 카테고리는 삭제 불가 |
+| `admin/talent-items.html` | 60 | 달란트 지급 항목 등록/수정/활성화, 지급 규칙/설명 관리, 총/이번 주/예외 지급 통계 표시. 항목 로우 클릭 시 수정 모달 열림. 학생 항목은 주 1회 지급 규칙과 연동, 퀵 버튼 설정은 80등급 이상 |
+| `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), QR 항목 영역 클릭 수정 모달, 수정(새 코드 재생성), 비활성화. 지정일 날짜+시간 또는 기간(from~to datetime) 설정, 위치 반경 100m~5km(기본 500m). 수령자 모달은 사용자별 묶음, 사용자 유형/부서/검색 필터, 선택 사용자 지급 항목 상세, 반환 상태를 표시 |
+| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 썸네일 이미지와 상세 설명 이미지 분리 업로드, 정렬 순번 관리. 목록은 카테고리 순번과 상품 순번 기준으로 기본 정렬되며 로우 클릭 시 수정 창이 열림. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
+| `admin/product-categories.html` | 70 | 상품 카테고리 등록, 수정, 삭제(비활성화), 카테고리 정렬 순번 관리. 그리드에는 코드 열을 표시하지 않고 로우 클릭 시 수정 모달이 열립니다. 사용 중인 카테고리와 기본 `etc` 카테고리는 삭제 불가 |
 | `admin/purchases.html` | 60 | 구매 관리: 4단계 처리, 모든 상태 탭에 부서/기간 필터(기본 오늘) + 기간 프리셋, 구매 확정 시 달란트 차감 |
-| `admin/notices.html` | 40 | 공지 사항 조회. 일반 교사는 활성 공지만 볼 수 있고, 전도사님(90+) 이상은 공지 등록/수정/삭제와 활성 토글을 처리합니다. 목록 행 선택 시 보기 모달이 열리며, 활성 공지는 로그인 후 메인 화면에 팝업 표시되고 계정별 다시 열지 않음 상태를 저장 |
+| `admin/notices.html` | 40 | 공지 사항 조회. 일반 교사는 활성 공지만 볼 수 있고, 전도사님(90+) 이상은 공지 등록/수정/삭제와 활성 토글을 처리합니다. 목록 행 선택 시 보기 모달이 열리며, 열람 현황 모달에서 등록일시/등록자, 사용자 유형, 전체/확인자/미확인자 콤보박스 필터를 확인할 수 있습니다. 활성 공지는 로그인 후 메인 화면에 팝업 표시되고 계정별 다시 열지 않음 상태를 저장 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록/수정, 선택 삭제 |
 | `admin/logs.html` | 100 | 활동 로그 필터링(기본 1년) + 기간 프리셋, 상세 보기, 한글 액션 라벨 표시, 오류 로그 확인 처리, 소프트 삭제(삭제 대기) |
-| `admin/versions.html` | 80 | 배포 버전과 변경 이력 확인 |
+| `admin/service-stats.html` | 80 | GitHub/Supabase/Kakao/Slack 무료 할당량, 현재·남은 사용량/비율, 예상 사용률, 30일 추이, 수집/Slack 알림 이력 조회와 즉시 수집 |
+| `admin/versions.html` | 80 | 배포 버전과 v1.0.0부터의 전체 변경 이력 확인 |
 | `admin/page-access.html` | 100 | 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100 | 권한별 페이지 기능(수정/삭제/승인 등) 설정값 관리 |
 | `admin/audit.html` | 100 | 관리 작업 이력 조회 (70+ 액션 타입, 10개 카테고리 필터, 한글 상세 내역). 기간 필터 기본값 1년 + 기간 프리셋, 자동 조회 |
@@ -723,11 +747,12 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  AdminShop["admin/shop.html"] --> ProductCRUD["products 등록/수정/삭제/정렬 순번"]
+  AdminShop["admin/shop.html"] --> ProductCRUD["products 등록/수정/삭제/정렬 순번<br/>썸네일 image_url / 상세 이미지 detail_image_url"]
   ProductCategories["admin/product-categories.html"] --> CategoryCRUD["code_items products.category 등록/수정/비활성화"]
   CategoryCRUD --> ProductCRUD
   ProductCRUD --> Storage["공통 압축 이미지 업로드<br/>Talents_Items Storage"]
   ProductCRUD --> PublicShop["shop.html"]
+  ProductCRUD --> DetailImage["상세 모달<br/>설명 아래 상세 이미지 표시"]
   PublicShop --> StudentGoods["학생용 상품"]
   PublicShop --> TeacherGoods["교사용 상품<br/>교사/60등급 이상 조회"]
   PublicShop --> OrderRequest["🛒 구매 신청 → product_orders 생성<br/>pending_talent 증가"]
@@ -778,8 +803,10 @@ flowchart TD
 | QR 코드 | `talent_qr_codes` | QR 코드 생성/유효기간(`valid_from`/`valid_until`, 지정일 시간 범위 포함)/1회·반복·위치 제한 관리 |
 | QR 스캔 | `talent_qr_scans` | QR 코드 스캔 이력 (중복 수령 방지) |
 | 공지 | `announcements` | 운영자가 등록한 공지 제목/내용, 활성 여부, 작성/수정자 기록 |
-| 공지 숨김 | `announcement_dismissals` | 사용자별 공지 다시 열지 않음 상태. 전도사님(90+) 이상은 공지 열람 현황 조회에 사용 |
+| 공지 숨김 | `announcement_dismissals` | 사용자별 공지 다시 열지 않음 상태. 전도사님(90+) 이상은 공지 열람 현황 조회와 확인/미확인 필터에 사용 |
 | 로그 | `activity_logs` | 오류/운영 활동 기록, 소프트 삭제, `activity_logs.action` 코드 라벨과 `details._actionLabel`/`details._actionKo` 및 한글 상세 키 저장 |
+| 서비스 통계 | `service_usage_metrics`, `service_usage_events`, `service_usage_snapshots` | 플랫폼별 한도 정의, 프로젝트 호출 계측, 6시간 수집 스냅샷 |
+| 서비스 통계 운영 | `service_usage_collection_runs`, `service_usage_alerts` | 수집 성공/오류와 70/85/95% Slack 알림 중복 방지/발송 이력 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
 | 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |
 | 권한별 접근 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
@@ -789,6 +816,9 @@ flowchart TD
 | RPC | 목적 | 주요 호출 |
 |---|---|---|
 | `get_my_profile` | 로그인 사용자 프로필/권한 조회 | `auth.js`, `activity-log.js` |
+| `get_service_usage_dashboard` | 부장 교사 이상 서비스 사용량/한도 분석 조회 | `admin/service-stats.html` |
+| `get_service_usage_history` | 선택 지표의 최근 30일 수집 추이 조회 | `admin/service-stats.html` |
+| `record_service_usage_batch` | 공개/로그인 페이지의 비식별 사용량 이벤트 배치 적재 | `js/supabase-config.js` |
 | `update_last_login` | 로그인 성공 시 `profiles.last_login_at` 갱신 | `auth.js` |
 | `check_username_available` | 가입 신청 아이디 중복확인 | `register.html` |
 | `check_registration_status` | 미승인/거부 계정 로그인 안내 조회 | `login.html` |
@@ -824,9 +854,9 @@ flowchart TD
 |---|---|
 | `docs/INITIAL_DATABASE_SETUP.sql` | 현재 테이블, RPC, RLS, Storage 버킷, 기본 데이터를 새 DB에 설치 |
 | `docs/INITIAL_DATABASE_SETUP.md` | SQL Editor 방식과 PowerShell/psql 자동 설치 방법 |
-| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트. 기본 실행 시 `docs/TASK-057_code_master.sql`, `docs/TASK-058_product_category_policy.sql`, `docs/TASK-068_product_category_page_and_sort_order.sql`도 합본에 포함 |
+| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트. 기본 실행 시 TASK-057/058/068/069와 `docs/TASK-070_service_usage_monitoring.sql`도 합본에 포함 |
 
-SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실행 후 `docs/TASK-057_code_master.sql`, `docs/TASK-058_product_category_policy.sql`, `docs/TASK-068_product_category_page_and_sort_order.sql`을 이어서 실행합니다. PowerShell/Bash 설치 스크립트와 `-GenerateOnly` 합본 SQL은 세 파일을 기본 포함합니다.
+SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실행 후 `docs/TASK-057_code_master.sql`, `docs/TASK-058_product_category_policy.sql`, `docs/TASK-068_product_category_page_and_sort_order.sql`, `docs/TASK-069_product_detail_image.sql`, `docs/TASK-070_service_usage_monitoring.sql`을 이어서 실행합니다. PowerShell/Bash 설치 스크립트와 `-GenerateOnly` 합본 SQL도 이 파일들을 기본 포함합니다.
 
 아래 SQL 파일들은 과거 작업별 변경 이력이며, 빈 새 DB에는 위 단일 설치 SQL을 우선 사용합니다:
 
@@ -848,6 +878,10 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-061_talent_exception_requests.sql` | v3.62.0: 예외 지급 요청/승인용 `talent_exception_requests` 테이블과 RLS 정책 |
 | `docs/TASK-065_registration_approval_contact.sql` | v3.65.0: 승인 대기 로그인 안내용 담당자 조회 RPC |
 | `docs/TASK-066_notice_reads_and_category_manage.sql` | v3.66.0: 상품 카테고리 수정/삭제 RLS와 공지 열람 현황 조회 권한 보강 |
+| `docs/TASK-069_product_detail_image.sql` | v3.69.0: `products.detail_image_url` 상세 설명 이미지 컬럼 추가 |
+| `docs/TASK-070_service_usage_monitoring.sql` | v3.70.0: 외부 서비스 할당량/사용량/수집/알림 테이블, RLS, RPC와 공식 무료 기준 |
+| `docs/TASK-070_service_usage_cron.sql` | v3.70.0: 00/06/12/18 KST Edge Function 예약 수집용 pg_cron/Vault 설정 |
+| `docs/TASK-070_SERVICE_USAGE_SETUP.md` | 서비스 통계 Edge Function Secret, 배포, Cron 설정과 값 해석 안내 |
 | `docs/TASK-067_korean_activity_logs.sql` | v3.66.0: 기존 활동 로그 상세 한글 별칭 백필 및 실제 발생 액션 라벨 보강 |
 | `docs/TASK-068_product_category_page_and_sort_order.sql` | v3.67.0: `products.sort_order` 컬럼/인덱스 추가와 상품 카테고리 관리 권한을 구매 담당 교사(70+) 이상으로 정렬 |
 
