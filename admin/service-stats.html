@@ -107,7 +107,7 @@
       </div>
       <div class="usage-actions">
         <div class="last-collected" id="lastCollected">마지막 수집: 확인 중...</div>
-        <button class="collect-btn" id="collectBtn" onclick="collectNow()">↻ 지금 수집</button>
+        <button class="collect-btn" id="collectBtn" onclick="collectNow()" hidden>↻ 지금 수집</button>
       </div>
     </div>
 
@@ -162,6 +162,7 @@
     let runs = [];
     let alerts = [];
     let activeService = 'all';
+    const MANUAL_COLLECT_PERMISSION_RANK = 100;
 
     const SERVICE_INFO = {
       github: { name:'GitHub', icon:'🐙', color:'#24292f', features:['저장소 1개 통합 관리','공개/비공개 저장소 무제한','협업자 무제한','Community support'] },
@@ -180,6 +181,7 @@
       session = await initPage(80, '../login.html');
       if (!session) return;
       navUpdateAuth(session);
+      syncCollectButtonVisibility();
       updatePendingBadge(); updateNavOrderBadge(); updateLogBadge(); autoLogPageView();
       await loadDashboard();
     })();
@@ -203,10 +205,21 @@
     }
 
     function renderAll() {
+      syncCollectButtonVisibility();
       renderSummary(); renderTabs(); renderPanels(); renderRuns(); renderAlerts();
       const dates = metrics.map(m => m.collected_at).filter(Boolean).sort();
       document.getElementById('lastCollected').textContent = dates.length
         ? `마지막 수집: ${formatKST(dates[dates.length - 1])}` : '마지막 수집: 수집 전';
+    }
+
+    function canManualCollect() {
+      return Number(session && session.permissionRank || 0) >= MANUAL_COLLECT_PERMISSION_RANK;
+    }
+
+    function syncCollectButtonVisibility() {
+      const btn = document.getElementById('collectBtn');
+      if (!btn) return;
+      btn.hidden = !canManualCollect();
     }
 
     function latestRunStatus(serviceKey) {
@@ -337,7 +350,13 @@
     }
 
     async function collectNow() {
-      const btn=document.getElementById('collectBtn'); btn.disabled=true; btn.textContent='수집 중...';
+      const btn=document.getElementById('collectBtn');
+      if (!canManualCollect()) {
+        syncCollectButtonVisibility();
+        alert('서비스 사용량 수동 수집은 관리자 이상만 가능합니다.');
+        return;
+      }
+      btn.disabled=true; btn.textContent='수집 중...';
       try {
         if (typeof flushServiceUsageTelemetry==='function') await flushServiceUsageTelemetry();
         const { data,error }=await _sb.functions.invoke('service-usage-collect',{body:{trigger:'manual'}});
@@ -347,7 +366,7 @@
       } catch(error) {
         await logError('SERVICE_USAGE_COLLECT_FAIL',{오류:error.message||String(error)});
         alert('서비스 사용량 수집 실패: '+tErr(error.message||String(error)));
-      } finally { btn.disabled=false; btn.textContent='↻ 지금 수집'; }
+      } finally { btn.disabled=false; btn.textContent='↻ 지금 수집'; syncCollectButtonVisibility(); }
     }
 
     async function openHistory(serviceKey, metricKey) {
