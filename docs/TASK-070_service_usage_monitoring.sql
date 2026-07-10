@@ -558,7 +558,7 @@ INSERT INTO public.service_usage_metrics
   (service, metric_key, label, category, unit, quota_value, reset_cycle, source_type, source_label, is_estimated, alert_enabled, official_url, notes, sort_order, metadata)
 VALUES
   ('github','actions_minutes','Actions 실행 시간','빌링','minutes',2000,'monthly','api','GitHub Billing API',false,true,'https://docs.github.com/en/billing/reference/product-usage-included','GitHub Free for organizations 월 제공량',10,'{}'),
-  ('github','actions_storage_bytes','Actions 아티팩트·캐시 저장공간','저장공간','bytes',524288000,'monthly','api','GitHub Actions API',true,true,'https://docs.github.com/en/billing/reference/product-usage-included','현재 아티팩트와 캐시 크기 합계로 추정',20,'{}'),
+  ('github','actions_storage_bytes','Actions 아티팩트·캐시 저장공간','저장공간','bytes',524288000,'monthly','api','GitHub Actions API',true,true,'https://docs.github.com/en/billing/reference/product-usage-included','만료되지 않은 활성 아티팩트와 active cache 크기 합계로 추정',20,'{}'),
   ('github','packages_storage_bytes','Packages 저장공간','저장공간','bytes',524288000,'monthly','api','GitHub Billing API',true,true,'https://docs.github.com/en/billing/reference/product-usage-included','Billing API 단위를 현재 월 기준으로 정규화',30,'{}'),
   ('github','packages_transfer_bytes','Packages 데이터 전송','트래픽','bytes',1073741824,'monthly','api','GitHub Billing API',true,true,'https://docs.github.com/en/billing/reference/product-usage-included','GitHub Free organization 월 제공량',40,'{}'),
   ('github','lfs_storage_bytes','Git LFS 저장공간','저장공간','bytes',10737418240,'monthly','api','GitHub Billing API',true,true,'https://docs.github.com/en/billing/reference/product-usage-included','Git LFS 월 저장공간 기준',50,'{}'),

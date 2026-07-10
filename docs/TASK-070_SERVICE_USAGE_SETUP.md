@@ -1,6 +1,6 @@
 # TASK-070 서비스 통계 운영 설정
 
-`운영 > 로그 > 서비스 통계` 페이지는 GitHub, Supabase, Kakao Developers, Slack의 무료 할당량과 현재 사용량을 표시합니다. 자동 수집은 매일 `00:00`, `06:00`, `12:00`, `18:00` KST에 실행되고, 사용률이 `70%`, `85%`, `95%`에 처음 도달할 때 운영관리 Slack 채널로 단계별 알림을 보냅니다.
+`운영 > 로그 > 서비스 통계` 페이지는 GitHub, Supabase, Kakao Developers, Slack의 무료 할당량과 현재 사용량을 표시합니다. 공식/관리 API로 수집 가능한 항목은 API로 수집하고, API가 없거나 프로젝트 내부 사용량만 필요한 항목은 브라우저·Edge Function 이벤트와 DB 직접 집계로 병행 수집합니다. 자동 수집은 매일 `00:00`, `06:00`, `12:00`, `18:00` KST에 실행되고, 사용률이 `70%`, `85%`, `95%`에 처음 도달할 때 운영관리 Slack 채널로 단계별 알림을 보냅니다.
 
 ## 1. Database 적용
 
@@ -27,6 +27,7 @@ supabase functions deploy slack-notify --project-ref <PROJECT_REF>
 | Secret | 필수 | 용도 |
 |---|---:|---|
 | `GITHUB_TOKEN` | 예 | GitHub Billing, Actions 저장공간, 저장소 Traffic API 조회 |
+| `GITHUB_ACCOUNT_TYPE` | 예 | GitHub 계정 유형. 현재 `CHO-Talents`는 개인 계정이므로 `user` |
 | `GITHUB_OWNER` | 예 | `CHO-Talents` |
 | `GITHUB_REPO` | 예 | `CHO-Talents` |
 | `SB_MANAGEMENT_ACCESS_TOKEN` | 예 | Supabase Management API 공식 API 요청 통계 조회 |
@@ -41,6 +42,7 @@ supabase functions deploy slack-notify --project-ref <PROJECT_REF>
 ```powershell
 supabase secrets set --project-ref <PROJECT_REF> `
   GITHUB_TOKEN="<GITHUB_FINE_GRAINED_TOKEN>" `
+  GITHUB_ACCOUNT_TYPE="user" `
   GITHUB_OWNER="CHO-Talents" `
   GITHUB_REPO="CHO-Talents" `
   SB_MANAGEMENT_ACCESS_TOKEN="<SUPABASE_MANAGEMENT_ACCESS_TOKEN>" `
@@ -51,12 +53,12 @@ supabase secrets set --project-ref <PROJECT_REF> `
 
 ### GitHub Token 권한
 
-Fine-grained personal access token의 접근 대상을 `CHO-Talents/CHO-Talents`로 제한하고 아래 읽기 권한만 부여합니다.
+`CHO-Talents`는 GitHub 개인 계정(`type: User`)입니다. Billing Summary API는 개인 계정 endpoint를 사용하므로 fine-grained personal access token에 아래 읽기 권한을 부여합니다.
 
-- Organization permissions: `Administration: Read`
+- Account permissions: `Plan: Read`
 - Repository permissions: `Actions: Read`, `Administration: Read`, `Metadata: Read`
 
-Billing API는 조직 관리자 계정의 토큰이어야 합니다. 저장소 Traffic API는 Repository `Administration: Read`가 필요합니다.
+저장소 Traffic API는 Repository `Administration: Read`가 필요합니다. 나중에 GitHub Organization으로 이전하면 `GITHUB_ACCOUNT_TYPE=organization`으로 바꾸고 조직 관리자 토큰에 Organization `Administration: Read` 권한을 부여합니다.
 
 ### Supabase Access Token 권한
 

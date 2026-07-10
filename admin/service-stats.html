@@ -36,6 +36,12 @@
     .connection-badge.connected,.connection-badge.tracking { color:#087f5b; background:#d3f9d8; }
     .connection-badge.partial { color:#d9480f; background:#fff3bf; }
     .connection-badge.needs_secret { color:#c92a2a; background:#ffe3e3; }
+    .source-statuses { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.55rem; }
+    .source-badge { display:inline-flex; align-items:center; gap:.25rem; border-radius:999px; padding:.2rem .48rem; font-size:.65rem; font-weight:750; background:var(--t-subtle-surface,#f1f3f5); color:var(--admin-text-muted); border:1px solid var(--admin-border); }
+    .source-badge.connected,.source-badge.tracking { color:#087f5b; background:#d3f9d8; border-color:#b2f2bb; }
+    .source-badge.partial { color:#d9480f; background:#fff3bf; border-color:#ffe066; }
+    .source-badge.needs_secret,.source-badge.failed { color:#c92a2a; background:#ffe3e3; border-color:#ffc9c9; }
+    .source-badge.not_supported { color:var(--admin-text-muted); background:transparent; }
 
     .platform-tabs { display:flex; gap:.35rem; flex-wrap:wrap; margin-bottom:.85rem; }
     .platform-tab { border:1px solid var(--admin-border); background:var(--admin-card); color:var(--admin-text); border-radius:999px; padding:.42rem .78rem; font-weight:700; font-size:.78rem; cursor:pointer; }
@@ -208,6 +214,38 @@
       const info = latest && latest.service_status && latest.service_status[serviceKey];
       return info || { status:'needs_secret', message:'수집 이력 없음' };
     }
+    function sourceCounts(serviceKey) {
+      const rows = metrics.filter(m => m.service === serviceKey);
+      const apiRows = rows.filter(m => m.source_type === 'api');
+      const projectRows = rows.filter(m => m.source_type !== 'api');
+      const count = group => ({ total: group.length, collected: group.filter(m => m.collected_at).length });
+      return { api: count(apiRows), project: count(projectRows) };
+    }
+    function sourceStatus(serviceKey, group) {
+      const counts = sourceCounts(serviceKey)[group];
+      const connection = latestRunStatus(serviceKey);
+      const channel = connection.channels && connection.channels[group];
+      const status = counts.total === 0
+        ? 'not_supported'
+        : channel && channel.status
+          ? channel.status
+          : counts.collected === 0
+            ? 'not_collected'
+            : counts.collected === counts.total ? 'connected' : 'partial';
+      const label = group === 'api' ? 'API' : '프로젝트';
+      const countText = counts.total ? `${counts.collected}/${counts.total}` : '해당 없음';
+      return {
+        status,
+        label: `${label} ${countText}`,
+        title: channel && (channel.message || channel.source) ? `${channel.source || ''}${channel.message ? ` · ${channel.message}` : ''}` : ''
+      };
+    }
+    function renderSourceBadges(serviceKey) {
+      return `<div class="source-statuses">${['api','project'].map(group => {
+        const item = sourceStatus(serviceKey, group);
+        return `<span class="source-badge ${esc(item.status)}" title="${escAttr(item.title)}">${esc(item.label)} · ${connectionLabel(item.status)}</span>`;
+      }).join('')}</div>`;
+    }
 
     function renderSummary() {
       document.getElementById('platformSummary').innerHTML = Object.entries(SERVICE_INFO).map(([key, info]) => {
@@ -218,6 +256,7 @@
         const connection = latestRunStatus(key);
         return `<article class="platform-card ${activeService === key ? 'active' : ''}" style="--platform:${info.color}" onclick="selectService('${key}')">
           <div class="platform-top"><span class="platform-name"><span class="platform-icon">${info.icon}</span> ${info.name}</span><span class="connection-badge ${esc(connection.status)}">${connectionLabel(connection.status)}</span></div>
+          ${renderSourceBadges(key)}
           <div class="platform-risk">${formatPercent(maxPct)} <small>최대 사용률</small></div>
           <div class="platform-meta"><span>수집 ${rows.length}/${metrics.filter(m=>m.service===key).length}항목</span><span>${risky ? `주의 이상 ${risky}개` : '모두 안정'}</span></div>
         </article>`;
@@ -240,6 +279,7 @@
         const connection = latestRunStatus(key);
         return `<section class="service-panel ${hidden?'hidden':''}" id="panel-${key}">
           <div class="service-heading"><h2>${info.icon} ${info.name}</h2><span class="connection-badge ${esc(connection.status)}" title="${esc(connection.message || '')}">${connectionLabel(connection.status)}</span></div>
+          ${renderSourceBadges(key)}
           <div class="plan-features">${info.features.map(feature=>`<span class="feature-chip">${esc(feature)}</span>`).join('')}</div>
           <div class="metric-grid">${rows.map(renderMetric).join('')}</div>
         </section>`;
@@ -344,7 +384,7 @@
     function formatPercent(value){return `${Number(value||0).toLocaleString('ko-KR',{maximumFractionDigits:1})}%`;}
     function resetLabel(cycle,end){const map={hourly:'매시간 초기화',daily:'매일 초기화',monthly:'매월 초기화',rolling_14d:'최근 14일',rolling_90d:'최근 90일',cumulative:'누적',policy:'플랜 정책'};return map[cycle]||(end?formatKSTShort(end):'-');}
     function statusLabel(s){return ({normal:'정상',caution:'주의',warning:'경고',danger:'위험',unlimited:'누적',policy:'정책',not_collected:'수집 전'})[s]||s;}
-    function connectionLabel(s){return ({connected:'API 연결',tracking:'프로젝트 계측',partial:'일부 연결',needs_secret:'Secret 필요'})[s]||'확인 필요';}
+    function connectionLabel(s){return ({connected:'API 연결',tracking:'프로젝트 계측',partial:'일부 연결',needs_secret:'Secret 필요',not_supported:'해당 없음',not_collected:'수집 전',failed:'실패'})[s]||'확인 필요';}
     function runStatusLabel(s){return ({running:'수집 중',success:'성공',partial:'일부 성공',failed:'실패'})[s]||s;}
     function alertStatusLabel(s){return ({pending:'발송 대기',sent:'발송 완료',failed:'발송 실패'})[s]||s;}
     function formatKST(value){return new Date(value).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}

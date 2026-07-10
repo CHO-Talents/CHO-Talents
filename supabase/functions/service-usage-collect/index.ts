@@ -6,8 +6,9 @@ const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
 const GITHUB_TOKEN = Deno.env.get("GITHUB_TOKEN") || Deno.env.get("GITHUB_PAT") || "";
 const GITHUB_OWNER = Deno.env.get("GITHUB_OWNER") || "CHO-Talents";
 const GITHUB_REPO = Deno.env.get("GITHUB_REPO") || "CHO-Talents";
-const SB_MANAGEMENT_ACCESS_TOKEN = Deno.env.get("SB_MANAGEMENT_ACCESS_TOKEN") || "";
-const SB_PROJECT_REF = Deno.env.get("SB_PROJECT_REF") || "";
+const GITHUB_ACCOUNT_TYPE = (Deno.env.get("GITHUB_ACCOUNT_TYPE") || "user").trim().toLowerCase();
+const SB_MANAGEMENT_ACCESS_TOKEN = (Deno.env.get("SB_MANAGEMENT_ACCESS_TOKEN") || "").trim();
+const SB_PROJECT_REF = (Deno.env.get("SB_PROJECT_REF") || "").trim();
 const SLACK_WEBHOOK_OPERATIONS = Deno.env.get("SLACK_WEBHOOK_OPERATIONS") || "";
 const SERVICE_STATS_URL = Deno.env.get("SERVICE_STATS_URL") ||
   "https://cho-talents.github.io/CHO-Talents/admin/service-stats.html";
@@ -154,7 +155,10 @@ async function collectGitHub(errors: ErrorItem[]): Promise<Json> {
   let items: Json[] = [];
 
   try {
-    summary = await githubFetch(`/organizations/${encodeURIComponent(GITHUB_OWNER)}/settings/billing/usage/summary?${query}`);
+    const billingSummaryPath = GITHUB_ACCOUNT_TYPE === "organization"
+      ? `/organizations/${encodeURIComponent(GITHUB_OWNER)}/settings/billing/usage/summary?${query}`
+      : `/users/${encodeURIComponent(GITHUB_OWNER)}/settings/billing/usage/summary?${query}`;
+    summary = await githubFetch(billingSummaryPath);
     items = Array.isArray(summary.usageItems) ? summary.usageItems as Json[] : [];
   } catch (error) {
     errors.push({ service: "github", endpoint: "billing/usage/summary", message: String(error) });
@@ -192,10 +196,16 @@ async function collectGitHub(errors: ErrorItem[]): Promise<Json> {
       githubFetch(`/repos/${encodeURIComponent(GITHUB_OWNER)}/${encodeURIComponent(GITHUB_REPO)}/actions/cache/usage`),
     ]);
     const artifactRows = Array.isArray(artifacts.artifacts) ? artifacts.artifacts as Json[] : [];
-    const artifactBytes = artifactRows.reduce((sum, row) => sum + numberValue(row.size_in_bytes), 0);
+    const activeArtifactRows = artifactRows.filter((row) => row.expired === false);
+    const expiredArtifactRows = artifactRows.filter((row) => row.expired === true);
+    const artifactBytes = activeArtifactRows.reduce((sum, row) => sum + numberValue(row.size_in_bytes), 0);
+    const expiredArtifactBytes = expiredArtifactRows.reduce((sum, row) => sum + numberValue(row.size_in_bytes), 0);
     const cacheBytes = numberValue(cacheUsage.active_caches_size_in_bytes);
     await writeSnapshot("github", "actions_storage_bytes", artifactBytes + cacheBytes, "GitHub Actions API", true, {
       artifacts_bytes: artifactBytes,
+      active_artifact_count: activeArtifactRows.length,
+      expired_artifacts_bytes: expiredArtifactBytes,
+      expired_artifact_count: expiredArtifactRows.length,
       cache_bytes: cacheBytes,
       artifact_count: artifactRows.length,
     });
@@ -229,6 +239,7 @@ async function collectGitHub(errors: ErrorItem[]): Promise<Json> {
     status: errors.some((item) => item.service === "github") ? "partial" : "connected",
     owner: GITHUB_OWNER,
     repository: GITHUB_REPO,
+    account_type: GITHUB_ACCOUNT_TYPE === "organization" ? "organization" : "user",
     billing_items: items.length,
   };
 }
@@ -240,8 +251,13 @@ async function collectSupabaseManagement(errors: ErrorItem[]): Promise<Json> {
 
   try {
     const response = await fetch(
-      `https://api.supabase.com/v1/projects/${encodeURIComponent(SB_PROJECT_REF)}/analytics/endpoints/usage.api-counts?interval=1d`,
-      { headers: { Authorization: `Bearer ${SB_MANAGEMENT_ACCESS_TOKEN}` } },
+      `https://api.supabase.com/v1/projects/${encodeURIComponent(SB_PROJECT_REF)}/analytics/endpoints/usage.api-counts?interval=1day`,
+      {
+        headers: {
+          Authorization: `Bearer ${SB_MANAGEMENT_ACCESS_TOKEN}`,
+          Accept: "application/json",
+        },
+      },
     );
     if (!response.ok) throw new Error(`Supabase ${response.status}: ${(await response.text()).slice(0, 300)}`);
     const payload = await response.json() as Json;
@@ -251,13 +267,23 @@ async function collectSupabaseManagement(errors: ErrorItem[]): Promise<Json> {
       numberValue(row.total_rest_requests) + numberValue(row.total_storage_requests), 0);
     await writeSnapshot("supabase", "official_api_requests_24h", total, "Supabase Management API", false, {
       points: rows.length,
-      interval: "1d",
+      interval: "1day",
     });
     return { status: "connected", analytics_points: rows.length };
   } catch (error) {
     errors.push({ service: "supabase", endpoint: "usage.api-counts", message: String(error) });
     return { status: "partial", message: String(error) };
   }
+}
+
+async function collectLocalSnapshots(errors: ErrorItem[]): Promise<Json> {
+  const { data, error } = await service.rpc("refresh_local_service_usage_snapshots");
+  if (error) {
+    errors.push({ service: "project", endpoint: "local snapshots", message: error.message });
+    return { status: "partial", source: "project telemetry", message: error.message, snapshots: 0 };
+  }
+
+  return { status: "tracking", source: "project telemetry", snapshots: numberValue(data) };
 }
 
 function formatMetricValue(value: number, unit: string): string {
@@ -378,18 +404,40 @@ Deno.serve(async (req) => {
   try {
     await recordEvent("edge_function_invocations", 1, { function: "service-usage-collect", trigger: auth.trigger });
 
-    const { data: localCount, error: localError } = await service.rpc("refresh_local_service_usage_snapshots");
-    if (localError) errors.push({ service: "supabase", endpoint: "local snapshots", message: localError.message });
+    const localErrors: ErrorItem[] = [];
+    const githubErrors: ErrorItem[] = [];
+    const supabaseErrors: ErrorItem[] = [];
 
-    const githubStatus = await collectGitHub(errors);
-    const supabaseStatus = await collectSupabaseManagement(errors);
+    const [localStatus, githubStatus, supabaseStatus] = await Promise.all([
+      collectLocalSnapshots(localErrors),
+      collectGitHub(githubErrors),
+      collectSupabaseManagement(supabaseErrors),
+    ]);
+    errors.push(...localErrors, ...githubErrors, ...supabaseErrors);
+
     const alertCount = await sendQuotaAlerts(errors);
+    const slackStatus = SLACK_WEBHOOK_OPERATIONS
+      ? { status: "connected", source: "project webhook events" }
+      : { status: "needs_secret", source: "project webhook events", message: "SLACK_WEBHOOK_OPERATIONS is not set" };
     const serviceStatus = {
-      github: githubStatus,
-      supabase: supabaseStatus,
-      kakao: { status: "tracking", source: "project events" },
-      slack: { status: SLACK_WEBHOOK_OPERATIONS ? "connected" : "needs_secret", source: "project webhook events" },
-      local_snapshots: numberValue(localCount),
+      github: { ...githubStatus, channels: { api: githubStatus, project: localStatus } },
+      supabase: { ...supabaseStatus, channels: { api: supabaseStatus, project: localStatus } },
+      kakao: {
+        status: "tracking",
+        source: "project events",
+        channels: {
+          api: { status: "not_supported", source: "official API", message: "Kakao 사용량은 프로젝트 계측으로 수집" },
+          project: localStatus,
+        },
+      },
+      slack: {
+        ...slackStatus,
+        channels: {
+          api: { status: "not_supported", source: "official API", message: "Slack 사용량은 Webhook 이벤트 계측으로 수집" },
+          project: slackStatus,
+        },
+      },
+      local_snapshots: numberValue(localStatus["snapshots"]),
       alerts_sent: alertCount,
     };
     const status = errors.length === 0 ? "success" : "partial";
