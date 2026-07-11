@@ -46,11 +46,30 @@ function permissionRank(level: string | null, superAdmin: boolean): number {
   return ({ admin: 100, evangelist: 90, chief: 80 } as Record<string, number>)[level || ""] || 0;
 }
 
+function decodeJwtPayload(token: string): Json | null {
+  const payload = token.split(".")[1];
+  if (!payload) return null;
+  const base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
+  try {
+    return JSON.parse(atob(padded)) as Json;
+  } catch {
+    return null;
+  }
+}
+
+function isServiceRoleJwt(token: string): boolean {
+  const payload = decodeJwtPayload(token);
+  return payload?.role === "service_role";
+}
+
 async function authorize(req: Request): Promise<{ ok: boolean; userId: string | null; trigger: "schedule" | "manual"; error?: string }> {
   const auth = req.headers.get("Authorization") || "";
   const token = auth.replace(/^Bearer\s+/i, "");
   if (!token) return { ok: false, userId: null, trigger: "manual", error: "authorization required" };
-  if (token === SERVICE_ROLE_KEY) return { ok: true, userId: null, trigger: "schedule" };
+  if (token === SERVICE_ROLE_KEY || isServiceRoleJwt(token)) {
+    return { ok: true, userId: null, trigger: "schedule" };
+  }
 
   const { data: userData, error: userError } = await service.auth.getUser(token);
   if (userError || !userData.user) {

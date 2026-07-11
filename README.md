@@ -12,16 +12,25 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.70.0` (`js/version.js` 기준, 2026-07-10) |
+| 현재 버전 | `v3.72.0` (`js/version.js` 기준, 2026-07-11) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.70.0`로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.72.0`로 갱신되어 있습니다.
+- **v3.72.0 주요 변경 사항**:
+  - `service_usage_snapshots`, `service_usage_collection_runs`, `activity_logs`에 180일 보존 정책을 추가했습니다.
+- `activity_logs`는 확인 완료된 로그만 180일 초과 시 삭제하고, 미확인 로그는 확인될 때까지 자동/선택 삭제 대상에서 제외합니다.
+  - `docs/TASK-072_data_retention_180d.sql`에 매일 03:30(KST) 실행되는 `cho-data-retention-180d` pg_cron 작업과 수동 실행용 `cleanup_data_retention_180d()` 함수를 추가했습니다.
+- **v3.71.0 주요 변경 사항**:
+  - 서비스 사용량 자동 수집 주기를 6시간에서 1시간으로 단축했습니다.
+  - `docs/TASK-070_service_usage_cron.sql`의 pg_cron 작업을 `cho-service-usage-collect-1h`, `0 * * * *` 기준으로 변경하고 기존 6시간 작업은 재설정 시 함께 제거하도록 했습니다.
+  - `운영 > 로그 > 서비스 통계` 화면과 서비스 통계 운영 설정 문서를 매시간 정각(KST) 자동 수집 기준으로 갱신했습니다.
+  - README, 사이트 안내서, 아키텍처 문서, 역할별 가이드와 권한/로그/Slack/작업 이력 룰 페이지를 v3.71.0 현재 운영 기준으로 동기화했습니다.
 - **v3.70.0 주요 변경 사항**:
   - `운영 > 로그` 아래에 부장 교사(80+) 이상 전용 `서비스 통계` 페이지를 추가했습니다.
   - GitHub, Supabase, Kakao Developers, Slack의 무료 할당량, 현재/남은 값과 사용률, 기간 종료 예상 사용률, 30일 추이를 표시합니다.
-  - 공식 관리 API·Database 직접값·프로젝트 호출 계측을 6시간마다 병합하고, 70%·85%·95% 도달 시 운영관리 Slack 채널에 단계별 알림을 보냅니다.
+  - 공식 관리 API·Database 직접값·프로젝트 호출 계측을 예약 수집으로 병합하고, 70%·85%·95% 도달 시 운영관리 Slack 채널에 단계별 알림을 보냅니다.
   - 페이지 트래픽, Supabase 요청/응답량, Kakao 지도 SDK/장소 검색, Slack Webhook 성공·실패를 개인정보 없이 누적합니다.
   - TASK-070 서비스 통계 스키마/RLS/RPC, Edge Function, Cron/Vault 설정 SQL과 Secret 설정 문서를 추가했습니다.
 - **v3.69.0 주요 변경 사항**:
@@ -510,7 +519,7 @@ CHO-Talents/
 - **Security:** RLS 정책과 `SECURITY DEFINER` RPC로 사용자/달란트/로그 등 민감 데이터 접근 제어
 - **에러 처리:** `tErr()` 함수로 영문 DB 에러를 한글로 자동 변환, 전체 기능에 `logError`/`logWarn`/`logInfo` 로깅
 - **Slack 알림:** 부서별/유형별 채널 분리 라우팅. 브라우저에서 `js/slack-notify.js` → Supabase Edge Function `slack-notify` → 채널별 Slack Webhook 경로로 전송
-- **서비스 통계:** 브라우저 계측 + Database 직접 집계 + `service-usage-collect` Edge Function의 GitHub/Supabase 공식 API 조회를 병합. 6시간 주기 수집과 70/85/95% 운영 채널 알림
+- **서비스 통계:** 브라우저 계측 + Database 직접 집계 + `service-usage-collect` Edge Function의 GitHub/Supabase 공식 API 조회를 병합. 1시간 주기 수집과 70/85/95% 운영 채널 알림
 - **공통 코드 관리:** 브라우저는 `js/codes.js`의 기본 코드북을 우선 사용하고, DB에 `code_items`가 있으면 활성 코드/라벨/정렬/색상 값을 불러와 덮어씁니다.
 - **버전 관리:** 모든 페이지는 고정 `?v=` 쿼리 대신 `js/version.js`가 최신 버전을 조회하고, 구버전 자산/세션을 감지하면 자산 재검증 또는 재로그인을 유도합니다.
 
@@ -780,7 +789,8 @@ flowchart TD
 - `writeLog()`는 액션 라벨과 상세 키의 한글 별칭을 함께 저장하며, `admin/logs.html`과 `admin/audit.html`은 한글 상세 데이터를 우선 표시합니다.
 - `writeLog()`는 Supabase insert의 반환 `error`를 확인하고, 구버전 DB 스키마의 선택 컬럼 오류는 제거 후 재시도합니다.
 - `ERROR`, `FATAL`, `CRITICAL` 로그는 미확인 상태로 남고, `admin/logs.html`에서 확인 처리합니다.
-- 로그 삭제는 소프트 삭제(`is_deleted=true`)이며, 실제 삭제는 SQL Editor에서 수행합니다.
+- 로그 삭제는 소프트 삭제(`is_deleted=true`)이며, 확인 완료된 오래된 로그는 180일 보존 정책으로 실제 삭제됩니다. 별도 운영 정리가 필요하면 SQL Editor에서 수행합니다.
+- `activity_logs`는 확인 완료 후 180일이 지난 행만 자동 정리하며, 미확인 로그는 확인될 때까지 보존됩니다.
 - `admin/reports.html`은 `reports` 테이블의 작업 보고서를 유형별로 조회하고, 등록/수정/삭제를 제공합니다.
 - `writeLog()`에서 `WARN` 이상 로그가 기록되면 `sendSlackNotify('log_alert', ...)`로 운영 채널에 Slack 알림이 전송됩니다.
 
@@ -804,9 +814,9 @@ flowchart TD
 | QR 스캔 | `talent_qr_scans` | QR 코드 스캔 이력 (중복 수령 방지) |
 | 공지 | `announcements` | 운영자가 등록한 공지 제목/내용, 활성 여부, 작성/수정자 기록 |
 | 공지 숨김 | `announcement_dismissals` | 사용자별 공지 다시 열지 않음 상태. 전도사님(90+) 이상은 공지 열람 현황 조회와 확인/미확인 필터에 사용 |
-| 로그 | `activity_logs` | 오류/운영 활동 기록, 소프트 삭제, `activity_logs.action` 코드 라벨과 `details._actionLabel`/`details._actionKo` 및 한글 상세 키 저장 |
-| 서비스 통계 | `service_usage_metrics`, `service_usage_events`, `service_usage_snapshots` | 플랫폼별 한도 정의, 프로젝트 호출 계측, 6시간 수집 스냅샷 |
-| 서비스 통계 운영 | `service_usage_collection_runs`, `service_usage_alerts` | 수집 성공/오류와 70/85/95% Slack 알림 중복 방지/발송 이력 |
+| 로그 | `activity_logs` | 오류/운영 활동 기록, 소프트 삭제, `activity_logs.action` 코드 라벨과 `details._actionLabel`/`details._actionKo` 및 한글 상세 키 저장. 확인 완료 로그는 180일 보존, 미확인 로그는 확인 전까지 보존 |
+| 서비스 통계 | `service_usage_metrics`, `service_usage_events`, `service_usage_snapshots` | 플랫폼별 한도 정의, 프로젝트 호출 계측, 1시간 수집 스냅샷. 스냅샷은 180일 보존 |
+| 서비스 통계 운영 | `service_usage_collection_runs`, `service_usage_alerts` | 수집 성공/오류와 70/85/95% Slack 알림 중복 방지/발송 이력. 수집 이력은 180일 보존 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
 | 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |
 | 권한별 접근 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
@@ -880,8 +890,13 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-066_notice_reads_and_category_manage.sql` | v3.66.0: 상품 카테고리 수정/삭제 RLS와 공지 열람 현황 조회 권한 보강 |
 | `docs/TASK-069_product_detail_image.sql` | v3.69.0: `products.detail_image_url` 상세 설명 이미지 컬럼 추가 |
 | `docs/TASK-070_service_usage_monitoring.sql` | v3.70.0: 외부 서비스 할당량/사용량/수집/알림 테이블, RLS, RPC와 공식 무료 기준 |
-| `docs/TASK-070_service_usage_cron.sql` | v3.70.0: 00/06/12/18 KST Edge Function 예약 수집용 pg_cron/Vault 설정 |
+| `docs/TASK-070_service_usage_cron.sql` | v3.71.0: 매시간 정각 KST Edge Function 예약 수집용 pg_cron/Vault 설정 |
 | `docs/TASK-070_SERVICE_USAGE_SETUP.md` | 서비스 통계 Edge Function Secret, 배포, Cron 설정과 값 해석 안내 |
+| `docs/TASK-071_change_report.md` | v3.71.0: 서비스 사용량 수집 주기 1시간 전환 변경 보고 |
+| `docs/TASK-071_test_result.md` | v3.71.0: 서비스 사용량 수집 주기 변경 정적 검증 결과 |
+| `docs/TASK-072_data_retention_180d.sql` | v3.72.0: 서비스 통계 스냅샷/수집 이력/확인 완료 활동 로그 180일 보존 정책 |
+| `docs/TASK-072_change_report.md` | v3.72.0: 180일 보존 정책 변경 보고 |
+| `docs/TASK-072_test_result.md` | v3.72.0: 180일 보존 정책 정적 검증 결과 |
 | `docs/TASK-067_korean_activity_logs.sql` | v3.66.0: 기존 활동 로그 상세 한글 별칭 백필 및 실제 발생 액션 라벨 보강 |
 | `docs/TASK-068_product_category_page_and_sort_order.sql` | v3.67.0: `products.sort_order` 컬럼/인덱스 추가와 상품 카테고리 관리 권한을 구매 담당 교사(70+) 이상으로 정렬 |
 

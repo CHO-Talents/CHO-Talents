@@ -1077,6 +1077,7 @@ async function deleteLogsByIds(ids) {
       .from('activity_logs')
       .update({ is_deleted: true, deleted_at: new Date().toISOString() })
       .in('id', ids)
+      .eq('is_acknowledged', true)
       .select('id');
     if (error) {
       if (_isMissingColErr(error.message)) return { error: _SOFT_DEL_COL_ERR, count: 0 };
