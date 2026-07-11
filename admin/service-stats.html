@@ -15,6 +15,7 @@
     .usage-actions { display:flex; gap:.45rem; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
     .collect-btn { border:0; border-radius:9px; padding:.62rem .95rem; background:var(--admin-primary); color:#fff; font-weight:700; cursor:pointer; }
     .collect-btn:disabled { opacity:.55; cursor:wait; }
+    .cleanup-btn { background:#495057; }
     .last-collected { font-size:.76rem; color:var(--admin-text-muted); text-align:right; }
     .threshold-strip { display:flex; align-items:center; flex-wrap:wrap; gap:.45rem .75rem; padding:.7rem .9rem; margin-bottom:1rem; background:var(--admin-card); border:1px solid var(--admin-border); border-radius:10px; font-size:.8rem; }
     .threshold-dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:.3rem; }
@@ -108,6 +109,7 @@
       <div class="usage-actions">
         <div class="last-collected" id="lastCollected">마지막 수집: 확인 중...</div>
         <button class="collect-btn" id="collectBtn" onclick="collectNow()" hidden>↻ 지금 수집</button>
+        <button class="collect-btn cleanup-btn" id="cleanupServiceUsageBtn" onclick="cleanupServiceUsage()" hidden>180일 초과 정리</button>
       </div>
     </div>
 
@@ -163,6 +165,7 @@
     let alerts = [];
     let activeService = 'all';
     const MANUAL_COLLECT_PERMISSION_RANK = 100;
+    const MANUAL_CLEANUP_PERMISSION_RANK = 100;
 
     const SERVICE_INFO = {
       github: { name:'GitHub', icon:'🐙', color:'#24292f', features:['저장소 1개 통합 관리','공개/비공개 저장소 무제한','협업자 무제한','Community support'] },
@@ -216,10 +219,15 @@
       return Number(session && session.permissionRank || 0) >= MANUAL_COLLECT_PERMISSION_RANK;
     }
 
+    function canManualCleanup() {
+      return Number(session && session.permissionRank || 0) >= MANUAL_CLEANUP_PERMISSION_RANK;
+    }
+
     function syncCollectButtonVisibility() {
       const btn = document.getElementById('collectBtn');
-      if (!btn) return;
-      btn.hidden = !canManualCollect();
+      if (btn) btn.hidden = !canManualCollect();
+      const cleanupBtn = document.getElementById('cleanupServiceUsageBtn');
+      if (cleanupBtn) cleanupBtn.hidden = !canManualCleanup();
     }
 
     function latestRunStatus(serviceKey) {
@@ -367,6 +375,40 @@
         await logError('SERVICE_USAGE_COLLECT_FAIL',{오류:error.message||String(error)});
         alert('서비스 사용량 수집 실패: '+tErr(error.message||String(error)));
       } finally { btn.disabled=false; btn.textContent='↻ 지금 수집'; syncCollectButtonVisibility(); }
+    }
+
+    async function cleanupServiceUsage() {
+      if (!canManualCleanup()) {
+        syncCollectButtonVisibility();
+        alert('서비스 통계 수동 정리는 관리자 이상만 가능합니다.');
+        return;
+      }
+      if (!confirm('180일이 지난 서비스 통계 스냅샷과 수집 이력을 실제 삭제합니다.\n\n계속하시겠습니까?')) return;
+
+      const btn = document.getElementById('cleanupServiceUsageBtn');
+      btn.disabled = true;
+      btn.textContent = '정리 중...';
+      try {
+        const { data, error } = await _sb.rpc('cleanup_service_usage_retention_180d');
+        if (error) throw error;
+        const row = Array.isArray(data) ? data[0] : data;
+        const snapshotCount = Number(row?.service_usage_snapshots_deleted || 0);
+        const runCount = Number(row?.service_usage_collection_runs_deleted || 0);
+        await logInfo('SERVICE_USAGE_RETENTION_CLEANUP', {
+          snapshots: snapshotCount,
+          collectionRuns: runCount,
+          cutoffAt: row?.cutoff_at || null
+        });
+        alert(`서비스 통계 정리 완료\n\n스냅샷 ${snapshotCount.toLocaleString('ko-KR')}건\n수집 이력 ${runCount.toLocaleString('ko-KR')}건`);
+        await loadDashboard();
+      } catch (error) {
+        await logError('SERVICE_USAGE_RETENTION_CLEANUP_FAIL', { 오류: error.message || String(error) });
+        alert('서비스 통계 정리 실패: ' + tErr(error.message || String(error)) + '\n\nSupabase SQL Editor에서 docs/TASK-073_manual_retention_cleanup.sql 적용 여부를 확인해주세요.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '180일 초과 정리';
+        syncCollectButtonVisibility();
+      }
     }
 
     async function openHistory(serviceKey, metricKey) {

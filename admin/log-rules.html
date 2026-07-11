@@ -35,7 +35,7 @@
   <div class="admin-container">
     <div class="page-header">
       <h1>📋 로그 작성 룰</h1>
-      <p>시스템 로그가 기록되는 기준과 규칙을 설명합니다. v3.72.0 기준 인증/권한 리디렉트 원인, 최신 버전 세션 감지, QR 위치 권한 차단, 상품 카테고리 관리, 공지 사항 관리/열람 현황, 이미지 업로드, 달란트 예외 지급 요청/승인, 서비스 사용량 수집/할당량 알림, 180일 보존 정책도 로그와 전용 수집 이력으로 구분합니다.</p>
+      <p>시스템 로그가 기록되는 기준과 규칙을 설명합니다. v3.74.0 기준 로그 details는 영어 key와 처리 상세만 저장하고, 작업명·사용자 계정·일시·레벨·페이지는 기본 컬럼/화면 표시 영역에서 처리합니다. 로그 화면과 Slack 알림은 저장된 영어 action/details를 한글로 치환해 보여줍니다.</p>
     </div>
 
     <!-- 로그 레벨 개요 -->
@@ -63,7 +63,7 @@
             <td><span class="level-tag info">INFO</span></td>
             <td>정상 동작 기록</td>
             <td>❌</td>
-            <td>모든 성공 작업, 페이지 방문, 정상 이벤트</td>
+            <td>모든 성공 작업, 정상 이벤트 (PAGE_VIEW는 저장하지 않음)</td>
           </tr>
           <tr>
             <td><span class="level-tag warn">WARN</span></td>
@@ -142,7 +142,7 @@
             <td><code>PAGE_VIEW</code></td>
             <td><span class="level-tag info">INFO</span></td>
             <td>모든 페이지 로드 시 autoLogPageView()</td>
-            <td>페이지 경로, 사용자명</td>
+            <td>v3.40.0부터 저장하지 않음</td>
           </tr>
           <tr>
             <td><code>JS_ERROR</code></td>
@@ -180,29 +180,28 @@
         // level: 'TRACE'|'DEBUG'|'INFO'|'WARN'|'ERROR'|'FATAL'|'CRITICAL'<br>
         // action: 작업 식별자 (예: 'USER_CREATE')<br>
         // page: 페이지 경로 (null이면 자동 감지)<br>
-        // details: 추가 정보 객체
+        // details: 처리 상세 정보 객체 (공통 필드는 저장 전 제거)
       </div>
       <h3>편의 함수</h3>
       <div class="code-block">
-        logInfo('TALENT_GIVE', { userId, 금액: amount, description })<br>
-        logWarn('TALENT_GIVE_DENIED', { userId, 사유: '권한 부족' })<br>
+        logInfo('TALENT_GIVE', { userId, amount, description })<br>
+        logWarn('TALENT_GIVE_DENIED', { userId, reason: '권한 부족' })<br>
         logError('TALENT_GIVE_FAIL', { userId, error: err.message })
       </div>
       <div class="note-box">
-        <strong>한글 상세:</strong> v3.66.0부터 <code>writeLog()</code>는 원본 영문/기술 키를 유지하면서 <code>details._actionLabel</code>, <code>details._actionKo</code>, 한글 키 별칭을 함께 저장합니다. 로그/작업 이력 상세 모달은 한글 키를 우선 표시합니다.
+        <strong>details 저장 기준:</strong> v3.74.0부터 <code>writeLog()</code>는 details를 영어 key로 정규화하고 중복 항목을 제거합니다. <code>action</code>, 작업자, 로그 작성 일시, 로그 레벨, 발생 페이지처럼 기본 컬럼 또는 화면 기본 영역에 표시되는 값은 details에 저장하지 않습니다.
       </div>
-      <h3>자동 첨부 데이터 (details._client)</h3>
+      <h3>기본 표시 필드와 details 제외 항목</h3>
       <table class="rule-table">
         <thead>
-          <tr><th>필드</th><th>내용</th></tr>
+          <tr><th>구분</th><th>처리 기준</th></tr>
         </thead>
         <tbody>
-          <tr><td>browser</td><td>브라우저 이름/버전</td></tr>
-          <tr><td>os</td><td>운영체제</td></tr>
-          <tr><td>screen</td><td>화면 해상도</td></tr>
-          <tr><td>device</td><td>디바이스 유형 (desktop/mobile/tablet)</td></tr>
-          <tr><td>lang</td><td>브라우저 언어</td></tr>
-          <tr><td>ip</td><td>클라이언트 IP (ipify.org)</td></tr>
+          <tr><td>작업</td><td><code>activity_logs.action</code>에 영어 action code로 저장하고 화면/Slack에서 한글 작업명으로 치환</td></tr>
+          <tr><td>사용자 계정</td><td><code>profiles.display_name(username)</code> 우선 표시. 승인 전 계정은 <code>registration_requests.display_name(username)</code> 기준으로 표시</td></tr>
+          <tr><td>일시/레벨/페이지</td><td><code>created_at</code>, <code>level</code>, <code>page</code> 기본 컬럼으로 표시하고 details에는 중복 저장하지 않음</td></tr>
+          <tr><td>처리 상세</td><td>대상, 금액, 상태 변경, 오류 메시지, 사유 등 실제 처리 내용만 영어 key로 details에 저장</td></tr>
+          <tr><td>클라이언트 정보</td><td><code>_client</code>, <code>클라이언트</code>, IP, 브라우저, OS, 화면 크기, 기기 정보는 신규 로그에 저장하지 않음</td></tr>
         </tbody>
       </table>
     </div>
@@ -238,10 +237,10 @@
           <tr><td><code>my-orders.html</code></td><td>본인 주문 취소, 취소 RPC 실패/폴백, 환불 실패</td><td><code>order_cancel</code>, <code>ORDER_CANCEL_*</code>, <code>ORDER_CANCEL_REFUND_FAIL</code></td><td><code>product_orders</code>, <code>cancel_product_order</code> RPC, <code>profiles.pending_talent</code></td><td>WARN+ 공통</td></tr>
           <tr><td><code>qna.html</code></td><td>질문/댓글/답변 등록, FAQ 지정, 삭제</td><td><code>QNA_CREATE</code>, <code>QNA_ANSWER</code>, <code>QNA_COMMENT</code>, <code>QNA_DELETE</code>, <code>QNA_FAQ_SET</code></td><td><code>qna</code>, <code>qna_comments</code>, 작성자 프로필, FAQ 플래그</td><td><code>qna_new</code> Q&amp;A 채널, WARN+ 공통</td></tr>
           <tr><td><code>admin/notices.html</code>, <code>index.html</code></td><td>공지 등록/수정/삭제/활성 토글, 공지 보기, 열람 현황 조회, 다시 열지 않음</td><td><code>ANNOUNCEMENT_CREATE</code>, <code>ANNOUNCEMENT_UPDATE</code>, <code>ANNOUNCEMENT_TOGGLE</code>, <code>ANNOUNCEMENT_DELETE</code>, <code>ANNOUNCEMENT_VIEW</code>, <code>ANNOUNCEMENT_READ_STATUS_VIEW</code>, <code>ANNOUNCEMENT_DISMISS</code></td><td><code>announcements</code>, <code>announcement_dismissals</code>, <code>profiles</code>, 열람 현황 사용자 유형/확인상태 필터</td><td>WARN+ 공통</td></tr>
-          <tr><td><code>admin/logs.html</code>, <code>admin/audit.html</code></td><td>로그 확인/일괄 확인, 범위/선택 삭제, 복원, 작업 이력 조회</td><td><code>LOG_ACKNOWLEDGED</code>, <code>LOG_BULK_ACK</code>, <code>LOG_RANGE_DELETE</code>, <code>LOG_SELECT_DELETE</code>, <code>LOG_RESTORE</code></td><td><code>activity_logs</code>, 확인자/확인 메모, <code>is_deleted</code>/<code>is_acknowledged</code></td><td>WARN+ 공통</td></tr>
+          <tr><td><code>admin/logs.html</code>, <code>admin/audit.html</code></td><td>로그 확인/일괄 확인, 범위/선택 삭제, 180일 초과 확인 완료 로그 실제 삭제, 복원, 작업 이력 조회</td><td><code>LOG_ACKNOWLEDGED</code>, <code>LOG_BULK_ACK</code>, <code>LOG_RANGE_DELETE</code>, <code>LOG_SELECT_DELETE</code>, <code>LOG_RETENTION_CLEANUP</code>, <code>LOG_RESTORE</code></td><td><code>activity_logs</code>, 확인자/확인 메모, <code>is_deleted</code>/<code>is_acknowledged</code>. 미확인 로그는 실제 삭제 제외</td><td>WARN+ 공통</td></tr>
           <tr><td><code>admin/page-access.html</code>, <code>admin/page-features.html</code>, <code>admin/page-permissions.html</code></td><td>역할별 페이지 접근/기능/권한 매트릭스 변경</td><td><code>ROLE_ACCESS_UPDATE</code>, <code>ROLE_FEATURE_UPDATE</code>, <code>PAGE_PERM_UPDATE</code></td><td><code>role_page_access</code>, <code>role_page_features</code>, <code>page_permissions</code>, 권한 코드/등급</td><td>WARN+ 공통</td></tr>
           <tr><td><code>admin/reports.html</code></td><td>보고서 조회/저장/삭제/시드 등록</td><td><code>REPORT_VIEW</code>, <code>REPORT_SAVE</code>, <code>REPORT_DELETE</code>, <code>REPORT_SEED</code>, 실패/오류 액션</td><td><code>reports</code>, 보고서 유형/제목/내용, 작성자</td><td>WARN+ 공통</td></tr>
-          <tr><td><code>admin/service-stats.html</code>, <code>service-usage-collect</code></td><td>서비스 사용량 수동/예약 수집, 수집 실패, 무료 할당량 임계값 도달</td><td><code>service_usage_collection_runs</code>, <code>service_usage_alerts</code>, <code>service_quota_alert</code></td><td><code>service_usage_metrics</code>, <code>service_usage_events</code>, <code>service_usage_snapshots</code>, Edge Function 수집 결과. 예약 수집은 매시간 정각, 수집 스냅샷/실행 이력은 180일 보존</td><td><code>service_quota_alert</code> 70%·85%·95% 최초 도달 시 운영 채널</td></tr>
+          <tr><td><code>admin/service-stats.html</code>, <code>service-usage-collect</code></td><td>서비스 사용량 수동/예약 수집, 수집 실패, 무료 할당량 임계값 도달, 180일 초과 서비스 통계 수동 정리</td><td><code>service_usage_collection_runs</code>, <code>service_usage_alerts</code>, <code>service_quota_alert</code>, <code>SERVICE_USAGE_RETENTION_CLEANUP</code></td><td><code>service_usage_metrics</code>, <code>service_usage_events</code>, <code>service_usage_snapshots</code>, Edge Function 수집 결과. 예약 수집은 매시간 정각, 수집 스냅샷/실행 이력은 180일 보존</td><td><code>service_quota_alert</code> 70%·85%·95% 최초 도달 시 운영 채널</td></tr>
         </tbody>
       </table>
     </div>
@@ -347,8 +346,10 @@
         <tbody>
           <tr><td>ROLE_ACCESS_UPDATE / ROLE_FEATURE_UPDATE</td><td><span class="level-tag info">INFO</span></td><td>페이지 접근/기능 권한 변경</td></tr>
           <tr><td>LOG_ACKNOWLEDGED / LOG_BULK_ACK</td><td><span class="level-tag info">INFO</span></td><td>로그 확인 처리</td></tr>
-          <tr><td>LOG_RANGE_DELETE / LOG_SELECT_DELETE</td><td><span class="level-tag info">INFO</span></td><td>로그 삭제 (소프트)</td></tr>
+          <tr><td>LOG_RANGE_DELETE / LOG_SELECT_DELETE</td><td><span class="level-tag info">INFO</span></td><td>로그 삭제 대기 처리. 미확인 로그는 선택/범위 삭제 대상에서 제외</td></tr>
+          <tr><td>LOG_RETENTION_CLEANUP / LOG_RETENTION_CLEANUP_FAIL</td><td><span class="level-tag info">INFO</span> / <span class="level-tag error">ERROR</span></td><td>관리자(100+)가 로그 페이지에서 확인 완료된 180일 초과 활동 로그를 실제 삭제하거나 실패</td></tr>
           <tr><td>SERVICE_USAGE_COLLECT / SERVICE_QUOTA_ALERT</td><td><span class="level-tag info">INFO</span></td><td>서비스 사용량 수집 이력과 할당량 임계값 알림. 상세 수집 결과는 전용 서비스 통계 테이블 기준</td></tr>
+          <tr><td>SERVICE_USAGE_RETENTION_CLEANUP / SERVICE_USAGE_RETENTION_CLEANUP_FAIL</td><td><span class="level-tag info">INFO</span> / <span class="level-tag error">ERROR</span></td><td>관리자(100+)가 서비스 통계 페이지에서 180일 초과 스냅샷/수집 이력을 수동 정리하거나 실패</td></tr>
         </tbody>
       </table>
     </div>
@@ -359,7 +360,7 @@
       <table class="rule-table">
         <thead><tr><th>대상 로그</th><th>호출 type</th><th>대상 채널</th><th>포함 정보</th></tr></thead>
         <tbody>
-          <tr><td>WARN / ERROR / FATAL / CRITICAL</td><td><code>log_alert</code></td><td>운영 채널</td><td>레벨, 액션, 페이지, 상세 정보</td></tr>
+          <tr><td>WARN / ERROR / FATAL / CRITICAL</td><td><code>log_alert</code></td><td>운영 채널</td><td>레벨, 한글 액션명, 페이지, 한글로 치환된 상세 정보</td></tr>
           <tr><td>서비스 사용률 70% / 85% / 95% 최초 도달</td><td><code>service_quota_alert</code></td><td>운영 채널</td><td>서비스명, 지표, 사용률, 남은 양, 서비스 통계 링크</td></tr>
         </tbody>
       </table>
@@ -381,10 +382,10 @@
         <strong>소프트 삭제:</strong> 로그는 물리적으로 삭제되지 않고 <code>is_deleted=true</code>로 표시됩니다.
       </div>
       <div class="note-box">
-        <strong>한글 라벨/상세:</strong> 액션 라벨은 <code>js/codes.js</code> 기본 코드북과 DB <code>activity_logs.action</code> 코드 그룹을 우선 사용합니다. <code>writeLog()</code> 호출 시 자동으로 <code>details._actionLabel</code>/<code>details._actionKo</code>와 한글 상세 키가 추가되어 기존 로그도 하위호환 표시됩니다. 기존 DB 데이터는 <code>docs/TASK-067_korean_activity_logs.sql</code>로 백필합니다.
+        <strong>한글 라벨/상세:</strong> 신규 로그는 영어 action/details로 저장하고, 화면과 Slack 알림에서 <code>js/codes.js</code> 기본 코드북, DB <code>activity_logs.action</code> 코드 그룹, 공통 details key 매핑을 기준으로 한글 치환합니다. 기존 DB의 한글 별칭/중복/client details는 <code>docs/TASK-074_activity_logs_english_details.sql</code>로 정리합니다.
       </div>
       <div class="note-box">
-        <strong>로그 관리 페이지:</strong> <a href="logs.html" style="color:var(--admin-primary);">운영 &gt; 로그</a>에서 조회/확인 처리/삭제 가능. 페이지당 항목 수 콤보 박스는 필터 영역 가장 아래의 <strong>삭제 대기 목록</strong> 줄 오른쪽에 배치되며, 선택값은 계정별 설정으로 저장됩니다. 확인 완료된 활동 로그는 180일 보존 후 자동 정리되지만, 미확인 로그는 확인 완료 전까지 자동 삭제되지 않으며 선택 삭제 체크박스도 비활성화됩니다.
+        <strong>로그 관리 페이지:</strong> <a href="logs.html" style="color:var(--admin-primary);">운영 &gt; 로그</a>에서 조회/확인 처리/삭제 가능. 페이지당 항목 수 콤보 박스는 필터 영역 가장 아래의 <strong>삭제 대기 목록</strong> 줄 오른쪽에 배치되며, 선택값은 계정별 설정으로 저장됩니다. 확인 완료된 활동 로그는 180일 보존 후 자동 정리되며, 관리자(100+)는 <strong>180일 초과 실제 삭제</strong> 버튼으로 즉시 정리할 수 있습니다. 미확인 로그는 확인 완료 전까지 자동/수동 실제 삭제되지 않으며 선택 삭제 체크박스도 비활성화됩니다.
       </div>
       <div class="note-box">
         <strong>Slack 알림 룰:</strong> <a href="slack-rules.html" style="color:var(--admin-primary);">운영 &gt; Slack 알림 룰</a>에서 구매/가입/부서 이동/Q&amp;A/로그/서비스 할당량 알림 라우팅을 확인 가능

@@ -7,8 +7,6 @@ const LOG_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'CRITICA
 const ERROR_LEVELS = ['ERROR', 'FATAL', 'CRITICAL'];
 const SLACK_ALERT_LEVELS = ['WARN', 'ERROR', 'FATAL', 'CRITICAL'];
 
-let _clientInfo = null;
-let _clientIp = null;
 let _logAlertLastSent = {};
 const _LOG_ALERT_THROTTLE_MS = 5000;
 
@@ -18,12 +16,18 @@ function _sendLogAlertDirect(level, action, page, details) {
   var now = Date.now();
   if (_logAlertLastSent[key] && now - _logAlertLastSent[key] < _LOG_ALERT_THROTTLE_MS) return;
   _logAlertLastSent[key] = now;
-  var safeDetails = {};
-  if (details) {
-    Object.keys(details).forEach(function(k) { if (!k.startsWith('_')) safeDetails[k] = details[k]; });
-  }
+  var safeDetails = (typeof getDisplayLogDetails === 'function') ? getDisplayLogDetails(details || {}) : (details || {});
   _sb.functions.invoke('slack-notify', {
-    body: { type: 'log_alert', data: { '레벨': level, '액션': action, '페이지': page || window.location.pathname, '상세': safeDetails } }
+    body: {
+      type: 'log_alert',
+      data: {
+        '레벨': level,
+        '액션': getActionLabel(action),
+        '액션코드': action,
+        '페이지': page || window.location.pathname,
+        '상세': safeDetails
+      }
+    }
   }).catch(function(err) {
     console.warn('[LogAlert] Slack notify failed:', err);
   });
@@ -243,6 +247,8 @@ const ACTION_LABELS = {
   LOG_SELECT_DELETE_ERROR: '로그 선택 삭제 오류',
   LOG_RESTORE: '로그 복원',
   LOG_RESTORE_FAIL: '로그 복원 실패',
+  LOG_RETENTION_CLEANUP: '180일 초과 로그 실제 삭제',
+  LOG_RETENTION_CLEANUP_FAIL: '180일 초과 로그 실제 삭제 실패',
   // 권한/설정
   ROLE_ACCESS_UPDATE: '페이지 접근 권한 변경',
   ROLE_ACCESS_UPDATE_FAIL: '페이지 접근 권한 변경 실패',
@@ -260,6 +266,8 @@ const ACTION_LABELS = {
   REPORT_SEED_FAIL: '보고서 시드 등록 실패',
   REPORT_SEED_ERROR: '보고서 시드 등록 오류',
   SERVICE_USAGE_COLLECT_FAIL: '서비스 사용량 수집 실패',
+  SERVICE_USAGE_RETENTION_CLEANUP: '서비스 통계 180일 초과 정리',
+  SERVICE_USAGE_RETENTION_CLEANUP_FAIL: '서비스 통계 180일 초과 정리 실패',
 };
 
 function getActionLabel(action) {
@@ -279,10 +287,20 @@ const LOG_DETAIL_KEY_LABELS = {
   _userName: '작업자',
   _displayName: '작업자',
   _client: '클라이언트',
+  client: '클라이언트',
+  targetAccount: '대상 아이디',
+  targetName: '대상',
+  targetUserId: '대상 사용자 ID',
+  actorAccount: '작업자 아이디',
+  actorName: '작업자',
+  actorId: '작업자 ID',
   action: '작업',
   id: 'ID',
   actionKey: '작업코드',
   actionLabel: '작업명',
+  actionCode: '작업코드',
+  operation: '처리',
+  type: '구분',
   message: '메시지',
   details: '상세',
   detail: '상세',
@@ -296,6 +314,7 @@ const LOG_DETAIL_KEY_LABELS = {
   userName: '사용자 이름',
   userId: '사용자 ID',
   authUserId: '인증 사용자 ID',
+  requestId: '요청 ID',
   user_type: '사용자 유형',
   userType: '사용자 유형',
   class_number: '반',
@@ -313,6 +332,9 @@ const LOG_DETAIL_KEY_LABELS = {
   page: '페이지',
   pageId: '페이지 ID',
   pageName: '페이지명',
+  logLevel: '로그 레벨',
+  logPage: '로그 발생 페이지',
+  loggedAt: '로그 작성 일시',
   filename: '파일명',
   lineno: '줄 번호',
   colno: '열 번호',
@@ -324,6 +346,7 @@ const LOG_DETAIL_KEY_LABELS = {
   sessionVersion: '세션 버전',
   currentPageVersion: '현재 페이지 버전',
   redirectTarget: '이동 대상',
+  requestedPage: '요청 페이지',
   dateFrom: '시작일',
   dateTo: '종료일',
   level: '레벨',
@@ -331,10 +354,16 @@ const LOG_DETAIL_KEY_LABELS = {
   count: '건수',
   total: '전체',
   totalCount: '전체 건수',
+  successCount: '성공 건수',
+  failCount: '실패 건수',
+  failedCount: '실패 건수',
+  givenCount: '지급 건수',
+  requestCount: '요청 건수',
   items: '항목 목록',
   itemId: '항목 ID',
   itemName: '항목명',
   managers: '담당자',
+  description: '설명',
   taskId: '작업 ID',
   taskTitle: '작업 제목',
   reportId: '보고서 ID',
@@ -342,6 +371,17 @@ const LOG_DETAIL_KEY_LABELS = {
   productId: '상품 ID',
   product_name: '상품명',
   productName: '상품명',
+  title: '제목',
+  questionId: '질문 ID',
+  answererName: '답변자',
+  isFaq: 'FAQ 여부',
+  noticeId: '공지 ID',
+  code: '코드',
+  field: '필드',
+  hasImage: '이미지 여부',
+  targetType: '대상 유형',
+  changeSummary: '변경 내역',
+  permissionLabel: '권한',
   category: '카테고리',
   categoryCode: '카테고리 코드',
   categoryName: '카테고리명',
@@ -357,6 +397,8 @@ const LOG_DETAIL_KEY_LABELS = {
   qrId: 'QR ID',
   orderId: '주문 ID',
   orderNo: '주문번호',
+  cutoffAt: '기준 일시',
+  oldState: '이전 상태',
   status: '상태',
   state: '상태',
   oldStatus: '이전 상태',
@@ -446,6 +488,79 @@ const LOG_DETAIL_VALUE_LABELS = {
   'Profile RPC returned no profile': '프로필 RPC 결과 없음'
 };
 
+const LOG_DETAIL_KEY_ALIASES = {
+  오류: 'error',
+  에러: 'error',
+  사유: 'reason',
+  대상: 'targetName',
+  아이디: 'targetAccount',
+  이름: 'targetName',
+  요청ID: 'requestId',
+  사용자ID: 'userId',
+  항목ID: 'itemId',
+  상품ID: 'productId',
+  주문ID: 'orderId',
+  거래ID: 'txnId',
+  작업ID: 'taskId',
+  보고서ID: 'reportId',
+  제목: 'title',
+  질문ID: 'questionId',
+  답변자: 'answererName',
+  FAQ여부: 'isFaq',
+  상품명: 'productName',
+  금액: 'amount',
+  수량: 'amount',
+  건수: 'count',
+  총건수: 'totalCount',
+  성공: 'successCount',
+  실패: 'failCount',
+  실패건수: 'failedCount',
+  지급건수: 'givenCount',
+  요청건수: 'requestCount',
+  구분: 'type',
+  코드: 'code',
+  카테고리: 'categoryName',
+  필드: 'field',
+  이미지: 'hasImage',
+  설명: 'description',
+  유형: 'type',
+  공지ID: 'noticeId',
+  활성: 'isActive',
+  활성여부: 'isActive',
+  변경상태: 'newStatus',
+  이전상태: 'oldStatus',
+  이전값: 'oldValue',
+  변경값: 'newValue',
+  변경내역: 'changeSummary',
+  권한: 'permissionLabel',
+  부서: 'departmentName',
+  부서명: 'departmentName',
+  이전부서: 'fromDeptName',
+  이동부서: 'toDeptName',
+  반: 'classNumber',
+  항목명: 'itemName',
+  주문번호: 'orderNo',
+  요청페이지: 'requestedPage',
+  이동대상: 'redirectTarget',
+  현재페이지버전: 'currentPageVersion',
+  최신버전: 'latestVersion',
+  세션버전: 'sessionVersion',
+  작업: 'operation',
+  작업코드: 'actionCode',
+  작업명: 'actionLabel',
+  작업자: 'actorName',
+  '작업자 아이디': 'actorAccount',
+  페이지: 'logPage',
+  레벨: 'logLevel',
+  시간: 'loggedAt',
+  일시: 'loggedAt',
+  작성일시: 'loggedAt',
+  '로그 작성 일시': 'loggedAt',
+  '로그 발생 페이지': 'logPage',
+  '로그 레벨': 'logLevel',
+  클라이언트: 'client'
+};
+
 const LOG_TECHNICAL_DETAIL_KEYS = new Set([
   '_actionKey',
   '_actionEn',
@@ -455,11 +570,189 @@ const LOG_TECHNICAL_DETAIL_KEYS = new Set([
   '_username',
   '_userName',
   '_displayName',
-  '_client'
+  '_client',
+  'client',
+  '클라이언트',
+  'actorAccount',
+  'actorName',
+  'actorId',
+  'username',
+  'displayName',
+  'userName',
+  'cachedUsername',
+  'authUserId',
+  'actionCode',
+  'actionLabel',
+  'logLevel',
+  'logPage',
+  'loggedAt'
+]);
+
+const LOG_COMMON_DETAIL_KEYS = new Set([
+  '_actionKey',
+  '_actionEn',
+  '_actionLabel',
+  '_actionKo',
+  '_userAccount',
+  '_username',
+  '_userName',
+  '_displayName',
+  '_client',
+  'client',
+  '클라이언트',
+  'actorAccount',
+  'actorName',
+  'actorId',
+  'username',
+  'displayName',
+  'userName',
+  'cachedUsername',
+  'authUserId',
+  'actionCode',
+  'actionLabel',
+  'logLevel',
+  'logPage',
+  'loggedAt',
+  'level',
+  'page',
+  'createdAt',
+  'created_at',
+  'timestamp',
+  'time',
+  '로그 작성 일시',
+  '로그 발생 페이지',
+  '로그 레벨',
+  '작업',
+  '작업코드',
+  '작업명',
+  '작업자',
+  '작업자 아이디',
+  '레벨',
+  '페이지',
+  '시간',
+  '일시',
+  '작성일시'
 ]);
 
 function getLogDetailKeyLabel(key) {
   return LOG_DETAIL_KEY_LABELS[key] || key;
+}
+
+function _safeLogJson(value) {
+  try { return JSON.stringify(value); }
+  catch (e) { return String(value); }
+}
+
+function _sameLogDetailValue(a, b) {
+  return _safeLogJson(a) === _safeLogJson(b);
+}
+
+function _isEmptyLogDetailValue(value) {
+  if (value === undefined || value === null) return true;
+  if (typeof value === 'string') return value.trim() === '';
+  if (Array.isArray(value)) return value.length === 0;
+  if (typeof value === 'object') return Object.keys(value).length === 0;
+  return false;
+}
+
+function _setNormalizedLogDetail(target, key, value) {
+  if (!key || _isEmptyLogDetailValue(value)) return;
+  if (!Object.prototype.hasOwnProperty.call(target, key)) {
+    target[key] = value;
+    return;
+  }
+  if (_sameLogDetailValue(target[key], value)) return;
+  let idx = 2;
+  let nextKey = key + idx;
+  while (Object.prototype.hasOwnProperty.call(target, nextKey)) {
+    if (_sameLogDetailValue(target[nextKey], value)) return;
+    idx += 1;
+    nextKey = key + idx;
+  }
+  target[nextKey] = value;
+}
+
+function _normalizeLogDetailKey(key, value, context = {}) {
+  const rawKey = String(key || '');
+  const aliasKey = LOG_DETAIL_KEY_ALIASES[rawKey] || rawKey;
+
+  if (LOG_COMMON_DETAIL_KEYS.has(rawKey) || LOG_COMMON_DETAIL_KEYS.has(aliasKey)) return null;
+  if (rawKey.startsWith('_')) return null;
+
+  if (aliasKey === 'action' || aliasKey === 'actionKey') {
+    return value === context.action ? null : 'operation';
+  }
+
+  if ((aliasKey === 'username' || aliasKey === 'displayName' || aliasKey === 'userName') &&
+      (value === context.actorAccount || value === context.actorName)) {
+    return null;
+  }
+
+  if ((aliasKey === 'targetAccount' || aliasKey === 'targetName' || aliasKey === 'targetUser' || aliasKey === 'userId' || aliasKey === 'targetUserId') &&
+      (value === context.actorAccount || value === context.actorName)) {
+    return null;
+  }
+
+  if (aliasKey === 'authUserId' && value === context.actorAccount) return null;
+  return aliasKey;
+}
+
+function normalizeLogDetailsForStorage(details, context = {}, depth = 0) {
+  if (!details || typeof details !== 'object') return {};
+  if (Array.isArray(details)) {
+    return details
+      .map(item => (item && typeof item === 'object') ? normalizeLogDetailsForStorage(item, context, depth + 1) : item)
+      .filter(item => !_isEmptyLogDetailValue(item));
+  }
+  if (depth > 5) return details;
+
+  const result = {};
+  Object.entries(details).forEach(([key, value]) => {
+    const normalizedKey = _normalizeLogDetailKey(key, value, context);
+    if (!normalizedKey) return;
+    let normalizedValue = value;
+    if (Array.isArray(value)) {
+      normalizedValue = value
+        .map(item => (item && typeof item === 'object') ? normalizeLogDetailsForStorage(item, context, depth + 1) : item)
+        .filter(item => !_isEmptyLogDetailValue(item));
+    } else if (value && typeof value === 'object') {
+      normalizedValue = normalizeLogDetailsForStorage(value, context, depth + 1);
+    }
+    _setNormalizedLogDetail(result, normalizedKey, normalizedValue);
+  });
+  return result;
+}
+
+function inferLogActor(session, details = {}, action = '') {
+  const source = (details && typeof details === 'object' && !Array.isArray(details)) ? details : {};
+  const targetLikeAccount = source['대상'] && typeof source['대상'] === 'string' && /^(LOGIN|LOGOUT|PASSWORD|REGISTER|AUTH_)/.test(String(action || ''))
+    ? source['대상']
+    : null;
+  const account = session ? (session.username || null) : (
+    source._userAccount ||
+    source._username ||
+    source.cachedUsername ||
+    source.username ||
+    source['아이디'] ||
+    targetLikeAccount ||
+    source.authUserId ||
+    source.userId ||
+    null
+  );
+  const name = session ? (session.displayName || session.username || null) : (
+    source._userName ||
+    source._displayName ||
+    source.displayName ||
+    source.userName ||
+    source['이름'] ||
+    source.name ||
+    source['대상'] ||
+    null
+  );
+  return {
+    account: account || null,
+    name: name || account || null
+  };
 }
 
 function _addLogDetailValue(target, key, value) {
@@ -542,16 +835,20 @@ function buildKoreanLogDetails(details, options = {}) {
 }
 
 function getLocalizedLogDetails(details, options = {}) {
-  return buildKoreanLogDetails(details, Object.assign({
+  const normalized = normalizeLogDetailsForStorage(details || {}, options);
+  return buildKoreanLogDetails(normalized, Object.assign({
     includeOriginalKeys: true,
-    includeTechnicalKeys: true
+    includeTechnicalKeys: true,
+    addContext: false
   }, options));
 }
 
 function getDisplayLogDetails(details, options = {}) {
-  return buildKoreanLogDetails(details, Object.assign({
+  const normalized = normalizeLogDetailsForStorage(details || {}, options);
+  return buildKoreanLogDetails(normalized, Object.assign({
     includeOriginalKeys: false,
-    includeTechnicalKeys: false
+    includeTechnicalKeys: false,
+    addContext: false
   }, options));
 }
 
@@ -651,30 +948,12 @@ function _parseUA() {
 }
 
 function getClientInfo() {
-  if (_clientInfo) return _clientInfo;
-  const { browser, os, deviceType, userAgent } = _parseUA();
-  _clientInfo = {
-    ip: _clientIp || null,
-    browser,
-    os,
-    screenRes: screen.width + 'x' + screen.height,
-    windowSize: window.innerWidth + 'x' + window.innerHeight,
-    deviceType,
-    language: navigator.language || navigator.userLanguage || 'unknown'
-  };
-  return _clientInfo;
+  return null;
 }
 
 function _fetchIp() {
-  fetch('https://api.ipify.org?format=json')
-    .then(r => r.json())
-    .then(d => {
-      _clientIp = d.ip;
-      if (_clientInfo) _clientInfo.ip = d.ip;
-    })
-    .catch(() => {});
+  return null;
 }
-_fetchIp();
 
 async function writeLog(level, action, page, details) {
   if (!_sb) {
@@ -682,45 +961,30 @@ async function writeLog(level, action, page, details) {
     return { data: null, error: 'Supabase not initialized' };
   }
   const session = getSession();
-  const ci = getClientInfo();
-  const userAccount = session ? (session.username || null) : null;
-  const userName = session ? (session.displayName || session.username || null) : null;
-  const actionLabel = getActionLabel(action);
   const baseDetails = (details && typeof details === 'object' && !Array.isArray(details))
     ? Object.assign({}, details)
     : {};
   if (details && (typeof details !== 'object' || Array.isArray(details))) {
     baseDetails.message = String(details);
   }
-  baseDetails._actionKey = action || null;
-  baseDetails._actionEn = action || null;
-  baseDetails._actionLabel = actionLabel || action || null;
-  baseDetails._actionKo = actionLabel || action || null;
-  baseDetails._userAccount = userAccount;
-  baseDetails._username = userAccount;
-  baseDetails._userName = userName;
-  baseDetails._displayName = userName;
-  const merged = Object.assign({}, getLocalizedLogDetails(baseDetails, {
+  const actor = inferLogActor(session, baseDetails, action);
+  const normalizedDetails = normalizeLogDetailsForStorage(baseDetails, {
     action,
-    actionLabel,
-    userAccount,
-    userName
-  }), {
-    _client: ci,
-    '클라이언트': _localizeLogDetailValue('_client', ci)
+    actorAccount: actor.account,
+    actorName: actor.name
   });
   const row = {
     level,
     action,
     page: page || window.location.pathname,
-    details: merged,
-    username: userAccount,
-    user_name: userName,
+    details: normalizedDetails,
+    username: actor.account,
+    user_name: actor.name,
     is_acknowledged: !ERROR_LEVELS.includes(level)
   };
   var result = await _insertActivityLogRow(row);
   if (SLACK_ALERT_LEVELS.includes(level)) {
-    _sendLogAlertDirect(level, action, page || window.location.pathname, merged);
+    _sendLogAlertDirect(level, action, page || window.location.pathname, normalizedDetails);
   }
   return result;
 }

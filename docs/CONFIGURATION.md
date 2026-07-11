@@ -28,6 +28,9 @@
 | `docs/TASK-058_product_category_policy.sql` | 추적 | 구매 담당 교사(70+) 이상 상품 카테고리 관리자의 `products.category` 코드 항목 추가 RLS 정책 |
 | `docs/TASK-068_product_category_page_and_sort_order.sql` | 추적 | 상품 정렬 순번 컬럼/인덱스와 상품 카테고리 관리 70+ 정책 |
 | `docs/TASK-072_data_retention_180d.sql` | 추적 | 서비스 통계 스냅샷/수집 이력과 확인 완료 활동 로그 180일 보존 정책 |
+| `docs/TASK-073_manual_retention_cleanup.sql` | 추적 | 관리자용 180일 초과 서비스 통계/확인 완료 활동 로그 수동 삭제 RPC와 로그 액션 |
+| `docs/TASK-074_plan.md`, `docs/TASK-074_test_scenario.md`, `docs/TASK-074_test_result.md`, `docs/TASK-074_change_report.md` | 추적 | 활동 로그 영어 저장/한글 표시 분리 작업 계획, 검증, 변경 보고 |
+| `docs/TASK-074_activity_logs_english_details.sql` | 추적 | 기존 활동 로그 details의 한글 별칭/중복/client 항목을 영어 key 중심으로 정리 |
 | `docs/TASK-041_app_config.sql` | 추적 | Supabase `app_config` 테이블, RLS, 공개 설정 RPC, 초기 데이터 |
 | `docs/edge-function-slack-notify.ts` | 추적 | Slack 알림 Edge Function 배포용 소스 |
 | `docs/SLACK_NOTIFICATION_RULES.md` | 추적 | Slack 알림 type, 라우팅, Secret 기준 |
@@ -96,7 +99,7 @@ Supabase `app_config` 테이블에는 비밀 원문을 넣지 않는다. 대신 
 
 ## 5. Supabase app_config 적용
 
-새 Supabase Database를 완전히 비어 있는 상태에서 구성할 때는 먼저 `docs/INITIAL_DATABASE_SETUP.sql`을 Supabase SQL Editor에서 실행한 뒤 `docs/TASK-057_code_master.sql`, `docs/TASK-058_product_category_policy.sql`, `docs/TASK-065_registration_approval_contact.sql`, `docs/TASK-066_notice_reads_and_category_manage.sql`, `docs/TASK-067_korean_activity_logs.sql`, `docs/TASK-068_product_category_page_and_sort_order.sql`, `docs/TASK-072_data_retention_180d.sql`을 이어서 실행한다. 기본 설치 SQL은 테이블, 함수/RPC, RLS 정책, Storage 버킷, 기본 권한 데이터를 포함하고, `TASK-057`은 권한/유형/상태/카테고리/로그 액션 코드 마스터를 추가하며 `TASK-058`/`TASK-066`/`TASK-068`은 상품 카테고리 추가·수정·삭제 권한과 상품 정렬 순번, 공지 열람 현황 조회 권한을 보강한다. `TASK-065`는 승인 대기 로그인 안내 담당자 조회 RPC, `TASK-067`은 기존 로그 상세 한글 별칭 백필과 실제 발생 액션 라벨을 보강한다. `TASK-072`는 서비스 통계 스냅샷/수집 이력과 확인 완료 활동 로그의 180일 보존 정책을 적용한다.
+새 Supabase Database를 완전히 비어 있는 상태에서 구성할 때는 먼저 `docs/INITIAL_DATABASE_SETUP.sql`을 Supabase SQL Editor에서 실행한 뒤 `docs/TASK-057_code_master.sql`, `docs/TASK-058_product_category_policy.sql`, `docs/TASK-065_registration_approval_contact.sql`, `docs/TASK-066_notice_reads_and_category_manage.sql`, `docs/TASK-068_product_category_page_and_sort_order.sql`, `docs/TASK-072_data_retention_180d.sql`, `docs/TASK-073_manual_retention_cleanup.sql`을 이어서 실행한다. 기본 설치 SQL은 테이블, 함수/RPC, RLS 정책, Storage 버킷, 기본 권한 데이터를 포함하고, `TASK-057`은 권한/유형/상태/카테고리/로그 액션 코드 마스터를 추가하며 `TASK-058`/`TASK-066`/`TASK-068`은 상품 카테고리 추가·수정·삭제 권한과 상품 정렬 순번, 공지 열람 현황 조회 권한을 보강한다. `TASK-065`는 승인 대기 로그인 안내 담당자 조회 RPC다. `TASK-072`는 서비스 통계 스냅샷/수집 이력과 확인 완료 활동 로그의 180일 보존 정책을 적용하고, `TASK-073`은 운영 화면의 180일 초과 수동 삭제 버튼이 호출하는 관리자용 RPC와 로그 액션을 보강한다. 기존 운영 DB에 v3.66 한글 별칭 로그가 남아 있으면 `docs/TASK-074_activity_logs_english_details.sql`로 중복 details와 client 항목을 영어 key 중심으로 정리한다.
 
 공개 설정만 기존 DB에 보강하거나 점검할 때는 Supabase SQL Editor 또는 Management API에서 `docs/TASK-041_app_config.sql`을 실행한다.
 

@@ -2,9 +2,32 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.72.0',
+  current: '3.74.0',
   date: '2026-07-11',
   history: [
+    {
+      version: '3.74.0',
+      date: '2026-07-11',
+      title: '활동 로그 상세 정규화와 한글 표시 분리',
+      changes: [
+        'writeLog()가 details를 영어 key로 정규화하고 중복 상세 항목을 제거하도록 변경',
+        '작업명, 사용자, 로그 일시, 레벨, 발생 페이지는 activity_logs 기본 컬럼과 화면 표시 영역에서 처리하고 details에는 처리 상세만 저장',
+        '신규 로그에서 _actionLabel/_actionKo 한글 별칭과 _client/클라이언트 정보를 저장하지 않도록 개인정보성 클라이언트 정보 수집 중단',
+        '로그/작업 이력 화면과 WARN+ Slack 알림은 영어로 저장된 action/details를 코드북과 공통 매핑 기준으로 한글 치환해 표시',
+        '기존 activity_logs.details의 한글 별칭, 중복 key, client 항목을 정리하는 운영 SQL 추가'
+      ]
+    },
+    {
+      version: '3.73.0',
+      date: '2026-07-11',
+      title: '180일 초과 데이터 수동 삭제 버튼 추가',
+      changes: [
+        '서비스 통계 페이지에 service_usage_snapshots와 service_usage_collection_runs 180일 초과 수동 정리 버튼 추가',
+        '로그 페이지에 확인 완료 activity_logs 180일 초과 실제 삭제 버튼 추가',
+        '관리자 전용 cleanup_service_usage_retention_180d, cleanup_activity_logs_retention_180d RPC와 코드 마스터 액션 추가',
+        '수동 삭제 실패/성공 로그를 한글 액션 라벨로 남기고 미확인 로그 보호 조건 유지'
+      ]
+    },
     {
       version: '3.72.0',
       date: '2026-07-11',

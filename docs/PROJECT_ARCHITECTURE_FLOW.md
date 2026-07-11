@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-07-11 KST 현재 코드 기준 (v3.72.0)
+작성 기준: 2026-07-11 KST 현재 코드 기준 (v3.74.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -15,9 +15,9 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 | 상품 구매 시스템 | 4단계 구매 흐름(신청→준비→구매→지급)으로 상품 교환을 관리하며, 되돌리기와 구매 취소(cancelled)도 가능하다. 상품 구매 화면은 최초 로드 시 카테고리 순번으로 그룹화하고 같은 카테고리 안에서는 상품 정렬 순번을 우선한다. 구매 카드 이미지는 `products.image_url`, 상세 모달 설명 아래 이미지는 `products.detail_image_url`로 분리한다. 취소는 RPC 우선 시도 + .select() 기반 결과 검증으로 안전하게 처리된다. |
 | 승인 기반 계정 운영 | 신규 사용자는 신청 후 관리자 승인으로 계정이 생성된다. |
 | 부서 이동 관리 | 부서 변경은 요청→승인 흐름으로 처리한다 (90등급 이상은 즉시 이동). |
-| 운영 추적 | 로그인, 인증/권한 리디렉트, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. 확인 완료 로그는 180일 보존 후 정리하고, 미확인 로그는 확인될 때까지 보존한다. (v3.40.0부터 PAGE_VIEW 비활성화) |
-| Slack 알림 | 부서별/유형별 채널로 구매/가입/부서이동/WARN+ 로그/Q&A 등 운영 이벤트를 Edge Function 경유 분리 전송한다. 서비스 사용률 70/85/95% 알림은 운영 채널로 전송한다. |
-| 서비스 통계 | GitHub/Supabase/Kakao/Slack 무료 할당량과 프로젝트 사용량을 매시간 수집하고, 현재/남은 값과 30일 추이를 운영 화면에서 확인한다. 수집 스냅샷과 수집 실행 이력은 180일 보존한다. |
+| 운영 추적 | 로그인, 인증/권한 리디렉트, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. `details`는 영어 key와 처리 상세만 저장하며, 작업명/사용자/일시/레벨/페이지는 기본 컬럼과 화면 영역에서 처리한다. 확인 완료 로그는 180일 보존 후 자동/수동 정리하고, 미확인 로그는 확인될 때까지 보존한다. (v3.40.0부터 PAGE_VIEW 비활성화) |
+| Slack 알림 | 부서별/유형별 채널로 구매/가입/부서이동/WARN+ 로그/Q&A 등 운영 이벤트를 Edge Function 경유 분리 전송한다. WARN+ 로그 알림은 영어로 저장된 action/details를 한글로 치환해 운영 채널에 전송한다. 서비스 사용률 70/85/95% 알림은 운영 채널로 전송한다. |
+| 서비스 통계 | GitHub/Supabase/Kakao/Slack 무료 할당량과 프로젝트 사용량을 매시간 수집하고, 현재/남은 값과 30일 추이를 운영 화면에서 확인한다. 수집 스냅샷과 수집 실행 이력은 180일 보존하며 관리자 버튼으로 수동 정리할 수 있다. |
 | 공지 사항 | 일반 교사(40+) 이상이 활성 공지를 확인하고, 전도사님(90+) 이상이 공지를 등록/수정/삭제/활성화한다. 열람 현황은 공지 등록일시/등록자, 사용자 유형, 전체/확인자/미확인자 콤보박스 필터를 함께 표시한다. 활성 공지는 로그인 후 메인 화면 팝업으로 표시한다. |
 | 코드 마스터 | 권한/유형/상태/카테고리/로그 액션 같은 구분값을 `code_groups`, `code_items`, `js/codes.js`로 통합 관리한다. |
 | 에러 한글화 | 영문 DB/RPC 에러를 `tErr()` 함수로 한글 변환하여 사용자에게 표시한다. |
@@ -30,7 +30,7 @@ flowchart LR
   User["사용자 브라우저"] --> Pages["GitHub Pages 정적 화면<br/>HTML/CSS/Vanilla JS"]
 
   Pages --> AuthJS["js/auth.js<br/>로그인/세션/24h 타임아웃/권한/리디렉트 진단/tErr()/fmtNum()"]
-  Pages --> LogJS["js/activity-log.js<br/>로그/action 라벨/한글 상세/세션 캐시/인증 실패 분류/소프트 삭제"]
+  Pages --> LogJS["js/activity-log.js<br/>로그 저장/영어 details 정규화/한글 표시 변환/세션 캐시/소프트 삭제"]
   Pages --> CodesJS["js/codes.js<br/>공통 코드북/라벨/정렬/옵션"]
   Pages --> UserMgmt["js/user-mgmt.js<br/>사용자/부서 관리"]
   Pages --> TalentJS["js/talent.js<br/>달란트 조회/지급/사용/반환"]
@@ -120,7 +120,7 @@ flowchart LR
 | `admin/versions.html` | 80등급 이상 버전 이력 확인. `js/version.js`의 v1.0.0 이후 전체 변경 이력을 표시 |
 | `admin/page-access.html` | 100등급 이상 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100등급 이상 권한별 페이지 기능 설정값 관리 |
-| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기본 조회 범위 1년 + 기간 프리셋(오늘/1주/1달/1년), 자동 조회, 10개 카테고리 필터, 한글 작업 유형 라벨, 한글 상세 키 우선 표시). 공통 페이징(PC 20/모바일 10) |
+| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기본 조회 범위 1년 + 기간 프리셋(오늘/1주/1달/1년), 자동 조회, 10개 카테고리 필터, 한글 작업 유형 라벨, 영어 저장 details의 한글 치환 표시). 공통 페이징(PC 20/모바일 10) |
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
@@ -580,10 +580,10 @@ flowchart TD
 ```mermaid
 flowchart TD
   Event["로그인/인증 리디렉트/오류/관리 작업"] --> WriteLog["writeLog() → activity_logs INSERT<br/>반환 error 감지 + 호환 재시도"]
-  WriteLog --> ActionLabel["activity_logs.action 코드 라벨<br/>details._actionLabel/_actionKo 및 한글 상세 키 저장"]
-  ActionLabel --> Logs["admin/logs.html (100등급+)"]
+  WriteLog --> NormalizeDetails["details 영어 key 정규화<br/>공통 필드/action/user/page/level/time/client 제거"]
+  NormalizeDetails --> Logs["admin/logs.html (100등급+)"]
   Logs --> Filter["레벨/기간 필터"]
-  Logs --> KoLabel["action 열 한글 라벨 표시<br/>상세 모달 한글 키 우선 표시"]
+  Logs --> KoLabel["action/details 한글 치환 표시<br/>필수 정보는 기본 영역 표시"]
   Logs --> Ack["ERROR 이상 로그 확인 처리"]
   Logs --> SoftDel["소프트 삭제 (is_deleted = true)<br/>관리자(100+)만"]
   SoftDel --> DelView["삭제 대기 목록 보기 / 복원"]
@@ -599,26 +599,27 @@ flowchart TD
 - v3.53.0부터 인증/권한 원인 분석용 action을 구분한다: `AUTH_SESSION_MISSING`, `AUTH_PROFILE_LOAD_FAIL`, `AUTH_REDIRECT`, `AUTH_PAGE_ACCESS_CHECK_FAIL`, `QR_LOCATION_PERMISSION_BLOCKED`.
 - v3.67.0부터 상품 카테고리 관리 페이지에서 새 카테고리를 추가하면 `PRODUCT_CATEGORY_CREATE`를 기록하고, 실패 시 `PRODUCT_CATEGORY_CREATE_FAIL`/`PRODUCT_CATEGORY_CREATE_ERROR`를 기록한다.
 - v3.66.0부터 상품 카테고리 수정/삭제는 `PRODUCT_CATEGORY_UPDATE`, `PRODUCT_CATEGORY_DELETE`로 기록하고, 공지 열람 현황 조회는 `ANNOUNCEMENT_READ_STATUS_VIEW`로 기록한다.
-- v3.69.0부터 상품 이미지 연결 로그(`PRODUCT_IMAGE_UPDATE`)는 `details.필드`로 `image_url`(썸네일)과 `detail_image_url`(상세 이미지)을 구분한다.
+- v3.69.0부터 상품 이미지 연결 로그(`PRODUCT_IMAGE_UPDATE`)는 `details.field`로 `image_url`(썸네일)과 `detail_image_url`(상세 이미지)을 구분한다.
+- v3.74.0부터 `writeLog()`는 details를 영어 key로 정규화하고, 작업명/사용자/일시/레벨/페이지/client처럼 기본 컬럼 또는 수집 금지 항목과 중복되는 값을 details에 저장하지 않는다.
 - `admin/log-rules.html`에는 페이지별 로그 작성 발생 조건, 로그 작성 항목, 데이터 참조 위치, Slack 알림 항목을 표로 정리한다.
 - `AUTH_REDIRECT`는 로그인 필수 페이지가 로그인 화면 또는 `index.html`로 이동한 원인을 추적하기 위한 로그이며, 세션 없음/만료, 최초 로그인, 권한 등급 부족, 허용 권한 불일치, DB 페이지 접근 차단을 구분한다.
-- `activity-log.js`의 `getActionLabel()`은 `js/codes.js`/DB `activity_logs.action` 코드 그룹을 우선 사용하고, 기존 로그의 `details._actionLabel`을 하위호환 라벨로 함께 사용한다
-- `writeLog()`는 기록 시 action 라벨이 있으면 `details._actionLabel`/`details._actionKo`와 한글 상세 키 별칭을 자동 저장한다
+- `activity-log.js`의 `getActionLabel()`은 `js/codes.js`/DB `activity_logs.action` 코드 그룹을 우선 사용한다.
+- `writeLog()`는 신규 로그에 `_actionLabel`/`_actionKo`와 한글 상세 키 별칭을 저장하지 않는다. 기존 중복 데이터는 `docs/TASK-074_activity_logs_english_details.sql`로 정리할 수 있다.
 - `writeLog()`는 Supabase insert 결과의 `error`를 확인하고, 구버전 DB 스키마에서 `user_name`/`is_acknowledged` 컬럼 오류가 나면 해당 선택 컬럼을 제거해 재시도한다
-- `admin/logs.html`은 `getActionLabel()`로 action 열에 한글 라벨을 표시한다 (영문 키 병기)
+- `admin/logs.html`은 `getActionLabel()`과 공통 details 매핑으로 action/details를 한글로 표시하며, 영문 action key를 목록에 병기하지 않는다.
 - `ERROR`, `FATAL`, `CRITICAL`은 기본적으로 미확인 상태로 저장
 - 운영자가 확인 내용을 남기면 확인 처리
 - 로그 삭제는 소프트 삭제(`is_deleted=true`) 방식
 - 로그/작업 이력 조회 시 `is_deleted`가 `NULL`인 기존 데이터도 함께 표시하도록 하위호환 처리
 - 실제 삭제는 180일 보존 정책으로 확인 완료 로그만 자동 정리하며, 별도 운영 정리가 필요하면 관리자가 SQL Editor에서 직접 실행한다
-- 자동 보존 정리는 `cleanup_data_retention_180d()`가 확인 완료된 180일 초과 로그만 삭제하며, 미확인 로그는 확인될 때까지 삭제하지 않는다
+- 자동 보존 정리는 `cleanup_data_retention_180d()`, 수동 로그 정리는 `cleanup_activity_logs_retention_180d()`가 확인 완료된 180일 초과 로그만 삭제하며, 미확인 로그는 확인될 때까지 삭제하지 않는다
 - 전체 기능의 성공/실패/거부가 `logInfo`/`logWarn`/`logError`로 기록됨
 
 ## 12. 작업 이력(감사) 흐름
 
 ```mermaid
 flowchart TD
-  AdminAction["관리 작업 수행"] --> AuditLog["writeLog() → activity_logs<br/>details._actionLabel/_actionKo + 한글 상세"]
+  AdminAction["관리 작업 수행"] --> AuditLog["writeLog() → activity_logs<br/>영어 details + 공통 필드 분리"]
   AuditLog --> AuditPage["admin/audit.html (100등급+)"]
   AuditPage --> CategoryFilter["10개 카테고리 필터<br/>사용자/등록/부서/달란트/상품·주문/Q&A/인증/로그관리/권한·설정"]
   AuditPage --> KoType["작업 유형 한글 라벨 표시<br/>(AUDIT_ACTIONS + 코드북)"]
@@ -628,7 +629,7 @@ flowchart TD
 - `AUDIT_ACTIONS`는 기본 정의와 `activity_logs.action` 코드 그룹을 함께 사용해 70개 이상 관리 작업 action 키와 한글 라벨/카테고리를 표시한다
 - 작업 이력 화면은 10개 카테고리 필터(전체 + 9개 그룹)로 조회 범위를 좁힌다
 - 작업 이력은 별도 테이블이 아니라 `activity_logs`에서 `AUDIT_ACTIONS` 키에 해당하는 로그만 필터링한다
-- 상세 내역은 `writeLog()`가 저장한 `details._actionLabel`/`details._actionKo` 및 한글화된 details 키를 표시한다. `docs/TASK-067_korean_activity_logs.sql`은 기존 로그에도 같은 한글 별칭을 백필한다
+- 상세 내역은 영어 key로 저장된 `details`를 화면에서 한글로 치환해 표시한다. 기존 한글 별칭/중복 details는 `docs/TASK-074_activity_logs_english_details.sql`로 정리할 수 있다.
 
 ## 13. Slack 알림 흐름
 
@@ -727,7 +728,7 @@ flowchart TD
 | `talent_qr_scans` | QR 코드 스캔 이력. 반복 수령 시 오늘 기준 중복 체크 |
 | `announcements` | 공지 제목/내용, 활성 여부, 작성자/수정자와 시각. 활성 공지는 로그인 사용자 조회 가능, 관리 작업은 90등급 이상 |
 | `announcement_dismissals` | 사용자별 공지 다시 열지 않음 상태. `(announcement_id, user_id)` 기본키로 중복 저장 방지. 90등급 이상 공지 열람 현황 조회에서 확인/미확인 판정과 전체/확인자/미확인자 콤보박스 필터에 사용 |
-| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록, `action` 코드 라벨과 `details._actionLabel`/`details._actionKo`, 한글 상세 키 별칭 저장. 작업 이력도 이 테이블을 필터링해 표시. 확인 완료 로그는 180일 보존, 미확인 로그는 확인 전까지 보존 |
+| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `username`/`user_name` 작업자 기록, `action` 코드와 영어 key 기반 `details` 저장. 화면/Slack에서는 코드북과 공통 매핑으로 한글 치환 표시. 작업 이력도 이 테이블을 필터링해 표시. 확인 완료 로그는 180일 보존, 미확인 로그는 확인 전까지 보존 |
 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
 | `role_page_features` | 권한 등급별 페이지 기능 설정값 |
 | `page_permissions` | 페이지 권한 설정 (레거시) |
@@ -831,7 +832,7 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 | 2 | `docs/PROJECT_ARCHITECTURE_FLOW.md` | 상세 구성도와 프로세스 흐름 |
 | 3 | `js/codes.js` | 권한/유형/상태/카테고리/로그 액션 코드북, DB `code_items` 로드, 라벨/정렬/옵션 공통 함수 |
 | 4 | `js/auth.js` | 권한 등급, 리디렉트, Supabase 세션, 24h 유휴 타임아웃(`startSessionTimer`), tErr() 에러 번역 |
-| 5 | `js/activity-log.js` | 로그 기록, action 한글 라벨, writeLog() 자동 라벨, WARN+ Slack 알림 연동, Q&A 미답변 배지, 세션 캐시, 소프트 삭제 |
+| 5 | `js/activity-log.js` | 로그 기록, details 영어 key 정규화/중복 제거, action/details 한글 표시 변환, WARN+ Slack 알림 연동, Q&A 미답변 배지, 세션 캐시, 소프트 삭제 |
 | 5a | `js/slack-notify.js` | Slack 알림 공통 유틸리티, Edge Function slack-notify 호출, 채널 라우팅은 Edge Function 측 |
 | 5b | `docs/edge-function-slack-notify.ts` | Edge Function 배포 소스, 부서별/유형별 Webhook Secret 동적 선택, Slack Block Kit 포맷 |
 | 5c | `docs/SLACK_NOTIFICATION_RULES.md`, `admin/slack-rules.html` | Slack 알림 type과 채널 라우팅 운영 문서 |
@@ -859,7 +860,10 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 | 27 | `docs/TASK-069_product_detail_image.sql` | v3.69.0: `products.detail_image_url` 상세 설명 이미지 컬럼 추가 |
 | 28 | `docs/TASK-070_service_usage_monitoring.sql`, `docs/TASK-070_service_usage_cron.sql` | v3.70.0~v3.71.0: 외부 서비스 사용량/한도/알림 스키마와 1시간 예약 수집 |
 | 29 | `docs/TASK-072_data_retention_180d.sql` | v3.72.0: 서비스 통계 스냅샷/수집 이력과 확인 완료 활동 로그 180일 보존 정책 |
-| 30 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
+| 30 | `docs/TASK-073_manual_retention_cleanup.sql` | v3.73.0: 서비스 통계/활동 로그 180일 초과 수동 삭제 RPC와 액션 코드 |
+| 31 | `docs/TASK-074_plan.md`, `docs/TASK-074_test_scenario.md`, `docs/TASK-074_test_result.md`, `docs/TASK-074_change_report.md` | v3.74.0: 활동 로그 영어 저장/한글 표시 분리 작업 계획, 검증, 변경 보고 |
+| 32 | `docs/TASK-074_activity_logs_english_details.sql` | v3.74.0: 기존 활동 로그 details의 중복 한글 별칭/client 항목을 영어 key 중심으로 정리 |
+| 33 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
 
 ## 19. 개발 주의사항
 
