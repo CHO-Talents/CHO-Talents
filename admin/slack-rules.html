@@ -27,7 +27,7 @@
   <div class="admin-container">
     <div class="page-header">
       <h1>🔔 Slack 알림 룰</h1>
-      <p>브라우저에서 발생한 운영 이벤트와 외부 서비스 무료 할당량 경고가 Supabase Edge Function을 거쳐 Slack 채널로 전송되는 기준입니다. v3.70.0부터 서비스 사용률 70%·85%·95% 알림과 Slack Webhook 성공/실패 계측을 포함합니다.</p>
+      <p>브라우저에서 발생한 운영 이벤트와 외부 서비스 무료 할당량 경고가 Supabase Edge Function을 거쳐 Slack 채널로 전송되는 기준입니다. v3.72.0 기준 서비스 사용률 70%·85%·95% 알림과 Slack Webhook 성공/실패 계측을 포함하며, 서비스 사용량은 매시간 정각에 수집하고 수집 이력은 180일 보존합니다.</p>
     </div>
 
     <div class="rule-section">
@@ -57,14 +57,14 @@
           <tr><td><code>dept_transfer</code></td><td><code>admin/users.html</code> 부서 이동 요청</td><td><code>data.이동부서</code></td><td><span class="route-badge">이동 대상 부서 채널</span></td></tr>
           <tr><td><code>log_alert</code></td><td><code>js/activity-log.js</code> WARN 이상 로그</td><td>로그 레벨. 예: <code>AUTH_REDIRECT</code>, <code>APP_VERSION_STALE_SESSION</code>, 로그인 실패, 권한 거부, ERROR+ 오류</td><td><span class="route-badge">운영 채널</span></td></tr>
           <tr><td><code>qna_new</code></td><td><code>qna.html</code> 새 질문 등록</td><td>고정 라우팅</td><td><span class="route-badge">Q&amp;A 채널</span></td></tr>
-          <tr><td><code>service_quota_alert</code></td><td><code>service-usage-collect</code> 6시간 수집</td><td>무료 한도 70%·85%·95% 최초 도달</td><td><span class="route-badge">운영 채널</span></td></tr>
+          <tr><td><code>service_quota_alert</code></td><td><code>service-usage-collect</code> 1시간 수집</td><td>무료 한도 70%·85%·95% 최초 도달</td><td><span class="route-badge">운영 채널</span></td></tr>
         </tbody>
       </table>
       <div class="note-box">구매 상태의 화면 표시명은 공통 코드북/DB <code>product_orders.status</code> 코드 마스터를 따릅니다. Slack 발송 조건은 표시명이 아니라 상태 코드 전환을 기준으로 유지합니다.</div>
       <div class="note-box">로그 알림의 액션 라벨과 상세는 <code>js/activity-log.js</code>의 한글 라벨/상세 키 기준을 따르며, 원본 영문 키는 호환성을 위해 함께 유지됩니다.</div>
       <div class="note-box">상품 관리에서 썸네일 이미지(<code>image_url</code>)와 상세 설명 이미지(<code>detail_image_url</code>)를 저장해도 정상 성공 건은 Slack 대상이 아닙니다. 업로드/저장 실패처럼 WARN 이상 로그가 남는 경우에만 <code>log_alert</code>로 운영 채널에 전송됩니다.</div>
       <div class="note-box">위치 제한 QR에서 위치 권한 차단이 발생하면 <code>QR_LOCATION_PERMISSION_BLOCKED</code>가 INFO 로그로 저장됩니다. INFO 로그는 기본 Slack WARN+ 알림 대상이 아니며, 현장 문의 분석은 로그 화면에서 action 필터로 확인합니다.</div>
-      <div class="note-box">서비스 할당량 알림은 지표의 초기화 주기별로 각 임계값을 한 번만 발송합니다. 월/일 초기화가 시작되면 새 주기의 70%·85%·95% 알림을 다시 받을 수 있습니다.</div>
+      <div class="note-box">서비스 할당량 알림은 매시간 정각 수집 결과를 기준으로 하며, 지표의 초기화 주기별로 각 임계값을 한 번만 발송합니다. 월/일 초기화가 시작되면 새 주기의 70%·85%·95% 알림을 다시 받을 수 있습니다.</div>
     </div>
 
     <div class="rule-section">

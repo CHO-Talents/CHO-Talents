@@ -2,9 +2,32 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.70.0',
-  date: '2026-07-10',
+  current: '3.72.0',
+  date: '2026-07-11',
   history: [
+    {
+      version: '3.72.0',
+      date: '2026-07-11',
+      title: '운영 데이터 180일 보존 정책 추가',
+      changes: [
+        'service_usage_snapshots와 service_usage_collection_runs를 180일 보존 후 자동 정리하는 SQL 정책 추가',
+        'activity_logs는 확인 완료된 로그만 180일 보존 후 삭제하고 미확인 로그는 확인될 때까지 자동/선택 삭제 대상에서 제외',
+        'pg_cron 작업 cho-data-retention-180d를 매일 03:30 KST 실행 기준으로 추가',
+        'README, 사이트 안내서, 아키텍처/설정/초기 세팅 문서와 운영 룰/가이드를 v3.72.0 기준으로 동기화'
+      ]
+    },
+    {
+      version: '3.71.0',
+      date: '2026-07-11',
+      title: '서비스 사용량 매시간 수집 전환과 운영 문서 동기화',
+      changes: [
+        'service-usage-collect 예약 실행 주기를 6시간에서 1시간으로 단축',
+        'pg_cron 작업명을 cho-service-usage-collect-1h로 전환하고 기존 6시간 작업을 재설정 시 함께 제거',
+        '예약 호출의 service_role JWT가 Edge Function 환경변수 문자열과 달라도 role=service_role이면 schedule 호출로 승인하도록 service-usage-collect 인증 로직 보강',
+        '서비스 통계 화면, README, 사이트 안내서, 아키텍처 문서, 서비스 통계 운영 설정 문서를 매시간 정각 수집 기준으로 갱신',
+        '역할별 가이드와 권한/로그/Slack/작업 이력 룰 페이지를 v3.71.0 현재 운영 기준으로 동기화'
+      ]
+    },
     {
       version: '3.70.0',
       date: '2026-07-10',
@@ -12,7 +35,7 @@ const APP_VERSION = {
       changes: [
         '운영 메뉴의 로그 아래에 부장 교사(80+) 이상 전용 서비스 통계 페이지 추가',
         'GitHub, Supabase, Kakao Developers, Slack의 무료 한도와 현재/남은 사용량, 사용률, 기간 종료 예상 사용률 표시',
-        'GitHub Billing/Actions/Traffic API와 Supabase Management API, Database/Storage/Auth 직접 조회값을 6시간마다 수집',
+        'GitHub Billing/Actions/Traffic API와 Supabase Management API, Database/Storage/Auth 직접 조회값을 예약 수집',
         '전체 페이지 트래픽과 Supabase API/응답량, Kakao Map SDK/장소 검색, Slack Webhook 성공·실패를 프로젝트 내부 이벤트로 누적',
         '70%, 85%, 95% 도달 시 주기별 중복을 방지하여 Slack 운영관리 채널에 단계별 알림 발송',
         '서비스 통계 테이블/RLS/RPC, Edge Function, pg_cron/Vault 설정 SQL과 운영 설정 문서 추가'
@@ -1958,5 +1981,3 @@ if (document.readyState === 'loading') {
 }
 
 window.refreshAppAssetsForVersion = refreshAppAssetsForVersion;
-
-

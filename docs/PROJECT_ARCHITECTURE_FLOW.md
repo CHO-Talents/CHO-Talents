@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-07-10 KST 현재 코드 기준 (v3.69.0)
+작성 기준: 2026-07-11 KST 현재 코드 기준 (v3.72.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -15,8 +15,9 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 | 상품 구매 시스템 | 4단계 구매 흐름(신청→준비→구매→지급)으로 상품 교환을 관리하며, 되돌리기와 구매 취소(cancelled)도 가능하다. 상품 구매 화면은 최초 로드 시 카테고리 순번으로 그룹화하고 같은 카테고리 안에서는 상품 정렬 순번을 우선한다. 구매 카드 이미지는 `products.image_url`, 상세 모달 설명 아래 이미지는 `products.detail_image_url`로 분리한다. 취소는 RPC 우선 시도 + .select() 기반 결과 검증으로 안전하게 처리된다. |
 | 승인 기반 계정 운영 | 신규 사용자는 신청 후 관리자 승인으로 계정이 생성된다. |
 | 부서 이동 관리 | 부서 변경은 요청→승인 흐름으로 처리한다 (90등급 이상은 즉시 이동). |
-| 운영 추적 | 로그인, 인증/권한 리디렉트, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. (v3.40.0부터 PAGE_VIEW 비활성화) |
-| Slack 알림 | 부서별/유형별 채널로 구매/가입/부서이동/WARN+ 로그/Q&A 등 운영 이벤트를 Edge Function 경유 분리 전송한다. |
+| 운영 추적 | 로그인, 인증/권한 리디렉트, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. 확인 완료 로그는 180일 보존 후 정리하고, 미확인 로그는 확인될 때까지 보존한다. (v3.40.0부터 PAGE_VIEW 비활성화) |
+| Slack 알림 | 부서별/유형별 채널로 구매/가입/부서이동/WARN+ 로그/Q&A 등 운영 이벤트를 Edge Function 경유 분리 전송한다. 서비스 사용률 70/85/95% 알림은 운영 채널로 전송한다. |
+| 서비스 통계 | GitHub/Supabase/Kakao/Slack 무료 할당량과 프로젝트 사용량을 매시간 수집하고, 현재/남은 값과 30일 추이를 운영 화면에서 확인한다. 수집 스냅샷과 수집 실행 이력은 180일 보존한다. |
 | 공지 사항 | 일반 교사(40+) 이상이 활성 공지를 확인하고, 전도사님(90+) 이상이 공지를 등록/수정/삭제/활성화한다. 열람 현황은 공지 등록일시/등록자, 사용자 유형, 전체/확인자/미확인자 콤보박스 필터를 함께 표시한다. 활성 공지는 로그인 후 메인 화면 팝업으로 표시한다. |
 | 코드 마스터 | 권한/유형/상태/카테고리/로그 액션 같은 구분값을 `code_groups`, `code_items`, `js/codes.js`로 통합 관리한다. |
 | 에러 한글화 | 영문 DB/RPC 에러를 `tErr()` 함수로 한글 변환하여 사용자에게 표시한다. |
@@ -42,7 +43,7 @@ flowchart LR
   EdgeFn --> Slack["채널별 Slack Webhook<br/>(부서/상품관리/운영/Q&A)"]
   Pages --> UsageTelemetry["공통 사용량 계측<br/>Pages/Supabase/Kakao"]
   UsageTelemetry --> UsageDB["service_usage_events / snapshots"]
-  UsageCollector["Edge Function<br/>service-usage-collect<br/>6시간 주기"] --> UsageDB
+  UsageCollector["Edge Function<br/>service-usage-collect<br/>1시간 주기"] --> UsageDB
   UsageCollector --> ExternalUsage["GitHub Billing/Actions/Traffic<br/>Supabase Management API"]
   UsageCollector --> Slack
 
@@ -115,7 +116,7 @@ flowchart LR
 | `admin/notices.html` | 40등급 이상 공지 사항 조회. 일반 교사는 활성 공지만 조회하고, 90등급 이상은 공지 제목/내용 등록, 기존 공지 조회/수정/삭제, 공지 컬럼 활성 토글, 공지 열람 현황 조회, 공통 페이지당 항목 수 설정을 사용. 열람 현황 모달은 등록일시/등록자, 사용자 유형 열, 전체/확인자/미확인자 콤보박스 필터를 제공한다. 활성 공지는 로그인 후 `index.html` 팝업으로 표시되고 사용자별 다시 열지 않음 상태는 `announcement_dismissals`에 저장 |
 | `admin/reports.html` | 80등급 이상 보고서 조회/등록/수정/삭제. 페이지당 항목 수 콤보는 필터 줄 아래 우측에 배치 |
 | `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리. action 열 한글 라벨 표시(`getActionLabel`)와 상세 모달 한글 키 우선 표시. 기본 조회 범위 1년 + 기간 프리셋(오늘/1주/1달/1년). 공통 페이징과 페이지당 항목 수 설정. 행 개수 콤보는 삭제 대기 목록 버튼 줄 우측에 배치 |
-| `admin/service-stats.html` | 80등급 이상 GitHub/Supabase/Kakao/Slack 무료 할당량, 현재·남은 사용량/비율, 기간 종료 예상 사용률, 30일 추이, 수집/Slack 알림 이력 조회와 즉시 수집 |
+| `admin/service-stats.html` | 80등급 이상 GitHub/Supabase/Kakao/Slack 무료 할당량, 현재·남은 사용량/비율, 기간 종료 예상 사용률, 30일 추이, 매시간 수집/Slack 알림 이력 조회와 즉시 수집 |
 | `admin/versions.html` | 80등급 이상 버전 이력 확인. `js/version.js`의 v1.0.0 이후 전체 변경 이력을 표시 |
 | `admin/page-access.html` | 100등급 이상 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100등급 이상 권한별 페이지 기능 설정값 관리 |
@@ -128,7 +129,7 @@ flowchart LR
 | `js/slack-notify.js` | Slack 알림 공통 유틸리티. `sendSlackNotify(type, data)`로 Edge Function `slack-notify` 호출. fire-and-forget, 동일 알림 5초 throttle. 부서/유형별 채널 라우팅은 Edge Function에서 수행 |
 | `js/` | 테마(`theme.js`), 네비게이션(`nav.js` - `#navHeaderActions` 내부 햄버거·테마·로그인/로그아웃, 처리 가능 건수 배지 + Q&A 미답변 배지 자동 호출 포함), 코드북(`codes.js`), 페이지 크기(`page-size.js`), Slack 알림(`slack-notify.js`), Supabase 설정, 인증/24h 세션 타임아웃/tErr, 로그, 사용자/달란트/상품/버전 모듈 |
 | `supabase/functions/slack-notify/index.ts`, `supabase/functions/_shared/slack-notify.ts` | Supabase Edge Function `slack-notify` 배포 진입점/공통 구현. 부서별/유형별 Webhook Secret 선택, Block Kit, 성공·실패 계측 |
-| `supabase/functions/service-usage-collect/index.ts` | 6시간 서비스 사용량 수집, 공식 API/DB/프로젝트 계측 병합, 70/85/95% 운영 채널 알림 |
+| `supabase/functions/service-usage-collect/index.ts` | 1시간 서비스 사용량 수집, 공식 API/DB/프로젝트 계측 병합, 70/85/95% 운영 채널 알림 |
 | `admin/slack-rules.html` | 80등급 이상 Slack 알림 룰 문서. 구매/가입/부서이동/Q&A/WARN+ 로그 알림 type과 채널 라우팅 설명 |
 | `docs/SLACK_NOTIFICATION_RULES.md` | Slack 알림 type, 라우팅, Secret 기준 문서 |
 | `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 다른 Supabase 프로젝트에서 새로 시작하기 위한 설치 절차 |
@@ -609,7 +610,8 @@ flowchart TD
 - 운영자가 확인 내용을 남기면 확인 처리
 - 로그 삭제는 소프트 삭제(`is_deleted=true`) 방식
 - 로그/작업 이력 조회 시 `is_deleted`가 `NULL`인 기존 데이터도 함께 표시하도록 하위호환 처리
-- 실제 삭제는 관리자가 SQL Editor에서 직접 실행: `DELETE FROM activity_logs WHERE is_deleted = true;`
+- 실제 삭제는 180일 보존 정책으로 확인 완료 로그만 자동 정리하며, 별도 운영 정리가 필요하면 관리자가 SQL Editor에서 직접 실행한다
+- 자동 보존 정리는 `cleanup_data_retention_180d()`가 확인 완료된 180일 초과 로그만 삭제하며, 미확인 로그는 확인될 때까지 삭제하지 않는다
 - 전체 기능의 성공/실패/거부가 `logInfo`/`logWarn`/`logError`로 기록됨
 
 ## 12. 작업 이력(감사) 흐름
@@ -725,7 +727,7 @@ flowchart TD
 | `talent_qr_scans` | QR 코드 스캔 이력. 반복 수령 시 오늘 기준 중복 체크 |
 | `announcements` | 공지 제목/내용, 활성 여부, 작성자/수정자와 시각. 활성 공지는 로그인 사용자 조회 가능, 관리 작업은 90등급 이상 |
 | `announcement_dismissals` | 사용자별 공지 다시 열지 않음 상태. `(announcement_id, user_id)` 기본키로 중복 저장 방지. 90등급 이상 공지 열람 현황 조회에서 확인/미확인 판정과 전체/확인자/미확인자 콤보박스 필터에 사용 |
-| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록, `action` 코드 라벨과 `details._actionLabel`/`details._actionKo`, 한글 상세 키 별칭 저장. 작업 이력도 이 테이블을 필터링해 표시 |
+| `activity_logs` | 활동/오류 로그. `is_deleted`/`deleted_at` 소프트 삭제, `user_name` 기록, `action` 코드 라벨과 `details._actionLabel`/`details._actionKo`, 한글 상세 키 별칭 저장. 작업 이력도 이 테이블을 필터링해 표시. 확인 완료 로그는 180일 보존, 미확인 로그는 확인 전까지 보존 |
 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
 | `role_page_features` | 권한 등급별 페이지 기능 설정값 |
 | `page_permissions` | 페이지 권한 설정 (레거시) |
@@ -855,8 +857,9 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 | 25 | `docs/TASK-067_korean_activity_logs.sql` | v3.66.0: 기존 활동 로그 상세 한글 별칭 백필 및 실제 발생 액션 라벨 |
 | 26 | `docs/TASK-068_product_category_page_and_sort_order.sql` | v3.67.0: 상품 정렬 순번 컬럼/인덱스와 상품 카테고리 관리 70+ 정책 |
 | 27 | `docs/TASK-069_product_detail_image.sql` | v3.69.0: `products.detail_image_url` 상세 설명 이미지 컬럼 추가 |
-| 28 | `docs/TASK-070_service_usage_monitoring.sql`, `docs/TASK-070_service_usage_cron.sql` | v3.70.0: 외부 서비스 사용량/한도/알림 스키마와 6시간 예약 수집 |
-| 29 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
+| 28 | `docs/TASK-070_service_usage_monitoring.sql`, `docs/TASK-070_service_usage_cron.sql` | v3.70.0~v3.71.0: 외부 서비스 사용량/한도/알림 스키마와 1시간 예약 수집 |
+| 29 | `docs/TASK-072_data_retention_180d.sql` | v3.72.0: 서비스 통계 스냅샷/수집 이력과 확인 완료 활동 로그 180일 보존 정책 |
+| 30 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
 
 ## 19. 개발 주의사항
 
