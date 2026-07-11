@@ -81,6 +81,7 @@
     let auditPageSize = 20;
     function getAuditPageSize() { return auditPageSize; }
     let auditPage = 1;
+    let auditProfileMap = {}, auditProfileById = {}, auditRegistrationMap = {}, auditRegistrationById = {};
 
     const AUDIT_ACTIONS = {
       // === USER (사용자) ===
@@ -179,7 +180,7 @@
       rank: '순위', department: '부서', departmentId: '부서 ID', departmentName: '부서명',
       fromDept: '이전 부서', toDept: '이동 부서', amount: '수량', balance: '잔액',
       reason: '사유', taskId: '작업 ID', taskTitle: '작업 제목', pageId: '페이지 ID',
-      action: '작업', error: '오류', _userName: '작업자 이름', _client: '클라이언트 정보',
+      action: '작업', error: '오류', _userName: '작업자 이름',
       user_type: '유형', class_number: '반', old: '이전 값', new: '변경 값',
       approval_scope: '승인 범위', transfer_type: '이동 유형', status: '상태',
       product_name: '상품명', product_id: '상품 ID', price: '가격',
@@ -203,6 +204,7 @@
         Object.assign(AUDIT_ACTIONS, getAuditActions());
         AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
       }
+      await loadAuditUserLookups();
       updatePendingBadge();
       updateNavOrderBadge();
       updateLogBadge();
@@ -210,6 +212,56 @@
       setAuditPeriod('year');
       await loadAuditLogs();
     })();
+
+    async function loadAuditUserLookups() {
+      const [{ data: profiles }, { data: requests }] = await Promise.all([
+        _sb.from('profiles').select('id, username, display_name'),
+        _sb.from('registration_requests').select('id, username, display_name')
+      ]);
+      auditProfileMap = {}; auditProfileById = {}; auditRegistrationMap = {}; auditRegistrationById = {};
+      (profiles || []).forEach(p => {
+        if (p.username) auditProfileMap[p.username] = p;
+        if (p.id) auditProfileById[p.id] = p;
+      });
+      (requests || []).forEach(r => {
+        if (r.username) auditRegistrationMap[r.username] = r;
+        if (r.id) auditRegistrationById[r.id] = r;
+      });
+    }
+
+	    function formatAuditKnownUser(row) {
+	      if (!row) return null;
+	      const account = row.username || '미등록';
+	      const name = row.display_name || '';
+	      return name && name !== account ? `${escapeHtml(name)} (${escapeHtml(account)})` : escapeHtml(account);
+	    }
+
+	    function escapeHtml(value) {
+	      return String(value ?? '').replace(/[&<>"']/g, ch => ({
+	        '&': '&amp;',
+	        '<': '&lt;',
+	        '>': '&gt;',
+	        '"': '&quot;',
+	        "'": '&#39;'
+	      }[ch]));
+	    }
+
+    function resolveAuditUser(accountOrId) {
+      if (!accountOrId) return null;
+      const key = String(accountOrId);
+      return formatAuditKnownUser(auditProfileMap[key] || auditProfileById[key] || auditRegistrationMap[key] || auditRegistrationById[key]);
+    }
+
+    function formatAuditActor(log, includeAccount) {
+      const d = log.details || {};
+      const account = log.username || d._username || d._userAccount || d.cachedUsername || d.authUserId || null;
+	      const known = resolveAuditUser(account);
+	      if (known) return known;
+	      const actorName = log.user_name || d._userName || null;
+	      if (actorName && account && includeAccount) return `${escapeHtml(actorName)} <span style="font-size:0.72rem;color:#888;">(${escapeHtml(account)})</span>`;
+	      if (actorName) return escapeHtml(actorName);
+	      return account ? escapeHtml(account) : '시스템';
+	    }
 
     function setFilter(f) {
       auditPage = 1;
@@ -306,17 +358,8 @@
       tbody.innerHTML = pageList.map(l => {
         const info = AUDIT_ACTIONS[l.action] || { label: l.action, emoji: '📋', category: '' };
         const dt = l.created_at ? formatKSTShort(l.created_at) : '-';
-        const actorName = l.user_name || (l.details && l.details._userName) || null;
-        const actorId = l.username || null;
-        let actor;
-        if (actorName) {
-          actor = isAdmin && actorId ? `${actorName} <span style="font-size:0.72rem;color:#888;">(${actorId})</span>` : actorName;
-        } else if (actorId) {
-          actor = actorId;
-        } else {
-          actor = '시스템';
-        }
-        const target = extractTarget(l);
+        const actor = formatAuditActor(l, isAdmin);
+	        const target = escapeHtml(extractTarget(l));
         return `<tr>
           <td style="white-space:nowrap;font-size:0.78rem;">${dt}</td>
           <td>${actor}</td>
@@ -346,19 +389,27 @@
       renderAudit();
     }
 
-    function extractTarget(log) {
-      const d = log.details || {};
-      if (d.targetName) return d.targetName;
-      if (d['대상']) return d['대상'];
-      if (d.displayName) return d.displayName;
-      if (d.name) return d.name;
-      if (d.username) return d.username;
-      if (d['항목명']) return d['항목명'];
-      if (d['상품명']) return d['상품명'];
-      if (d.product_name) return d.product_name;
-      if (d['변경내역']) {
-        const changes = d['변경내역'];
-        if (typeof changes === 'string') return changes;
+	    function extractTarget(log) {
+	      const d = log.details || {};
+	      if (d.targetName) return d.targetName;
+	      if (d['대상']) return d['대상'];
+	      if (d.targetAccount) return resolveAuditUser(d.targetAccount) || d.targetAccount;
+	      if (d.targetUser) return resolveAuditUser(d.targetUser) || d.targetUser;
+	      if (d.targetUserId) return resolveAuditUser(d.targetUserId) || d.targetUserId;
+	      if (d.displayName) return d.displayName;
+	      if (d.name) return d.name;
+	      if (d.username) return d.username;
+	      if (d['항목명']) return d['항목명'];
+	      if (d.itemName) return d.itemName;
+	      if (d['상품명']) return d['상품명'];
+	      if (d.productName) return d.productName;
+	      if (d.product_name) return d.product_name;
+	      if (d.changeSummary) {
+	        return typeof d.changeSummary === 'string' ? d.changeSummary : JSON.stringify(d.changeSummary);
+	      }
+	      if (d['변경내역']) {
+	        const changes = d['변경내역'];
+	        if (typeof changes === 'string') return changes;
         if (typeof changes === 'object') return JSON.stringify(changes);
       }
       if (d.taskId) return d.taskId;
@@ -376,14 +427,14 @@
       let html = `
         <table style="width:100%;border-collapse:collapse;font-size:0.85rem;">
           <tr><td style="padding:0.4rem;font-weight:700;width:100px;">시간</td><td style="padding:0.4rem;">${dt}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">작업자</td><td style="padding:0.4rem;">${log.user_name || '-'}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">작업</td><td style="padding:0.4rem;">${info.emoji} ${info.label}</td></tr>
-          <tr><td style="padding:0.4rem;font-weight:700;">페이지</td><td style="padding:0.4rem;">${log.page || '-'}</td></tr>
-        </table>
-        <div style="margin-top:0.8rem;border-top:1px solid var(--admin-border);padding-top:0.6rem;">
-          <div style="font-weight:700;margin-bottom:0.4rem;">상세 데이터</div>
-          <pre style="background:#f8f9fa;padding:0.6rem;border-radius:6px;font-size:0.78rem;overflow-x:auto;max-height:300px;">${localizeDetailJson(details)}</pre>
-        </div>`;
+          <tr><td style="padding:0.4rem;font-weight:700;">작업자</td><td style="padding:0.4rem;">${formatAuditActor(log, true)}</td></tr>
+	          <tr><td style="padding:0.4rem;font-weight:700;">작업</td><td style="padding:0.4rem;">${info.emoji} ${escapeHtml(info.label)}</td></tr>
+	          <tr><td style="padding:0.4rem;font-weight:700;">페이지</td><td style="padding:0.4rem;">${escapeHtml(log.page || '-')}</td></tr>
+	        </table>
+	        <div style="margin-top:0.8rem;border-top:1px solid var(--admin-border);padding-top:0.6rem;">
+	          <div style="font-weight:700;margin-bottom:0.4rem;">상세 데이터</div>
+	          <pre style="background:#f8f9fa;padding:0.6rem;border-radius:6px;font-size:0.78rem;overflow-x:auto;max-height:300px;">${escapeHtml(localizeDetailJson(details))}</pre>
+	        </div>`;
 
       document.getElementById('auditDetailBody').innerHTML = html;
       document.getElementById('auditDetailModal').classList.remove('hidden');

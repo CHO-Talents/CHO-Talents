@@ -8,6 +8,7 @@ Supabase SQL Editor에서 다음 파일을 실행합니다.
 
 1. `docs/TASK-070_service_usage_monitoring.sql`
 2. Edge Function과 Secret 설정 완료 후 `docs/TASK-070_service_usage_cron.sql`
+3. 보존 정책 적용 후 기존 운영 DB에는 `docs/TASK-073_manual_retention_cleanup.sql`
 
 새 Database 설치 스크립트는 TASK-070 스키마를 자동으로 포함합니다.
 
@@ -75,6 +76,7 @@ supabase secrets set --project-ref <PROJECT_REF> `
 - `pg_cron`은 UTC 기준이며 `0 * * * *`로 매시간 정각에 실행합니다.
 - 기존 6시간 작업(`cho-service-usage-collect-6h`)과 새 1시간 작업(`cho-service-usage-collect-1h`)이 있으면 제거하고 다시 생성하므로 재설정할 수 있습니다.
 - 매시간 수집으로 누적되는 `service_usage_snapshots`와 `service_usage_collection_runs`는 `docs/TASK-072_data_retention_180d.sql`의 180일 보존 정책으로 정리합니다.
+- 기존 DB에 `서비스 통계` 화면의 `180일 초과 정리` 버튼을 활성화하려면 `docs/TASK-073_manual_retention_cleanup.sql`을 추가 적용합니다.
 
 운영 DB가 아래 상태라면 아직 새 SQL이 적용되지 않은 것입니다.
 
@@ -109,6 +111,13 @@ Supabase Free 플랜은 초과 사용료가 자동 과금되는 대신 서비스
 - `activity_logs`: `created_at` 기준 180일 초과이면서 확인 완료(`is_acknowledged=true`)된 행만 삭제
 - 미확인 `activity_logs`는 확인 완료 처리 전까지 삭제하지 않음
 
+`docs/TASK-073_manual_retention_cleanup.sql`을 적용하면 관리자(100+)가 화면에서 같은 기준의 수동 정리를 실행할 수 있습니다.
+
+- `운영 > 서비스 통계`: `180일 초과 정리` 버튼으로 `service_usage_snapshots`, `service_usage_collection_runs`를 즉시 정리
+- `운영 > 로그`: `180일 초과 실제 삭제` 버튼으로 확인 완료된 `activity_logs`만 즉시 삭제
+- 수동 정리 RPC는 관리자(100+) 또는 `service_role`만 실행 가능
+- 미확인 `activity_logs`는 자동 정리, 선택 삭제, 수동 실제 삭제 모두에서 보존
+
 ## 6. 확인 순서
 
 1. 부장 교사 이상 계정으로 `admin/service-stats.html`에 접속합니다.
@@ -116,5 +125,6 @@ Supabase Free 플랜은 초과 사용료가 자동 과금되는 대신 서비스
 3. 플랫폼 카드가 `API 연결` 또는 `프로젝트 계측`으로 표시되는지 확인합니다.
 4. `service_usage_collection_runs`의 최신 행이 `success` 또는 예상한 `partial`인지 확인합니다.
 5. Cron 설정 후 `cron.job`와 `cron.job_run_details`에서 1시간 예약 실행을 확인합니다.
+6. 관리자 계정에서 `180일 초과 정리` 버튼이 보이고, RPC 미적용 오류가 없으면 `TASK-073` 적용이 완료된 상태입니다.
 
 브라우저 계측은 개인정보, 입력값, URL 쿼리 문자열을 저장하지 않으며 페이지 경로와 서비스 호출 종류, 전송량만 기록합니다.

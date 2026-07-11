@@ -208,13 +208,13 @@ function formatMessage(type: string, data: Record<string, unknown>): { text: str
     case "log_alert": {
       const level = (data["레벨"] as string) || "WARN";
       const emoji = LOG_LEVEL_EMOJI[level] || "⚠️";
-      const action = data["액션"] as string || "";
+      const action = (data["액션"] || data["actionLabel"] || data["action"] || "") as string;
       const details = data["상세"] || {};
       let detailStr = "";
       if (typeof details === "object" && details !== null) {
         const d = details as Record<string, unknown>;
         const filtered = Object.entries(d)
-          .filter(([k]) => !k.startsWith("_"))
+          .filter(([k]) => !k.startsWith("_") && !["client", "클라이언트", "logLevel", "logPage", "loggedAt", "actionCode", "actionLabel", "actorAccount", "actorName"].includes(k))
           .slice(0, 5);
         detailStr = filtered.map(([k, v]) => `${k}: ${v}`).join("\n");
       } else {

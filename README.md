@@ -12,12 +12,22 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.72.0` (`js/version.js` 기준, 2026-07-11) |
+| 현재 버전 | `v3.74.0` (`js/version.js` 기준, 2026-07-11) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.72.0`로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.74.0`로 갱신되어 있습니다.
+- **v3.74.0 주요 변경 사항**:
+  - 활동 로그 `details` 저장 기준을 영어 key 중심으로 통일하고, 한글 별칭/영문 원본/공통 필드 중복 저장을 중단했습니다.
+  - 작업명, 사용자 계정, 로그 일시, 레벨, 발생 페이지는 `activity_logs` 기본 컬럼과 로그 화면 표시 영역에서 처리하고, `details`에는 실제 처리 상세만 저장합니다.
+  - 신규 로그에서 `_client`/`클라이언트` 자동 수집을 중단해 IP, 브라우저, OS, 해상도, 기기 정보가 더 이상 저장되지 않습니다.
+  - 로그 화면, 작업 이력 화면, WARN+ Slack 알림은 영어로 저장된 action/details를 코드북과 공통 매핑 기준으로 한글 치환해 보여줍니다.
+  - 기존 `activity_logs.details`의 중복 한글 별칭과 client 항목을 정리하는 `docs/TASK-074_activity_logs_english_details.sql`을 추가했습니다.
+- **v3.73.0 주요 변경 사항**:
+  - `서비스 통계` 페이지에 `service_usage_snapshots`, `service_usage_collection_runs` 180일 초과 수동 정리 버튼을 추가했습니다.
+  - `로그` 페이지에 확인 완료 `activity_logs` 180일 초과 실제 삭제 버튼을 추가했습니다.
+  - 수동 삭제 RPC는 관리자(100+) 또는 service_role만 실행할 수 있으며, 미확인 활동 로그는 계속 보호됩니다.
 - **v3.72.0 주요 변경 사항**:
   - `service_usage_snapshots`, `service_usage_collection_runs`, `activity_logs`에 180일 보존 정책을 추가했습니다.
 - `activity_logs`는 확인 완료된 로그만 180일 초과 시 삭제하고, 미확인 로그는 확인될 때까지 자동/선택 삭제 대상에서 제외합니다.
@@ -60,9 +70,9 @@
   - 각 HTML 파일의 고정 버전 쿼리 문자열을 제거하고, `js/version.js`가 최신 버전 확인과 로드된 CSS/JS 자산 재검증을 중앙에서 담당합니다.
   - 구버전 자산이 감지되면 한 번 새로고침해 최신 자산을 받아오고, 이후 세션 버전이 맞지 않으면 재로그인 안내를 표시합니다.
 - **v3.66.0 주요 변경 사항**:
-  - 신규 활동 로그 저장 시 원본 키와 함께 한글 상세 키 별칭을 저장합니다.
-  - 로그 관리와 작업 이력 상세 모달은 한글화된 상세 데이터를 우선 표시합니다.
-  - 기존 `activity_logs.details` 데이터에 한글 별칭을 추가하는 `docs/TASK-067_korean_activity_logs.sql`을 추가했습니다.
+  - 신규 활동 로그 저장 시 원본 키와 함께 한글 상세 키 별칭을 저장했습니다. 현재 운영 기준은 v3.74.0의 영어 key 저장/한글 표시 정책입니다.
+  - 로그 관리와 작업 이력 상세 모달은 한글화된 상세 데이터를 우선 표시했습니다. 현재는 저장된 영어 details를 화면에서 한글로 치환합니다.
+  - 기존 `activity_logs.details` 데이터에 한글 별칭을 추가하는 `docs/TASK-067_korean_activity_logs.sql`을 추가했습니다. 현재 기존 로그 중복 정리는 `docs/TASK-074_activity_logs_english_details.sql`을 사용합니다.
   - 인증/버전/아이디 확인 관련 실제 발생 로그 액션의 한글 라벨을 보강했습니다.
 - **v3.65.0 주요 변경 사항**:
   - 승인 대기 중인 가입 신청 계정은 비밀번호 인증 전에 승인 대기 안내와 신청 부서 담당 관리자 정보를 표시합니다.
@@ -135,7 +145,7 @@
   - `auth.js`, `activity-log.js`, `user-mgmt.js`, `product.js`가 하드코딩 라벨 대신 공통 코드북을 사용하도록 정리
   - 구매 관리/구매 통계/내 구매 상품의 주문 상태 라벨, 색상, 이모지, 정렬 순서를 `product_orders.status` 기준으로 통합
   - 상품 관리의 카테고리를 자유 텍스트 입력에서 코드 마스터 기반 선택값으로 변경하고, 기존 카테고리는 마이그레이션에서 보존
-  - 작업 이력/로그 액션 라벨을 `activity_logs.action` 코드 마스터와 `details._actionLabel` 기반으로 확장 가능하게 정리
+  - 작업 이력/로그 액션 라벨을 `activity_logs.action` 코드 마스터와 `details._actionLabel` 기반으로 확장 가능하게 정리 (현재 v3.74.0부터 신규 로그는 `_actionLabel`을 details에 저장하지 않음)
   - DB 코드 마스터 SQL 추가: `docs/TASK-057_code_master.sql` (`code_groups`, `code_items`, 코드 컬럼 검증 트리거, `get_permission_rank()` 코드화)
   - 새 DB 설치 스크립트가 기본으로 `TASK-057_code_master.sql`을 합본 SQL에 포함하도록 개선
 - **v3.49.0 주요 변경 사항**:
@@ -274,7 +284,7 @@
   - 작업 이력(admin/audit.html): AUDIT_ACTIONS 키 불일치 수정 및 70개 이상 액션 타입으로 확대
   - 작업 이력: 필터 그룹 6개 → 10개 확대 (사용자/등록/부서/달란트/상품·주문/Q&A/인증/로그관리/권한·설정)
   - 로그 시스템: ACTION_LABELS 한글 매핑 150개+ 추가, writeLog() 자동 한글 라벨 적용
-  - 로그 뷰어(admin/logs.html): action 열 한글 라벨 표시 (영문 키 병기)
+  - 로그 뷰어(admin/logs.html): action 열 한글 라벨 표시 (당시 영문 키 병기, 현재 v3.74.0부터 한글 라벨만 표시)
   - 전체 20개+ 페이지/JS: logInfo/logWarn/logError 호출의 details 키 한글화 (대상/변경내역/오류/금액 등)
   - 누락 로그 추가: qna.html(QNA_CREATE/ANSWER/COMMENT/DELETE/FAQ_SET), talent-items.html(TOGGLE/QUICKBTN), page-permissions.html(PAGE_PERM_UPDATE)
   - 즐겨찾기 DB 마이그레이션: user_preferences 테이블 신설, localStorage → Supabase DB 저장으로 전환 (비로그인 시 localStorage 폴백)
@@ -657,12 +667,12 @@ flowchart TD
 | `admin/purchases.html` | 60 | 구매 관리: 4단계 처리, 모든 상태 탭에 부서/기간 필터(기본 오늘) + 기간 프리셋, 구매 확정 시 달란트 차감 |
 | `admin/notices.html` | 40 | 공지 사항 조회. 일반 교사는 활성 공지만 볼 수 있고, 전도사님(90+) 이상은 공지 등록/수정/삭제와 활성 토글을 처리합니다. 목록 행 선택 시 보기 모달이 열리며, 열람 현황 모달에서 등록일시/등록자, 사용자 유형, 전체/확인자/미확인자 콤보박스 필터를 확인할 수 있습니다. 활성 공지는 로그인 후 메인 화면에 팝업 표시되고 계정별 다시 열지 않음 상태를 저장 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록/수정, 선택 삭제 |
-| `admin/logs.html` | 100 | 활동 로그 필터링(기본 1년) + 기간 프리셋, 상세 보기, 한글 액션 라벨 표시, 오류 로그 확인 처리, 소프트 삭제(삭제 대기) |
+| `admin/logs.html` | 100 | 활동 로그 필터링(기본 1년) + 기간 프리셋, 상세 보기, 한글 액션 라벨 표시, 오류 로그 확인 처리, 소프트 삭제(삭제 대기), 확인 완료 로그 180일 초과 실제 삭제 |
 | `admin/service-stats.html` | 80 | GitHub/Supabase/Kakao/Slack 무료 할당량, 현재·남은 사용량/비율, 예상 사용률, 30일 추이, 수집/Slack 알림 이력 조회와 즉시 수집 |
 | `admin/versions.html` | 80 | 배포 버전과 v1.0.0부터의 전체 변경 이력 확인 |
 | `admin/page-access.html` | 100 | 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100 | 권한별 페이지 기능(수정/삭제/승인 등) 설정값 관리 |
-| `admin/audit.html` | 100 | 관리 작업 이력 조회 (70+ 액션 타입, 10개 카테고리 필터, 한글 상세 내역). 기간 필터 기본값 1년 + 기간 프리셋, 자동 조회 |
+| `admin/audit.html` | 100 | 관리 작업 이력 조회 (70+ 액션 타입, 10개 카테고리 필터, 영어 저장 details의 한글 표시). 기간 필터 기본값 1년 + 기간 프리셋, 자동 조회 |
 | `admin/page-permissions.html` | 100 | 페이지별 조회/관리 권한 매트릭스 설정 (레거시) |
 | `admin/change-password.html` | 로그인 | 최초 로그인 또는 비밀번호 변경 처리 |
 
@@ -784,13 +794,14 @@ flowchart TD
 
 ### 로그/보고서
 
-- `activity-log.js`가 페이지 방문, 로그인, 관리 작업, 에러를 `activity_logs`에 기록합니다.
+- `activity-log.js`가 로그인, 관리 작업, 에러를 `activity_logs`에 기록합니다. 페이지 조회(PAGE_VIEW)는 v3.40.0부터 기록하지 않습니다.
 - 모든 기능의 성공/실패/거부가 `logInfo`/`logWarn`/`logError`로 기록됩니다.
-- `writeLog()`는 액션 라벨과 상세 키의 한글 별칭을 함께 저장하며, `admin/logs.html`과 `admin/audit.html`은 한글 상세 데이터를 우선 표시합니다.
+- `writeLog()`는 `details`를 영어 key로 정규화하고 중복을 제거합니다. 작업명, 사용자 계정, 로그 일시, 레벨, 발생 페이지는 기본 컬럼/화면에서 표시하며 `details`에는 처리 상세만 저장합니다.
+- `admin/logs.html`과 `admin/audit.html`은 저장된 영어 action/details를 코드북과 공통 매핑 기준으로 한글 치환해 표시합니다.
 - `writeLog()`는 Supabase insert의 반환 `error`를 확인하고, 구버전 DB 스키마의 선택 컬럼 오류는 제거 후 재시도합니다.
 - `ERROR`, `FATAL`, `CRITICAL` 로그는 미확인 상태로 남고, `admin/logs.html`에서 확인 처리합니다.
 - 로그 삭제는 소프트 삭제(`is_deleted=true`)이며, 확인 완료된 오래된 로그는 180일 보존 정책으로 실제 삭제됩니다. 별도 운영 정리가 필요하면 SQL Editor에서 수행합니다.
-- `activity_logs`는 확인 완료 후 180일이 지난 행만 자동 정리하며, 미확인 로그는 확인될 때까지 보존됩니다.
+- `activity_logs`는 확인 완료 후 180일이 지난 행만 자동/수동 정리하며, 미확인 로그는 확인될 때까지 보존됩니다.
 - `admin/reports.html`은 `reports` 테이블의 작업 보고서를 유형별로 조회하고, 등록/수정/삭제를 제공합니다.
 - `writeLog()`에서 `WARN` 이상 로그가 기록되면 `sendSlackNotify('log_alert', ...)`로 운영 채널에 Slack 알림이 전송됩니다.
 
@@ -814,9 +825,9 @@ flowchart TD
 | QR 스캔 | `talent_qr_scans` | QR 코드 스캔 이력 (중복 수령 방지) |
 | 공지 | `announcements` | 운영자가 등록한 공지 제목/내용, 활성 여부, 작성/수정자 기록 |
 | 공지 숨김 | `announcement_dismissals` | 사용자별 공지 다시 열지 않음 상태. 전도사님(90+) 이상은 공지 열람 현황 조회와 확인/미확인 필터에 사용 |
-| 로그 | `activity_logs` | 오류/운영 활동 기록, 소프트 삭제, `activity_logs.action` 코드 라벨과 `details._actionLabel`/`details._actionKo` 및 한글 상세 키 저장. 확인 완료 로그는 180일 보존, 미확인 로그는 확인 전까지 보존 |
-| 서비스 통계 | `service_usage_metrics`, `service_usage_events`, `service_usage_snapshots` | 플랫폼별 한도 정의, 프로젝트 호출 계측, 1시간 수집 스냅샷. 스냅샷은 180일 보존 |
-| 서비스 통계 운영 | `service_usage_collection_runs`, `service_usage_alerts` | 수집 성공/오류와 70/85/95% Slack 알림 중복 방지/발송 이력. 수집 이력은 180일 보존 |
+| 로그 | `activity_logs` | 오류/운영 활동 기록, 소프트 삭제, `activity_logs.action` 코드와 영어 key 기반 `details` 저장. 화면/Slack에서는 코드북과 공통 매핑으로 한글 표시. 확인 완료 로그는 180일 보존, 미확인 로그는 확인 전까지 보존 |
+| 서비스 통계 | `service_usage_metrics`, `service_usage_events`, `service_usage_snapshots` | 플랫폼별 한도 정의, 프로젝트 호출 계측, 1시간 수집 스냅샷. 스냅샷은 180일 보존하며 관리자 버튼으로 수동 정리 가능 |
+| 서비스 통계 운영 | `service_usage_collection_runs`, `service_usage_alerts` | 수집 성공/오류와 70/85/95% Slack 알림 중복 방지/발송 이력. 수집 이력은 180일 보존하며 관리자 버튼으로 수동 정리 가능 |
 | 보고서 | `reports` | 작업 계획, 검증, 테스트, 수정 보고서 |
 | 페이지 권한 | `page_permissions` | 페이지별 조회/관리 권한 설정 (레거시) |
 | 권한별 접근 | `role_page_access` | 권한 등급별 페이지 접근/요소 가시성 설정 |
@@ -854,7 +865,7 @@ flowchart TD
 - 페이지 접근/페이지 기능/작업 이력/로그 화면은 100등급 이상만 접근합니다.
 - 교사가 `shop.html`에 접근하면 기본 필터가 교사용으로 자동 설정됩니다.
 - 영문 DB/RPC 에러는 `tErr()` 함수를 통해 한글로 변환되어 사용자에게 표시됩니다.
-- 활동 로그에는 브라우저, OS, 화면 크기, IP 등 클라이언트 정보가 저장됩니다.
+- 신규 활동 로그에는 브라우저, OS, 화면 크기, IP 같은 클라이언트 정보가 저장되지 않습니다.
 
 ## DB 스키마 초기 설정
 
@@ -897,7 +908,15 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-072_data_retention_180d.sql` | v3.72.0: 서비스 통계 스냅샷/수집 이력/확인 완료 활동 로그 180일 보존 정책 |
 | `docs/TASK-072_change_report.md` | v3.72.0: 180일 보존 정책 변경 보고 |
 | `docs/TASK-072_test_result.md` | v3.72.0: 180일 보존 정책 정적 검증 결과 |
+| `docs/TASK-073_manual_retention_cleanup.sql` | v3.73.0: 서비스 통계/활동 로그 180일 초과 수동 삭제 RPC |
+| `docs/TASK-073_change_report.md` | v3.73.0: 180일 초과 데이터 수동 삭제 버튼 변경 보고 |
+| `docs/TASK-073_test_result.md` | v3.73.0: 180일 초과 데이터 수동 삭제 버튼 정적 검증 결과 |
 | `docs/TASK-067_korean_activity_logs.sql` | v3.66.0: 기존 활동 로그 상세 한글 별칭 백필 및 실제 발생 액션 라벨 보강 |
+| `docs/TASK-074_plan.md` | v3.74.0: 활동 로그 영어 저장/한글 표시 분리 작업 계획 |
+| `docs/TASK-074_test_scenario.md` | v3.74.0: 활동 로그 정규화와 표시/Slack 검증 시나리오 |
+| `docs/TASK-074_test_result.md` | v3.74.0: 활동 로그 정규화 정적 검증 결과 |
+| `docs/TASK-074_change_report.md` | v3.74.0: 활동 로그 영어 저장과 한글 표시 분리 변경 보고 |
+| `docs/TASK-074_activity_logs_english_details.sql` | v3.74.0: 기존 활동 로그 상세 중복/한글 별칭/client 항목을 영어 key 중심으로 정리 |
 | `docs/TASK-068_product_category_page_and_sort_order.sql` | v3.67.0: `products.sort_order` 컬럼/인덱스 추가와 상품 카테고리 관리 권한을 구매 담당 교사(70+) 이상으로 정렬 |
 
 ## 관련 문서

@@ -200,13 +200,11 @@
           } else {
             localStorage.removeItem(SAVED_USERNAME_KEY);
           }
-          logInfo('LOGIN_SUCCESS', { username });
           window.location.href = getPostLoginTarget({
             isFirstLogin: !!result.data.is_first_login,
             permissionLevel: result.data.permission_level || result.data.permissionLevel || 'teacher'
           });
         } else {
-          logWarn('LOGIN_FAIL', { username, error: result.error });
           if (regInfo.status === 'approved') {
             errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> 비밀번호가 일치하지 않습니다.';
           } else {
