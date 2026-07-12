@@ -98,6 +98,14 @@ async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
   try {
     const overrideWeekLimit = options.overrideWeekLimit === true;
     const overrideReason = options.overrideReason || null;
+    const logContext = {
+      targetUserId: userId,
+      targetAccount: options.targetAccount || null,
+      targetName: options.targetName || options.userDisplayName || null,
+      talentItemId,
+      itemName: options.itemName || options.talentItemName || null,
+      사유: overrideReason,
+    };
     const { data, error } = await _sb.rpc('give_talent', {
       p_user_id: userId,
       p_amount: 0,
@@ -109,26 +117,33 @@ async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
     });
     if (error) {
       if (isWeeklyDuplicateTalentError(error)) {
-        await logInfo('TALENT_GIVE_ITEM_DENIED', { userId, talentItemId, 사유: error.message, 처리: 'weekly_duplicate' });
+        await logInfo('TALENT_GIVE_ITEM_DENIED', { ...logContext, 사유: error.message, 처리: 'weekly_duplicate' });
         return { success: false, error: error.message, handled: true, reason: 'weekly_duplicate' };
       }
-      await logError('TALENT_GIVE_ITEM_FAIL', { userId, talentItemId, 오류: error.message });
+      await logError('TALENT_GIVE_ITEM_FAIL', { ...logContext, 오류: error.message });
       return { success: false, error: error.message };
     }
     if (data && data.success === false) {
       const logFn = isWeeklyDuplicateTalentError(data.error) ? logInfo : logWarn;
-      await logFn('TALENT_GIVE_ITEM_DENIED', { userId, talentItemId, 사유: data.error, 처리: isWeeklyDuplicateTalentError(data.error) ? 'weekly_duplicate' : 'denied' });
+      await logFn('TALENT_GIVE_ITEM_DENIED', { ...logContext, 사유: data.error, 처리: isWeeklyDuplicateTalentError(data.error) ? 'weekly_duplicate' : 'denied' });
       return data;
     }
     await logInfo('TALENT_GIVE_ITEM', {
-      userId,
-      talentItemId,
+      ...logContext,
       금액: data?.amount,
       예외지급: overrideWeekLimit,
+      변경내역: `${logContext.targetName || userId}에게 달란트 항목 지급: ${logContext.itemName || talentItemId} / 금액: ${fmtNum(data?.amount || 0)} 달란트${overrideWeekLimit ? ' / 예외 지급' : ''}`,
     });
     return data;
   } catch (err) {
-    await logError('TALENT_GIVE_ITEM_ERROR', { userId, talentItemId, 오류: String(err) });
+    await logError('TALENT_GIVE_ITEM_ERROR', {
+      targetUserId: userId,
+      targetAccount: options.targetAccount || null,
+      targetName: options.targetName || options.userDisplayName || null,
+      talentItemId,
+      itemName: options.itemName || options.talentItemName || null,
+      오류: String(err)
+    });
     return { success: false, error: String(err) };
   }
 }
@@ -154,10 +169,13 @@ async function createTalentExceptionRequest(requestData) {
       return { data: null, error: error.message, logged: true };
     }
     await logInfo('TALENT_EXCEPTION_REQUEST', {
-      userId: row.user_id,
+      targetUserId: row.user_id,
+      targetName: row.user_display_name || null,
       talentItemId: row.talent_item_id,
+      itemName: row.talent_item_name || row.description || null,
       금액: row.amount,
-      사유: row.override_reason
+      사유: row.override_reason,
+      변경내역: `달란트 예외 지급 요청: ${row.user_display_name || row.user_id} / 항목: ${row.talent_item_name || row.description || row.talent_item_id} / 금액: ${fmtNum(row.amount || 0)} 달란트 / 사유: ${row.override_reason || '-'}`
     });
     return { data, error: null };
   } catch (err) {

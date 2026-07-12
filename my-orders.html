@@ -170,13 +170,32 @@
           throw new Error('주문 취소 환불 처리가 확인되지 않았습니다. 관리자에게 문의해주세요.');
         }
 
-        await logInfo('ORDER_CANCEL', { orderId, productId, targetUserId: session.id, 상품명: productName, 금액: refundedAmount || price });
+        await logInfo('ORDER_CANCEL', {
+          orderId,
+          productId,
+          targetUserId: session.id,
+          targetAccount: session.username,
+          targetName: session.displayName || session.username,
+          상품명: productName,
+          금액: refundedAmount || price,
+          변경내역: `주문 취소: ${session.displayName || session.username} (${session.username}) / 상품: ${productName} / 환불: ${fmtNum(refundedAmount || price)} 달란트`
+        });
         alert('구매가 취소되었습니다.');
         await loadOrders();
       } catch (e) {
         const msg = e.message || String(e);
         if (/환불|DB 함수|취소 처리 결과|cancel_product_order|permission denied/i.test(msg)) {
-          await logWarn('ORDER_CANCEL_REFUND_FAIL', { orderId, productId, targetUserId: session.id, 상품명: productName, 금액: price, 오류: msg, 처리: 'cancel_aborted_before_partial_update' });
+          await logWarn('ORDER_CANCEL_REFUND_FAIL', {
+            orderId,
+            productId,
+            targetUserId: session.id,
+            targetAccount: session.username,
+            targetName: session.displayName || session.username,
+            상품명: productName,
+            금액: price,
+            오류: msg,
+            처리: 'cancel_aborted_before_partial_update'
+          });
         }
         alert('취소 실패: ' + tErr(e.message || e));
       }
