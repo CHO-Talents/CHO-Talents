@@ -378,6 +378,7 @@ async function sendQuotaAlerts(errors: ErrorItem[]): Promise<number> {
             { type: "mrkdwn", text: `*남은 사용량*\n${formatMetricValue(remaining, String(metric.unit))} (${Math.max(100 - percent, 0).toFixed(1)}%)` },
           ] },
           { type: "section", text: { type: "mrkdwn", text: `<${SERVICE_STATS_URL}|서비스 통계에서 상세 확인>` } },
+          { type: "context", elements: [{ type: "mrkdwn", text: "👤 사용자 계정: 계정 없음 / 표시이름: 시스템 자동 수집" }] },
         ],
       };
 

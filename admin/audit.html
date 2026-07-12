@@ -65,7 +65,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../config/public-config.js"></script>
   <script src="../js/supabase-config.js"></script>
   <script src="../js/activity-log.js"></script>
@@ -231,7 +231,7 @@
 
 	    function formatAuditKnownUser(row) {
 	      if (!row) return null;
-	      const account = row.username || '미등록';
+	      const account = row.username || '계정 없음';
 	      const name = row.display_name || '';
 	      return name && name !== account ? `${escapeHtml(name)} (${escapeHtml(account)})` : escapeHtml(account);
 	    }
@@ -254,13 +254,13 @@
 
     function formatAuditActor(log, includeAccount) {
       const d = log.details || {};
-      const account = log.username || d._username || d._userAccount || d.cachedUsername || d.authUserId || null;
+      const account = log.username || d.logUserAccount || d._username || d._userAccount || d.cachedUsername || d.authUserId || null;
 	      const known = resolveAuditUser(account);
 	      if (known) return known;
-	      const actorName = log.user_name || d._userName || null;
+	      const actorName = log.user_name || d.logUserName || d._userName || null;
 	      if (actorName && account && includeAccount) return `${escapeHtml(actorName)} <span style="font-size:0.72rem;color:#888;">(${escapeHtml(account)})</span>`;
 	      if (actorName) return escapeHtml(actorName);
-	      return account ? escapeHtml(account) : '시스템';
+	      return account ? escapeHtml(account) : '계정 없음';
 	    }
 
     function setFilter(f) {
@@ -331,7 +331,7 @@
       }
       if (search) {
         list = list.filter(l => {
-          const userName = l.user_name || (l.details && l.details._userName) || l.username || '';
+          const userName = l.user_name || (l.details && (l.details.logUserName || l.details._userName || l.details.logUserAccount)) || l.username || '';
           const targetRaw = l.details?.targetName || l.details?.displayName || l.details?.name
             || l.details?.['대상'] || l.details?.['변경내역'] || '';
           const target = typeof targetRaw === 'string' ? targetRaw : JSON.stringify(targetRaw);

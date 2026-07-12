@@ -6,9 +6,27 @@
 const LOG_LEVELS = ['TRACE', 'DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL', 'CRITICAL'];
 const ERROR_LEVELS = ['ERROR', 'FATAL', 'CRITICAL'];
 const SLACK_ALERT_LEVELS = ['WARN', 'ERROR', 'FATAL', 'CRITICAL'];
+const LOG_NO_ACCOUNT = '계정 없음';
 
 let _logAlertLastSent = {};
 const _LOG_ALERT_THROTTLE_MS = 5000;
+let _logWriteLastSeen = {};
+const _LOG_WRITE_DEDUPE_MS = 5000;
+
+function _stableStringifyForLog(value) {
+  if (value == null || typeof value !== 'object') return String(value);
+  if (Array.isArray(value)) return '[' + value.map(_stableStringifyForLog).join(',') + ']';
+  return '{' + Object.keys(value).sort().map(key => key + ':' + _stableStringifyForLog(value[key])).join(',') + '}';
+}
+
+function _shouldSkipDuplicateLog(level, action, page, details) {
+  if (!SLACK_ALERT_LEVELS.includes(level)) return false;
+  const key = [level, action, page || '', _stableStringifyForLog(details || {})].join('|');
+  const now = Date.now();
+  if (_logWriteLastSeen[key] && now - _logWriteLastSeen[key] < _LOG_WRITE_DEDUPE_MS) return true;
+  _logWriteLastSeen[key] = now;
+  return false;
+}
 
 function _sendLogAlertDirect(level, action, page, details) {
   if (!_sb) return;
@@ -16,6 +34,8 @@ function _sendLogAlertDirect(level, action, page, details) {
   var now = Date.now();
   if (_logAlertLastSent[key] && now - _logAlertLastSent[key] < _LOG_ALERT_THROTTLE_MS) return;
   _logAlertLastSent[key] = now;
+  var actorAccount = (details && (details.logUserAccount || details.actorAccount || details._userAccount || details._username)) || LOG_NO_ACCOUNT;
+  var actorName = (details && (details.logUserName || details.actorName || details._userName || details._displayName)) || actorAccount || LOG_NO_ACCOUNT;
   var safeDetails = (typeof getDisplayLogDetails === 'function') ? getDisplayLogDetails(details || {}) : (details || {});
   _sb.functions.invoke('slack-notify', {
     body: {
@@ -25,6 +45,8 @@ function _sendLogAlertDirect(level, action, page, details) {
         '액션': getActionLabel(action),
         '액션코드': action,
         '페이지': page || window.location.pathname,
+        '사용자계정': actorAccount,
+        '사용자이름': actorName,
         '상세': safeDetails
       }
     }
@@ -286,6 +308,8 @@ const LOG_DETAIL_KEY_LABELS = {
   _username: '작업자 아이디',
   _userName: '작업자',
   _displayName: '작업자',
+  logUserAccount: '사용자 계정',
+  logUserName: '사용자 이름',
   _client: '클라이언트',
   client: '클라이언트',
   targetAccount: '대상 아이디',
@@ -485,8 +509,38 @@ const LOG_DETAIL_VALUE_LABELS = {
   'Supabase auth session error': 'Supabase 인증 세션 오류',
   'Supabase auth session exception': 'Supabase 인증 세션 예외',
   'Supabase auth session missing': 'Supabase 인증 세션 없음',
-  'Profile RPC returned no profile': '프로필 RPC 결과 없음'
+  'Profile RPC returned no profile': '프로필 RPC 결과 없음',
+  'Invalid login credentials': '로그인 정보가 일치하지 않습니다',
+  'TypeError: Load failed': '로드 실패',
+  'Script error.': '스크립트 오류',
+  'User denied Geolocation': '사용자가 위치 권한을 거부했습니다',
+  'Cannot coerce the result to a single JSON object': '단일 결과로 변환할 수 없습니다',
+  'permission denied for table profiles': 'profiles 테이블 권한이 없습니다',
+  last_activity: '마지막 활동 기준',
+  idle_timer: '유휴 타이머 기준',
+  visibilitychange: '탭 재활성화 기준',
+  weekly_duplicate: '주간 중복 지급',
+  duplicate_pending: '이미 대기 중인 요청',
+  cached_session: '캐시 세션으로 복구',
+  profiles_fallback: '프로필 직접 조회로 복구',
+  cancel_aborted_before_partial_update: '부분 취소 방지를 위해 중단',
+  'admin-dashboard': '관리자 대시보드',
+  'admin-users': '사용자 관리',
+  'admin-talents': '달란트 관리',
+  'admin-service-stats': '서비스 통계',
+  'my-talents': '내 달란트',
+  'talent-receive': 'QR 달란트 수령',
+  login: '로그인'
 };
+
+const LOG_DETAIL_VALUE_PATTERNS = [
+  [/^Already given this item this week:\s*(.+)$/i, '이번 주에 이미 지급된 항목입니다: $1'],
+  [/^permission denied for table ([\w.]+)$/i, '$1 테이블 권한이 없습니다'],
+  [/^Could not find the function/i, 'DB 함수를 찾을 수 없습니다'],
+  [/^Cannot coerce the result to a single JSON object$/i, '단일 결과로 변환할 수 없습니다'],
+  [/^TypeError:\s*Load failed$/i, '로드 실패'],
+  [/^Script error\.$/i, '스크립트 오류']
+];
 
 const LOG_DETAIL_KEY_ALIASES = {
   오류: 'error',
@@ -655,6 +709,33 @@ function _isEmptyLogDetailValue(value) {
   return false;
 }
 
+function translateLogDetailValue(key, value) {
+  if (value === null || value === undefined) return value;
+  if (typeof value === 'boolean') return value ? '예' : '아니오';
+  if (typeof value !== 'string') return value;
+
+  const direct = LOG_DETAIL_VALUE_LABELS[value];
+  if (direct) return direct;
+
+  const lowerKey = String(key || '').toLowerCase();
+  if ((lowerKey.includes('permission') || lowerKey === 'rolekey' || lowerKey === '권한' || lowerKey === '실제권한') && typeof getCodeLabel === 'function') {
+    const label = getCodeLabel('profiles.permission_level', value, LOG_DETAIL_VALUE_LABELS[value] || value);
+    if (label !== value) return label;
+  }
+  if ((lowerKey.includes('status') || lowerKey === '상태' || lowerKey === '변경상태') && typeof getCodeLabel === 'function') {
+    const label = getCodeLabel('product_orders.status', value, LOG_DETAIL_VALUE_LABELS[value] || value);
+    if (label !== value) return label;
+  }
+  if ((lowerKey === 'action' || lowerKey === 'actionkey') && value) {
+    return getActionLabel(value);
+  }
+
+  for (const [pattern, replacement] of LOG_DETAIL_VALUE_PATTERNS) {
+    if (pattern.test(value)) return value.replace(pattern, replacement);
+  }
+  return value;
+}
+
 function _setNormalizedLogDetail(target, key, value) {
   if (!key || _isEmptyLogDetailValue(value)) return;
   if (!Object.prototype.hasOwnProperty.call(target, key)) {
@@ -713,10 +794,12 @@ function normalizeLogDetailsForStorage(details, context = {}, depth = 0) {
     let normalizedValue = value;
     if (Array.isArray(value)) {
       normalizedValue = value
-        .map(item => (item && typeof item === 'object') ? normalizeLogDetailsForStorage(item, context, depth + 1) : item)
+        .map(item => (item && typeof item === 'object') ? normalizeLogDetailsForStorage(item, context, depth + 1) : translateLogDetailValue(normalizedKey, item))
         .filter(item => !_isEmptyLogDetailValue(item));
     } else if (value && typeof value === 'object') {
       normalizedValue = normalizeLogDetailsForStorage(value, context, depth + 1);
+    } else {
+      normalizedValue = translateLogDetailValue(normalizedKey, value);
     }
     _setNormalizedLogDetail(result, normalizedKey, normalizedValue);
   });
@@ -750,9 +833,49 @@ function inferLogActor(session, details = {}, action = '') {
     null
   );
   return {
-    account: account || null,
-    name: name || account || null
+    account: account || LOG_NO_ACCOUNT,
+    name: name || account || LOG_NO_ACCOUNT
   };
+}
+
+function _isUuidLike(value) {
+  return typeof value === 'string'
+    && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
+}
+
+async function enrichLogDetailsWithUserContext(details) {
+  if (!_sb || !details || typeof details !== 'object' || Array.isArray(details)) return details || {};
+  const enriched = Object.assign({}, details);
+  const targetId = enriched.targetUserId || enriched.targetUser || enriched.userId || null;
+  const targetAccount = enriched.targetAccount || enriched.username || enriched['아이디'] || null;
+
+  try {
+    let profile = null;
+    if (_isUuidLike(targetId)) {
+      const { data } = await _sb
+        .from('profiles')
+        .select('id,username,display_name')
+        .eq('id', targetId)
+        .maybeSingle();
+      profile = data || null;
+      if (!enriched.targetUserId) enriched.targetUserId = targetId;
+    } else if (targetAccount && targetAccount !== LOG_NO_ACCOUNT) {
+      const { data } = await _sb
+        .from('profiles')
+        .select('id,username,display_name')
+        .eq('username', targetAccount)
+        .maybeSingle();
+      profile = data || null;
+    }
+
+    if (profile) {
+      if (!enriched.targetUserId) enriched.targetUserId = profile.id;
+      if (!enriched.targetAccount) enriched.targetAccount = profile.username || null;
+      if (!enriched.targetName) enriched.targetName = profile.display_name || profile.username || null;
+    }
+  } catch (e) {}
+
+  return enriched;
 }
 
 function _addLogDetailValue(target, key, value) {
@@ -794,7 +917,7 @@ function _localizeLogDetailValue(key, value, depth = 0) {
   if ((lowerKey === 'action' || lowerKey === 'actionkey') && value) {
     return getActionLabel(value);
   }
-  return LOG_DETAIL_VALUE_LABELS[value] || value;
+  return translateLogDetailValue(key, value);
 }
 
 function buildKoreanLogDetails(details, options = {}) {
@@ -967,21 +1090,27 @@ async function writeLog(level, action, page, details) {
   if (details && (typeof details !== 'object' || Array.isArray(details))) {
     baseDetails.message = String(details);
   }
-  const actor = inferLogActor(session, baseDetails, action);
-  const normalizedDetails = normalizeLogDetailsForStorage(baseDetails, {
+  const enrichedDetails = await enrichLogDetailsWithUserContext(baseDetails);
+  const actor = inferLogActor(session, enrichedDetails, action);
+  const normalizedDetails = normalizeLogDetailsForStorage(enrichedDetails, {
     action,
     actorAccount: actor.account,
     actorName: actor.name
   });
+  normalizedDetails.logUserAccount = actor.account || LOG_NO_ACCOUNT;
+  normalizedDetails.logUserName = actor.name || LOG_NO_ACCOUNT;
   const row = {
     level,
     action,
     page: page || window.location.pathname,
     details: normalizedDetails,
-    username: actor.account,
-    user_name: actor.name,
+    username: actor.account || LOG_NO_ACCOUNT,
+    user_name: actor.name || LOG_NO_ACCOUNT,
     is_acknowledged: !ERROR_LEVELS.includes(level)
   };
+  if (_shouldSkipDuplicateLog(level, action, row.page, normalizedDetails)) {
+    return { data: null, error: null, skipped: true };
+  }
   var result = await _insertActivityLogRow(row);
   if (SLACK_ALERT_LEVELS.includes(level)) {
     _sendLogAlertDirect(level, action, page || window.location.pathname, normalizedDetails);
@@ -1200,6 +1329,37 @@ function clearSession() {
   sessionStorage.removeItem('cho_admin_session');
 }
 
+async function _loadProfileDirectForSession(authUserId) {
+  if (!_sb || !authUserId) return { data: null, error: null };
+  try {
+    const { data, error } = await _sb
+      .from('profiles')
+      .select('id, username, display_name, user_type, permission_level, is_super_admin, is_first_login, department_id, managed_dept_id, talent_balance, class_number, departments(name)')
+      .eq('id', authUserId)
+      .maybeSingle();
+    if (error || !data) return { data: null, error };
+    return {
+      data: {
+        id: data.id,
+        username: data.username,
+        display_name: data.display_name,
+        user_type: data.user_type,
+        permission_level: data.permission_level,
+        is_super_admin: data.is_super_admin,
+        is_first_login: data.is_first_login,
+        department_id: data.department_id,
+        managed_dept_id: data.managed_dept_id,
+        talent_balance: data.talent_balance,
+        department_name: data.departments ? data.departments.name : null,
+        class_number: data.class_number
+      },
+      error: null
+    };
+  } catch (err) {
+    return { data: null, error: err };
+  }
+}
+
 async function loadAuthSession() {
   if (!_sb) {
     window.__lastAuthSessionFailure = {
@@ -1259,14 +1419,16 @@ async function loadAuthSession() {
       lastActivityAt,
       idleExpired
     };
-    await logInfo('AUTH_SESSION_MISSING', window.__lastAuthSessionFailure);
+    if (cached || idleExpired) {
+      await logInfo('AUTH_SESSION_MISSING', window.__lastAuthSessionFailure);
+    }
     clearSession();
     return null;
   }
 
   if (cached && cached.id === authSession.user.id && cached.isSuperAdmin !== undefined) return cached;
 
-  const { data, error: profileError } = await _sb.rpc('get_my_profile');
+  let { data, error: profileError } = await _sb.rpc('get_my_profile');
   if (profileError || !data) {
     window.__lastAuthSessionFailure = {
       reason: 'Profile RPC returned no profile',
@@ -1275,6 +1437,21 @@ async function loadAuthSession() {
       authUserId: authSession.user.id,
       cachedUsername: cached ? cached.username : null
     };
+    if (cached && cached.id === authSession.user.id && cached.username && cached.permissionLevel) {
+      await logInfo('AUTH_PROFILE_LOAD_FAIL', Object.assign({}, window.__lastAuthSessionFailure, { recoveredBy: 'cached_session' }));
+      return cached;
+    }
+    const directProfile = await _loadProfileDirectForSession(authSession.user.id);
+    if (directProfile.data) {
+      await logInfo('AUTH_PROFILE_LOAD_FAIL', Object.assign({}, window.__lastAuthSessionFailure, { recoveredBy: 'profiles_fallback' }));
+      data = directProfile.data;
+      profileError = null;
+    } else {
+      window.__lastAuthSessionFailure.fallbackMessage = directProfile.error ? (directProfile.error.message || String(directProfile.error)) : null;
+    }
+  }
+
+  if (profileError || !data) {
     await logError('AUTH_PROFILE_LOAD_FAIL', window.__lastAuthSessionFailure);
     clearSession();
     return null;
@@ -1308,12 +1485,16 @@ async function loadAuthSession() {
 /* ===== Global Error Handler ===== */
 
 window.addEventListener('error', (e) => {
-  logError('JS_ERROR', {
+  const details = {
     message: e.message,
     filename: e.filename,
     lineno: e.lineno,
     colno: e.colno
-  });
+  };
+  if (e.message === 'Script error.' && !e.filename && !e.lineno && !e.colno) {
+    details.hint = '외부 스크립트 오류 세부정보가 브라우저 CORS 정책으로 숨겨졌습니다.';
+  }
+  logError('JS_ERROR', details);
 });
 
 window.addEventListener('unhandledrejection', (e) => {

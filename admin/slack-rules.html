@@ -55,7 +55,7 @@
           <tr><td><code>purchase_status</code></td><td><code>admin/purchases.html</code> 구매 신청 → 상품 준비</td><td><code>product_orders.status</code> 코드 <code>requested</code> → <code>preparing</code></td><td><span class="route-badge">상품 관리 채널</span></td></tr>
           <tr><td><code>user_register</code></td><td><code>register.html</code> 계정 등록 신청</td><td><code>data.부서</code></td><td><span class="route-badge">해당 부서 채널</span></td></tr>
           <tr><td><code>dept_transfer</code></td><td><code>admin/users.html</code> 부서 이동 요청</td><td><code>data.이동부서</code></td><td><span class="route-badge">이동 대상 부서 채널</span></td></tr>
-          <tr><td><code>log_alert</code></td><td><code>js/activity-log.js</code> WARN 이상 로그</td><td>로그 레벨. 예: <code>AUTH_REDIRECT</code>, <code>APP_VERSION_STALE_SESSION</code>, 로그인 실패, 권한 거부, ERROR+ 오류</td><td><span class="route-badge">운영 채널</span></td></tr>
+          <tr><td><code>log_alert</code></td><td><code>js/activity-log.js</code> WARN 이상 로그</td><td>로그 레벨. 예: 권한 거부, DB 페이지 접근 차단, ERROR+ 오류</td><td><span class="route-badge">운영 채널</span></td></tr>
           <tr><td><code>qna_new</code></td><td><code>qna.html</code> 새 질문 등록</td><td>고정 라우팅</td><td><span class="route-badge">Q&amp;A 채널</span></td></tr>
           <tr><td><code>service_quota_alert</code></td><td><code>service-usage-collect</code> 1시간 수집</td><td>무료 한도 70%·85%·95% 최초 도달</td><td><span class="route-badge">운영 채널</span></td></tr>
         </tbody>
@@ -109,7 +109,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../config/public-config.js"></script>
   <script src="../js/supabase-config.js"></script>
   <script src="../js/activity-log.js"></script>

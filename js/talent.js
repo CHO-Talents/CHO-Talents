@@ -79,6 +79,20 @@ async function giveTalent(userId, amount, description, createdBy) {
   }
 }
 
+function getTalentErrorMessage(value) {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  return value.message || value.error || String(value);
+}
+
+function isWeeklyDuplicateTalentError(value) {
+  return /already given this item this week|이미.*이번 주.*지급|이번 주.*이미.*지급/i.test(getTalentErrorMessage(value));
+}
+
+function isDuplicateTalentExceptionRequest(value) {
+  return /이미.*대기 중|already.*pending|duplicate key|unique constraint/i.test(getTalentErrorMessage(value));
+}
+
 async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
   if (!_sb) return { success: false, error: 'Supabase not initialized' };
   try {
@@ -94,11 +108,16 @@ async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
       p_override_reason: overrideReason,
     });
     if (error) {
+      if (isWeeklyDuplicateTalentError(error)) {
+        await logInfo('TALENT_GIVE_ITEM_DENIED', { userId, talentItemId, 사유: error.message, 처리: 'weekly_duplicate' });
+        return { success: false, error: error.message, handled: true, reason: 'weekly_duplicate' };
+      }
       await logError('TALENT_GIVE_ITEM_FAIL', { userId, talentItemId, 오류: error.message });
       return { success: false, error: error.message };
     }
     if (data && data.success === false) {
-      await logWarn('TALENT_GIVE_ITEM_DENIED', { userId, talentItemId, 사유: data.error });
+      const logFn = isWeeklyDuplicateTalentError(data.error) ? logInfo : logWarn;
+      await logFn('TALENT_GIVE_ITEM_DENIED', { userId, talentItemId, 사유: data.error, 처리: isWeeklyDuplicateTalentError(data.error) ? 'weekly_duplicate' : 'denied' });
       return data;
     }
     await logInfo('TALENT_GIVE_ITEM', {
@@ -127,8 +146,12 @@ async function createTalentExceptionRequest(requestData) {
       .select()
       .single();
     if (error) {
+      if (isDuplicateTalentExceptionRequest(error)) {
+        await logInfo('TALENT_EXCEPTION_REQUEST_FAIL', { userId: row.user_id, talentItemId: row.talent_item_id, 오류: error.message, 처리: 'duplicate_pending' });
+        return { data: null, error: error.message, handled: true, logged: true };
+      }
       await logError('TALENT_EXCEPTION_REQUEST_FAIL', { userId: row.user_id, talentItemId: row.talent_item_id, 오류: error.message });
-      return { data: null, error: error.message };
+      return { data: null, error: error.message, logged: true };
     }
     await logInfo('TALENT_EXCEPTION_REQUEST', {
       userId: row.user_id,

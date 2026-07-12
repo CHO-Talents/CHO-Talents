@@ -148,7 +148,7 @@ async function login(username, password) {
     const { data: authData, error: authError } = await _sb.auth.signInWithPassword({ email, password });
 
     if (authError) {
-      await logWarn('LOGIN_FAIL', { 대상: username, 사유: authError.message });
+      await logInfo('LOGIN_FAIL', { 대상: username, 사유: authError.message });
       return { success: false, error: '아이디 또는 비밀번호가 일치하지 않습니다.' };
     }
 
@@ -312,7 +312,7 @@ function _getAuthRedirectBase(loginPath) {
 }
 
 async function _logAuthRedirect(reason, session, target, extra) {
-  if (typeof logWarn !== 'function') return;
+  if (typeof logWarn !== 'function' && typeof logInfo !== 'function') return;
   const details = Object.assign({
     사유: reason,
     요청페이지: window.location.pathname,
@@ -323,7 +323,9 @@ async function _logAuthRedirect(reason, session, target, extra) {
     권한등급: session ? session.permissionRank : null,
     최고관리자: session ? !!session.isSuperAdmin : false
   }, extra || {});
-  await logWarn('AUTH_REDIRECT', details);
+  const routineRedirect = /세션 없음|세션 만료|24시간 비활성|첫 로그인/i.test(reason || '');
+  const logger = routineRedirect && typeof logInfo === 'function' ? logInfo : logWarn;
+  await logger('AUTH_REDIRECT', details);
 }
 
 async function initPage(allowedRolesOrMinRank, loginPath) {
