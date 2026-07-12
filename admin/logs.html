@@ -167,6 +167,12 @@
       return null;
     }
 
+    function getKnownUserProfile(accountOrId) {
+      if (!accountOrId) return null;
+      const key = String(accountOrId);
+      return userProfileMap[key] || userProfileById[key] || registrationRequestMap[key] || registrationRequestById[key] || null;
+    }
+
     function getLogUserDisplay(log) {
       if (!log || typeof log === 'string') return getUserDisplay(log);
       const details = log.details || {};
@@ -212,6 +218,22 @@
       delete clean._client;
       delete clean.client;
       delete clean['클라이언트'];
+
+      const targetUserProfile = getKnownUserProfile(clean.targetUser);
+      const targetUserIdProfile = getKnownUserProfile(clean.targetUserId);
+      const targetProfile = targetUserIdProfile
+        || targetUserProfile
+        || getKnownUserProfile(clean.userId)
+        || getKnownUserProfile(clean.targetAccount);
+      if (targetProfile) {
+        const targetName = targetProfile.display_name || targetProfile.username || '';
+        const targetAccount = targetProfile.username || '';
+        if (clean.targetUser && targetUserProfile) clean.targetUser = targetUserProfile.display_name || targetUserProfile.username || '';
+        if (clean.targetUserId && targetUserIdProfile) clean.targetUserId = targetUserIdProfile.username || '';
+        if (!clean.targetName && targetName) clean.targetName = targetName;
+        if (!clean.targetAccount && targetAccount) clean.targetAccount = targetAccount;
+      }
+
       const display = (typeof getDisplayLogDetails === 'function') ? getDisplayLogDetails(clean) : clean;
       return Object.keys(display).length ? JSON.stringify(display, null, 2) : '-';
     }

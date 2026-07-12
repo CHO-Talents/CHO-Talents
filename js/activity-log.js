@@ -334,6 +334,7 @@ const LOG_DETAIL_KEY_LABELS = {
   targetAccount: '대상 아이디',
   targetName: '대상',
   targetDisplayName: '대상 이름',
+  targetUser: '대상 사용자',
   targetUserId: '대상 사용자 ID',
   targetDepartmentId: '대상 부서 ID',
   actorAccount: '작업자 아이디',
@@ -578,6 +579,10 @@ const LOG_DETAIL_KEY_ALIASES = {
   '사용자 아이디': 'targetAccount',
   사용자이름: 'targetName',
   '사용자 이름': 'targetName',
+  '대상 사용자': 'targetUser',
+  대상사용자: 'targetUser',
+  '대상 사용자 ID': 'targetUserId',
+  대상사용자ID: 'targetUserId',
   사용자ID: 'userId',
   항목ID: 'itemId',
   상품ID: 'productId',
@@ -948,15 +953,24 @@ async function _resolveLogUserByUsername(value) {
 
 function _applyResolvedLogUser(enriched, resolved, options = {}) {
   if (!resolved) return;
+  const displayName = resolved.display_name || resolved.username || null;
+  const account = resolved.username || null;
   if (options.asActorFallback) {
-    if (!enriched.username) enriched.username = resolved.username;
+    if (!enriched.username) enriched.username = account;
     if (!enriched.displayName && !enriched.userName && !enriched.name && !enriched['이름']) {
-      enriched.displayName = resolved.display_name || resolved.username;
+      enriched.displayName = displayName;
     }
   }
-  if (!enriched.targetUserId && resolved.sourceTable === 'profiles') enriched.targetUserId = resolved.id || null;
-  if (!enriched.targetAccount) enriched.targetAccount = resolved.username || null;
-  if (!enriched.targetName) enriched.targetName = resolved.display_name || resolved.username || null;
+  if (Object.prototype.hasOwnProperty.call(enriched, 'targetUser') &&
+      (_isUuidLike(enriched.targetUser) || enriched.targetUser === resolved.id)) {
+    enriched.targetUser = displayName;
+  }
+  if (Object.prototype.hasOwnProperty.call(enriched, 'targetUserId') &&
+      (_isUuidLike(enriched.targetUserId) || enriched.targetUserId === resolved.id)) {
+    enriched.targetUserId = account;
+  }
+  if (!enriched.targetAccount) enriched.targetAccount = account;
+  if (!enriched.targetName) enriched.targetName = displayName;
   if (!enriched.targetDepartmentId && resolved.department_id) enriched.targetDepartmentId = resolved.department_id;
   if (!enriched.sourceTable) enriched.sourceTable = resolved.sourceTable;
 }
@@ -972,7 +986,6 @@ async function enrichLogDetailsWithUserContext(details) {
     let profile = null;
     if (_isUuidLike(targetId)) {
       profile = await _resolveLogUserById(targetId);
-      if (!enriched.targetUserId) enriched.targetUserId = targetId;
     } else if (targetAccount && targetAccount !== LOG_NO_ACCOUNT) {
       profile = await _resolveLogUserByUsername(targetAccount);
     }
@@ -1053,12 +1066,20 @@ function buildKoreanLogDetails(details, options = {}) {
 
   Object.entries(source).forEach(([key, value]) => {
     const isTechnical = key.startsWith('_') || LOG_TECHNICAL_DETAIL_KEYS.has(key);
+    let displayValue = value;
+    if ((key === 'targetUser' || key === '대상 사용자') && _isUuidLike(value)) {
+      displayValue = source.targetName || source.targetDisplayName || source['대상'] || source['대상 이름'] || value;
+    }
+    if ((key === 'targetUserId' || key === '대상 사용자 ID') && _isUuidLike(value)) {
+      displayValue = source.targetAccount || source['대상 아이디'] || source['사용자 계정'] || value;
+    }
+
     if (includeOriginalKeys && (includeTechnicalKeys || !isTechnical)) {
-      _addLogDetailValue(result, key, value);
+      _addLogDetailValue(result, key, displayValue);
     }
 
     const label = getLogDetailKeyLabel(key);
-    const localizedValue = _localizeLogDetailValue(key, value, options.depth || 0);
+    const localizedValue = _localizeLogDetailValue(key, displayValue, options.depth || 0);
     if (label && label !== key) {
       _addLogDetailValue(result, label, localizedValue);
     } else if (!includeOriginalKeys && !isTechnical) {
