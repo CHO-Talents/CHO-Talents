@@ -2,9 +2,20 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.78.0',
+  current: '3.78.1',
   date: '2026-07-12',
   history: [
+    {
+      version: '3.78.1',
+      date: '2026-07-12',
+      title: '로그 대상 사용자 UUID 표시 보정',
+      changes: [
+        '로그 상세의 대상 사용자 값이 UUID로 저장된 경우 display_name으로 표시되도록 보정',
+        '로그 상세의 대상 사용자 ID 값이 UUID로 저장된 경우 username으로 표시되도록 보정',
+        '신규 로그 저장 시 targetUserId UUID를 username으로 치환하고 targetUser UUID를 display_name으로 치환하도록 개선',
+        '기존 로그도 profiles와 registration_requests 조회 결과를 활용해 대상 사용자 값을 화면에서 보정'
+      ]
+    },
     {
       version: '3.78.0',
       date: '2026-07-12',
