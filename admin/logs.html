@@ -103,7 +103,7 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="../config/public-config.js"></script>
   <script src="../js/supabase-config.js"></script>
   <script src="../js/activity-log.js"></script>
@@ -146,14 +146,14 @@
     }
 
     function formatProfileUser(profile) {
-      if (!profile) return '미등록';
-      const account = profile.username || '미등록';
+      if (!profile) return '계정 없음';
+      const account = profile.username || '계정 없음';
       const name = profile.display_name || '';
       return name && name !== account ? `${name} (${account})` : account;
     }
 
     function getUserDisplay(username) {
-      if (!username) return '-';
+      if (!username) return '계정 없음';
       return userProfileMap[username] ? formatProfileUser(userProfileMap[username]) : username;
     }
 
@@ -170,11 +170,11 @@
     function getLogUserDisplay(log) {
       if (!log || typeof log === 'string') return getUserDisplay(log);
       const details = log.details || {};
-      const username = log.username || details._username || details._userAccount || details.cachedUsername || details.사용자;
+      const username = log.username || details.logUserAccount || details._username || details._userAccount || details.cachedUsername || details.사용자;
       if (username) {
         const known = getKnownUserDisplay(username);
         if (known) return known;
-        const displayName = log.user_name || details._userName || details._displayName;
+        const displayName = log.user_name || details.logUserName || details._userName || details._displayName;
         return displayName && displayName !== username ? `${displayName} (${username})` : username;
       }
       const authUserId = details.authUserId || details._authUserId;
@@ -187,8 +187,8 @@
         const known = getKnownUserDisplay(requestId);
         if (known) return known;
       }
-      const displayName = log.user_name || details._userName || details._displayName;
-      return displayName || '-';
+      const displayName = log.user_name || details.logUserName || details._userName || details._displayName;
+      return displayName || '계정 없음';
     }
 
     function formatActionCell(action) {

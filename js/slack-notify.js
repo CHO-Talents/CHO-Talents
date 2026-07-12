@@ -22,7 +22,19 @@ const _slackNotifyState = {
 function sendSlackNotify(type, data) {
   if (!_sb || !type) return;
 
-  const key = type + '_' + JSON.stringify(data);
+  const payloadData = Object.assign({}, data || {});
+  let session = null;
+  try {
+    session = (typeof getSession === 'function') ? getSession() : null;
+  } catch (e) {}
+  if (!payloadData['사용자계정']) {
+    payloadData['사용자계정'] = session?.username || payloadData['아이디'] || payloadData['계정'] || '계정 없음';
+  }
+  if (!payloadData['사용자이름']) {
+    payloadData['사용자이름'] = session?.displayName || payloadData['이름'] || payloadData['신청자'] || payloadData['등록자'] || '이름 없음';
+  }
+
+  const key = type + '_' + JSON.stringify(payloadData);
   const now = Date.now();
   if (_slackNotifyState.lastSent[key] && now - _slackNotifyState.lastSent[key] < _slackNotifyState.THROTTLE_MS) {
     return;
@@ -38,7 +50,7 @@ function sendSlackNotify(type, data) {
   }
 
   _sb.functions.invoke('slack-notify', {
-    body: { type: type, data: data || {} }
+    body: { type: type, data: payloadData }
   }).catch(function(err) {
     console.warn('[SlackNotify] Failed:', err);
   });

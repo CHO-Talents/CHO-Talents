@@ -234,8 +234,8 @@ CREATE TABLE IF NOT EXISTS public.activity_logs (
   action text NOT NULL,
   page text,
   details jsonb,
-  username text,
-  user_name text,
+  username text DEFAULT '계정 없음',
+  user_name text DEFAULT '계정 없음',
   is_acknowledged boolean DEFAULT false,
   acknowledged_by text,
   acknowledged_at timestamptz,
@@ -454,6 +454,56 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
   SELECT permission_level FROM public.profiles WHERE id = auth.uid();
+$$;
+
+CREATE OR REPLACE FUNCTION public.can_view_managed_profile(p_target_id uuid)
+RETURNS boolean
+LANGUAGE plpgsql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_caller_perm text;
+  v_caller_dept uuid;
+  v_caller_class integer;
+  v_target_type text;
+  v_target_dept uuid;
+  v_target_class integer;
+  v_caller_rank integer;
+BEGIN
+  IF p_target_id IS NULL OR auth.uid() IS NULL THEN
+    RETURN false;
+  END IF;
+
+  SELECT permission_level, department_id, class_number
+  INTO v_caller_perm, v_caller_dept, v_caller_class
+  FROM public.profiles
+  WHERE id = auth.uid();
+
+  IF v_caller_perm IS NULL THEN
+    RETURN false;
+  END IF;
+
+  v_caller_rank := public.get_permission_rank(v_caller_perm);
+
+  IF auth.uid() = p_target_id OR v_caller_rank >= 60 THEN
+    RETURN true;
+  END IF;
+
+  IF v_caller_rank <> 40 OR v_caller_dept IS NULL OR v_caller_class IS NULL THEN
+    RETURN false;
+  END IF;
+
+  SELECT user_type, department_id, class_number
+  INTO v_target_type, v_target_dept, v_target_class
+  FROM public.profiles
+  WHERE id = p_target_id;
+
+  RETURN v_target_type = 'student'
+    AND v_target_dept = v_caller_dept
+    AND v_target_class IS NOT DISTINCT FROM v_caller_class;
+END;
 $$;
 
 CREATE OR REPLACE FUNCTION public.set_updated_at()
@@ -1577,6 +1627,9 @@ DROP POLICY IF EXISTS profiles_select_own ON public.profiles;
 CREATE POLICY profiles_select_own ON public.profiles FOR SELECT USING (auth.uid() = id);
 DROP POLICY IF EXISTS profiles_select_perm ON public.profiles;
 CREATE POLICY profiles_select_perm ON public.profiles FOR SELECT USING (public.get_permission_rank(public.get_my_role()) >= 60);
+DROP POLICY IF EXISTS profiles_select_teacher_scope ON public.profiles;
+CREATE POLICY profiles_select_teacher_scope ON public.profiles FOR SELECT TO authenticated
+  USING (public.can_view_managed_profile(id));
 DROP POLICY IF EXISTS profiles_insert_system ON public.profiles;
 CREATE POLICY profiles_insert_system ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 DROP POLICY IF EXISTS profiles_update_own ON public.profiles;
@@ -1621,7 +1674,7 @@ CREATE POLICY talent_items_delete ON public.talent_items FOR DELETE USING (publi
 
 DROP POLICY IF EXISTS tt_select_perm ON public.talent_transactions;
 CREATE POLICY tt_select_perm ON public.talent_transactions FOR SELECT
-  USING (auth.uid() = user_id OR public.get_permission_rank(public.get_my_role()) >= 60);
+  USING (public.can_view_managed_profile(user_id));
 DROP POLICY IF EXISTS tt_insert_system ON public.talent_transactions;
 CREATE POLICY tt_insert_system ON public.talent_transactions FOR INSERT WITH CHECK (true);
 
@@ -1847,6 +1900,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO anon, aut
 
 GRANT EXECUTE ON FUNCTION public.get_my_profile() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.get_my_role() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.can_view_managed_profile(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.change_my_password(text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.update_last_login() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.check_username_available(text) TO anon, authenticated;

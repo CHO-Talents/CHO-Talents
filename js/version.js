@@ -2,9 +2,46 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.74.0',
-  date: '2026-07-11',
+  current: '3.77.0',
+  date: '2026-07-12',
   history: [
+    {
+      version: '3.77.0',
+      date: '2026-07-12',
+      title: '로그 상세 영문 문구 한글화와 DB 코드 마스터 보강',
+      changes: [
+        'activity_logs details의 영어 오류/사유/처리 값에 대한 공통 한글 번역 매핑 추가',
+        '신규 로그 저장 시 알려진 영어 문구를 한글 값으로 정규화해 DB에 저장',
+        '기존 운영 DB 로그의 대표 영어 문구를 한글로 보정하고 activity_logs.action 코드 마스터 누락 라벨을 추가',
+        '로그 상세 화면과 작업 이력 상세가 과거 로그도 한글 치환된 상세 문구로 표시되도록 개선',
+        'WARN 이상 Slack log_alert 알림도 Edge Function에서 액션/상세 값을 한 번 더 한글화하도록 보강'
+      ]
+    },
+    {
+      version: '3.76.0',
+      date: '2026-07-12',
+      title: 'WARN 이상 로그 재분류와 반복 오류 방지',
+      changes: [
+        '달란트 항목 주간 중복 지급과 예외 지급 중복 요청을 운영 ERROR가 아닌 INFO 처리로 낮춰 오탐 미확인 오류와 Slack 알림을 제거',
+        '인증 세션 없음, 24시간 유휴 만료, 첫 로그인 이동, 로그인 실패, 가입 승인 대기, 구버전 세션 재로그인을 정상 흐름 INFO 로그로 재분류',
+        '프로필 RPC 조회 실패 시 기존 세션 캐시와 profiles 직접 조회 fallback으로 복구해 일시적 로드 실패가 즉시 로그아웃/ERROR로 이어지지 않도록 개선',
+        '같은 페이지/액션/상세의 WARN 이상 로그가 5초 안에 반복 저장되지 않도록 중복 억제',
+        '주문 취소는 환불 RPC 성공이 확인된 경우에만 완료 처리해 profiles 직접 업데이트 권한 오류와 부분 취소 가능성을 차단',
+        '외부 스크립트 오류 추적성을 높이고 Supabase CDN 스크립트에 CORS 속성을 추가'
+      ]
+    },
+    {
+      version: '3.75.0',
+      date: '2026-07-12',
+      title: '주문 취소 환불 중복 처리 제거와 Slack 사용자 표시 강화',
+      changes: [
+        '내 구매 상품 주문 취소에서 cancel_product_order RPC 성공 시 이미 사용 대기 달란트가 복원된 것으로 처리해 중복 profiles 업데이트와 ORDER_CANCEL_REFUND_FAIL 오탐 로그를 제거',
+        'RPC가 없는 구버전 DB 폴백에서만 직접 pending_talent 복원을 시도하도록 주문 취소 흐름을 분리',
+        '모든 Slack 알림에 사용자 계정과 표시이름 공통 context를 추가',
+        'WARN+ 로그 Slack 알림 페이로드에 사용자 계정과 표시이름을 명시적으로 포함',
+        '서비스 사용량 임계치 자동 Slack 알림에도 시스템 사용자 정보를 표시'
+      ]
+    },
     {
       version: '3.74.0',
       date: '2026-07-11',
@@ -1941,8 +1978,8 @@ async function _forceLogoutForVersion(latestVersion, sessionVersion) {
   const target = _versionRedirectTarget(loginPath);
   await refreshAppAssetsForVersion(latestVersion);
   try {
-    if (typeof logWarn === 'function') {
-      await logWarn('APP_VERSION_STALE_SESSION', {
+    if (typeof logInfo === 'function') {
+      await logInfo('APP_VERSION_STALE_SESSION', {
         현재페이지버전: APP_VERSION.current,
         최신버전: latestVersion,
         세션버전: sessionVersion || null,
