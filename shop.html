@@ -403,7 +403,16 @@
       if (!_shopSession) { alert('로그인이 필요합니다.'); return; }
       const available = _userBalance - _userPending;
       if (available < price) {
-        logWarn('ORDER_INSUFFICIENT_BALANCE', { 상품명: productName, 금액: price, balance: _userBalance, pending: _userPending, available });
+        logWarn('ORDER_INSUFFICIENT_BALANCE', {
+          targetUserId: _shopSession.id,
+          targetAccount: _shopSession.username,
+          targetName: _shopSession.displayName || _shopSession.username,
+          상품명: productName,
+          금액: price,
+          balance: _userBalance,
+          pending: _userPending,
+          available
+        });
         alert(`사용 가능한 달란트가 부족합니다.\n잔여: ${fmtNum(_userBalance)} / 사용 대기: ${fmtNum(_userPending)} / 사용 가능: ${fmtNum(available)}`);
         return;
       }
@@ -417,22 +426,56 @@
           p_price: price
         });
         if (error) {
-          await logError('ORDER_REQUEST_FAIL', { productId, 상품명: productName, 금액: price, 오류: error.message });
+          await logError('ORDER_REQUEST_FAIL', {
+            productId,
+            상품명: productName,
+            금액: price,
+            targetUserId: _shopSession.id,
+            targetAccount: _shopSession.username,
+            targetName: _shopSession.displayName || _shopSession.username,
+            오류: error.message
+          });
           alert('구매 신청 실패: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('ORDER_REQUEST_DENIED', { 상품명: productName, 금액: price, 사유: data.error });
+          await logWarn('ORDER_REQUEST_DENIED', {
+            productId,
+            상품명: productName,
+            금액: price,
+            targetUserId: _shopSession.id,
+            targetAccount: _shopSession.username,
+            targetName: _shopSession.displayName || _shopSession.username,
+            사유: data.error
+          });
           alert(tErr(data.error));
           return;
         }
         _userPending += price;
-        await logInfo('ORDER_REQUEST_SUCCESS', { 상품명: productName, 금액: price, orderId: data?.order_id });
+        await logInfo('ORDER_REQUEST_SUCCESS', {
+          orderId: data?.order_id,
+          productId,
+          상품명: productName,
+          금액: price,
+          targetUserId: _shopSession.id,
+          targetAccount: _shopSession.username,
+          targetName: _shopSession.displayName || _shopSession.username,
+          부서: _shopSession.departmentName || '',
+          변경내역: `상품 구매 신청: ${_shopSession.displayName || _shopSession.username} (${_shopSession.username}) / 상품: ${productName} / 금액: ${fmtNum(price)} 달란트`
+        });
         sendSlackNotify('purchase_new', { 신청자: _shopSession.displayName || _shopSession.username, 상품명: productName, 금액: price, 유형: '일반 구매', 부서: _shopSession.departmentName || '' });
         alert('✅ 구매 신청이 완료되었습니다!');
         renderShopProducts();
       } catch (err) {
-        await logError('ORDER_REQUEST_ERROR', { 상품명: productName, 금액: price, 오류: String(err) });
+        await logError('ORDER_REQUEST_ERROR', {
+          productId,
+          상품명: productName,
+          금액: price,
+          targetUserId: _shopSession.id,
+          targetAccount: _shopSession.username,
+          targetName: _shopSession.displayName || _shopSession.username,
+          오류: String(err)
+        });
         alert('구매 신청 중 오류가 발생했습니다: ' + tErr(err.message));
       }
     }
@@ -603,21 +646,63 @@
           p_price: price
         });
         if (error) {
-          await logError('PROXY_ORDER_FAIL', { targetUser: _proxyTarget.id, 상품명: product.name, 오류: error.message });
+          await logError('PROXY_ORDER_FAIL', {
+            targetUserId: _proxyTarget.id,
+            targetAccount: _proxyTarget.username,
+            targetName: _proxyTarget.display_name || _proxyTarget.username,
+            대리구매자: _shopSession.displayName || _shopSession.username,
+            대리구매자계정: _shopSession.username,
+            productId,
+            상품명: product.name,
+            금액: price,
+            오류: error.message
+          });
           alert('대리 구매 실패: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('PROXY_ORDER_DENIED', { targetUser: _proxyTarget.id, 상품명: product.name, 사유: data.error });
+          await logWarn('PROXY_ORDER_DENIED', {
+            targetUserId: _proxyTarget.id,
+            targetAccount: _proxyTarget.username,
+            targetName: _proxyTarget.display_name || _proxyTarget.username,
+            대리구매자: _shopSession.displayName || _shopSession.username,
+            대리구매자계정: _shopSession.username,
+            productId,
+            상품명: product.name,
+            금액: price,
+            사유: data.error
+          });
           alert(tErr(data.error));
           return;
         }
-        await logInfo('PROXY_ORDER_SUCCESS', { targetUser: _proxyTarget.id, 대상: _proxyTarget.display_name, 상품명: product.name, 금액: price });
+        await logInfo('PROXY_ORDER_SUCCESS', {
+          orderId: data?.order_id,
+          targetUserId: _proxyTarget.id,
+          targetAccount: _proxyTarget.username,
+          targetName: _proxyTarget.display_name || _proxyTarget.username,
+          대리구매자: _shopSession.displayName || _shopSession.username,
+          대리구매자계정: _shopSession.username,
+          productId,
+          상품명: product.name,
+          금액: price,
+          부서: _proxyDeptMap[_proxyTarget.department_id] || '',
+          변경내역: `대리 구매 신청: ${_shopSession.displayName || _shopSession.username} (${_shopSession.username}) → ${_proxyTarget.display_name || _proxyTarget.username} (${_proxyTarget.username}) / 상품: ${product.name} / 금액: ${fmtNum(price)} 달란트`
+        });
         sendSlackNotify('purchase_new', { 신청자: _proxyTarget.display_name || _proxyTarget.username, 상품명: product.name, 금액: price, 유형: '대리 구매 (' + (_shopSession.displayName || _shopSession.username) + ')', 부서: _proxyDeptMap[_proxyTarget.department_id] || '' });
         alert(`✅ ${_proxyTarget.display_name || _proxyTarget.username}님 명의로 대리 구매 신청 완료!`);
         closeProxyModal();
       } catch (err) {
-        await logError('PROXY_ORDER_ERROR', { 오류: String(err) });
+        await logError('PROXY_ORDER_ERROR', {
+          targetUserId: _proxyTarget.id,
+          targetAccount: _proxyTarget.username,
+          targetName: _proxyTarget.display_name || _proxyTarget.username,
+          대리구매자: _shopSession.displayName || _shopSession.username,
+          대리구매자계정: _shopSession.username,
+          productId,
+          상품명: product.name,
+          금액: price,
+          오류: String(err)
+        });
         alert('대리 구매 중 오류: ' + tErr(err.message));
       }
     }

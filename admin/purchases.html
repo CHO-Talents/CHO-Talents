@@ -323,6 +323,45 @@
       return `<div style="font-size:0.75rem;color:#636e72;">${label}: ${name}<br>${time}</div>`;
     }
 
+    function getOrderStatusLabel(status) {
+      return STATUS_LABEL[status] || status || '-';
+    }
+
+    function getOrderLogContext(orderOrId, extra = {}) {
+      const order = typeof orderOrId === 'object' ? orderOrId : allOrders.find(x => x.id === orderOrId);
+      const prof = order ? (profileMap[order.user_id] || {}) : {};
+      const targetName = order ? (order._userName || prof.display_name || prof.username || '-') : '-';
+      const targetAccount = prof.username || null;
+      return Object.assign({
+        orderId: order ? order.id : orderOrId,
+        productId: order ? order.product_id : null,
+        productName: order ? order.product_name : null,
+        상품명: order ? order.product_name : null,
+        금액: order ? (order.total_price || order.price || 0) : null,
+        targetUserId: order ? order.user_id : null,
+        targetAccount,
+        targetName,
+        부서: order ? (order._deptName || '-') : '-',
+        oldStatus: order ? order.status : null
+      }, extra);
+    }
+
+    function summarizeOrdersForLog(ids) {
+      return ids.map(id => {
+        const order = allOrders.find(o => o.id === id);
+        const ctx = getOrderLogContext(order || id);
+        return {
+          orderId: ctx.orderId,
+          productName: ctx.productName,
+          amount: ctx['금액'],
+          targetAccount: ctx.targetAccount,
+          targetName: ctx.targetName,
+          departmentName: ctx['부서'],
+          status: ctx.oldStatus
+        };
+      });
+    }
+
     function renderProductSummary(orders) {
       const el = document.getElementById('productSummary');
       if (currentPTab === 'all') {
@@ -506,19 +545,32 @@
         if (newStatus === 'delivered') { updateFields.delivered_at = new Date().toISOString(); updateFields.delivered_by = session.id; }
 
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
+        const o = allOrders.find(x => x.id === orderId);
         if (error) {
-          await logError('ORDER_STATUS_CHANGE_FAIL', { orderId, 변경상태: newStatus, 오류: error.message });
+          await logError('ORDER_STATUS_CHANGE_FAIL', {
+            ...getOrderLogContext(o || orderId, { newStatus }),
+            변경상태: getOrderStatusLabel(newStatus),
+            오류: error.message
+          });
           alert('상태 변경 실패: ' + tErr(error.message));
           return;
         }
-        const o = allOrders.find(x => x.id === orderId);
-        await logInfo('ORDER_STATUS_CHANGE', { orderId, 변경상태: newStatus });
+        await logInfo('ORDER_STATUS_CHANGE', {
+          ...getOrderLogContext(o || orderId, { newStatus }),
+          이전상태: getOrderStatusLabel(o?.status),
+          변경상태: getOrderStatusLabel(newStatus),
+          변경내역: `주문 상태 변경: ${o?._userName || '-'} / 상품: ${o?.product_name || '-'} / ${getOrderStatusLabel(o?.status)} → ${getOrderStatusLabel(newStatus)}`
+        });
         if (o && o.status === 'requested' && newStatus === 'preparing') {
           sendSlackNotify('purchase_status', { 상품명: o.product_name || '-', 신청자: o._userName || '-', 이전상태: 'requested', 변경상태: 'preparing', 처리자: session.displayName || session.username });
         }
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_STATUS_CHANGE_ERROR', { orderId, 변경상태: newStatus, 오류: String(err) });
+        await logError('ORDER_STATUS_CHANGE_ERROR', {
+          ...getOrderLogContext(orderId, { newStatus }),
+          변경상태: getOrderStatusLabel(newStatus),
+          오류: String(err)
+        });
         alert('상태 변경 중 오류: ' + tErr(err.message));
       }
     }
@@ -531,21 +583,35 @@
         if (prevStatus === 'preparing') { updateFields.purchased_at = null; updateFields.purchased_by = null; }
         if (prevStatus === 'purchased') { updateFields.delivered_at = null; updateFields.delivered_by = null; }
         const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
+        const ro = allOrders.find(x => x.id === orderId);
         if (error) {
-          await logError('ORDER_REVERT_FAIL', { orderId, 변경상태: prevStatus, 오류: error.message });
+          await logError('ORDER_REVERT_FAIL', {
+            ...getOrderLogContext(ro || orderId, { newStatus: prevStatus }),
+            변경상태: getOrderStatusLabel(prevStatus),
+            오류: error.message
+          });
           alert('되돌리기 실패: ' + tErr(error.message));
           return;
         }
-        const ro = allOrders.find(x => x.id === orderId);
-        await logInfo('ORDER_REVERT', { orderId, 변경상태: prevStatus });
+        await logInfo('ORDER_REVERT', {
+          ...getOrderLogContext(ro || orderId, { newStatus: prevStatus }),
+          이전상태: getOrderStatusLabel(ro?.status),
+          변경상태: getOrderStatusLabel(prevStatus),
+          변경내역: `주문 상태 되돌리기: ${ro?._userName || '-'} / 상품: ${ro?.product_name || '-'} / ${getOrderStatusLabel(ro?.status)} → ${getOrderStatusLabel(prevStatus)}`
+        });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_REVERT_ERROR', { orderId, 변경상태: prevStatus, 오류: String(err) });
+        await logError('ORDER_REVERT_ERROR', {
+          ...getOrderLogContext(orderId, { newStatus: prevStatus }),
+          변경상태: getOrderStatusLabel(prevStatus),
+          오류: String(err)
+        });
         alert('되돌리기 중 오류: ' + tErr(err.message));
       }
     }
 
     function showOrderDetail(orderId) {
+      if (typeof closeOpenActionMenus === 'function') closeOpenActionMenus();
       const o = allOrders.find(x => x.id === orderId);
       if (!o) return;
       const infos = [getProcessorInfo(o, 'preparing'), getProcessorInfo(o, 'purchased'), getProcessorInfo(o, 'delivered')].filter(Boolean).join('<hr style="margin:0.4rem 0;border:none;border-top:1px solid #e9ecef;">');
@@ -571,21 +637,34 @@
           p_order_id: orderId,
           p_admin_id: session.id
         });
+        const co = allOrders.find(x => x.id === orderId);
         if (error) {
-          await logError('ORDER_PURCHASE_CONFIRM_FAIL', { orderId, 오류: error.message });
+          await logError('ORDER_PURCHASE_CONFIRM_FAIL', {
+            ...getOrderLogContext(co || orderId, { newStatus: 'purchased' }),
+            오류: error.message
+          });
           alert('구매 확정 실패: ' + tErr(error.message));
           return;
         }
         if (data && data.success === false) {
-          await logWarn('ORDER_PURCHASE_CONFIRM_DENIED', { orderId, 사유: data.error });
+          await logWarn('ORDER_PURCHASE_CONFIRM_DENIED', {
+            ...getOrderLogContext(co || orderId, { newStatus: 'purchased' }),
+            사유: data.error
+          });
           alert(tErr(data.error));
           return;
         }
-        const co = allOrders.find(x => x.id === orderId);
-        await logInfo('ORDER_PURCHASE_CONFIRM', { orderId });
+        await logInfo('ORDER_PURCHASE_CONFIRM', {
+          ...getOrderLogContext(co || orderId, { newStatus: 'purchased' }),
+          변경상태: getOrderStatusLabel('purchased'),
+          변경내역: `구매 확정: ${co?._userName || '-'} / 상품: ${co?.product_name || '-'} / 금액: ${fmtNum(co?.price || 0)} 달란트`
+        });
         await loadOrders();
       } catch (err) {
-        await logError('ORDER_PURCHASE_CONFIRM_ERROR', { orderId, 오류: String(err) });
+        await logError('ORDER_PURCHASE_CONFIRM_ERROR', {
+          ...getOrderLogContext(orderId, { newStatus: 'purchased' }),
+          오류: String(err)
+        });
         alert('구매 확정 중 오류: ' + tErr(err.message));
       }
     }
@@ -613,10 +692,21 @@
           prepared_at: new Date().toISOString(),
           prepared_by: session.id
         }).eq('id', id);
-        if (error) { failCount++; await logError('ORDER_BULK_PREPARE_ITEM_FAIL', { orderId: id, 오류: error.message }); }
+        if (error) {
+          failCount++;
+          await logError('ORDER_BULK_PREPARE_ITEM_FAIL', {
+            ...getOrderLogContext(id, { newStatus: 'preparing' }),
+            오류: error.message
+          });
+        }
       }
       if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
-      await logInfo('ORDER_BULK_PREPARE', { 건수: ids.length, 실패건수: failCount });
+      await logInfo('ORDER_BULK_PREPARE', {
+        건수: ids.length,
+        실패건수: failCount,
+        items: summarizeOrdersForLog(ids),
+        변경내역: `일괄 상품 준비: ${ids.length}건 / 실패 ${failCount}건`
+      });
       sendSlackNotify('purchase_status', { 상품명: '일괄 처리', 이전상태: 'requested', 변경상태: 'preparing', 처리자: session.displayName || session.username, 건수: ids.length, 실패건수: failCount });
       await loadOrders();
     }
@@ -634,14 +724,25 @@
         });
         if (error) {
           failCount++;
-          await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', { orderId: id, 오류: error.message });
+          await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', {
+            ...getOrderLogContext(id, { newStatus: 'purchased' }),
+            오류: error.message
+          });
         } else if (data && data.success === false) {
           failCount++;
-          await logWarn('ORDER_BULK_PURCHASE_DENIED', { orderId: id, 사유: data.error });
+          await logWarn('ORDER_BULK_PURCHASE_DENIED', {
+            ...getOrderLogContext(id, { newStatus: 'purchased' }),
+            사유: data.error
+          });
         }
       }
       if (failCount > 0) alert(`${failCount}건 처리 실패. 잔액 부족 등의 사유일 수 있습니다.`);
-      await logInfo('ORDER_BULK_PURCHASE', { 건수: ids.length, 실패건수: failCount });
+      await logInfo('ORDER_BULK_PURCHASE', {
+        건수: ids.length,
+        실패건수: failCount,
+        items: summarizeOrdersForLog(ids),
+        변경내역: `일괄 구매 확정: ${ids.length}건 / 실패 ${failCount}건`
+      });
       await loadOrders();
     }
 
@@ -657,10 +758,21 @@
           delivered_at: new Date().toISOString(),
           delivered_by: session.id
         }).eq('id', id);
-        if (error) { failCount++; await logError('ORDER_BULK_DELIVER_ITEM_FAIL', { orderId: id, 오류: error.message }); }
+        if (error) {
+          failCount++;
+          await logError('ORDER_BULK_DELIVER_ITEM_FAIL', {
+            ...getOrderLogContext(id, { newStatus: 'delivered' }),
+            오류: error.message
+          });
+        }
       }
       if (failCount > 0) alert(`${failCount}건 처리 실패. 로그를 확인해주세요.`);
-      await logInfo('ORDER_BULK_DELIVER', { 건수: ids.length, 실패건수: failCount });
+      await logInfo('ORDER_BULK_DELIVER', {
+        건수: ids.length,
+        실패건수: failCount,
+        items: summarizeOrdersForLog(ids),
+        변경내역: `일괄 상품 지급: ${ids.length}건 / 실패 ${failCount}건`
+      });
       await loadOrders();
     }
 
