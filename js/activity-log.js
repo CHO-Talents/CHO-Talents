@@ -1668,6 +1668,8 @@ async function deleteLogsByIds(ids) {
   }
 }
 
+const LOG_PROCESSABLE_ORDER_STATUSES = ['requested', 'preparing', 'purchased'];
+
 async function getPendingOrderCount() {
   if (!_sb) return 0;
   try {
@@ -1675,7 +1677,10 @@ async function getPendingOrderCount() {
     if (!session || (session.permissionRank || 0) < 60) return 0;
     const myRank = session.permissionRank || 0;
     const isPurchaseTeacher = session.permissionLevel === 'purchase_teacher';
-    const { data, error } = await _sb.from('product_orders').select('user_id').neq('status', 'delivered').neq('status', 'cancelled');
+    const { data, error } = await _sb
+      .from('product_orders')
+      .select('user_id')
+      .in('status', LOG_PROCESSABLE_ORDER_STATUSES);
     if (error || !data) return 0;
     let orders = data;
     if (!session.isSuperAdmin) {
