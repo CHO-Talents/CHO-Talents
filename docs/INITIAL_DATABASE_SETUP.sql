@@ -154,6 +154,7 @@ CREATE TABLE IF NOT EXISTS public.products (
   image_emoji text DEFAULT '',
   image_url text,
   detail_image_url text,
+  purchase_url text,
   target_role text NOT NULL CHECK (target_role IN ('teacher','student')),
   category text,
   sort_order integer DEFAULT 0,
