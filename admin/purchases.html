@@ -152,9 +152,18 @@
     let processorMap = {};
     let productMap = {};
     let orderPageSize = null;
+    let productPurchaseDetailPage = 1;
+    let productPurchaseDetailPageSize = null;
+    let productPurchaseDetailKey = null;
     function getOrderPageSize() {
       if (orderPageSize !== null) return orderPageSize;
       return window.innerWidth <= 768 ? 10 : 20;
+    }
+    function getProductPurchaseDetailPageSize() {
+      return productPurchaseDetailPageSize || 10;
+    }
+    function canViewPurchaseAccounts() {
+      return !!session && (session.permissionRank || 0) >= 100;
     }
     let orderPage = 1;
 
@@ -172,6 +181,7 @@
       navUpdateAuth(session);
       autoLogPageView();
       orderPageSize = await loadPageSize('purchases', 20);
+      productPurchaseDetailPageSize = await loadPageSize('purchase_product_detail', 10);
       updatePendingBadge();
       updateNavOrderBadge();
       updateLogBadge();
@@ -256,18 +266,32 @@
           profiles = userIds.map(id => scopedMap.get(id)).filter(Boolean);
           const missingProcIds = procIds.filter(id => !scopedMap.has(id));
           if (missingProcIds.length > 0) {
-            const { data: processors } = await _sb.from('profiles').select('id,display_name,username,department_id').in('id', missingProcIds);
+            const processorColumns = canViewPurchaseAccounts()
+              ? 'id,display_name,username,department_id'
+              : 'id,display_name,department_id';
+            const { data: processors } = await _sb.from('profiles').select(processorColumns).in('id', missingProcIds);
             profiles = profiles.concat(processors || []);
           }
         } else {
-          const { data: profileRows } = await _sb.from('profiles').select('id,display_name,username,department_id,class_number').in('id', allIds);
+          const profileColumns = canViewPurchaseAccounts()
+            ? 'id,display_name,username,department_id,class_number'
+            : 'id,display_name,department_id,class_number';
+          const { data: profileRows } = await _sb.from('profiles').select(profileColumns).in('id', allIds);
           profiles = profileRows || [];
         }
         profileMap = {};
         processorMap = {};
         profiles.forEach(p => {
-          profileMap[p.id] = p;
-          processorMap[p.id] = p.display_name || p.username || '-';
+          const safeProfile = canViewPurchaseAccounts()
+            ? p
+            : {
+              id: p.id,
+              display_name: p.display_name,
+              department_id: p.department_id,
+              class_number: p.class_number
+            };
+          profileMap[p.id] = safeProfile;
+          processorMap[p.id] = safeProfile.display_name || safeProfile.username || '-';
         });
       }
 
@@ -451,6 +475,15 @@
     }
 
     function showProductPurchaseDetail(summaryKey) {
+      productPurchaseDetailKey = summaryKey;
+      productPurchaseDetailPage = 1;
+      renderProductPurchaseDetail();
+      document.getElementById('productPurchaseDetailModal').classList.remove('hidden');
+    }
+
+    function renderProductPurchaseDetail() {
+      const summaryKey = productPurchaseDetailKey;
+      if (!summaryKey) return;
       const visibleOrders = getVisibleOrders();
       const summary = getProductSummaryRows(visibleOrders).find(item => item.key === summaryKey);
       if (!summary) return;
@@ -471,6 +504,16 @@
         buyers.get(key).quantity += Number(order.quantity) || 1;
       });
       const buyerRows = [...buyers.values()].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+      const totalQuantity = buyerRows.reduce((sum, buyer) => sum + buyer.quantity, 0);
+      const canViewAccounts = canViewPurchaseAccounts();
+      const pageSize = getProductPurchaseDetailPageSize();
+      const totalPages = Math.max(1, Math.ceil(buyerRows.length / pageSize));
+      if (productPurchaseDetailPage > totalPages) productPurchaseDetailPage = totalPages;
+      const startIndex = (productPurchaseDetailPage - 1) * pageSize;
+      const pageBuyerRows = buyerRows.slice(startIndex, startIndex + pageSize);
+      const accountHeader = canViewAccounts ? '<th>계정</th>' : '';
+      const accountCells = buyer => canViewAccounts ? `<td>${escapePurchaseHtml(buyer.username)}</td>` : '';
+      const colspan = canViewAccounts ? 3 : 2;
       const purchaseUrl = getSafePurchaseUrl(summary.purchaseUrl);
       const purchaseUrlHtml = purchaseUrl
         ? `<a href="${escapePurchaseHtml(purchaseUrl)}" target="_blank" rel="noopener noreferrer" style="word-break:break-all;">${escapePurchaseHtml(purchaseUrl)}</a>`
@@ -479,16 +522,33 @@
       document.getElementById('productPurchaseDetailContent').innerHTML = `
         <div style="margin-bottom:0.9rem;"><strong style="font-size:1rem;">${escapePurchaseHtml(summary.name)}</strong></div>
         <div style="font-size:0.84rem;margin-bottom:0.45rem;"><strong>구매 URL:</strong> ${purchaseUrlHtml}</div>
-        <div style="font-size:0.84rem;margin:0.9rem 0 0.45rem;font-weight:700;">구매자별 구매 개수</div>
+        <div style="font-size:0.84rem;margin-top:0.9rem;"><strong>총 구매 개수:</strong> ${totalQuantity}개</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;margin:0.45rem 0;font-size:0.84rem;font-weight:700;">
+          <span>구매자별 구매 개수 (${buyerRows.length}명)</span>
+          <span style="display:flex;align-items:center;gap:0.35rem;font-size:0.78rem;font-weight:400;">표시 ${renderPageSizeSelector('purchase_product_detail', pageSize, 'onProductPurchaseDetailPageSizeChange(this.value)')}</span>
+        </div>
         <table class="admin-table" style="margin:0;font-size:0.82rem;">
-          <thead><tr><th>구매자</th><th>계정</th><th>구매 개수</th></tr></thead>
-          <tbody>${buyerRows.map(buyer => `<tr><td>${escapePurchaseHtml(buyer.name)}</td><td>${escapePurchaseHtml(buyer.username)}</td><td>${buyer.quantity}</td></tr>`).join('') || '<tr><td colspan="3" class="empty-state">구매자 정보가 없습니다.</td></tr>'}</tbody>
-        </table>`;
-      document.getElementById('productPurchaseDetailModal').classList.remove('hidden');
+          <thead><tr><th>구매자</th>${accountHeader}<th>구매 개수</th></tr></thead>
+          <tbody>${pageBuyerRows.map(buyer => `<tr><td>${escapePurchaseHtml(buyer.name)}</td>${accountCells(buyer)}<td>${buyer.quantity}</td></tr>`).join('') || `<tr><td colspan="${colspan}" class="empty-state">구매자 정보가 없습니다.</td></tr>`}</tbody>
+        </table>
+        <div style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.7rem;flex-wrap:wrap;">${buildPagingButtons(productPurchaseDetailPage, totalPages, 'goProductPurchaseDetailPage(__PAGE__)')}</div>`;
+    }
+
+    function goProductPurchaseDetailPage(page) {
+      productPurchaseDetailPage = page;
+      renderProductPurchaseDetail();
+    }
+
+    async function onProductPurchaseDetailPageSizeChange(value) {
+      productPurchaseDetailPageSize = parseInt(value, 10) || 10;
+      await savePageSize('purchase_product_detail', productPurchaseDetailPageSize);
+      productPurchaseDetailPage = 1;
+      renderProductPurchaseDetail();
     }
 
     function closeProductPurchaseDetail() {
       document.getElementById('productPurchaseDetailModal').classList.add('hidden');
+      productPurchaseDetailKey = null;
     }
 
     function buildMgmtMenu(o, canProc, isAllTab) {
