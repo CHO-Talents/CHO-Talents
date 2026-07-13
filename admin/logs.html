@@ -197,6 +197,14 @@
       return displayName || '계정 없음';
     }
 
+    function applyKnownLogUserToDetails(log, details) {
+      const account = log.username || details.logUserAccount || details._username || details._userAccount || details.cachedUsername || details.사용자;
+      const profile = getKnownUserProfile(account);
+      if (!profile) return;
+      details.logUserAccount = profile.username || account;
+      details.logUserName = profile.display_name || profile.username || details.logUserName || account;
+    }
+
     function formatActionCell(action) {
       const key = action || '-';
       const label = typeof getActionLabel === 'function' ? getActionLabel(action) : key;
@@ -372,18 +380,18 @@
             : `<span class="ack-badge pending">미확인</span>`)
           : '-';
         const actionHtml = isError && !l.is_acknowledged
-          ? `<button class="btn-ack" onclick="openAckModal('${l.id}')">확인</button>`
+          ? `<button class="btn-ack" onclick="event.stopPropagation();openAckModal('${l.id}')">확인</button>`
           : '';
         const canDeleteLog = l.is_acknowledged !== false;
-        return `<tr>
-          ${isAdminUser ? `<td><input type="checkbox" class="log-chk" value="${l.id}" onchange="updateLogDeleteBtn()" ${canDeleteLog ? '' : 'disabled title="미확인 로그는 확인 완료 후 삭제할 수 있습니다."'}></td>` : ''}
+        return `<tr style="cursor:pointer;" onclick="showLogDetail('${l.id}')">
+          ${isAdminUser ? `<td><input type="checkbox" class="log-chk" value="${l.id}" onclick="event.stopPropagation()" onchange="updateLogDeleteBtn()" ${canDeleteLog ? '' : 'disabled title="미확인 로그는 확인 완료 후 삭제할 수 있습니다."'}></td>` : ''}
           <td>${formatKST(l.created_at)}</td>
           <td><span class="level-badge ${l.level}">${l.level}</span></td>
           <td>${formatActionCell(l.action)}</td>
           <td>${l.page || '-'}</td>
           <td>${getLogUserDisplay(l)}</td>
           <td>${ackHtml}</td>
-          <td><button class="filter-btn" onclick="showLogDetail('${l.id}')" style="margin-right:0.3rem;">상세</button>${actionHtml}</td>
+          <td><button class="filter-btn" onclick="event.stopPropagation();showLogDetail('${l.id}')" style="margin-right:0.3rem;">상세</button>${actionHtml}</td>
         </tr>`;
       }).join('');
 
@@ -559,6 +567,7 @@
         delete detailsClean._client;
         delete detailsClean.client;
         delete detailsClean['클라이언트'];
+        applyKnownLogUserToDetails(l, detailsClean);
         const detailText = formatKoreanLogDetails(detailsClean);
         const hasDetails = detailText !== '-';
         let html = '<table style="width:100%;border-collapse:collapse;font-size:0.85rem;">';

@@ -313,12 +313,16 @@ function _getAuthRedirectBase(loginPath) {
 
 async function _logAuthRedirect(reason, session, target, extra) {
   if (typeof logWarn !== 'function' && typeof logInfo !== 'function') return;
+  const authFailure = (extra && typeof extra.세션실패 === 'object') ? extra.세션실패 : {};
+  const cachedUsername = authFailure.cachedUsername || null;
+  const cachedDisplayName = authFailure.cachedDisplayName || null;
   const details = Object.assign({
     사유: reason,
     요청페이지: window.location.pathname,
     pageId: typeof detectCurrentPageId === 'function' ? detectCurrentPageId() : null,
     이동대상: target,
-    사용자: session ? session.username : null,
+    사용자: session ? session.username : cachedUsername,
+    사용자이름: session ? (session.displayName || session.username) : cachedDisplayName,
     권한: session ? session.permissionLevel : null,
     권한등급: session ? session.permissionRank : null,
     최고관리자: session ? !!session.isSuperAdmin : false

@@ -84,6 +84,16 @@
 
     <div id="productSummary" style="display:none;margin-bottom:1rem;"></div>
 
+    <div class="modal-overlay hidden" id="productPurchaseDetailModal">
+      <div class="modal-box" style="max-width:640px;max-height:85vh;overflow-y:auto;">
+        <h3 class="modal-title">상품별 구매 상세</h3>
+        <div id="productPurchaseDetailContent"></div>
+        <div class="modal-actions" style="margin-top:1rem;">
+          <button class="btn-cancel" type="button" onclick="closeProductPurchaseDetail()">닫기</button>
+        </div>
+      </div>
+    </div>
+
     <div class="admin-table-wrap">
       <div class="admin-table-header">
         <div class="admin-table-title" id="tableTitle">전체 목록</div>
@@ -118,6 +128,7 @@
     .kanban-card.active .kanban-count{font-size:1.45rem;}
     @media (max-width:768px){.kanban-card{flex:1 1 calc(33% - 0.5rem);min-width:95px;max-width:none;}.kanban-label{font-size:0.72rem;}.kanban-count{font-size:1.15rem;}}
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:140px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
+    .product-summary-row{cursor:pointer;}.product-summary-row:hover{background:var(--t-hover-bg,#f8f9fa);}
   </style>
 
   <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -139,6 +150,7 @@
     let allOrders = [];
     let profileMap = {};
     let processorMap = {};
+    let productMap = {};
     let orderPageSize = null;
     function getOrderPageSize() {
       if (orderPageSize !== null) return orderPageSize;
@@ -222,6 +234,15 @@
           const scopedIds = new Set(scopedUsers.map(u => u.id));
           allOrders = allOrders.filter(o => scopedIds.has(o.user_id));
         }
+      }
+
+      const productIds = [...new Set(allOrders.map(o => o.product_id).filter(Boolean))];
+      productMap = {};
+      if (productIds.length > 0) {
+        let productResult = await _sb.from('products').select('id,name,purchase_url').in('id', productIds);
+        // 구매 URL 컬럼을 추가하기 전의 DB에서도 기존 구매 관리 기능은 계속 동작하게 한다.
+        if (productResult.error) productResult = await _sb.from('products').select('id,name').in('id', productIds);
+        (productResult.data || []).forEach(product => { productMap[product.id] = product; });
       }
 
       const userIds = [...new Set(allOrders.map(o => o.user_id))];
@@ -363,6 +384,42 @@
       });
     }
 
+    function escapePurchaseHtml(value) {
+      return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function getSafePurchaseUrl(value) {
+      if (!value) return null;
+      try {
+        const url = new URL(value);
+        return /^https?:$/.test(url.protocol) ? url.href : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function getProductSummaryRows(orders) {
+      const map = new Map();
+      orders.forEach(o => {
+        const key = o.product_id ? `id:${o.product_id}` : `name:${o.product_name || '-'}`;
+        const product = o.product_id ? productMap[o.product_id] : null;
+        if (!map.has(key)) {
+          map.set(key, {
+            key,
+            productId: o.product_id || null,
+            name: (product && product.name) || o.product_name || '-',
+            purchaseUrl: product ? product.purchase_url : null,
+            qty: 0,
+            amount: 0
+          });
+        }
+        const item = map.get(key);
+        item.qty += Number(o.quantity) || 1;
+        item.amount += Number(o.total_price || o.price || 0);
+      });
+      return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+    }
+
     function renderProductSummary(orders) {
       const el = document.getElementById('productSummary');
       if (currentPTab === 'all') {
@@ -370,14 +427,7 @@
         el.innerHTML = '';
         return;
       }
-      const map = {};
-      orders.forEach(o => {
-        const name = o.product_name || '-';
-        if (!map[name]) map[name] = { qty: 0, amount: 0 };
-        map[name].qty += (o.quantity || 1);
-        map[name].amount += (o.total_price || o.price || 0);
-      });
-      const rows = Object.entries(map).sort((a, b) => a[0].localeCompare(b[0], 'ko'));
+      const rows = getProductSummaryRows(orders);
       if (rows.length === 0) {
         el.style.display = 'none';
         el.innerHTML = '';
@@ -386,9 +436,59 @@
       el.style.display = '';
       el.innerHTML = `<div style="font-size:0.85rem;font-weight:600;margin-bottom:0.4rem;">상품별 합계</div>
         <table class="admin-table" style="margin-bottom:0;font-size:0.82rem;">
-          <thead><tr><th>상품명</th><th>수량 합계</th><th>금액 합계</th></tr></thead>
-          <tbody>${rows.map(([name, v]) => `<tr><td>${name}</td><td>${v.qty}</td><td>${fmtNum(v.amount)}</td></tr>`).join('')}</tbody>
+          <thead><tr><th>상품명</th><th>수량 합계</th><th>금액 합계</th><th>관리</th></tr></thead>
+          <tbody>${rows.map(v => `<tr class="product-summary-row" data-summary-key="${escapePurchaseHtml(v.key)}"><td>${escapePurchaseHtml(v.name)}</td><td>${v.qty}</td><td>${fmtNum(v.amount)}</td><td><button class="filter-btn product-summary-detail" data-summary-key="${escapePurchaseHtml(v.key)}" type="button">상세</button></td></tr>`).join('')}</tbody>
         </table>`;
+      el.querySelectorAll('.product-summary-row').forEach(row => {
+        row.addEventListener('click', () => showProductPurchaseDetail(row.dataset.summaryKey));
+      });
+      el.querySelectorAll('.product-summary-detail').forEach(button => {
+        button.addEventListener('click', event => {
+          event.stopPropagation();
+          showProductPurchaseDetail(button.dataset.summaryKey);
+        });
+      });
+    }
+
+    function showProductPurchaseDetail(summaryKey) {
+      const visibleOrders = getVisibleOrders();
+      const summary = getProductSummaryRows(visibleOrders).find(item => item.key === summaryKey);
+      if (!summary) return;
+
+      const matchingOrders = visibleOrders.filter(order => {
+        const key = order.product_id ? `id:${order.product_id}` : `name:${order.product_name || '-'}`;
+        return key === summaryKey;
+      });
+      const buyers = new Map();
+      matchingOrders.forEach(order => {
+        const profile = profileMap[order.user_id] || {};
+        const key = order.user_id || `${order._userName || '-'}:${order.id}`;
+        if (!buyers.has(key)) buyers.set(key, {
+          name: order._userName || profile.display_name || profile.username || '-',
+          username: profile.username || '-',
+          quantity: 0
+        });
+        buyers.get(key).quantity += Number(order.quantity) || 1;
+      });
+      const buyerRows = [...buyers.values()].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+      const purchaseUrl = getSafePurchaseUrl(summary.purchaseUrl);
+      const purchaseUrlHtml = purchaseUrl
+        ? `<a href="${escapePurchaseHtml(purchaseUrl)}" target="_blank" rel="noopener noreferrer" style="word-break:break-all;">${escapePurchaseHtml(purchaseUrl)}</a>`
+        : '<span style="color:var(--admin-text-muted);">등록된 구매 URL이 없습니다.</span>';
+
+      document.getElementById('productPurchaseDetailContent').innerHTML = `
+        <div style="margin-bottom:0.9rem;"><strong style="font-size:1rem;">${escapePurchaseHtml(summary.name)}</strong></div>
+        <div style="font-size:0.84rem;margin-bottom:0.45rem;"><strong>구매 URL:</strong> ${purchaseUrlHtml}</div>
+        <div style="font-size:0.84rem;margin:0.9rem 0 0.45rem;font-weight:700;">구매자별 구매 개수</div>
+        <table class="admin-table" style="margin:0;font-size:0.82rem;">
+          <thead><tr><th>구매자</th><th>계정</th><th>구매 개수</th></tr></thead>
+          <tbody>${buyerRows.map(buyer => `<tr><td>${escapePurchaseHtml(buyer.name)}</td><td>${escapePurchaseHtml(buyer.username)}</td><td>${buyer.quantity}</td></tr>`).join('') || '<tr><td colspan="3" class="empty-state">구매자 정보가 없습니다.</td></tr>'}</tbody>
+        </table>`;
+      document.getElementById('productPurchaseDetailModal').classList.remove('hidden');
+    }
+
+    function closeProductPurchaseDetail() {
+      document.getElementById('productPurchaseDetailModal').classList.add('hidden');
     }
 
     function buildMgmtMenu(o, canProc, isAllTab) {
@@ -824,6 +924,9 @@
       const min = String(d.getMinutes()).padStart(2, '0');
       return `${m}-${day} ${h}:${min}`;
     }
+    document.getElementById('productPurchaseDetailModal').addEventListener('click', event => {
+      if (event.target.classList.contains('modal-overlay')) closeProductPurchaseDetail();
+    });
   </script>
   <div id="version-container"></div>
   <script src="../js/version.js"></script>

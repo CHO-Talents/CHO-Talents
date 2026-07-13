@@ -2,9 +2,20 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.78.2',
-  date: '2026-07-12',
+  current: '3.78.3',
+  date: '2026-07-13',
   history: [
+    {
+      version: '3.78.3',
+      date: '2026-07-13',
+      title: '로그 사용자 식별 보정 및 구매 URL 관리 추가',
+      changes: [
+        '로그의 표시 이름(display_name)과 계정(username)을 profiles 기준으로 정규화하고, 구버전 세션·인증 리디렉트도 캐시 사용자 정보를 이용해 식별자를 남기도록 보강',
+        '로그, 페이지 접근 관리, 페이지 기능 관리 그리드의 로우 클릭으로 각 상세 또는 설정 모달을 열 수 있도록 개선',
+        '상품 등록·수정에 관리자 전용 구매 URL을 추가하고, 구매 관리 상품별 합계의 상세 모달에서 구매자별 수량과 구매 URL을 확인하도록 추가',
+        '구매 URL은 사용자 상품 구매 화면과 상품 상세에는 표시하지 않도록 유지'
+      ]
+    },
     {
       version: '3.78.2',
       date: '2026-07-12',
@@ -2013,6 +2024,8 @@ async function _forceLogoutForVersion(latestVersion, sessionVersion) {
   try {
     if (typeof logInfo === 'function') {
       await logInfo('APP_VERSION_STALE_SESSION', {
+        사용자: session ? session.username : null,
+        사용자이름: session ? (session.displayName || session.username) : null,
         현재페이지버전: APP_VERSION.current,
         최신버전: latestVersion,
         세션버전: sessionVersion || null,

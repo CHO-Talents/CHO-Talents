@@ -122,6 +122,11 @@
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">설명</label>
         <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
       </div>
+      <div style="margin-bottom:0.8rem;">
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">구매 URL</label>
+        <input type="url" id="mPurchaseUrl" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="https://example.com/purchase" />
+        <div style="margin-top:0.25rem;font-size:0.76rem;color:var(--admin-text-muted);">구매 관리의 상품별 상세에서만 확인할 수 있으며 상품 구매 화면에는 표시되지 않습니다.</div>
+      </div>
       <div style="margin-bottom:0.8rem;" id="activeWrap">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상품 상태</label>
         <div style="display:flex;align-items:center;gap:1rem;">
@@ -326,7 +331,7 @@
     function openAddModal() {
       editingId = null;
       document.getElementById('modalTitle').textContent = '상품 등록';
-      ['mName','mEmoji','mImageUrlText','mDetailImageUrlText','mDesc'].forEach(id => document.getElementById(id).value = '');
+      ['mName','mEmoji','mImageUrlText','mDetailImageUrlText','mDesc','mPurchaseUrl'].forEach(id => document.getElementById(id).value = '');
       refreshProductCategorySelect('etc');
       document.getElementById('mTarget').value = 'student';
       document.getElementById('mPrice').value = '';
@@ -363,6 +368,7 @@
       document.getElementById('mDetailImageUrl').value = p.detail_image_url || '';
       document.getElementById('mDetailImageFile').value = '';
       document.getElementById('mDetailImageUrlText').value = p.detail_image_url || '';
+      document.getElementById('mPurchaseUrl').value = p.purchase_url || '';
       if (p.detail_image_url) showDetailImgPreview(p.detail_image_url); else resetDetailImgPreview();
       document.getElementById('urlInputWrap').style.display = p.image_url ? 'block' : 'none';
       document.getElementById('detailUrlInputWrap').style.display = p.detail_image_url ? 'block' : 'none';
@@ -398,6 +404,19 @@
       let detailImageUrl = document.getElementById('mDetailImageUrl').value.trim() || null;
       const detailUrlText = document.getElementById('mDetailImageUrlText').value.trim();
       if (!selectedDetailFile && detailUrlText) detailImageUrl = detailUrlText;
+      const purchaseUrlInput = document.getElementById('mPurchaseUrl').value.trim();
+      let purchaseUrl = null;
+      if (purchaseUrlInput) {
+        try {
+          const parsedPurchaseUrl = new URL(purchaseUrlInput);
+          if (!/^https?:$/.test(parsedPurchaseUrl.protocol)) throw new Error('invalid protocol');
+          purchaseUrl = parsedPurchaseUrl.href;
+        } catch (e) {
+          errEl.textContent = '구매 URL은 http 또는 https 주소로 입력해주세요.';
+          errEl.classList.add('show');
+          return;
+        }
+      }
 
       if (editingId && selectedFile) {
         const statusEl = document.getElementById('uploadStatus');
@@ -422,6 +441,7 @@
         image_emoji: document.getElementById('mEmoji').value.trim() || '🎁',
         image_url: imageUrl,
         detail_image_url: detailImageUrl,
+        purchase_url: purchaseUrl,
         description: document.getElementById('mDesc').value.trim() || null
       };
 

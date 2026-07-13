@@ -193,13 +193,13 @@
       const tbody = document.getElementById('permList');
       tbody.innerHTML = PERM_LIST
         .filter(p => !p.superOnly || isSA)
-        .map(p => `<tr>
+        .map(p => `<tr style="cursor:pointer;" onclick="openFeatureModal('${p.key}')">
           <td><span class="level-badge">${p.emoji} ${p.label}</span></td>
           <td>${p.userType === 'teacher' ? '교사' : '학생'}</td>
           <td>${PERMISSION_LABELS[p.perm] || p.perm}</td>
           <td style="font-weight:700;">${p.rank}</td>
           <td style="font-size:0.82rem;color:var(--admin-text-muted);">${p.desc}</td>
-          <td><button class="filter-btn" onclick="openFeatureModal('${p.key}')">설정</button></td>
+          <td><button class="filter-btn" onclick="event.stopPropagation();openFeatureModal('${p.key}')">설정</button></td>
         </tr>`).join('');
     }
 

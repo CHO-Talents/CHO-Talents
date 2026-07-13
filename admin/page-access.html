@@ -127,13 +127,13 @@
       const isSA = session.isSuperAdmin;
       document.getElementById('roleList').innerHTML = ROLE_LIST
         .filter(r => !r.superOnly || isSA)
-        .map(r => `<tr>
+        .map(r => `<tr style="cursor:pointer;" onclick="openAccessModal('${r.key}')">
           <td><span class="level-badge">${r.emoji} ${r.label}</span></td>
           <td>${r.userType === 'teacher' ? '교사' : '학생'}</td>
           <td>${PERMISSION_LABELS[r.perm] || r.perm}</td>
           <td style="font-weight:700;">${r.rank}</td>
           <td style="font-size:0.82rem;color:var(--admin-text-muted);">${r.desc}</td>
-          <td><button class="filter-btn" onclick="openAccessModal('${r.key}')">설정</button></td>
+          <td><button class="filter-btn" onclick="event.stopPropagation();openAccessModal('${r.key}')">설정</button></td>
         </tr>`).join('');
     }
 

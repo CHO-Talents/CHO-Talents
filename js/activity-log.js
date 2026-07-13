@@ -841,31 +841,37 @@ function normalizeLogDetailsForStorage(details, context = {}, depth = 0) {
 
 function inferLogActor(session, details = {}, action = '') {
   const source = (details && typeof details === 'object' && !Array.isArray(details)) ? details : {};
+  const authFailure = (source.sessionFailure && typeof source.sessionFailure === 'object')
+    ? source.sessionFailure
+    : ((source.세션실패 && typeof source.세션실패 === 'object') ? source.세션실패 : {});
   const targetLikeAccount = source['대상'] && typeof source['대상'] === 'string' && /^(LOGIN|LOGOUT|PASSWORD|REGISTER|AUTH_)/.test(String(action || ''))
     ? source['대상']
     : null;
-  const account = session ? (session.username || null) : (
+  const targetAccount = source.targetAccount || source['사용자'] || source['아이디'] || targetLikeAccount || null;
+  const targetName = source.targetName || source['사용자 이름'] || source['이름'] || source['대상'] || null;
+  const isLoginAttempt = /^(LOGIN_FAIL|LOGIN_ERROR|LOGIN_PENDING_APPROVAL)$/.test(String(action || ''));
+  const account = (isLoginAttempt && targetAccount) ? targetAccount : (session ? (session.username || null) : (
     source._userAccount ||
     source._username ||
     source.cachedUsername ||
+    authFailure.cachedUsername ||
     source.username ||
-    source['사용자'] ||
-    source['아이디'] ||
-    targetLikeAccount ||
+    targetAccount ||
     source.authUserId ||
     source.userId ||
     null
-  );
-  const name = session ? (session.displayName || session.username || null) : (
+  ));
+  const name = (isLoginAttempt && targetName) ? targetName : (session ? (session.displayName || session.username || null) : (
     source._userName ||
     source._displayName ||
     source.displayName ||
     source.userName ||
-    source['이름'] ||
+    source.cachedDisplayName ||
+    authFailure.cachedDisplayName ||
+    targetName ||
     source.name ||
-    source['대상'] ||
     null
-  );
+  ));
   return {
     account: account || LOG_NO_ACCOUNT,
     name: name || account || LOG_NO_ACCOUNT
@@ -978,9 +984,12 @@ function _applyResolvedLogUser(enriched, resolved, options = {}) {
 async function enrichLogDetailsWithUserContext(details) {
   if (!_sb || !details || typeof details !== 'object' || Array.isArray(details)) return details || {};
   const enriched = Object.assign({}, details);
+  const authFailure = (enriched.sessionFailure && typeof enriched.sessionFailure === 'object')
+    ? enriched.sessionFailure
+    : ((enriched.세션실패 && typeof enriched.세션실패 === 'object') ? enriched.세션실패 : {});
   const targetId = enriched.targetUserId || enriched.targetUser || enriched.userId || null;
-  const targetAccount = enriched.targetAccount || enriched.username || enriched['아이디'] || enriched['사용자'] || _extractLogUsername(enriched['대상']) || null;
-  const actorCandidate = enriched.username || enriched['사용자'] || enriched['아이디'] || enriched._username || enriched._userAccount || enriched.cachedUsername || null;
+  const targetAccount = enriched.targetAccount || enriched.username || enriched['아이디'] || enriched['사용자'] || _extractLogUsername(enriched['대상']) || enriched.cachedUsername || authFailure.cachedUsername || null;
+  const actorCandidate = enriched.username || enriched['사용자'] || enriched['아이디'] || enriched._username || enriched._userAccount || enriched.cachedUsername || authFailure.cachedUsername || null;
 
   try {
     let profile = null;
@@ -1226,6 +1235,11 @@ async function writeLog(level, action, page, details) {
   }
   const enrichedDetails = await enrichLogDetailsWithUserContext(baseDetails);
   const actor = inferLogActor(session, enrichedDetails, action);
+  const resolvedActor = await _resolveLogUserByUsername(actor.account);
+  if (resolvedActor) {
+    actor.account = resolvedActor.username || actor.account;
+    actor.name = resolvedActor.display_name || resolvedActor.username || actor.name;
+  }
   const normalizedDetails = normalizeLogDetailsForStorage(enrichedDetails, {
     action,
     actorAccount: actor.account,
@@ -1513,6 +1527,7 @@ async function loadAuthSession() {
         message: authError.message,
         page: window.location.pathname,
         cachedUsername: cached ? cached.username : null,
+        cachedDisplayName: cached ? (cached.displayName || cached.username) : null,
         cachedPermissionLevel: cached ? cached.permissionLevel : null
       };
       await logWarn('AUTH_SESSION_MISSING', window.__lastAuthSessionFailure);
@@ -1521,12 +1536,13 @@ async function loadAuthSession() {
     }
     authSession = authData.session;
   } catch (err) {
-    window.__lastAuthSessionFailure = {
-      reason: 'Supabase auth session exception',
-      message: err.message || String(err),
-      page: window.location.pathname,
-      cachedUsername: cached ? cached.username : null,
-      cachedPermissionLevel: cached ? cached.permissionLevel : null
+      window.__lastAuthSessionFailure = {
+        reason: 'Supabase auth session exception',
+        message: err.message || String(err),
+        page: window.location.pathname,
+        cachedUsername: cached ? cached.username : null,
+        cachedDisplayName: cached ? (cached.displayName || cached.username) : null,
+        cachedPermissionLevel: cached ? cached.permissionLevel : null
     };
     await logWarn('AUTH_SESSION_MISSING', window.__lastAuthSessionFailure);
     clearSession();
@@ -1547,6 +1563,7 @@ async function loadAuthSession() {
       reason: 'Supabase auth session missing',
       page: window.location.pathname,
       cachedUsername: cached ? cached.username : null,
+      cachedDisplayName: cached ? (cached.displayName || cached.username) : null,
       cachedPermissionLevel: cached ? cached.permissionLevel : null,
       cachedPermissionRank: cached ? cached.permissionRank : null,
       hasCachedSession: !!cached,
@@ -1569,7 +1586,8 @@ async function loadAuthSession() {
       message: profileError ? profileError.message : null,
       page: window.location.pathname,
       authUserId: authSession.user.id,
-      cachedUsername: cached ? cached.username : null
+      cachedUsername: cached ? cached.username : null,
+      cachedDisplayName: cached ? (cached.displayName || cached.username) : null
     };
     if (cached && cached.id === authSession.user.id && cached.username && cached.permissionLevel) {
       await logInfo('AUTH_PROFILE_LOAD_FAIL', Object.assign({}, window.__lastAuthSessionFailure, { recoveredBy: 'cached_session' }));
