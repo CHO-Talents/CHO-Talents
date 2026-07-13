@@ -125,6 +125,7 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   $defaultProductCategoryPageSql = Join-Path $ScriptRoot '..\docs\TASK-068_product_category_page_and_sort_order.sql'
   $defaultProductDetailImageSql = Join-Path $ScriptRoot '..\docs\TASK-069_product_detail_image.sql'
   $defaultServiceUsageSql = Join-Path $ScriptRoot '..\docs\TASK-070_service_usage_monitoring.sql'
+  $defaultServiceUsageWebhookFailureSql = Join-Path $ScriptRoot '..\docs\TASK-080_service_usage_source_and_webhook_failures.sql'
   if (Test-Path -LiteralPath $defaultCodeMasterSql) {
     $ExtraSqlPaths = @($defaultCodeMasterSql)
   }
@@ -139,6 +140,9 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   }
   if (Test-Path -LiteralPath $defaultServiceUsageSql) {
     $ExtraSqlPaths += $defaultServiceUsageSql
+  }
+  if (Test-Path -LiteralPath $defaultServiceUsageWebhookFailureSql) {
+    $ExtraSqlPaths += $defaultServiceUsageWebhookFailureSql
   }
 }
 

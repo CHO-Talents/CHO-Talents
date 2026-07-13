@@ -359,6 +359,11 @@ async function sendQuotaAlerts(errors: ErrorItem[]): Promise<number> {
 
       if (!SLACK_WEBHOOK_OPERATIONS) {
         await service.from("service_usage_alerts").update({ status: "failed", slack_response: "SLACK_WEBHOOK_OPERATIONS 미설정" }).eq("id", alertId);
+        await recordEvent("webhook_failures", 1, {
+          type: "service_quota_alert",
+          threshold,
+          reason: "missing_webhook_config",
+        });
         continue;
       }
 
@@ -382,12 +387,14 @@ async function sendQuotaAlerts(errors: ErrorItem[]): Promise<number> {
         ],
       };
 
+      let slackStatus: number | null = null;
       try {
         const response = await fetch(SLACK_WEBHOOK_OPERATIONS, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
+        slackStatus = response.status;
         const responseText = (await response.text()).slice(0, 300);
         if (!response.ok) throw new Error(`Slack ${response.status}: ${responseText}`);
         await service.from("service_usage_alerts").update({
@@ -399,7 +406,12 @@ async function sendQuotaAlerts(errors: ErrorItem[]): Promise<number> {
         const message = String(sendError);
         errors.push({ service: "slack", endpoint: "quota alert", message });
         await service.from("service_usage_alerts").update({ status: "failed", slack_response: message.slice(0, 500) }).eq("id", alertId);
-        await recordEvent("webhook_failures", 1, { type: "service_quota_alert", threshold });
+        await recordEvent("webhook_failures", 1, {
+          type: "service_quota_alert",
+          threshold,
+          status: slackStatus,
+          reason: slackStatus ? "http_error" : "network_error",
+        });
       }
     }
   }

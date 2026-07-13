@@ -7,10 +7,11 @@
 Supabase SQL Editor에서 다음 파일을 실행합니다.
 
 1. `docs/TASK-070_service_usage_monitoring.sql`
-2. Edge Function과 Secret 설정 완료 후 `docs/TASK-070_service_usage_cron.sql`
-3. 보존 정책 적용 후 기존 운영 DB에는 `docs/TASK-073_manual_retention_cleanup.sql`
+2. 기존 운영 DB는 `docs/TASK-080_service_usage_source_and_webhook_failures.sql`
+3. Edge Function과 Secret 설정 완료 후 `docs/TASK-070_service_usage_cron.sql`
+4. 보존 정책 적용 후 기존 운영 DB에는 `docs/TASK-073_manual_retention_cleanup.sql`
 
-새 Database 설치 스크립트는 TASK-070 스키마를 자동으로 포함합니다.
+새 Database 설치 스크립트는 TASK-070과 TASK-080 스키마를 자동으로 포함합니다.
 
 ## 2. Edge Function 배포
 
@@ -99,6 +100,8 @@ WHERE jobname LIKE 'cho-service-usage-collect%';
 | 프로젝트 계측 | 이 프로젝트의 페이지, SDK, Edge Function, Webhook 호출 기록 |
 | 추정 | 브라우저 Resource Timing 또는 Billing 단위 정규화 값 |
 | Secret 필요 | 수집기는 배포됐지만 해당 API Secret이 없거나 권한이 부족함 |
+
+화면의 `계측 기준` 필터에서 `공식/API 계측`과 `프로젝트 자체 계측`을 분리해서 볼 수 있습니다. DB 직접값과 브라우저·Edge Function 이벤트, 추정값은 후자에 포함됩니다. `최근 Slack Webhook 실패`에는 HTTP 오류, 네트워크 오류, Webhook Secret 미설정이 유형·상태와 함께 표시됩니다.
 
 Supabase Free 플랜은 초과 사용료가 자동 과금되는 대신 서비스 제한 또는 grace period가 적용될 수 있습니다. GitHub는 결제수단/예산 설정에 따라 초과 사용이 차단되거나 과금될 수 있습니다. Kakao 예상 비용은 유료 API를 활성화한 경우에만 실제 비용이 됩니다. Slack Free의 90일 내역과 앱 10개는 과금형 종량제가 아니라 기능 제한입니다.
 

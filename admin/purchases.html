@@ -131,7 +131,7 @@
     .product-summary-row{cursor:pointer;}.product-summary-row:hover{background:var(--t-hover-bg,#f8f9fa);}
   </style>
 
-  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
   <script src="../config/public-config.js"></script>
   <script src="../js/supabase-config.js"></script>
   <script src="../js/activity-log.js"></script>
@@ -267,15 +267,15 @@
           const missingProcIds = procIds.filter(id => !scopedMap.has(id));
           if (missingProcIds.length > 0) {
             const processorColumns = canViewPurchaseAccounts()
-              ? 'id,display_name,username,department_id'
-              : 'id,display_name,department_id';
+              ? 'id,display_name,username,user_type,department_id'
+              : 'id,display_name,user_type,department_id';
             const { data: processors } = await _sb.from('profiles').select(processorColumns).in('id', missingProcIds);
             profiles = profiles.concat(processors || []);
           }
         } else {
           const profileColumns = canViewPurchaseAccounts()
-            ? 'id,display_name,username,department_id,class_number'
-            : 'id,display_name,department_id,class_number';
+            ? 'id,display_name,username,user_type,department_id,class_number'
+              : 'id,display_name,user_type,department_id,class_number';
           const { data: profileRows } = await _sb.from('profiles').select(profileColumns).in('id', allIds);
           profiles = profileRows || [];
         }
@@ -287,6 +287,7 @@
             : {
               id: p.id,
               display_name: p.display_name,
+              user_type: p.user_type,
               department_id: p.department_id,
               class_number: p.class_number
             };
@@ -499,6 +500,8 @@
         if (!buyers.has(key)) buyers.set(key, {
           name: order._userName || profile.display_name || profile.username || '-',
           username: profile.username || '-',
+          departmentName: order._deptName || '-',
+          userType: profile.user_type === 'teacher' ? '교사' : '학생',
           quantity: 0
         });
         buyers.get(key).quantity += Number(order.quantity) || 1;
@@ -513,7 +516,7 @@
       const pageBuyerRows = buyerRows.slice(startIndex, startIndex + pageSize);
       const accountHeader = canViewAccounts ? '<th>계정</th>' : '';
       const accountCells = buyer => canViewAccounts ? `<td>${escapePurchaseHtml(buyer.username)}</td>` : '';
-      const colspan = canViewAccounts ? 3 : 2;
+      const colspan = canViewAccounts ? 5 : 4;
       const purchaseUrl = getSafePurchaseUrl(summary.purchaseUrl);
       const purchaseUrlHtml = purchaseUrl
         ? `<a href="${escapePurchaseHtml(purchaseUrl)}" target="_blank" rel="noopener noreferrer" style="word-break:break-all;">${escapePurchaseHtml(purchaseUrl)}</a>`
@@ -528,8 +531,8 @@
           <span style="display:flex;align-items:center;gap:0.35rem;font-size:0.78rem;font-weight:400;">표시 ${renderPageSizeSelector('purchase_product_detail', pageSize, 'onProductPurchaseDetailPageSizeChange(this.value)')}</span>
         </div>
         <table class="admin-table" style="margin:0;font-size:0.82rem;">
-          <thead><tr><th>구매자</th>${accountHeader}<th>구매 개수</th></tr></thead>
-          <tbody>${pageBuyerRows.map(buyer => `<tr><td>${escapePurchaseHtml(buyer.name)}</td>${accountCells(buyer)}<td>${buyer.quantity}</td></tr>`).join('') || `<tr><td colspan="${colspan}" class="empty-state">구매자 정보가 없습니다.</td></tr>`}</tbody>
+          <thead><tr><th>구매자</th><th>사용자 부서</th><th>사용자 유형</th>${accountHeader}<th>구매 개수</th></tr></thead>
+          <tbody>${pageBuyerRows.map(buyer => `<tr><td>${escapePurchaseHtml(buyer.name)}</td><td>${escapePurchaseHtml(buyer.departmentName)}</td><td>${escapePurchaseHtml(buyer.userType)}</td>${accountCells(buyer)}<td>${buyer.quantity}</td></tr>`).join('') || `<tr><td colspan="${colspan}" class="empty-state">구매자 정보가 없습니다.</td></tr>`}</tbody>
         </table>
         <div style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.7rem;flex-wrap:wrap;">${buildPagingButtons(productPurchaseDetailPage, totalPages, 'goProductPurchaseDetailPage(__PAGE__)')}</div>`;
     }
