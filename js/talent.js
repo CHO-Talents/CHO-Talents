@@ -86,7 +86,10 @@ function getTalentErrorMessage(value) {
 }
 
 function isWeeklyDuplicateTalentError(value) {
-  return /already given this item this week|이미.*이번 주.*지급|이번 주.*이미.*지급/i.test(getTalentErrorMessage(value));
+  const message = getTalentErrorMessage(value)
+    .replace(/\s+/g, ' ')
+    .trim();
+  return /already\s+given(?:\s+this)?\s+item\s+this\s+week|이미.*이번\s*주.*지급|이번\s*주.*이미.*지급/i.test(message);
 }
 
 function isDuplicateTalentExceptionRequest(value) {

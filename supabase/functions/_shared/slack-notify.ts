@@ -15,7 +15,16 @@
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-async function recordSlackUsage(metricKey: "notifications_sent" | "webhook_failures", type: string, status?: number) {
+type SlackUsageContext = {
+  reason?: "http_error" | "network_error" | "missing_webhook_config";
+};
+
+async function recordSlackUsage(
+  metricKey: "notifications_sent" | "webhook_failures",
+  type: string,
+  status?: number,
+  context: SlackUsageContext = {},
+) {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !serviceRoleKey) return;
@@ -34,7 +43,7 @@ async function recordSlackUsage(metricKey: "notifications_sent" | "webhook_failu
         metric_key: metricKey,
         quantity: 1,
         source: "edge-function",
-        metadata: { type, status: status || null },
+        metadata: { type, status: status || null, ...context },
       }),
     });
   } catch (error) {
@@ -413,6 +422,9 @@ Deno.serve(async (req) => {
     });
   }
 
+  let notificationType = "unknown";
+  let webhookRequestStarted = false;
+
   try {
     const { type, data } = await req.json();
     if (!type) {
@@ -421,16 +433,19 @@ Deno.serve(async (req) => {
         headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
       });
     }
+    notificationType = String(type);
 
     const webhookUrl = resolveWebhookUrl(type, data || {});
     if (!webhookUrl) {
+      await recordSlackUsage("webhook_failures", notificationType, undefined, { reason: "missing_webhook_config" });
       return new Response(JSON.stringify({ error: "No webhook configured for this notification type/department", type, data }), {
-        status: 200,
+        status: 503,
         headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
       });
     }
 
     const payload = addUserContext(formatMessage(type, data || {}), data || {});
+    webhookRequestStarted = true;
 
     const slackRes = await fetch(webhookUrl, {
       method: "POST",
@@ -441,19 +456,22 @@ Deno.serve(async (req) => {
     if (!slackRes.ok) {
       const errText = await slackRes.text();
       console.error("[slack-notify] Slack API error:", slackRes.status, errText);
-      await recordSlackUsage("webhook_failures", type, slackRes.status);
+      await recordSlackUsage("webhook_failures", notificationType, slackRes.status, { reason: "http_error" });
       return new Response(JSON.stringify({ error: "Slack API error", status: slackRes.status }), {
         status: 502,
         headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
       });
     }
 
-    await recordSlackUsage("notifications_sent", type, slackRes.status);
+    await recordSlackUsage("notifications_sent", notificationType, slackRes.status);
     return new Response(JSON.stringify({ success: true }), {
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
     });
   } catch (err) {
     console.error("[slack-notify] Error:", err);
+    if (webhookRequestStarted) {
+      await recordSlackUsage("webhook_failures", notificationType, undefined, { reason: "network_error" });
+    }
     return new Response(JSON.stringify({ error: String(err) }), {
       status: 500,
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },

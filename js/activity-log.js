@@ -348,6 +348,7 @@ const LOG_DETAIL_KEY_LABELS = {
   operation: '처리',
   type: '구분',
   message: '메시지',
+  stack: '오류 스택',
   details: '상세',
   detail: '상세',
   error: '오류',
@@ -385,6 +386,8 @@ const LOG_DETAIL_KEY_LABELS = {
   lineno: '줄 번호',
   colno: '열 번호',
   url: 'URL',
+  resourceUrl: '리소스 URL',
+  resourceType: '리소스 유형',
   imageUrl: '이미지 URL',
   filePath: '파일 경로',
   currentVersion: '현재 버전',
@@ -1637,17 +1640,30 @@ async function loadAuthSession() {
 /* ===== Global Error Handler ===== */
 
 window.addEventListener('error', (e) => {
+  const resource = e.target;
+  const resourceTag = resource && resource !== window ? String(resource.tagName || '').toUpperCase() : '';
+  const isExternalResource = resourceTag === 'SCRIPT'
+    || (resourceTag === 'LINK' && String(resource.rel || '').toLowerCase() === 'stylesheet');
+  if (isExternalResource) {
+    logError('JS_ERROR', {
+      message: resourceTag === 'SCRIPT' ? '외부 스크립트 로드 실패' : '외부 스타일시트 로드 실패',
+      resourceType: resourceTag,
+      resourceUrl: resource.src || resource.href || null
+    });
+    return;
+  }
   const details = {
     message: e.message,
     filename: e.filename,
     lineno: e.lineno,
     colno: e.colno
   };
+  if (e.error && e.error.stack) details.stack = String(e.error.stack).slice(0, 2000);
   if (e.message === 'Script error.' && !e.filename && !e.lineno && !e.colno) {
     details.hint = '외부 스크립트 오류 세부정보가 브라우저 CORS 정책으로 숨겨졌습니다.';
   }
   logError('JS_ERROR', details);
-});
+}, true);
 
 window.addEventListener('unhandledrejection', (e) => {
   logError('PROMISE_REJECTION', {
