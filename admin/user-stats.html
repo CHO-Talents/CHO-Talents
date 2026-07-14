@@ -19,6 +19,7 @@
     .user-stats-table tbody tr:nth-child(even) { background:var(--t-subtle-surface,#fafbfc); }
     .user-stats-table .num { text-align:right; font-variant-numeric:tabular-nums; font-weight:700; }
     .user-stats-note { margin:0.35rem 0 0; color:var(--admin-text-muted,var(--t-text-muted,#868e96)); font-size:0.82rem; }
+    .user-stats-detail-btn { padding:0.3rem 0.65rem; font-size:0.78rem; white-space:nowrap; }
     @media (max-width:640px) {
       .user-stats-table th, .user-stats-table td { padding:0.6rem; }
     }
@@ -64,6 +65,17 @@
       <div id="userStatsContent"><div class="empty-state">통계를 불러오는 중입니다.</div></div>
     </section>
   </main>
+
+  <div class="modal-overlay hidden" id="loginStatDetailModal" role="dialog" aria-modal="true" aria-labelledby="loginStatDetailTitle">
+    <div class="modal-box" style="max-width:900px;max-height:85vh;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:0.4rem;">
+        <h3 class="modal-title" id="loginStatDetailTitle" style="margin-bottom:0;">로그인 통계 상세</h3>
+        <button class="btn-cancel" type="button" onclick="closeLoginStatDetail()">닫기</button>
+      </div>
+      <p class="user-stats-note" id="loginStatDetailNote"></p>
+      <div id="loginStatDetailContent" style="margin-top:1rem;"></div>
+    </div>
+  </div>
 
   <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
   <script src="../config/public-config.js"></script>
@@ -180,14 +192,106 @@
       content.innerHTML = `<h3 style="margin:0 0 0.8rem;">${VIEW_LABELS[currentView]}</h3>
         <div class="admin-table-wrap">
           <table class="user-stats-table">
-            <thead><tr><th>기준</th><th class="num">로그인 횟수</th><th class="num">로그인 사용자</th></tr></thead>
+            <thead><tr><th>기준</th><th class="num">로그인 횟수</th><th class="num">로그인 사용자</th><th>관리</th></tr></thead>
             <tbody>${rows.map(row => `<tr>
               <td>${escapeHtml(row.group_label)}</td>
               <td class="num">${formatNumber(row.login_count)}</td>
               <td class="num">${formatNumber(row.user_count)}</td>
+              <td><button type="button" class="filter-btn user-stats-detail-btn" onclick="openLoginStatDetail('${currentView}', '${escapeHtml(row.group_key)}')">상세</button></td>
             </tr>`).join('')}</tbody>
           </table>
         </div>`;
+    }
+
+    async function openLoginStatDetail(groupType, groupKey) {
+      const sourceRow = loginStats.find(row => row.group_type === groupType && String(row.group_key) === String(groupKey));
+      if (!sourceRow) return;
+
+      const modal = document.getElementById('loginStatDetailModal');
+      const title = document.getElementById('loginStatDetailTitle');
+      const note = document.getElementById('loginStatDetailNote');
+      const detailContent = document.getElementById('loginStatDetailContent');
+      const isUserHistory = groupType === 'user';
+      title.textContent = isUserHistory
+        ? `${sourceRow.group_label} 로그인 이력`
+        : `${sourceRow.group_label} 사용자 목록`;
+      note.textContent = isUserHistory
+        ? '선택한 기간과 부서 필터가 적용된 로그인 이력입니다. 로그인 시점의 부서·권한 정보가 표시됩니다.'
+        : '선택한 기준에 해당하는 사용자입니다. 로그인 횟수와 가장 최근 로그인 시각을 함께 확인할 수 있습니다.';
+      detailContent.innerHTML = '<div class="empty-state">상세 정보를 불러오는 중입니다.</div>';
+      modal.classList.remove('hidden');
+
+      const { data, error } = await _sb.rpc('get_user_login_stat_detail', {
+        p_group_type: groupType,
+        p_group_key: String(groupKey),
+        p_start_date: document.getElementById('userStatsDateFrom').value || null,
+        p_end_date: document.getElementById('userStatsDateTo').value || null,
+        p_department_id: document.getElementById('userStatsDept').value || null
+      });
+      if (error) {
+        detailContent.innerHTML = `<div class="empty-state" style="color:#d63031;">상세 조회 오류: ${escapeHtml(tErr(error.message))}</div>`;
+        return;
+      }
+
+      renderLoginStatDetail(groupType, data || []);
+    }
+
+    function renderLoginStatDetail(groupType, rows) {
+      const detailContent = document.getElementById('loginStatDetailContent');
+      if (!rows.length) {
+        detailContent.innerHTML = '<div class="empty-state">선택한 조건의 로그인 이력이 없습니다.</div>';
+        return;
+      }
+
+      if (groupType === 'user') {
+        detailContent.innerHTML = `<div class="admin-table-wrap"><table class="user-stats-table">
+          <thead><tr><th>로그인 시각 (KST)</th><th>부서</th><th>권한</th></tr></thead>
+          <tbody>${rows.map(row => `<tr>
+            <td>${escapeHtml(formatKstDateTime(row.last_logged_in_at))}</td>
+            <td>${escapeHtml(row.department_name || '미배정')}</td>
+            <td>${escapeHtml(permissionLabel(row.permission_level))}</td>
+          </tr>`).join('')}</tbody>
+        </table></div>`;
+        return;
+      }
+
+      detailContent.innerHTML = `<div class="admin-table-wrap"><table class="user-stats-table">
+        <thead><tr><th>사용자</th><th>부서</th><th>권한</th><th class="num">로그인 횟수</th><th>최근 로그인 (KST)</th></tr></thead>
+        <tbody>${rows.map(row => `<tr>
+          <td>${escapeHtml(userLabel(row))}</td>
+          <td>${escapeHtml(row.department_name || '미배정')}</td>
+          <td>${escapeHtml(permissionLabel(row.permission_level))}</td>
+          <td class="num">${formatNumber(row.login_count)}</td>
+          <td>${escapeHtml(formatKstDateTime(row.last_logged_in_at))}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>`;
+    }
+
+    function closeLoginStatDetail() {
+      document.getElementById('loginStatDetailModal').classList.add('hidden');
+    }
+
+    function userLabel(row) {
+      const displayName = row.display_name || '';
+      const username = row.username || '';
+      if (displayName && username && displayName !== username) return `${displayName} (${username})`;
+      return displayName || username || '이름 없음';
+    }
+
+    function permissionLabel(value) {
+      return (typeof PERMISSION_LABELS !== 'undefined' && PERMISSION_LABELS[value]) || value || '-';
+    }
+
+    function formatKstDateTime(value) {
+      if (!value) return '-';
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+      }).formatToParts(new Date(value)).reduce((result, part) => {
+        if (part.type !== 'literal') result[part.type] = part.value;
+        return result;
+      }, {});
+      return `${parts.year}.${parts.month}.${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
     }
 
     function formatNumber(value) {
@@ -199,6 +303,10 @@
         '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
       }[character]));
     }
+
+    document.getElementById('loginStatDetailModal').addEventListener('click', event => {
+      if (event.target.classList.contains('modal-overlay')) closeLoginStatDetail();
+    });
   </script>
   <div id="version-container"></div>
   <script src="../js/version.js"></script>

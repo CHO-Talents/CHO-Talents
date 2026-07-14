@@ -634,7 +634,7 @@ flowchart TD
 - 작업 이력은 별도 테이블이 아니라 `activity_logs`에서 `AUDIT_ACTIONS` 키에 해당하는 로그만 필터링한다
 - 상세 내역은 영어 key로 저장된 `details`를 화면에서 한글로 치환해 표시한다. 기존 한글 별칭/중복 details는 `docs/TASK-074_activity_logs_english_details.sql`로 정리할 수 있다.
 
-### 사용자 로그인 이력 및 통계 (v3.79.1)
+### 사용자 로그인 이력 및 통계 (v3.81.0)
 
 ```mermaid
 flowchart TD
@@ -643,13 +643,16 @@ flowchart TD
   Record --> History["user_login_history\n사용자·부서·권한 스냅샷"]
   Admin["관리자 100+"] --> StatsPage["admin/user-stats.html"]
   StatsPage --> StatsRPC["get_user_login_statistics RPC"]
+  StatsPage --> DetailRPC["get_user_login_stat_detail RPC"]
   StatsRPC --> History
+  DetailRPC --> History
   StatsRPC --> KST["KST 기준 날짜·요일·시간·부서·사용자 집계"]
+  DetailRPC --> Detail["통계별 사용자 목록 / 사용자별 로그인 이력"]
 ```
 
 - 로그인 실패와 승인 대기/거부, `profiles.is_super_admin=true`인 최고관리자는 이 테이블에 기록하지 않는다. 기존 최고관리자 이력은 `TASK-082`에서 정리한다.
-- `user_login_history` 직접 SELECT는 RLS와 권한 회수로 막고, 관리자 통계 RPC만 결과를 반환한다.
-- 통계 화면은 기간과 부서 필터를 지원하며, 원본 로그인 행을 표시하지 않는다.
+- `user_login_history` 직접 SELECT는 RLS와 권한 회수로 막고, 관리자 통계·상세 조회 RPC만 결과를 반환한다.
+- 통계 화면은 기간과 부서 필터를 지원한다. 날짜·요일·시간·부서별 상세는 사용자 목록과 로그인 횟수·최근 로그인 시각을, 사용자별 상세는 로그인 시점의 부서·권한 스냅샷을 함께 표시한다.
 
 ## 13. Slack 알림 흐름
 
@@ -732,7 +735,7 @@ flowchart TD
 |---|---|
 | `code_groups`, `code_items` | 권한/유형/상태/카테고리/로그 액션 등 코드 마스터. `code_items.meta`에 rank, color, emoji, category 같은 표시/검증 메타 저장 |
 | `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`), 마지막 로그인(`last_login_at`) |
-| `user_login_history` | 최고관리자를 제외한 성공 로그인 시점의 사용자·부서·권한 스냅샷과 로그인 시각. 직접 조회를 금지하고 관리자 통계 RPC로만 집계 |
+| `user_login_history` | 최고관리자를 제외한 성공 로그인 시점의 사용자·부서·권한 스냅샷과 로그인 시각. 직접 조회를 금지하고 관리자 통계·상세 조회 RPC로만 집계 |
 | `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB), 테마(`theme`), 그리드별 페이지 크기(`page_sizes` JSONB), RLS 적용 |
 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | `registration_requests` | 가입 신청/승인/거부 |
@@ -889,7 +892,8 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 | 33 | `docs/TASK-081_user_login_statistics.sql` | v3.79.0: 성공 로그인 이력 테이블, RLS, 기록/통계 RPC |
 | 34 | `docs/TASK-082_exclude_super_admin_login_history.sql` | v3.79.1: 최고관리자 로그인 이력 정리 및 기록·통계 제외 |
 | 35 | `docs/TASK-083_talent_item_emoji.sql` | v3.80.0: 달란트 항목 카드 이모지 컬럼과 기존 항목 기본 이모지 보정 |
-| 36 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
+| 36 | `docs/TASK-084_user_login_statistics_detail.sql` | v3.81.0: 통계별 사용자 목록 및 사용자별 로그인 이력 조회 RPC |
+| 37 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
 
 ## 19. 개발 주의사항
 
