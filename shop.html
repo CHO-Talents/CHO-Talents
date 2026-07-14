@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/common.css" />
   <style>
     .product-card { cursor: pointer; }
-    .product-card img.product-img { cursor: zoom-in; }
+    .product-card img.product-img { cursor: pointer; }
     .product-card .product-buy-btn { cursor: pointer; }
     .product-detail-overlay, .image-zoom-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
@@ -32,6 +32,11 @@
     }
     .product-detail-body { padding: 1rem 1.1rem 1.1rem; overflow-y: auto; flex: 1 1 auto; min-height: 0; overscroll-behavior: contain; }
     .product-detail-layout { display: block; }
+    .product-detail-thumbnail { margin: 0 0 1rem; display: none; }
+    .product-detail-thumbnail img {
+      width: 100%; max-height: 320px; object-fit: contain; display: block; border: 1px solid var(--t-border, #e9ecef);
+      border-radius: 10px; background: var(--t-bg, #f8f9fa);
+    }
     .product-detail-detail-image { margin-top: 1rem; display: none; }
     .product-detail-detail-image img {
       width: 100%; height: auto; max-height: none; display: block; border: 1px solid var(--t-border, #e9ecef);
@@ -129,6 +134,7 @@
         <div class="product-detail-layout">
           <div class="product-detail-meta" id="productDetailMeta"></div>
           <div class="product-detail-price" id="productDetailPrice"></div>
+          <div class="product-detail-thumbnail" id="productDetailThumbnail"></div>
           <div class="product-detail-desc" id="productDetailDesc"></div>
           <div class="product-detail-detail-image" id="productDetailDetailImage"></div>
           <div class="product-detail-actions" id="productDetailActions"></div>
@@ -343,7 +349,7 @@
           : `<button class="product-buy-btn" onclick="event.stopPropagation(); requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`)
         : '';
       return `<div class="product-card" onclick="openProductDetail('${p.id}')">
-        ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" class="product-img" onclick="event.stopPropagation(); openImageZoom('${escapeAttr(p.image_url)}','${escapeAttr(p.name)}')" />` : `<span class="product-emoji">${p.image_emoji || '🎁'}</span>`}
+        ${p.image_url ? `<img src="${escapeAttr(p.image_url)}" alt="${escapeAttr(p.name)}" class="product-img" onclick="event.stopPropagation(); openProductDetail('${p.id}')" />` : `<span class="product-emoji">${p.image_emoji || '🎁'}</span>`}
         <div class="product-name">${escapeHtml(p.name)}</div>
         <div class="product-price">${fmtNum(p.price)} <span class="unit">달란트</span></div>
         <div class="product-desc">${escapeHtml(p.description || '')}</div>
@@ -361,6 +367,14 @@
         `<span>카테고리: ${escapeHtml(getProductCategoryLabel(product.category || 'etc'))}</span>` +
         `<span>대상: ${escapeHtml(getProductTargetLabel(product.target_role || 'student'))}</span>`;
       document.getElementById('productDetailPrice').textContent = `${fmtNum(product.price)} 달란트`;
+      const thumbnail = document.getElementById('productDetailThumbnail');
+      if (product.image_url) {
+        thumbnail.style.display = 'block';
+        thumbnail.innerHTML = `<img src="${escapeAttr(product.image_url)}" alt="${escapeAttr(product.name)} 썸네일" />`;
+      } else {
+        thumbnail.style.display = 'block';
+        thumbnail.innerHTML = `<div class="product-detail-emoji" aria-label="${escapeAttr(product.name)} 썸네일">${escapeHtml(product.image_emoji || '🎁')}</div>`;
+      }
       document.getElementById('productDetailDesc').textContent = product.description || '설명이 없습니다.';
       const detailImage = document.getElementById('productDetailDetailImage');
       const detailImageUrl = product.detail_image_url || '';
