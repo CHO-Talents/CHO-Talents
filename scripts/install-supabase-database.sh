@@ -54,7 +54,7 @@ docs/TASK-058_product_category_policy.sql,
 docs/TASK-068_product_category_page_and_sort_order.sql, and
 docs/TASK-069_product_detail_image.sql, and
 docs/TASK-070_service_usage_monitoring.sql through
-docs/TASK-085_product_suggestions.sql when no --extra-sql-path is provided.
+docs/TASK-086_product_suggestion_admin_decision.sql when no --extra-sql-path is provided.
 USAGE
 }
 
@@ -288,6 +288,10 @@ if [ "${#EXTRA_SQL_PATHS[@]}" -eq 0 ]; then
   DEFAULT_PRODUCT_SUGGESTIONS_SQL="$ROOT_DIR/docs/TASK-085_product_suggestions.sql"
   if [ -f "$DEFAULT_PRODUCT_SUGGESTIONS_SQL" ]; then
     EXTRA_SQL_PATHS+=("$DEFAULT_PRODUCT_SUGGESTIONS_SQL")
+  fi
+  DEFAULT_PRODUCT_SUGGESTION_ADMIN_DECISION_SQL="$ROOT_DIR/docs/TASK-086_product_suggestion_admin_decision.sql"
+  if [ -f "$DEFAULT_PRODUCT_SUGGESTION_ADMIN_DECISION_SQL" ]; then
+    EXTRA_SQL_PATHS+=("$DEFAULT_PRODUCT_SUGGESTION_ADMIN_DECISION_SQL")
   fi
 fi
 

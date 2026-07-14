@@ -12,12 +12,22 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.82.2` (`js/version.js` 기준, 2026-07-14) |
+| 현재 버전 | `v3.84.0` (`js/version.js` 기준, 2026-07-14) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.82.2`로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.84.0`로 갱신되어 있습니다.
+- **v3.84.0 주요 변경 사항**:
+  - 관리자는 `상품 추천 투표` 상세 모달에서 투표 완료 전에도 채택 또는 불채택을 직접 결정할 수 있습니다.
+  - 예외 결정은 관리자(100+)만 가능하며, 투표자·개별 찬반·추천자 정보는 화면과 작업 이력에 남기지 않습니다.
+  - 운영 DB에는 `docs/TASK-086_product_suggestion_admin_decision.sql` 적용이 필요합니다.
+- **v3.83.1 주요 변경 사항**:
+  - 상품 구매는 권한과 관계없이 활성 상품만 표시하며, 비활성 채택 상품은 상품 관리에서만 확인합니다.
+- **v3.83.0 주요 변경 사항**:
+  - 내 추천 목록은 채택여부·상품명·추천일·상세만 표시하며, 행 또는 상세 버튼에서 전체 입력 정보를 확인합니다.
+  - `상품 관리`는 채택된 비활성 상품을 포함해 활성/비활성 상품을 모두 표시합니다.
+  - 모바일 상품 추천 투표는 다섯 열로 압축하고, 상세 모달에서 찬성 또는 반대할 수 있습니다.
 - **v3.82.2 주요 변경 사항**:
   - 상품 추천 SQL의 권한 계산과 Storage 소유자 비교를 타입 호환 방식으로 보완해 `text = uuid` 오류 없이 적용할 수 있습니다.
 - **v3.82.1 주요 변경 사항**:
@@ -961,6 +971,8 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-084_plan.md`, `docs/TASK-084_test_scenario.md`, `docs/TASK-084_change_report.md` | v3.81.0: 사용자 통계 상세 조회 계획, 검증 시나리오, 변경 보고 |
 | `docs/TASK-085_product_suggestions.sql` | v3.82.2: 상품 추천, 등록 시점 투표 정원, 비밀 투표, 관리자 현재 유효 정원 종료, 미투표 배지와 타입 호환 RPC/RLS/Storage 정책 |
 | `docs/TASK-085_plan.md`, `docs/TASK-085_test_scenario.md`, `docs/TASK-085_test_result.md`, `docs/TASK-085_change_report.md` | v3.82.0: 상품 추천 및 비밀 투표 계획, 시나리오, 검증 기준, 변경 보고 |
+| `docs/TASK-086_product_suggestion_admin_decision.sql` | v3.84.0: 관리자(100+)의 투표 완료 전 채택/불채택 예외 결정 RPC |
+| `docs/TASK-086_test_scenario.md`, `docs/TASK-086_test_result.md`, `docs/TASK-086_change_report.md` | v3.84.0: 관리자 예외 결정 검증 기준과 변경 보고 |
 
 ## 관련 문서
 

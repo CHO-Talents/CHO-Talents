@@ -361,7 +361,7 @@
         <tbody>
           <tr><td>추천 등록</td><td><code>PRODUCT_SUGGESTION_CREATE</code>에 추천 상품 ID, 상품명, 등록 시점 정원/과반만 기록합니다.</td></tr>
           <tr><td>개별 투표</td><td>비밀 투표를 위해 개별 찬성/반대와 투표자 식별 정보는 <code>activity_logs</code>에 기록하지 않습니다.</td></tr>
-          <tr><td>관리자 종료/결과</td><td><code>PRODUCT_SUGGESTION_CLOSE</code>, <code>PRODUCT_SUGGESTION_ADOPT</code>, <code>PRODUCT_SUGGESTION_REJECT</code>에는 익명 집계와 처리 기준만 기록하고 투표자 목록은 남기지 않습니다.</td></tr>
+          <tr><td>관리자 종료/결과</td><td><code>PRODUCT_SUGGESTION_CLOSE</code>, <code>PRODUCT_SUGGESTION_ADOPT</code>, <code>PRODUCT_SUGGESTION_REJECT</code>에는 종료 또는 <code>관리자 예외 결정</code> 처리유형만 기록합니다. 종료 건의 익명 집계 외에 투표자 목록과 개별 찬반은 남기지 않습니다.</td></tr>
         </tbody>
       </table>
       <div class="note-box">추천자 이력은 채택 상품의 <code>products.created_by</code>와 추천 연결 테이블에서 관리하며, 투표 화면과 투표 로그에는 표시하지 않습니다.</div>
