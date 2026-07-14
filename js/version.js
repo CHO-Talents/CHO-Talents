@@ -2,9 +2,17 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.81.0',
+  current: '3.81.1',
   date: '2026-07-14',
   history: [
+    {
+      version: '3.81.1',
+      date: '2026-07-14',
+      title: '사용자 통계 행 클릭 상세 조회',
+      changes: [
+        '사용자 통계의 각 행을 클릭하거나 키보드 Enter·Space를 눌러도 상세 모달을 열 수 있도록 개선했습니다.'
+      ]
+    },
     {
       version: '3.81.0',
       date: '2026-07-14',
