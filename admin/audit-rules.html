@@ -134,7 +134,7 @@
           <tr><td>PRODUCT_CATEGORY_CREATE</td><td>상품 카테고리 등록</td><td>상품 카테고리 관리 페이지에서 새 카테고리 추가</td></tr>
           <tr><td>PRODUCT_CATEGORY_UPDATE / PRODUCT_CATEGORY_DELETE</td><td>상품 카테고리 수정/삭제</td><td>상품 카테고리 관리 페이지에서 코드 마스터 항목 수정 또는 비활성화</td></tr>
           <tr><td>PRODUCT_DEACTIVATE / PRODUCT_SOFT_DELETE</td><td>상품 비활성화/소프트삭제</td><td>상품 숨김 처리</td></tr>
-          <tr><td>PRODUCT_SUGGESTION_CREATE / ADOPT / REJECT / CLOSE</td><td>상품 추천 등록/채택/불채택/투표 종료</td><td>추천 등록과 관리자 종료 결과만 익명 집계 기준으로 기록. 개별 투표자와 찬성/반대 선택은 비밀 투표 보호를 위해 작업 이력에 남기지 않음</td></tr>
+          <tr><td>PRODUCT_SUGGESTION_CREATE / ADOPT / REJECT / CLOSE</td><td>상품 추천 등록/채택/불채택/투표 종료</td><td>추천 등록, 관리자 종료, 관리자 예외 결정 결과만 기록. 종료 건 외에는 익명 집계를 기록하지 않으며 개별 투표자와 찬성/반대 선택은 비밀 투표 보호를 위해 작업 이력에 남기지 않음</td></tr>
           <tr><td>ORDER_REQUEST_SUCCESS</td><td>구매 요청 성공</td><td>학생이 상품 구매 요청</td></tr>
           <tr><td>ORDER_STATUS_CHANGE / ORDER_CANCEL / ORDER_REVERT</td><td>주문 상태 변경</td><td>관리자 주문 처리</td></tr>
           <tr><td>ORDER_BULK_*</td><td>일괄 주문 처리</td><td>다건 주문 처리</td></tr>
@@ -252,7 +252,7 @@
         <strong>Slack 알림 룰:</strong> <a href="slack-rules.html" style="color:var(--admin-primary);">운영 &gt; Slack 알림 룰</a>에서 WARN+ 로그와 구매/가입/Q&amp;A/서비스 할당량 알림 라우팅을 확인 가능
       </div>
       <div class="note-box">
-        <strong>상품 추천 비밀 투표:</strong> 추천 등록·채택·불채택·관리자 종료만 상품/주문 카테고리 작업 이력으로 확인합니다. 투표자 이름, 찬성/반대 선택, 추천자 이름은 투표 화면과 작업 이력에 표시하지 않습니다.
+        <strong>상품 추천 비밀 투표:</strong> 추천 등록·채택·불채택·관리자 종료·관리자 예외 결정만 상품/주문 카테고리 작업 이력으로 확인합니다. 투표자 이름, 찬성/반대 선택, 추천자 이름은 투표 화면과 작업 이력에 표시하지 않습니다.
       </div>
     </div>
   </div>

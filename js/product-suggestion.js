@@ -155,3 +155,25 @@ async function closeProductSuggestionVote(suggestionId, item) {
     return { data: null, error: String(err) };
   }
 }
+
+async function adminResolveProductSuggestion(suggestionId, status, item) {
+  if (!_sb) return { data: null, error: 'Supabase not initialized' };
+  try {
+    const { data, error } = await _sb.rpc('admin_resolve_product_suggestion', {
+      p_suggestion_id: suggestionId,
+      p_status: status
+    });
+    if (error) return { data: null, error: error.message };
+    if (!data || data.success !== true) return { data: null, error: (data && data.error) || '관리자 결정 처리에 실패했습니다.' };
+    if (!data.already_resolved && typeof logInfo === 'function') {
+      await logInfo(status === 'adopted' ? 'PRODUCT_SUGGESTION_ADOPT' : 'PRODUCT_SUGGESTION_REJECT', {
+        추천상품ID: suggestionId,
+        상품명: item && item.name ? item.name : '',
+        처리유형: '관리자 예외 결정'
+      });
+    }
+    return { data, error: null };
+  } catch (err) {
+    return { data: null, error: String(err) };
+  }
+}
