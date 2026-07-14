@@ -360,12 +360,12 @@
         const dt = l.created_at ? formatKSTShort(l.created_at) : '-';
         const actor = formatAuditActor(l, isAdmin);
 	        const target = escapeHtml(extractTarget(l));
-        return `<tr>
+        return `<tr style="cursor:pointer;" onclick="showDetailById('${l.id}')">
           <td style="white-space:nowrap;font-size:0.78rem;">${dt}</td>
           <td>${actor}</td>
           <td><span class="level-badge INFO">${info.emoji} ${info.label}</span></td>
           <td>${target}</td>
-          <td><button class="filter-btn" onclick='showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>상세</button></td>
+          <td><button class="filter-btn" onclick='event.stopPropagation();showDetail(${JSON.stringify(l).replace(/'/g,"&#39;")})'>상세</button></td>
         </tr>`;
       }).join('');
       renderAuditPaging(totalPages);
@@ -387,6 +387,11 @@
     function goAuditPage(p) {
       auditPage = p;
       renderAudit();
+    }
+
+    function showDetailById(logId) {
+      const log = allAuditLogs.find(item => item.id === logId);
+      if (log) showDetail(log);
     }
 
 	    function extractTarget(log) {

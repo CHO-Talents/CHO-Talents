@@ -30,11 +30,11 @@
       border: 1px solid var(--t-border, #dee2e6); background: var(--t-bg, #f8f9fa); color: var(--t-text, #222);
       width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; flex: 0 0 auto;
     }
-    .product-detail-body { padding: 1rem 1.1rem 1.1rem; overflow-y: auto; }
+    .product-detail-body { padding: 1rem 1.1rem 1.1rem; overflow-y: auto; flex: 1 1 auto; min-height: 0; overscroll-behavior: contain; }
     .product-detail-layout { display: block; }
     .product-detail-detail-image { margin-top: 1rem; display: none; }
     .product-detail-detail-image img {
-      width: 100%; max-height: 360px; object-fit: contain; display: block; border: 1px solid var(--t-border, #e9ecef);
+      width: 100%; height: auto; max-height: none; display: block; border: 1px solid var(--t-border, #e9ecef);
       border-radius: 10px; background: var(--t-bg, #f8f9fa); cursor: zoom-in;
     }
     .product-detail-emoji {
@@ -46,8 +46,8 @@
     .product-detail-desc { line-height: 1.65; white-space: pre-wrap; }
     .product-detail-actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; justify-content: flex-end; }
     .image-zoom-modal { width: min(92vw, 1000px); max-height: 92vh; display: flex; flex-direction: column; }
-    .image-zoom-body { padding: 1rem 1.1rem 1.1rem; overflow: auto; }
-    .image-zoom-body img { display: block; max-width: 100%; max-height: 74vh; margin: 0 auto; object-fit: contain; }
+    .image-zoom-body { padding: 1rem 1.1rem 1.1rem; overflow-y: auto; flex: 1 1 auto; min-height: 0; overscroll-behavior: contain; }
+    .image-zoom-body img { display: block; width: 100%; height: auto; max-width: none; max-height: none; margin: 0 auto; }
     .shop-sort-buttons { display: inline-flex; gap: 0.35rem; flex-wrap: wrap; }
     .shop-sort-buttons .filter-btn { padding: 0.4rem 0.7rem; font-size: 0.82rem; }
     .shop-sort-buttons .filter-btn.active { background: #228be6; color: #fff; border-color: #228be6; }

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="default">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>사용자 통계 - 달란트 마을</title>
+  <link rel="stylesheet" href="../css/themes.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <style>
+    .user-stats-summary { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:0.7rem; margin:1rem 0; }
+    .user-stats-card { padding:1rem; background:var(--t-card,#fff); border:1px solid var(--t-border,#e9ecef); border-radius:12px; }
+    .user-stats-card span { display:block; color:var(--admin-text-muted,var(--t-text-muted,#868e96)); font-size:0.8rem; font-weight:700; }
+    .user-stats-card strong { display:block; margin-top:0.25rem; font-size:1.5rem; color:var(--t-text,#212529); font-variant-numeric:tabular-nums; }
+    .user-stats-tabs { display:flex; gap:0.4rem; flex-wrap:wrap; margin:1rem 0; }
+    .user-stats-tabs .filter-btn.active { background:#228be6; border-color:#228be6; color:#fff; }
+    .user-stats-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
+    .user-stats-table th, .user-stats-table td { padding:0.7rem 0.8rem; border-bottom:1px solid var(--t-border,#e9ecef); text-align:left; }
+    .user-stats-table th { background:var(--t-subtle-surface,#f1f3f5); font-size:0.8rem; }
+    .user-stats-table tbody tr:nth-child(even) { background:var(--t-subtle-surface,#fafbfc); }
+    .user-stats-table .num { text-align:right; font-variant-numeric:tabular-nums; font-weight:700; }
+    .user-stats-note { margin:0.35rem 0 0; color:var(--admin-text-muted,var(--t-text-muted,#868e96)); font-size:0.82rem; }
+    @media (max-width:640px) {
+      .user-stats-table th, .user-stats-table td { padding:0.6rem; }
+    }
+  </style>
+</head>
+<body class="admin-body">
+  <div id="nav-container"></div>
+
+  <main class="admin-container" style="max-width:1100px;">
+    <h2>👥 사용자 통계</h2>
+    <p class="user-stats-note">성공한 로그인 이력을 KST(한국 표준시) 기준으로 집계합니다. 사용자 로그인 이력과 통계는 관리자만 조회할 수 있습니다.</p>
+
+    <div id="userStatsFilters" class="filters" style="margin-top:1rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;">
+      <label for="userStatsDateFrom" style="font-size:0.85rem;font-weight:700;">기간</label>
+      <input type="date" id="userStatsDateFrom" onchange="loadLoginStatistics()" style="padding:0.4rem;border:1px solid var(--admin-border);border-radius:8px;" />
+      <span>~</span>
+      <input type="date" id="userStatsDateTo" onchange="loadLoginStatistics()" style="padding:0.4rem;border:1px solid var(--admin-border);border-radius:8px;" />
+      <select id="userStatsDept" onchange="loadLoginStatistics()" style="padding:0.4rem 0.7rem;border:1px solid var(--admin-border);border-radius:8px;">
+        <option value="">전체 부서</option>
+      </select>
+      <span style="display:inline-flex;gap:0.3rem;flex-wrap:wrap;">
+        <button class="filter-btn" type="button" onclick="setUserStatsPeriod('today')">오늘</button>
+        <button class="filter-btn" type="button" onclick="setUserStatsPeriod('week')">1주</button>
+        <button class="filter-btn" type="button" onclick="setUserStatsPeriod('month')">1개월</button>
+        <button class="filter-btn" type="button" onclick="setUserStatsPeriod('year')">1년</button>
+      </span>
+    </div>
+
+    <section class="user-stats-summary" aria-label="로그인 요약">
+      <div class="user-stats-card"><span>로그인 횟수</span><strong id="loginTotalCount">0</strong></div>
+      <div class="user-stats-card"><span>로그인 사용자</span><strong id="loginUserCount">0</strong></div>
+      <div class="user-stats-card"><span>선택 기간</span><strong id="loginPeriodLabel" style="font-size:1rem;padding-top:0.35rem;">-</strong></div>
+    </section>
+
+    <section class="admin-card" style="padding:1rem;">
+      <div class="user-stats-tabs" id="userStatsTabs" role="tablist" aria-label="통계 구분">
+        <button type="button" class="filter-btn active" data-view="date" onclick="switchUserStatsView('date')">날짜별</button>
+        <button type="button" class="filter-btn" data-view="weekday" onclick="switchUserStatsView('weekday')">요일별</button>
+        <button type="button" class="filter-btn" data-view="hour" onclick="switchUserStatsView('hour')">시간별</button>
+        <button type="button" class="filter-btn" data-view="department" onclick="switchUserStatsView('department')">부서별</button>
+        <button type="button" class="filter-btn" data-view="user" onclick="switchUserStatsView('user')">사용자별</button>
+      </div>
+      <div id="userStatsContent"><div class="empty-state">통계를 불러오는 중입니다.</div></div>
+    </section>
+  </main>
+
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
+  <script src="../config/public-config.js"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/activity-log.js"></script>
+  <script src="../js/codes.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/theme.js"></script>
+  <script src="../js/nav.js"></script>
+  <script>
+    initSupabase();
+
+    let session;
+    let loginStats = [];
+    let currentView = 'date';
+
+    const VIEW_LABELS = {
+      date: '날짜별 로그인 통계',
+      weekday: '요일별 로그인 통계',
+      hour: '시간별 로그인 통계',
+      department: '부서별 로그인 통계',
+      user: '사용자별 로그인 통계'
+    };
+
+    (async () => {
+      await navInit();
+      session = await initPage(100, '../login.html');
+      if (!session) return;
+      navUpdateAuth(session);
+      autoLogPageView();
+      setUserStatsPeriod('month', false);
+      await loadDepartments();
+      await loadLoginStatistics();
+    })();
+
+    function kstDateInput(date) {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'
+      }).formatToParts(date).reduce((result, part) => {
+        if (part.type !== 'literal') result[part.type] = part.value;
+        return result;
+      }, {});
+      return `${parts.year}-${parts.month}-${parts.day}`;
+    }
+
+    function setUserStatsPeriod(period, shouldLoad = true) {
+      const end = new Date();
+      const start = new Date(end);
+      if (period === 'week') start.setDate(start.getDate() - 6);
+      else if (period === 'month') start.setDate(start.getDate() - 29);
+      else if (period === 'year') start.setDate(start.getDate() - 364);
+      document.getElementById('userStatsDateFrom').value = kstDateInput(start);
+      document.getElementById('userStatsDateTo').value = kstDateInput(end);
+      if (shouldLoad) loadLoginStatistics();
+    }
+
+    async function loadDepartments() {
+      const { data, error } = await _sb.from('departments').select('id,name').order('name');
+      if (error) return;
+      document.getElementById('userStatsDept').innerHTML = '<option value="">전체 부서</option>' +
+        (data || []).map(dept => `<option value="${dept.id}">${escapeHtml(dept.name)}</option>`).join('');
+    }
+
+    async function loadLoginStatistics() {
+      const content = document.getElementById('userStatsContent');
+      const startDate = document.getElementById('userStatsDateFrom').value || null;
+      const endDate = document.getElementById('userStatsDateTo').value || null;
+      const departmentId = document.getElementById('userStatsDept').value || null;
+      content.innerHTML = '<div class="empty-state">통계를 불러오는 중입니다.</div>';
+
+      const { data, error } = await _sb.rpc('get_user_login_statistics', {
+        p_start_date: startDate,
+        p_end_date: endDate,
+        p_department_id: departmentId
+      });
+      if (error) {
+        content.innerHTML = `<div class="empty-state" style="color:#d63031;">조회 오류: ${escapeHtml(tErr(error.message))}</div>`;
+        return;
+      }
+      loginStats = data || [];
+      renderLoginStats();
+    }
+
+    function switchUserStatsView(view) {
+      currentView = view;
+      document.querySelectorAll('#userStatsTabs [data-view]').forEach(button => {
+        button.classList.toggle('active', button.dataset.view === view);
+      });
+      renderLoginStats();
+    }
+
+    function renderLoginStats() {
+      const dateRows = loginStats.filter(row => row.group_type === 'date');
+      const userRows = loginStats.filter(row => row.group_type === 'user');
+      const totalLogins = dateRows.reduce((sum, row) => sum + Number(row.login_count || 0), 0);
+      const startDate = document.getElementById('userStatsDateFrom').value || '-';
+      const endDate = document.getElementById('userStatsDateTo').value || '-';
+      document.getElementById('loginTotalCount').textContent = formatNumber(totalLogins);
+      document.getElementById('loginUserCount').textContent = formatNumber(userRows.length);
+      document.getElementById('loginPeriodLabel').textContent = `${startDate} ~ ${endDate}`;
+
+      const rows = loginStats.filter(row => row.group_type === currentView).sort((a, b) => {
+        if (currentView === 'department' || currentView === 'user') {
+          return Number(b.login_count) - Number(a.login_count) || String(a.group_label).localeCompare(String(b.group_label), 'ko');
+        }
+        return Number(a.sort_order) - Number(b.sort_order);
+      });
+      const content = document.getElementById('userStatsContent');
+      if (!rows.length) {
+        content.innerHTML = `<h3 style="margin:0 0 0.8rem;">${VIEW_LABELS[currentView]}</h3><div class="empty-state">선택한 조건의 로그인 이력이 없습니다.</div>`;
+        return;
+      }
+
+      content.innerHTML = `<h3 style="margin:0 0 0.8rem;">${VIEW_LABELS[currentView]}</h3>
+        <div class="admin-table-wrap">
+          <table class="user-stats-table">
+            <thead><tr><th>기준</th><th class="num">로그인 횟수</th><th class="num">로그인 사용자</th></tr></thead>
+            <tbody>${rows.map(row => `<tr>
+              <td>${escapeHtml(row.group_label)}</td>
+              <td class="num">${formatNumber(row.login_count)}</td>
+              <td class="num">${formatNumber(row.user_count)}</td>
+            </tr>`).join('')}</tbody>
+          </table>
+        </div>`;
+    }
+
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString('ko-KR');
+    }
+
+    function escapeHtml(value) {
+      return String(value == null ? '' : value).replace(/[&<>"']/g, character => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[character]));
+    }
+  </script>
+  <div id="version-container"></div>
+  <script src="../js/version.js"></script>
+</body>
+</html>

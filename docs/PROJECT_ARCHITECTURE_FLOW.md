@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-07-11 KST 현재 코드 기준 (v3.74.0)
+작성 기준: 2026-07-14 KST 현재 코드 기준 (v3.79.1)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -16,6 +16,7 @@ CHO-Talents는 초등부 달란트 운영을 위한 정적 웹 기반 관리 시
 | 승인 기반 계정 운영 | 신규 사용자는 신청 후 관리자 승인으로 계정이 생성된다. |
 | 부서 이동 관리 | 부서 변경은 요청→승인 흐름으로 처리한다 (90등급 이상은 즉시 이동). |
 | 운영 추적 | 로그인, 인증/권한 리디렉트, 오류, 관리 작업을 로그로 남기고 오류 로그를 확인 처리한다. `details`는 영어 key와 처리 상세만 저장하며, 작업명/사용자/일시/레벨/페이지는 기본 컬럼과 화면 영역에서 처리한다. 확인 완료 로그는 180일 보존 후 자동/수동 정리하고, 미확인 로그는 확인될 때까지 보존한다. (v3.40.0부터 PAGE_VIEW 비활성화) |
+| 사용자 로그인 통계 | 최고관리자를 제외한 성공 로그인 시 사용자·부서·권한 스냅샷을 별도 이력에 저장하고, 관리자(100+)가 KST 기준 날짜·요일·시간·부서·사용자별 집계를 조회한다. 원본 로그인 이력은 직접 노출하지 않는다. |
 | Slack 알림 | 부서별/유형별 채널로 구매/가입/부서이동/WARN+ 로그/Q&A 등 운영 이벤트를 Edge Function 경유 분리 전송한다. WARN+ 로그 알림은 영어로 저장된 action/details를 한글로 치환해 운영 채널에 전송한다. 서비스 사용률 70/85/95% 알림은 운영 채널로 전송한다. |
 | 서비스 통계 | GitHub/Supabase/Kakao/Slack 무료 할당량과 프로젝트 사용량을 매시간 수집하고, 현재/남은 값과 30일 추이를 운영 화면에서 확인한다. 수집 스냅샷과 수집 실행 이력은 180일 보존하며 관리자 버튼으로 수동 정리할 수 있다. |
 | 공지 사항 | 일반 교사(40+) 이상이 활성 공지를 확인하고, 전도사님(90+) 이상이 공지를 등록/수정/삭제/활성화한다. 열람 현황은 공지 등록일시/등록자, 사용자 유형, 전체/확인자/미확인자 콤보박스 필터를 함께 표시한다. 활성 공지는 로그인 후 메인 화면 팝업으로 표시한다. |
@@ -69,6 +70,7 @@ flowchart LR
   DB --> Transfers["department_transfer_requests"]
   DB --> Reports["reports"]
   DB --> Logs["activity_logs"]
+  DB --> LoginHistory["user_login_history"]
   DB --> RoleAccess["role_page_access"]
   DB --> Announcements["announcements / announcement_dismissals"]
   DB --> QnA["qna"]
@@ -84,7 +86,7 @@ flowchart LR
 
 | 경로 | 역할 |
 |---|---|
-| `index.html` | 메인 진입 화면. 학생 가이드, Q&A, 상점, 로그인, 적립 안내, 내 달란트로 이동. 동적 로그인/로그아웃 버튼. 로그인 사용자는 `⭐ 즐겨찾기 설정`으로 바로가기 카드 커스터마이징 (`user_preferences` DB 저장, 비로그인은 localStorage 폴백). 모바일/PC 모두 최대 10개, 권한에 맞는 메뉴만 표시. 활성 공지는 로그인 후 팝업 표시, 계정별 다시 열지 않음 저장 |
+| `index.html` | 메인 진입 화면. 학생 가이드, Q&A, 상점, 로그인, 적립 안내, 내 달란트로 이동. 동적 로그인/로그아웃 버튼. 로그인 사용자는 `⭐ 즐겨찾기 설정`으로 바로가기 카드 커스터마이징 (`user_preferences` DB 저장, 비로그인은 localStorage 폴백). 모바일/PC 모두 최대 20개, 권한에 맞는 메뉴만 표시. 활성 공지는 로그인 후 팝업 표시, 계정별 다시 열지 않음 저장 |
 | `login.html` | 통합 로그인. 성공/실패 로그 기록. 승인 대기/거부 계정 구분 안내 |
 | `register.html` | 계정 등록 신청. 영문/숫자/`_`/`-` 아이디 중복확인 후 승인 대기 등록 |
 | `guide.html` | 학생 가이드. 사이트 이용 흐름을 카드/스텝 중심으로 안내. 소개 메뉴의 단일 `가이드` 항목은 비로그인/학생에게 이 페이지로 연결 |
@@ -112,7 +114,7 @@ flowchart LR
 | `admin/shop.html` | 60등급 이상 상품 관리. 교사/학생 그룹별 분리+공통 페이징(PC 20/모바일 10). 카테고리 열 맨 왼쪽, 상품 정렬 순번 열 표시, 대상 열 삭제. 상품 등록/수정 시 구매 카드 썸네일(`image_url`)과 상세 설명 이미지(`detail_image_url`)를 분리 업로드. 로우 클릭 시 수정 창 열림. 관리 드롭다운(수정/삭제). 상품 삭제는 소프트 삭제 |
 | `admin/product-categories.html` | 70등급 이상 상품 카테고리 관리. `products.category` 코드 항목 등록·수정·삭제(비활성화), 카테고리 정렬 순번 관리. 그리드는 내부 코드 열을 숨기고 로우 클릭 시 수정 모달을 연다. 사용 중인 카테고리와 기본 `etc` 카테고리는 삭제 불가 |
 | `admin/purchases.html` | 60등급 이상 구매 관리. 칸반보드 형태 상태별 카드(개수 실시간 표시)+일괄 처리 버튼(일괄 준비/구매 확정). 관리 드롭다운. 부서/기간 필터(기본 1주) + 기간 프리셋, 4단계 구매 흐름 + 되돌리기(↩). 공통 페이징(PC 20/모바일 10) |
-| `admin/purchase-stats.html` | 60등급 이상 구매 통계. 전체/부서별/사용자별/유형별 4개 탭. 교사/학생 분리 표시. 섹션별 페이징과 페이지당 항목 수 설정. 부서별은 부서 ASC, 사용자별은 부서 ASC → 개수 DESC → 이름 ASC, 유형별은 상품 ASC → 상태 ASC. 부서 필터+유형 필터+기간 필터(기본 1주). 부서 담당 교사는 담당 부서만 조회, 부장 교사 이상 전체 조회 |
+| `admin/purchase-stats.html` | 60등급 이상 구매 통계. 전체/부서별/사용자별/유형별 4개 탭. 전체·부서별·사용자별 행 클릭 시 기존 상세 모달을 연다. 교사/학생 분리 표시. 섹션별 페이징과 페이지당 항목 수 설정. 부서별은 부서 ASC, 사용자별은 부서 ASC → 개수 DESC → 이름 ASC, 유형별은 상품 ASC → 상태 ASC. 부서 필터+유형 필터+기간 필터(기본 1주). 부서 담당 교사는 담당 부서만 조회, 부장 교사 이상 전체 조회 |
 | `admin/notices.html` | 40등급 이상 공지 사항 조회. 일반 교사는 활성 공지만 조회하고, 90등급 이상은 공지 제목/내용 등록, 기존 공지 조회/수정/삭제, 공지 컬럼 활성 토글, 공지 열람 현황 조회, 공통 페이지당 항목 수 설정을 사용. 열람 현황 모달은 등록일시/등록자, 사용자 유형 열, 전체/확인자/미확인자 콤보박스 필터를 제공한다. 활성 공지는 로그인 후 `index.html` 팝업으로 표시되고 사용자별 다시 열지 않음 상태는 `announcement_dismissals`에 저장 |
 | `admin/reports.html` | 80등급 이상 보고서 조회/등록/수정/삭제. 페이지당 항목 수 콤보는 필터 줄 아래 우측에 배치 |
 | `admin/logs.html` | 100등급 이상 로그 조회/확인/소프트 삭제 대기 처리. action 열 한글 라벨 표시(`getActionLabel`)와 상세 모달 한글 키 우선 표시. 기본 조회 범위 1년 + 기간 프리셋(오늘/1주/1달/1년). 공통 페이징과 페이지당 항목 수 설정. 행 개수 콤보는 삭제 대기 목록 버튼 줄 우측에 배치 |
@@ -120,7 +122,8 @@ flowchart LR
 | `admin/versions.html` | 80등급 이상 버전 이력 확인. `js/version.js`의 v1.0.0 이후 전체 변경 이력을 표시 |
 | `admin/page-access.html` | 100등급 이상 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100등급 이상 권한별 페이지 기능 설정값 관리 |
-| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기본 조회 범위 1년 + 기간 프리셋(오늘/1주/1달/1년), 자동 조회, 10개 카테고리 필터, 한글 작업 유형 라벨, 영어 저장 details의 한글 치환 표시). 공통 페이징(PC 20/모바일 10) |
+| `admin/audit.html` | 100등급 이상 관리 작업 이력 조회 (기본 조회 범위 1년 + 기간 프리셋(오늘/1주/1달/1년), 자동 조회, 10개 카테고리 필터, 한글 작업 유형 라벨, 영어 저장 details의 한글 치환 표시). 행 또는 상세 버튼 클릭 시 상세 모달을 열며 공통 페이징(PC 20/모바일 10)을 사용 |
+| `admin/user-stats.html` | 100등급 이상 사용자 로그인 통계. 성공 로그인 이력만 KST 기준 날짜별·요일별·시간별·부서별·사용자별로 집계하고 기간/부서 필터를 제공. 관리 네비게이션의 마지막 메뉴 |
 | `admin/page-permissions.html` | 100등급 페이지 권한 매트릭스 관리 (레거시, 직접 주소 접근) |
 | `admin/change-password.html` | 로그인 사용자 비밀번호 변경 |
 | `css/` | 테마(`themes.css`), 메인(`style.css`), 공통(`common.css`), 관리자(`admin.css`) 스타일 |
@@ -631,6 +634,23 @@ flowchart TD
 - 작업 이력은 별도 테이블이 아니라 `activity_logs`에서 `AUDIT_ACTIONS` 키에 해당하는 로그만 필터링한다
 - 상세 내역은 영어 key로 저장된 `details`를 화면에서 한글로 치환해 표시한다. 기존 한글 별칭/중복 details는 `docs/TASK-074_activity_logs_english_details.sql`로 정리할 수 있다.
 
+### 사용자 로그인 이력 및 통계 (v3.79.1)
+
+```mermaid
+flowchart TD
+  Login["로그인 성공"] --> LastLogin["update_last_login RPC"]
+  Login --> Record["record_user_login RPC"]
+  Record --> History["user_login_history\n사용자·부서·권한 스냅샷"]
+  Admin["관리자 100+"] --> StatsPage["admin/user-stats.html"]
+  StatsPage --> StatsRPC["get_user_login_statistics RPC"]
+  StatsRPC --> History
+  StatsRPC --> KST["KST 기준 날짜·요일·시간·부서·사용자 집계"]
+```
+
+- 로그인 실패와 승인 대기/거부, `profiles.is_super_admin=true`인 최고관리자는 이 테이블에 기록하지 않는다. 기존 최고관리자 이력은 `TASK-082`에서 정리한다.
+- `user_login_history` 직접 SELECT는 RLS와 권한 회수로 막고, 관리자 통계 RPC만 결과를 반환한다.
+- 통계 화면은 기간과 부서 필터를 지원하며, 원본 로그인 행을 표시하지 않는다.
+
 ## 13. Slack 알림 흐름
 
 ```mermaid
@@ -712,6 +732,7 @@ flowchart TD
 |---|---|
 | `code_groups`, `code_items` | 권한/유형/상태/카테고리/로그 액션 등 코드 마스터. `code_items.meta`에 rank, color, emoji, category 같은 표시/검증 메타 저장 |
 | `profiles` | 사용자 유형, 권한, 부서, 반, 달란트 잔액, 사용 대기 달란트(`pending_talent`), 마지막 로그인(`last_login_at`) |
+| `user_login_history` | 최고관리자를 제외한 성공 로그인 시점의 사용자·부서·권한 스냅샷과 로그인 시각. 직접 조회를 금지하고 관리자 통계 RPC로만 집계 |
 | `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB), 테마(`theme`), 그리드별 페이지 크기(`page_sizes` JSONB), RLS 적용 |
 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | `registration_requests` | 가입 신청/승인/거부 |
@@ -774,6 +795,8 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 |---|---|
 | `get_my_profile` | 로그인 사용자 프로필/권한 조회 |
 | `update_last_login` | 로그인 성공 시 `profiles.last_login_at` 갱신 |
+| `record_user_login` | 성공 로그인 시 로그인 이력 스냅샷 기록 |
+| `get_user_login_statistics` | 관리자(100+)의 KST 기준 날짜/요일/시간/부서/사용자별 성공 로그인 집계 |
 | `check_username_available` | 가입 신청 아이디 중복확인 |
 | `check_registration_status` | 미승인/거부 계정 로그인 안내 조회 |
 | `admin_list_users` | 사용자 목록 조회 |
@@ -813,7 +836,7 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 17. 부서 이동이 수정 모달이 아닌 부서 이동 버튼으로만 되는지 확인한다.
 18. 60등급 이상이 `admin/users.html`, `admin/shop.html`, `admin/purchases.html`을 사용할 수 있고, 70등급 이상만 `admin/product-categories.html`에 접근 가능한지 확인한다.
 19. 60등급 이상이 대시보드를, 80등급 이상이 관리자, 보고서, 버전 화면을 사용할 수 있는지 확인한다.
-20. 100등급 이상만 `admin/page-access.html`, `admin/page-features.html`, `admin/audit.html`, `admin/logs.html`에 접근 가능하고, 부장 교사(80+) 이상은 `admin/service-stats.html`에 접근 가능한지 확인한다.
+20. 100등급 이상만 `admin/page-access.html`, `admin/page-features.html`, `admin/audit.html`, `admin/logs.html`, `admin/user-stats.html`에 접근 가능하고, 부장 교사(80+) 이상은 `admin/service-stats.html`에 접근 가능한지 확인한다.
 21. 80등급 이상이 `docs/page-permission-rules.html`, `admin/log-rules.html`, `admin/slack-rules.html`, `admin/audit-rules.html`에 접근 가능한지 확인한다.
 22. 소개 메뉴에 `가이드` 항목 하나만 표시되고, 비로그인은 학생 가이드, 로그인 사용자는 권한별 가이드(교사/부서 담당/구매 담당/부장/전도사님/관리자)로 연결되는지 확인한다.
 23. `qna.html`에서 공개 FAQ, 로그인 질문 등록, 60등급 이상 댓글(답변)/FAQ 등록/직접 FAQ 추가, 90등급 이상 삭제가 동작하는지 확인한다.
@@ -863,7 +886,9 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 | 30 | `docs/TASK-073_manual_retention_cleanup.sql` | v3.73.0: 서비스 통계/활동 로그 180일 초과 수동 삭제 RPC와 액션 코드 |
 | 31 | `docs/TASK-074_plan.md`, `docs/TASK-074_test_scenario.md`, `docs/TASK-074_test_result.md`, `docs/TASK-074_change_report.md` | v3.74.0: 활동 로그 영어 저장/한글 표시 분리 작업 계획, 검증, 변경 보고 |
 | 32 | `docs/TASK-074_activity_logs_english_details.sql` | v3.74.0: 기존 활동 로그 details의 중복 한글 별칭/client 항목을 영어 key 중심으로 정리 |
-| 33 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
+| 33 | `docs/TASK-081_user_login_statistics.sql` | v3.79.0: 성공 로그인 이력 테이블, RLS, 기록/통계 RPC |
+| 34 | `docs/TASK-082_exclude_super_admin_login_history.sql` | v3.79.1: 최고관리자 로그인 이력 정리 및 기록·통계 제외 |
+| 35 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
 
 ## 19. 개발 주의사항
 

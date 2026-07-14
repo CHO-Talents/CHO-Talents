@@ -35,7 +35,7 @@
   <div class="admin-container">
     <div class="page-header">
       <h1>📋 로그 작성 룰</h1>
-      <p>시스템 로그가 기록되는 기준과 규칙을 설명합니다. v3.74.0 기준 로그 details는 영어 key와 처리 상세만 저장하고, 작업명·사용자 계정·일시·레벨·페이지는 기본 컬럼/화면 표시 영역에서 처리합니다. 로그 화면과 Slack 알림은 저장된 영어 action/details를 한글로 치환해 보여줍니다.</p>
+      <p>시스템 로그가 기록되는 기준과 규칙을 설명합니다. v3.79.0 기준 로그 details는 영어 key와 처리 상세만 저장하고, 작업명·사용자 계정·일시·레벨·페이지는 기본 컬럼/화면 표시 영역에서 처리합니다. 로그 화면과 Slack 알림은 저장된 영어 action/details를 한글로 치환해 보여줍니다.</p>
     </div>
 
     <!-- 로그 레벨 개요 -->
@@ -220,7 +220,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td><code>login.html</code></td><td>로그인 성공, 인증 실패, 로그인 예외</td><td><code>LOGIN_SUCCESS</code>, <code>LOGIN_FAIL</code>, <code>LOGIN_ERROR</code></td><td>Supabase Auth 결과, <code>profiles</code>/<code>get_my_profile</code>, 입력 아이디</td><td><code>LOGIN_ERROR</code> 등 WARN+ 공통 <code>log_alert</code></td></tr>
+          <tr><td><code>login.html</code></td><td>로그인 성공, 인증 실패, 로그인 예외</td><td><code>LOGIN_SUCCESS</code>, <code>LOGIN_FAIL</code>, <code>LOGIN_ERROR</code></td><td>Supabase Auth 결과, <code>profiles</code>/<code>get_my_profile</code>, 입력 아이디. 성공 시 <code>record_user_login</code>이 <code>user_login_history</code>에 사용자·부서 스냅샷을 별도 기록</td><td><code>LOGIN_ERROR</code> 등 WARN+ 공통 <code>log_alert</code>. 성공 로그인 이력 기록은 Slack 알림 대상 아님</td></tr>
           <tr><td><code>register.html</code></td><td>가입 신청 제출 성공/실패</td><td><code>REGISTER_REQUEST</code>, <code>REGISTER_REQUEST_FAIL</code></td><td><code>registration_requests</code>, 입력 아이디/이름/부서, 부서명 조회 결과</td><td><code>user_register</code> 신청 부서 채널</td></tr>
           <tr><td><code>admin/users.html</code></td><td>사용자 등록/수정/삭제, 비밀번호 초기화, 가입 승인/거절, 부서 이동 요청/승인/거절/즉시 이동</td><td><code>USER_*</code>, <code>PASSWORD_RESET</code>, <code>REGISTER_APPROVE</code>, <code>REGISTER_REJECT</code>, <code>DEPT_TRANSFER_*</code></td><td><code>profiles</code>, <code>registration_requests</code>, <code>department_transfer_requests</code>, <code>admin_*_user</code> RPC 결과</td><td><code>dept_transfer</code> 이동 대상 부서 채널, WARN+ 공통</td></tr>
           <tr><td><code>admin/managers.html</code></td><td>운영 권한 부여/수정, 권한 변경 실패</td><td><code>MANAGER_UPDATE</code>, <code>MANAGER_PROMOTE</code>, 실패/오류 액션</td><td><code>profiles</code>, <code>departments</code>, <code>admin_update_user</code> RPC</td><td>WARN+ 공통</td></tr>
