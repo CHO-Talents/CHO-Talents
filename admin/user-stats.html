@@ -17,6 +17,9 @@
     .user-stats-table th, .user-stats-table td { padding:0.7rem 0.8rem; border-bottom:1px solid var(--t-border,#e9ecef); text-align:left; }
     .user-stats-table th { background:var(--t-subtle-surface,#f1f3f5); font-size:0.8rem; }
     .user-stats-table tbody tr:nth-child(even) { background:var(--t-subtle-surface,#fafbfc); }
+    .user-stats-table tbody tr.user-stats-row { cursor:pointer; }
+    .user-stats-table tbody tr.user-stats-row:hover { background:var(--t-hover-bg,#e7f5ff); }
+    .user-stats-table tbody tr.user-stats-row:focus { outline:2px solid var(--admin-primary,#228be6); outline-offset:-2px; }
     .user-stats-table .num { text-align:right; font-variant-numeric:tabular-nums; font-weight:700; }
     .user-stats-note { margin:0.35rem 0 0; color:var(--admin-text-muted,var(--t-text-muted,#868e96)); font-size:0.82rem; }
     .user-stats-detail-btn { padding:0.3rem 0.65rem; font-size:0.78rem; white-space:nowrap; }
@@ -193,11 +196,11 @@
         <div class="admin-table-wrap">
           <table class="user-stats-table">
             <thead><tr><th>기준</th><th class="num">로그인 횟수</th><th class="num">로그인 사용자</th><th>관리</th></tr></thead>
-            <tbody>${rows.map(row => `<tr>
+            <tbody>${rows.map(row => `<tr class="user-stats-row" tabindex="0" onclick="openLoginStatDetail('${currentView}', '${escapeHtml(row.group_key)}')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openLoginStatDetail('${currentView}', '${escapeHtml(row.group_key)}'); }">
               <td>${escapeHtml(row.group_label)}</td>
               <td class="num">${formatNumber(row.login_count)}</td>
               <td class="num">${formatNumber(row.user_count)}</td>
-              <td><button type="button" class="filter-btn user-stats-detail-btn" onclick="openLoginStatDetail('${currentView}', '${escapeHtml(row.group_key)}')">상세</button></td>
+              <td><button type="button" class="filter-btn user-stats-detail-btn" onclick="event.stopPropagation(); openLoginStatDetail('${currentView}', '${escapeHtml(row.group_key)}')">상세</button></td>
             </tr>`).join('')}</tbody>
           </table>
         </div>`;
