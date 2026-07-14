@@ -129,6 +129,7 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   $defaultUserLoginStatisticsSql = Join-Path $ScriptRoot '..\docs\TASK-081_user_login_statistics.sql'
   $defaultSuperAdminLoginExclusionSql = Join-Path $ScriptRoot '..\docs\TASK-082_exclude_super_admin_login_history.sql'
   $defaultUserLoginStatisticsDetailSql = Join-Path $ScriptRoot '..\docs\TASK-084_user_login_statistics_detail.sql'
+  $defaultProductSuggestionsSql = Join-Path $ScriptRoot '..\docs\TASK-085_product_suggestions.sql'
   if (Test-Path -LiteralPath $defaultCodeMasterSql) {
     $ExtraSqlPaths = @($defaultCodeMasterSql)
   }
@@ -155,6 +156,9 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   }
   if (Test-Path -LiteralPath $defaultUserLoginStatisticsDetailSql) {
     $ExtraSqlPaths += $defaultUserLoginStatisticsDetailSql
+  }
+  if (Test-Path -LiteralPath $defaultProductSuggestionsSql) {
+    $ExtraSqlPaths += $defaultProductSuggestionsSql
   }
 }
 

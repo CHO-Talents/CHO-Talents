@@ -213,6 +213,11 @@ const ACTION_LABELS = {
   PRODUCT_DEACTIVATE_FAIL: '상품 비활성화 실패',
   PRODUCT_DEACTIVATE_ERROR: '상품 비활성화 오류',
   PRODUCT_SOFT_DELETE: '상품 비활성화',
+  PRODUCT_SUGGESTION_CREATE: '상품 추천 등록',
+  PRODUCT_SUGGESTION_CREATE_FAIL: '상품 추천 등록 실패',
+  PRODUCT_SUGGESTION_ADOPT: '추천 상품 채택',
+  PRODUCT_SUGGESTION_REJECT: '추천 상품 불채택',
+  PRODUCT_SUGGESTION_CLOSE: '추천 상품 투표 종료',
   IMAGE_UPLOAD: '이미지 업로드',
   IMAGE_COMPRESS_FAIL: '이미지 압축 실패',
   IMAGE_UPLOAD_FAIL: '이미지 업로드 실패',
@@ -1743,6 +1748,34 @@ async function updateNavOrderBadge() {
     const cnt = await getPendingOrderCount();
     if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
     else { badge.classList.add('hidden'); }
+  } catch (e) {}
+  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+}
+
+/* ===== Product Suggestion Vote Badge (nav "상품" group) ===== */
+
+async function getUnvotedProductSuggestionCount() {
+  if (!_sb) return 0;
+  try {
+    const session = getSession();
+    if (!session || (session.permissionRank || 0) < 60) return 0;
+    const { data, error } = await _sb.rpc('get_unvoted_product_suggestion_count');
+    if (error) return 0;
+    return Number(data) || 0;
+  } catch (e) { return 0; }
+}
+
+async function updateNavProductSuggestionVoteBadge() {
+  const badge = document.getElementById('navProductSuggestionVoteBadge');
+  if (!badge) return;
+  try {
+    const count = await getUnvotedProductSuggestionCount();
+    if (count > 0) {
+      badge.textContent = count;
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
   } catch (e) {}
   if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
 }
