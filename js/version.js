@@ -2,9 +2,19 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.79.1',
+  current: '3.80.0',
   date: '2026-07-14',
   history: [
+    {
+      version: '3.80.0',
+      date: '2026-07-14',
+      title: '달란트 적립 항목 완전 동적 표시와 이모지 관리',
+      changes: [
+        '달란트 적립 안내는 미리 작성된 카드 이름을 연결하지 않고, 학생/교사용 활성 talent_items를 정렬 순서대로 직접 카드로 생성합니다.',
+        '달란트 항목 관리에서 카드 이모지를 등록·수정할 수 있고, 달란트 적립 안내와 관리 목록에 같은 이모지가 표시됩니다.',
+        '기존 운영 DB용 emoji 컬럼 및 기본 이모지 보정 SQL을 docs/TASK-083_talent_item_emoji.sql로 제공합니다.'
+      ]
+    },
     {
       version: '3.79.1',
       date: '2026-07-14',

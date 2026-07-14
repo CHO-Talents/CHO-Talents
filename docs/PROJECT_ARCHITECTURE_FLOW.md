@@ -1,6 +1,6 @@
 # CHO-Talents 프로젝트 구성도 및 프로세스 흐름도
 
-작성 기준: 2026-07-14 KST 현재 코드 기준 (v3.79.1)
+작성 기준: 2026-07-14 KST 현재 코드 기준 (v3.80.0)
 대상 배포: https://cho-talents.github.io/CHO-Talents/  
 문서 목적: 다음 검토자가 프로젝트 목적, 화면 구성, 권한 구조, 주요 데이터 흐름, 검증 지점을 빠르게 파악하도록 한다.
 
@@ -97,7 +97,7 @@ flowchart LR
 | `evangelist-guide.html` | 전도사님 가이드. 달란트 항목, QR, 상품 삭제, 공지 열람 현황, Q&A 삭제, 부서 비활성화 안내 |
 | `admin-guide.html` | 관리자 가이드. 부서 담당 교사(60+) 이상만 접근 가능, 운영 권한 전체 요약 |
 | `qna.html` | Q&A/FAQ. 공개 FAQ 조회, 관리자 FAQ 직접 등록, 로그인 사용자 질문/답변 등록, 60등급 이상 답변+FAQ 등록, 90등급 이상 삭제 |
-| `earn-talents.html` | 달란트 적립 방법 안내. 항목 카드 그리드(모바일 3열, PC 5열)와 `talent_items` 활성 항목 지급 수량 배지 표시. 로그인 사용자의 `user_type`에 따라 학생/교사 탭 기본 선택 |
+| `earn-talents.html` | 달란트 적립 방법 안내. 학생/교사별 활성 `talent_items`를 정렬 순서대로 카드로 생성해 이모지, 지급 규칙·설명, 지급 수량을 표시. 로그인 사용자의 `user_type`에 따라 학생/교사 탭 기본 선택 |
 | `shop.html` | 상점 조회 + 구매 신청 + 대리 구매. 비로그인은 학생용, 교사는 교사용 기본 필터. 최초 상품 목록은 카테고리 순번 그룹화 후 상품 정렬 순번 → 상품명 기준으로 표시. 상세 모달은 설명을 먼저 표시하고 `detail_image_url`이 있으면 설명 아래에 상세 이미지를 표시 |
 | `talent-receive.html` | 로그인 사용자 QR 달란트 수령. 카메라 스캔 또는 코드 입력, 대상/기간/시간/반복/위치 조건 검증, 최근 수령 내역 페이징. 카메라 스캔 결과 메시지는 카메라 영역 위에 표시하며 위치 권한 차단 시 alert와 `QR_LOCATION_PERMISSION_BLOCKED` 로그를 남김. 최근 수령 내역의 수동/관리 지급 건은 실제 지급자 이름을 표시하고 관리자 권한에서는 아이디를 함께 표시 |
 | `my-talents.html` | 로그인 사용자 본인의 사용 가능 달란트/상품 수령 예정/사용 대기/사용 완료/반환/예외/누적 적립 달란트, 달란트 내역(적립·예외·사용·반환 배지), 구매 내역. `fetchTalentSummary()`의 `returned` 필드와 `override_week_limit` 이력으로 반환/예외 요약 표시. 지급 취소 이력의 트랜잭션 ID는 숨김 |
@@ -737,7 +737,7 @@ flowchart TD
 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
 | `registration_requests` | 가입 신청/승인/거부 |
 | `department_transfer_requests` | 부서 이동 요청/승인/거부 |
-| `talent_items` | 달란트 지급 항목 (학생용/교사용 구분), 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
+| `talent_items` | 달란트 지급 항목 (학생용/교사용 구분), 카드 이모지(`emoji`), 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
 | `talent_transactions` | 달란트 적립/사용/반환 내역. `created_by`로 지급자 추적. 예외 지급은 `override_week_limit`, `override_reason`으로 표시 |
 | `talent_exception_requests` | 예외 지급 요청/승인/거부. 60등급 이상 요청, 90등급 이상 승인/거부, 승인 시 `give_talent` RPC로 실제 지급 |
 | `products` | 상점 상품. `target_role`, `category`는 코드 마스터 기준 구분값이고 `sort_order`로 카테고리 안 상품 표시 순서를 제어 |
@@ -888,7 +888,8 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 | 32 | `docs/TASK-074_activity_logs_english_details.sql` | v3.74.0: 기존 활동 로그 details의 중복 한글 별칭/client 항목을 영어 key 중심으로 정리 |
 | 33 | `docs/TASK-081_user_login_statistics.sql` | v3.79.0: 성공 로그인 이력 테이블, RLS, 기록/통계 RPC |
 | 34 | `docs/TASK-082_exclude_super_admin_login_history.sql` | v3.79.1: 최고관리자 로그인 이력 정리 및 기록·통계 제외 |
-| 35 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
+| 35 | `docs/TASK-083_talent_item_emoji.sql` | v3.80.0: 달란트 항목 카드 이모지 컬럼과 기존 항목 기본 이모지 보정 |
+| 36 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
 
 ## 19. 개발 주의사항
 
