@@ -128,6 +128,7 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   $defaultServiceUsageWebhookFailureSql = Join-Path $ScriptRoot '..\docs\TASK-080_service_usage_source_and_webhook_failures.sql'
   $defaultUserLoginStatisticsSql = Join-Path $ScriptRoot '..\docs\TASK-081_user_login_statistics.sql'
   $defaultSuperAdminLoginExclusionSql = Join-Path $ScriptRoot '..\docs\TASK-082_exclude_super_admin_login_history.sql'
+  $defaultUserLoginStatisticsDetailSql = Join-Path $ScriptRoot '..\docs\TASK-084_user_login_statistics_detail.sql'
   if (Test-Path -LiteralPath $defaultCodeMasterSql) {
     $ExtraSqlPaths = @($defaultCodeMasterSql)
   }
@@ -151,6 +152,9 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   }
   if (Test-Path -LiteralPath $defaultSuperAdminLoginExclusionSql) {
     $ExtraSqlPaths += $defaultSuperAdminLoginExclusionSql
+  }
+  if (Test-Path -LiteralPath $defaultUserLoginStatisticsDetailSql) {
+    $ExtraSqlPaths += $defaultUserLoginStatisticsDetailSql
   }
 }
 

@@ -12,12 +12,15 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.80.1` (`js/version.js` 기준, 2026-07-14) |
+| 현재 버전 | `v3.81.0` (`js/version.js` 기준, 2026-07-14) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.80.1`로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.81.0`로 갱신되어 있습니다.
+- **v3.81.0 주요 변경 사항**:
+  - `관리 > 사용자 통계`의 날짜·요일·시간·부서·사용자별 통계 표에 관리 열과 상세 버튼을 추가했습니다.
+  - 날짜·요일·시간·부서별 상세에는 사용자·로그인 횟수·최근 로그인 시각을, 사용자별 상세에는 KST 로그인 이력과 당시 부서·권한을 표시합니다.
 - **v3.80.1 주요 변경 사항**:
   - 상품 구매 카드의 썸네일을 선택하면 이미지 확대 모달 대신 상품 상세 모달을 표시합니다.
   - 상품 상세 모달은 카테고리·대상·달란트, 썸네일, 설명, 상세 이미지 순서로 상품 정보를 보여줍니다.
@@ -685,7 +688,7 @@ flowchart TD
 | `admin/page-access.html` | 100 | 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100 | 권한별 페이지 기능(수정/삭제/승인 등) 설정값 관리 |
 | `admin/audit.html` | 100 | 관리 작업 이력 조회 (70+ 액션 타입, 10개 카테고리 필터, 영어 저장 details의 한글 표시). 기간 필터 기본값 1년 + 기간 프리셋, 자동 조회 |
-| `admin/user-stats.html` | 100 | 성공 로그인 이력을 KST 기준으로 날짜별·요일별·시간별·부서별·사용자별 집계. 기간/부서 필터와 탭별 그리드 제공, 원본 이력 직접 조회 없음 |
+| `admin/user-stats.html` | 100 | 성공 로그인 이력을 KST 기준으로 날짜별·요일별·시간별·부서별·사용자별 집계. 각 통계 행은 안전한 상세 RPC로 사용자 목록 또는 사용자 로그인 이력을 표시 |
 | `admin/page-permissions.html` | 100 | 페이지별 조회/관리 권한 매트릭스 설정 (레거시) |
 | `admin/change-password.html` | 로그인 | 최초 로그인 또는 비밀번호 변경 처리 |
 
@@ -811,7 +814,7 @@ flowchart TD
 - 모든 기능의 성공/실패/거부가 `logInfo`/`logWarn`/`logError`로 기록됩니다.
 - `writeLog()`는 `details`를 영어 key로 정규화하고 중복을 제거합니다. 작업명, 사용자 계정, 로그 일시, 레벨, 발생 페이지는 기본 컬럼/화면에서 표시하며 `details`에는 처리 상세만 저장합니다.
 - `admin/logs.html`과 `admin/audit.html`은 저장된 영어 action/details를 코드북과 공통 매핑 기준으로 한글 치환해 표시합니다.
-- 로그인 성공은 기존 `LOGIN_SUCCESS` 활동 로그와 별도로 `user_login_history`에 사용자/부서 스냅샷을 남깁니다. 원본 이력은 직접 노출하지 않고, 관리자(100+)만 `admin/user-stats.html`의 집계 RPC로 조회합니다.
+- 로그인 성공은 기존 `LOGIN_SUCCESS` 활동 로그와 별도로 `user_login_history`에 사용자/부서 스냅샷을 남깁니다. 원본 이력의 직접 조회는 막고, 관리자(100+)만 `admin/user-stats.html`의 집계·상세 조회 RPC로 통계별 사용자 목록과 선택 사용자 이력을 확인합니다.
 - `writeLog()`는 Supabase insert의 반환 `error`를 확인하고, 구버전 DB 스키마의 선택 컬럼 오류는 제거 후 재시도합니다.
 - `ERROR`, `FATAL`, `CRITICAL` 로그는 미확인 상태로 남고, `admin/logs.html`에서 확인 처리합니다.
 - 로그 삭제는 소프트 삭제(`is_deleted=true`)이며, 확인 완료된 오래된 로그는 180일 보존 정책으로 실제 삭제됩니다. 별도 운영 정리가 필요하면 SQL Editor에서 수행합니다.
@@ -824,7 +827,7 @@ flowchart TD
 | 구분 | 리소스 | 용도 |
 |---|---|---|
 | 사용자 | `profiles` | 사용자 정보, 유형, 권한, 부서, 반, 잔액, 사용 대기 달란트, 마지막 로그인(`last_login_at`) |
-| 사용자 로그인 이력 | `user_login_history` | 최고관리자를 제외한 성공 로그인 시점의 사용자·부서·권한 스냅샷. RLS로 직접 조회를 막고 관리자 통계 RPC만 사용 |
+| 사용자 로그인 이력 | `user_login_history` | 최고관리자를 제외한 성공 로그인 시점의 사용자·부서·권한 스냅샷. RLS로 직접 조회를 막고 관리자 통계·상세 조회 RPC만 사용 |
 | 코드 마스터 | `code_groups`, `code_items` | 권한/유형/상태/카테고리/로그 액션 같은 구분값의 코드, 표시명, 정렬, 색상, 이모지, rank 메타 관리 |
 | 사용자 설정 | `user_preferences` | 사용자별 즐겨찾기 바로가기 설정(JSONB), 테마(`theme`), 그리드별 페이지 크기(`page_sizes` JSONB) |
 | 부서 | `departments` | 부서명, 설명, 반 개수, 활성 상태 |
@@ -858,6 +861,7 @@ flowchart TD
 | `update_last_login` | 로그인 성공 시 `profiles.last_login_at` 갱신 | `auth.js` |
 | `record_user_login` | 로그인 성공 시 사용자 로그인 이력 스냅샷 저장 | `auth.js` |
 | `get_user_login_statistics` | KST 기준 날짜/요일/시간/부서/사용자별 성공 로그인 집계(관리자 100+ 전용) | `admin/user-stats.html` |
+| `get_user_login_stat_detail` | 통계별 사용자 목록 또는 선택 사용자의 로그인 이력 조회(관리자 100+ 전용) | `admin/user-stats.html` |
 | `check_username_available` | 가입 신청 아이디 중복확인 | `register.html` |
 | `check_registration_status` | 미승인/거부 계정 로그인 안내 조회 | `login.html` |
 | `admin_list_users` | 사용자 목록 조회 | `user-mgmt.js` |
@@ -892,9 +896,9 @@ flowchart TD
 |---|---|
 | `docs/INITIAL_DATABASE_SETUP.sql` | 현재 테이블, RPC, RLS, Storage 버킷, 기본 데이터를 새 DB에 설치 |
 | `docs/INITIAL_DATABASE_SETUP.md` | SQL Editor 방식과 PowerShell/psql 자동 설치 방법 |
-| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트. 기본 실행 시 사용자 로그인 통계와 최고관리자 제외 보강 SQL(`TASK-081`/`TASK-082`)을 합본에 포함 |
+| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트. 기본 실행 시 사용자 로그인 통계, 최고관리자 제외, 통계 상세 조회 보강 SQL(`TASK-081`/`TASK-082`/`TASK-084`)을 합본에 포함 |
 
-SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실행 후 필요한 보강 SQL과 `docs/TASK-081_user_login_statistics.sql`, `docs/TASK-082_exclude_super_admin_login_history.sql`을 이어서 실행합니다. PowerShell/Bash 설치 스크립트와 `-GenerateOnly` 합본 SQL은 두 파일을 기본 포함합니다.
+SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실행 후 필요한 보강 SQL과 `docs/TASK-081_user_login_statistics.sql`, `docs/TASK-082_exclude_super_admin_login_history.sql`, `docs/TASK-084_user_login_statistics_detail.sql`을 이어서 실행합니다. PowerShell/Bash 설치 스크립트와 `-GenerateOnly` 합본 SQL은 세 파일을 기본 포함합니다.
 
 아래 SQL 파일들은 과거 작업별 변경 이력이며, 빈 새 DB에는 위 단일 설치 SQL을 우선 사용합니다:
 
@@ -941,6 +945,8 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-082_plan.md`, `docs/TASK-082_test_scenario.md`, `docs/TASK-082_test_result.md`, `docs/TASK-082_change_report.md` | v3.79.1: 최고관리자 로그인 이력 제외 계획, 검증 시나리오·결과, 변경 보고 |
 | `docs/TASK-083_talent_item_emoji.sql` | v3.80.0: `talent_items.emoji` 컬럼과 기존 항목 기본 이모지 보정 |
 | `docs/TASK-083_plan.md`, `docs/TASK-083_test_scenario.md`, `docs/TASK-083_test_result.md`, `docs/TASK-083_change_report.md` | v3.80.0: 달란트 적립 카드 동적 생성과 이모지 관리 계획, 검증 시나리오·결과, 변경 보고 |
+| `docs/TASK-084_user_login_statistics_detail.sql` | v3.81.0: 사용자 통계별 사용자 목록과 사용자별 로그인 이력 상세 조회 RPC |
+| `docs/TASK-084_plan.md`, `docs/TASK-084_test_scenario.md`, `docs/TASK-084_change_report.md` | v3.81.0: 사용자 통계 상세 조회 계획, 검증 시나리오, 변경 보고 |
 
 ## 관련 문서
 
