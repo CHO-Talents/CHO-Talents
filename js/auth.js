@@ -444,6 +444,7 @@ function detectCurrentPageId() {
   if (path.includes('admin/talent-stats.html')) return 'admin-talent-stats';
   if (path.includes('admin/talent-qr.html')) return 'admin-talent-qr';
   if (path.includes('admin/product-categories.html')) return 'admin-product-categories';
+  if (path.includes('admin/product-suggestion-votes.html')) return 'admin-product-suggestion-votes';
   if (path.includes('admin/shop.html')) return 'admin-shop';
   if (path.includes('admin/purchases.html')) return 'admin-purchases';
   if (path.includes('admin/purchase-stats.html')) return 'admin-purchase-stats';
@@ -464,6 +465,7 @@ function detectCurrentPageId() {
   if (path.includes('talent-receive.html')) return 'talent-receive';
   if (path.includes('my-talents.html')) return 'my-talents';
   if (path.includes('my-orders.html')) return 'my-orders';
+  if (path.includes('product-suggestions.html')) return 'product-suggestions';
   if (path.includes('dept-teacher-guide.html')) return 'dept-teacher-guide';
   if (path.includes('purchase-teacher-guide.html')) return 'purchase-teacher-guide';
   if (path.includes('chief-teacher-guide.html')) return 'chief-teacher-guide';

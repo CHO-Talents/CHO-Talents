@@ -53,7 +53,8 @@ The script automatically appends docs/TASK-057_code_master.sql,
 docs/TASK-058_product_category_policy.sql,
 docs/TASK-068_product_category_page_and_sort_order.sql, and
 docs/TASK-069_product_detail_image.sql, and
-docs/TASK-070_service_usage_monitoring.sql when no --extra-sql-path is provided.
+docs/TASK-070_service_usage_monitoring.sql through
+docs/TASK-085_product_suggestions.sql when no --extra-sql-path is provided.
 USAGE
 }
 
@@ -283,6 +284,10 @@ if [ "${#EXTRA_SQL_PATHS[@]}" -eq 0 ]; then
   DEFAULT_USER_LOGIN_STATISTICS_DETAIL_SQL="$ROOT_DIR/docs/TASK-084_user_login_statistics_detail.sql"
   if [ -f "$DEFAULT_USER_LOGIN_STATISTICS_DETAIL_SQL" ]; then
     EXTRA_SQL_PATHS+=("$DEFAULT_USER_LOGIN_STATISTICS_DETAIL_SQL")
+  fi
+  DEFAULT_PRODUCT_SUGGESTIONS_SQL="$ROOT_DIR/docs/TASK-085_product_suggestions.sql"
+  if [ -f "$DEFAULT_PRODUCT_SUGGESTIONS_SQL" ]; then
+    EXTRA_SQL_PATHS+=("$DEFAULT_PRODUCT_SUGGESTIONS_SQL")
   fi
 fi
 

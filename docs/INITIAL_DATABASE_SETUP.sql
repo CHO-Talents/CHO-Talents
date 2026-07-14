@@ -2081,6 +2081,8 @@ pages(page_key, min_view_rank, min_manage_rank) AS (
     ('talent_qr', 90, 90),
     ('talent_items', 90, 90),
     ('shop', 60, 60),
+    ('product_suggestions', 20, 20),
+    ('product_suggestion_votes', 60, 60),
     ('purchases', 60, 60),
     ('purchase_stats', 60, 60),
     ('reports', 80, 80),
