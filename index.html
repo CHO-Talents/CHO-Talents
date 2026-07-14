@@ -173,10 +173,11 @@
       { id:'admin-feat',    href:'admin/page-features.html', icon:'⚙️', title:'페이지 기능',   desc:'페이지 기능 권한을 설정해요!',                color:'#d63031',       minRank:100 },
       { id:'admin-audit',   href:'admin/audit.html',         icon:'📜', title:'작업 이력',      desc:'작업 이력을 확인해요!',                       color:'#6c5ce7',       minRank:100 },
       { id:'admin-logs',    href:'admin/logs.html',          icon:'🗂️', title:'로그',           desc:'시스템 로그를 확인해요!',                     color:'#fd79a8',       minRank:100 },
+      { id:'admin-user-stats', href:'admin/user-stats.html', icon:'👥', title:'사용자 통계', desc:'사용자 로그인 통계를 확인하세요!', color:'#5f3dc4', minRank:100 },
     ];
     const DEFAULT_FAV_IDS = ['earn-talents','shop','my-talents'];
-    const MAX_FAV_MOBILE = 10;
-    const MAX_FAV_PC = 10;
+    const MAX_FAV_MOBILE = 20;
+    const MAX_FAV_PC = 20;
 
     let _favSession = null, _favRank = 0;
 

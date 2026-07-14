@@ -179,6 +179,7 @@ async function login(username, password) {
 
     await logInfo('LOGIN_SUCCESS', { 대상: username, permissionLevel: perm });
     try { await _sb.rpc('update_last_login'); } catch(e) {}
+    try { await _sb.rpc('record_user_login'); } catch(e) { console.warn('[AUTH] login history record skipped:', e.message); }
     _touchActivity();
     return { success: true, data: profile };
   } catch (err) {
@@ -436,6 +437,7 @@ function detectCurrentPageId() {
   if (path.includes('admin/users.html')) return 'admin-users';
   if (path.includes('admin/bulk-register.html')) return 'admin-bulk-register';
   if (path.includes('admin/departments.html')) return 'admin-departments';
+  if (path.includes('admin/user-stats.html')) return 'admin-user-stats';
   if (path.includes('admin/managers.html')) return 'admin-managers';
   if (path.includes('admin/talents.html')) return 'admin-talents';
   if (path.includes('admin/talent-adjustments.html')) return 'admin-talent-adjustments';
