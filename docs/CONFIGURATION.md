@@ -71,9 +71,12 @@ Supabase 접속 이후에는 `app_config` 테이블의 공개 설정을 `get_pub
 GITHUB_PAT=...
 GITHUB_TOKEN=...
 SB_MANAGEMENT_ACCESS_TOKEN=...
+SUPABASE_SECRET_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
 SUPABASE_DB_CONNECTION_STRING=...
 ```
+
+반복적인 운영 로그 한글 번역 점검/보완은 [로그 번역 운영 런북](LOG_TRANSLATION_RUNBOOK.md)을 따른다. 이 작업에는 대상 환경과 프로젝트 ref, 그리고 로컬의 `SUPABASE_SECRET_KEY`(권장) 또는 `SUPABASE_SERVICE_ROLE_KEY`(레거시)가 필요하다. 두 키 모두 프로젝트 전체 데이터 권한을 가지므로 채팅, 정적 파일, `app_config`, Git에 입력하지 않는다.
 
 로컬 PowerShell 자동화에서는 아래처럼 설정을 읽는다.
 
@@ -88,6 +91,7 @@ Supabase `app_config` 테이블에는 비밀 원문을 넣지 않는다. 대신 
 | `GITHUB_PAT` | `env:GITHUB_PAT` | 로컬 `.env.local`, CI secret, 서버/Edge Function 환경변수 |
 | `GITHUB_TOKEN` | 미저장 | 서비스 통계용 GitHub fine-grained token. Edge Function Secret |
 | `SB_MANAGEMENT_ACCESS_TOKEN` | `env:SB_MANAGEMENT_ACCESS_TOKEN` | 로컬 `.env.local`, CI secret |
+| `SUPABASE_SECRET_KEY` | `env:SUPABASE_SECRET_KEY` | 서버/로컬 자동화용 권장 Secret key. 로컬 `.env.local`, CI secret |
 | `SUPABASE_SERVICE_ROLE_KEY` | `env:SUPABASE_SERVICE_ROLE_KEY` | 서버/Edge Function 환경변수 또는 Supabase Vault |
 | `SUPABASE_DB_CONNECTION_STRING` | `env:SUPABASE_DB_CONNECTION_STRING` | 로컬/CI 비밀 저장소 |
 | `SLACK_WEBHOOK_PART1` ~ `SLACK_WEBHOOK_PART5` | `env:SLACK_WEBHOOK_PART1` 등 | Supabase Edge Function Secret |
@@ -140,7 +144,7 @@ Slack 알림은 브라우저에서 Webhook URL을 직접 호출하지 않는다.
 
 | 목적 | 필요한 값 |
 |---|---|
-| RLS를 무시하는 서버/로컬 CRUD | `SUPABASE_SERVICE_ROLE_KEY` |
+| RLS를 무시하는 서버/로컬 CRUD | `SUPABASE_SECRET_KEY`(권장) 또는 `SUPABASE_SERVICE_ROLE_KEY`(레거시) |
 | SQL 실행, 마이그레이션, 백업 | `SUPABASE_DB_CONNECTION_STRING` 또는 DB password |
 | 서비스 통계 Supabase Management API 연결 | `SB_MANAGEMENT_ACCESS_TOKEN` + `SB_PROJECT_REF` |
 
