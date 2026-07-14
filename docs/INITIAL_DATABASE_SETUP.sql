@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS public.department_transfer_requests (
 CREATE TABLE IF NOT EXISTS public.talent_items (
   id uuid PRIMARY KEY DEFAULT extensions.gen_random_uuid(),
   name text NOT NULL,
+  emoji text NOT NULL DEFAULT '✨',
   target_type text NOT NULL CHECK (target_type IN ('teacher', 'student')),
   talent_amount integer NOT NULL CHECK (talent_amount > 0),
   is_active boolean DEFAULT true,

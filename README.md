@@ -12,12 +12,15 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.79.1` (`js/version.js` 기준, 2026-07-14) |
+| 현재 버전 | `v3.80.0` (`js/version.js` 기준, 2026-07-14) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.79.1`로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.80.0`로 갱신되어 있습니다.
+- **v3.80.0 주요 변경 사항**:
+  - `달란트 적립`은 학생/교사별 활성 `talent_items` 행을 카드로 직접 생성하므로, 항목 관리에서 추가·수정·활성화한 항목이 이름 매칭 없이 정렬 순서대로 표시됩니다.
+  - `달란트 항목 관리`에서 안내 카드용 이모지를 저장·수정할 수 있으며, 기존 운영 DB에는 `docs/TASK-083_talent_item_emoji.sql`로 `talent_items.emoji` 컬럼과 기본 이모지를 적용합니다.
 - **v3.79.1 주요 변경 사항**:
   - `profiles.is_super_admin=true`인 최고관리자 계정은 사용자 로그인 이력에 기록하지 않으며, 기존 이력도 정리하고 사용자 통계 집계에서 제외합니다.
 - **v3.79.0 주요 변경 사항**:
@@ -650,7 +653,7 @@ flowchart TD
 | `register.html` | 로그인 | 영문/숫자/`_`/`-` 아이디 중복확인 후 가입 신청. 실패 시 에러 로깅 |
 | `guide.html` | 메인, Q&A, 상점, 내 달란트 | 사이트 이용 방법을 카드/스텝 형태로 안내 |
 | `qna.html` | 메인, 학생 가이드 | FAQ 공개 조회, 로그인 사용자 질문 등록, 60등급 이상 답변/FAQ 등록 |
-| `earn-talents.html` | 메인, 상점, 내 달란트 | 달란트 적립 방법 안내. `talent_items` 활성 항목의 지급 수량을 카드별 `+N 달란트` 배지로 표시 |
+| `earn-talents.html` | 메인, 상점, 내 달란트 | 달란트 적립 방법 안내. 학생/교사별 활성 `talent_items`를 정렬 순서대로 카드로 생성해 이모지, 지급 규칙·설명, `+N 달란트`를 표시 |
 | `shop.html` | 메인, 적립 안내, 내 달란트, 내 구매 상품 | 학생용 상품 공개 조회. 교사/60등급 이상은 교사용 탭. 로그인 시 구매 신청, 40등급 이상은 대리 구매 가능. 상품 상세 모달은 설명을 먼저 보여 주고, 상세 설명 이미지(`products.detail_image_url`)가 있으면 설명 아래에 표시 |
 | `talent-receive.html` | 로그인 필요 | QR 코드 카메라 스캔/코드 입력 수령. 결과 메시지는 카메라 영역 위에 표시되며, 위치 제한 QR에서 기기/브라우저 위치 권한이 차단되면 알림창과 화면 메시지를 표시. 최근 수령 내역은 실제 지급자 이름을 표시하고, 관리자 권한은 지급자 아이디도 함께 표시 |
 | `my-talents.html` | 로그인 필요 | 누적 적립/예외 지급/반환/사용 완료/사용 대기/사용 가능 잔액, 달란트 내역(적립/예외/사용/반환 구분), 구매 내역 조회 |
@@ -666,7 +669,7 @@ flowchart TD
 | `admin/managers.html` | 80 | 기존 사용자를 관리자 계열 권한으로 승격/수정, 담당 부서 지정. 로우 클릭 시 수정 모달 열림 |
 | `admin/talents.html` | 40 | 학생/교사 탭별 달란트 체크박스 선택+일괄 지급, 로우 클릭 사용자 상세 모달, 전도사님(90+) 예외 지급, 수동 적립/사용, 반환(80+). 상세 팝업에 누적적립/총사용/총반환/잔여와 이력 페이징/페이지당 항목 수 설정 표시. 일반 교사는 담당 부서/반 제한 |
 | `admin/talent-adjustments.html` | 60 | 예외 지급 요청, 예외 지급 내역, 달란트 반환 내역, 전체 처리 순으로 조회. 부서 담당 교사는 담당 부서만, 부장 교사 이상은 전체 부서 이력 조회. 전도사님(90+) 이상은 예외 지급 요청 승인/거부와 네비게이션 배지를 확인. 처리자/대상자/사유/원본 지급 참조/처리 시각을 페이징으로 확인 |
-| `admin/talent-items.html` | 60 | 달란트 지급 항목 등록/수정/활성화, 지급 규칙/설명 관리, 총/이번 주/예외 지급 통계 표시. 항목 로우 클릭 시 수정 모달 열림. 학생 항목은 주 1회 지급 규칙과 연동, 퀵 버튼 설정은 80등급 이상 |
+| `admin/talent-items.html` | 60 | 달란트 지급 항목 등록/수정/활성화, 카드 이모지와 지급 규칙/설명 관리, 총/이번 주/예외 지급 통계 표시. 항목 로우 클릭 시 수정 모달 열림. 학생 항목은 주 1회 지급 규칙과 연동, 퀵 버튼 설정은 80등급 이상 |
 | `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), QR 항목 영역 클릭 수정 모달, 수정(새 코드 재생성), 비활성화. 지정일 날짜+시간 또는 기간(from~to datetime) 설정, 위치 반경 100m~5km(기본 500m). 수령자 모달은 사용자별 묶음, 사용자 유형/부서/검색 필터, 선택 사용자 지급 항목 상세, 반환 상태를 표시 |
 | `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 썸네일 이미지와 상세 설명 이미지 분리 업로드, 정렬 순번 관리. 목록은 카테고리 순번과 상품 순번 기준으로 기본 정렬되며 로우 클릭 시 수정 창이 열림. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
 | `admin/product-categories.html` | 70 | 상품 카테고리 등록, 수정, 삭제(비활성화), 카테고리 정렬 순번 관리. 그리드에는 코드 열을 표시하지 않고 로우 클릭 시 수정 모달이 열립니다. 사용 중인 카테고리와 기본 `etc` 카테고리는 삭제 불가 |
@@ -826,7 +829,7 @@ flowchart TD
 | 부서 이동 | `department_transfer_requests` | 부서 이동 요청, 승인/거부, 처리 기록 |
 | 달란트 | `talent_transactions` | 적립/사용/반환 거래 내역. 승인 완료된 예외 지급은 `override_week_limit=true`, `override_reason`으로 사유 저장 |
 | 예외 지급 요청 | `talent_exception_requests` | 부서 담당 교사(60+) 이상 예외 지급 요청과 전도사님(90+) 이상 승인/거부 상태 |
-| 달란트 항목 | `talent_items` | 지급 항목, 달란트 금액, 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
+| 달란트 항목 | `talent_items` | 지급 항목, 카드 이모지(`emoji`), 달란트 금액, 지급 규칙(`giving_rule`), 지급 설명(`giving_description`) |
 | 상품 | `products` | 상점 상품, 가격, 대상(`products.target_role`), 카테고리(`products.category`), 정렬 순번(`sort_order`), 이미지, 활성 상태 |
 | 상품 주문 | `product_orders` | 구매 신청, 코드화된 4단계 상태(`product_orders.status`) 관리, 담당자 기록 |
 | Q&A | `qna` | FAQ, 사용자 질문, 답변, 공개 여부 |
@@ -933,6 +936,8 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-081_plan.md`, `docs/TASK-081_test_scenario.md`, `docs/TASK-081_test_result.md`, `docs/TASK-081_change_report.md` | v3.79.0: 사용자 로그인 통계 작업 계획, 검증 시나리오·결과, 변경 보고 |
 | `docs/TASK-082_exclude_super_admin_login_history.sql` | v3.79.1: 최고관리자 로그인 이력 삭제·미기록 및 사용자 통계 제외 |
 | `docs/TASK-082_plan.md`, `docs/TASK-082_test_scenario.md`, `docs/TASK-082_test_result.md`, `docs/TASK-082_change_report.md` | v3.79.1: 최고관리자 로그인 이력 제외 계획, 검증 시나리오·결과, 변경 보고 |
+| `docs/TASK-083_talent_item_emoji.sql` | v3.80.0: `talent_items.emoji` 컬럼과 기존 항목 기본 이모지 보정 |
+| `docs/TASK-083_plan.md`, `docs/TASK-083_test_scenario.md`, `docs/TASK-083_test_result.md`, `docs/TASK-083_change_report.md` | v3.80.0: 달란트 적립 카드 동적 생성과 이모지 관리 계획, 검증 시나리오·결과, 변경 보고 |
 
 ## 관련 문서
 
