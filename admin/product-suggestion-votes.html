@@ -40,6 +40,8 @@
     .ps-detail-grid dt { color:var(--admin-text-muted); font-weight:700; }
     .ps-detail-grid dd { margin:0; white-space:pre-wrap; word-break:break-word; color:var(--admin-text); }
     .ps-detail-image { max-width:100%; max-height:360px; object-fit:contain; border:1px solid var(--admin-border); border-radius:6px; }
+    .ps-product-view-link { display:inline-flex; align-items:center; justify-content:center; padding:0.42rem 0.7rem; border-radius:6px; background:var(--admin-primary); color:#fff; text-decoration:none; font-size:0.82rem; font-weight:700; }
+    .ps-product-view-link:hover { filter:brightness(0.95); }
     .ps-empty-note { font-size:0.79rem; color:var(--admin-text-muted); }
     .ps-detail-vote-actions { display:flex; align-items:center; justify-content:flex-end; gap:0.45rem; flex-wrap:wrap; }
     #suggestionDetailModal .modal-actions { flex-wrap:wrap; }
@@ -257,11 +259,13 @@
       const item = voteItems.get(suggestionId);
       if (!item) return;
       const image = item.image_url ? `<img class="ps-detail-image" src="${psEscapeHtml(item.image_url)}" alt="${psEscapeHtml(item.name)}" />` : '-';
-      const productUrl = item.product_url ? `<a class="ps-link" href="${psEscapeHtml(item.product_url)}" target="_blank" rel="noopener">${psEscapeHtml(item.product_url)}</a>` : '-';
+      const detailImage = item.detail_image_url ? `<img class="ps-detail-image" src="${psEscapeHtml(item.detail_image_url)}" alt="${psEscapeHtml(item.name)} 상세 설명 이미지" />` : '-';
+      const productUrl = item.product_url ? `<a class="ps-product-view-link" href="${psEscapeHtml(item.product_url)}" target="_blank" rel="noopener">상품 보기</a>` : '-';
       document.getElementById('suggestionDetailContent').innerHTML = `
         <dt>상품명</dt><dd>${psEscapeHtml(item.name)}</dd>
         <dt>상품 URL</dt><dd>${productUrl}</dd>
         <dt>이미지</dt><dd>${image}</dd>
+        <dt>상세 설명 이미지</dt><dd>${detailImage}</dd>
         <dt>상품 설명</dt><dd>${psEscapeHtml(item.description || '-')}</dd>
         <dt>금액</dt><dd>${psEscapeHtml(psFormatKrw(item.price_krw))}</dd>
         <dt>카테고리</dt><dd>${psEscapeHtml(getProductCategoryLabel(item.category))}</dd>

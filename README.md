@@ -12,12 +12,17 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.84.0` (`js/version.js` 기준, 2026-07-14) |
+| 현재 버전 | `v3.85.0` (`js/version.js` 기준, 2026-07-15) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
 - `APP_VERSION.current`는 `3.84.0`로 갱신되어 있습니다.
+- **v3.85.0 주요 변경 사항**:
+  - 상품 추천은 선택형 상세 설명 이미지(URL 또는 파일)를 지원하며, 추천/투표 상세 모달의 긴 구매 URL은 `상품 보기` 버튼으로 표시합니다.
+  - 일반 투표자는 투표 종료 전 찬성·반대 득표 수를 볼 수 없고, 관리자(100+)만 진행 중 집계를 확인합니다. 종료된 투표에는 새 투표와 기존 투표 변경이 모두 차단됩니다.
+  - 구매 담당 교사(70+) 이상은 `상품 > 상품 관리` 바로 아래의 `상품 일괄 등록`에서 엑셀 양식 다운로드, 행별 검증 미리보기, 성공/실패 사유 확인을 할 수 있습니다.
+  - 관리 변경 로그는 변경 항목과 이전 값 → 변경 값을 구조화해 기록합니다.
 - **v3.84.0 주요 변경 사항**:
   - 관리자는 `상품 추천 투표` 상세 모달에서 투표 완료 전에도 채택 또는 불채택을 직접 결정할 수 있습니다.
   - 예외 결정은 관리자(100+)만 가능하며, 투표자·개별 찬반·추천자 정보는 화면과 작업 이력에 남기지 않습니다.
@@ -972,6 +977,7 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-085_product_suggestions.sql` | v3.82.2: 상품 추천, 등록 시점 투표 정원, 비밀 투표, 관리자 현재 유효 정원 종료, 미투표 배지와 타입 호환 RPC/RLS/Storage 정책 |
 | `docs/TASK-085_plan.md`, `docs/TASK-085_test_scenario.md`, `docs/TASK-085_test_result.md`, `docs/TASK-085_change_report.md` | v3.82.0: 상품 추천 및 비밀 투표 계획, 시나리오, 검증 기준, 변경 보고 |
 | `docs/TASK-086_product_suggestion_admin_decision.sql` | v3.84.0: 관리자(100+)의 투표 완료 전 채택/불채택 예외 결정 RPC |
+| `docs/TASK-087_product_suggestion_detail_image.sql` | v3.85.0: 추천 상세 이미지, 종료 전 득표 비공개, 종료 투표 잠금, 상품 일괄 등록 로그 액션 |
 | `docs/TASK-086_test_scenario.md`, `docs/TASK-086_test_result.md`, `docs/TASK-086_change_report.md` | v3.84.0: 관리자 예외 결정 검증 기준과 변경 보고 |
 
 ## 관련 문서

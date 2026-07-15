@@ -131,6 +131,7 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   $defaultUserLoginStatisticsDetailSql = Join-Path $ScriptRoot '..\docs\TASK-084_user_login_statistics_detail.sql'
   $defaultProductSuggestionsSql = Join-Path $ScriptRoot '..\docs\TASK-085_product_suggestions.sql'
   $defaultProductSuggestionAdminDecisionSql = Join-Path $ScriptRoot '..\docs\TASK-086_product_suggestion_admin_decision.sql'
+  $defaultProductSuggestionDetailImageSql = Join-Path $ScriptRoot '..\docs\TASK-087_product_suggestion_detail_image.sql'
   if (Test-Path -LiteralPath $defaultCodeMasterSql) {
     $ExtraSqlPaths = @($defaultCodeMasterSql)
   }
@@ -163,6 +164,9 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   }
   if (Test-Path -LiteralPath $defaultProductSuggestionAdminDecisionSql) {
     $ExtraSqlPaths += $defaultProductSuggestionAdminDecisionSql
+  }
+  if (Test-Path -LiteralPath $defaultProductSuggestionDetailImageSql) {
+    $ExtraSqlPaths += $defaultProductSuggestionDetailImageSql
   }
 }
 

@@ -162,6 +162,7 @@ const CODE_ITEMS = {
     { key: 'qr_toggle', value: 'QR 코드 토글', category: 'TALENT', emoji: '🔘', order: 4160 },
     { key: 'qr_scan', value: 'QR 달란트 수령', category: 'TALENT', emoji: '📱', order: 4170 },
     { key: 'PRODUCT_CREATE', value: '상품 등록', category: 'ORDER', emoji: '🛍️', order: 5010 },
+    { key: 'PRODUCT_BULK_CREATE', value: '상품 일괄 등록', category: 'ORDER', emoji: '📦', order: 5011 },
     { key: 'PRODUCT_CATEGORY_CREATE', value: '상품 카테고리 등록', category: 'ORDER', emoji: '🏷️', order: 5015 },
     { key: 'PRODUCT_CATEGORY_UPDATE', value: '상품 카테고리 수정', category: 'ORDER', emoji: '🏷️', order: 5016 },
     { key: 'PRODUCT_CATEGORY_DELETE', value: '상품 카테고리 삭제', category: 'ORDER', emoji: '🏷️', order: 5017 },
