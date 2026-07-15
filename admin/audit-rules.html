@@ -134,7 +134,7 @@
           <tr><td>PRODUCT_CATEGORY_CREATE</td><td>상품 카테고리 등록</td><td>상품 카테고리 관리 페이지에서 새 카테고리 추가</td></tr>
           <tr><td>PRODUCT_CATEGORY_UPDATE / PRODUCT_CATEGORY_DELETE</td><td>상품 카테고리 수정/삭제</td><td>상품 카테고리 관리 페이지에서 코드 마스터 항목 수정 또는 비활성화</td></tr>
           <tr><td>PRODUCT_DEACTIVATE / PRODUCT_SOFT_DELETE</td><td>상품 비활성화/소프트삭제</td><td>상품 숨김 처리</td></tr>
-          <tr><td>PRODUCT_SUGGESTION_CREATE / ADOPT / REJECT / CLOSE / ADOPTION_TALENT</td><td>상품 추천 등록/채택/불채택/투표 종료/채택 달란트 지급</td><td>추천 등록, 관리자 종료, 관리자 예외 결정, 채택 시 상품 추천 채택 1달란트 자동 지급을 기록. 종료 건 외에는 익명 집계를 기록하지 않으며 개별 투표자와 찬성/반대 선택, 추천 등록자 식별 정보는 비밀 투표 보호를 위해 작업 이력에 남기지 않음</td></tr>
+          <tr><td>PRODUCT_SUGGESTION_CREATE / ADOPT / REJECT / CLOSE / ADOPTION_TALENT</td><td>상품 추천 등록/채택/불채택/투표 종료/채택 달란트 지급</td><td>추천 등록, 최고관리자 종료, 최고관리자 예외 결정, 채택 시 상품 추천 채택 1달란트 자동 지급을 기록. 진행 중 집계 열람·직접 결정·정원 감소 종료는 profiles.is_super_admin=true 계정만 가능하며, 종료 건 외에는 익명 집계를 기록하지 않고 개별 투표자와 찬성/반대 선택, 추천 등록자 식별 정보는 비밀 투표 보호를 위해 작업 이력에 남기지 않음</td></tr>
           <tr><td>PRODUCT_BULK_CREATE</td><td>상품 일괄 등록</td><td>총·성공·실패 건수와 실패 행을 기록. 개별 상품 등록 로그에는 등록된 필드가 남음</td></tr>
           <tr><td>ORDER_REQUEST_SUCCESS</td><td>구매 요청 성공</td><td>학생이 상품 구매 요청</td></tr>
           <tr><td>ORDER_STATUS_CHANGE / ORDER_CANCEL / ORDER_REVERT</td><td>주문 상태 변경</td><td>관리자 주문 처리</td></tr>
@@ -253,7 +253,7 @@
         <strong>Slack 알림 룰:</strong> <a href="slack-rules.html" style="color:var(--admin-primary);">운영 &gt; Slack 알림 룰</a>에서 WARN+ 로그와 구매/가입/Q&amp;A/서비스 할당량 알림 라우팅을 확인 가능
       </div>
       <div class="note-box">
-        <strong>상품 추천 비밀 투표:</strong> 추천 등록·채택·불채택·관리자 종료·관리자 예외 결정과 채택 달란트 자동 지급만 상품/주문 카테고리 작업 이력으로 확인합니다. 등록·종료 시 운영관리 Slack에도 상품명·결과·익명 득표 수만 안내합니다. 자동 지급 로그와 Slack 모두에서 투표자 이름, 찬성/반대 선택, 추천자 이름은 표시하지 않습니다.
+        <strong>상품 추천 비밀 투표:</strong> 추천 등록·채택·불채택·최고관리자 종료·최고관리자 예외 결정과 채택 달란트 자동 지급만 상품/주문 카테고리 작업 이력으로 확인합니다. 진행 중 집계 열람·직접 결정·정원 감소 종료는 <code>profiles.is_super_admin=true</code> 계정만 가능합니다. 등록·종료 시 운영관리 Slack에도 상품명·결과·익명 득표 수만 안내합니다. 자동 지급 로그와 Slack 모두에서 투표자 이름, 찬성/반대 선택, 추천자 이름은 표시하지 않습니다.
       </div>
     </div>
   </div>

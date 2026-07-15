@@ -361,7 +361,7 @@
         <tbody>
           <tr><td>추천 등록</td><td><code>PRODUCT_SUGGESTION_CREATE</code>에 추천 상품 ID, 상품명, 등록 시점 정원/과반만 기록합니다.</td></tr>
           <tr><td>개별 투표</td><td>비밀 투표를 위해 개별 찬성/반대와 투표자 식별 정보는 <code>activity_logs</code>에 기록하지 않습니다.</td></tr>
-          <tr><td>관리자 종료/결과</td><td><code>PRODUCT_SUGGESTION_CLOSE</code>, <code>PRODUCT_SUGGESTION_ADOPT</code>, <code>PRODUCT_SUGGESTION_REJECT</code>에는 종료 또는 <code>관리자 예외 결정</code> 처리유형만 기록합니다. 종료 건의 익명 집계 외에 투표자 목록과 개별 찬반은 남기지 않습니다.</td></tr>
+          <tr><td>최고관리자 종료/결과</td><td><code>PRODUCT_SUGGESTION_CLOSE</code>, <code>PRODUCT_SUGGESTION_ADOPT</code>, <code>PRODUCT_SUGGESTION_REJECT</code>에는 종료 또는 <code>최고관리자 예외 결정</code> 처리유형만 기록합니다. 진행 중 집계 열람, 직접 결정, 정원 감소 종료는 <code>profiles.is_super_admin=true</code> 계정만 가능하며, 종료 건의 익명 집계 외에 투표자 목록과 개별 찬반은 남기지 않습니다.</td></tr>
           <tr><td>채택 자동 지급</td><td><code>PRODUCT_SUGGESTION_ADOPTION_TALENT</code>에는 추천 상품, <code>상품 추천 채택</code> 항목, 1달란트 자동 지급 사실만 기록합니다. 추천 등록자·투표자 식별 정보와 개별 찬반은 기록하지 않습니다.</td></tr>
           <tr><td>운영관리 Slack</td><td>추천 등록 완료와 채택/불채택 종료 시 별도 Slack 이벤트를 전송합니다. 등록 알림은 상품명·시각, 종료 알림은 상품명·결과·익명 득표 수만 포함하며 추천자·투표자 식별 정보는 전송하지 않습니다.</td></tr>
         </tbody>

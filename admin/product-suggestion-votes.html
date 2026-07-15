@@ -133,8 +133,8 @@
       loadVoteItems();
     })();
 
-    function isSuggestionAdmin() {
-      return (session && session.permissionRank || 0) >= 100;
+    function isSuggestionSuperAdmin() {
+      return !!(session && session.isSuperAdmin === true);
     }
 
     function changeVoteFilter(filter) {
@@ -160,7 +160,7 @@
     }
 
     function renderVoteItem(item) {
-      const isAdmin = isSuggestionAdmin();
+      const isSuperAdmin = isSuggestionSuperAdmin();
       const productDetail = psEscapeHtml(item.description || '설명 없음').slice(0, 95);
       const media = item.image_url
         ? `<div class="ps-media"><img class="ps-thumb" src="${psEscapeHtml(item.image_url)}" alt="" />${item.product_url ? `<a class="ps-link" href="${psEscapeHtml(item.product_url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">상품 링크</a>` : ''}</div>`
@@ -174,7 +174,7 @@
       const rejectCell = resultVisible
         ? `<strong>${fmtNum(item.reject_count)}</strong><div class="ps-vote-actions" style="margin-top:0.4rem;">${rejectButton}</div>`
         : `<div class="ps-vote-actions">${rejectButton}</div>`;
-      const adminProgress = isAdmin ? renderAdminProgress(item, 'ps-grid-admin-progress') : '';
+      const adminProgress = isSuperAdmin ? renderAdminProgress(item, 'ps-grid-admin-progress') : '';
       return `<tr class="ps-vote-row" onclick="openSuggestionDetail('${item.suggestion_id}')">
         <td>${psStatusBadge(item.display_status)}</td>
         <td class="ps-product-cell"><strong>${psEscapeHtml(item.name)}</strong><small class="ps-product-summary">${productDetail}${(item.description || '').length > 95 ? '...' : ''}</small>${adminProgress}</td>
@@ -223,7 +223,7 @@
 
     async function closeSuggestionVote(suggestionId) {
       const item = voteItems.get(suggestionId);
-      if (!item || !item.can_admin_close) return;
+      if (!item || !isSuggestionSuperAdmin() || !item.can_admin_close) return;
       const resultLabel = item.approve_count >= item.current_majority ? '채택' : '불채택';
       if (!confirm(`현재 유효 투표 정원 기준으로 ${resultLabel} 처리합니다. 계속하시겠습니까?`)) return;
       const result = await closeProductSuggestionVote(suggestionId, item);
@@ -235,14 +235,14 @@
     }
 
     function renderAdminDecisionActions(item) {
-      if (!isSuggestionAdmin() || item.actual_status !== 'voting') return '';
+      if (!isSuggestionSuperAdmin() || item.actual_status !== 'voting') return '';
       return `<button class="ps-admin-decision-btn" type="button" onclick="adminResolveSuggestion('${item.suggestion_id}','adopted')">채택 결정</button>
         <button class="ps-admin-decision-btn reject" type="button" onclick="adminResolveSuggestion('${item.suggestion_id}','rejected')">불채택 결정</button>`;
     }
 
     async function adminResolveSuggestion(suggestionId, status) {
       const item = voteItems.get(suggestionId);
-      if (!item || !isSuggestionAdmin() || item.actual_status !== 'voting') return;
+      if (!item || !isSuggestionSuperAdmin() || item.actual_status !== 'voting') return;
       const resultLabel = status === 'adopted' ? '채택' : '불채택';
       if (!confirm(`투표 완료 여부와 관계없이 이 추천 상품을 ${resultLabel} 결정합니다. 계속하시겠습니까?`)) return;
       const result = await adminResolveProductSuggestion(suggestionId, status, item);
@@ -271,7 +271,7 @@
         <dt>금액</dt><dd>${psEscapeHtml(psFormatKrw(item.price_krw))}</dd>
         <dt>카테고리</dt><dd>${psEscapeHtml(getProductCategoryLabel(item.category))}</dd>
         <dt>추천 등록일</dt><dd>${psEscapeHtml(psFormatDate(item.created_at))}</dd>`;
-      document.getElementById('suggestionAdminProgress').innerHTML = isSuggestionAdmin() ? renderAdminProgress(item) : '';
+      document.getElementById('suggestionAdminProgress').innerHTML = isSuggestionSuperAdmin() ? renderAdminProgress(item) : '';
       document.getElementById('suggestionAdminDecisionActions').innerHTML = renderAdminDecisionActions(item);
       document.getElementById('suggestionDetailVoteActions').innerHTML = `${renderVoteButton(item, 'approve')}${renderVoteButton(item, 'reject')}`;
       document.getElementById('suggestionDetailModal').classList.remove('hidden');
