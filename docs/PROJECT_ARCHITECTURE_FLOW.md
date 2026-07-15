@@ -140,9 +140,9 @@ flowchart LR
 | `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 다른 Supabase 프로젝트에서 새로 시작하기 위한 설치 절차 |
 | `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서, Edge Function 소스 |
 
-## 3-1. 상품 추천 및 비밀 투표 (v3.84.0)
+## 3-1. 상품 추천 및 비밀 투표 (v3.86.0)
 
-`product-suggestions.html`은 로그인 사용자(20+)가 상품 추천을 등록하고 자신의 처리 상태를 조회하는 화면이다. 상품명과 상품 URL 또는 이미지는 필수이며, 카테고리는 미선택 시 `gift`로 보정한다. 내 추천 목록은 채택여부, 상품명, KST 추천일, 상세만 표시하고 행 또는 상세 버튼으로 전체 입력 정보 모달을 연다. 관리자(100+)가 직접 추천을 등록하면 투표 없이 `products`에 즉시 생성한다. 이때 상품은 추천 카테고리, 달란트 `0`, 순번 `0`, 대상 `student`, 비활성 상태로 저장하고 `products.created_by`와 `product_suggestions.suggested_by` 연결로 추천자 이력을 유지한다.
+`product-suggestions.html`은 로그인 사용자(20+)가 상품 추천을 등록하고 자신의 처리 상태를 조회하는 화면이다. 상품명과 상품 URL 또는 이미지는 필수이며, 카테고리는 미선택 시 `gift`로 보정한다. 내 추천 목록은 채택여부, 상품명, KST 추천일, 상세만 표시하고 행 또는 상세 버튼으로 전체 입력 정보 모달을 연다. 채택 시 `_resolve_product_suggestion`이 상품을 생성하고, `product_suggestion_adoption_rewards`의 추천 ID 기본키로 중복을 막은 뒤 등록자에게 대상별 `상품 추천 채택` 달란트 항목 1을 자동 지급한다. 생성 상품은 추천 카테고리, 달란트 `0`, 순번 `999`, 대상 `student`, 비활성 상태로 저장하고 `products.created_by`와 `product_suggestions.suggested_by` 연결로 추천자 이력을 유지한다. 관리자(100+) 직접 등록도 같은 채택·보상 흐름을 사용한다.
 
 `admin/product-suggestion-votes.html`은 부서 담당 교사(60+) 이상의 `상품 추천 투표` 화면이며, 상품 메뉴에서 구매 관리 바로 아래에 배치한다. `product_suggestions`, `product_suggestion_eligible_voters`, `product_suggestion_votes` 테이블은 직접 브라우저 조회를 허용하지 않고 전용 RPC로만 사용한다. 추천 생성 시점의 60+ 계정 목록을 `eligible_voters`에 스냅샷하고, 기본 통과/불채택 기준은 이 정원의 과반이다. 이후 현재 60+를 유지하는 스냅샷 구성원만 유효 투표로 집계한다.
 
@@ -841,6 +841,7 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 | `confirm_product_purchase` | 상품 구매 확정 (실제 달란트 차감) |
 | `cancel_product_order` | 구매 신청 상태 주문 취소와 사용 대기 달란트 복원 |
 | `scan_qr_talent` | QR 수령 처리, 스캔 기록, `talent_transactions.source='qr'` 기록 |
+| `_grant_product_suggestion_adoption_talent` | 채택 추천의 등록자에게 `상품 추천 채택` 1달란트를 건별 자동 지급하고 보상 원장·작업 이력을 기록 |
 | `submit_anonymous_question` | 비로그인 Q&A 질문 등록 |
 | `admin_soft_delete_qna` | 전도사님 이상 Q&A 소프트 삭제 |
 | `get_public_app_config` | 공개 런타임 설정 조회 |
@@ -924,6 +925,7 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 | 38 | `docs/INITIAL_DATABASE_SETUP.sql`, `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 새 Supabase 프로젝트 초기 설치 통합 SQL과 실행 절차 |
 | 39 | `docs/TASK-086_product_suggestion_admin_decision.sql` | v3.84.0: 관리자(100+) 상품 추천 예외 결정 RPC |
 | 40 | `docs/TASK-087_product_suggestion_detail_image.sql` | v3.85.0: 추천 상세 이미지, 종료 전 득표 비공개, 종료 투표 잠금 |
+| 41 | `docs/TASK-088_product_suggestion_adoption_talent.sql` | v3.86.0: 채택 추천 등록자 1달란트 자동 지급, 중복 방지 보상 원장, 채택 상품 순번 999 |
 
 ## 19. 개발 주의사항
 
