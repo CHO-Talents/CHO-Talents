@@ -189,6 +189,7 @@ const ACTION_LABELS = {
   qr_scan: 'QR 달란트 수령',
   // 상품/주문
   PRODUCT_CREATE: '상품 등록',
+  PRODUCT_BULK_CREATE: '상품 일괄 등록',
   PRODUCT_CREATE_FAIL: '상품 등록 실패',
   PRODUCT_CREATE_ERROR: '상품 등록 오류',
   PRODUCT_CATEGORY_CREATE: '상품 카테고리 등록',
@@ -435,6 +436,9 @@ const LOG_DETAIL_KEY_LABELS = {
   hasImage: '이미지 여부',
   targetType: '대상 유형',
   changeSummary: '변경 내역',
+  changes: '변경 항목',
+  targetId: '대상 ID',
+  fieldLabel: '항목',
   permissionLabel: '권한',
   category: '카테고리',
   categoryCode: '카테고리 코드',
@@ -1128,6 +1132,82 @@ function getDisplayLogDetails(details, options = {}) {
 function stringifyKoreanLogDetails(details) {
   const localized = getDisplayLogDetails(details || {});
   return Object.keys(localized).length ? JSON.stringify(localized, null, 2) : '-';
+}
+
+const CHANGE_LOG_FIELD_LABELS = {
+  name: '명칭',
+  display_name: '표시 이름',
+  displayName: '표시 이름',
+  username: '계정',
+  department_id: '소속 부서',
+  departmentId: '소속 부서',
+  managed_dept_id: '관리 부서',
+  managedDeptId: '관리 부서',
+  user_type: '사용자 유형',
+  userType: '사용자 유형',
+  permission_level: '권한',
+  permissionLevel: '권한',
+  class_number: '반',
+  classNumber: '반',
+  description: '설명',
+  category: '카테고리',
+  target_role: '대상',
+  price: '달란트 가격',
+  sort_order: '표시 순번',
+  image_emoji: '아이콘',
+  image_url: '썸네일 이미지',
+  detail_image_url: '상세 설명 이미지',
+  purchase_url: '구매 URL',
+  stock: '재고',
+  is_active: '활성 상태',
+  code_value: '명칭',
+  code_key: '코드',
+  meta: '추가 설정'
+};
+
+function _changeLogComparable(value) {
+  if (value === undefined || value === null || value === '') return null;
+  if (typeof value === 'object') return JSON.stringify(value);
+  return value;
+}
+
+function buildChangeSet(before = {}, after = {}, options = {}) {
+  const fields = options.fields || Array.from(new Set([...Object.keys(before || {}), ...Object.keys(after || {})]));
+  const ignore = new Set(options.ignore || ['id', 'created_at', 'updated_at', 'created_by', 'password', 'password_hash']);
+  return fields.filter(field => !ignore.has(field)).map(field => {
+    const oldValue = before ? before[field] : undefined;
+    const newValue = after ? after[field] : undefined;
+    return {
+      field,
+      label: CHANGE_LOG_FIELD_LABELS[field] || getLogDetailKeyLabel(field) || field,
+      before: oldValue == null || oldValue === '' ? null : oldValue,
+      after: newValue == null || newValue === '' ? null : newValue
+    };
+  }).filter(change => _changeLogComparable(change.before) !== _changeLogComparable(change.after));
+}
+
+function _changeLogText(value) {
+  if (value === undefined || value === null || value === '') return '없음';
+  if (typeof value === 'boolean') return value ? '사용' : '사용 안 함';
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(_localizeLogDetailValue('', value));
+}
+
+function buildChangeLogDetails(options = {}) {
+  const changes = Array.isArray(options.changes) ? options.changes : [];
+  const changeSummary = changes.map(change => `${change.label || CHANGE_LOG_FIELD_LABELS[change.field] || change.field}: ${_changeLogText(change.before)} → ${_changeLogText(change.after)}`).join(' / ');
+  return Object.assign({
+    targetName: options.targetName || null,
+    targetType: options.targetType || null,
+    targetId: options.targetId || null,
+    changes,
+    changeSummary: changeSummary || null
+  }, options.extra || {});
+}
+
+if (typeof window !== 'undefined') {
+  window.buildChangeSet = buildChangeSet;
+  window.buildChangeLogDetails = buildChangeLogDetails;
 }
 
 if (typeof window !== 'undefined') {

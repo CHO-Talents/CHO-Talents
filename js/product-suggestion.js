@@ -63,6 +63,7 @@ async function submitProductSuggestion(payload) {
       p_name: payload.name || '',
       p_product_url: payload.productUrl || null,
       p_image_url: payload.imageUrl || null,
+      p_detail_image_url: payload.detailImageUrl || null,
       p_description: payload.description || null,
       p_price_krw: payload.priceKrw == null || payload.priceKrw === '' ? null : Number(payload.priceKrw),
       p_category: payload.category || null
@@ -77,13 +78,25 @@ async function submitProductSuggestion(payload) {
       return { data: null, error: message };
     }
     if (typeof logInfo === 'function') {
-      await logInfo('PRODUCT_SUGGESTION_CREATE', {
-        추천상품ID: data.suggestion_id,
-        상품명: payload.name || '',
-        처리상태: psStatusLabel(data.status),
-        등록시점투표정원: data.electorate_count,
-        등록시점과반: data.electorate_majority
-      });
+      await logInfo('PRODUCT_SUGGESTION_CREATE', buildChangeLogDetails({
+        targetName: payload.name || '',
+        targetType: '상품 추천',
+        targetId: data.suggestion_id,
+        changes: buildChangeSet({}, {
+          name: payload.name || '',
+          product_url: payload.productUrl || null,
+          image_url: payload.imageUrl || null,
+          detail_image_url: payload.detailImageUrl || null,
+          description: payload.description || null,
+          price_krw: payload.priceKrw == null ? null : payload.priceKrw,
+          category: payload.category || 'gift'
+        }),
+        extra: {
+          처리상태: psStatusLabel(data.status),
+          등록시점투표정원: data.electorate_count,
+          등록시점과반: data.electorate_majority
+        }
+      }));
       if (data.status === 'adopted') {
         await logInfo('PRODUCT_SUGGESTION_ADOPT', { 추천상품ID: data.suggestion_id, 처리유형: '관리자 즉시 등록' });
       }

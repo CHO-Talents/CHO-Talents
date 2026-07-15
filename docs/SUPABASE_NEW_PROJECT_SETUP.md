@@ -21,7 +21,7 @@
 2. `docs/INITIAL_DATABASE_SETUP.sql` 하단의 `공개 런타임 설정과 비밀 참조값` 값을 새 프로젝트 기준으로 바꾼다.
    - `env` 값은 `config/public-config.js`의 `TARGET_ENV`와 맞춘다. DEV 검증이면 `DEV`를 사용한다.
 3. SQL Editor에서 전체 실행한다.
-4. 이어서 `docs/TASK-057_code_master.sql`부터 최신 보강 SQL을 순서대로 실행한다. 상품 추천과 비밀 투표 기능을 사용하려면 마지막에 `docs/TASK-085_product_suggestions.sql`과 `docs/TASK-086_product_suggestion_admin_decision.sql`을 순서대로 반드시 적용한다. `TASK-085`는 추천 전용 테이블/RPC/RLS와 `Talents_Items/product-suggestions/` 이미지 업로드 정책을, `TASK-086`은 관리자(100+)의 투표중 채택/불채택 예외 결정 RPC를 추가한다.
+4. 이어서 `docs/TASK-057_code_master.sql`부터 최신 보강 SQL을 순서대로 실행한다. 상품 추천과 비밀 투표 기능을 사용하려면 마지막에 `docs/TASK-085_product_suggestions.sql`, `docs/TASK-086_product_suggestion_admin_decision.sql`, `docs/TASK-087_product_suggestion_detail_image.sql`을 순서대로 반드시 적용한다. `TASK-087`은 추천 상세 이미지, 종료 전 일반 투표자 득표 비공개와 종료 투표 잠금을 추가한다.
 4. `docs/TASK-057_code_master.sql`을 SQL Editor에서 이어서 실행한다.
 5. `docs/TASK-058_product_category_policy.sql`을 SQL Editor에서 이어서 실행한다.
 6. `docs/TASK-068_product_category_page_and_sort_order.sql`을 SQL Editor에서 이어서 실행한다.

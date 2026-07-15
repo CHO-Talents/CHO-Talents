@@ -36,6 +36,7 @@ const NAV_MENU = [
       { href: 'product-suggestions.html', label: '상품 추천', authOnly: true },
       { href: 'my-orders.html', label: '내 구매 상품', id: 'navMyOrders', authOnly: true },
       { href: 'admin/shop.html', label: '상품 관리', minPerm: 60 },
+      { href: 'admin/product-bulk-register.html', label: '상품 일괄 등록', minPerm: 70 },
       { href: 'admin/product-categories.html', label: '상품 카테고리 관리', minPerm: 70 },
       { href: 'admin/purchases.html', label: '구매 관리', minPerm: 60, badgeId: 'navOrderBadge' },
       { href: 'admin/product-suggestion-votes.html', label: '상품 추천 투표', minPerm: 60, badgeId: 'navProductSuggestionVoteBadge' },

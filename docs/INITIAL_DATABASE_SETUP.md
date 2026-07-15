@@ -12,6 +12,8 @@
 
 ## 실행 순서
 
+> 상품 추천 상세 이미지와 최신 투표 정책을 적용하려면 `docs/TASK-087_product_suggestion_detail_image.sql`을 `TASK-085`·`TASK-086` 다음 순서로 실행합니다. 자동 설치 스크립트도 기본 합본에 이 파일을 포함합니다.
+
 1. 새 Supabase 프로젝트를 만든다.
 2. 새 프로젝트의 `Project URL`, `publishable/anon key`, DB connection string을 확인한다.
 3. 아래 수동 또는 자동 방식 중 하나로 DB 설치를 실행한다. SQL Editor 수동 방식이면 `INITIAL_DATABASE_SETUP.sql` 실행 후 `TASK-057_code_master.sql`, `TASK-058_product_category_policy.sql`, `TASK-065_registration_approval_contact.sql`, `TASK-066_notice_reads_and_category_manage.sql`, `TASK-068_product_category_page_and_sort_order.sql`, `TASK-069_product_detail_image.sql`, `TASK-072_data_retention_180d.sql`, `TASK-073_manual_retention_cleanup.sql`, `TASK-081_user_login_statistics.sql`, `TASK-082_exclude_super_admin_login_history.sql`, `TASK-083_talent_item_emoji.sql`, `TASK-084_user_login_statistics_detail.sql`, `TASK-085_product_suggestions.sql`, `TASK-086_product_suggestion_admin_decision.sql`을 이어서 실행한다. 기존 운영 DB의 과거 로그 details를 정리할 때만 `TASK-074_activity_logs_english_details.sql`을 추가 실행한다.

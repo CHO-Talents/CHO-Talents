@@ -79,7 +79,20 @@ async function createUser(userData) {
       await logWarn('USER_CREATE_DENIED', { 대상: userData.username, 사유: data.error });
       return { data: null, error: data.error };
     }
-    await logInfo('USER_CREATE', { 대상: userData.username, userType: userData.userType });
+    await logInfo('USER_CREATE', buildChangeLogDetails({
+      targetName: userData.displayName || userData.username,
+      targetType: '사용자',
+      targetId: data.user_id || data.id || null,
+      changes: buildChangeSet({}, {
+        username: userData.username,
+        displayName: userData.displayName || userData.username,
+        departmentId: userData.departmentId || null,
+        managedDeptId: userData.managedDeptId || null,
+        userType: userData.userType || 'student',
+        permissionLevel: userData.permissionLevel || 'student',
+        classNumber: userData.classNumber != null ? userData.classNumber : null
+      })
+    }));
     return { data, error: null };
   } catch (err) {
     await logError('USER_CREATE_ERROR', { 오류: String(err) });
@@ -90,6 +103,8 @@ async function createUser(userData) {
 async function updateUser(id, updates) {
   if (!_sb) return { data: null, error: 'Supabase not initialized' };
   try {
+    const { data: beforeUsers } = await fetchUsers();
+    const before = (beforeUsers || []).find(user => user.id === id) || {};
     const { data, error } = await _sb.rpc('admin_update_user', {
       p_user_id: id,
       p_display_name: updates.displayName || null,
@@ -107,7 +122,19 @@ async function updateUser(id, updates) {
       await logWarn('USER_UPDATE_DENIED', { id, 사유: data.error });
       return { data: null, error: data.error };
     }
-    await logInfo('USER_UPDATE', { id });
+    await logInfo('USER_UPDATE', buildChangeLogDetails({
+      targetName: updates.displayName || before.display_name || before.displayName || before.username,
+      targetType: '사용자',
+      targetId: id,
+      changes: buildChangeSet(before, {
+        display_name: updates.displayName,
+        department_id: updates.departmentId,
+        managed_dept_id: updates.managedDeptId,
+        user_type: updates.userType,
+        permission_level: updates.permissionLevel,
+        class_number: updates.classNumber
+      })
+    }));
     return { data, error: null };
   } catch (err) {
     await logError('USER_UPDATE_ERROR', { id, 오류: String(err) });
@@ -118,6 +145,8 @@ async function updateUser(id, updates) {
 async function deleteUser(id) {
   if (!_sb) return { error: 'Supabase not initialized' };
   try {
+    const { data: beforeUsers } = await fetchUsers();
+    const before = (beforeUsers || []).find(user => user.id === id) || {};
     const { data, error } = await _sb.rpc('admin_delete_user', { p_user_id: id });
     if (error) {
       await logError('USER_DELETE_FAIL', { id, 오류: error.message });
@@ -127,7 +156,12 @@ async function deleteUser(id) {
       await logWarn('USER_DELETE_DENIED', { id, 사유: data.error });
       return { error: data.error };
     }
-    await logInfo('USER_DELETE', { id });
+    await logInfo('USER_DELETE', buildChangeLogDetails({
+      targetName: before.display_name || before.displayName || before.username,
+      targetType: '사용자',
+      targetId: id,
+      changes: buildChangeSet(before, {}, { fields:['username', 'display_name', 'department_id', 'managed_dept_id', 'user_type', 'permission_level', 'class_number'] })
+    }));
     return { error: null };
   } catch (err) {
     await logError('USER_DELETE_ERROR', { id, 오류: String(err) });
@@ -150,7 +184,12 @@ async function resetUserPassword(id, username) {
       await logWarn('PASSWORD_RESET_DENIED', { id, 대상: username, 사유: data.error });
       return { error: data.error };
     }
-    await logInfo('PASSWORD_RESET', { id, 대상: username });
+    await logInfo('PASSWORD_RESET', buildChangeLogDetails({
+      targetName: username,
+      targetType: '사용자',
+      targetId: id,
+      extra: { 처리내용:'초기 비밀번호로 재설정 (비밀번호 값 미기록)' }
+    }));
     return { error: null };
   } catch (err) {
     await logError('PASSWORD_RESET_ERROR', { id, 오류: String(err) });
@@ -173,8 +212,14 @@ async function createDepartment(name, description, classCount) {
       await logError('DEPT_CREATE_FAIL', { 대상: name, 오류: error.message });
       return { data: null, error: error.message };
     }
-    await logInfo('DEPT_CREATE', { 대상: name });
-    return { data: data[0], error: null };
+    const created = data && data[0] ? data[0] : row;
+    await logInfo('DEPT_CREATE', buildChangeLogDetails({
+      targetName: name,
+      targetType: '부서',
+      targetId: created.id,
+      changes: buildChangeSet({}, created)
+    }));
+    return { data: created, error: null };
   } catch (err) {
     await logError('DEPT_CREATE_ERROR', { 오류: String(err) });
     return { data: null, error: String(err) };
@@ -184,13 +229,20 @@ async function createDepartment(name, description, classCount) {
 async function updateDepartment(id, updates) {
   if (!_sb) return { data: null, error: 'Supabase not initialized' };
   try {
+    const { data: before } = await _sb.from('departments').select('*').eq('id', id).maybeSingle();
     const { data, error } = await _sb.from('departments').update(updates).eq('id', id).select();
     if (error) {
       await logError('DEPT_UPDATE_FAIL', { id, 오류: error.message });
       return { data: null, error: error.message };
     }
-    await logInfo('DEPT_UPDATE', { id, 대상: updates.name });
-    return { data: data[0], error: null };
+    const updated = data && data[0] ? data[0] : null;
+    await logInfo('DEPT_UPDATE', buildChangeLogDetails({
+      targetName: (updated && updated.name) || (before && before.name) || updates.name,
+      targetType: '부서',
+      targetId: id,
+      changes: buildChangeSet(before || {}, updated || updates)
+    }));
+    return { data: updated, error: null };
   } catch (err) {
     await logError('DEPT_UPDATE_ERROR', { id, 오류: String(err) });
     return { data: null, error: String(err) };
@@ -200,12 +252,19 @@ async function updateDepartment(id, updates) {
 async function deleteDepartment(id) {
   if (!_sb) return { error: 'Supabase not initialized' };
   try {
-    const { error } = await _sb.from('departments').update({ is_active: false }).eq('id', id);
+    const { data: before } = await _sb.from('departments').select('*').eq('id', id).maybeSingle();
+    const { data, error } = await _sb.from('departments').update({ is_active: false }).eq('id', id).select();
     if (error) {
       await logError('DEPT_DELETE_FAIL', { id, 오류: error.message });
       return { error: error.message };
     }
-    await logInfo('DEPT_DELETE', { id });
+    const updated = data && data[0] ? data[0] : null;
+    await logInfo('DEPT_DELETE', buildChangeLogDetails({
+      targetName: (updated && updated.name) || (before && before.name),
+      targetType: '부서',
+      targetId: id,
+      changes: buildChangeSet(before || {}, updated || { is_active:false }, { fields:['is_active'] })
+    }));
     return { error: null };
   } catch (err) {
     await logError('DEPT_DELETE_ERROR', { id, 오류: String(err) });

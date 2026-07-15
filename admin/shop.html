@@ -450,14 +450,12 @@
       if (editingId) {
         const { error } = await updateProduct(editingId, row);
         if (error) { await logError('PRODUCT_UPDATE_FAIL', { id: editingId, 상품명: name, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('PRODUCT_UPDATE', { id: editingId, 상품명: name });
       } else {
         row.created_by = session.id;
         if (selectedFile) row.image_url = null;
         if (selectedDetailFile) row.detail_image_url = null;
         const { data: createdProduct, error } = await createProduct(row);
         if (error) { await logError('PRODUCT_CREATE_FAIL', { 상품명: name, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
-        await logInfo('PRODUCT_CREATE', { 상품명: name, 금액: price });
         if ((selectedFile || selectedDetailFile) && (!createdProduct || !createdProduct.id)) {
           errEl.textContent = '상품 ID를 확인하지 못해 이미지 업로드를 진행할 수 없습니다.';
           errEl.classList.add('show');
