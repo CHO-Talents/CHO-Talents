@@ -114,6 +114,7 @@
   <script src="../js/theme.js"></script>
   <script src="../js/nav.js"></script>
   <script src="../js/product.js"></script>
+  <script src="../js/slack-notify.js"></script>
   <script src="../js/product-suggestion.js"></script>
   <script src="../js/version.js"></script>
   <script>
@@ -207,7 +208,7 @@
       const item = voteItems.get(suggestionId);
       if (!item) return;
       const isDetailOpen = !document.getElementById('suggestionDetailModal').classList.contains('hidden');
-      const result = await voteProductSuggestion(suggestionId, vote);
+      const result = await voteProductSuggestion(suggestionId, vote, item);
       if (result.error) {
         alert(tErr(result.error));
         return;

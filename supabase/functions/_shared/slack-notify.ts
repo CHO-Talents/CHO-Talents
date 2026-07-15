@@ -68,6 +68,12 @@ const STATUS_LABELS: Record<string, string> = {
   cancelled: "❌ 구매 취소",
 };
 
+const PRODUCT_SUGGESTION_RESULT_LABELS: Record<string, string> = {
+  adopted: "채택",
+  rejected: "불채택",
+  voting: "투표중",
+};
+
 const LOG_LEVEL_EMOJI: Record<string, string> = {
   WARN: "⚠️",
   ERROR: "🔴",
@@ -223,6 +229,10 @@ function resolveWebhookUrl(type: string, data: Record<string, unknown>): string 
     case "log_alert": {
       return Deno.env.get("SLACK_WEBHOOK_OPERATIONS") || null;
     }
+    case "product_suggestion_registered":
+    case "product_suggestion_vote_completed": {
+      return Deno.env.get("SLACK_WEBHOOK_OPERATIONS") || null;
+    }
     case "qna_new": {
       return Deno.env.get("SLACK_WEBHOOK_ANSWER") || null;
     }
@@ -371,6 +381,60 @@ function formatMessage(type: string, data: Record<string, unknown>): { text: str
       };
     }
 
+    case "product_suggestion_registered": {
+      const registeredAt = data["등록완료시각"]
+        ? new Date(String(data["등록완료시각"])).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })
+        : now;
+      const status = String(data["처리상태"] || "투표중");
+      const fallback = `💡 상품 추천 등록: ${data["상품명"] || "-"}`;
+      return {
+        text: fallback,
+        blocks: [
+          { type: "header", text: { type: "plain_text", text: "💡 상품 추천 등록 완료", emoji: true } },
+          {
+            type: "section",
+            fields: [
+              { type: "mrkdwn", text: `*상품명:*\n${data["상품명"] || "-"}` },
+              { type: "mrkdwn", text: `*등록 완료 시각:*\n${registeredAt}` },
+              { type: "mrkdwn", text: `*처리 상태:*\n${status}` },
+            ],
+          },
+          { type: "context", elements: [{ type: "mrkdwn", text: "🔒 추천자 정보는 비밀 투표 정책에 따라 포함하지 않습니다." }] },
+        ],
+      };
+    }
+
+    case "product_suggestion_vote_completed": {
+      const resultCode = String(data["결과"] || "");
+      const result = PRODUCT_SUGGESTION_RESULT_LABELS[resultCode] || resultCode || "-";
+      const completedAt = data["완료시각"]
+        ? new Date(String(data["완료시각"])).toLocaleString("ko-KR", { timeZone: "Asia/Seoul" })
+        : now;
+      const approve = Number(data["찬성"] || 0).toLocaleString();
+      const reject = Number(data["반대"] || 0).toLocaleString();
+      const voteCount = Number(data["투표수"] || 0).toLocaleString();
+      const fallback = `🗳️ 상품 추천 투표 완료: ${data["상품명"] || "-"} (${result}, 찬성 ${approve}표 / 반대 ${reject}표)`;
+      return {
+        text: fallback,
+        blocks: [
+          { type: "header", text: { type: "plain_text", text: "🗳️ 상품 추천 투표 완료", emoji: true } },
+          {
+            type: "section",
+            fields: [
+              { type: "mrkdwn", text: `*상품명:*\n${data["상품명"] || "-"}` },
+              { type: "mrkdwn", text: `*투표 결과:*\n${result}` },
+              { type: "mrkdwn", text: `*찬성:*\n${approve}표` },
+              { type: "mrkdwn", text: `*반대:*\n${reject}표` },
+              { type: "mrkdwn", text: `*총 투표:*\n${voteCount}표` },
+              { type: "mrkdwn", text: `*종료 방식:*\n${data["종료방식"] || "-"}` },
+            ],
+          },
+          { type: "context", elements: [{ type: "mrkdwn", text: `📅 투표 완료 시각: ${completedAt}` }] },
+          { type: "context", elements: [{ type: "mrkdwn", text: "🔒 추천자와 개별 투표자 정보는 포함하지 않습니다." }] },
+        ],
+      };
+    }
+
     case "qna_new": {
       const questionText = String(data["질문"] || "");
       const truncated = questionText.length > 200 ? questionText.substring(0, 200) + "..." : questionText;
@@ -444,7 +508,10 @@ Deno.serve(async (req) => {
       });
     }
 
-    const payload = addUserContext(formatMessage(type, data || {}), data || {});
+    const payload = formatMessage(type, data || {});
+    if (type !== "product_suggestion_registered" && type !== "product_suggestion_vote_completed") {
+      addUserContext(payload, data || {});
+    }
     webhookRequestStarted = true;
 
     const slackRes = await fetch(webhookUrl, {

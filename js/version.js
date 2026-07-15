@@ -2,9 +2,19 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.86.0',
+  current: '3.87.0',
   date: '2026-07-15',
   history: [
+    {
+      version: '3.87.0',
+      date: '2026-07-15',
+      title: '상품 추천 운영관리 Slack 알림',
+      changes: [
+        '상품 추천 등록이 완료되면 운영관리 Slack 채널에 상품명, 등록 완료 시각, 처리 상태를 알립니다.',
+        '상품 추천 투표가 채택 또는 불채택으로 종료되면 상품명, 결과, 찬성·반대·총 득표 수, 종료 방식을 운영관리 Slack 채널에 알립니다.',
+        'Slack 메시지에는 추천자와 개별 투표자 정보를 포함하지 않습니다. 관리자 직접 결정의 정확한 익명 득표 반환은 docs/TASK-089_product_suggestion_slack_notifications.sql 적용이 필요합니다.'
+      ]
+    },
     {
       version: '3.86.0',
       date: '2026-07-15',
