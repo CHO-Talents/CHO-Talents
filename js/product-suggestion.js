@@ -189,10 +189,10 @@ async function closeProductSuggestionVote(suggestionId, item) {
       });
       await logInfo(data.status === 'adopted' ? 'PRODUCT_SUGGESTION_ADOPT' : 'PRODUCT_SUGGESTION_REJECT', {
         추천상품ID: suggestionId,
-        처리유형: '관리자 현재 유효 정원 종료'
+        처리유형: '최고관리자 현재 유효 정원 종료'
       });
     }
-    psNotifySuggestionVoteCompleted(item, data, '관리자 현재 유효 정원 종료');
+    psNotifySuggestionVoteCompleted(item, data, '최고관리자 현재 유효 정원 종료');
     return { data, error: null };
   } catch (err) {
     return { data: null, error: String(err) };
@@ -212,10 +212,10 @@ async function adminResolveProductSuggestion(suggestionId, status, item) {
       await logInfo(status === 'adopted' ? 'PRODUCT_SUGGESTION_ADOPT' : 'PRODUCT_SUGGESTION_REJECT', {
         추천상품ID: suggestionId,
         상품명: item && item.name ? item.name : '',
-        처리유형: '관리자 예외 결정'
+        처리유형: '최고관리자 예외 결정'
       });
     }
-    psNotifySuggestionVoteCompleted(item, data, '관리자 직접 결정');
+    psNotifySuggestionVoteCompleted(item, data, '최고관리자 직접 결정');
     return { data, error: null };
   } catch (err) {
     return { data: null, error: String(err) };

@@ -12,12 +12,15 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.85.0` (`js/version.js` 기준, 2026-07-15) |
+| 현재 버전 | `v3.88.0` (`js/version.js` 기준, 2026-07-15) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.87.0`로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.88.0`로 갱신되어 있습니다.
+- **v3.88.0 주요 변경 사항**:
+  - 상품 추천 투표의 진행 중 익명 득표·유권자 정원 확인, 채택/불채택 직접 결정, 현재 유효 정원 기준 종료 처리는 `profiles.is_super_admin=true`인 최고관리자만 사용할 수 있습니다.
+  - 일반 관리자(100)는 종료 전 득표 수를 보거나 위 특례 RPC를 실행할 수 없습니다. 운영 DB에는 `docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql` 적용이 필요합니다.
 - **v3.87.0 주요 변경 사항**:
   - 상품 추천 등록 완료와 투표 종료 결과를 운영관리 Slack 채널로 알립니다. 등록 알림에는 상품명·등록 시각, 종료 알림에는 상품명·결과·찬성/반대/총 득표 수·종료 방식을 포함합니다.
   - 추천자와 개별 투표자 정보는 Slack 알림에 포함하지 않습니다. 운영 DB에는 `docs/TASK-089_product_suggestion_slack_notifications.sql` 적용과 `slack-notify` Edge Function 재배포가 필요합니다.
@@ -987,6 +990,8 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-087_product_suggestion_detail_image.sql` | v3.85.0: 추천 상세 이미지, 종료 전 득표 비공개, 종료 투표 잠금, 상품 일괄 등록 로그 액션 |
 | `docs/TASK-088_product_suggestion_adoption_talent.sql` | v3.86.0: 채택 추천 등록자 1달란트 자동 지급, 중복 방지 보상 원장, 채택 상품 순번 999 |
 | `docs/TASK-089_product_suggestion_slack_notifications.sql` | v3.87.0: 관리자 직접 결정의 익명 득표 반환과 상품 추천 Slack 종료 알림 연동 |
+| `docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql` | v3.88.0: 최고관리자만 진행 중 집계·직접 결정·현재 유효 정원 종료를 수행하도록 RPC 권한 보강 |
+| `docs/TASK-090_plan.md`, `docs/TASK-090_test_scenario.md`, `docs/TASK-090_test_result.md`, `docs/TASK-090_change_report.md` | v3.88.0: 최고관리자 특례 권한 변경 계획, 검증 시나리오·결과, 변경 보고 |
 | `docs/TASK-086_test_scenario.md`, `docs/TASK-086_test_result.md`, `docs/TASK-086_change_report.md` | v3.84.0: 관리자 예외 결정 검증 기준과 변경 보고 |
 
 ## 관련 문서

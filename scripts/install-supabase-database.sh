@@ -54,7 +54,8 @@ docs/TASK-058_product_category_policy.sql,
 docs/TASK-068_product_category_page_and_sort_order.sql, and
 docs/TASK-069_product_detail_image.sql, and
 docs/TASK-070_service_usage_monitoring.sql through
-docs/TASK-089_product_suggestion_slack_notifications.sql when no --extra-sql-path is provided.
+docs/TASK-089_product_suggestion_slack_notifications.sql and
+docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql when no --extra-sql-path is provided.
 USAGE
 }
 
@@ -304,6 +305,10 @@ if [ "${#EXTRA_SQL_PATHS[@]}" -eq 0 ]; then
   DEFAULT_PRODUCT_SUGGESTION_SLACK_NOTIFICATIONS_SQL="$ROOT_DIR/docs/TASK-089_product_suggestion_slack_notifications.sql"
   if [ -f "$DEFAULT_PRODUCT_SUGGESTION_SLACK_NOTIFICATIONS_SQL" ]; then
     EXTRA_SQL_PATHS+=("$DEFAULT_PRODUCT_SUGGESTION_SLACK_NOTIFICATIONS_SQL")
+  fi
+  DEFAULT_PRODUCT_SUGGESTION_SUPER_ADMIN_VOTE_PRIVILEGES_SQL="$ROOT_DIR/docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql"
+  if [ -f "$DEFAULT_PRODUCT_SUGGESTION_SUPER_ADMIN_VOTE_PRIVILEGES_SQL" ]; then
+    EXTRA_SQL_PATHS+=("$DEFAULT_PRODUCT_SUGGESTION_SUPER_ADMIN_VOTE_PRIVILEGES_SQL")
   fi
 fi
 

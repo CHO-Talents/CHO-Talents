@@ -140,13 +140,13 @@ flowchart LR
 | `docs/SUPABASE_NEW_PROJECT_SETUP.md` | 다른 Supabase 프로젝트에서 새로 시작하기 위한 설치 절차 |
 | `docs/` | 작업 기록, SQL 스키마, 구성 문서, 사용자 안내서, Edge Function 소스 |
 
-## 3-1. 상품 추천 및 비밀 투표 (v3.87.0)
+## 3-1. 상품 추천 및 비밀 투표 (v3.88.0)
 
 `product-suggestions.html`은 로그인 사용자(20+)가 상품 추천을 등록하고 자신의 처리 상태를 조회하는 화면이다. 상품명과 상품 URL 또는 이미지는 필수이며, 카테고리는 미선택 시 `gift`로 보정한다. 내 추천 목록은 채택여부, 상품명, KST 추천일, 상세만 표시하고 행 또는 상세 버튼으로 전체 입력 정보 모달을 연다. 채택 시 `_resolve_product_suggestion`이 상품을 생성하고, `product_suggestion_adoption_rewards`의 추천 ID 기본키로 중복을 막은 뒤 등록자에게 대상별 `상품 추천 채택` 달란트 항목 1을 자동 지급한다. 생성 상품은 추천 카테고리, 달란트 `0`, 순번 `999`, 대상 `student`, 비활성 상태로 저장하고 `products.created_by`와 `product_suggestions.suggested_by` 연결로 추천자 이력을 유지한다. 관리자(100+) 직접 등록도 같은 채택·보상 흐름을 사용한다.
 
 `admin/product-suggestion-votes.html`은 부서 담당 교사(60+) 이상의 `상품 추천 투표` 화면이며, 상품 메뉴에서 구매 관리 바로 아래에 배치한다. `product_suggestions`, `product_suggestion_eligible_voters`, `product_suggestion_votes` 테이블은 직접 브라우저 조회를 허용하지 않고 전용 RPC로만 사용한다. 추천 생성 시점의 60+ 계정 목록을 `eligible_voters`에 스냅샷하고, 기본 통과/불채택 기준은 이 정원의 과반이다. 이후 현재 60+를 유지하는 스냅샷 구성원만 유효 투표로 집계한다.
 
-일반 투표자는 추천자·투표자 정보와 투표 종료 전 찬성/반대 집계를 보지 못한다. 관리자는 투표자 신원 없이 전체 진행률, 찬성/반대, 등록 시점 정원, 현재 유효 정원을 확인한다. 종료 상태에서는 모든 투표 요청을 서버에서 거부해 기존 선택도 바꿀 수 없다. 모바일 그리드는 채택여부, 상품명, 찬성, 반대, 상세만 표시하고 URL은 `상품 보기` 버튼으로, 대표/상세 이미지는 상세 모달에서 제공한다. 현재 유효 정원이 등록 시점 과반보다 적어져 자동 완료가 불가능한 경우에만 관리자가 현재 유효 정원의 과반 결과로 `close_product_suggestion_vote` RPC를 실행할 수 있다. 별도로 관리자(100+)는 투표중 상세 모달에서 `admin_resolve_product_suggestion` RPC로 투표 완료 여부와 무관하게 채택 또는 불채택을 예외 결정할 수 있으며, 이 처리도 추천자·투표자·개별 찬반을 반환하거나 기록하지 않는다.
+일반 투표자와 일반 관리자(100)는 추천자·투표자 정보와 투표 종료 전 찬성/반대 집계를 보지 못한다. `profiles.is_super_admin=true`인 최고관리자만 투표자 신원 없이 전체 진행률, 찬성/반대, 등록 시점 정원, 현재 유효 정원을 확인한다. 종료 상태에서는 모든 투표 요청을 서버에서 거부해 기존 선택도 바꿀 수 없다. 모바일 그리드는 채택여부, 상품명, 찬성, 반대, 상세만 표시하고 URL은 `상품 보기` 버튼으로, 대표/상세 이미지는 상세 모달에서 제공한다. 현재 유효 정원이 등록 시점 과반보다 적어져 자동 완료가 불가능한 경우에만 최고관리자가 현재 유효 정원의 과반 결과로 `close_product_suggestion_vote` RPC를 실행할 수 있다. 별도로 최고관리자만 투표중 상세 모달에서 `admin_resolve_product_suggestion` RPC로 투표 완료 여부와 무관하게 채택 또는 불채택을 예외 결정할 수 있으며, 이 처리도 추천자·투표자·개별 찬반을 반환하거나 기록하지 않는다.
 
 추천 등록 완료 시 `product_suggestion_registered`, 투표 상태가 채택 또는 불채택으로 전환될 때 `product_suggestion_vote_completed` Slack 이벤트를 운영관리 채널로 보낸다. 등록 알림에는 상품명·등록 시각·처리 상태를, 종료 알림에는 상품명·결과·찬성·반대·총 투표 수·종료 방식을 담는다. Edge Function은 이 두 이벤트에 사용자 컨텍스트를 추가하지 않아 추천자와 개별 투표자의 식별 정보를 보존하지 않는다.
 
@@ -159,10 +159,10 @@ flowchart LR
 | 추천 등록 | `submit_product_suggestion` | 인증 사용자만, URL 또는 이미지 검증, 관리자 즉시 채택 |
 | 내 추천 목록 | `get_my_product_suggestions` | 본인이 만든 추천만 반환 |
 | 비밀 투표 | `vote_product_suggestion` | 현재 60+이면서 등록 시점 투표 정원에 포함된 계정만 가능 |
-| 투표 목록 | `get_product_suggestion_vote_items` | 일반 투표 전 결과/집계 비공개, 관리자만 익명 집계 공개 |
+| 투표 목록 | `get_product_suggestion_vote_items` | 종료 전 결과/집계는 일반 투표자·일반 관리자에게 비공개, 최고관리자만 익명 집계 공개 |
 | 미투표 배지 | `get_unvoted_product_suggestion_count` | 등록 시점 투표 정원에 포함된 본인의 미투표 추천 수만 반환 |
-| 관리자 종료 | `close_product_suggestion_vote` | 100+만, 기존 과반 불가능 + 현재 유효 정원 과반 결과가 있을 때만 가능 |
-| 관리자 예외 결정 | `admin_resolve_product_suggestion` | 100+만, 투표중 추천을 채택/불채택으로 직접 처리. 기존 종료 조건과 별도 |
+| 최고관리자 종료 | `close_product_suggestion_vote` | `profiles.is_super_admin=true`만, 기존 과반 불가능 + 현재 유효 정원 과반 결과가 있을 때만 가능 |
+| 최고관리자 예외 결정 | `admin_resolve_product_suggestion` | `profiles.is_super_admin=true`만, 투표중 추천을 채택/불채택으로 직접 처리. 기존 종료 조건과 별도 |
 | 추천 이미지 | `Talents_Items/product-suggestions/` | 로그인 사용자는 자기 소유 객체만 업로드/수정/삭제 |
 
 ## 4. 권한 구조
@@ -929,6 +929,7 @@ ID가 없는 상태에서 이미지 업로드 함수를 호출하면 파일명�
 | 40 | `docs/TASK-087_product_suggestion_detail_image.sql` | v3.85.0: 추천 상세 이미지, 종료 전 득표 비공개, 종료 투표 잠금 |
 | 41 | `docs/TASK-088_product_suggestion_adoption_talent.sql` | v3.86.0: 채택 추천 등록자 1달란트 자동 지급, 중복 방지 보상 원장, 채택 상품 순번 999 |
 | 42 | `docs/TASK-089_product_suggestion_slack_notifications.sql` | v3.87.0: 상품 추천 Slack 종료 알림에 필요한 관리자 직접 결정 익명 득표 반환 |
+| 43 | `docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql` | v3.88.0: 최고관리자만 진행 중 집계·직접 결정·현재 유효 정원 종료를 수행하도록 보강 |
 
 ## 19. 개발 주의사항
 

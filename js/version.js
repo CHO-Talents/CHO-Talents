@@ -2,9 +2,19 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.87.0',
+  current: '3.88.0',
   date: '2026-07-15',
   history: [
+    {
+      version: '3.88.0',
+      date: '2026-07-15',
+      title: '상품 추천 투표 최고관리자 특례 권한',
+      changes: [
+        '진행 중 익명 찬성/반대·총 투표 수와 투표 정원은 profiles.is_super_admin=true인 최고관리자만 확인할 수 있습니다.',
+        '투표 중 채택/불채택 직접 결정과 현재 유효 유권자 과반 기준 투표 종료는 최고관리자만 사용할 수 있으며, 서버 RPC도 같은 기준으로 차단합니다.',
+        '일반 관리자(100)는 추천 상품 비밀 투표의 일반 투표자 규칙을 적용받고 종료 전 집계를 볼 수 없습니다. 이 변경은 docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql 적용이 필요합니다.'
+      ]
+    },
     {
       version: '3.87.0',
       date: '2026-07-15',
