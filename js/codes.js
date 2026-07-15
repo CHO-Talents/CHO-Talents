@@ -79,7 +79,8 @@ const CODE_ITEMS = {
   'talent_transactions.source': [
     { key: 'admin', value: '관리자 지급', emoji: '🧑‍💻', order: 10 },
     { key: 'qr', value: 'QR 수령', emoji: '📱', order: 20 },
-    { key: 'override', value: '예외 지급', emoji: '⚠️', order: 30 }
+    { key: 'override', value: '예외 지급', emoji: '⚠️', order: 30 },
+    { key: 'product_suggestion_adoption', value: '상품 추천 채택 보상', emoji: '💡', order: 40 }
   ],
   'qna.status': [
     { key: 'pending', value: '답변 대기', emoji: '❓', order: 10 },
@@ -180,6 +181,7 @@ const CODE_ITEMS = {
     { key: 'PRODUCT_SUGGESTION_ADOPT', value: '추천 상품 채택', category: 'ORDER', emoji: '✅', order: 5153 },
     { key: 'PRODUCT_SUGGESTION_REJECT', value: '추천 상품 불채택', category: 'ORDER', emoji: '❌', order: 5154 },
     { key: 'PRODUCT_SUGGESTION_CLOSE', value: '추천 상품 투표 종료', category: 'ORDER', emoji: '⏹️', order: 5155 },
+    { key: 'PRODUCT_SUGGESTION_ADOPTION_TALENT', value: '상품 추천 채택 달란트 지급', category: 'ORDER', emoji: '💰', order: 5156 },
     { key: 'ORDER_REQUEST_SUCCESS', value: '상품 구매 신청', category: 'ORDER', emoji: '🛒', order: 5060 },
     { key: 'PROXY_ORDER_SUCCESS', value: '대리 구매 신청', category: 'ORDER', emoji: '🛒', order: 5070 },
     { key: 'order_cancel', value: '주문 취소', category: 'ORDER', emoji: '❌', order: 5080 },

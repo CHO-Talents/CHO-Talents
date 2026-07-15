@@ -219,6 +219,7 @@ const ACTION_LABELS = {
   PRODUCT_SUGGESTION_ADOPT: '추천 상품 채택',
   PRODUCT_SUGGESTION_REJECT: '추천 상품 불채택',
   PRODUCT_SUGGESTION_CLOSE: '추천 상품 투표 종료',
+  PRODUCT_SUGGESTION_ADOPTION_TALENT: '상품 추천 채택 달란트 지급',
   IMAGE_UPLOAD: '이미지 업로드',
   IMAGE_COMPRESS_FAIL: '이미지 압축 실패',
   IMAGE_UPLOAD_FAIL: '이미지 업로드 실패',
