@@ -77,7 +77,7 @@ END;
 $$;
 
 DROP FUNCTION IF EXISTS public.submit_product_suggestion(uuid, text, text, text, text, integer, text);
-CREATE FUNCTION public.submit_product_suggestion(
+CREATE OR REPLACE FUNCTION public.submit_product_suggestion(
   p_id uuid,
   p_name text,
   p_product_url text,
