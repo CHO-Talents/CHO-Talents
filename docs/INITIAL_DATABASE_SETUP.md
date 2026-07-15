@@ -6,13 +6,13 @@
 
 추가 코드 마스터 SQL: `docs/TASK-057_code_master.sql`
 상품 카테고리/상품 이미지 정책 SQL: `docs/TASK-058_product_category_policy.sql`, `docs/TASK-066_notice_reads_and_category_manage.sql`, `docs/TASK-068_product_category_page_and_sort_order.sql`, `docs/TASK-069_product_detail_image.sql`
-최신 운영 보강 SQL: `docs/TASK-065_registration_approval_contact.sql`, `docs/TASK-072_data_retention_180d.sql`, `docs/TASK-073_manual_retention_cleanup.sql`, `docs/TASK-081_user_login_statistics.sql`, `docs/TASK-082_exclude_super_admin_login_history.sql`, `docs/TASK-083_talent_item_emoji.sql`, `docs/TASK-084_user_login_statistics_detail.sql`, `docs/TASK-085_product_suggestions.sql`, `docs/TASK-086_product_suggestion_admin_decision.sql`, `docs/TASK-087_product_suggestion_detail_image.sql`, `docs/TASK-088_product_suggestion_adoption_talent.sql`, 기존 로그 정리용 `docs/TASK-074_activity_logs_english_details.sql`
+최신 운영 보강 SQL: `docs/TASK-065_registration_approval_contact.sql`, `docs/TASK-072_data_retention_180d.sql`, `docs/TASK-073_manual_retention_cleanup.sql`, `docs/TASK-081_user_login_statistics.sql`, `docs/TASK-082_exclude_super_admin_login_history.sql`, `docs/TASK-083_talent_item_emoji.sql`, `docs/TASK-084_user_login_statistics_detail.sql`, `docs/TASK-085_product_suggestions.sql`, `docs/TASK-086_product_suggestion_admin_decision.sql`, `docs/TASK-087_product_suggestion_detail_image.sql`, `docs/TASK-088_product_suggestion_adoption_talent.sql`, `docs/TASK-089_product_suggestion_slack_notifications.sql`, 기존 로그 정리용 `docs/TASK-074_activity_logs_english_details.sql`
 
 자동 실행 스크립트: `scripts/install-supabase-database.ps1`, `scripts/install-supabase-database.sh`
 
 ## 실행 순서
 
-> 상품 추천 상세 이미지·최신 투표 정책·채택 보상을 적용하려면 `docs/TASK-087_product_suggestion_detail_image.sql`, `docs/TASK-088_product_suggestion_adoption_talent.sql`을 `TASK-085`·`TASK-086` 다음 순서로 실행합니다. 자동 설치 스크립트도 기본 합본에 두 파일을 포함합니다.
+> 상품 추천 상세 이미지·최신 투표 정책·채택 보상·운영관리 Slack 알림을 적용하려면 `docs/TASK-087_product_suggestion_detail_image.sql`, `docs/TASK-088_product_suggestion_adoption_talent.sql`, `docs/TASK-089_product_suggestion_slack_notifications.sql`을 순서대로 실행하고 최신 `slack-notify` Edge Function을 배포합니다. 자동 설치 스크립트도 세 SQL 파일을 기본 합본에 포함합니다.
 
 1. 새 Supabase 프로젝트를 만든다.
 2. 새 프로젝트의 `Project URL`, `publishable/anon key`, DB connection string을 확인한다.
@@ -115,7 +115,7 @@ scripts/install-supabase-database.sh \
   --supabase-anon-key "YOUR_PUBLISHABLE_OR_ANON_KEY"
 ```
 
-`scripts/install-supabase-database.ps1`와 `scripts/install-supabase-database.sh`는 기본으로 `docs/TASK-057_code_master.sql`, `docs/TASK-058_product_category_policy.sql`, `docs/TASK-068_product_category_page_and_sort_order.sql`, `docs/TASK-069_product_detail_image.sql`, `docs/TASK-081_user_login_statistics.sql`, `docs/TASK-082_exclude_super_admin_login_history.sql`, `docs/TASK-084_user_login_statistics_detail.sql`, `docs/TASK-085_product_suggestions.sql`, `docs/TASK-086_product_suggestion_admin_decision.sql`, `docs/TASK-087_product_suggestion_detail_image.sql`, `docs/TASK-088_product_suggestion_adoption_talent.sql`을 합본에 포함하고, 적용 후 `scripts/verify-task-057-code-master.sql`로 코드 마스터를 검증한다. 별도 마이그레이션을 추가로 합치려면 `-ExtraSqlPaths` 또는 `--extra-sql-path`에 경로를 넘긴다.
+`scripts/install-supabase-database.ps1`와 `scripts/install-supabase-database.sh`는 기본으로 `docs/TASK-057_code_master.sql`, `docs/TASK-058_product_category_policy.sql`, `docs/TASK-068_product_category_page_and_sort_order.sql`, `docs/TASK-069_product_detail_image.sql`, `docs/TASK-081_user_login_statistics.sql`, `docs/TASK-082_exclude_super_admin_login_history.sql`, `docs/TASK-084_user_login_statistics_detail.sql`, `docs/TASK-085_product_suggestions.sql`, `docs/TASK-086_product_suggestion_admin_decision.sql`, `docs/TASK-087_product_suggestion_detail_image.sql`, `docs/TASK-088_product_suggestion_adoption_talent.sql`, `docs/TASK-089_product_suggestion_slack_notifications.sql`을 합본에 포함하고, 적용 후 `scripts/verify-task-057-code-master.sql`로 코드 마스터를 검증한다. 상품 추천 Slack 알림을 사용하려면 최신 `slack-notify` Edge Function도 배포한다. 별도 마이그레이션을 추가로 합치려면 `-ExtraSqlPaths` 또는 `--extra-sql-path`에 경로를 넘긴다.
 
 ## 필수 테이블
 

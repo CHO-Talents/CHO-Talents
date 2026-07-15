@@ -21,6 +21,8 @@ Slack 알림은 브라우저 이벤트가 `sendSlackNotify(type, data)`를 호�
 | `user_register` | `register.html` 계정 등록 신청 | `data.부서` | 해당 부서 채널 |
 | `dept_transfer` | `admin/users.html` 부서 이동 요청 | `data.이동부서` | 이동 대상 부서 채널 |
 | `log_alert` | `js/activity-log.js` WARN 이상 로그 | 로그 레벨. 액션/상세는 한글 치환 후 전송 | 운영 채널 |
+| `product_suggestion_registered` | `product-suggestions.html` 추천 등록 완료 | 상품명, 등록 완료 시각, 처리 상태 | 운영관리 채널 |
+| `product_suggestion_vote_completed` | `admin/product-suggestion-votes.html` 채택/불채택 종료 | 상품명, 결과, 찬성/반대/총 득표 수, 종료 방식 | 운영관리 채널 |
 
 ## 로그 알림 상세 기준
 
@@ -28,6 +30,7 @@ Slack 알림은 브라우저 이벤트가 `sendSlackNotify(type, data)`를 호�
 - Slack `log_alert`에는 작업명, 레벨, 발생 페이지, 처리 상세를 한글 라벨로 표시한다.
 - 사용자 계정, 일시, 레벨, 발생 페이지처럼 기본 컬럼으로 표현되는 값은 `details` 중복 항목으로 보내지 않는다.
 - `_client`, `client`, `클라이언트` 같은 브라우저/기기 정보는 신규 로그 알림 상세에 포함하지 않는다.
+- 상품 추천 Slack 알림은 추천자와 개별 투표자 정보를 포함하지 않으며, Edge Function도 사용자 계정/표시 이름 컨텍스트를 추가하지 않는다.
 | `qna_new` | `qna.html` 새 질문 등록 | 고정 | Q&A 채널 |
 
 ## Edge Function Secrets

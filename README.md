@@ -17,7 +17,10 @@
 
 ## 현재 버전 요약
 
-- `APP_VERSION.current`는 `3.86.0`로 갱신되어 있습니다.
+- `APP_VERSION.current`는 `3.87.0`로 갱신되어 있습니다.
+- **v3.87.0 주요 변경 사항**:
+  - 상품 추천 등록 완료와 투표 종료 결과를 운영관리 Slack 채널로 알립니다. 등록 알림에는 상품명·등록 시각, 종료 알림에는 상품명·결과·찬성/반대/총 득표 수·종료 방식을 포함합니다.
+  - 추천자와 개별 투표자 정보는 Slack 알림에 포함하지 않습니다. 운영 DB에는 `docs/TASK-089_product_suggestion_slack_notifications.sql` 적용과 `slack-notify` Edge Function 재배포가 필요합니다.
 - **v3.86.0 주요 변경 사항**:
   - 상품 추천이 채택될 때마다 등록자에게 `상품 추천 채택` 항목으로 1달란트가 자동 지급됩니다. 추천 건별 보상 원장으로 재시도·중복 지급을 방지합니다.
   - 채택으로 생성되는 상품은 순번 `999`, 달란트 `0`, 비활성 상태로 등록되어 상품 관리에서 검토 후 조정할 수 있습니다.
@@ -982,6 +985,8 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-085_plan.md`, `docs/TASK-085_test_scenario.md`, `docs/TASK-085_test_result.md`, `docs/TASK-085_change_report.md` | v3.82.0: 상품 추천 및 비밀 투표 계획, 시나리오, 검증 기준, 변경 보고 |
 | `docs/TASK-086_product_suggestion_admin_decision.sql` | v3.84.0: 관리자(100+)의 투표 완료 전 채택/불채택 예외 결정 RPC |
 | `docs/TASK-087_product_suggestion_detail_image.sql` | v3.85.0: 추천 상세 이미지, 종료 전 득표 비공개, 종료 투표 잠금, 상품 일괄 등록 로그 액션 |
+| `docs/TASK-088_product_suggestion_adoption_talent.sql` | v3.86.0: 채택 추천 등록자 1달란트 자동 지급, 중복 방지 보상 원장, 채택 상품 순번 999 |
+| `docs/TASK-089_product_suggestion_slack_notifications.sql` | v3.87.0: 관리자 직접 결정의 익명 득표 반환과 상품 추천 Slack 종료 알림 연동 |
 | `docs/TASK-086_test_scenario.md`, `docs/TASK-086_test_result.md`, `docs/TASK-086_change_report.md` | v3.84.0: 관리자 예외 결정 검증 기준과 변경 보고 |
 
 ## 관련 문서

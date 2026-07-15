@@ -151,6 +151,7 @@
   <script src="js/nav.js"></script>
   <script src="js/image-upload.js"></script>
   <script src="js/product.js"></script>
+  <script src="js/slack-notify.js"></script>
   <script src="js/product-suggestion.js"></script>
   <script src="js/version.js"></script>
   <script>
@@ -347,7 +348,7 @@
         const immediate = result.data.status === 'adopted';
         showFormNotice(
           immediate
-            ? '관리자 권한으로 상품이 바로 등록되었습니다. 달란트 0, 순번 0, 학생 대상, 비활성 상태로 등록되었습니다.'
+            ? '관리자 권한으로 상품이 바로 등록되었습니다. 달란트 0, 순번 999, 학생 대상, 비활성 상태로 등록되었습니다.'
             : `추천이 등록되었습니다. 등록 시점 투표 정원 ${fmtNum(result.data.electorate_count)}명, 과반 ${fmtNum(result.data.electorate_majority)}표입니다.`,
           'success'
         );

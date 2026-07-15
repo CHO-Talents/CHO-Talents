@@ -110,7 +110,7 @@
         <tr><td><code>admin/departments.html</code></td><td>부서 관리</td><td><span class="badge b-60">60</span></td><td>생성/수정 80+, 삭제/비활성화 90+ 성격. 부서명 오름차순 기본 정렬과 페이지당 항목 수 선택 지원</td></tr>
         <tr><td><code>admin/shop.html</code></td><td>상품 관리</td><td><span class="badge b-60">60</span></td><td>상품 등록/수정, 썸네일 이미지와 상세 설명 이미지 분리 업로드, 상품 정렬 순번 관리. 목록은 카테고리 순번과 상품 순번 기준으로 정렬되며 로우 클릭 시 수정 창이 열림. 상품 삭제는 90+</td></tr>
         <tr><td><code>admin/product-bulk-register.html</code></td><td>상품 일괄 등록</td><td><span class="badge b-70">70</span></td><td>양식 엑셀 다운로드, 행별 검증 미리보기, 성공/실패 사유 확인 후 상품 일괄 등록</td></tr>
-        <tr><td><code>admin/product-suggestion-votes.html</code></td><td>상품 추천 투표</td><td><span class="badge b-60">60</span></td><td>추천 입력 정보만 보고 찬성/반대 비밀 투표. 일반 투표자는 종료 전 집계를 볼 수 없고, 관리자(100+)만 익명 진행률·찬성·반대·정원을 확인. 채택 시 등록자에게 상품 추천 채택 1달란트를 자동 지급하고, 생성 상품은 순번 999로 등록. 종료된 투표는 새 투표와 변경 모두 차단</td></tr>
+        <tr><td><code>admin/product-suggestion-votes.html</code></td><td>상품 추천 투표</td><td><span class="badge b-60">60</span></td><td>추천 입력 정보만 보고 찬성/반대 비밀 투표. 일반 투표자는 종료 전 집계를 볼 수 없고, 관리자(100+)만 익명 진행률·찬성·반대·정원을 확인. 채택 시 등록자에게 상품 추천 채택 1달란트를 자동 지급하고, 생성 상품은 순번 999로 등록. 종료 시 상품명·결과·익명 득표 수를 운영관리 Slack 채널로 안내하며, 종료된 투표는 새 투표와 변경 모두 차단</td></tr>
         <tr><td><code>admin/product-categories.html</code></td><td>상품 카테고리 관리</td><td><span class="badge b-70">70</span></td><td>카테고리 등록/수정/삭제와 카테고리 정렬 순번 관리. 그리드의 내부 코드 열은 숨기고 로우 클릭 시 수정 창을 표시. 사용 중인 카테고리와 기본 <code>etc</code> 카테고리는 삭제 불가</td></tr>
         <tr><td><code>admin/purchases.html</code></td><td>구매 관리</td><td><span class="badge b-60">60</span></td><td>구매 담당 교사는 전체 부서, 60~89 일반 운영자는 담당 부서 중심</td></tr>
         <tr><td><code>admin/purchase-stats.html</code></td><td>구매 통계</td><td><span class="badge b-60">60</span></td><td>구매 담당 교사와 80+는 전체 부서 통계 조회. v3.51.0: 부서별/사용자별/유형별 기본 정렬과 통계별 페이지당 항목 수 선택 지원</td></tr>
@@ -138,7 +138,7 @@
       <thead><tr><th>파일</th><th>페이지명</th><th>최소 권한</th><th>v3.48.0 변경</th></tr></thead>
       <tbody>
         <tr><td><code>my-talents.html</code></td><td>내 달란트</td><td><span class="badge b-20">로그인</span></td><td>요약 영역에 <strong>반환 달란트</strong>, <strong>예외 달란트</strong> 박스 표시. <strong>사용 완료</strong>는 실제 상품 구매(차감)만 집계하며, 잘못 지급 반환 건은 별도 <strong>반환</strong>, 주간 제한 예외 지급은 <strong>예외</strong> 유형으로 표시</td></tr>
-        <tr><td><code>product-suggestions.html</code></td><td>상품 추천</td><td><span class="badge b-20">로그인</span></td><td>상품명과 상품 URL 또는 이미지가 필수. 상세 설명 이미지는 선택형이며, 상세 모달은 상품 보기 버튼으로 구매 URL을 연결. 채택되면 등록자에게 상품 추천 채택 1달란트 자동 지급</td></tr>
+        <tr><td><code>product-suggestions.html</code></td><td>상품 추천</td><td><span class="badge b-20">로그인</span></td><td>상품명과 상품 URL 또는 이미지가 필수. 상세 설명 이미지는 선택형이며, 상세 모달은 상품 보기 버튼으로 구매 URL을 연결. 등록 완료 시 상품명·시각만 운영관리 Slack 채널에 안내하며, 채택되면 등록자에게 상품 추천 채택 1달란트 자동 지급</td></tr>
       </tbody>
     </table>
   </div>

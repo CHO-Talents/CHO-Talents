@@ -56,6 +56,8 @@
           <tr><td><code>user_register</code></td><td><code>register.html</code> 계정 등록 신청</td><td><code>data.부서</code></td><td><span class="route-badge">해당 부서 채널</span></td></tr>
           <tr><td><code>dept_transfer</code></td><td><code>admin/users.html</code> 부서 이동 요청</td><td><code>data.이동부서</code></td><td><span class="route-badge">이동 대상 부서 채널</span></td></tr>
           <tr><td><code>log_alert</code></td><td><code>js/activity-log.js</code> WARN 이상 로그</td><td>로그 레벨. 예: 권한 거부, DB 페이지 접근 차단, ERROR+ 오류</td><td><span class="route-badge">운영 채널</span></td></tr>
+          <tr><td><code>product_suggestion_registered</code></td><td><code>product-suggestions.html</code> 추천 등록 완료</td><td>상품명, 등록 완료 시각, 처리 상태</td><td><span class="route-badge">운영관리 채널</span></td></tr>
+          <tr><td><code>product_suggestion_vote_completed</code></td><td><code>admin/product-suggestion-votes.html</code> 투표 종료</td><td>상품명, 결과, 찬성/반대/총 득표 수, 종료 방식</td><td><span class="route-badge">운영관리 채널</span></td></tr>
           <tr><td><code>qna_new</code></td><td><code>qna.html</code> 새 질문 등록</td><td>고정 라우팅</td><td><span class="route-badge">Q&amp;A 채널</span></td></tr>
           <tr><td><code>service_quota_alert</code></td><td><code>service-usage-collect</code> 1시간 수집</td><td>무료 한도 70%·85%·95% 최초 도달</td><td><span class="route-badge">운영 채널</span></td></tr>
         </tbody>
@@ -67,7 +69,7 @@
       <div class="note-box">서비스 할당량 알림은 매시간 정각 수집 결과를 기준으로 하며, 지표의 초기화 주기별로 각 임계값을 한 번만 발송합니다. 월/일 초기화가 시작되면 새 주기의 70%·85%·95% 알림을 다시 받을 수 있습니다.</div>
       <div class="note-box">180일 초과 수동 정리 성공 로그는 INFO라 기본 Slack 알림 대상이 아닙니다. RPC 권한/적용 오류처럼 ERROR로 남는 실패 로그는 <code>log_alert</code> 기준에 따라 운영 채널 알림 대상입니다.</div>
       <div class="note-box">v3.79.0의 성공 로그인 이력 저장과 <code>관리 &gt; 사용자 통계</code> 조회는 Slack 알림 이벤트가 아닙니다. 로그인 이력 기록 실패는 사용자 로그인 흐름을 중단하지 않고 콘솔 경고로만 확인합니다.</div>
-      <div class="note-box">상품 추천 등록, 비밀 투표, 채택/불채택, 채택 달란트 자동 지급, 관리자 투표 종료, 관리자 예외 결정은 Slack 알림 이벤트가 아닙니다. 투표 비밀을 위해 개별 투표자나 찬성/반대, 추천 등록자 정보는 Slack으로 보내지 않습니다. 예외 오류가 WARN 이상 로그로 남는 경우에만 일반 <code>log_alert</code> 기준이 적용됩니다.</div>
+      <div class="note-box">상품 추천 등록 완료와 채택/불채택 종료는 운영관리 Slack 알림 이벤트입니다. 등록 알림에는 상품명·등록 시각, 종료 알림에는 상품명·결과·찬성/반대/총 득표 수·종료 방식만 포함합니다. 비밀 투표를 위해 추천자·개별 투표자 정보는 Slack으로 보내지 않습니다.</div>
       <div class="note-box">상품 일괄 등록과 일반 관리 변경 로그도 정상 성공 시 Slack 알림 대상이 아닙니다. 실패가 WARN 이상으로 기록될 때만 변경 항목·사유를 포함한 일반 <code>log_alert</code> 규칙이 적용됩니다.</div>
     </div>
 
@@ -84,7 +86,7 @@
         </tbody>
       </table>
       <div class="note-box">Webhook URL 원문은 정적 HTML, JS, <code>app_config</code>에 저장하지 않습니다. Supabase Edge Function Secret 또는 서버 환경변수에만 저장합니다.</div>
-      <div class="note-box"><code>SLACK_WEBHOOK_OPERATIONS</code>는 WARN+ 로그와 서비스 할당량 70%·85%·95% 알림이 함께 사용하는 운영관리 채널입니다.</div>
+      <div class="note-box"><code>SLACK_WEBHOOK_OPERATIONS</code>는 WARN+ 로그, 서비스 할당량 70%·85%·95% 알림, 상품 추천 등록/투표 종료 알림이 함께 사용하는 운영관리 채널입니다.</div>
     </div>
 
     <div class="rule-section">
