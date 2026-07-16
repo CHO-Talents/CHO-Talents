@@ -12,10 +12,17 @@
 | 목적 | 초등부 학생/교사 달란트 적립, 사용, 상품 구매, 운영 관리를 한 곳에서 처리 |
 | 배포 | GitHub Pages 정적 사이트 |
 | 데이터 | Supabase PostgreSQL, Auth, Storage, RPC, RLS |
-| 현재 버전 | `v3.88.0` (`js/version.js` 기준, 2026-07-15) |
+| 현재 버전 | `v3.89.0` (`js/version.js` 기준, 2026-07-16) |
 | 작성 기준 | `develop` 브랜치 현재 코드와 `APP_VERSION.history` |
 
 ## 현재 버전 요약
+
+- **v3.89.0 주요 변경 사항**:
+  - 미확인 ERROR+ 로그 그리드의 행 전체를 클릭해 상세 모달을 열 수 있습니다.
+  - 서비스 통계에서 수집 실행별 서비스·수집 항목·실패 사유를 별도 목록으로 확인합니다.
+  - 사용자 통계는 학생/교사 필터와 날짜·요일·시간·부서·사용자별 2차원 막대 그래프를 제공합니다. 이 필터는 `TASK-091_user_stats_filters.sql`의 관리자 전용 RPC 보강이 필요합니다.
+  - 상품 등록은 상품명·대상·카테고리·썸네일 이미지·구매 URL을 필수로 검증하고, 교사용/학생용 목록에서 전체·활성·비활성 필터를 제공합니다. 상점 카드의 대표 이미지는 잘리지 않도록 축소 표시됩니다.
+  - 역할별 가이드 전환기는 현재 권한 이하의 가이드만 누적 표시하며, 관리자 가이드는 관리자(100+) 전용입니다.
 
 - `APP_VERSION.current`는 `3.88.0`로 갱신되어 있습니다.
 - **v3.88.0 주요 변경 사항**:
@@ -714,13 +721,13 @@ flowchart TD
 | `admin/talent-adjustments.html` | 60 | 예외 지급 요청, 예외 지급 내역, 달란트 반환 내역, 전체 처리 순으로 조회. 부서 담당 교사는 담당 부서만, 부장 교사 이상은 전체 부서 이력 조회. 전도사님(90+) 이상은 예외 지급 요청 승인/거부와 네비게이션 배지를 확인. 처리자/대상자/사유/원본 지급 참조/처리 시각을 페이징으로 확인 |
 | `admin/talent-items.html` | 60 | 달란트 지급 항목 등록/수정/활성화, 카드 이모지와 지급 규칙/설명 관리, 총/이번 주/예외 지급 통계 표시. 항목 로우 클릭 시 수정 모달 열림. 학생 항목은 주 1회 지급 규칙과 연동, 퀵 버튼 설정은 80등급 이상 |
 | `admin/talent-qr.html` | 90 | QR 코드 생성(qrcode.js 이미지), QR 항목 영역 클릭 수정 모달, 수정(새 코드 재생성), 비활성화. 지정일 날짜+시간 또는 기간(from~to datetime) 설정, 위치 반경 100m~5km(기본 500m). 수령자 모달은 사용자별 묶음, 사용자 유형/부서/검색 필터, 선택 사용자 지급 항목 상세, 반환 상태를 표시 |
-| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 썸네일 이미지와 상세 설명 이미지 분리 업로드, 정렬 순번 관리. 목록은 카테고리 순번과 상품 순번 기준으로 기본 정렬되며 로우 클릭 시 수정 창이 열림. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
+| `admin/shop.html` | 60 | 학생용/교사용 상품 등록, 수정, 썸네일 이미지와 상세 설명 이미지 분리 업로드, 정렬 순번 관리. 등록 시 상품명·대상·카테고리·썸네일 이미지·구매 URL은 필수이며, 교사/학생 목록은 각각 전체·활성·비활성 필터를 제공합니다. 목록은 카테고리 순번과 상품 순번 기준으로 기본 정렬되며 로우 클릭 시 수정 창이 열림. 삭제 버튼(90+)은 소프트 삭제(삭제 대기=비활성화)로 목록에서 숨김 |
 | `admin/product-categories.html` | 70 | 상품 카테고리 등록, 수정, 삭제(비활성화), 카테고리 정렬 순번 관리. 그리드에는 코드 열을 표시하지 않고 로우 클릭 시 수정 모달이 열립니다. 사용 중인 카테고리와 기본 `etc` 카테고리는 삭제 불가 |
 | `admin/purchases.html` | 60 | 구매 관리: 4단계 처리, 모든 상태 탭에 부서/기간 필터(기본 오늘) + 기간 프리셋, 구매 확정 시 달란트 차감 |
 | `admin/notices.html` | 40 | 공지 사항 조회. 일반 교사는 활성 공지만 볼 수 있고, 전도사님(90+) 이상은 공지 등록/수정/삭제와 활성 토글을 처리합니다. 목록 행 선택 시 보기 모달이 열리며, 열람 현황 모달에서 등록일시/등록자, 사용자 유형, 전체/확인자/미확인자 콤보박스 필터를 확인할 수 있습니다. 활성 공지는 로그인 후 메인 화면에 팝업 표시되고 계정별 다시 열지 않음 상태를 저장 |
 | `admin/reports.html` | 80 | 작업 보고서 유형별 조회, 상세 보기, 등록/수정, 선택 삭제 |
-| `admin/logs.html` | 100 | 활동 로그 필터링(기본 1년) + 기간 프리셋, 상세 보기, 한글 액션 라벨 표시, 오류 로그 확인 처리, 소프트 삭제(삭제 대기), 확인 완료 로그 180일 초과 실제 삭제 |
-| `admin/service-stats.html` | 80 | GitHub/Supabase/Kakao/Slack 무료 할당량, 현재·남은 사용량/비율, 예상 사용률, 30일 추이, 수집/Slack 알림 이력 조회와 즉시 수집 |
+| `admin/logs.html` | 100 | 활동 로그 필터링(기본 1년) + 기간 프리셋, 상세 보기, 한글 액션 라벨 표시, 오류 로그 확인 처리, 소프트 삭제(삭제 대기), 확인 완료 로그 180일 초과 실제 삭제. 미확인 ERROR+ 목록은 행 전체 클릭으로 상세 모달을 엽니다. |
+| `admin/service-stats.html` | 80 | GitHub/Supabase/Kakao/Slack 무료 할당량, 현재·남은 사용량/비율, 예상 사용률, 30일 추이, 수집/Slack 알림 이력 조회와 즉시 수집. 최근 수집 실패 항목은 서비스·수집 항목·실패 사유를 별도로 표시합니다. |
 | `admin/versions.html` | 80 | 배포 버전과 v1.0.0부터의 전체 변경 이력 확인 |
 | `admin/page-access.html` | 100 | 유형/권한별 페이지 접근/요소 가시성 설정 |
 | `admin/page-features.html` | 100 | 권한별 페이지 기능(수정/삭제/승인 등) 설정값 관리 |
@@ -933,9 +940,9 @@ flowchart TD
 |---|---|
 | `docs/INITIAL_DATABASE_SETUP.sql` | 현재 테이블, RPC, RLS, Storage 버킷, 기본 데이터를 새 DB에 설치 |
 | `docs/INITIAL_DATABASE_SETUP.md` | SQL Editor 방식과 PowerShell/psql 자동 설치 방법 |
-| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트. 기본 실행 시 사용자 로그인 통계, 최고관리자 제외, 통계 상세 조회 보강 SQL(`TASK-081`/`TASK-082`/`TASK-084`)을 합본에 포함 |
+| `scripts/install-supabase-database.ps1` | `.env.local` 값을 읽어 새 프로젝트 공개 설정까지 반영하는 자동 설치 스크립트. 기본 실행 시 사용자 로그인 통계, 최고관리자 제외, 통계 상세 조회와 학생/교사 필터 보강 SQL(`TASK-081`/`TASK-082`/`TASK-084`/`TASK-091`)을 합본에 포함 |
 
-SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실행 후 필요한 보강 SQL과 `docs/TASK-081_user_login_statistics.sql`, `docs/TASK-082_exclude_super_admin_login_history.sql`, `docs/TASK-084_user_login_statistics_detail.sql`을 이어서 실행합니다. PowerShell/Bash 설치 스크립트와 `-GenerateOnly` 합본 SQL은 세 파일을 기본 포함합니다.
+SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실행 후 필요한 보강 SQL과 `docs/TASK-081_user_login_statistics.sql`, `docs/TASK-082_exclude_super_admin_login_history.sql`, `docs/TASK-084_user_login_statistics_detail.sql`, `docs/TASK-091_user_stats_filters.sql`을 순서대로 실행합니다. PowerShell/Bash 설치 스크립트와 `-GenerateOnly` 합본 SQL은 네 파일을 기본 포함합니다.
 
 아래 SQL 파일들은 과거 작업별 변경 이력이며, 빈 새 DB에는 위 단일 설치 SQL을 우선 사용합니다:
 
@@ -992,6 +999,8 @@ SQL Editor에서 수동 설치할 때는 `docs/INITIAL_DATABASE_SETUP.sql` 실�
 | `docs/TASK-089_product_suggestion_slack_notifications.sql` | v3.87.0: 관리자 직접 결정의 익명 득표 반환과 상품 추천 Slack 종료 알림 연동 |
 | `docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql` | v3.88.0: 최고관리자만 진행 중 집계·직접 결정·현재 유효 정원 종료를 수행하도록 RPC 권한 보강 |
 | `docs/TASK-090_plan.md`, `docs/TASK-090_test_scenario.md`, `docs/TASK-090_test_result.md`, `docs/TASK-090_change_report.md` | v3.88.0: 최고관리자 특례 권한 변경 계획, 검증 시나리오·결과, 변경 보고 |
+| `docs/TASK-091_user_stats_filters.sql` | v3.89.0: 사용자 로그인 통계 집계·상세 RPC에 학생/교사 필터를 동일하게 적용 |
+| `docs/TASK-091_plan.md`, `docs/TASK-091_test_scenario.md`, `docs/TASK-091_test_result.md`, `docs/TASK-091_change_report.md` | v3.89.0: 운영 조회·상품 검증·가이드 권한 정비 계획, 시나리오·결과, 변경 보고 |
 | `docs/TASK-086_test_scenario.md`, `docs/TASK-086_test_result.md`, `docs/TASK-086_change_report.md` | v3.84.0: 관리자 예외 결정 검증 기준과 변경 보고 |
 
 ## 관련 문서

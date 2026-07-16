@@ -23,6 +23,14 @@
     .user-stats-table .num { text-align:right; font-variant-numeric:tabular-nums; font-weight:700; }
     .user-stats-note { margin:0.35rem 0 0; color:var(--admin-text-muted,var(--t-text-muted,#868e96)); font-size:0.82rem; }
     .user-stats-detail-btn { padding:0.3rem 0.65rem; font-size:0.78rem; white-space:nowrap; }
+    .user-stats-chart-wrap { margin:0 0 1rem; padding:0.8rem; border:1px solid var(--t-border,#e9ecef); border-radius:10px; background:var(--t-subtle-surface,#fafbfc); overflow-x:auto; }
+    .user-stats-chart { display:block; min-width:680px; height:310px; }
+    .user-stats-chart .axis { stroke:var(--t-border,#ced4da); stroke-width:1; }
+    .user-stats-chart .grid { stroke:var(--t-border,#e9ecef); stroke-width:1; stroke-dasharray:3 3; }
+    .user-stats-chart .bar { fill:var(--admin-primary,#228be6); }
+    .user-stats-chart .bar:hover { fill:#1864ab; }
+    .user-stats-chart .label { fill:var(--admin-text-muted,var(--t-text-muted,#868e96)); font-size:11px; }
+    .user-stats-chart .value { fill:var(--admin-text,var(--t-text,#212529)); font-size:11px; font-weight:700; }
     @media (max-width:640px) {
       .user-stats-table th, .user-stats-table td { padding:0.6rem; }
     }
@@ -42,6 +50,11 @@
       <input type="date" id="userStatsDateTo" onchange="loadLoginStatistics()" style="padding:0.4rem;border:1px solid var(--admin-border);border-radius:8px;" />
       <select id="userStatsDept" onchange="loadLoginStatistics()" style="padding:0.4rem 0.7rem;border:1px solid var(--admin-border);border-radius:8px;">
         <option value="">전체 부서</option>
+      </select>
+      <select id="userStatsUserType" onchange="loadLoginStatistics()" style="padding:0.4rem 0.7rem;border:1px solid var(--admin-border);border-radius:8px;">
+        <option value="">전체 사용자</option>
+        <option value="student">학생</option>
+        <option value="teacher">교사</option>
       </select>
       <span style="display:inline-flex;gap:0.3rem;flex-wrap:wrap;">
         <button class="filter-btn" type="button" onclick="setUserStatsPeriod('today')">오늘</button>
@@ -147,12 +160,14 @@
       const startDate = document.getElementById('userStatsDateFrom').value || null;
       const endDate = document.getElementById('userStatsDateTo').value || null;
       const departmentId = document.getElementById('userStatsDept').value || null;
+      const userType = document.getElementById('userStatsUserType').value || null;
       content.innerHTML = '<div class="empty-state">통계를 불러오는 중입니다.</div>';
 
       const { data, error } = await _sb.rpc('get_user_login_statistics', {
         p_start_date: startDate,
         p_end_date: endDate,
-        p_department_id: departmentId
+        p_department_id: departmentId,
+        p_user_type: userType
       });
       if (error) {
         content.innerHTML = `<div class="empty-state" style="color:#d63031;">조회 오류: ${escapeHtml(tErr(error.message))}</div>`;
@@ -193,6 +208,7 @@
       }
 
       content.innerHTML = `<h3 style="margin:0 0 0.8rem;">${VIEW_LABELS[currentView]}</h3>
+        ${renderLoginStatsChart(rows)}
         <div class="admin-table-wrap">
           <table class="user-stats-table">
             <thead><tr><th>기준</th><th class="num">로그인 횟수</th><th class="num">로그인 사용자</th><th>관리</th></tr></thead>
@@ -204,6 +220,38 @@
             </tr>`).join('')}</tbody>
           </table>
         </div>`;
+    }
+
+    function renderLoginStatsChart(rows) {
+      const values = rows.map(row => Math.max(0, Number(row.login_count || 0)));
+      const maxValue = Math.max(...values, 1);
+      const yMax = Math.max(5, Math.ceil(maxValue / 5) * 5);
+      const width = Math.max(680, rows.length * 74 + 76);
+      const height = 310;
+      const left = 48;
+      const right = 18;
+      const top = 24;
+      const bottom = 88;
+      const chartHeight = height - top - bottom;
+      const chartWidth = width - left - right;
+      const slotWidth = chartWidth / rows.length;
+      const barWidth = Math.max(16, Math.min(44, slotWidth * 0.64));
+      const ticks = Array.from({ length: 5 }, (_, index) => Math.round(yMax * index / 4));
+      const grid = ticks.map(value => {
+        const y = top + chartHeight - (value / yMax * chartHeight);
+        return `<line class="grid" x1="${left}" x2="${width - right}" y1="${y}" y2="${y}"></line><text class="label" x="${left - 7}" y="${y + 4}" text-anchor="end">${formatNumber(value)}</text>`;
+      }).join('');
+      const bars = rows.map((row, index) => {
+        const value = values[index];
+        const barHeight = value / yMax * chartHeight;
+        const x = left + index * slotWidth + (slotWidth - barWidth) / 2;
+        const y = top + chartHeight - barHeight;
+        const rawLabel = String(row.group_label || '-');
+        const label = rawLabel.length > 12 ? rawLabel.slice(0, 11) + '…' : rawLabel;
+        const labelX = left + index * slotWidth + slotWidth / 2;
+        return `<g><title>${escapeHtml(rawLabel)}: ${formatNumber(value)}회</title><rect class="bar" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${barWidth.toFixed(1)}" height="${Math.max(barHeight, value ? 1 : 0).toFixed(1)}" rx="3"></rect><text class="value" x="${labelX.toFixed(1)}" y="${Math.max(15, y - 6).toFixed(1)}" text-anchor="middle">${formatNumber(value)}</text><text class="label" x="${labelX.toFixed(1)}" y="${height - bottom + 17}" text-anchor="end" transform="rotate(-42 ${labelX.toFixed(1)} ${height - bottom + 17})">${escapeHtml(label)}</text></g>`;
+      }).join('');
+      return `<div class="user-stats-chart-wrap"><svg class="user-stats-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeHtml(VIEW_LABELS[currentView])} 막대 그래프"><line class="axis" x1="${left}" x2="${left}" y1="${top}" y2="${height - bottom}"></line><line class="axis" x1="${left}" x2="${width - right}" y1="${height - bottom}" y2="${height - bottom}"></line>${grid}${bars}</svg></div>`;
     }
 
     async function openLoginStatDetail(groupType, groupKey) {
@@ -229,7 +277,8 @@
         p_group_key: String(groupKey),
         p_start_date: document.getElementById('userStatsDateFrom').value || null,
         p_end_date: document.getElementById('userStatsDateTo').value || null,
-        p_department_id: document.getElementById('userStatsDept').value || null
+        p_department_id: document.getElementById('userStatsDept').value || null,
+        p_user_type: document.getElementById('userStatsUserType').value || null
       });
       if (error) {
         detailContent.innerHTML = `<div class="empty-state" style="color:#d63031;">상세 조회 오류: ${escapeHtml(tErr(error.message))}</div>`;

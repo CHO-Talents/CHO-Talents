@@ -247,6 +247,9 @@
         <strong>로그 조회:</strong> <a href="logs.html" style="color:var(--admin-primary);">운영 &gt; 로그</a>에서 전체 시스템 로그 레벨별 조회 가능. 세션 만료/권한 불일치/페이지 접근 차단 원인은 <code>AUTH_SESSION_MISSING</code>, <code>AUTH_PROFILE_LOAD_FAIL</code>, <code>AUTH_REDIRECT</code>, <code>AUTH_PAGE_ACCESS_CHECK_FAIL</code> 액션으로 확인합니다.
       </div>
       <div class="note-box">
+        <strong>상품 관리 검증:</strong> 상품 등록은 상품명·대상·카테고리·썸네일 이미지·구매 URL을 모두 입력해야 저장됩니다. 교사용/학생용 목록의 전체·활성·비활성 필터는 조회 상태일 뿐 별도 작업 이력을 만들지 않으며, 실제 등록·수정·상태 변경만 상품/주문 카테고리 이력으로 남습니다.
+      </div>
+      <div class="note-box">
         <strong>180일 수동 정리:</strong> 서비스 통계의 <strong>180일 초과 정리</strong>와 로그의 <strong>180일 초과 실제 삭제</strong>는 관리자(100+) 전용이며, 성공/실패 액션은 코드 마스터 <code>activity_logs.action</code> 기준으로 작업 이력에 표시됩니다.
       </div>
       <div class="note-box">

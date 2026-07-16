@@ -86,6 +86,30 @@ const GUIDE_HREFS = [
   'admin-guide.html'
 ];
 
+const GUIDE_MIN_RANK = {
+  'guide.html': 0,
+  'teacher-guide.html': 40,
+  'dept-teacher-guide.html': 60,
+  'purchase-teacher-guide.html': 70,
+  'chief-teacher-guide.html': 80,
+  'evangelist-guide.html': 90,
+  'admin-guide.html': 100
+};
+
+function applyGuideSwitcherAccess(rank) {
+  const permissionRank = Number(rank || 0);
+  document.querySelectorAll('.guide-switcher a').forEach(link => {
+    const href = (link.getAttribute('href') || '').split('?')[0].split('#')[0];
+    const guideName = href.split('/').pop();
+    const minRank = GUIDE_MIN_RANK[guideName];
+    if (minRank === undefined) return;
+    const visible = permissionRank >= minRank;
+    link.hidden = !visible;
+    link.style.display = visible ? '' : 'none';
+    link.setAttribute('aria-hidden', String(!visible));
+  });
+}
+
 function _navBasePath() {
   const path = window.location.pathname;
   if (path.includes('/admin/') || path.endsWith('/admin') ||

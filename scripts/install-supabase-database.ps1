@@ -135,6 +135,7 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   $defaultProductSuggestionAdoptionTalentSql = Join-Path $ScriptRoot '..\docs\TASK-088_product_suggestion_adoption_talent.sql'
   $defaultProductSuggestionSlackNotificationsSql = Join-Path $ScriptRoot '..\docs\TASK-089_product_suggestion_slack_notifications.sql'
   $defaultProductSuggestionSuperAdminVotePrivilegesSql = Join-Path $ScriptRoot '..\docs\TASK-090_product_suggestion_super_admin_vote_privileges.sql'
+  $defaultUserStatsFiltersSql = Join-Path $ScriptRoot '..\docs\TASK-091_user_stats_filters.sql'
   if (Test-Path -LiteralPath $defaultCodeMasterSql) {
     $ExtraSqlPaths = @($defaultCodeMasterSql)
   }
@@ -179,6 +180,9 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   }
   if (Test-Path -LiteralPath $defaultProductSuggestionSuperAdminVotePrivilegesSql) {
     $ExtraSqlPaths += $defaultProductSuggestionSuperAdminVotePrivilegesSql
+  }
+  if (Test-Path -LiteralPath $defaultUserStatsFiltersSql) {
+    $ExtraSqlPaths += $defaultUserStatsFiltersSql
   }
 }
 
