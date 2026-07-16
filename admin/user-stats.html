@@ -105,12 +105,16 @@
   <script src="../js/auth.js"></script>
   <script src="../js/theme.js"></script>
   <script src="../js/nav.js"></script>
+  <script src="../js/page-size.js"></script>
   <script>
     initSupabase();
 
     let session;
     let loginStats = [];
     let currentView = 'date';
+    const USER_STATS_VIEWS = ['date', 'weekday', 'hour', 'department', 'user'];
+    const userStatsPageSizes = {};
+    const userStatsPages = {};
 
     const VIEW_LABELS = {
       date: '날짜별 로그인 통계',
@@ -126,10 +130,18 @@
       if (!session) return;
       navUpdateAuth(session);
       autoLogPageView();
+      await loadUserStatsPageSizes();
       setUserStatsPeriod('month', false);
       await loadDepartments();
       await loadLoginStatistics();
     })();
+
+    async function loadUserStatsPageSizes() {
+      for (const view of USER_STATS_VIEWS) {
+        userStatsPageSizes[view] = Number(await loadPageSize(`user_stats_${view}`, 20)) || 20;
+        userStatsPages[view] = 1;
+      }
+    }
 
     function kstDateInput(date) {
       const parts = new Intl.DateTimeFormat('en-CA', {
@@ -178,6 +190,7 @@
         return;
       }
       loginStats = data || [];
+      USER_STATS_VIEWS.forEach(view => { userStatsPages[view] = 1; });
       renderLoginStats();
     }
 
@@ -186,6 +199,19 @@
       document.querySelectorAll('#userStatsTabs [data-view]').forEach(button => {
         button.classList.toggle('active', button.dataset.view === view);
       });
+      renderLoginStats();
+    }
+
+    function onUserStatsPageSizeChange(view, value) {
+      const pageSize = Number(value) || 20;
+      userStatsPageSizes[view] = pageSize;
+      userStatsPages[view] = 1;
+      savePageSize(`user_stats_${view}`, pageSize);
+      renderLoginStats();
+    }
+
+    function goUserStatsPage(view, page) {
+      userStatsPages[view] = Math.max(1, Number(page) || 1);
       renderLoginStats();
     }
 
@@ -211,19 +237,37 @@
         return;
       }
 
+      const pageSize = userStatsPageSizes[currentView] || 20;
+      const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+      const currentPage = Math.min(Math.max(1, userStatsPages[currentView] || 1), totalPages);
+      const pageRows = rows.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+      userStatsPages[currentView] = currentPage;
+      const isUserView = currentView === 'user';
+      const tableHeader = isUserView
+        ? '<tr><th>권한</th><th>기준</th><th class="num">로그인 횟수</th><th>마지막 로그인 일시</th><th>관리</th></tr>'
+        : '<tr><th>기준</th><th class="num">로그인 횟수</th><th class="num">로그인 사용자</th><th>관리</th></tr>';
+      const tableRows = pageRows.map(row => {
+        const openDetail = `openLoginStatDetail('${currentView}', '${escapeHtml(row.group_key)}')`;
+        const common = `class="user-stats-row" tabindex="0" onclick="${openDetail}" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); ${openDetail}; }"`;
+        const cells = isUserView
+          ? `<td>${escapeHtml(permissionLabel(row.permission_level))}</td><td>${escapeHtml(row.group_label)}</td><td class="num">${formatNumber(row.login_count)}</td><td>${escapeHtml(formatKstDateTime(row.last_logged_in_at))}</td>`
+          : `<td>${escapeHtml(row.group_label)}</td><td class="num">${formatNumber(row.login_count)}</td><td class="num">${formatNumber(row.user_count)}</td>`;
+        return `<tr ${common}>${cells}<td><button type="button" class="filter-btn user-stats-detail-btn" onclick="event.stopPropagation(); ${openDetail}">상세</button></td></tr>`;
+      }).join('');
+
       content.innerHTML = `<h3 style="margin:0 0 0.8rem;">${VIEW_LABELS[currentView]}</h3>
         ${renderLoginStatsChart(rows)}
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:wrap;margin:0 0 0.6rem;">
+          <span class="user-stats-note" style="margin:0;">총 ${formatNumber(rows.length)}건</span>
+          <label class="user-stats-note" style="margin:0;display:inline-flex;align-items:center;gap:0.4rem;">표시 행 수 ${renderPageSizeSelector(`user_stats_${currentView}`, pageSize, `onUserStatsPageSizeChange('${currentView}', this.value)`)}</label>
+        </div>
         <div class="admin-table-wrap">
           <table class="user-stats-table">
-            <thead><tr><th>기준</th><th class="num">로그인 횟수</th><th class="num">로그인 사용자</th><th>관리</th></tr></thead>
-            <tbody>${rows.map(row => `<tr class="user-stats-row" tabindex="0" onclick="openLoginStatDetail('${currentView}', '${escapeHtml(row.group_key)}')" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); openLoginStatDetail('${currentView}', '${escapeHtml(row.group_key)}'); }">
-              <td>${escapeHtml(row.group_label)}</td>
-              <td class="num">${formatNumber(row.login_count)}</td>
-              <td class="num">${formatNumber(row.user_count)}</td>
-              <td><button type="button" class="filter-btn user-stats-detail-btn" onclick="event.stopPropagation(); openLoginStatDetail('${currentView}', '${escapeHtml(row.group_key)}')">상세</button></td>
-            </tr>`).join('')}</tbody>
+            <thead>${tableHeader}</thead>
+            <tbody>${tableRows}</tbody>
           </table>
-        </div>`;
+        </div>
+        <div style="display:flex;justify-content:center;align-items:center;gap:0.25rem;flex-wrap:wrap;margin-top:0.85rem;">${buildPagingButtons(currentPage, totalPages, `goUserStatsPage('${currentView}', __PAGE__)`)}</div>`;
     }
 
     function renderLoginStatsChart(rows) {

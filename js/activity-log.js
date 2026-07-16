@@ -1164,6 +1164,8 @@ const CHANGE_LOG_FIELD_LABELS = {
   image_url: '썸네일 이미지',
   detail_image_url: '상세 설명 이미지',
   purchase_url: '구매 URL',
+  actual_purchase_price: '실제 상품 가격',
+  show_delivery_delay_notice: '배송 지연 안내',
   stock: '재고',
   is_active: '활성 상태',
   code_value: '명칭',

@@ -419,7 +419,7 @@ async function deleteProduct(id) {
       targetName: before && before.name,
       targetType: '상품',
       targetId: id,
-      changes: buildChangeSet(before || {}, {}, { fields:['name', 'target_role', 'category', 'price', 'image_url', 'detail_image_url', 'purchase_url', 'description', 'is_active'] })
+      changes: buildChangeSet(before || {}, {}, { fields:['name', 'target_role', 'category', 'price', 'actual_purchase_price', 'image_url', 'detail_image_url', 'purchase_url', 'show_delivery_delay_notice', 'description', 'is_active'] })
     }));
     return { error: null };
   } catch (err) {
