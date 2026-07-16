@@ -226,11 +226,19 @@
     })();
 
     async function loadAllProducts() {
-      let query = _sb.from('products').select('*').eq('is_active', true);
+      const publicProductColumns = 'id,name,target_role,category,price,sort_order,image_emoji,image_url,detail_image_url,description,is_active,show_delivery_delay_notice,created_at';
+      const legacyPublicProductColumns = 'id,name,target_role,category,price,sort_order,image_emoji,image_url,detail_image_url,description,is_active,created_at';
+      let query = _sb.from('products').select(publicProductColumns).eq('is_active', true);
       if (!_canViewTeacher) {
         query = query.eq('target_role', 'student');
       }
-      const { data, error } = await query.order('created_at', { ascending: false });
+      let { data, error } = await query.order('created_at', { ascending: false });
+      // 배송 지연 안내 컬럼을 추가하기 전의 DB에서도 상품 구매 화면은 계속 표시한다.
+      if (error) {
+        let legacyQuery = _sb.from('products').select(legacyPublicProductColumns).eq('is_active', true);
+        if (!_canViewTeacher) legacyQuery = legacyQuery.eq('target_role', 'student');
+        ({ data, error } = await legacyQuery.order('created_at', { ascending: false }));
+      }
       allShopProducts = data || [];
       renderShopProducts();
     }

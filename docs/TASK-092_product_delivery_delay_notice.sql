@@ -6,7 +6,13 @@ BEGIN;
 ALTER TABLE public.products
   ADD COLUMN IF NOT EXISTS show_delivery_delay_notice boolean NOT NULL DEFAULT false;
 
+ALTER TABLE public.products
+  ADD COLUMN IF NOT EXISTS actual_purchase_price integer NOT NULL DEFAULT 0;
+
 COMMENT ON COLUMN public.products.show_delivery_delay_notice IS
   '상품 구매 화면에 배송 지연 안내를 표시할지 여부';
+
+COMMENT ON COLUMN public.products.actual_purchase_price IS
+  '관리용 실제 상품 구매 가격(원). 사용자 상품 구매 화면에는 노출하지 않음';
 
 COMMIT;

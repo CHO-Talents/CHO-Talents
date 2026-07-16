@@ -249,8 +249,9 @@
       const productIds = [...new Set(allOrders.map(o => o.product_id).filter(Boolean))];
       productMap = {};
       if (productIds.length > 0) {
-        let productResult = await _sb.from('products').select('id,name,purchase_url').in('id', productIds);
-        // 구매 URL 컬럼을 추가하기 전의 DB에서도 기존 구매 관리 기능은 계속 동작하게 한다.
+        let productResult = await _sb.from('products').select('id,name,purchase_url,actual_purchase_price').in('id', productIds);
+        // 선택 컬럼을 추가하기 전의 DB에서도 기존 구매 관리 기능은 계속 동작하게 한다.
+        if (productResult.error) productResult = await _sb.from('products').select('id,name,purchase_url').in('id', productIds);
         if (productResult.error) productResult = await _sb.from('products').select('id,name').in('id', productIds);
         (productResult.data || []).forEach(product => { productMap[product.id] = product; });
       }
@@ -423,6 +424,11 @@
       }
     }
 
+    function formatActualPurchasePrice(value) {
+      const price = Number(value);
+      return Number.isFinite(price) && price > 0 ? `${fmtNum(price)}원` : '-';
+    }
+
     function getProductSummaryRows(orders) {
       const map = new Map();
       orders.forEach(o => {
@@ -434,6 +440,7 @@
             productId: o.product_id || null,
             name: (product && product.name) || o.product_name || '-',
             purchaseUrl: product ? product.purchase_url : null,
+            actualPurchasePrice: product ? product.actual_purchase_price : null,
             qty: 0,
             amount: 0
           });
@@ -461,8 +468,8 @@
       el.style.display = '';
       el.innerHTML = `<div style="font-size:0.85rem;font-weight:600;margin-bottom:0.4rem;">상품별 합계</div>
         <table class="admin-table" style="margin-bottom:0;font-size:0.82rem;">
-          <thead><tr><th>상품명</th><th>수량 합계</th><th>금액 합계</th><th>관리</th></tr></thead>
-          <tbody>${rows.map(v => `<tr class="product-summary-row" data-summary-key="${escapePurchaseHtml(v.key)}"><td>${escapePurchaseHtml(v.name)}</td><td>${v.qty}</td><td>${fmtNum(v.amount)}</td><td><button class="filter-btn product-summary-detail" data-summary-key="${escapePurchaseHtml(v.key)}" type="button">상세</button></td></tr>`).join('')}</tbody>
+          <thead><tr><th>상품명</th><th>실제 상품 가격</th><th>수량 합계</th><th>금액 합계</th><th>관리</th></tr></thead>
+          <tbody>${rows.map(v => `<tr class="product-summary-row" data-summary-key="${escapePurchaseHtml(v.key)}"><td>${escapePurchaseHtml(v.name)}</td><td>${formatActualPurchasePrice(v.actualPurchasePrice)}</td><td>${v.qty}</td><td>${fmtNum(v.amount)}</td><td><button class="filter-btn product-summary-detail" data-summary-key="${escapePurchaseHtml(v.key)}" type="button">상세</button></td></tr>`).join('')}</tbody>
         </table>`;
       el.querySelectorAll('.product-summary-row').forEach(row => {
         row.addEventListener('click', () => showProductPurchaseDetail(row.dataset.summaryKey));
@@ -516,14 +523,16 @@
       const pageBuyerRows = buyerRows.slice(startIndex, startIndex + pageSize);
       const accountHeader = canViewAccounts ? '<th>계정</th>' : '';
       const accountCells = buyer => canViewAccounts ? `<td>${escapePurchaseHtml(buyer.username)}</td>` : '';
-      const colspan = canViewAccounts ? 5 : 4;
+      const colspan = canViewAccounts ? 6 : 5;
       const purchaseUrl = getSafePurchaseUrl(summary.purchaseUrl);
+      const actualPurchasePrice = formatActualPurchasePrice(summary.actualPurchasePrice);
       const purchaseUrlHtml = purchaseUrl
-        ? `<a href="${escapePurchaseHtml(purchaseUrl)}" target="_blank" rel="noopener noreferrer" style="word-break:break-all;">${escapePurchaseHtml(purchaseUrl)}</a>`
+        ? `<a href="${escapePurchaseHtml(purchaseUrl)}" target="_blank" rel="noopener noreferrer" class="filter-btn" style="display:inline-block;text-decoration:none;">구매 링크 열기 ↗</a>`
         : '<span style="color:var(--admin-text-muted);">등록된 구매 URL이 없습니다.</span>';
 
       document.getElementById('productPurchaseDetailContent').innerHTML = `
         <div style="margin-bottom:0.9rem;"><strong style="font-size:1rem;">${escapePurchaseHtml(summary.name)}</strong></div>
+        <div style="font-size:0.84rem;margin-bottom:0.45rem;"><strong>실제 상품 가격:</strong> ${actualPurchasePrice}</div>
         <div style="font-size:0.84rem;margin-bottom:0.45rem;"><strong>구매 URL:</strong> ${purchaseUrlHtml}</div>
         <div style="font-size:0.84rem;margin-top:0.9rem;"><strong>총 구매 개수:</strong> ${totalQuantity}개</div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;margin:0.45rem 0;font-size:0.84rem;font-weight:700;">
@@ -531,8 +540,8 @@
           <span style="display:flex;align-items:center;gap:0.35rem;font-size:0.78rem;font-weight:400;">표시 ${renderPageSizeSelector('purchase_product_detail', pageSize, 'onProductPurchaseDetailPageSizeChange(this.value)')}</span>
         </div>
         <table class="admin-table" style="margin:0;font-size:0.82rem;">
-          <thead><tr><th>구매자</th><th>사용자 부서</th><th>사용자 유형</th>${accountHeader}<th>구매 개수</th></tr></thead>
-          <tbody>${pageBuyerRows.map(buyer => `<tr><td>${escapePurchaseHtml(buyer.name)}</td><td>${escapePurchaseHtml(buyer.departmentName)}</td><td>${escapePurchaseHtml(buyer.userType)}</td>${accountCells(buyer)}<td>${buyer.quantity}</td></tr>`).join('') || `<tr><td colspan="${colspan}" class="empty-state">구매자 정보가 없습니다.</td></tr>`}</tbody>
+          <thead><tr><th>구매자</th><th>사용자 부서</th><th>사용자 유형</th>${accountHeader}<th>구매 개수</th><th>실제 상품 가격</th></tr></thead>
+          <tbody>${pageBuyerRows.map(buyer => `<tr><td>${escapePurchaseHtml(buyer.name)}</td><td>${escapePurchaseHtml(buyer.departmentName)}</td><td>${escapePurchaseHtml(buyer.userType)}</td>${accountCells(buyer)}<td>${buyer.quantity}</td><td>${actualPurchasePrice}</td></tr>`).join('') || `<tr><td colspan="${colspan}" class="empty-state">구매자 정보가 없습니다.</td></tr>`}</tbody>
         </table>
         <div style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.7rem;flex-wrap:wrap;">${buildPagingButtons(productPurchaseDetailPage, totalPages, 'goProductPurchaseDetailPage(__PAGE__)')}</div>`;
     }
