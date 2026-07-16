@@ -43,7 +43,7 @@
           <tr><td>Edge Function</td><td><code>supabase/functions/_shared/slack-notify.ts</code></td><td>알림 유형과 부서명에 따라 사용할 Slack Webhook Secret을 선택하고 Block Kit 메시지를 구성하며 성공/실패 사용량을 기록합니다.</td></tr>
         </tbody>
       </table>
-      <div class="note-box">Slack 호출은 fire-and-forget 방식입니다. 실패해도 구매, 가입, Q&amp;A 같은 사용자 작업은 중단하지 않고 브라우저 콘솔에 경고만 남깁니다.</div>
+      <div class="note-box">Slack 호출은 fire-and-forget 방식입니다. 실패해도 구매, 가입, Q&amp;A 같은 사용자 작업은 중단하지 않지만, 실패 유형·응답 상태·사유를 활동 로그에 남겨 원인을 확인할 수 있습니다.</div>
     </div>
 
     <div class="rule-section">
@@ -58,6 +58,7 @@
           <tr><td><code>log_alert</code></td><td><code>js/activity-log.js</code> WARN 이상 로그</td><td>로그 레벨. 예: 권한 거부, DB 페이지 접근 차단, ERROR+ 오류</td><td><span class="route-badge">운영 채널</span></td></tr>
           <tr><td><code>product_suggestion_registered</code></td><td><code>product-suggestions.html</code> 추천 등록 완료</td><td>상품명, 등록 완료 시각, 처리 상태</td><td><span class="route-badge">운영관리 채널</span></td></tr>
           <tr><td><code>product_suggestion_vote_completed</code></td><td><code>admin/product-suggestion-votes.html</code> 투표 종료</td><td>상품명, 결과, 찬성/반대/총 득표 수, 종료 방식</td><td><span class="route-badge">운영관리 채널</span></td></tr>
+          <tr><td><code>slack_test</code></td><td>이 페이지의 연결 테스트</td><td>고정 라우팅</td><td><span class="route-badge">운영관리 채널</span></td></tr>
           <tr><td><code>qna_new</code></td><td><code>qna.html</code> 새 질문 등록</td><td>고정 라우팅</td><td><span class="route-badge">Q&amp;A 채널</span></td></tr>
           <tr><td><code>service_quota_alert</code></td><td><code>service-usage-collect</code> 1시간 수집</td><td>무료 한도 70%·85%·95% 최초 도달</td><td><span class="route-badge">운영 채널</span></td></tr>
         </tbody>
@@ -88,6 +89,10 @@
       </table>
       <div class="note-box">Webhook URL 원문은 정적 HTML, JS, <code>app_config</code>에 저장하지 않습니다. Supabase Edge Function Secret 또는 서버 환경변수에만 저장합니다.</div>
       <div class="note-box"><code>SLACK_WEBHOOK_OPERATIONS</code>는 WARN+ 로그, 서비스 할당량 70%·85%·95% 알림, 상품 추천 등록/투표 종료 알림이 함께 사용하는 운영관리 채널입니다.</div>
+      <div style="display:flex;align-items:center;gap:0.7rem;flex-wrap:wrap;margin-top:1rem;">
+        <button id="operationsSlackTestButton" class="filter-btn" type="button">운영관리 Slack 테스트 알림 보내기</button>
+        <span id="operationsSlackTestStatus" aria-live="polite" style="font-size:0.82rem;color:var(--admin-text-muted);"></span>
+      </div>
     </div>
 
     <div class="rule-section">
@@ -123,8 +128,27 @@
   <script src="../js/auth.js"></script>
   <script src="../js/theme.js"></script>
   <script src="../js/nav.js"></script>
+  <script src="../js/slack-notify.js"></script>
   <script>
     initSupabase();
+
+    async function sendOperationsSlackTest() {
+      const button = document.getElementById('operationsSlackTestButton');
+      const status = document.getElementById('operationsSlackTestStatus');
+      if (!button || !status || typeof sendSlackNotify !== 'function') return;
+      button.disabled = true;
+      status.textContent = '테스트 알림을 보내는 중입니다...';
+      const result = await sendSlackNotify('slack_test', { 테스트시각: new Date().toISOString() });
+      if (result.success) {
+        status.textContent = '전송 성공: 운영관리 Slack 채널을 확인하세요.';
+        status.style.color = '#2b8a3e';
+      } else {
+        status.textContent = `전송 실패${result.status ? ` (${result.status})` : ''}: ${result.error || '활동 로그를 확인하세요.'}`;
+        status.style.color = '#c92a2a';
+      }
+      button.disabled = false;
+    }
+
     (async () => {
       await navInit();
       const session = await initPage(80, '../login.html');
@@ -135,6 +159,7 @@
       updateNavOrderBadge();
       updateLogBadge();
       autoLogPageView();
+      document.getElementById('operationsSlackTestButton')?.addEventListener('click', sendOperationsSlackTest);
     })();
   </script>
   <div id="version-container"></div>

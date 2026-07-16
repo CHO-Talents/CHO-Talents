@@ -14,18 +14,53 @@ const _slackNotifyState = {
   THROTTLE_MS: 5000
 };
 
+async function _getSlackNotifyFailure(error) {
+  let status = null;
+  let message = error && error.message ? String(error.message) : 'Slack 알림 요청에 실패했습니다.';
+  const response = error && error.context;
+  if (response) {
+    status = Number(response.status) || null;
+    try {
+      const body = await (typeof response.clone === 'function' ? response.clone() : response).text();
+      if (body) {
+        try {
+          const parsed = JSON.parse(body);
+          message = String(parsed.error || parsed.message || body);
+        } catch (e) {
+          message = String(body);
+        }
+      }
+    } catch (e) {}
+  }
+  return { status, message: message.slice(0, 500) };
+}
+
+function _recordSlackNotifyFailure(type, failure) {
+  // log_alert 자체의 전송 실패를 다시 Slack 오류로 기록하면 재귀 알림이 생길 수 있습니다.
+  if (type === 'log_alert' || typeof logError !== 'function') return;
+  try {
+    const result = logError('SLACK_NOTIFY_FAIL', {
+      notificationType: type,
+      notificationStatus: failure.status || null,
+      error: failure.message || 'Slack 알림 요청에 실패했습니다.'
+    });
+    if (result && typeof result.catch === 'function') result.catch(() => {});
+  } catch (e) {}
+}
+
 /**
- * Slack 알림 전송 (fire-and-forget)
- * @param {string} type - 알림 유형: purchase_new, purchase_status, user_register, dept_transfer, log_alert, qna_new, product_suggestion_registered, product_suggestion_vote_completed
+ * Slack 알림 전송. 호출자는 await할 수 있으나, 기존 화면 흐름은 await하지 않아도 됩니다.
+ * @param {string} type - 알림 유형: purchase_new, purchase_status, user_register, dept_transfer, log_alert, qna_new, product_suggestion_registered, product_suggestion_vote_completed, slack_test
  * @param {Object} data - 알림 데이터
+ * @returns {Promise<{success:boolean, skipped?:boolean, data?:Object|null, error?:string, status?:number|null}>}
  */
-function sendSlackNotify(type, data) {
-  if (!_sb || !type) return;
+async function sendSlackNotify(type, data) {
+  if (!_sb || !type) return { success: false, error: 'Supabase 또는 알림 유형이 없습니다.' };
 
   const payloadData = Object.assign({}, data || {});
-  const isAnonymousProductSuggestionNotification = type === 'product_suggestion_registered'
+  const doesNotNeedUserContext = type === 'product_suggestion_registered'
     || type === 'product_suggestion_vote_completed';
-  if (!isAnonymousProductSuggestionNotification) {
+  if (!doesNotNeedUserContext && type !== 'slack_test') {
     let session = null;
     try {
       session = (typeof getSession === 'function') ? getSession() : null;
@@ -41,7 +76,7 @@ function sendSlackNotify(type, data) {
   const key = type + '_' + JSON.stringify(payloadData);
   const now = Date.now();
   if (_slackNotifyState.lastSent[key] && now - _slackNotifyState.lastSent[key] < _slackNotifyState.THROTTLE_MS) {
-    return;
+    return { success: false, skipped: true, error: '동일 알림을 잠시 후 다시 시도하세요.' };
   }
   _slackNotifyState.lastSent[key] = now;
 
@@ -53,9 +88,23 @@ function sendSlackNotify(type, data) {
     });
   }
 
-  _sb.functions.invoke('slack-notify', {
-    body: { type: type, data: payloadData }
-  }).catch(function(err) {
-    console.warn('[SlackNotify] Failed:', err);
-  });
+  try {
+    const { data: responseData, error } = await _sb.functions.invoke('slack-notify', {
+      body: { type: type, data: payloadData }
+    });
+    if (error || !responseData || responseData.success !== true) {
+      const failure = error
+        ? await _getSlackNotifyFailure(error)
+        : { status: null, message: String((responseData && responseData.error) || 'Slack 알림 응답이 성공이 아닙니다.').slice(0, 500) };
+      console.warn('[SlackNotify] Failed:', type, failure);
+      _recordSlackNotifyFailure(type, failure);
+      return { success: false, error: failure.message, status: failure.status };
+    }
+    return { success: true, data: responseData };
+  } catch (err) {
+    const failure = await _getSlackNotifyFailure(err);
+    console.warn('[SlackNotify] Failed:', type, failure);
+    _recordSlackNotifyFailure(type, failure);
+    return { success: false, error: failure.message, status: failure.status };
+  }
 }

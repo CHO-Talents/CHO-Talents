@@ -948,7 +948,7 @@
           return;
         }
         const { error } = await updateUser(editingId, { displayName, userType, permissionLevel: permLevel, departmentId: deptId, managedDeptId: needsManagedDept ? managedDeptId : null, classNumber });
-        if (error) { await logError('USER_UPDATE_FAIL', { userId: editingId, 오류: error }); errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
+        if (error) { errEl.textContent = tErr(error); errEl.classList.add('show'); return; }
         const 변경Parts = [];
         if ((target.display_name || '') !== displayName) 변경Parts.push(`이름: ${target.display_name || '-'} → ${displayName}`);
         if ((target.user_type || 'student') !== userType) 변경Parts.push(`유형: ${target.user_type || 'student'} → ${userType}`);

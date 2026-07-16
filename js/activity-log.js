@@ -13,6 +13,7 @@ const _LOG_ALERT_THROTTLE_MS = 5000;
 let _logWriteLastSeen = {};
 const _LOG_WRITE_DEDUPE_MS = 5000;
 const _logUserLookupCache = {};
+const _logDepartmentLookupCache = {};
 
 function closeOpenActionMenus() {
   if (typeof document === 'undefined') return;
@@ -88,6 +89,7 @@ const ACTION_LABELS = {
   USER_UPDATE_FAIL: '사용자 수정 실패',
   USER_UPDATE_DENIED: '사용자 수정 거부',
   USER_UPDATE_ERROR: '사용자 수정 오류',
+  SLACK_NOTIFY_FAIL: 'Slack 알림 전송 실패',
   USER_DELETE: '사용자 삭제',
   USER_DELETE_FAIL: '사용자 삭제 실패',
   USER_DELETE_DENIED: '사용자 삭제 거부',
@@ -349,6 +351,7 @@ const LOG_DETAIL_KEY_LABELS = {
   targetUser: '대상 사용자',
   targetUserId: '대상 사용자 ID',
   targetDepartmentId: '대상 부서 ID',
+  targetDepartmentName: '대상 부서',
   actorAccount: '작업자 아이디',
   actorName: '작업자',
   actorId: '작업자 ID',
@@ -364,6 +367,12 @@ const LOG_DETAIL_KEY_LABELS = {
   details: '상세',
   detail: '상세',
   error: '오류',
+  errorKind: '오류 유형',
+  errorName: '오류 이름',
+  errorFingerprint: '오류 식별값',
+  notificationType: '알림 유형',
+  notificationStatus: '알림 응답 상태',
+  requestedChanges: '수정 요청 항목',
   reason: '사유',
   target: '대상',
   targetName: '대상',
@@ -556,6 +565,7 @@ const LOG_DETAIL_VALUE_LABELS = {
   'User denied Geolocation': '사용자가 위치 권한을 거부했습니다',
   'Cannot coerce the result to a single JSON object': '단일 결과로 변환할 수 없습니다',
   'permission denied for table profiles': 'profiles 테이블 권한이 없습니다',
+  Unauthorized: '권한이 없습니다',
   last_activity: '마지막 활동 기준',
   idle_timer: '유휴 타이머 기준',
   visibilitychange: '탭 재활성화 기준',
@@ -601,6 +611,10 @@ const LOG_DETAIL_KEY_ALIASES = {
   대상사용자: 'targetUser',
   '대상 사용자 ID': 'targetUserId',
   대상사용자ID: 'targetUserId',
+  '대상 부서 ID': 'targetDepartmentId',
+  대상부서ID: 'targetDepartmentId',
+  '대상 부서': 'targetDepartmentName',
+  대상부서: 'targetDepartmentName',
   사용자ID: 'userId',
   항목ID: 'itemId',
   상품ID: 'productId',
@@ -654,6 +668,12 @@ const LOG_DETAIL_KEY_ALIASES = {
   작업코드: 'actionCode',
   작업명: 'actionLabel',
   작업자: 'actorName',
+  '수정 요청 항목': 'requestedChanges',
+  '알림 유형': 'notificationType',
+  '알림 응답 상태': 'notificationStatus',
+  '오류 유형': 'errorKind',
+  '오류 이름': 'errorName',
+  '오류 식별값': 'errorFingerprint',
   '작업자 아이디': 'actorAccount',
   페이지: 'logPage',
   레벨: 'logLevel',
@@ -901,6 +921,16 @@ function _isUuidLike(value) {
     && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 }
 
+function _isDisplayOnlyUuidIdentifier(key, value) {
+  if (!_isUuidLike(value)) return false;
+  const normalizedKey = LOG_DETAIL_KEY_ALIASES[String(key || '')] || key;
+  return [
+    'id', 'userId', 'authUserId', 'targetId', 'targetUserId', 'targetDepartmentId',
+    'departmentId', 'managedDeptId', 'fromDept', 'toDept', 'itemId', 'productId',
+    'orderId', 'txnId', 'taskId', 'reportId', 'requestId', 'noticeId', 'logId', 'qrId'
+  ].includes(normalizedKey);
+}
+
 function _extractLogUsername(value) {
   if (value === undefined || value === null) return '';
   const raw = String(value).trim();
@@ -975,6 +1005,26 @@ async function _resolveLogUserByUsername(value) {
   return resolved;
 }
 
+async function _resolveLogDepartmentById(departmentId) {
+  if (!_sb || !_isUuidLike(departmentId)) return null;
+  const cacheKey = 'id:' + departmentId;
+  if (Object.prototype.hasOwnProperty.call(_logDepartmentLookupCache, cacheKey)) {
+    return _logDepartmentLookupCache[cacheKey];
+  }
+
+  let name = null;
+  try {
+    const { data } = await _sb
+      .from('departments')
+      .select('name')
+      .eq('id', departmentId)
+      .maybeSingle();
+    name = data && data.name ? data.name : null;
+  } catch (e) {}
+  _logDepartmentLookupCache[cacheKey] = name;
+  return name;
+}
+
 function _applyResolvedLogUser(enriched, resolved, options = {}) {
   if (!resolved) return;
   const displayName = resolved.display_name || resolved.username || null;
@@ -1019,6 +1069,12 @@ async function enrichLogDetailsWithUserContext(details) {
 
     if (profile) {
       _applyResolvedLogUser(enriched, profile, { asActorFallback: false });
+    }
+
+    const departmentId = enriched.targetDepartmentId || enriched.departmentId || (profile && profile.department_id) || null;
+    const departmentName = await _resolveLogDepartmentById(departmentId);
+    if (departmentName && !enriched.targetDepartmentName) {
+      enriched.targetDepartmentName = departmentName;
     }
 
     const actorResolved = await _resolveLogUserByUsername(actorCandidate);
@@ -1076,6 +1132,7 @@ function buildKoreanLogDetails(details, options = {}) {
   const source = (details && typeof details === 'object' && !Array.isArray(details)) ? details : {};
   const includeOriginalKeys = options.includeOriginalKeys !== false;
   const includeTechnicalKeys = options.includeTechnicalKeys !== false;
+  const hideUuidIdentifiers = options.hideUuidIdentifiers !== false;
   const addContext = options.addContext !== false;
   const result = {};
 
@@ -1093,6 +1150,7 @@ function buildKoreanLogDetails(details, options = {}) {
 
   Object.entries(source).forEach(([key, value]) => {
     const isTechnical = key.startsWith('_') || LOG_TECHNICAL_DETAIL_KEYS.has(key);
+    if (hideUuidIdentifiers && _isDisplayOnlyUuidIdentifier(key, value)) return;
     let displayValue = value;
     if ((key === 'targetUser' || key === '대상 사용자') && _isUuidLike(value)) {
       displayValue = source.targetName || source.targetDisplayName || source['대상'] || source['대상 이름'] || value;
@@ -1732,35 +1790,76 @@ async function loadAuthSession() {
 
 /* ===== Global Error Handler ===== */
 
+function _clientErrorText(value, fallback = '브라우저가 오류 세부정보를 제공하지 않았습니다.') {
+  if (value && typeof value === 'object' && value.message) return String(value.message);
+  if (typeof value === 'string' && value.trim()) return value.trim();
+  if (value !== null && value !== undefined) {
+    try {
+      const serialized = JSON.stringify(value);
+      if (serialized && serialized !== '{}') return serialized;
+    } catch (e) {}
+  }
+  return fallback;
+}
+
+function _clientErrorFingerprint(parts) {
+  const source = parts.map(value => String(value || '')
+    .replace(/[?#].*$/, '')
+    .replace(/\b[0-9a-f]{8}-[0-9a-f-]{27,}\b/ig, '{uuid}')
+    .trim()).join('|');
+  let hash = 2166136261;
+  for (let i = 0; i < source.length; i += 1) {
+    hash ^= source.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return 'js-' + (hash >>> 0).toString(36);
+}
+
 window.addEventListener('error', (e) => {
   const resource = e.target;
   const resourceTag = resource && resource !== window ? String(resource.tagName || '').toUpperCase() : '';
   const isExternalResource = resourceTag === 'SCRIPT'
     || (resourceTag === 'LINK' && String(resource.rel || '').toLowerCase() === 'stylesheet');
   if (isExternalResource) {
+    const resourceUrl = resource.src || resource.href || null;
     logError('JS_ERROR', {
       message: resourceTag === 'SCRIPT' ? '외부 스크립트 로드 실패' : '외부 스타일시트 로드 실패',
+      errorKind: 'resource-load',
+      errorFingerprint: _clientErrorFingerprint(['resource-load', resourceTag, resourceUrl]),
       resourceType: resourceTag,
-      resourceUrl: resource.src || resource.href || null
+      resourceUrl
     });
     return;
   }
+  const message = _clientErrorText(e.message || (e.error && e.error.message));
+  const filename = e.filename || (e.error && e.error.fileName) || null;
+  const lineno = e.lineno || (e.error && e.error.lineNumber) || null;
+  const colno = e.colno || (e.error && e.error.columnNumber) || null;
   const details = {
-    message: e.message,
-    filename: e.filename,
-    lineno: e.lineno,
-    colno: e.colno
+    message,
+    errorKind: 'runtime',
+    errorName: e.error && e.error.name ? String(e.error.name) : null,
+    errorFingerprint: _clientErrorFingerprint(['runtime', message, filename, lineno, colno]),
+    filename,
+    lineno,
+    colno
   };
   if (e.error && e.error.stack) details.stack = String(e.error.stack).slice(0, 2000);
-  if (e.message === 'Script error.' && !e.filename && !e.lineno && !e.colno) {
+  if (message === 'Script error.' && !filename && !lineno && !colno) {
     details.hint = '외부 스크립트 오류 세부정보가 브라우저 CORS 정책으로 숨겨졌습니다.';
   }
   logError('JS_ERROR', details);
 }, true);
 
 window.addEventListener('unhandledrejection', (e) => {
+  const reason = e.reason;
+  const message = _clientErrorText(reason, '처리되지 않은 Promise 거부');
   logError('PROMISE_REJECTION', {
-    reason: e.reason ? String(e.reason) : 'Unknown'
+    reason: message,
+    errorKind: 'unhandled-rejection',
+    errorName: reason && reason.name ? String(reason.name) : null,
+    errorFingerprint: _clientErrorFingerprint(['unhandled-rejection', message, reason && reason.stack]),
+    stack: reason && reason.stack ? String(reason.stack).slice(0, 2000) : null
   });
 });
 
