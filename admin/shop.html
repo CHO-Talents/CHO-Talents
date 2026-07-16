@@ -21,13 +21,22 @@
         </div>
       </div>
 
-      <div style="display:flex;align-items:center;justify-content:space-between;margin:1rem 0 0.5rem;border-bottom:2px solid #fab005;padding-bottom:0.3rem;">
-        <h3 style="font-size:0.95rem;margin:0;" id="teacherTitle">👩‍🏫 교사용 상품 (0건)</h3>
-        <select id="teacherStatusFilter" aria-label="교사용 상품 상태 필터" onchange="onProductStatusFilterChange('teacher')" style="padding:0.35rem 0.55rem;border:1px solid var(--admin-border);border-radius:8px;background:var(--t-card,#fff);color:var(--admin-text);font-size:0.8rem;">
-          <option value="all">전체</option>
-          <option value="active">활성</option>
-          <option value="inactive">비활성</option>
-        </select>
+      <div class="product-list-toolbar" style="display:flex;align-items:center;justify-content:space-between;gap:0.7rem;flex-wrap:wrap;margin:1rem 0 0.5rem;border-bottom:2px solid #fab005;padding-bottom:0.3rem;">
+        <div style="display:flex;align-items:center;gap:0.55rem;flex-wrap:wrap;">
+          <h3 style="font-size:0.95rem;margin:0;" id="teacherTitle">👩‍🏫 교사용 상품 (0건)</h3>
+          <div style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;">
+            <label for="teacherStatusFilter" class="sr-only">교사용 상품 상태</label>
+            <select id="teacherStatusFilter" aria-label="교사용 상품 상태 필터" onchange="onProductStatusFilterChange('teacher')" style="padding:0.35rem 0.55rem;border:1px solid var(--admin-border);border-radius:8px;background:var(--t-card,#fff);color:var(--admin-text);font-size:0.8rem;">
+              <option value="all">전체 상태</option>
+              <option value="active">활성</option>
+              <option value="inactive">비활성</option>
+            </select>
+            <label for="teacherCategoryFilter" class="sr-only">교사용 상품 카테고리</label>
+            <select id="teacherCategoryFilter" aria-label="교사용 상품 카테고리 필터" onchange="onProductCategoryFilterChange('teacher')" style="padding:0.35rem 0.55rem;border:1px solid var(--admin-border);border-radius:8px;background:var(--t-card,#fff);color:var(--admin-text);font-size:0.8rem;">
+              <option value="">전체 카테고리</option>
+            </select>
+          </div>
+        </div>
         <span id="teacherPageSizeWrap"></span>
       </div>
       <table class="admin-table" id="teacherProductTable">
@@ -36,13 +45,22 @@
       </table>
       <div id="teacherPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
 
-      <div style="display:flex;align-items:center;justify-content:space-between;margin:1.5rem 0 0.5rem;border-bottom:2px solid #51cf66;padding-bottom:0.3rem;">
-        <h3 style="font-size:0.95rem;margin:0;" id="studentTitle">🎒 학생용 상품 (0건)</h3>
-        <select id="studentStatusFilter" aria-label="학생용 상품 상태 필터" onchange="onProductStatusFilterChange('student')" style="padding:0.35rem 0.55rem;border:1px solid var(--admin-border);border-radius:8px;background:var(--t-card,#fff);color:var(--admin-text);font-size:0.8rem;">
-          <option value="all">전체</option>
-          <option value="active">활성</option>
-          <option value="inactive">비활성</option>
-        </select>
+      <div class="product-list-toolbar" style="display:flex;align-items:center;justify-content:space-between;gap:0.7rem;flex-wrap:wrap;margin:1.5rem 0 0.5rem;border-bottom:2px solid #51cf66;padding-bottom:0.3rem;">
+        <div style="display:flex;align-items:center;gap:0.55rem;flex-wrap:wrap;">
+          <h3 style="font-size:0.95rem;margin:0;" id="studentTitle">🎒 학생용 상품 (0건)</h3>
+          <div style="display:flex;align-items:center;gap:0.35rem;flex-wrap:wrap;">
+            <label for="studentStatusFilter" class="sr-only">학생용 상품 상태</label>
+            <select id="studentStatusFilter" aria-label="학생용 상품 상태 필터" onchange="onProductStatusFilterChange('student')" style="padding:0.35rem 0.55rem;border:1px solid var(--admin-border);border-radius:8px;background:var(--t-card,#fff);color:var(--admin-text);font-size:0.8rem;">
+              <option value="all">전체 상태</option>
+              <option value="active">활성</option>
+              <option value="inactive">비활성</option>
+            </select>
+            <label for="studentCategoryFilter" class="sr-only">학생용 상품 카테고리</label>
+            <select id="studentCategoryFilter" aria-label="학생용 상품 카테고리 필터" onchange="onProductCategoryFilterChange('student')" style="padding:0.35rem 0.55rem;border:1px solid var(--admin-border);border-radius:8px;background:var(--t-card,#fff);color:var(--admin-text);font-size:0.8rem;">
+              <option value="">전체 카테고리</option>
+            </select>
+          </div>
+        </div>
         <span id="studentPageSizeWrap"></span>
       </div>
       <table class="admin-table" id="studentProductTable">
@@ -108,6 +126,13 @@
           </div>
         </div>
         <div id="uploadStatus" style="margin-top:0.3rem;font-size:0.8rem;text-align:center;"></div>
+      </div>
+      <div id="deliveryDelayNoticeWrap" style="margin:-0.2rem 0 0.8rem;">
+        <label style="display:flex;align-items:flex-start;gap:0.45rem;cursor:pointer;font-size:0.85rem;font-weight:600;">
+          <input type="checkbox" id="mDeliveryDelayNotice" style="margin-top:0.15rem;" />
+          <span>배송 지연 안내</span>
+        </label>
+        <p style="margin:0.25rem 0 0 1.55rem;font-size:0.78rem;color:var(--admin-text-muted);">선택하면 상품 썸네일 아래에 “배송 상황에 따라 상품 지급이 늦어질 수 있습니다”를 표시합니다.</p>
       </div>
       <div style="margin-bottom:0.8rem;">
         <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상세 설명 이미지</label>
@@ -175,6 +200,7 @@
     .product-row{cursor:pointer;}
     .product-row:hover{background:var(--t-hover-bg,#f8f9fa);}
     [data-theme="dark"] .product-row:hover{background:#1f2937;}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
     .product-drop-zone{border:2px dashed var(--admin-border);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--t-input-bg,#fafafa);color:var(--admin-text);}
     .drop-help{font-size:0.85rem;color:var(--admin-text-muted);}
     .drop-meta{font-size:0.75rem;color:var(--t-text-light,#b2bec3);margin-top:0.2rem;}
@@ -251,6 +277,7 @@
 
     let _shopTeachers = [], _shopStudents = [];
     function renderProducts() {
+      updateProductCategoryFilters();
       _shopTeachers = sortShopProducts(filterProductsByStatus('teacher'));
       _shopStudents = sortShopProducts(filterProductsByStatus('student'));
       document.getElementById('tableTitle').textContent = `상품 목록 (${allProducts.length}건)`;
@@ -261,16 +288,40 @@
     }
 
     function filterProductsByStatus(targetRole) {
-      const filter = document.getElementById(targetRole + 'StatusFilter');
-      const status = filter ? filter.value : 'all';
-      return allProducts.filter(product => product.target_role === targetRole && (
-        status === 'all' ||
-        (status === 'active' && product.is_active !== false) ||
-        (status === 'inactive' && product.is_active === false)
-      ));
+      const statusFilter = document.getElementById(targetRole + 'StatusFilter');
+      const categoryFilter = document.getElementById(targetRole + 'CategoryFilter');
+      const status = statusFilter ? statusFilter.value : 'all';
+      const category = categoryFilter ? categoryFilter.value : '';
+      return allProducts.filter(product => product.target_role === targetRole &&
+        (!category || (product.category || 'etc') === category) &&
+        (status === 'all' ||
+          (status === 'active' && product.is_active !== false) ||
+          (status === 'inactive' && product.is_active === false))
+      );
+    }
+
+    function updateProductCategoryFilters() {
+      ['teacher', 'student'].forEach(targetRole => {
+        const select = document.getElementById(targetRole + 'CategoryFilter');
+        if (!select) return;
+        const previous = select.value;
+        const categories = [...new Set(allProducts
+          .filter(product => product.target_role === targetRole)
+          .map(product => product.category || 'etc'))]
+          .sort((a, b) => getProductCategoryLabel(a).localeCompare(getProductCategoryLabel(b), 'ko'));
+        select.innerHTML = '<option value="">전체 카테고리</option>' + categories
+          .map(category => `<option value="${escapeHtml(category)}">${escapeHtml(getProductCategoryLabel(category))}</option>`)
+          .join('');
+        select.value = categories.includes(previous) ? previous : '';
+      });
     }
 
     function onProductStatusFilterChange(targetRole) {
+      shopPages[targetRole] = 1;
+      renderProducts();
+    }
+
+    function onProductCategoryFilterChange(targetRole) {
       shopPages[targetRole] = 1;
       renderProducts();
     }
@@ -363,6 +414,7 @@
       document.getElementById('mTarget').value = '';
       document.getElementById('mPrice').value = '';
       document.getElementById('mSortOrder').value = '0';
+      document.getElementById('mDeliveryDelayNotice').checked = false;
       document.getElementById('mImageUrl').value = '';
       document.getElementById('mImageFile').value = '';
       document.getElementById('mDetailImageUrl').value = '';
@@ -396,6 +448,7 @@
       document.getElementById('mDetailImageFile').value = '';
       document.getElementById('mDetailImageUrlText').value = p.detail_image_url || '';
       document.getElementById('mPurchaseUrl').value = p.purchase_url || '';
+      document.getElementById('mDeliveryDelayNotice').checked = p.show_delivery_delay_notice === true;
       if (p.detail_image_url) showDetailImgPreview(p.detail_image_url); else resetDetailImgPreview();
       document.getElementById('urlInputWrap').style.display = p.image_url ? 'block' : 'none';
       document.getElementById('detailUrlInputWrap').style.display = p.detail_image_url ? 'block' : 'none';
@@ -494,6 +547,7 @@
         image_url: imageUrl,
         detail_image_url: detailImageUrl,
         purchase_url: purchaseUrl,
+        show_delivery_delay_notice: document.getElementById('mDeliveryDelayNotice').checked,
         description: document.getElementById('mDesc').value.trim() || null
       };
 

@@ -319,9 +319,14 @@ const ACTION_LABELS = {
 
 function getActionLabel(action) {
   const fallback = ACTION_LABELS[action] || action;
-  return (typeof getCodeLabel === 'function')
-    ? getCodeLabel('activity_logs.action', action, fallback)
-    : fallback;
+  if (typeof getCodeLabel !== 'function') return fallback;
+  const codeLabel = getCodeLabel('activity_logs.action', action, fallback);
+  // 코드북 반영 전의 영문/코드값이 화면에 그대로 노출되지 않도록,
+  // 이미 정의된 한글 기본 라벨을 우선 사용한다.
+  if (fallback !== action && (!codeLabel || codeLabel === action || !/[가-힣]/.test(codeLabel))) {
+    return fallback;
+  }
+  return codeLabel;
 }
 
 const LOG_DETAIL_KEY_LABELS = {

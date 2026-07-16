@@ -48,6 +48,8 @@
     }
     .product-detail-meta { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.8rem; font-size: 0.78rem; color: var(--t-text-muted, #868e96); }
     .product-detail-price { font-size: 1.25rem; font-weight: 800; margin: 0.25rem 0 0.8rem; }
+    .delivery-delay-notice { margin: 0.55rem 0; padding: 0.5rem 0.65rem; border-radius: 8px; background: #fff4e6; color: #c05621; font-size: 0.8rem; font-weight: 700; line-height: 1.45; }
+    [data-theme="dark"] .delivery-delay-notice { background: #4a2f12; color: #ffd8a8; }
     .product-detail-desc { line-height: 1.65; white-space: pre-wrap; }
     .product-detail-actions { display: flex; gap: 0.5rem; margin-top: 1rem; flex-wrap: wrap; justify-content: flex-end; }
     .image-zoom-modal { width: min(92vw, 1000px); max-height: 92vh; display: flex; flex-direction: column; }
@@ -70,6 +72,7 @@
 
   <div class="page-container">
     <h1 class="page-title">🛒 달란트 상점</h1>
+    <div id="shopProductCount" role="status" style="margin:0 0 0.35rem;font-size:1.02rem;font-weight:800;color:var(--t-text,#212529);">전체 상품 0건</div>
     <p class="page-sub" id="shopSub">달란트로 교환할 수 있는 상품들이에요!</p>
 
     <div id="tabArea" style="display:none;margin-bottom:1.5rem;gap:0.5rem;">
@@ -135,6 +138,7 @@
           <div class="product-detail-meta" id="productDetailMeta"></div>
           <div class="product-detail-price" id="productDetailPrice"></div>
           <div class="product-detail-thumbnail" id="productDetailThumbnail"></div>
+          <p class="delivery-delay-notice" id="productDetailDeliveryDelayNotice" style="display:none;"></p>
           <div class="product-detail-desc" id="productDetailDesc"></div>
           <div class="product-detail-detail-image" id="productDetailDetailImage"></div>
           <div class="product-detail-actions" id="productDetailActions"></div>
@@ -311,6 +315,8 @@
       );
       filtered = filtered.slice().sort(compareShopProducts);
       const area = document.getElementById('productArea');
+      const productCount = document.getElementById('shopProductCount');
+      if (productCount) productCount.textContent = `전체 상품 ${fmtNum(filtered.length)}건`;
       const label = currentShopTab === 'student' ? '학생' : '교사';
       document.getElementById('shopSub').textContent = `${label} 달란트 교환 상품입니다`;
 
@@ -348,8 +354,12 @@
           ? ''
           : `<button class="product-buy-btn" onclick="event.stopPropagation(); requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`)
         : '';
+      const deliveryNoticeHtml = p.show_delivery_delay_notice
+        ? '<p class="delivery-delay-notice">배송 상황에 따라 상품 지급이 늦어질 수 있습니다.</p>'
+        : '';
       return `<div class="product-card" onclick="openProductDetail('${p.id}')">
         ${p.image_url ? `<img src="${escapeAttr(p.image_url)}" alt="${escapeAttr(p.name)}" class="product-img" onclick="event.stopPropagation(); openProductDetail('${p.id}')" />` : `<span class="product-emoji">${p.image_emoji || '🎁'}</span>`}
+        ${deliveryNoticeHtml}
         <div class="product-name">${escapeHtml(p.name)}</div>
         <div class="product-price">${fmtNum(p.price)} <span class="unit">달란트</span></div>
         <div class="product-desc">${escapeHtml(p.description || '')}</div>
@@ -374,6 +384,9 @@
         thumbnail.style.display = 'block';
         thumbnail.innerHTML = `<div class="product-detail-emoji" aria-label="${escapeAttr(product.name)} 썸네일">${escapeHtml(product.image_emoji || '🎁')}</div>`;
       }
+      const deliveryNotice = document.getElementById('productDetailDeliveryDelayNotice');
+      deliveryNotice.style.display = product.show_delivery_delay_notice ? 'block' : 'none';
+      deliveryNotice.textContent = product.show_delivery_delay_notice ? '배송 상황에 따라 상품 지급이 늦어질 수 있습니다.' : '';
       document.getElementById('productDetailDesc').textContent = product.description || '설명이 없습니다.';
       const detailImage = document.getElementById('productDetailDetailImage');
       const detailImageUrl = product.detail_image_url || '';
