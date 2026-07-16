@@ -23,6 +23,11 @@
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin:1rem 0 0.5rem;border-bottom:2px solid #fab005;padding-bottom:0.3rem;">
         <h3 style="font-size:0.95rem;margin:0;" id="teacherTitle">👩‍🏫 교사용 상품 (0건)</h3>
+        <select id="teacherStatusFilter" aria-label="교사용 상품 상태 필터" onchange="onProductStatusFilterChange('teacher')" style="padding:0.35rem 0.55rem;border:1px solid var(--admin-border);border-radius:8px;background:var(--t-card,#fff);color:var(--admin-text);font-size:0.8rem;">
+          <option value="all">전체</option>
+          <option value="active">활성</option>
+          <option value="inactive">비활성</option>
+        </select>
         <span id="teacherPageSizeWrap"></span>
       </div>
       <table class="admin-table" id="teacherProductTable">
@@ -33,6 +38,11 @@
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin:1.5rem 0 0.5rem;border-bottom:2px solid #51cf66;padding-bottom:0.3rem;">
         <h3 style="font-size:0.95rem;margin:0;" id="studentTitle">🎒 학생용 상품 (0건)</h3>
+        <select id="studentStatusFilter" aria-label="학생용 상품 상태 필터" onchange="onProductStatusFilterChange('student')" style="padding:0.35rem 0.55rem;border:1px solid var(--admin-border);border-radius:8px;background:var(--t-card,#fff);color:var(--admin-text);font-size:0.8rem;">
+          <option value="all">전체</option>
+          <option value="active">활성</option>
+          <option value="inactive">비활성</option>
+        </select>
         <span id="studentPageSizeWrap"></span>
       </div>
       <table class="admin-table" id="studentProductTable">
@@ -48,20 +58,21 @@
       <h3 class="modal-title" id="modalTitle">상품 등록</h3>
       <div class="form-error" id="modalError"></div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상품명</label>
-        <input type="text" id="mName" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">상품명 <span class="required-mark">필수</span></label>
+        <input type="text" id="mName" required aria-required="true" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" />
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">대상</label>
-          <select id="mTarget" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">대상 <span class="required-mark">필수</span></label>
+          <select id="mTarget" required aria-required="true" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;">
+            <option value="">대상을 선택하세요</option>
             <option value="student">학생</option>
             <option value="teacher">교사</option>
           </select>
         </div>
         <div style="flex:1;">
-          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">카테고리</label>
-          <select id="mCategory" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;"></select>
+          <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">카테고리 <span class="required-mark">필수</span></label>
+          <select id="mCategory" required aria-required="true" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;"></select>
         </div>
       </div>
       <div style="display:flex;gap:0.8rem;margin-bottom:0.8rem;">
@@ -79,7 +90,7 @@
         <input type="text" id="mEmoji" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="🎁" />
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">썸네일 이미지</label>
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">썸네일 이미지 <span class="required-mark">필수</span></label>
         <div id="dropZone" class="product-drop-zone">
           <div id="dropContent">
             <div style="font-size:2rem;margin-bottom:0.3rem;">📷</div>
@@ -88,7 +99,7 @@
           </div>
           <div id="imgPreview" style="display:none;"></div>
         </div>
-        <input type="file" id="mImageFile" accept="image/*" style="display:none;" />
+        <input type="file" id="mImageFile" accept="image/*" aria-required="true" style="display:none;" />
         <input type="hidden" id="mImageUrl" />
         <div style="margin-top:0.4rem;">
           <button type="button" id="btnUrlToggle" onclick="toggleUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL 직접 입력</button>
@@ -123,8 +134,8 @@
         <textarea id="mDesc" style="width:100%;min-height:60px;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;resize:vertical;"></textarea>
       </div>
       <div style="margin-bottom:0.8rem;">
-        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">구매 URL</label>
-        <input type="url" id="mPurchaseUrl" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="https://example.com/purchase" />
+        <label style="font-weight:600;font-size:0.85rem;display:block;margin-bottom:0.3rem;">구매 URL <span class="required-mark">필수</span></label>
+        <input type="url" id="mPurchaseUrl" required aria-required="true" style="width:100%;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="https://example.com/purchase" />
         <div style="margin-top:0.25rem;font-size:0.76rem;color:var(--admin-text-muted);">구매 관리의 상품별 상세에서만 확인할 수 있으며 상품 구매 화면에는 표시되지 않습니다.</div>
       </div>
       <div style="margin-bottom:0.8rem;" id="activeWrap">
@@ -167,6 +178,7 @@
     .product-drop-zone{border:2px dashed var(--admin-border);border-radius:12px;padding:1.2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--t-input-bg,#fafafa);color:var(--admin-text);}
     .drop-help{font-size:0.85rem;color:var(--admin-text-muted);}
     .drop-meta{font-size:0.75rem;color:var(--t-text-light,#b2bec3);margin-top:0.2rem;}
+    .required-mark{display:inline-block;margin-left:0.25rem;color:#e03131;font-size:0.72rem;font-weight:800;}
     [data-theme="dark"] .product-drop-zone{background:#101827;color:var(--t-text);border-color:var(--t-input-border,#33415c);}
   </style>
   <script>
@@ -239,13 +251,28 @@
 
     let _shopTeachers = [], _shopStudents = [];
     function renderProducts() {
-      _shopTeachers = sortShopProducts(allProducts.filter(p => p.target_role === 'teacher'));
-      _shopStudents = sortShopProducts(allProducts.filter(p => p.target_role === 'student'));
+      _shopTeachers = sortShopProducts(filterProductsByStatus('teacher'));
+      _shopStudents = sortShopProducts(filterProductsByStatus('student'));
       document.getElementById('tableTitle').textContent = `상품 목록 (${allProducts.length}건)`;
       renderShopGroup(_shopTeachers, 'teacher', 'teacherProducts', 'teacherPaging', 'teacherTitle', '👩‍🏫 교사용 상품');
       renderShopGroup(_shopStudents, 'student', 'studentProducts', 'studentPaging', 'studentTitle', '🎒 학생용 상품');
       initSortableHeaders('teacherProductTable', function(){ return _shopTeachers; }, function(d){ _shopTeachers = d; shopPages.teacher = 1; renderShopGroup(d,'teacher','teacherProducts','teacherPaging','teacherTitle','👩‍🏫 교사용 상품'); });
       initSortableHeaders('studentProductTable', function(){ return _shopStudents; }, function(d){ _shopStudents = d; shopPages.student = 1; renderShopGroup(d,'student','studentProducts','studentPaging','studentTitle','🎒 학생용 상품'); });
+    }
+
+    function filterProductsByStatus(targetRole) {
+      const filter = document.getElementById(targetRole + 'StatusFilter');
+      const status = filter ? filter.value : 'all';
+      return allProducts.filter(product => product.target_role === targetRole && (
+        status === 'all' ||
+        (status === 'active' && product.is_active !== false) ||
+        (status === 'inactive' && product.is_active === false)
+      ));
+    }
+
+    function onProductStatusFilterChange(targetRole) {
+      shopPages[targetRole] = 1;
+      renderProducts();
     }
 
     function renderShopGroup(list, groupKey, tbodyId, pagingId, titleId, titleLabel) {
@@ -323,17 +350,17 @@
 
     function refreshProductCategorySelect(selectedValue) {
       const select = document.getElementById('mCategory');
-      const selected = selectedValue || select.value || 'etc';
-      select.innerHTML = renderProductCategoryOptions(selected);
-      select.value = selected;
+      const selected = selectedValue == null ? select.value : selectedValue;
+      select.innerHTML = '<option value="">카테고리를 선택하세요</option>' + renderProductCategoryOptions(selected || 'etc');
+      select.value = selected || '';
     }
 
     function openAddModal() {
       editingId = null;
       document.getElementById('modalTitle').textContent = '상품 등록';
       ['mName','mEmoji','mImageUrlText','mDetailImageUrlText','mDesc','mPurchaseUrl'].forEach(id => document.getElementById(id).value = '');
-      refreshProductCategorySelect('etc');
-      document.getElementById('mTarget').value = 'student';
+      refreshProductCategorySelect('');
+      document.getElementById('mTarget').value = '';
       document.getElementById('mPrice').value = '';
       document.getElementById('mSortOrder').value = '0';
       document.getElementById('mImageUrl').value = '';
@@ -388,9 +415,13 @@
     async function saveProduct() {
       const errEl = document.getElementById('modalError');
       const name = document.getElementById('mName').value.trim();
+      const targetRole = document.getElementById('mTarget').value;
+      const category = document.getElementById('mCategory').value;
       const price = parseInt(document.getElementById('mPrice').value);
       const sortOrder = parseInt(document.getElementById('mSortOrder').value, 10);
       if (!name) { errEl.textContent = '상품명을 입력해주세요.'; errEl.classList.add('show'); return; }
+      if (!targetRole) { errEl.textContent = '대상을 선택해주세요.'; errEl.classList.add('show'); return; }
+      if (!category) { errEl.textContent = '카테고리를 선택해주세요.'; errEl.classList.add('show'); return; }
       if (!price || price <= 0) { errEl.textContent = '유효한 가격을 입력해주세요.'; errEl.classList.add('show'); return; }
 
       const fileInput = document.getElementById('mImageFile');
@@ -398,6 +429,22 @@
       let imageUrl = document.getElementById('mImageUrl').value.trim() || null;
       const urlText = document.getElementById('mImageUrlText').value.trim();
       if (!selectedFile && urlText) imageUrl = urlText;
+      if (!selectedFile && !imageUrl) {
+        errEl.textContent = '썸네일 이미지를 파일 또는 URL로 등록해주세요.';
+        errEl.classList.add('show');
+        return;
+      }
+      if (!selectedFile && imageUrl) {
+        try {
+          const parsedImageUrl = new URL(imageUrl);
+          if (!/^https?:$/.test(parsedImageUrl.protocol)) throw new Error('invalid protocol');
+          imageUrl = parsedImageUrl.href;
+        } catch (e) {
+          errEl.textContent = '썸네일 이미지 URL은 http 또는 https 주소로 입력해주세요.';
+          errEl.classList.add('show');
+          return;
+        }
+      }
 
       const detailFileInput = document.getElementById('mDetailImageFile');
       const selectedDetailFile = detailFileInput && detailFileInput.files && detailFileInput.files[0] ? detailFileInput.files[0] : null;
@@ -406,6 +453,11 @@
       if (!selectedDetailFile && detailUrlText) detailImageUrl = detailUrlText;
       const purchaseUrlInput = document.getElementById('mPurchaseUrl').value.trim();
       let purchaseUrl = null;
+      if (!purchaseUrlInput) {
+        errEl.textContent = '구매 URL을 입력해주세요.';
+        errEl.classList.add('show');
+        return;
+      }
       if (purchaseUrlInput) {
         try {
           const parsedPurchaseUrl = new URL(purchaseUrlInput);
@@ -434,8 +486,8 @@
       }
 
       const row = {
-        name, target_role: document.getElementById('mTarget').value,
-        category: document.getElementById('mCategory').value || 'etc',
+        name, target_role: targetRole,
+        category,
         price,
         sort_order: Number.isFinite(sortOrder) ? sortOrder : 0,
         image_emoji: document.getElementById('mEmoji').value.trim() || '🎁',

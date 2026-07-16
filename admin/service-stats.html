@@ -85,7 +85,7 @@
     .metric-link { border:0; padding:0; background:none; color:var(--admin-primary); font-size:.68rem; font-weight:700; cursor:pointer; text-decoration:none; }
     .empty-panel { padding:2.5rem; text-align:center; color:var(--admin-text-muted); }
 
-    .activity-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem; margin-top:1rem; }
+    .activity-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.75rem; margin-top:1rem; }
     .activity-card { background:var(--admin-card); border:1px solid var(--admin-border); border-radius:12px; padding:1rem; overflow:auto; }
     .activity-card h3 { font-size:.92rem; margin-bottom:.65rem; }
     .activity-table { width:100%; border-collapse:collapse; font-size:.73rem; }
@@ -136,6 +136,10 @@
     <div id="servicePanels"><div class="empty-panel">서비스 사용량을 불러오는 중...</div></div>
 
     <div class="activity-grid">
+      <section class="activity-card">
+        <h3>⚠️ 최근 수집 실패 항목</h3>
+        <div id="recentCollectionFailures"><div class="empty-panel">불러오는 중...</div></div>
+      </section>
       <section class="activity-card">
         <h3>🔔 최근 할당량 알림</h3>
         <div id="recentAlerts"><div class="empty-panel">불러오는 중...</div></div>
@@ -228,7 +232,7 @@
 
     function renderAll() {
       syncCollectButtonVisibility();
-      renderSummary(); renderTabs(); renderSourceFilter(); renderPanels(); renderRuns(); renderAlerts(); renderWebhookFailures();
+      renderSummary(); renderTabs(); renderSourceFilter(); renderPanels(); renderRuns(); renderCollectionFailures(); renderAlerts(); renderWebhookFailures();
       const dates = metrics.map(m => m.collected_at).filter(Boolean).sort();
       document.getElementById('lastCollected').textContent = dates.length
         ? `마지막 수집: ${formatKST(dates[dates.length - 1])}` : '마지막 수집: 수집 전';
@@ -388,6 +392,38 @@
       const el=document.getElementById('recentRuns');
       if(!runs.length){el.innerHTML='<div class="empty-panel">아직 수집 이력이 없습니다.</div>';return;}
       el.innerHTML=`<table class="activity-table"><thead><tr><th>시작</th><th>구분</th><th>상태</th><th>오류</th></tr></thead><tbody>${runs.map(r=>`<tr><td>${formatKST(r.started_at)}</td><td>${r.trigger_type==='manual'?'수동':'예약'}</td><td class="run-status ${esc(r.status)}">${runStatusLabel(r.status)}</td><td>${Array.isArray(r.errors)?r.errors.length:0}건</td></tr>`).join('')}</tbody></table>`;
+    }
+
+    function collectionFailureEntries() {
+      return runs.flatMap(run => {
+        const errors = Array.isArray(run.errors) ? run.errors : [];
+        const directFailures = errors.map(error => ({
+          startedAt: run.started_at,
+          service: error && error.service || 'collector',
+          endpoint: error && (error.endpoint || error.metric_key || error.metric) || '수집 처리',
+          message: error && (error.message || error.error || error.reason) || '수집 중 오류가 발생했습니다.'
+        }));
+        if (directFailures.length || run.status !== 'failed') return directFailures;
+        return [{
+          startedAt: run.started_at,
+          service: 'collector',
+          endpoint: '수집 처리',
+          message: '수집 실행이 실패했지만 세부 오류 정보가 기록되지 않았습니다.'
+        }];
+      });
+    }
+
+    function renderCollectionFailures() {
+      const el = document.getElementById('recentCollectionFailures');
+      const failures = collectionFailureEntries();
+      if (!failures.length) {
+        el.innerHTML = '<div class="empty-panel">최근 수집 실패 항목이 없습니다.</div>';
+        return;
+      }
+      el.innerHTML = `<table class="activity-table"><thead><tr><th>시간</th><th>서비스</th><th>수집 항목</th><th>실패 사유</th></tr></thead><tbody>${failures.map(item => {
+        const service = (SERVICE_INFO[item.service] || {}).name || item.service;
+        return `<tr><td>${formatKSTShort(item.startedAt)}</td><td>${esc(service)}</td><td>${esc(item.endpoint)}</td><td title="${escAttr(item.message)}">${esc(item.message)}</td></tr>`;
+      }).join('')}</tbody></table>`;
     }
 
     function webhookFailureTypeLabel(type) {

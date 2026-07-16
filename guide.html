@@ -265,15 +265,7 @@
       if (session) navUpdateAuth(session);
       await initTheme();
       const rank = session ? (session.permissionRank || 0) : 0;
-      const tabs = document.querySelectorAll('.guide-switcher a');
-      tabs.forEach(a => {
-        if (a.href.includes('teacher-guide') && rank < 40) a.style.display = 'none';
-        if (a.href.includes('dept-teacher-guide') && rank < 60) a.style.display = 'none';
-        if (a.href.includes('purchase-teacher-guide') && rank < 70) a.style.display = 'none';
-        if (a.href.includes('chief-teacher-guide') && rank < 80) a.style.display = 'none';
-        if (a.href.includes('evangelist-guide') && rank < 90) a.style.display = 'none';
-        if (a.href.includes('admin-guide') && rank < 60) a.style.display = 'none';
-      });
+      applyGuideSwitcherAccess(rank);
       autoLogPageView();
     })();
   </script>

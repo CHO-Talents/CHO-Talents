@@ -11,7 +11,8 @@ CREATE OR REPLACE FUNCTION public.get_user_login_stat_detail(
   p_group_key text,
   p_start_date date DEFAULT NULL,
   p_end_date date DEFAULT NULL,
-  p_department_id uuid DEFAULT NULL
+  p_department_id uuid DEFAULT NULL,
+  p_user_type text DEFAULT NULL
 )
 RETURNS TABLE (
   user_id uuid,
@@ -43,6 +44,10 @@ BEGIN
     RAISE EXCEPTION 'invalid date range';
   END IF;
 
+  IF p_user_type IS NOT NULL AND p_user_type NOT IN ('student', 'teacher') THEN
+    RAISE EXCEPTION 'invalid user type';
+  END IF;
+
   IF p_group_type = 'user' THEN
     RETURN QUERY
     WITH filtered AS (
@@ -59,6 +64,7 @@ BEGIN
         AND (p_start_date IS NULL OR (h.logged_in_at AT TIME ZONE 'Asia/Seoul')::date >= p_start_date)
         AND (p_end_date IS NULL OR (h.logged_in_at AT TIME ZONE 'Asia/Seoul')::date <= p_end_date)
         AND (p_department_id IS NULL OR h.department_id = p_department_id)
+        AND (p_user_type IS NULL OR p.user_type = p_user_type)
     )
     SELECT
       f.user_id,
@@ -93,6 +99,7 @@ BEGIN
       AND (p_start_date IS NULL OR (h.logged_in_at AT TIME ZONE 'Asia/Seoul')::date >= p_start_date)
       AND (p_end_date IS NULL OR (h.logged_in_at AT TIME ZONE 'Asia/Seoul')::date <= p_end_date)
       AND (p_department_id IS NULL OR h.department_id = p_department_id)
+      AND (p_user_type IS NULL OR p.user_type = p_user_type)
   ),
   matched AS (
     SELECT *
@@ -134,8 +141,8 @@ BEGIN
 END;
 $$;
 
-REVOKE EXECUTE ON FUNCTION public.get_user_login_stat_detail(text, text, date, date, uuid) FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION public.get_user_login_stat_detail(text, text, date, date, uuid) TO authenticated;
+REVOKE EXECUTE ON FUNCTION public.get_user_login_stat_detail(text, text, date, date, uuid, text) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.get_user_login_stat_detail(text, text, date, date, uuid, text) TO authenticated;
 
 NOTIFY pgrst, 'reload schema';
 

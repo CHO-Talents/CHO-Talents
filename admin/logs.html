@@ -300,14 +300,14 @@
         `미확인 ERROR 이상 로그가 ${data.length}건 있습니다. 확인이 필요합니다.`;
 
       tbody.innerHTML = data.map(l => `
-        <tr style="background:#fff5f5;">
+        <tr style="background:#fff5f5;cursor:pointer;" onclick="showLogDetail('${l.id}')">
           <td>${formatKSTShort(l.created_at)}</td>
           <td><span class="level-badge ${l.level}">${l.level}</span></td>
           <td>${formatActionCell(l.action)}</td>
           <td>${l.page || '-'}</td>
           <td>${getLogUserDisplay(l)}</td>
           <td><span class="ack-badge pending">미확인</span></td>
-          <td><button class="filter-btn" onclick="showLogDetail('${l.id}')" style="margin-right:0.3rem;">상세</button><button class="btn-ack" onclick="openAckModal('${l.id}')">확인하기</button></td>
+          <td><button class="filter-btn" onclick="event.stopPropagation();showLogDetail('${l.id}')" style="margin-right:0.3rem;">상세</button><button class="btn-ack" onclick="event.stopPropagation();openAckModal('${l.id}')">확인하기</button></td>
         </tr>
       `).join('');
     }

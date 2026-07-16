@@ -147,9 +147,7 @@
       navUpdateAuth(session);
       await initTheme();
       const rank = session.permissionRank || 0;
-      document.querySelectorAll('.guide-switcher a').forEach(a => {
-        if (a.href.includes('evangelist-guide') && rank < 90) a.style.display = 'none';
-      });
+      applyGuideSwitcherAccess(rank);
       autoLogPageView();
     })();
   </script>

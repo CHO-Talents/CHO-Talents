@@ -325,19 +325,19 @@
     (async () => {
       await navInit();
       const session = await loadAuthSession();
-      if (!session || (session.permissionRank || 0) < 60) {
-        location.href = session && (session.permissionRank || 0) >= 40 ? 'teacher-guide.html' : 'guide.html';
+      if (!session || (session.permissionRank || 0) < 100) {
+        const rank = session ? (session.permissionRank || 0) : 0;
+        location.href = rank >= 90 ? 'evangelist-guide.html'
+          : rank >= 80 ? 'chief-teacher-guide.html'
+          : rank >= 70 ? 'purchase-teacher-guide.html'
+          : rank >= 60 ? 'dept-teacher-guide.html'
+          : rank >= 40 ? 'teacher-guide.html' : 'guide.html';
         return;
       }
       navUpdateAuth(session);
       await initTheme();
       const rank = session.permissionRank || 0;
-      const tabs = document.querySelectorAll('.guide-switcher a');
-      tabs.forEach(a => {
-        if (a.href.includes('purchase-teacher-guide') && rank < 70) a.style.display = 'none';
-        if (a.href.includes('chief-teacher-guide') && rank < 80) a.style.display = 'none';
-        if (a.href.includes('evangelist-guide') && rank < 90) a.style.display = 'none';
-      });
+      applyGuideSwitcherAccess(rank);
       autoLogPageView();
     })();
   </script>
