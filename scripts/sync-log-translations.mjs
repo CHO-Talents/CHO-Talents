@@ -216,7 +216,9 @@ async function main() {
         body: JSON.stringify({ code_value: item.code_value, is_active: true })
       });
     }
+  }
 
+  if (apply && (inserts.length || updates.length)) {
     const verifiedItems = await fetchAll('code_items?group_key=eq.activity_logs.action&select=code_key,code_value,is_active&order=code_key.asc');
     const verifiedByCode = new Map(verifiedItems.map(item => [item.code_key, item]));
     result.remaining_untranslated_known_actions = logActions.filter(code =>

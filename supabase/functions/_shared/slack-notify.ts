@@ -93,6 +93,7 @@ const LOG_ACTION_LABELS: Record<string, string> = {
   TALENT_EXCEPTION_REQUEST_FAIL: "예외 지급 요청 실패",
   ORDER_CANCEL_REFUND_FAIL: "주문 취소 환불 실패",
   JS_ERROR: "JS 오류",
+  SLACK_NOTIFY_FAIL: "Slack 알림 전송 실패",
   MY_TALENT_PENDING_QUERY: "대기 달란트 조회 오류",
 };
 
@@ -105,6 +106,7 @@ const LOG_VALUE_LABELS: Record<string, string> = {
   "Profile RPC returned no profile": "프로필 RPC 결과 없음",
   "Cannot coerce the result to a single JSON object": "단일 결과로 변환할 수 없습니다",
   "permission denied for table profiles": "profiles 테이블 권한이 없습니다",
+  Unauthorized: "권한이 없습니다",
   last_activity: "마지막 활동 기준",
   idle_timer: "유휴 타이머 기준",
   visibilitychange: "탭 재활성화 기준",
@@ -230,7 +232,8 @@ function resolveWebhookUrl(type: string, data: Record<string, unknown>): string 
       return Deno.env.get("SLACK_WEBHOOK_OPERATIONS") || null;
     }
     case "product_suggestion_registered":
-    case "product_suggestion_vote_completed": {
+    case "product_suggestion_vote_completed":
+    case "slack_test": {
       return Deno.env.get("SLACK_WEBHOOK_OPERATIONS") || null;
     }
     case "qna_new": {
@@ -435,6 +438,20 @@ function formatMessage(type: string, data: Record<string, unknown>): { text: str
       };
     }
 
+    case "slack_test": {
+      return {
+        text: "✅ Slack 연결 테스트",
+        blocks: [
+          { type: "header", text: { type: "plain_text", text: "✅ Slack 연결 테스트", emoji: true } },
+          {
+            type: "section",
+            text: { type: "mrkdwn", text: "운영관리 Slack 알림 경로가 정상적으로 연결되었습니다." },
+          },
+          { type: "context", elements: [{ type: "mrkdwn", text: `📅 ${now}` }] },
+        ],
+      };
+    }
+
     case "qna_new": {
       const questionText = String(data["질문"] || "");
       const truncated = questionText.length > 200 ? questionText.substring(0, 200) + "..." : questionText;
@@ -502,14 +519,14 @@ Deno.serve(async (req) => {
     const webhookUrl = resolveWebhookUrl(type, data || {});
     if (!webhookUrl) {
       await recordSlackUsage("webhook_failures", notificationType, undefined, { reason: "missing_webhook_config" });
-      return new Response(JSON.stringify({ error: "No webhook configured for this notification type/department", type, data }), {
+      return new Response(JSON.stringify({ error: "No webhook configured for this notification type/department", type }), {
         status: 503,
         headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
       });
     }
 
     const payload = formatMessage(type, data || {});
-    if (type !== "product_suggestion_registered" && type !== "product_suggestion_vote_completed") {
+    if (type !== "product_suggestion_registered" && type !== "product_suggestion_vote_completed" && type !== "slack_test") {
       addUserContext(payload, data || {});
     }
     webhookRequestStarted = true;

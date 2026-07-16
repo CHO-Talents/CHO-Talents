@@ -277,7 +277,7 @@
       const yMax = Math.max(5, Math.ceil(maxValue / 5) * 5);
       const isScrollableHourChart = currentView === 'hour';
       const width = isScrollableHourChart
-        ? Math.max(680, rows.length * 74 + 76)
+        ? Math.max(680, rows.length * 42 + 76)
         : Math.max(320, Math.min(720, rows.length * 32 + 76));
       const height = 310;
       const left = 48;
@@ -287,8 +287,8 @@
       const chartHeight = height - top - bottom;
       const chartWidth = width - left - right;
       const slotWidth = chartWidth / rows.length;
-      const barWidth = Math.max(1, Math.min(44, slotWidth * 0.64));
-      const labelEvery = Math.max(1, Math.ceil(rows.length / (isScrollableHourChart ? 24 : 10)));
+      const barWidth = Math.max(1, Math.min(24, slotWidth * 0.44));
+      const labelEvery = Math.max(1, Math.ceil(rows.length / (isScrollableHourChart ? 18 : 10)));
       const ticks = Array.from({ length: 5 }, (_, index) => Math.round(yMax * index / 4));
       const grid = ticks.map(value => {
         const y = top + chartHeight - (value / yMax * chartHeight);

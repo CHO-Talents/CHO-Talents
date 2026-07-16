@@ -58,6 +58,46 @@ async function fetchUsers(options = {}) {
   }
 }
 
+function _userUpdateDepartmentName(departmentId) {
+  if (!departmentId) return '미배정';
+  try {
+    const name = (typeof getDeptName === 'function') ? getDeptName(departmentId) : '';
+    if (name && name !== '-') return name;
+  } catch (e) {}
+  return '선택한 부서';
+}
+
+function _userUpdateValueLabel(key, value) {
+  if (key === 'departmentId' || key === 'managedDeptId') return _userUpdateDepartmentName(value);
+  if (key === 'userType' && typeof getCodeLabel === 'function') return getCodeLabel('profiles.user_type', value, value || '미지정');
+  if (key === 'permissionLevel' && typeof getCodeLabel === 'function') return getCodeLabel('profiles.permission_level', value, value || '미지정');
+  if (key === 'classNumber') return value == null ? '미배정' : String(value) + '반';
+  return value == null || value === '' ? '미지정' : String(value);
+}
+
+function _buildUserUpdateFailureDetails(id, before, updates, error) {
+  const fields = [
+    ['displayName', '표시 이름'],
+    ['departmentId', '소속 부서'],
+    ['managedDeptId', '관리 부서'],
+    ['userType', '사용자 유형'],
+    ['permissionLevel', '권한'],
+    ['classNumber', '반']
+  ];
+  const requestedChanges = fields
+    .filter(([key]) => Object.prototype.hasOwnProperty.call(updates || {}, key))
+    .map(([key, label]) => `${label}: ${_userUpdateValueLabel(key, updates[key])}`)
+    .join(' / ');
+  return {
+    targetUserId: id,
+    targetName: before.display_name || before.displayName || before.username || null,
+    targetAccount: before.username || null,
+    operation: '사용자 정보 수정',
+    requestedChanges: requestedChanges || '수정 요청 항목을 확인할 수 없습니다',
+    error: (error && error.message) ? error.message : String(error || '알 수 없는 오류')
+  };
+}
+
 async function createUser(userData) {
   if (!_sb) return { data: null, error: 'Supabase not initialized' };
   try {
@@ -102,9 +142,10 @@ async function createUser(userData) {
 
 async function updateUser(id, updates) {
   if (!_sb) return { data: null, error: 'Supabase not initialized' };
+  let before = {};
   try {
     const { data: beforeUsers } = await fetchUsers();
-    const before = (beforeUsers || []).find(user => user.id === id) || {};
+    before = (beforeUsers || []).find(user => user.id === id) || {};
     const { data, error } = await _sb.rpc('admin_update_user', {
       p_user_id: id,
       p_display_name: updates.displayName || null,
@@ -115,11 +156,14 @@ async function updateUser(id, updates) {
       p_class_number: updates.classNumber != null ? updates.classNumber : null
     });
     if (error) {
-      await logError('USER_UPDATE_FAIL', { id, 오류: error.message });
+      await logError('USER_UPDATE_FAIL', _buildUserUpdateFailureDetails(id, before, updates, error));
       return { data: null, error: error.message };
     }
     if (!data.success) {
-      await logWarn('USER_UPDATE_DENIED', { id, 사유: data.error });
+      await logWarn('USER_UPDATE_DENIED', Object.assign(
+        _buildUserUpdateFailureDetails(id, before, updates, data.error),
+        { reason: data.error }
+      ));
       return { data: null, error: data.error };
     }
     await logInfo('USER_UPDATE', buildChangeLogDetails({
@@ -137,7 +181,7 @@ async function updateUser(id, updates) {
     }));
     return { data, error: null };
   } catch (err) {
-    await logError('USER_UPDATE_ERROR', { id, 오류: String(err) });
+    await logError('USER_UPDATE_ERROR', _buildUserUpdateFailureDetails(id, before, updates, err));
     return { data: null, error: String(err) };
   }
 }
