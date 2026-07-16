@@ -84,7 +84,7 @@
     let session;
     (async () => {
       await navInit();
-      session = await initPage(80, '../login.html');
+      session = await initPage(100, '../login.html');
       if (!session) return;
       navUpdateAuth(session);
       autoLogPageView();

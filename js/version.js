@@ -2,9 +2,21 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.89.0',
+  current: '3.90.0',
   date: '2026-07-16',
   history: [
+    {
+      version: '3.90.0',
+      date: '2026-07-16',
+      title: '상품 배송 안내·이력·통계 화면 개선',
+      changes: [
+        '상품 관리의 교사용·학생용 목록에 상태 및 카테고리 필터를 제목 옆 왼쪽에 배치하고, 상품별 배송 지연 안내 선택 기능을 추가',
+        '상품 구매 화면에 필터 적용 수량을 표시하고 배송 지연 안내를 상품 카드와 상세 모달의 썸네일 아래에 표시',
+        '작업 이력의 500건 조회 제한을 제거하고 코드북의 신규 작업 유형 카테고리 필터를 동적으로 추가',
+        '사용자별 로그인 통계에서는 그래프를 숨기고, 시간별 외 그래프는 모바일 폭에 맞춰 가로 스크롤 없이 표시하도록 조정',
+        '버전 메뉴와 페이지는 관리자(100+)로 제한하고 모든 화면 하단의 버전 이력 링크를 제거'
+      ]
+    },
     {
       version: '3.89.0',
       date: '2026-07-16',
@@ -2104,14 +2116,11 @@ function renderVersionFooter(containerId = 'version-container') {
     container.id = containerId;
     document.body.appendChild(container);
   }
-  const historyHref = _versionBasePath() + 'admin/versions.html';
   container.innerHTML = `
     <footer class="version-footer" aria-label="버전 정보">
       <span class="version-footer-brand">CHO Talents</span>
       <span class="version-badge" title="최종 업데이트: ${APP_VERSION.date}">v${APP_VERSION.current}</span>
       <span>최종 업데이트 ${APP_VERSION.date}</span>
-      <span aria-hidden="true">·</span>
-      <a href="${historyHref}">버전 이력</a>
     </footer>
   `;
 }

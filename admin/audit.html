@@ -82,6 +82,7 @@
     function getAuditPageSize() { return auditPageSize; }
     let auditPage = 1;
     let auditProfileMap = {}, auditProfileById = {}, auditRegistrationMap = {}, auditRegistrationById = {};
+    let auditDeletedColumnAvailable = false;
 
     const AUDIT_ACTIONS = {
       // === USER (사용자) ===
@@ -172,6 +173,12 @@
     };
 
     let AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
+    const AUDIT_CATEGORY_LABELS = {
+      USER: '👤 사용자', REGISTER: '📝 가입', DEPT: '🏢 부서', TALENT: '💰 달란트',
+      ORDER: '🛒 상품/주문', QNA: '❓ Q&A', AUTH: '🔐 인증', LOG_MGMT: '📋 로그 관리',
+      PERM: '🛡️ 권한/설정', NOTICE: '📢 공지', REPORT: '📄 보고서',
+      SERVICE: '📊 서비스', SYSTEM: '⚙️ 시스템', PRODUCT: '🛍️ 상품'
+    };
     const PERM_KEY_LABELS = (typeof codeMap === 'function') ? codeMap('profiles.permission_level', 'value') : {
       super_admin: '최고 관리자', admin: '관리자', evangelist: '전도사님',
       chief: '부장 교사', purchase_teacher: '구매 담당 교사', dept_teacher: '부서 담당 교사', teacher: '일반 교사', student: '학생'
@@ -206,6 +213,7 @@
         Object.assign(AUDIT_ACTIONS, getAuditActions());
         AUDIT_ACTION_KEYS = Object.keys(AUDIT_ACTIONS);
       }
+      renderAuditCategoryFilters();
       await loadAuditUserLookups();
       updatePendingBadge();
       updateNavOrderBadge();
@@ -271,9 +279,34 @@
       document.querySelectorAll('#auditCategoryFilters .filter-btn').forEach(b => {
         b.classList.remove('active');
         const m = b.getAttribute('onclick')?.match(/setFilter\('([^']+)'\)/);
-        if (m && m[1] === f) b.classList.add('active');
+        const category = b.dataset.generatedAuditCategory || (m && m[1]);
+        if (category === f) b.classList.add('active');
       });
       renderAudit();
+    }
+
+    function renderAuditCategoryFilters() {
+      const root = document.getElementById('auditCategoryFilters');
+      if (!root) return;
+      root.querySelectorAll('[data-generated-audit-category]').forEach(button => button.remove());
+      const fixedCategories = new Set(Array.from(root.querySelectorAll('[onclick*="setFilter"]'))
+        .map(button => (button.getAttribute('onclick') || '').match(/setFilter\('([^']+)'\)/))
+        .filter(Boolean)
+        .map(match => match[1]));
+      const categories = [...new Set(Object.values(AUDIT_ACTIONS)
+        .map(info => info && info.category)
+        .filter(Boolean))]
+        .filter(category => category !== 'all' && !fixedCategories.has(category))
+        .sort((a, b) => (AUDIT_CATEGORY_LABELS[a] || a).localeCompare(AUDIT_CATEGORY_LABELS[b] || b, 'ko'));
+      categories.forEach(category => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'filter-btn';
+        button.dataset.generatedAuditCategory = category;
+        button.textContent = AUDIT_CATEGORY_LABELS[category] || `📋 ${category}`;
+        button.addEventListener('click', () => setFilter(category));
+        root.appendChild(button);
+      });
     }
 
     function setAuditPeriod(type) {
@@ -287,31 +320,46 @@
       loadAuditLogs();
     }
 
+    function buildAuditLogsQuery(fromDate, toDate) {
+      let query = _sb.from('activity_logs')
+        .select('*')
+        .in('action', AUDIT_ACTION_KEYS)
+        .order('created_at', { ascending: false });
+      if (auditDeletedColumnAvailable) query = query.or('is_deleted.is.null,is_deleted.eq.false');
+      if (fromDate) query = query.gte('created_at', fromDate + 'T00:00:00+09:00');
+      if (toDate) query = query.lte('created_at', toDate + 'T23:59:59+09:00');
+      return query;
+    }
+
+    async function fetchAllAuditLogs(fromDate, toDate) {
+      const pageSize = 1000;
+      const rows = [];
+      for (let offset = 0; ; offset += pageSize) {
+        const { data, error } = await buildAuditLogsQuery(fromDate, toDate)
+          .range(offset, offset + pageSize - 1);
+        if (error) return { data: null, error };
+        const page = data || [];
+        rows.push(...page);
+        if (page.length < pageSize) return { data: rows, error: null };
+      }
+    }
+
     async function loadAuditLogs() {
       auditPage = 1;
       const fromDate = document.getElementById('auditDateFrom').value;
       const toDate = document.getElementById('auditDateTo').value;
-
-      let query = _sb.from('activity_logs')
-        .select('*')
-        .in('action', AUDIT_ACTION_KEYS)
-        .order('created_at', { ascending: false })
-        .limit(500);
 
       try {
         const { error: deletedColError } = await _sb.from('activity_logs')
           .select('id', { count: 'exact', head: true })
           .or('is_deleted.is.null,is_deleted.eq.false')
           .limit(1);
-        if (!deletedColError) {
-          query = query.or('is_deleted.is.null,is_deleted.eq.false');
-        }
-      } catch (e) {}
+        auditDeletedColumnAvailable = !deletedColError;
+      } catch (e) {
+        auditDeletedColumnAvailable = false;
+      }
 
-      if (fromDate) query = query.gte('created_at', fromDate + 'T00:00:00+09:00');
-      if (toDate) query = query.lte('created_at', toDate + 'T23:59:59+09:00');
-
-      const { data, error } = await query;
+      const { data, error } = await fetchAllAuditLogs(fromDate, toDate);
       if (error) {
         console.error('[AUDIT] load error:', error);
         document.getElementById('auditList').innerHTML = `<tr><td colspan="5" class="empty-state" style="color:#d63031;">조회 오류: ${tErr(error.message)}</td></tr>`;

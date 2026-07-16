@@ -297,7 +297,7 @@ function getAuditActions() {
   getCodeItems('activity_logs.action', { includeInactive: true }).forEach(item => {
     if (!item.category) return;
     result[item.key] = {
-      label: item.value || item.key,
+      label: typeof getActionLabel === 'function' ? getActionLabel(item.key) : (item.value || item.key),
       category: item.category,
       emoji: item.emoji || '📋'
     };
