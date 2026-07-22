@@ -1,8 +1,9 @@
--- TASK-041: Fix give_talent RPC weekly item limit without creating overloads.
--- Root cause:
---   A previous migration created public.give_talent(uuid, uuid, uuid).
---   The app also uses public.give_talent(uuid, integer, text, uuid, uuid).
---   PostgREST can become ambiguous when both signatures exist.
+-- TASK-094: Allow a cancelled weekly talent item to be issued again.
+--
+-- The attendance quick button cancels a grant through use_talent(), which writes
+-- a transaction description in the form: 반환: [<original earn transaction id>] <item name>.
+-- The former give_talent() weekly check counted the original earn regardless of
+-- that cancellation, causing a false "Already given this item this week" error.
 
 BEGIN;
 
@@ -54,6 +55,7 @@ BEGIN
   IF v_caller_perm IS NULL OR v_caller_rank < 40 THEN
     RETURN json_build_object('success', false, 'error', 'Unauthorized');
   END IF;
+
   v_override_week_limit := COALESCE(p_override_week_limit, false);
   IF v_override_week_limit AND v_caller_rank < 90 THEN
     RETURN json_build_object('success', false, 'error', '예외 지급은 전도사님 이상만 가능합니다');
@@ -106,8 +108,6 @@ BEGIN
       AND earned.type = 'earn'
       AND earned.created_at >= date_trunc('week', now() AT TIME ZONE 'Asia/Seoul')
       AND earned.created_at < date_trunc('week', now() AT TIME ZONE 'Asia/Seoul') + interval '7 days'
-      -- A cancellation is stored as a use transaction referencing the original earn ID.
-      -- Cancelled grants must not consume this week's item allowance.
       AND NOT EXISTS (
         SELECT 1
         FROM public.talent_transactions AS returned
@@ -133,6 +133,7 @@ BEGIN
     v_actual_amount := p_amount;
     v_actual_desc := COALESCE(NULLIF(p_description, ''), 'Manual');
   END IF;
+
   IF v_override_week_limit AND (p_override_reason IS NULL OR btrim(p_override_reason) = '') THEN
     RETURN json_build_object('success', false, 'error', '예외 지급 사유를 입력해주세요');
   END IF;
