@@ -513,7 +513,10 @@
         const m = r.description.match(/반환:\s*\[([^\]]+)\]/);
         if (m) { cancelledById.add(m[1]); }
         else {
-          const k = r.user_id + '|' + r.amount + '|' + r.description.replace('반환: ','').replace('반환:','');
+          const legacyDescription = r.description
+            .replace(/^반환:\s*/, '')
+            .replace(/^\[\]\s*/, '');
+          const k = r.user_id + '|' + r.amount + '|' + legacyDescription;
           legacyRetCount[k] = (legacyRetCount[k] || 0) + 1;
         }
       });
@@ -546,7 +549,7 @@
           return;
         }
         _attendanceGivenThisWeek.add(userId);
-        _attendanceTxnMap[userId] = { id: result?.id || '', amount: result?.amount || attendItem.talent_amount, description: result?.description || attendItem.name };
+        _attendanceTxnMap[userId] = { id: result?.txn_id || result?.id || '', amount: result?.amount || attendItem.talent_amount, description: result?.description || attendItem.name };
         renderTalentTable();
         await logInfo('ATTENDANCE_GIVE', {
           ...targetLogContext,
@@ -818,7 +821,10 @@
         const m = r.description.match(/\uBC18\uD658:\s*\[([^\]]+)\]/);
         if (m) { cancelledById.add(m[1]); }
         else {
-          const k = r.amount + '|' + r.description.replace('\uBC18\uD658: ', '').replace('\uBC18\uD658:', '');
+          const legacyDescription = r.description
+            .replace(/^\uBC18\uD658:\s*/, '')
+            .replace(/^\[\]\s*/, '');
+          const k = r.amount + '|' + legacyDescription;
           legacyRetCount[k] = (legacyRetCount[k] || 0) + 1;
         }
       });
