@@ -125,7 +125,7 @@
     let voteItems = new Map();
     let filteredVoteItems = [];
     let votePage = 1;
-    const VOTE_PAGE_SIZE = 10;
+    let votePageSize = null;
 
     (async () => {
       await navInit();
@@ -134,7 +134,9 @@
       navUpdateAuth(session);
       autoLogPageView();
       if (typeof loadCodeItems === 'function') await loadCodeItems(['products.category']);
+      votePageSize = await loadPageSize('product_suggestion_votes', 10);
       ensureUnvotedFilterButton();
+      ensureVotePageSizeSelector();
       loadVoteItems();
     })();
 
@@ -193,6 +195,39 @@
       return paging;
     }
 
+    function getVotePageSize() {
+      return votePageSize || 10;
+    }
+
+    function getVotePageSizeElement() {
+      let wrap = document.getElementById('votePageSizeWrap');
+      if (wrap) return wrap;
+      const refreshButton = document.querySelector('button[onclick="loadVoteItems()"]');
+      if (!refreshButton || !refreshButton.parentNode) return null;
+      wrap = document.createElement('span');
+      wrap.id = 'votePageSizeWrap';
+      wrap.style.cssText = 'display:inline-flex;align-items:center;gap:0.35rem;margin-right:0.5rem;font-size:0.78rem;color:var(--admin-text-muted);';
+      refreshButton.parentNode.insertBefore(wrap, refreshButton);
+      return wrap;
+    }
+
+    function ensureVotePageSizeSelector() {
+      renderVotePageSizeSelector();
+    }
+
+    function renderVotePageSizeSelector() {
+      const wrap = getVotePageSizeElement();
+      if (!wrap) return;
+      wrap.innerHTML = `표시 ${renderPageSizeSelector('product_suggestion_votes', getVotePageSize(), 'onVotePageSizeChange(this.value)')}`;
+    }
+
+    async function onVotePageSizeChange(value) {
+      votePageSize = parseInt(value, 10) || 10;
+      await savePageSize('product_suggestion_votes', votePageSize);
+      votePage = 1;
+      renderVoteItems();
+    }
+
     async function loadVoteItems() {
       const body = document.getElementById('voteItemBody');
       body.innerHTML = '<tr><td colspan="6" class="empty-state">로딩 중...</td></tr>';
@@ -219,10 +254,11 @@
 
     function renderVoteItems() {
       const body = document.getElementById('voteItemBody');
-      const totalPages = Math.max(1, Math.ceil(filteredVoteItems.length / VOTE_PAGE_SIZE));
+      const pageSize = getVotePageSize();
+      const totalPages = Math.max(1, Math.ceil(filteredVoteItems.length / pageSize));
       if (votePage > totalPages) votePage = totalPages;
-      const start = (votePage - 1) * VOTE_PAGE_SIZE;
-      const pageItems = filteredVoteItems.slice(start, start + VOTE_PAGE_SIZE);
+      const start = (votePage - 1) * pageSize;
+      const pageItems = filteredVoteItems.slice(start, start + pageSize);
       if (!pageItems.length) {
         body.innerHTML = '<tr><td colspan="6" class="empty-state">조건에 맞는 추천 상품이 없습니다.</td></tr>';
       } else {
@@ -232,6 +268,7 @@
     }
 
     function renderVotePaging(totalPages) {
+      renderVotePageSizeSelector();
       const paging = getVotePagingElement();
       if (filteredVoteItems.length === 0 || totalPages <= 1) {
         paging.innerHTML = '';
@@ -241,7 +278,7 @@
     }
 
     function goVotePage(page) {
-      const totalPages = Math.max(1, Math.ceil(filteredVoteItems.length / VOTE_PAGE_SIZE));
+      const totalPages = Math.max(1, Math.ceil(filteredVoteItems.length / getVotePageSize()));
       votePage = Math.min(Math.max(1, page), totalPages);
       renderVoteItems();
     }
