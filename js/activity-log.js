@@ -77,6 +77,7 @@ function _sendLogAlertDirect(level, action, page, details) {
 const ACTION_LABELS = {
   PAGE_VIEW: '페이지 조회',
   JS_ERROR: 'JS 오류',
+  RESOURCE_LOAD_FAIL: '리소스 로드 실패',
   PROMISE_REJECTION: '비동기 오류',
   CONNECTION_FAIL: '연결 실패',
   APP_VERSION_STALE_SESSION: '구버전 세션 감지',
@@ -382,6 +383,11 @@ const LOG_DETAIL_KEY_LABELS = {
   userName: '사용자 이름',
   userId: '사용자 ID',
   authUserId: '인증 사용자 ID',
+  authSessionUserId: '인증 세션 사용자 ID',
+  authSessionAccount: '인증 세션 계정',
+  authSessionRole: '인증 세션 역할',
+  authSessionIsAnonymous: '익명 인증 세션 여부',
+  authSessionExpiresAt: '인증 세션 만료 시각',
   requestId: '요청 ID',
   user_type: '사용자 유형',
   userType: '사용자 유형',
@@ -392,9 +398,37 @@ const LOG_DETAIL_KEY_LABELS = {
   permissionLevel: '권한 등급',
   permissionRank: '권한 순위',
   cachedUsername: '캐시된 아이디',
+  cachedDisplayName: '캐시된 표시 이름',
   cachedPermissionLevel: '캐시된 권한 등급',
   cachedPermissionRank: '캐시된 권한 순위',
   hasCachedSession: '캐시 세션 여부',
+  cachedSessionIdMatchesAuthUser: '캐시와 인증 사용자 ID 일치',
+  cachedAccountMatchesAuthUser: '캐시와 인증 계정 일치',
+  browserOnline: '브라우저 온라인 상태',
+  networkEffectiveType: '네트워크 유형',
+  networkRttMs: '네트워크 RTT(ms)',
+  networkDownlinkMbps: '네트워크 다운링크(Mbps)',
+  networkSaveData: '데이터 절약 모드',
+  profileRpcName: '프로필 RPC',
+  profileRpcOutcome: '프로필 RPC 결과',
+  profileRpcDurationMs: '프로필 RPC 소요 시간(ms)',
+  profileRpcErrorName: '프로필 RPC 오류 유형',
+  profileRpcErrorMessage: '프로필 RPC 오류 메시지',
+  profileRpcErrorCode: '프로필 RPC 오류 코드',
+  profileRpcErrorStatus: '프로필 RPC HTTP 상태',
+  profileRpcErrorDetails: '프로필 RPC 오류 상세',
+  profileRpcErrorHint: '프로필 RPC 오류 힌트',
+  profileFallbackAttempted: '프로필 직접 조회 시도',
+  profileFallbackQuery: '프로필 직접 조회 방식',
+  profileFallbackRequestedUserId: '프로필 직접 조회 사용자 ID',
+  profileFallbackOutcome: '프로필 직접 조회 결과',
+  profileFallbackDurationMs: '프로필 직접 조회 소요 시간(ms)',
+  profileFallbackErrorName: '프로필 직접 조회 오류 유형',
+  profileFallbackErrorMessage: '프로필 직접 조회 오류 메시지',
+  profileFallbackErrorCode: '프로필 직접 조회 오류 코드',
+  profileFallbackErrorStatus: '프로필 직접 조회 HTTP 상태',
+  profileFallbackErrorDetails: '프로필 직접 조회 오류 상세',
+  profileFallbackErrorHint: '프로필 직접 조회 오류 힌트',
   lastActivityAt: '마지막 활동 일시',
   idleExpired: '유휴 만료 여부',
   page: '페이지',
@@ -409,7 +443,16 @@ const LOG_DETAIL_KEY_LABELS = {
   url: 'URL',
   resourceUrl: '리소스 URL',
   resourceType: '리소스 유형',
+  resourceHasQuery: '리소스 URL 쿼리 포함 여부',
+  resourceId: '리소스 요소 ID',
+  resourceRel: '리소스 rel',
+  resourceLoading: '리소스 로딩 방식',
+  resourceCrossOrigin: '리소스 CORS 설정',
   imageUrl: '이미지 URL',
+  imageMimeType: '이미지 MIME',
+  imageExtension: '이미지 확장자',
+  imageSizeBytes: '이미지 크기(Byte)',
+  imageSizeLabel: '이미지 크기',
   filePath: '파일 경로',
   currentVersion: '현재 버전',
   latestVersion: '최신 버전',
@@ -885,7 +928,7 @@ function inferLogActor(session, details = {}, action = '') {
   const targetLikeAccount = source['대상'] && typeof source['대상'] === 'string' && /^(LOGIN|LOGOUT|PASSWORD|REGISTER|AUTH_)/.test(String(action || ''))
     ? source['대상']
     : null;
-  const targetAccount = source.targetAccount || source['사용자'] || source['아이디'] || targetLikeAccount || null;
+  const targetAccount = source.targetAccount || source['사용자'] || source['아이디'] || targetLikeAccount || source.authSessionAccount || null;
   const targetName = source.targetName || source['사용자 이름'] || source['이름'] || source['대상'] || null;
   const isLoginAttempt = /^(LOGIN_FAIL|LOGIN_ERROR|LOGIN_PENDING_APPROVAL)$/.test(String(action || ''));
   const account = (isLoginAttempt && targetAccount) ? targetAccount : (session ? (session.username || null) : (
@@ -893,6 +936,7 @@ function inferLogActor(session, details = {}, action = '') {
     source._username ||
     source.cachedUsername ||
     authFailure.cachedUsername ||
+    source.authSessionAccount ||
     source.username ||
     targetAccount ||
     source.authUserId ||
@@ -1056,8 +1100,8 @@ async function enrichLogDetailsWithUserContext(details) {
     ? enriched.sessionFailure
     : ((enriched.세션실패 && typeof enriched.세션실패 === 'object') ? enriched.세션실패 : {});
   const targetId = enriched.targetUserId || enriched.targetUser || enriched.userId || null;
-  const targetAccount = enriched.targetAccount || enriched.username || enriched['아이디'] || enriched['사용자'] || _extractLogUsername(enriched['대상']) || enriched.cachedUsername || authFailure.cachedUsername || null;
-  const actorCandidate = enriched.username || enriched['사용자'] || enriched['아이디'] || enriched._username || enriched._userAccount || enriched.cachedUsername || authFailure.cachedUsername || null;
+  const targetAccount = enriched.targetAccount || enriched.username || enriched['아이디'] || enriched['사용자'] || _extractLogUsername(enriched['대상']) || enriched.authSessionAccount || enriched.cachedUsername || authFailure.cachedUsername || null;
+  const actorCandidate = enriched.username || enriched['사용자'] || enriched['아이디'] || enriched._username || enriched._userAccount || enriched.authSessionAccount || enriched.cachedUsername || authFailure.cachedUsername || null;
 
   try {
     let profile = null;
@@ -1631,15 +1675,82 @@ function clearSession() {
   sessionStorage.removeItem('cho_admin_session');
 }
 
+function _getRequestErrorDetails(prefix, error) {
+  if (!error) return {};
+  const value = (error && typeof error === 'object') ? error : {};
+  const details = {};
+  details[`${prefix}ErrorName`] = value.name ? String(value.name) : null;
+  details[`${prefix}ErrorMessage`] = value.message ? String(value.message) : String(error);
+  details[`${prefix}ErrorCode`] = value.code ? String(value.code) : null;
+  details[`${prefix}ErrorStatus`] = value.status ?? value.statusCode ?? null;
+  details[`${prefix}ErrorDetails`] = value.details ? String(value.details) : null;
+  details[`${prefix}ErrorHint`] = value.hint ? String(value.hint) : null;
+  return details;
+}
+
+function _getProfileRequestNetworkDetails() {
+  const details = {};
+  try {
+    details.browserOnline = typeof navigator.onLine === 'boolean' ? navigator.onLine : null;
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    if (connection) {
+      details.networkEffectiveType = connection.effectiveType || null;
+      details.networkRttMs = Number.isFinite(connection.rtt) ? connection.rtt : null;
+      details.networkDownlinkMbps = Number.isFinite(connection.downlink) ? connection.downlink : null;
+      details.networkSaveData = typeof connection.saveData === 'boolean' ? connection.saveData : null;
+    }
+  } catch (e) {}
+  return details;
+}
+
+function _getProfileRequestAuthDetails(authSession, cached) {
+  const authUser = authSession && authSession.user ? authSession.user : {};
+  const authEmail = String(authUser.email || '');
+  const atIndex = authEmail.indexOf('@');
+  const authAccount = atIndex > 0 ? authEmail.slice(0, atIndex) : null;
+  const expiresAt = Number(authSession && authSession.expires_at);
+  return {
+    authSessionUserId: authUser.id || null,
+    authSessionAccount: authAccount,
+    authSessionRole: authUser.role || null,
+    authSessionIsAnonymous: authUser.is_anonymous === true,
+    authSessionExpiresAt: Number.isFinite(expiresAt) && expiresAt > 0 ? new Date(expiresAt * 1000).toISOString() : null,
+    hasCachedSession: !!cached,
+    cachedSessionIdMatchesAuthUser: cached && cached.id ? cached.id === authUser.id : null,
+    cachedAccountMatchesAuthUser: cached && cached.username && authAccount ? cached.username === authAccount : null,
+    cachedUsername: cached ? cached.username : null,
+    cachedDisplayName: cached ? (cached.displayName || cached.username) : null
+  };
+}
+
 async function _loadProfileDirectForSession(authUserId) {
-  if (!_sb || !authUserId) return { data: null, error: null };
+  const startedAt = Date.now();
+  const diagnostics = {
+    profileFallbackAttempted: !!(_sb && authUserId),
+    profileFallbackQuery: 'profiles.select(..., departments(name)).eq(id, auth user).maybeSingle()',
+    profileFallbackRequestedUserId: authUserId || null
+  };
+  if (!_sb || !authUserId) {
+    return {
+      data: null,
+      error: null,
+      diagnostics: Object.assign(diagnostics, {
+        profileFallbackOutcome: 'skipped',
+        profileFallbackDurationMs: Date.now() - startedAt
+      })
+    };
+  }
   try {
     const { data, error } = await _sb
       .from('profiles')
       .select('id, username, display_name, user_type, permission_level, is_super_admin, is_first_login, department_id, managed_dept_id, talent_balance, class_number, departments(name)')
       .eq('id', authUserId)
       .maybeSingle();
-    if (error || !data) return { data: null, error };
+    Object.assign(diagnostics, {
+      profileFallbackDurationMs: Date.now() - startedAt,
+      profileFallbackOutcome: error ? 'error' : (data ? 'profile' : 'empty_result')
+    }, _getRequestErrorDetails('profileFallback', error));
+    if (error || !data) return { data: null, error, diagnostics };
     return {
       data: {
         id: data.id,
@@ -1655,10 +1766,18 @@ async function _loadProfileDirectForSession(authUserId) {
         department_name: data.departments ? data.departments.name : null,
         class_number: data.class_number
       },
-      error: null
+      error: null,
+      diagnostics
     };
   } catch (err) {
-    return { data: null, error: err };
+    return {
+      data: null,
+      error: err,
+      diagnostics: Object.assign(diagnostics, {
+        profileFallbackDurationMs: Date.now() - startedAt,
+        profileFallbackOutcome: 'exception'
+      }, _getRequestErrorDetails('profileFallback', err))
+    };
   }
 }
 
@@ -1733,21 +1852,40 @@ async function loadAuthSession() {
 
   if (cached && cached.id === authSession.user.id && cached.isSuperAdmin !== undefined) return cached;
 
-  let { data, error: profileError } = await _sb.rpc('get_my_profile');
+  const profileRequestAuth = _getProfileRequestAuthDetails(authSession, cached);
+  const profileRequestNetwork = _getProfileRequestNetworkDetails();
+  const profileRpcStartedAt = Date.now();
+  let data = null;
+  let profileError = null;
+  try {
+    const profileRpc = await _sb.rpc('get_my_profile');
+    data = profileRpc.data;
+    profileError = profileRpc.error;
+  } catch (err) {
+    profileError = err;
+  }
+  const profileRpcDiagnostics = Object.assign({
+    profileRpcName: 'get_my_profile',
+    profileRpcDurationMs: Date.now() - profileRpcStartedAt,
+    profileRpcOutcome: profileError ? 'error' : (data ? 'profile' : 'empty_result')
+  }, _getRequestErrorDetails('profileRpc', profileError));
   if (profileError || !data) {
     window.__lastAuthSessionFailure = {
       reason: 'Profile RPC returned no profile',
-      message: profileError ? profileError.message : null,
+      message: profileError ? (profileError.message || String(profileError)) : null,
       page: window.location.pathname,
       authUserId: authSession.user.id,
-      cachedUsername: cached ? cached.username : null,
-      cachedDisplayName: cached ? (cached.displayName || cached.username) : null
+      profileFallbackAttempted: false,
+      ...profileRequestAuth,
+      ...profileRequestNetwork,
+      ...profileRpcDiagnostics
     };
     if (cached && cached.id === authSession.user.id && cached.username && cached.permissionLevel) {
       await logInfo('AUTH_PROFILE_LOAD_FAIL', Object.assign({}, window.__lastAuthSessionFailure, { recoveredBy: 'cached_session' }));
       return cached;
     }
     const directProfile = await _loadProfileDirectForSession(authSession.user.id);
+    Object.assign(window.__lastAuthSessionFailure, directProfile.diagnostics || {});
     if (directProfile.data) {
       await logInfo('AUTH_PROFILE_LOAD_FAIL', Object.assign({}, window.__lastAuthSessionFailure, { recoveredBy: 'profiles_fallback' }));
       data = directProfile.data;
@@ -1815,20 +1953,41 @@ function _clientErrorFingerprint(parts) {
   return 'js-' + (hash >>> 0).toString(36);
 }
 
+function _getResourceLoadDetails(resource, resourceTag) {
+  const rawUrl = resource.currentSrc || resource.src || resource.href || null;
+  const details = {
+    resourceType: resourceTag,
+    resourceUrl: null,
+    resourceHasQuery: false,
+    resourceId: resource.id || null,
+    resourceRel: resource.rel || null,
+    resourceLoading: resource.loading || null,
+    resourceCrossOrigin: resource.crossOrigin || null
+  };
+  if (!rawUrl) return details;
+
+  try {
+    const parsed = new URL(rawUrl, window.location.href);
+    details.resourceUrl = parsed.protocol === 'blob:' || parsed.protocol === 'data:'
+      ? parsed.protocol
+      : `${parsed.origin}${parsed.pathname}`;
+    details.resourceHasQuery = !!parsed.search;
+  } catch (e) {
+    details.resourceUrl = String(rawUrl).replace(/[?#].*$/, '').slice(0, 1000);
+  }
+  return details;
+}
+
 window.addEventListener('error', (e) => {
   const resource = e.target;
   const resourceTag = resource && resource !== window ? String(resource.tagName || '').toUpperCase() : '';
-  const isExternalResource = resourceTag === 'SCRIPT'
-    || (resourceTag === 'LINK' && String(resource.rel || '').toLowerCase() === 'stylesheet');
-  if (isExternalResource) {
-    const resourceUrl = resource.src || resource.href || null;
-    logError('JS_ERROR', {
-      message: resourceTag === 'SCRIPT' ? '외부 스크립트 로드 실패' : '외부 스타일시트 로드 실패',
+  if (resourceTag) {
+    const resourceDetails = _getResourceLoadDetails(resource, resourceTag);
+    logError('RESOURCE_LOAD_FAIL', Object.assign({
+      message: `${resourceTag} 리소스 로드 실패`,
       errorKind: 'resource-load',
-      errorFingerprint: _clientErrorFingerprint(['resource-load', resourceTag, resourceUrl]),
-      resourceType: resourceTag,
-      resourceUrl
-    });
+      errorFingerprint: _clientErrorFingerprint(['resource-load', resourceTag, resourceDetails.resourceUrl])
+    }, resourceDetails));
     return;
   }
   const message = _clientErrorText(e.message || (e.error && e.error.message));
@@ -1894,37 +2053,38 @@ async function deleteLogsByIds(ids) {
   }
 }
 
-const LOG_PROCESSABLE_ORDER_STATUSES = ['requested', 'preparing', 'purchased'];
-
 async function getPendingOrderCount() {
   if (!_sb) return 0;
   try {
     const session = getSession();
     if (!session || (session.permissionRank || 0) < 60) return 0;
-    const myRank = session.permissionRank || 0;
-    const isPurchaseTeacher = session.permissionLevel === 'purchase_teacher';
+    const permissionLevel = session.permissionLevel;
+    const isGlobalManager = (session.permissionRank || 0) >= 90;
+    const isPurchaseTeacher = permissionLevel === 'purchase_teacher';
+    const isManagedDepartmentTeacher = permissionLevel === 'dept_teacher' || permissionLevel === 'chief';
+    const badgeStatuses = isGlobalManager
+      ? ['requested', 'preparing', 'purchased']
+      : isPurchaseTeacher
+        ? ['preparing', 'purchased']
+        : isManagedDepartmentTeacher
+          ? ['requested']
+          : [];
+    if (badgeStatuses.length === 0) return 0;
     const { data, error } = await _sb
       .from('product_orders')
       .select('user_id')
-      .in('status', LOG_PROCESSABLE_ORDER_STATUSES);
+      .in('status', badgeStatuses);
     if (error || !data) return 0;
-    let orders = data;
-    if (!session.isSuperAdmin) {
-      const { data: saRows } = await _sb.from('profiles').select('id').eq('is_super_admin', true);
-      if (saRows && saRows.length) {
-        const saIds = new Set(saRows.map(r => r.id));
-        orders = orders.filter(o => !saIds.has(o.user_id));
-      }
-    }
-    if (myRank >= 90 || isPurchaseTeacher) return orders.length;
-    const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
-    if (myDepts.size === 0) return 0;
-    const userIds = [...new Set(orders.map(o => o.user_id))];
+    if (isGlobalManager || isPurchaseTeacher) return data.length;
+    if (!session.managedDeptId) return 0;
+    const userIds = [...new Set(data.map(o => o.user_id))];
     if (userIds.length === 0) return 0;
     const { data: profiles } = await _sb.from('profiles').select('id,department_id').in('id', userIds);
     if (!profiles) return 0;
-    const deptUsers = new Set(profiles.filter(p => myDepts.has(p.department_id)).map(p => p.id));
-    return orders.filter(o => deptUsers.has(o.user_id)).length;
+    const departmentUsers = new Set(profiles
+      .filter(profile => profile.department_id === session.managedDeptId)
+      .map(profile => profile.id));
+    return data.filter(order => departmentUsers.has(order.user_id)).length;
   } catch (e) { return 0; }
 }
 

@@ -93,6 +93,7 @@ const LOG_ACTION_LABELS: Record<string, string> = {
   TALENT_EXCEPTION_REQUEST_FAIL: "예외 지급 요청 실패",
   ORDER_CANCEL_REFUND_FAIL: "주문 취소 환불 실패",
   JS_ERROR: "JS 오류",
+  RESOURCE_LOAD_FAIL: "리소스 로드 실패",
   SLACK_NOTIFY_FAIL: "Slack 알림 전송 실패",
   MY_TALENT_PENDING_QUERY: "대기 달란트 조회 오류",
 };
