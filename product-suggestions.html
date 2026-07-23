@@ -78,7 +78,7 @@
                 <button type="button" class="suggestion-image-remove" id="suggestionImageRemove" aria-label="선택한 이미지 제거">&times;</button>
               </div>
             </div>
-            <input id="suggestionImageFile" type="file" accept="image/*" style="display:none;" />
+            <input id="suggestionImageFile" type="file" accept=".jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp" style="display:none;" />
             <div class="suggestion-help">상품 URL, 이미지 URL, 이미지 파일 중 하나는 반드시 입력해야 합니다.</div>
           </div>
           <div class="suggestion-field">
@@ -94,7 +94,7 @@
                 <button type="button" class="suggestion-image-remove" id="suggestionDetailImageRemove" aria-label="선택한 상세 이미지 제거">&times;</button>
               </div>
             </div>
-            <input id="suggestionDetailImageFile" type="file" accept="image/*" style="display:none;" />
+            <input id="suggestionDetailImageFile" type="file" accept=".jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp" style="display:none;" />
           </div>
           <div class="suggestion-form-grid">
             <div class="suggestion-field">
@@ -208,14 +208,23 @@
 
     function setSuggestionImage(file) {
       if (!file) return;
-      if (!file.type || !file.type.startsWith('image/')) {
-        showFormNotice('이미지 파일만 선택할 수 있습니다.', 'error');
+      const validationError = typeof getImageUploadValidationError === 'function'
+        ? getImageUploadValidationError(file)
+        : (!file.type || !file.type.startsWith('image/') ? '이미지 파일만 선택할 수 있습니다.' : null);
+      if (validationError) {
+        showFormNotice(validationError, 'error');
         return;
       }
       selectedSuggestionImage = file;
       if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
       previewObjectUrl = URL.createObjectURL(file);
-      document.getElementById('suggestionPreview').src = previewObjectUrl;
+      const preview = document.getElementById('suggestionPreview');
+      preview.onerror = () => {
+        if (selectedSuggestionImage !== file) return;
+        resetSuggestionImage();
+        showFormNotice('이미지 파일을 읽을 수 없습니다. JPG, PNG, GIF 또는 WebP 파일인지 확인해주세요.', 'error');
+      };
+      preview.src = previewObjectUrl;
       document.getElementById('suggestionDropHelp').style.display = 'none';
       document.getElementById('suggestionPreviewWrap').style.display = 'block';
     }
@@ -226,7 +235,9 @@
       input.value = '';
       if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
       previewObjectUrl = null;
-      document.getElementById('suggestionPreview').removeAttribute('src');
+      const preview = document.getElementById('suggestionPreview');
+      preview.onerror = null;
+      preview.removeAttribute('src');
       document.getElementById('suggestionDropHelp').style.display = '';
       document.getElementById('suggestionPreviewWrap').style.display = 'none';
     }
@@ -255,14 +266,23 @@
 
     function setSuggestionDetailImage(file) {
       if (!file) return;
-      if (!file.type || !file.type.startsWith('image/')) {
-        showFormNotice('상세 설명 이미지 파일만 선택할 수 있습니다.', 'error');
+      const validationError = typeof getImageUploadValidationError === 'function'
+        ? getImageUploadValidationError(file)
+        : (!file.type || !file.type.startsWith('image/') ? '상세 설명 이미지 파일만 선택할 수 있습니다.' : null);
+      if (validationError) {
+        showFormNotice(validationError, 'error');
         return;
       }
       selectedSuggestionDetailImage = file;
       if (detailPreviewObjectUrl) URL.revokeObjectURL(detailPreviewObjectUrl);
       detailPreviewObjectUrl = URL.createObjectURL(file);
-      document.getElementById('suggestionDetailPreview').src = detailPreviewObjectUrl;
+      const preview = document.getElementById('suggestionDetailPreview');
+      preview.onerror = () => {
+        if (selectedSuggestionDetailImage !== file) return;
+        resetSuggestionDetailImage();
+        showFormNotice('상세 설명 이미지 파일을 읽을 수 없습니다. JPG, PNG, GIF 또는 WebP 파일인지 확인해주세요.', 'error');
+      };
+      preview.src = detailPreviewObjectUrl;
       document.getElementById('suggestionDetailDropHelp').style.display = 'none';
       document.getElementById('suggestionDetailPreviewWrap').style.display = 'block';
     }
@@ -272,7 +292,9 @@
       document.getElementById('suggestionDetailImageFile').value = '';
       if (detailPreviewObjectUrl) URL.revokeObjectURL(detailPreviewObjectUrl);
       detailPreviewObjectUrl = null;
-      document.getElementById('suggestionDetailPreview').removeAttribute('src');
+      const preview = document.getElementById('suggestionDetailPreview');
+      preview.onerror = null;
+      preview.removeAttribute('src');
       document.getElementById('suggestionDetailDropHelp').style.display = '';
       document.getElementById('suggestionDetailPreviewWrap').style.display = 'none';
     }

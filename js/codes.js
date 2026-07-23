@@ -121,6 +121,9 @@ const CODE_ITEMS = {
     { key: 'winter', value: '겨울', order: 60 }
   ],
   'activity_logs.action': [
+    { key: 'JS_ERROR', value: 'JS 오류', category: 'SYSTEM', emoji: '⚠️', order: 10 },
+    { key: 'RESOURCE_LOAD_FAIL', value: '리소스 로드 실패', category: 'SYSTEM', emoji: '🖼️', order: 11 },
+    { key: 'PROMISE_REJECTION', value: '비동기 오류', category: 'SYSTEM', emoji: '⚠️', order: 12 },
     { key: 'USER_CREATE', value: '사용자 등록', category: 'USER', emoji: '➕', order: 1010 },
     { key: 'USER_UPDATE', value: '사용자 수정', category: 'USER', emoji: '✏️', order: 1020 },
     { key: 'USER_DELETE', value: '사용자 삭제', category: 'USER', emoji: '🗑️', order: 1030 },

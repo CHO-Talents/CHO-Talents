@@ -330,7 +330,7 @@
           '<div class="announcement-body" id="announcementBody"></div>' +
           '<div class="announcement-actions">' +
             '<button class="announcement-btn" type="button" onclick="closeAnnouncementPopup()">닫기</button>' +
-            '<button class="announcement-btn primary" type="button" onclick="dismissCurrentAnnouncement()">다시 열지 않음</button>' +
+            '<button id="dismissAnnouncementButton" class="announcement-btn primary" type="button" onclick="dismissCurrentAnnouncement()">다시 열지 않음</button>' +
           '</div>' +
         '</div>';
       document.body.appendChild(overlay);
@@ -343,6 +343,7 @@
     let _announcementQueue = [];
     let _currentAnnouncement = null;
     let _announcementSession = null;
+    let _announcementDismissInFlight = false;
 
     async function showActiveAnnouncements(session) {
       if (!_sb || !session || !session.id) return;
@@ -425,30 +426,51 @@
     }
 
     async function dismissCurrentAnnouncement() {
-      if (!_currentAnnouncement || !_announcementSession) {
+      const announcement = _currentAnnouncement;
+      const announcementSession = _announcementSession;
+      if (!announcement || !announcementSession) {
         closeAnnouncementPopup();
         return;
       }
+      if (_announcementDismissInFlight) return;
+
+      _announcementDismissInFlight = true;
+      const dismissButton = document.getElementById('dismissAnnouncementButton');
+      if (dismissButton) {
+        dismissButton.disabled = true;
+        dismissButton.textContent = '처리 중...';
+      }
       try {
         const { error } = await _sb.from('announcement_dismissals').upsert({
-          announcement_id: _currentAnnouncement.id,
-          user_id: _announcementSession.id,
+          announcement_id: announcement.id,
+          user_id: announcementSession.id,
           dismissed_at: new Date().toISOString()
         }, { onConflict: 'announcement_id,user_id' });
         if (error) throw error;
         await logInfo('ANNOUNCEMENT_DISMISS', {
-          공지ID: _currentAnnouncement.id,
-          제목: _currentAnnouncement.title
+          공지ID: announcement.id,
+          제목: announcement.title
         });
-        closeAnnouncementPopup(false);
-        showNextAnnouncement();
+        if (_currentAnnouncement && _currentAnnouncement.id === announcement.id) {
+          closeAnnouncementPopup(false);
+          showNextAnnouncement();
+        }
       } catch (err) {
+        const errorMessage = err && err.message ? err.message : String(err);
         await logError('ANNOUNCEMENT_DISMISS_FAIL', {
-          공지ID: _currentAnnouncement.id,
-          제목: _currentAnnouncement.title,
-          오류: err.message || String(err)
+          공지ID: announcement.id,
+          제목: announcement.title,
+          오류: errorMessage,
+          현재공지ID: _currentAnnouncement ? _currentAnnouncement.id : null,
+          공지상태변경됨: !_currentAnnouncement || _currentAnnouncement.id !== announcement.id
         });
-        alert('공지 숨김 처리에 실패했습니다: ' + tErr(err.message || String(err)));
+        alert('공지 숨김 처리에 실패했습니다: ' + tErr(errorMessage));
+      } finally {
+        _announcementDismissInFlight = false;
+        if (dismissButton) {
+          dismissButton.disabled = false;
+          dismissButton.textContent = '다시 열지 않음';
+        }
       }
     }
 

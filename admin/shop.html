@@ -122,7 +122,7 @@
           </div>
           <div id="imgPreview" style="display:none;"></div>
         </div>
-        <input type="file" id="mImageFile" accept="image/*" aria-required="true" style="display:none;" />
+        <input type="file" id="mImageFile" accept=".jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp" aria-required="true" style="display:none;" />
         <input type="hidden" id="mImageUrl" />
         <div style="margin-top:0.4rem;">
           <button type="button" id="btnUrlToggle" onclick="toggleUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL 직접 입력</button>
@@ -149,7 +149,7 @@
           </div>
           <div id="detailImgPreview" style="display:none;"></div>
         </div>
-        <input type="file" id="mDetailImageFile" accept="image/*" style="display:none;" />
+        <input type="file" id="mDetailImageFile" accept=".jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp" style="display:none;" />
         <input type="hidden" id="mDetailImageUrl" />
         <div style="margin-top:0.4rem;">
           <button type="button" onclick="toggleDetailUrlInput()" style="background:none;border:none;color:var(--admin-primary);cursor:pointer;font-size:0.8rem;text-decoration:underline;">URL 직접 입력</button>
@@ -670,9 +670,13 @@
     dropZone.addEventListener('click', () => fileInput.click());
     dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--admin-primary)'; dropZone.style.background = 'var(--t-hover-bg, rgba(108,92,231,0.05))'; });
     dropZone.addEventListener('dragleave', resetDropZoneStyle);
-    dropZone.addEventListener('drop', e => { e.preventDefault(); resetDropZoneStyle(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) handleFileSelect(f); });
+    dropZone.addEventListener('drop', e => { e.preventDefault(); resetDropZoneStyle(); const f = e.dataTransfer.files[0]; if (f) handleFileSelect(f); });
     fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFileSelect(fileInput.files[0]); });
     function handleFileSelect(file) {
+      const validationError = typeof getImageUploadValidationError === 'function'
+        ? getImageUploadValidationError(file)
+        : (!file.type || !file.type.startsWith('image/') ? '이미지 파일만 선택할 수 있습니다.' : null);
+      if (validationError) { fileInput.value = ''; document.getElementById('uploadStatus').innerHTML = `<span style="color:#ff6b6b;">${validationError}</span>`; return; }
       const maxBytes = typeof MAX_IMAGE_UPLOAD_INPUT_BYTES === 'number' ? MAX_IMAGE_UPLOAD_INPUT_BYTES : 20*1024*1024;
       if (file.size > maxBytes) { document.getElementById('uploadStatus').innerHTML = '<span style="color:#ff6b6b;">20MB 이하 이미지 파일만 업로드 가능합니다</span>'; return; }
       const dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files;
@@ -689,9 +693,13 @@
     detailDropZone.addEventListener('click', () => detailFileInput.click());
     detailDropZone.addEventListener('dragover', e => { e.preventDefault(); detailDropZone.style.borderColor = 'var(--admin-primary)'; detailDropZone.style.background = 'var(--t-hover-bg, rgba(108,92,231,0.05))'; });
     detailDropZone.addEventListener('dragleave', resetDetailDropZoneStyle);
-    detailDropZone.addEventListener('drop', e => { e.preventDefault(); resetDetailDropZoneStyle(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) handleDetailFileSelect(f); });
+    detailDropZone.addEventListener('drop', e => { e.preventDefault(); resetDetailDropZoneStyle(); const f = e.dataTransfer.files[0]; if (f) handleDetailFileSelect(f); });
     detailFileInput.addEventListener('change', () => { if (detailFileInput.files[0]) handleDetailFileSelect(detailFileInput.files[0]); });
     function handleDetailFileSelect(file) {
+      const validationError = typeof getImageUploadValidationError === 'function'
+        ? getImageUploadValidationError(file)
+        : (!file.type || !file.type.startsWith('image/') ? '이미지 파일만 선택할 수 있습니다.' : null);
+      if (validationError) { detailFileInput.value = ''; document.getElementById('detailUploadStatus').innerHTML = `<span style="color:#ff6b6b;">${validationError}</span>`; return; }
       const maxBytes = typeof MAX_IMAGE_UPLOAD_INPUT_BYTES === 'number' ? MAX_IMAGE_UPLOAD_INPUT_BYTES : 20*1024*1024;
       if (file.size > maxBytes) { document.getElementById('detailUploadStatus').innerHTML = '<span style="color:#ff6b6b;">20MB 이하 이미지 파일만 업로드 가능합니다</span>'; return; }
       const dt = new DataTransfer(); dt.items.add(file); detailFileInput.files = dt.files;

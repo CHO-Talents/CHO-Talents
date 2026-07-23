@@ -2,9 +2,19 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '3.94.0',
-  date: '2026-07-22',
+  current: '3.95.0',
+  date: '2026-07-23',
   history: [
+    {
+      version: '3.95.0',
+      date: '2026-07-23',
+      title: '구매 관리 권한·배지 정렬 및 오류 진단 보강',
+      changes: [
+        '구매 담당 교사, 부서 담당 교사·부장 교사, 전도사님·관리자의 구매 처리 대기 배지를 각 역할의 실제 처리 범위에 맞게 계산합니다.',
+        '구매 관리의 개별·일괄 상태 변경은 역할, 관리 부서, 이전·변경 상태를 서버에서 검증하는 process_product_order RPC를 사용합니다. 운영 DB에는 docs/TASK-096_purchase_badge_workflow_permissions.sql 적용이 필요합니다.',
+        '공지 다시 열지 않음 처리의 중복 클릭 경합을 방지하고, 리소스 로드·프로필 조회·이미지 형식 오류의 진단 로그를 보강했습니다.'
+      ]
+    },
     {
       version: '3.94.0',
       date: '2026-07-22',

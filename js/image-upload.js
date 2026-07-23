@@ -7,6 +7,14 @@ const MANAGED_IMAGE_BUCKET = 'Talents_Items';
 const MAX_IMAGE_UPLOAD_INPUT_BYTES = 20 * 1024 * 1024;
 const DEFAULT_COMPRESSED_IMAGE_TYPE = 'image/jpeg';
 const DEFAULT_COMPRESSED_IMAGE_EXT = 'jpg';
+const SUPPORTED_IMAGE_UPLOAD_TYPES = Object.freeze([
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp'
+]);
+const SUPPORTED_IMAGE_UPLOAD_ACCEPT = '.jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp';
+const SUPPORTED_IMAGE_UPLOAD_LABEL = 'JPG, PNG, GIF 또는 WebP';
 
 function _imageUploadLog(level, action, details) {
   try {
@@ -25,6 +33,32 @@ function _imageUploadFormatBytes(bytes) {
   return (n / 1024).toFixed(1) + 'KB';
 }
 
+function getImageUploadFileInfo(file) {
+  const name = String((file && file.name) || '');
+  const extensionMatch = name.match(/\.([^.]+)$/);
+  const size = Number((file && file.size) || 0);
+  return {
+    imageMimeType: String((file && file.type) || '').toLowerCase() || null,
+    imageExtension: extensionMatch ? extensionMatch[1].toLowerCase() : null,
+    imageSizeBytes: size,
+    imageSizeLabel: _imageUploadFormatBytes(size)
+  };
+}
+
+function getImageUploadValidationError(file, options = {}) {
+  if (!file) return '이미지 파일을 선택해주세요.';
+  const mimeType = String(file.type || '').toLowerCase();
+  if (!SUPPORTED_IMAGE_UPLOAD_TYPES.includes(mimeType)) {
+    return `${SUPPORTED_IMAGE_UPLOAD_LABEL} 형식의 이미지 파일만 업로드할 수 있습니다.`;
+  }
+
+  const maxInputBytes = options.maxInputBytes || MAX_IMAGE_UPLOAD_INPUT_BYTES;
+  if (file.size > maxInputBytes) {
+    return `${_imageUploadFormatBytes(maxInputBytes)} 이하 이미지 파일만 업로드할 수 있습니다.`;
+  }
+  return null;
+}
+
 function _imageUploadObjectUrl(file) {
   return new Promise((resolve, reject) => {
     const objectUrl = URL.createObjectURL(file);
@@ -32,7 +66,9 @@ function _imageUploadObjectUrl(file) {
     img.onload = () => resolve({ img, objectUrl });
     img.onerror = () => {
       URL.revokeObjectURL(objectUrl);
-      reject(new Error('이미지 파일을 읽지 못했습니다.'));
+      const error = new Error('이미지 파일을 읽지 못했습니다. 지원 형식인지, 파일이 손상되지 않았는지 확인해주세요.');
+      error.code = 'IMAGE_DECODE_FAILED';
+      reject(error);
     };
     img.src = objectUrl;
   });
@@ -88,12 +124,14 @@ function buildManagedImageFileName(options = {}) {
 }
 
 async function compressImageFile(file, options = {}) {
-  if (!file) return { file: null, error: '이미지 파일을 선택해주세요.' };
-  if (!String(file.type || '').startsWith('image/')) return { file: null, error: '이미지 파일만 업로드할 수 있습니다.' };
-
-  const maxInputBytes = options.maxInputBytes || MAX_IMAGE_UPLOAD_INPUT_BYTES;
-  if (file.size > maxInputBytes) {
-    return { file: null, error: `${_imageUploadFormatBytes(maxInputBytes)} 이하 이미지 파일만 업로드할 수 있습니다.` };
+  const validationError = getImageUploadValidationError(file, options);
+  if (validationError) {
+    return {
+      file: null,
+      error: validationError,
+      errorCode: !file ? 'IMAGE_FILE_MISSING' : 'IMAGE_FILE_VALIDATION_FAILED',
+      ...getImageUploadFileInfo(file)
+    };
   }
 
   let objectUrl = null;
@@ -139,7 +177,12 @@ async function compressImageFile(file, options = {}) {
       mimeType
     };
   } catch (err) {
-    return { file: null, error: err.message || String(err) };
+    return {
+      file: null,
+      error: err.message || String(err),
+      errorCode: err && err.code ? String(err.code) : 'IMAGE_PROCESSING_FAILED',
+      ...getImageUploadFileInfo(file)
+    };
   } finally {
     if (objectUrl) URL.revokeObjectURL(objectUrl);
   }
@@ -151,7 +194,15 @@ async function uploadManagedImage(file, options = {}) {
   const context = options.context || 'image';
   const compressed = await compressImageFile(file, options);
   if (compressed.error) {
-    await _imageUploadLog('error', 'IMAGE_COMPRESS_FAIL', { 구분: context, 오류: compressed.error });
+    await _imageUploadLog('error', 'IMAGE_COMPRESS_FAIL', {
+      구분: context,
+      오류: compressed.error,
+      오류코드: compressed.errorCode || 'IMAGE_PROCESSING_FAILED',
+      원본MIME: compressed.imageMimeType,
+      원본확장자: compressed.imageExtension,
+      원본크기: compressed.imageSizeBytes,
+      원본크기표시: compressed.imageSizeLabel
+    });
     return { url: null, error: compressed.error };
   }
 

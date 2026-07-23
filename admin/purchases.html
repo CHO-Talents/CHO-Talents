@@ -172,7 +172,6 @@
     const STATUS_COLOR = (typeof codeMap === 'function') ? codeMap(ORDER_STATUS_GROUP, 'color') : { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e', cancelled:'#e03131' };
     const STATUS_EMOJI = (typeof codeMap === 'function') ? codeMap(ORDER_STATUS_GROUP, 'emoji') : {};
     const TAB_IDS = ['all','requested','preparing','purchased','delivered','cancelled'];
-    const PURCHASE_BADGE_STATUSES = ['requested','preparing','purchased'];
 
     (async () => {
       await navInit();
@@ -221,14 +220,6 @@
         return;
       }
       allOrders = data || [];
-
-      if (!session.isSuperAdmin) {
-        const { data: saRows } = await _sb.from('profiles').select('id').eq('is_super_admin', true);
-        if (saRows && saRows.length) {
-          const saIds = new Set(saRows.map(r => r.id));
-          allOrders = allOrders.filter(o => !saIds.has(o.user_id));
-        }
-      }
 
       const myRank = session.permissionRank || 0;
       const isPurchaseTeacher = (session.permissionLevel === 'purchase_teacher');
@@ -347,13 +338,36 @@
       return orders;
     }
 
+    function getAllowedOrderTransitions(order) {
+      if (!session || !order) return [];
+      const permissionLevel = session.permissionLevel;
+      const isGlobalManager = (session.permissionRank || 0) >= 90;
+      const isPurchaseTeacher = permissionLevel === 'purchase_teacher';
+      const isManagedDepartmentTeacher = (permissionLevel === 'dept_teacher' || permissionLevel === 'chief')
+        && session.managedDeptId
+        && order._deptId === session.managedDeptId;
+
+      if (isGlobalManager) {
+        if (order.status === 'requested') return ['preparing'];
+        if (order.status === 'preparing') return ['purchased', 'requested'];
+        if (order.status === 'purchased') return ['delivered'];
+        return [];
+      }
+      if (isPurchaseTeacher) {
+        if (order.status === 'preparing') return ['purchased'];
+        if (order.status === 'purchased') return ['delivered'];
+        return [];
+      }
+      if (isManagedDepartmentTeacher && order.status === 'requested') return ['preparing'];
+      return [];
+    }
+
     function canProcessOrder(order) {
-      const myRank = session.permissionRank || 0;
-      if (order.status === 'delivered') return false;
-      if (myRank >= 90) return true;
-      if (session.permissionLevel === 'purchase_teacher') return true;
-      if (myRank >= 60 && session.managedDeptId && order._deptId === session.managedDeptId) return true;
-      return false;
+      return getAllowedOrderTransitions(order).length > 0;
+    }
+
+    function canChangeOrderStatus(order, newStatus) {
+      return getAllowedOrderTransitions(order).includes(newStatus);
     }
 
     function getProcessorInfo(order, stage) {
@@ -565,17 +579,19 @@
 
     function buildMgmtMenu(o, canProc, isAllTab) {
       const items = [];
+      const transitions = canProc ? getAllowedOrderTransitions(o) : [];
       if (isAllTab) items.push(`<a onclick="showOrderDetail('${o.id}')">📋 상세</a>`);
-      if (o.status === 'requested' && canProc) {
+      if (transitions.includes('preparing')) {
         items.push(`<a onclick="updateStatus('${o.id}','preparing')">📦 상품 준비</a>`);
-      } else if (o.status === 'preparing' && canProc) {
+      }
+      if (transitions.includes('purchased')) {
         items.push(`<a onclick="confirmPurchase('${o.id}')">💳 구매 확정</a>`);
-        items.push(`<a onclick="revertStatus('${o.id}','requested')">↩ 되돌리기</a>`);
-      } else if (o.status === 'purchased' && canProc) {
+      }
+      if (transitions.includes('delivered')) {
         items.push(`<a onclick="updateStatus('${o.id}','delivered')">✅ 지급 완료</a>`);
-        items.push(`<a onclick="revertStatus('${o.id}','preparing')">↩ 되돌리기</a>`);
-      } else if (o.status === 'delivered' && canProc) {
-        items.push(`<a onclick="revertStatus('${o.id}','purchased')">↩ 되돌리기</a>`);
+      }
+      if (transitions.includes('requested')) {
+        items.push(`<a onclick="revertStatus('${o.id}','requested')">↩ 되돌리기</a>`);
       }
       if (items.length === 0) return '-';
       return `<div class="mgmt-dropdown">
@@ -615,8 +631,14 @@
 
       renderProductSummary(orders);
 
-      const myRank = session.permissionRank || 0;
-      const showBulk = !isAllTab && currentPTab !== 'delivered' && myRank >= 60;
+      const bulkTargetStatus = {
+        requested: 'preparing',
+        preparing: 'purchased',
+        purchased: 'delivered'
+      }[currentPTab];
+      const showBulk = !isAllTab
+        && !!bulkTargetStatus
+        && orders.some(order => canChangeOrderStatus(order, bulkTargetStatus));
       const bulkEl = document.getElementById('bulkActions');
       const btnPrepare = document.getElementById('btnBulkPrepare');
       const btnPurchase = document.getElementById('btnBulkPurchase');
@@ -671,7 +693,9 @@
         }
 
         const mgmtMenu = buildMgmtMenu(o, canProc, isAllTab);
-        const chkTd = showBulk && o.status === currentPTab ? `<td><input type="checkbox" class="order-chk" value="${o.id}"></td>` : (showBulk ? '<td></td>' : '');
+        const chkTd = showBulk && canChangeOrderStatus(o, bulkTargetStatus)
+          ? `<td><input type="checkbox" class="order-chk" value="${o.id}"></td>`
+          : (showBulk ? '<td></td>' : '');
         const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.78rem;background:${STATUS_COLOR[o.status] || '#868e96'}22;color:${STATUS_COLOR[o.status] || '#868e96'};font-weight:600;">${STATUS_EMOJI[o.status] || ''} ${STATUS_LABEL[o.status] || o.status}</span>`;
 
         let row = '<tr>';
@@ -713,12 +737,16 @@
 
     async function updateStatus(orderId, newStatus) {
       try {
-        const updateFields = { status: newStatus };
-        if (newStatus === 'preparing') { updateFields.prepared_at = new Date().toISOString(); updateFields.prepared_by = session.id; }
-        if (newStatus === 'delivered') { updateFields.delivered_at = new Date().toISOString(); updateFields.delivered_by = session.id; }
-
-        const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         const o = allOrders.find(x => x.id === orderId);
+        if (!canChangeOrderStatus(o, newStatus)) {
+          alert('현재 권한으로는 이 주문 상태를 변경할 수 없습니다.');
+          return;
+        }
+        const { data, error: rpcError } = await _sb.rpc('process_product_order', {
+          p_order_id: orderId,
+          p_new_status: newStatus
+        });
+        const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
           await logError('ORDER_STATUS_CHANGE_FAIL', {
             ...getOrderLogContext(o || orderId, { newStatus }),
@@ -751,12 +779,16 @@
     async function revertStatus(orderId, prevStatus) {
       if (!confirm(`"${STATUS_LABEL[prevStatus] || prevStatus}" 단계로 되돌리시겠습니까?`)) return;
       try {
-        const updateFields = { status: prevStatus };
-        if (prevStatus === 'requested') { updateFields.prepared_at = null; updateFields.prepared_by = null; }
-        if (prevStatus === 'preparing') { updateFields.purchased_at = null; updateFields.purchased_by = null; }
-        if (prevStatus === 'purchased') { updateFields.delivered_at = null; updateFields.delivered_by = null; }
-        const { error } = await _sb.from('product_orders').update(updateFields).eq('id', orderId);
         const ro = allOrders.find(x => x.id === orderId);
+        if (!canChangeOrderStatus(ro, prevStatus)) {
+          alert('현재 권한으로는 이 주문 상태를 되돌릴 수 없습니다.');
+          return;
+        }
+        const { data, error: rpcError } = await _sb.rpc('process_product_order', {
+          p_order_id: orderId,
+          p_new_status: prevStatus
+        });
+        const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
           await logError('ORDER_REVERT_FAIL', {
             ...getOrderLogContext(ro || orderId, { newStatus: prevStatus }),
@@ -806,11 +838,16 @@
     async function confirmPurchase(orderId) {
       if (!confirm('상품 구매를 확정하시겠습니까?\n달란트가 실제 차감됩니다.')) return;
       try {
-        const { data, error } = await _sb.rpc('confirm_product_purchase', {
-          p_order_id: orderId,
-          p_admin_id: session.id
-        });
         const co = allOrders.find(x => x.id === orderId);
+        if (!canChangeOrderStatus(co, 'purchased')) {
+          alert('현재 권한으로는 이 주문을 구매 확정할 수 없습니다.');
+          return;
+        }
+        const { data, error: rpcError } = await _sb.rpc('process_product_order', {
+          p_order_id: orderId,
+          p_new_status: 'purchased'
+        });
+        const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
           await logError('ORDER_PURCHASE_CONFIRM_FAIL', {
             ...getOrderLogContext(co || orderId, { newStatus: 'purchased' }),
@@ -860,11 +897,11 @@
 
       let failCount = 0;
       for (const id of ids) {
-        const { error } = await _sb.from('product_orders').update({
-          status: 'preparing',
-          prepared_at: new Date().toISOString(),
-          prepared_by: session.id
-        }).eq('id', id);
+        const { data, error: rpcError } = await _sb.rpc('process_product_order', {
+          p_order_id: id,
+          p_new_status: 'preparing'
+        });
+        const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
           failCount++;
           await logError('ORDER_BULK_PREPARE_ITEM_FAIL', {
@@ -891,21 +928,16 @@
 
       let failCount = 0;
       for (const id of ids) {
-        const { data, error } = await _sb.rpc('confirm_product_purchase', {
+        const { data, error: rpcError } = await _sb.rpc('process_product_order', {
           p_order_id: id,
-          p_admin_id: session.id
+          p_new_status: 'purchased'
         });
+        const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
           failCount++;
           await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', {
             ...getOrderLogContext(id, { newStatus: 'purchased' }),
             오류: error.message
-          });
-        } else if (data && data.success === false) {
-          failCount++;
-          await logWarn('ORDER_BULK_PURCHASE_DENIED', {
-            ...getOrderLogContext(id, { newStatus: 'purchased' }),
-            사유: data.error
           });
         }
       }
@@ -926,11 +958,11 @@
 
       let failCount = 0;
       for (const id of ids) {
-        const { error } = await _sb.from('product_orders').update({
-          status: 'delivered',
-          delivered_at: new Date().toISOString(),
-          delivered_by: session.id
-        }).eq('id', id);
+        const { data, error: rpcError } = await _sb.rpc('process_product_order', {
+          p_order_id: id,
+          p_new_status: 'delivered'
+        });
+        const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
           failCount++;
           await logError('ORDER_BULK_DELIVER_ITEM_FAIL', {
@@ -950,32 +982,10 @@
     }
 
     async function updateOrderBadge() {
-      const myRank = session.permissionRank || 0;
-      if (myRank < 60) return;
       try {
-        let query = _sb
-          .from('product_orders')
-          .select('user_id,status', { count: 'exact' })
-          .in('status', PURCHASE_BADGE_STATUSES);
-        const { data, count } = await query;
-        let orders = data || [];
-        if (!session.isSuperAdmin) {
-          const { data: saRows } = await _sb.from('profiles').select('id').eq('is_super_admin', true);
-          if (saRows && saRows.length) {
-            const saIds = new Set(saRows.map(r => r.id));
-            orders = orders.filter(o => !saIds.has(o.user_id));
-          }
-        }
-        let processableCount = 0;
-        if (myRank >= 90 || session.permissionLevel === 'purchase_teacher') {
-          processableCount = session.isSuperAdmin ? (count || 0) : orders.length;
-        } else {
-          const myDepts = new Set([session.managedDeptId, session.departmentId].filter(Boolean));
-          processableCount = orders.filter(o => {
-            const prof = profileMap[o.user_id];
-            return prof && myDepts.has(prof.department_id);
-          }).length;
-        }
+        const processableCount = typeof getPendingOrderCount === 'function'
+          ? await getPendingOrderCount()
+          : 0;
         const badge = document.getElementById('navOrderBadge');
         if (badge && processableCount > 0) {
           badge.textContent = processableCount;

@@ -43,10 +43,24 @@ BEGIN
     WHEN 'Profile RPC returned no profile' THEN RETURN '프로필 RPC 결과 없음';
     WHEN 'Invalid login credentials' THEN RETURN '로그인 정보가 일치하지 않습니다';
     WHEN 'TypeError: Load failed' THEN RETURN '로드 실패';
+    WHEN 'Load failed' THEN RETURN '로드 실패';
+    WHEN 'Failed to fetch' THEN RETURN '네트워크 요청 실패';
+    WHEN 'fetch failed' THEN RETURN '네트워크 요청 실패';
+    WHEN 'Network request failed' THEN RETURN '네트워크 요청 실패';
+    WHEN 'NetworkError when attempting to fetch resource.' THEN RETURN '네트워크 리소스 요청 실패';
+    WHEN 'The network connection was lost.' THEN RETURN '네트워크 연결이 끊어졌습니다';
     WHEN 'Script error.' THEN RETURN '스크립트 오류';
     WHEN 'User denied Geolocation' THEN RETURN '사용자가 위치 권한을 거부했습니다';
     WHEN 'Cannot coerce the result to a single JSON object' THEN RETURN '단일 결과로 변환할 수 없습니다';
     WHEN 'permission denied for table profiles' THEN RETURN 'profiles 테이블 권한이 없습니다';
+    WHEN 'Unauthorized' THEN RETURN '권한이 없습니다';
+    WHEN 'JWT expired' THEN RETURN '인증 토큰이 만료되었습니다';
+    WHEN 'Invalid JWT' THEN RETURN '유효하지 않은 인증 토큰입니다';
+    WHEN 'refresh_token_not_found' THEN RETURN '세션 갱신 토큰을 찾을 수 없습니다';
+    WHEN 'Email not confirmed' THEN RETURN '이메일 인증이 완료되지 않았습니다';
+    WHEN 'User already registered' THEN RETURN '이미 등록된 사용자입니다';
+    WHEN 'Failed to send a request to the Edge Function' THEN RETURN 'Edge Function 요청 전송 실패';
+    WHEN 'Edge Function returned a non-2xx status code' THEN RETURN 'Edge Function이 오류 상태를 반환했습니다';
     WHEN 'last_activity' THEN RETURN '마지막 활동 기준';
     WHEN 'idle_timer' THEN RETURN '유휴 타이머 기준';
     WHEN 'visibilitychange' THEN RETURN '탭 재활성화 기준';
@@ -96,6 +110,22 @@ BEGIN
   suffix := substring(v from '^permission denied for table ([A-Za-z0-9_.]+)$');
   IF suffix IS NOT NULL THEN
     RETURN suffix || ' 테이블 권한이 없습니다';
+  END IF;
+
+  IF v ~* '^relation ".+" does not exist$' THEN
+    RETURN '필요한 테이블 또는 뷰를 찾을 수 없습니다';
+  END IF;
+
+  IF v ~* '^function .+ does not exist$' OR v ~* '^Could not find the function' THEN
+    RETURN '필요한 DB 함수를 찾을 수 없습니다';
+  END IF;
+
+  IF v ~* 'row-level security policy' THEN
+    RETURN '행 수준 보안(RLS) 정책에 의해 요청이 거부되었습니다';
+  END IF;
+
+  IF v ~* '^duplicate key value violates unique constraint' THEN
+    RETURN '중복된 데이터로 저장할 수 없습니다';
   END IF;
 
   RETURN v;
