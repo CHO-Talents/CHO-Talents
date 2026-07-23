@@ -113,6 +113,7 @@
   <script src="../js/auth.js"></script>
   <script src="../js/theme.js"></script>
   <script src="../js/nav.js"></script>
+  <script src="../js/page-size.js"></script>
   <script src="../js/product.js"></script>
   <script src="../js/slack-notify.js"></script>
   <script src="../js/product-suggestion.js"></script>
@@ -120,8 +121,11 @@
   <script>
     initSupabase();
     let session;
-    let voteFilter = 'all';
+    let voteFilter = 'unvoted';
     let voteItems = new Map();
+    let filteredVoteItems = [];
+    let votePage = 1;
+    const VOTE_PAGE_SIZE = 10;
 
     (async () => {
       await navInit();
@@ -130,6 +134,7 @@
       navUpdateAuth(session);
       autoLogPageView();
       if (typeof loadCodeItems === 'function') await loadCodeItems(['products.category']);
+      ensureUnvotedFilterButton();
       loadVoteItems();
     })();
 
@@ -139,15 +144,68 @@
 
     function changeVoteFilter(filter) {
       voteFilter = filter;
-      document.querySelectorAll('[data-filter]').forEach(button => button.classList.toggle('active', button.dataset.filter === filter));
+      votePage = 1;
+      syncVoteFilterButtons();
       loadVoteItems();
+    }
+
+    function ensureUnvotedFilterButton() {
+      const allButton = document.querySelector('[data-filter="all"]');
+      if (allButton && !document.querySelector('[data-filter="unvoted"]')) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.dataset.filter = 'unvoted';
+        button.textContent = '미투표';
+        button.addEventListener('click', () => changeVoteFilter('unvoted'));
+        allButton.parentNode.insertBefore(button, allButton);
+      }
+      syncVoteFilterButtons();
+    }
+
+    function syncVoteFilterButtons() {
+      document.querySelectorAll('[data-filter]').forEach(button => {
+        button.classList.toggle('active', button.dataset.filter === voteFilter);
+      });
+    }
+
+    function getVoteItemBackendFilter() {
+      return voteFilter === 'unvoted' ? 'all' : voteFilter;
+    }
+
+    function isUnvotedVoteItem(item) {
+      return item.actual_status === 'voting' && item.viewer_has_voted !== true;
+    }
+
+    function getDisplayedVoteItems(items) {
+      return voteFilter === 'unvoted'
+        ? items.filter(isUnvotedVoteItem)
+        : items;
+    }
+
+    function getVotePagingElement() {
+      let paging = document.getElementById('votePaging');
+      if (paging) return paging;
+      paging = document.createElement('div');
+      paging.id = 'votePaging';
+      paging.style.cssText = 'display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.8rem;flex-wrap:wrap;';
+      const note = document.getElementById('votePrivacyNote');
+      if (note && note.parentNode) note.parentNode.insertBefore(paging, note);
+      return paging;
     }
 
     async function loadVoteItems() {
       const body = document.getElementById('voteItemBody');
       body.innerHTML = '<tr><td colspan="6" class="empty-state">로딩 중...</td></tr>';
-      const { data, error } = await fetchProductSuggestionVoteItems(voteFilter);
+      const { data, error } = await fetchProductSuggestionVoteItems(getVoteItemBackendFilter());
+      if (!error) {
+        filteredVoteItems = getDisplayedVoteItems(data);
+        voteItems = new Map(filteredVoteItems.map(item => [item.suggestion_id, item]));
+        renderVoteItems();
+        return;
+      }
       if (error) {
+        filteredVoteItems = [];
+        getVotePagingElement().innerHTML = '';
         body.innerHTML = `<tr><td colspan="6" class="empty-state">${psEscapeHtml(tErr(error))}</td></tr>`;
         return;
       }
@@ -157,6 +215,35 @@
         return;
       }
       body.innerHTML = data.map(renderVoteItem).join('');
+    }
+
+    function renderVoteItems() {
+      const body = document.getElementById('voteItemBody');
+      const totalPages = Math.max(1, Math.ceil(filteredVoteItems.length / VOTE_PAGE_SIZE));
+      if (votePage > totalPages) votePage = totalPages;
+      const start = (votePage - 1) * VOTE_PAGE_SIZE;
+      const pageItems = filteredVoteItems.slice(start, start + VOTE_PAGE_SIZE);
+      if (!pageItems.length) {
+        body.innerHTML = '<tr><td colspan="6" class="empty-state">조건에 맞는 추천 상품이 없습니다.</td></tr>';
+      } else {
+        body.innerHTML = pageItems.map(renderVoteItem).join('');
+      }
+      renderVotePaging(totalPages);
+    }
+
+    function renderVotePaging(totalPages) {
+      const paging = getVotePagingElement();
+      if (filteredVoteItems.length === 0 || totalPages <= 1) {
+        paging.innerHTML = '';
+        return;
+      }
+      paging.innerHTML = buildPagingButtons(votePage, totalPages, 'goVotePage(__PAGE__)');
+    }
+
+    function goVotePage(page) {
+      const totalPages = Math.max(1, Math.ceil(filteredVoteItems.length / VOTE_PAGE_SIZE));
+      votePage = Math.min(Math.max(1, page), totalPages);
+      renderVoteItems();
     }
 
     function renderVoteItem(item) {
