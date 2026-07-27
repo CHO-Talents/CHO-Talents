@@ -510,9 +510,15 @@
     function renderHistoryChart(rows,metric) {
       const chart=document.getElementById('historyChart'); const list=document.getElementById('historyList');
       if(!rows.length){chart.innerHTML='<div class="empty-panel">아직 추이 데이터가 없습니다.</div>';list.innerHTML='';return;}
-      const values=rows.map(r=>Number(r.usage_value||0)); const max=Math.max(...values,Number(metric.quota_value||0),1); const min=Math.min(...values,0);
+      const values=rows.map(r=>Number(r.usage_value||0));
+      const quota=Number(metric.quota_value||0); const peakUsage=Math.max(...values,0);
+      // Keep low usage readable.  The quota only becomes part of the scale once
+      // the metric reaches the same 70% caution threshold used for alerts.
+      const showQuotaLine=quota>0&&peakUsage/quota>=.7;
+      const max=showQuotaLine?Math.max(peakUsage*1.08,quota):Math.max(peakUsage*1.08,1);
+      const min=Math.min(...values,0);
       const points=values.map((v,i)=>{const x=rows.length===1?50:5+i*(90/(rows.length-1));const y=92-(v-min)/(max-min||1)*82;return `${x},${y}`;}).join(' ');
-      const quotaY=metric.quota_value?92-(Number(metric.quota_value)-min)/(max-min||1)*82:null;
+      const quotaY=showQuotaLine?92-(quota-min)/(max-min||1)*82:null;
       chart.innerHTML=`<svg class="history-chart" viewBox="0 0 100 100" preserveAspectRatio="none"><line x1="5" y1="92" x2="95" y2="92" stroke="var(--admin-border)" stroke-width=".6"/>${quotaY!=null?`<line x1="5" y1="${quotaY}" x2="95" y2="${quotaY}" stroke="#e03131" stroke-width=".5" stroke-dasharray="2 2"/>`:''}<polyline points="${points}" fill="none" stroke="var(--admin-primary)" stroke-width="1.7" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
       list.innerHTML=`<table class="activity-table"><thead><tr><th>수집 시각</th><th>사용량</th><th>한도</th><th>출처</th></tr></thead><tbody>${rows.slice().reverse().map(r=>`<tr><td>${formatKST(r.collected_at)}</td><td>${formatValue(Number(r.usage_value),metric.unit)}</td><td>${r.quota_value==null?'-':formatValue(Number(r.quota_value),metric.unit)}</td><td>${r.is_estimated?'추정 · ':''}${esc(r.source)}</td></tr>`).join('')}</tbody></table>`;
     }

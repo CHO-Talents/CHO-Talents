@@ -14,6 +14,7 @@ const SUPPORTED_IMAGE_UPLOAD_TYPES = Object.freeze([
   'image/webp'
 ]);
 const SUPPORTED_IMAGE_UPLOAD_ACCEPT = '.jpg,.jpeg,.png,.gif,.webp,image/jpeg,image/png,image/gif,image/webp';
+const EXTERNAL_IMAGE_URL_VALIDATION_TIMEOUT_MS = 10000;
 const SUPPORTED_IMAGE_UPLOAD_LABEL = 'JPG, PNG, GIF 또는 WebP';
 
 function _imageUploadLog(level, action, details) {
@@ -57,6 +58,56 @@ function getImageUploadValidationError(file, options = {}) {
     return `${_imageUploadFormatBytes(maxInputBytes)} 이하 이미지 파일만 업로드할 수 있습니다.`;
   }
   return null;
+}
+
+/**
+ * Checks an externally hosted image without inserting it into the page.
+ * A syntactically valid URL can still point to a product/detail HTML page,
+ * so the browser must be able to decode it as an image before it is stored.
+ */
+async function validateExternalImageUrl(value, options = {}) {
+  const rawUrl = String(value || '').trim();
+  if (!rawUrl) return { url: null, error: null };
+
+  let url;
+  try {
+    url = new URL(rawUrl);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error('invalid protocol');
+  } catch (e) {
+    return { url: null, error: '이미지 URL은 http 또는 https 주소로 입력해주세요.' };
+  }
+
+  if (typeof Image !== 'function') return { url: url.href, error: null };
+
+  const timeoutMs = Number(options.timeoutMs) || EXTERNAL_IMAGE_URL_VALIDATION_TIMEOUT_MS;
+  return new Promise(resolve => {
+    const image = new Image();
+    let settled = false;
+    let timeoutId = null;
+    const finish = error => {
+      if (settled) return;
+      settled = true;
+      if (timeoutId) window.clearTimeout(timeoutId);
+      image.onload = null;
+      image.onerror = null;
+      resolve({ url: error ? null : url.href, error: error || null });
+    };
+
+    image.onload = () => {
+      if (!image.naturalWidth || !image.naturalHeight) {
+        finish('이미지 URL에서 유효한 이미지를 확인하지 못했습니다. 이미지 파일 URL을 입력해주세요.');
+        return;
+      }
+      finish(null);
+    };
+    image.onerror = () => {
+      finish('이미지 URL을 불러올 수 없습니다. 상품 페이지가 아닌 이미지 파일 URL을 입력해주세요.');
+    };
+    timeoutId = window.setTimeout(() => {
+      finish('이미지 URL 확인 시간이 초과되었습니다. 접근 가능한 이미지 파일 URL을 입력해주세요.');
+    }, timeoutMs);
+    image.src = url.href;
+  });
 }
 
 function _imageUploadObjectUrl(file) {

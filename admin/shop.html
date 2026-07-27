@@ -496,15 +496,13 @@
         return;
       }
       if (!selectedFile && imageUrl) {
-        try {
-          const parsedImageUrl = new URL(imageUrl);
-          if (!/^https?:$/.test(parsedImageUrl.protocol)) throw new Error('invalid protocol');
-          imageUrl = parsedImageUrl.href;
-        } catch (e) {
-          errEl.textContent = '썸네일 이미지 URL은 http 또는 https 주소로 입력해주세요.';
+        const checkedImageUrl = await validateExternalImageUrl(imageUrl);
+        if (checkedImageUrl.error) {
+          errEl.textContent = `썸네일 ${checkedImageUrl.error}`;
           errEl.classList.add('show');
           return;
         }
+        imageUrl = checkedImageUrl.url;
       }
 
       const detailFileInput = document.getElementById('mDetailImageFile');
@@ -512,6 +510,15 @@
       let detailImageUrl = document.getElementById('mDetailImageUrl').value.trim() || null;
       const detailUrlText = document.getElementById('mDetailImageUrlText').value.trim();
       if (!selectedDetailFile && detailUrlText) detailImageUrl = detailUrlText;
+      if (!selectedDetailFile && detailImageUrl) {
+        const checkedDetailImageUrl = await validateExternalImageUrl(detailImageUrl);
+        if (checkedDetailImageUrl.error) {
+          errEl.textContent = `상세 설명 ${checkedDetailImageUrl.error}`;
+          errEl.classList.add('show');
+          return;
+        }
+        detailImageUrl = checkedDetailImageUrl.url;
+      }
       const purchaseUrlInput = document.getElementById('mPurchaseUrl').value.trim();
       let purchaseUrl = null;
       if (!purchaseUrlInput) {
@@ -683,7 +690,14 @@
       const reader = new FileReader(); reader.onload = e => showImgPreview(e.target.result); reader.readAsDataURL(file);
       document.getElementById('uploadStatus').innerHTML = `<span style="color:#636e72;">📎 ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;
     }
-    document.getElementById('mImageUrlText').addEventListener('input', function() { const u = this.value.trim(); if (u) { document.getElementById('mImageFile').value = ''; showImgPreview(u); } else resetImgPreview(); });
+    document.getElementById('mImageUrlText').addEventListener('input', function() {
+      const u = this.value.trim();
+      document.getElementById('mImageFile').value = '';
+      resetImgPreview();
+      document.getElementById('uploadStatus').innerHTML = u
+        ? '<span style="color:#636e72;">저장할 때 실제 이미지 URL인지 확인합니다.</span>'
+        : '';
+    });
     const detailDropZone = document.getElementById('detailDropZone');
     const detailFileInput = document.getElementById('mDetailImageFile');
     function resetDetailDropZoneStyle() {
@@ -706,7 +720,14 @@
       const reader = new FileReader(); reader.onload = e => showDetailImgPreview(e.target.result); reader.readAsDataURL(file);
       document.getElementById('detailUploadStatus').innerHTML = `<span style="color:#636e72;">📎 ${file.name} (${(file.size/1024).toFixed(1)}KB)</span>`;
     }
-    document.getElementById('mDetailImageUrlText').addEventListener('input', function() { const u = this.value.trim(); if (u) { document.getElementById('mDetailImageFile').value = ''; showDetailImgPreview(u); } else resetDetailImgPreview(); });
+    document.getElementById('mDetailImageUrlText').addEventListener('input', function() {
+      const u = this.value.trim();
+      document.getElementById('mDetailImageFile').value = '';
+      resetDetailImgPreview();
+      document.getElementById('detailUploadStatus').innerHTML = u
+        ? '<span style="color:#636e72;">저장할 때 실제 이미지 URL인지 확인합니다.</span>'
+        : '';
+    });
     document.getElementById('productModal').addEventListener('click', e => { if(e.target.classList.contains('modal-overlay')) closeModal(); });
   </script>
   <div id="version-container"></div>

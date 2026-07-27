@@ -28,7 +28,7 @@
 7. `docs/TASK-069_product_detail_image.sql`을 SQL Editor에서 이어서 실행한다.
 8. `docs/TASK-072_data_retention_180d.sql`을 SQL Editor에서 이어서 실행해 운영 데이터 180일 보존 정책을 적용한다.
 9. `docs/TASK-073_manual_retention_cleanup.sql`을 SQL Editor에서 이어서 실행해 운영 화면의 180일 초과 수동 삭제 RPC를 적용한다. 기존 운영 DB에서 v3.66 한글 별칭 로그가 남아 있으면 `docs/TASK-074_activity_logs_english_details.sql`도 실행해 `activity_logs.details` 중복/client 항목을 정리한다.
-10. `admin_user / 1234`로 로그인하고 비밀번호를 바꾼다.
+10. `admin / 1234`로 로그인하고 비밀번호를 바꾼다.
 
 ### PowerShell/psql
 

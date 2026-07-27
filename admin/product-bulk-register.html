@@ -83,6 +83,7 @@
   <script src="../js/auth.js"></script>
   <script src="../js/theme.js"></script>
   <script src="../js/nav.js"></script>
+  <script src="../js/image-upload.js"></script>
   <script src="../js/product.js"></script>
   <script src="../js/version.js"></script>
   <script>
@@ -223,6 +224,16 @@
       const results = [];
       for (const row of validRows) {
         try {
+          const checkedImageUrl = await validateExternalImageUrl(row.imageUrl);
+          if (checkedImageUrl.error) {
+            results.push(Object.assign({}, row, { success:false, reason:`썸네일 ${checkedImageUrl.error}` }));
+            continue;
+          }
+          const checkedDetailImageUrl = await validateExternalImageUrl(row.detailImageUrl);
+          if (checkedDetailImageUrl.error) {
+            results.push(Object.assign({}, row, { success:false, reason:`상세 설명 ${checkedDetailImageUrl.error}` }));
+            continue;
+          }
           const product = {
             name: row.name,
             target_role: row.targetRole,
@@ -230,8 +241,8 @@
             price: 0,
             sort_order: 0,
             image_emoji: '🎁',
-            image_url: row.imageUrl || null,
-            detail_image_url: row.detailImageUrl || null,
+            image_url: checkedImageUrl.url,
+            detail_image_url: checkedDetailImageUrl.url,
             description: row.description || null,
             purchase_url: row.purchaseUrl || null,
             stock: 0,

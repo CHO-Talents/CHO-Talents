@@ -24,7 +24,7 @@
 6. 사이트 설정 파일의 Supabase URL/anon key를 새 프로젝트 값으로 바꾼다.
    - `config/public-config.js`
    - 필요 시 `.env.local`
-7. `admin_user / 1234`로 로그인한다.
+7. `admin / 1234`로 로그인한다.
 8. 최초 로그인 후 비밀번호를 변경한다.
 9. 부서, 사용자, 상품을 실제 운영 기준으로 새로 등록한다.
 
@@ -125,7 +125,7 @@ scripts/install-supabase-database.sh \
 |---|---|---|
 | `code_groups`, `code_items` | 권한/유형/상태/카테고리/로그 액션 코드 마스터 | 기본 코드 그룹과 활성 코드값 |
 | `departments` | 부서/반 관리 | `기본 부서` 1개 |
-| `profiles` | Supabase Auth 사용자 프로필, 권한, 달란트 잔액, 마지막 로그인 | `admin_user` 최고 관리자 1명 |
+| `profiles` | Supabase Auth 사용자 프로필, 권한, 달란트 잔액, 마지막 로그인 | `admin` 최고 관리자 1명 |
 | `user_login_history` | 최고관리자를 제외한 성공 로그인 시점의 사용자·부서·권한 스냅샷. 직접 조회를 제한하고 사용자 통계 RPC로만 집계 | 비움 |
 | `registration_requests` | 가입 신청 | 비움 |
 | `department_transfer_requests` | 부서 이동 신청/승인 | 비움 |
@@ -220,7 +220,7 @@ DB SQL은 Slack Webhook 원문을 저장하지 않고 `app_config`에 `env:SLACK
 `기본 부서`
 : 가입 신청 화면에서 부서 선택이 필수이므로 최소 1개가 필요하다. 실제 운영 전 이름과 반 개수를 수정한다.
 
-`admin_user`
+`admin`
 : 새 DB 진입용 최고 관리자 계정이다. 초기 비밀번호는 `1234`이며 첫 로그인 후 변경해야 한다.
 
 달란트 항목
