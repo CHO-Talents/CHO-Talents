@@ -142,6 +142,9 @@ REVOKE ALL ON FUNCTION public.confirm_product_purchase(uuid, uuid) FROM PUBLIC;
 REVOKE ALL ON FUNCTION public.confirm_product_purchase(uuid, uuid) FROM anon;
 GRANT EXECUTE ON FUNCTION public.confirm_product_purchase(uuid, uuid) TO authenticated;
 
+-- PostgREST가 새 RPC 시그니처를 즉시 인식하도록 스키마 캐시를 갱신한다.
+NOTIFY pgrst, 'reload schema';
+
 COMMIT;
 
 -- 적용 확인
