@@ -6,7 +6,7 @@
 --   Supabase Dashboard > SQL Editor > New query
 --
 -- 실행 후 기본 로그인:
---   ID: admin_user
+--   ID: admin
 --   PW: 1234
 --   최초 로그인 후 비밀번호 변경 화면으로 이동됩니다.
 --
@@ -2108,11 +2108,11 @@ SET description = EXCLUDED.description,
     is_active = EXCLUDED.is_active,
     class_count = EXCLUDED.class_count;
 
--- 첫 관리자 계정: admin_user / 1234
+-- 첫 관리자 계정: admin / 1234
 DO $$
 DECLARE
   v_admin_id uuid;
-  v_email text := 'admin_user@cho-talents.app';
+  v_email text := 'admin@cho-talents.app';
 BEGIN
   SELECT id INTO v_admin_id FROM auth.users WHERE email = v_email LIMIT 1;
 
@@ -2131,7 +2131,7 @@ BEGIN
       v_email, extensions.crypt('1234', extensions.gen_salt('bf')),
       now(), now(), now(),
       '{"provider":"email","providers":["email"]}'::jsonb,
-      jsonb_build_object('username', 'admin_user', 'display_name', '관리자'),
+      jsonb_build_object('username', 'admin', 'display_name', '관리자'),
       '', '', '', '', false, false
     );
 
@@ -2148,7 +2148,7 @@ BEGIN
     id, email, username, display_name, user_type, permission_level,
     is_super_admin, is_first_login, talent_balance, pending_talent
   ) VALUES (
-    v_admin_id, v_email, 'admin_user', '관리자', 'teacher', 'admin',
+    v_admin_id, v_email, 'admin', '관리자', 'teacher', 'admin',
     true, true, 0, 0
   )
   ON CONFLICT (id) DO UPDATE
