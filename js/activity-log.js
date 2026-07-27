@@ -604,11 +604,23 @@ const LOG_DETAIL_VALUE_LABELS = {
   'Profile RPC returned no profile': '프로필 RPC 결과 없음',
   'Invalid login credentials': '로그인 정보가 일치하지 않습니다',
   'TypeError: Load failed': '로드 실패',
+  'TypeError: Failed to fetch': '네트워크 요청에 실패했습니다',
+  TypeError: '유형 오류',
   'Script error.': '스크립트 오류',
   'User denied Geolocation': '사용자가 위치 권한을 거부했습니다',
   'Cannot coerce the result to a single JSON object': '단일 결과로 변환할 수 없습니다',
   'permission denied for table profiles': 'profiles 테이블 권한이 없습니다',
+  'Could not embed because more than one relationship was found for \'profiles\' and \'departments\'': 'profiles와 departments 사이의 관계가 둘 이상이라 자동으로 연결할 수 없습니다',
+  "Try changing 'departments' to one of the following: 'departments!profiles_department_id_fkey', 'departments!profiles_managed_dept_id_fkey'. Find the desired relationship in the 'details' key.": 'profiles와 departments의 관계를 명시적으로 선택해야 합니다',
+  '[object Object],[object Object]': '관계 후보 상세 정보',
+  'null is not an object (evaluating \'_currentAnnouncement.id\')': '현재 공지 정보가 없어 처리할 수 없습니다',
   Unauthorized: '권한이 없습니다',
+  'resource-load': '리소스 로드',
+  runtime: '실행 중 오류',
+  'unhandled-rejection': '처리되지 않은 비동기 오류',
+  error: '오류',
+  profile: '프로필 조회 완료',
+  empty_result: '조회 결과 없음',
   last_activity: '마지막 활동 기준',
   idle_timer: '유휴 타이머 기준',
   visibilitychange: '탭 재활성화 기준',
@@ -629,9 +641,11 @@ const LOG_DETAIL_VALUE_LABELS = {
 const LOG_DETAIL_VALUE_PATTERNS = [
   [/^Already given this item this week:\s*(.+)$/i, '이번 주에 이미 지급된 항목입니다: $1'],
   [/^permission denied for table ([\w.]+)$/i, '$1 테이블 권한이 없습니다'],
-  [/^Could not find the function/i, 'DB 함수를 찾을 수 없습니다'],
+  [/^(?:Could not find the function|DB 함수를 찾을 수 없습니다)\s*:?\s*(.+?)\s+in the schema cache$/i, 'DB 함수 $1을(를) 스키마 캐시에서 찾을 수 없습니다'],
   [/^Cannot coerce the result to a single JSON object$/i, '단일 결과로 변환할 수 없습니다'],
   [/^TypeError:\s*Load failed$/i, '로드 실패'],
+  [/^TypeError:\s*Failed to fetch$/i, '네트워크 요청에 실패했습니다'],
+  [/^IMG 리소스 로드 실패$/i, '이미지 리소스 로드 실패'],
   [/^Script error\.$/i, '스크립트 오류']
 ];
 
@@ -1727,7 +1741,7 @@ async function _loadProfileDirectForSession(authUserId) {
   const startedAt = Date.now();
   const diagnostics = {
     profileFallbackAttempted: !!(_sb && authUserId),
-    profileFallbackQuery: 'profiles.select(..., departments(name)).eq(id, auth user).maybeSingle()',
+    profileFallbackQuery: 'profiles.select(..., departments!profiles_department_id_fkey(name)).eq(id, auth user).maybeSingle()',
     profileFallbackRequestedUserId: authUserId || null
   };
   if (!_sb || !authUserId) {
@@ -1743,7 +1757,7 @@ async function _loadProfileDirectForSession(authUserId) {
   try {
     const { data, error } = await _sb
       .from('profiles')
-      .select('id, username, display_name, user_type, permission_level, is_super_admin, is_first_login, department_id, managed_dept_id, talent_balance, class_number, departments(name)')
+      .select('id, username, display_name, user_type, permission_level, is_super_admin, is_first_login, department_id, managed_dept_id, talent_balance, class_number, departments!profiles_department_id_fkey(name)')
       .eq('id', authUserId)
       .maybeSingle();
     Object.assign(diagnostics, {
