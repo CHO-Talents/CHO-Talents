@@ -348,7 +348,7 @@
         && order._deptId === session.managedDeptId;
 
       if (isGlobalManager) {
-        if (order.status === 'requested') return ['preparing'];
+        if (order.status === 'requested') return ['preparing', 'cancelled'];
         if (order.status === 'preparing') return ['purchased', 'requested'];
         if (order.status === 'purchased') return ['delivered'];
         return [];
@@ -358,7 +358,7 @@
         if (order.status === 'purchased') return ['delivered'];
         return [];
       }
-      if (isManagedDepartmentTeacher && order.status === 'requested') return ['preparing'];
+      if (isManagedDepartmentTeacher && order.status === 'requested') return ['preparing', 'cancelled'];
       return [];
     }
 
@@ -583,6 +583,9 @@
       if (isAllTab) items.push(`<a onclick="showOrderDetail('${o.id}')">📋 상세</a>`);
       if (transitions.includes('preparing')) {
         items.push(`<a onclick="updateStatus('${o.id}','preparing')">📦 상품 준비</a>`);
+      }
+      if (transitions.includes('cancelled')) {
+        items.push(`<a style="color:#c92a2a;" onclick="cancelPurchase('${o.id}')">❌ 구매 취소</a>`);
       }
       if (transitions.includes('purchased')) {
         items.push(`<a onclick="confirmPurchase('${o.id}')">💳 구매 확정</a>`);
@@ -833,6 +836,45 @@
         </div>
       </div>`;
       document.body.insertAdjacentHTML('beforeend', html);
+    }
+
+    async function cancelPurchase(orderId) {
+      const co = allOrders.find(x => x.id === orderId);
+      if (!canChangeOrderStatus(co, 'cancelled')) {
+        alert('현재 권한으로는 이 주문을 구매 취소할 수 없습니다.');
+        return;
+      }
+      if (!confirm(`"${co?.product_name || '이 상품'}" 구매 신청을 취소하시겠습니까?\n예약된 달란트가 다시 사용 가능해집니다.`)) return;
+
+      try {
+        const { data, error: rpcError } = await _sb.rpc('process_product_order', {
+          p_order_id: orderId,
+          p_new_status: 'cancelled'
+        });
+        const error = rpcError || (data && data.success === false ? { message: data.error || '구매 취소 처리 권한이 없습니다.' } : null);
+        if (error) {
+          await logError('ORDER_PURCHASE_CANCEL_FAIL', {
+            ...getOrderLogContext(co || orderId, { newStatus: 'cancelled' }),
+            error: error.message
+          });
+          alert('구매 취소 처리에 실패했습니다: ' + tErr(error.message));
+          return;
+        }
+        await logInfo('ORDER_PURCHASE_CANCEL', {
+          ...getOrderLogContext(co || orderId, { newStatus: 'cancelled' }),
+          oldStatus: getOrderStatusLabel(co?.status),
+          newStatus: getOrderStatusLabel('cancelled'),
+          refundedTalent: co?.price || 0,
+          changeSummary: `구매 취소: ${co?._userName || '-'} / 상품: ${co?.product_name || '-'} / 예약 달란트 해제: ${fmtNum(co?.price || 0)}`
+        });
+        await loadOrders();
+      } catch (err) {
+        await logError('ORDER_PURCHASE_CANCEL_ERROR', {
+          ...getOrderLogContext(orderId, { newStatus: 'cancelled' }),
+          error: String(err)
+        });
+        alert('구매 취소 처리 중 오류가 발생했습니다: ' + tErr(err.message));
+      }
     }
 
     async function confirmPurchase(orderId) {

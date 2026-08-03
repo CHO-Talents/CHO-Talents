@@ -56,7 +56,8 @@ docs/TASK-069_product_detail_image.sql, and
 docs/TASK-070_service_usage_monitoring.sql through
 docs/TASK-089_product_suggestion_slack_notifications.sql and
 docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql when no --extra-sql-path is provided.
-docs/TASK-091_user_stats_filters.sql is applied last to add the user-type statistics filter.
+docs/TASK-091_user_stats_filters.sql and
+docs/TASK-098_purchase_request_cancellation.sql are applied last.
 USAGE
 }
 
@@ -309,11 +310,15 @@ if [ "${#EXTRA_SQL_PATHS[@]}" -eq 0 ]; then
   fi
   DEFAULT_PRODUCT_SUGGESTION_SUPER_ADMIN_VOTE_PRIVILEGES_SQL="$ROOT_DIR/docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql"
   DEFAULT_USER_STATS_FILTERS_SQL="$ROOT_DIR/docs/TASK-091_user_stats_filters.sql"
+  DEFAULT_PURCHASE_REQUEST_CANCELLATION_SQL="$ROOT_DIR/docs/TASK-098_purchase_request_cancellation.sql"
   if [ -f "$DEFAULT_PRODUCT_SUGGESTION_SUPER_ADMIN_VOTE_PRIVILEGES_SQL" ]; then
     EXTRA_SQL_PATHS+=("$DEFAULT_PRODUCT_SUGGESTION_SUPER_ADMIN_VOTE_PRIVILEGES_SQL")
   fi
   if [ -f "$DEFAULT_USER_STATS_FILTERS_SQL" ]; then
     EXTRA_SQL_PATHS+=("$DEFAULT_USER_STATS_FILTERS_SQL")
+  fi
+  if [ -f "$DEFAULT_PURCHASE_REQUEST_CANCELLATION_SQL" ]; then
+    EXTRA_SQL_PATHS+=("$DEFAULT_PURCHASE_REQUEST_CANCELLATION_SQL")
   fi
 fi
 
