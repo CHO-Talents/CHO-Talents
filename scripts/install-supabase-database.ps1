@@ -119,7 +119,8 @@ if (-not (Test-Path -LiteralPath $SqlPath)) {
 $resolvedSqlPath = (Resolve-Path -LiteralPath $SqlPath).Path
 $baseSql = Get-Content -LiteralPath $resolvedSqlPath -Raw -Encoding UTF8
 
-if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
+$hasExtraSqlPaths = @($ExtraSqlPaths | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }).Count -gt 0
+if (-not $hasExtraSqlPaths) {
   $defaultCodeMasterSql = Join-Path $ScriptRoot '..\docs\TASK-057_code_master.sql'
   $defaultProductCategoryPolicySql = Join-Path $ScriptRoot '..\docs\TASK-058_product_category_policy.sql'
   $defaultProductCategoryPageSql = Join-Path $ScriptRoot '..\docs\TASK-068_product_category_page_and_sort_order.sql'
@@ -136,6 +137,7 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   $defaultProductSuggestionSlackNotificationsSql = Join-Path $ScriptRoot '..\docs\TASK-089_product_suggestion_slack_notifications.sql'
   $defaultProductSuggestionSuperAdminVotePrivilegesSql = Join-Path $ScriptRoot '..\docs\TASK-090_product_suggestion_super_admin_vote_privileges.sql'
   $defaultUserStatsFiltersSql = Join-Path $ScriptRoot '..\docs\TASK-091_user_stats_filters.sql'
+  $defaultPurchaseRequestCancellationSql = Join-Path $ScriptRoot '..\docs\TASK-098_purchase_request_cancellation.sql'
   if (Test-Path -LiteralPath $defaultCodeMasterSql) {
     $ExtraSqlPaths = @($defaultCodeMasterSql)
   }
@@ -183,6 +185,9 @@ if ($null -eq $ExtraSqlPaths -or $ExtraSqlPaths.Count -eq 0) {
   }
   if (Test-Path -LiteralPath $defaultUserStatsFiltersSql) {
     $ExtraSqlPaths += $defaultUserStatsFiltersSql
+  }
+  if (Test-Path -LiteralPath $defaultPurchaseRequestCancellationSql) {
+    $ExtraSqlPaths += $defaultPurchaseRequestCancellationSql
   }
 }
 
@@ -253,7 +258,7 @@ SET key_value = EXCLUDED.key_value,
 NOTIFY pgrst, 'reload schema';
 "@
 
-$combinedSql = ($baseSql.TrimEnd(), $extraSqlBlocks, $appConfigPatch) -join "`r`n`r`n"
+$combinedSql = (@($baseSql.TrimEnd()) + $extraSqlBlocks + @($appConfigPatch)) -join "`r`n`r`n"
 $writtenOutputPath = $null
 
 if ($GenerateOnly -and [string]::IsNullOrWhiteSpace($OutputSqlPath)) {

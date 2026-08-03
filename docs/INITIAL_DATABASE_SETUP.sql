@@ -1340,7 +1340,7 @@ BEGIN
   v_caller_rank := public.get_permission_rank(v_caller_permission);
 
   IF v_caller_rank >= 90 THEN
-    v_allowed := (v_order.status = 'requested' AND p_new_status = 'preparing')
+    v_allowed := (v_order.status = 'requested' AND p_new_status IN ('preparing', 'cancelled'))
       OR (v_order.status = 'preparing' AND p_new_status IN ('purchased', 'requested'))
       OR (v_order.status = 'purchased' AND p_new_status = 'delivered');
   ELSIF v_caller_permission = 'purchase_teacher' THEN
@@ -1349,7 +1349,7 @@ BEGIN
   ELSIF v_caller_permission IN ('dept_teacher', 'chief')
     AND v_caller_managed_dept_id IS NOT NULL
     AND v_caller_managed_dept_id = v_order_department_id THEN
-    v_allowed := v_order.status = 'requested' AND p_new_status = 'preparing';
+    v_allowed := v_order.status = 'requested' AND p_new_status IN ('preparing', 'cancelled');
   END IF;
 
   IF NOT v_allowed THEN
@@ -1388,6 +1388,14 @@ BEGIN
     UPDATE public.product_orders
     SET status = 'requested', prepared_at = null, prepared_by = null
     WHERE id = v_order.id;
+  ELSIF p_new_status = 'cancelled' THEN
+    UPDATE public.product_orders
+    SET status = 'cancelled'
+    WHERE id = v_order.id;
+
+    UPDATE public.profiles
+    SET pending_talent = GREATEST(COALESCE(pending_talent, 0) - v_order.price, 0)
+    WHERE id = v_order.user_id;
   END IF;
 
   RETURN json_build_object(
