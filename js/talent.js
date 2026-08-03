@@ -96,6 +96,34 @@ function isDuplicateTalentExceptionRequest(value) {
   return /이미.*대기 중|already.*pending|duplicate key|unique constraint/i.test(getTalentErrorMessage(value));
 }
 
+function isTransientTalentRequestError(value) {
+  return /(?:load failed|failed to fetch|network(?:error| request)?|network connection was lost|connection.*lost|timeout)/i
+    .test(getTalentErrorMessage(value));
+}
+
+async function findRecentlyGrantedTalentItem(userId, talentItemId, createdBy, attemptedAt) {
+  if (!_sb || !userId || !talentItemId || !createdBy) return null;
+
+  // 응답만 유실된 경우에만 복구합니다. 예외 지급은 같은 항목을 여러 번 지급할 수 있어
+  // 이 조회 결과만으로 성공을 확정할 수 없으므로 호출하지 않습니다.
+  const since = new Date(attemptedAt - (2 * 60 * 1000)).toISOString();
+  try {
+    const { data, error } = await _sb
+      .from('talent_transactions')
+      .select('id,amount,balance_after,description,created_at,override_week_limit')
+      .eq('user_id', userId)
+      .eq('talent_item_id', talentItemId)
+      .eq('created_by', createdBy)
+      .eq('type', 'earn')
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
+      .limit(1);
+    return error ? null : (data && data[0]) || null;
+  } catch (e) {
+    return null;
+  }
+}
+
 async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
   if (!_sb) return { success: false, error: 'Supabase not initialized' };
   try {
@@ -109,6 +137,7 @@ async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
       itemName: options.itemName || options.talentItemName || null,
       사유: overrideReason,
     };
+    const attemptedAt = Date.now();
     const { data, error } = await _sb.rpc('give_talent', {
       p_user_id: userId,
       p_amount: 0,
@@ -123,8 +152,32 @@ async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
         await logInfo('TALENT_GIVE_ITEM_DENIED', { ...logContext, 사유: error.message, 처리: 'weekly_duplicate' });
         return { success: false, error: error.message, handled: true, reason: 'weekly_duplicate' };
       }
+      const recoveredGrant = !overrideWeekLimit && isTransientTalentRequestError(error)
+        ? await findRecentlyGrantedTalentItem(userId, talentItemId, createdBy, attemptedAt)
+        : null;
+      if (recoveredGrant) {
+        await logInfo('TALENT_GIVE_ITEM', {
+          ...logContext,
+          금액: recoveredGrant.amount,
+          처리: '서버 처리 확인으로 복구',
+          변경내역: `${logContext.targetName || userId}에게 달란트 항목 지급이 서버 처리 확인으로 복구됨: ${logContext.itemName || talentItemId} / 금액: ${fmtNum(recoveredGrant.amount || 0)} 달란트`,
+        });
+        return {
+          success: true,
+          recovered: true,
+          balance: recoveredGrant.balance_after,
+          txn_id: recoveredGrant.id,
+          amount: recoveredGrant.amount,
+          description: recoveredGrant.description,
+        };
+      }
       await logError('TALENT_GIVE_ITEM_FAIL', { ...logContext, 오류: error.message });
-      return { success: false, error: error.message };
+      return {
+        success: false,
+        error: isTransientTalentRequestError(error)
+          ? '달란트 지급 서버와 연결하지 못했습니다. 대상 내역을 새로고침해 지급 여부를 확인한 뒤 다시 시도해주세요.'
+          : error.message
+      };
     }
     if (data && data.success === false) {
       const logFn = isWeeklyDuplicateTalentError(data.error) ? logInfo : logWarn;
