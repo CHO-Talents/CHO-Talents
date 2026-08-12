@@ -48,6 +48,7 @@ function _shouldSkipDuplicateLog(level, action, page, details) {
 }
 
 function _sendLogAlertDirect(level, action, page, details) {
+  if (window.CHO_TALENTS_CONFIG?.notifications?.slackEnabled !== true) return;
   if (!_sb) return;
   var key = 'log_alert_' + level + '_' + action;
   var now = Date.now();
@@ -645,6 +646,7 @@ const LOG_DETAIL_VALUE_LABELS = {
   'admin-dashboard': '관리자 대시보드',
   'admin-users': '사용자 관리',
   'admin-talents': '달란트 관리',
+  'admin-monthly-talents': '월별 달란트 관리',
   'admin-service-stats': '서비스 통계',
   'my-talents': '내 달란트',
   'talent-receive': 'QR 달란트 수령',
