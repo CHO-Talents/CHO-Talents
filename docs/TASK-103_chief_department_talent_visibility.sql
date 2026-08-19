@@ -272,7 +272,11 @@ BEGIN
     RETURN json_build_object('success', false, 'error', 'Unauthorized');
   END IF;
 
-  v_grant_date := COALESCE(p_grant_date, (now() AT TIME ZONE 'Asia/Seoul')::date);
+  v_grant_date := COALESCE(
+    p_grant_date,
+    (now() AT TIME ZONE 'Asia/Seoul')::date
+      + ((7 - EXTRACT(DOW FROM (now() AT TIME ZONE 'Asia/Seoul'))::integer) % 7)
+  );
 
   IF p_talent_item_id IS NOT NULL THEN
     IF p_grant_date IS NOT NULL AND EXTRACT(DOW FROM p_grant_date) <> 0 THEN
