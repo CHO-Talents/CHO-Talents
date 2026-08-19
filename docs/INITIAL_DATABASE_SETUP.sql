@@ -127,6 +127,36 @@ CREATE TABLE IF NOT EXISTS public.talent_transactions (
   created_at timestamptz DEFAULT now()
 );
 
+-- 지급 이벤트 발생일을 기준으로 일요일을 지급 대상일로 정규화한다.
+-- 월~토요일에는 다음 일요일, 일요일에는 당일을 사용하며, 월별 화면에서 선택한
+-- 다른 일요일은 그대로 유지한다.
+CREATE OR REPLACE FUNCTION public.normalize_talent_grant_date()
+RETURNS trigger
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+DECLARE
+  v_occurrence_date date;
+BEGIN
+  IF NEW.type = 'earn' THEN
+    v_occurrence_date := COALESCE(
+      (NEW.created_at AT TIME ZONE 'Asia/Seoul')::date,
+      (now() AT TIME ZONE 'Asia/Seoul')::date
+    );
+    IF NEW.grant_date IS NULL OR NEW.grant_date = v_occurrence_date THEN
+      NEW.grant_date := v_occurrence_date
+        + ((7 - EXTRACT(DOW FROM v_occurrence_date)::integer) % 7);
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS normalize_talent_grant_date_before_insert ON public.talent_transactions;
+CREATE TRIGGER normalize_talent_grant_date_before_insert
+  BEFORE INSERT ON public.talent_transactions
+  FOR EACH ROW EXECUTE FUNCTION public.normalize_talent_grant_date();
+
 CREATE TABLE IF NOT EXISTS public.talent_exception_requests (
   id uuid PRIMARY KEY DEFAULT extensions.gen_random_uuid(),
   user_id uuid NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
@@ -1040,7 +1070,11 @@ BEGIN
     END IF;
   END IF;
 
-  v_grant_date := COALESCE(p_grant_date, (now() AT TIME ZONE 'Asia/Seoul')::date);
+  v_grant_date := COALESCE(
+    p_grant_date,
+    (now() AT TIME ZONE 'Asia/Seoul')::date
+      + ((7 - EXTRACT(DOW FROM (now() AT TIME ZONE 'Asia/Seoul'))::integer) % 7)
+  );
 
   IF p_talent_item_id IS NOT NULL THEN
     IF p_grant_date IS NOT NULL AND EXTRACT(DOW FROM p_grant_date) <> 0 THEN
@@ -1553,8 +1587,11 @@ DECLARE
   v_week_kst integer;
   v_today_start_utc timestamptz;
   v_tomorrow_start_utc timestamptz;
+  v_grant_date date;
 BEGIN
   v_now_kst := timezone('Asia/Seoul', now());
+  -- QR를 실제로 수령한 시각(created_at/scanned_at)과 지급 대상일은 별도로 보관한다.
+  v_grant_date := v_now_kst::date + ((7 - EXTRACT(DOW FROM v_now_kst)::integer) % 7);
   v_time_kst := v_now_kst::time;
   v_day_kst := extract(dow from v_now_kst)::integer;
   v_week_kst := ceil((
@@ -1673,11 +1710,11 @@ BEGIN
 
   INSERT INTO public.talent_transactions (
     user_id, type, amount, balance_after, description,
-    created_by, talent_item_id, source
+    created_by, talent_item_id, source, grant_date
   ) VALUES (
     p_user_id, 'earn', v_qr.amount, v_new_balance,
     COALESCE(v_qr.description, 'QR 달란트'),
-    p_user_id, v_qr.talent_item_id, 'qr'
+    p_user_id, v_qr.talent_item_id, 'qr', v_grant_date
   )
   RETURNING id INTO v_txn_id;
 
@@ -1686,7 +1723,8 @@ BEGIN
     'balance', v_new_balance,
     'amount', v_qr.amount,
     'txn_id', v_txn_id,
-    'scan_id', v_scan_id
+    'scan_id', v_scan_id,
+    'grant_date', v_grant_date
   );
 END;
 $$;

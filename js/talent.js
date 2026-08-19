@@ -23,6 +23,22 @@ function prioritizeTalentUsersByCurrentDeptAndClass(users, currentUser) {
   return [...currentDeptClassUsers, ...currentDeptUsers, ...otherUsers];
 }
 
+// 지급 이벤트가 발생한 한국 날짜를 기준으로, 그 주의 일요일을 지급 대상일로 만든다.
+// 일요일이면 당일, 월~토요일이면 다음 일요일을 반환한다.
+function getUpcomingSundayKSTDate(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(date);
+  const part = type => parts.find(item => item.type === type)?.value;
+  const kstCalendarDate = new Date(Date.UTC(
+    Number(part('year')),
+    Number(part('month')) - 1,
+    Number(part('day'))
+  ));
+  kstCalendarDate.setUTCDate(kstCalendarDate.getUTCDate() + ((7 - kstCalendarDate.getUTCDay()) % 7));
+  return kstCalendarDate.toISOString().slice(0, 10);
+}
+
 async function fetchTalentBalance(userId) {
   if (!_sb) return 0;
   const { data, error } = await _sb
@@ -76,12 +92,14 @@ async function fetchTalentSummary(userId) {
 async function giveTalent(userId, amount, description, createdBy) {
   if (!_sb) return { success: false, error: 'Supabase not initialized' };
   try {
+    const grantDate = getUpcomingSundayKSTDate();
     const { data, error } = await _sb.rpc('give_talent', {
       p_user_id: userId,
       p_amount: amount,
       p_description: description,
       p_created_by: createdBy,
-      p_talent_item_id: null
+      p_talent_item_id: null,
+      p_grant_date: grantDate
     });
     if (error) {
       await logError('TALENT_GIVE_FAIL', { userId, 금액: amount, description, 오류: error.message });
@@ -151,7 +169,7 @@ async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
   try {
     const overrideWeekLimit = options.overrideWeekLimit === true;
     const overrideReason = options.overrideReason || null;
-    const grantDate = options.grantDate || null;
+    const grantDate = options.grantDate || getUpcomingSundayKSTDate();
     const logContext = {
       targetUserId: userId,
       targetAccount: options.targetAccount || null,

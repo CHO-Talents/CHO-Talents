@@ -100,7 +100,11 @@ BEGIN
     END IF;
   END IF;
 
-  v_grant_date := COALESCE(p_grant_date, (now() AT TIME ZONE 'Asia/Seoul')::date);
+  v_grant_date := COALESCE(
+    p_grant_date,
+    (now() AT TIME ZONE 'Asia/Seoul')::date
+      + ((7 - EXTRACT(DOW FROM (now() AT TIME ZONE 'Asia/Seoul'))::integer) % 7)
+  );
 
   IF p_talent_item_id IS NOT NULL THEN
     -- 일정 화면에서 전달하는 지정일은 일요일만 허용합니다. 지정하지 않은 다른 지급 경로는

@@ -276,7 +276,7 @@
         }
 
         if (qr.talent_item_id) {
-          const paymentDate = getKSTDateString();
+          const paymentDate = getUpcomingSundayKSTDate();
           try {
             const { data: adminEarns } = await _sb.from('talent_transactions')
               .select('id').eq('user_id', session.id)
@@ -284,7 +284,7 @@
               .eq('type', 'earn').eq('source', 'admin')
               .eq('grant_date', paymentDate);
             if (adminEarns && adminEarns.length > 0) {
-              showResult('fail', '오늘 지급일에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
+              showResult('fail', '이번 지급 대상일에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
             }
           } catch (srcErr) {
             const { data: allEarns } = await _sb.from('talent_transactions')
@@ -293,7 +293,7 @@
               .eq('type', 'earn')
               .eq('grant_date', paymentDate);
             if (allEarns && allEarns.some(e => e.created_by !== session.id)) {
-              showResult('fail', '오늘 지급일에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
+              showResult('fail', '이번 지급 대상일에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
             }
           }
         }
@@ -338,7 +338,8 @@
 
         const itemName = qr.description || 'QR 달란트';
         await logInfo('qr_scan', { 항목명: itemName, 금액: rpcResult.amount });
-        showResult('ok', `✅ ${rpcResult.amount} 달란트를 수령했습니다! (${itemName})`);
+        const grantDate = getUpcomingSundayKSTDate();
+        showResult('ok', `✅ ${rpcResult.amount} 달란트를 수령했습니다! (${itemName})\n지급 대상일: ${grantDate}`);
         document.getElementById('qrInput').value = '';
         loadHistory();
       } catch (e) {
@@ -358,6 +359,29 @@
       }).formatToParts(date);
       const value = type => parts.find(part => part.type === type)?.value;
       return `${value('year')}-${value('month')}-${value('day')}`;
+    }
+
+    function getUpcomingSundayKSTDate(date = new Date()) {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit'
+      }).formatToParts(date);
+      const value = type => parts.find(part => part.type === type)?.value;
+      const kstCalendarDate = new Date(Date.UTC(
+        Number(value('year')),
+        Number(value('month')) - 1,
+        Number(value('day'))
+      ));
+      kstCalendarDate.setUTCDate(kstCalendarDate.getUTCDate() + ((7 - kstCalendarDate.getUTCDay()) % 7));
+      return kstCalendarDate.toISOString().slice(0, 10);
+    }
+
+    function getKSTDateTimeString(date) {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+      }).formatToParts(new Date(date));
+      const value = type => parts.find(part => part.type === type)?.value;
+      return `${value('year')}-${value('month')}-${value('day')} ${value('hour')}:${value('minute')}`;
     }
 
     function getTodayStartKST() {
@@ -480,12 +504,13 @@
       const startIdx = (historyPage - 1) * pageSize;
       const pageItems = historyItems.slice(startIdx, startIdx + pageSize);
       list.innerHTML = pageItems.map(t => {
-          const dateStr = t.grant_date || getKSTDateString(new Date(t.created_at));
+          const grantDate = t.grant_date || getKSTDateString(new Date(t.created_at));
+          const occurredAt = getKSTDateTimeString(t.created_at);
           const srcLabel = t.source === 'qr'
             ? '<span style="font-size:0.7rem;padding:0.1rem 0.35rem;border-radius:4px;background:#d0ebff;color:#1971c2;margin-right:0.3rem;">📱 QR</span>'
             : '<span style="font-size:0.7rem;padding:0.1rem 0.35rem;border-radius:4px;background:#fff3bf;color:#e67700;margin-right:0.3rem;">👨‍💼 ' + escapeHtml(historyCreatorMap[t.created_by] || '관리자') + '</span>';
           const desc = (t.description || '-').replace(/\[[0-9a-f-]{36}\]\s*/gi, '');
-          return `<div class="scan-item">${srcLabel}<span>${dateStr} - ${desc}</span><span class="amt">+${t.amount || 0} 달란트</span></div>`;
+          return `<div class="scan-item">${srcLabel}<span><small style="display:block;color:var(--c-text-muted);">지급 대상일 ${grantDate} · 발생 ${occurredAt}</small>${desc}</span><span class="amt">+${t.amount || 0} 달란트</span></div>`;
         }).join('');
       if (sizeWrap) sizeWrap.innerHTML = renderPageSizeSelector('talent_receive_history', pageSize, 'onHistoryPageSizeChange(this.value)');
       if (paging) paging.innerHTML = buildPagingButtons(historyPage, totalPages, 'goHistoryPage(__PAGE__)');
