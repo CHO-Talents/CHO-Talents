@@ -136,6 +136,7 @@ if (-not $hasExtraSqlPaths) {
   $defaultProductSuggestionAdoptionTalentSql = Join-Path $ScriptRoot '..\docs\TASK-088_product_suggestion_adoption_talent.sql'
   $defaultProductSuggestionSlackNotificationsSql = Join-Path $ScriptRoot '..\docs\TASK-089_product_suggestion_slack_notifications.sql'
   $defaultProductSuggestionSuperAdminVotePrivilegesSql = Join-Path $ScriptRoot '..\docs\TASK-090_product_suggestion_super_admin_vote_privileges.sql'
+  $defaultProductSuggestionAdoptionRewardItemConfigSql = Join-Path $ScriptRoot '..\docs\TASK-113_product_suggestion_adoption_reward_item_config.sql'
   $defaultUserStatsFiltersSql = Join-Path $ScriptRoot '..\docs\TASK-091_user_stats_filters.sql'
   $defaultPurchaseRequestCancellationSql = Join-Path $ScriptRoot '..\docs\TASK-098_purchase_request_cancellation.sql'
   if (Test-Path -LiteralPath $defaultCodeMasterSql) {
@@ -182,6 +183,9 @@ if (-not $hasExtraSqlPaths) {
   }
   if (Test-Path -LiteralPath $defaultProductSuggestionSuperAdminVotePrivilegesSql) {
     $ExtraSqlPaths += $defaultProductSuggestionSuperAdminVotePrivilegesSql
+  }
+  if (Test-Path -LiteralPath $defaultProductSuggestionAdoptionRewardItemConfigSql) {
+    $ExtraSqlPaths += $defaultProductSuggestionAdoptionRewardItemConfigSql
   }
   if (Test-Path -LiteralPath $defaultUserStatsFiltersSql) {
     $ExtraSqlPaths += $defaultUserStatsFiltersSql

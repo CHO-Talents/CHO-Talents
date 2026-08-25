@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS public.talent_items (
   sort_order integer DEFAULT 0,
   created_by uuid REFERENCES public.profiles(id),
   is_quick_button boolean DEFAULT false,
+  is_product_suggestion_adoption_reward boolean NOT NULL DEFAULT false,
   giving_rule text,
   giving_description text,
   created_at timestamptz DEFAULT now(),

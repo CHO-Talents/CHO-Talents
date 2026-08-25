@@ -181,7 +181,7 @@
 
     (async () => {
       await navInit();
-      session = await initPage(60, '../login.html');
+      session = await initPage(40, '../login.html');
       if (!session) return;
       navUpdateAuth(session);
       autoLogPageView();
@@ -228,15 +228,29 @@
       allOrders = data || [];
 
       const myRank = session.permissionRank || 0;
-      const scopedDeptId = (myRank >= 60 && myRank < 80 && !isPurchaseTeacher()) ? (session.managedDeptId || session.departmentId) : null;
+      const isClassScopedTeacher = session.permissionLevel === 'teacher' && myRank === 40;
+      const scopedDeptId = (myRank >= 60 && myRank < 80 && !isPurchaseTeacher())
+        ? (session.managedDeptId || session.departmentId)
+        : null;
       let scopedUsers = null;
-      if (scopedDeptId) {
-        const { data: users, error: userErr } = await fetchUsers({ departmentId: scopedDeptId });
+      if (isClassScopedTeacher && (!session.departmentId || session.classNumber == null)) {
+        // 일반 교사는 부서와 반이 모두 지정된 경우에만 담당 학생 주문을 볼 수 있다.
+        allOrders = [];
+      } else if (isClassScopedTeacher || scopedDeptId) {
+        const scopeDepartmentId = isClassScopedTeacher ? session.departmentId : scopedDeptId;
+        const userOptions = isClassScopedTeacher
+          ? { userType: 'student', departmentId: scopeDepartmentId }
+          : { departmentId: scopeDepartmentId };
+        const { data: users, error: userErr } = await fetchUsers(userOptions);
         if (userErr) {
-          await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopedDeptId, 오류: userErr });
+          await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopeDepartmentId, 오류: userErr });
           allOrders = [];
         } else {
-          scopedUsers = users || [];
+          scopedUsers = (users || []).filter(user => !isClassScopedTeacher || (
+            user.user_type === 'student'
+            && user.department_id === session.departmentId
+            && String(user.class_number) === String(session.classNumber)
+          ));
           const scopedIds = new Set(scopedUsers.map(u => u.id));
           allOrders = allOrders.filter(o => scopedIds.has(o.user_id));
         }
@@ -252,16 +266,18 @@
         (productResult.data || []).forEach(product => { productMap[product.id] = product; });
       }
 
-      const userIds = [...new Set(allOrders.map(o => o.user_id))];
-      const procIds = [...new Set(allOrders.flatMap(o => [o.prepared_by, o.purchased_by, o.delivered_by].filter(Boolean)))];
-      const allIds = [...new Set([...userIds, ...procIds])];
+      // 이 ID 목록은 위에서 기존 권한에 따라 필터링된 주문에서만 만든다.
+      // 따라서 아래 RPC는 목록 범위를 넓히지 않고, 화면에 이미 표시된 주문의
+      // 신청자·부서·이전 처리자 정보를 보강하는 용도로만 사용한다.
+      const visibleOrderUserIds = [...new Set(allOrders.map(o => o.user_id))];
+      const visibleOrderProcessorIds = [...new Set(allOrders.flatMap(o => [o.prepared_by, o.purchased_by, o.delivered_by].filter(Boolean)))];
+      const visibleOrderProfileIds = [...new Set([...visibleOrderUserIds, ...visibleOrderProcessorIds])];
 
-      if (allIds.length > 0) {
-        // profiles RLS는 구매 담당 교사의 일반 계정 조회를 담당 부서로 제한한다.
-        // 주문 화면에서는 전용 RPC로 주문자·처리자의 최소 정보만 받아 전체 부서
-        // 구매 이력의 이름/부서를 정상 표시한다.
+      if (visibleOrderProfileIds.length > 0) {
+        // profiles RLS와 무관하게, 목록에 이미 표시된 주문의 주문자·처리자의 최소
+        // 정보만 전용 RPC로 받는다. 이 조회는 주문 목록의 기존 권한 범위를 바꾸지 않는다.
         let { data: profiles, error: profileError } = await _sb.rpc('get_purchase_order_profiles', {
-          p_user_ids: allIds
+          p_user_ids: visibleOrderProfileIds
         });
         if (profileError) {
           await logWarn('PURCHASE_PROFILE_CONTEXT_LOAD_FAIL', { 오류: profileError.message });
@@ -269,7 +285,7 @@
           const profileColumns = canViewPurchaseAccounts()
             ? 'id,display_name,username,user_type,department_id,class_number'
             : 'id,display_name,user_type,department_id,class_number';
-          const { data: fallbackProfiles } = await _sb.from('profiles').select(profileColumns).in('id', allIds);
+          const { data: fallbackProfiles } = await _sb.from('profiles').select(profileColumns).in('id', visibleOrderProfileIds);
           profiles = fallbackProfiles || [];
         }
         profileMap = {};
@@ -346,6 +362,12 @@
       const isManagedDepartmentTeacher = (permissionLevel === 'dept_teacher' || permissionLevel === 'chief')
         && session.managedDeptId
         && order._deptId === session.managedDeptId;
+      const isManagedClassTeacher = session.permissionLevel === 'teacher'
+        && (session.permissionRank || 0) === 40
+        && session.departmentId
+        && session.classNumber != null
+        && order._deptId === session.departmentId
+        && String(order._classNum) === String(session.classNumber);
 
       if (isGlobalManager) {
         if (order.status === 'requested') return ['preparing', 'cancelled'];
@@ -354,6 +376,9 @@
         return [];
       }
       if (isManagedDepartmentTeacher && order.status === 'requested') return ['preparing', 'cancelled'];
+      if (isManagedClassTeacher) {
+        if (order.status === 'requested') return ['preparing'];
+      }
       return [];
     }
 
@@ -378,6 +403,18 @@
       const name = processorMap[byField] || '-';
       const time = atField ? formatKSTShort(atField) : '-';
       return `<div style="font-size:0.75rem;color:#636e72;">${label}: ${name}<br>${time}</div>`;
+    }
+
+    function getCurrentStatusProcessorInfo(order) {
+      // 전체 탭에서는 "이전" 단계가 아니라 현재 상태로 변경한 처리자를 표시한다.
+      // 구매 신청/취소는 처리자 필드가 없어 '-'를 유지한다.
+      const stageByStatus = {
+        preparing: 'preparing',
+        purchased: 'purchased',
+        delivered: 'delivered'
+      };
+      const stage = stageByStatus[order?.status];
+      return stage ? (getProcessorInfo(order, stage) || '-') : '-';
     }
 
     function getOrderStatusLabel(status) {
@@ -655,7 +692,8 @@
       if (isAllTab) headCols += '<th data-sort-key="status">상태</th>';
       headCols += '<th data-sort-key="created_at" data-sort-type="date">신청일</th><th data-sort-key="product_name">상품명</th><th data-sort-key="price" data-sort-type="number">가격</th><th data-sort-key="_userName">신청자</th><th data-sort-key="_deptName">부서</th>';
 
-      if (currentPTab === 'preparing' || (isAllTab)) headCols += '<th>이전 처리</th>';
+      if (isAllTab) headCols += '<th>현재 처리</th>';
+      else if (currentPTab === 'preparing') headCols += '<th>이전 처리</th>';
       else if (currentPTab === 'purchased') headCols += '<th>준비 처리</th>';
       else if (currentPTab === 'delivered') headCols += '<th>구매 처리</th>';
 
@@ -687,7 +725,7 @@
         } else if (currentPTab === 'delivered') {
           procInfo = getProcessorInfo(o, 'purchased') || '-';
         } else if (isAllTab) {
-          procInfo = '-';
+          procInfo = getCurrentStatusProcessorInfo(o);
         }
 
         const mgmtMenu = buildMgmtMenu(o, canProc, isAllTab);
