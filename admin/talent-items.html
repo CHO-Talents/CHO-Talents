@@ -215,10 +215,11 @@
         ];
         if (i.is_active && (session.permissionRank || 0) >= 80) {
           actions.push(`<a onclick='event.stopPropagation();setQuickButton(${idJson})'>${isQuick ? '⚡퀵 해제' : '⚡퀵 지정'}</a>`);
+          actions.push(`<a onclick='event.stopPropagation();setProductSuggestionAdoptionReward(${idJson})'>${i.is_product_suggestion_adoption_reward ? '상품 추천 채택 지급 해제' : '상품 추천 채택 지급 지정'}</a>`);
         }
         return `<tr style="cursor:pointer;${!i.is_active ? 'opacity:0.5;' : ''}" onclick='openEditModal(${itemJson})'>
         <td>${i.sort_order}</td>
-        <td><strong>${escapeHtml(getTalentItemEmoji(i))} ${escapeHtml(i.name)}</strong>${isQuick ? ' <span style="font-size:0.7rem;background:#e7f5ff;color:#1971c2;padding:0.1rem 0.4rem;border-radius:4px;">⚡퀵</span>' : ''}</td>
+        <td><strong>${escapeHtml(getTalentItemEmoji(i))} ${escapeHtml(i.name)}</strong>${isQuick ? ' <span style="font-size:0.7rem;background:#e7f5ff;color:#1971c2;padding:0.1rem 0.4rem;border-radius:4px;">⚡퀵</span>' : ''}${i.is_product_suggestion_adoption_reward ? ' <span style="font-size:0.7rem;background:#fff3bf;color:#8f5b00;padding:0.1rem 0.4rem;border-radius:4px;">상품 채택 지급</span>' : ''}</td>
         <td style="font-weight:700;color:#2b8a3e;">+${i.talent_amount}</td>
         <td style="font-size:0.82rem;line-height:1.4;">
           <div>총 ${stats.total}회</div>
@@ -325,6 +326,10 @@
       const action = currentActive ? '비활성화' : '활성화';
       if (!confirm(`이 항목을 ${action}하시겠습니까?`)) return;
       const item = allItems.find(i => i.id === id);
+      if (currentActive && item?.is_product_suggestion_adoption_reward === true) {
+        alert('상품 채택 지급 달란트 항목으로 설정된 항목은 비활성화할 수 없습니다. 관리 메뉴에서 상품 추천 채택 지급을 먼저 해제해주세요.');
+        return;
+      }
       await _sb.from('talent_items').update({ is_active: !currentActive }).eq('id', id);
       await logInfo('TALENT_ITEM_TOGGLE', { 항목명: item?.name || id, 활성여부: !currentActive });
       await loadItems();
@@ -352,6 +357,47 @@
           alert('⚡ 퀵 버튼 기능을 사용하려면 DB에 is_quick_button 컬럼을 추가해야 합니다.\n\ndocs/TASK-039_quick_button.sql 파일의 SQL을 실행해주세요.');
         } else {
           alert('퀵 버튼 설정 실패: ' + tErr(msg));
+        }
+      }
+    }
+
+    async function setProductSuggestionAdoptionReward(id) {
+      const item = allItems.find(i => i.id === id);
+      if (!item) return;
+
+      const isConfigured = item.is_product_suggestion_adoption_reward === true;
+      const action = isConfigured ? '해제' : '지정';
+      if (!confirm(`'${item.name}' 항목을 상품 추천 채택 지급 항목으로 ${action}하시겠습니까?`)) return;
+
+      try {
+        if (isConfigured) {
+          const { error } = await _sb.from('talent_items')
+            .update({ is_product_suggestion_adoption_reward: false })
+            .eq('id', id);
+          if (error) throw error;
+        } else {
+          // 전 항목에서 하나만 유지한다. DB 트리거와 고유 인덱스도 같은 규칙을 보장한다.
+          const { error: e1 } = await _sb.from('talent_items')
+            .update({ is_product_suggestion_adoption_reward: false })
+            .eq('is_product_suggestion_adoption_reward', true);
+          if (e1) throw e1;
+          const { error: e2 } = await _sb.from('talent_items')
+            .update({ is_product_suggestion_adoption_reward: true })
+            .eq('id', id);
+          if (e2) throw e2;
+        }
+        await logInfo('TALENT_ITEM_PRODUCT_SUGGESTION_ADOPTION_REWARD', {
+          항목ID: id,
+          항목명: item.name,
+          설정: !isConfigured
+        });
+        await loadItems();
+      } catch (err) {
+        const msg = (err && err.message) || String(err);
+        if (/is_product_suggestion_adoption_reward.*(does not exist|schema cache)|could not find.*is_product_suggestion_adoption_reward/i.test(msg)) {
+          alert('상품 추천 채택 지급 설정을 사용하려면 DB에 설정 컬럼을 추가해야 합니다.\n\ndocs/TASK-113_product_suggestion_adoption_reward_item_config.sql 파일의 SQL을 실행해주세요.');
+        } else {
+          alert(`상품 추천 채택 지급 ${action} 실패: ` + tErr(msg));
         }
       }
     }

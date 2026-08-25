@@ -2086,8 +2086,9 @@ async function getPendingOrderCount() {
   if (!_sb) return 0;
   try {
     const session = getSession();
-    if (!session || (session.permissionRank || 0) < 60) return 0;
+    if (!session || (session.permissionRank || 0) < 40) return 0;
     const permissionLevel = session.permissionLevel;
+    const isClassScopedTeacher = permissionLevel === 'teacher' && (session.permissionRank || 0) === 40;
     const isGlobalManager = (session.permissionRank || 0) >= 90;
     const isPurchaseTeacher = permissionLevel === 'purchase_teacher';
     const isManagedDepartmentTeacher = permissionLevel === 'dept_teacher' || permissionLevel === 'chief';
@@ -2097,7 +2098,9 @@ async function getPendingOrderCount() {
         ? ['preparing', 'purchased']
         : isManagedDepartmentTeacher
           ? ['requested']
-          : [];
+          : isClassScopedTeacher
+            ? ['requested']
+            : [];
     if (badgeStatuses.length === 0) return 0;
     const { data, error } = await _sb
       .from('product_orders')
@@ -2105,6 +2108,22 @@ async function getPendingOrderCount() {
       .in('status', badgeStatuses);
     if (error || !data) return 0;
     if (isGlobalManager || isPurchaseTeacher) return data.length;
+    if (isClassScopedTeacher) {
+      if (!session.departmentId || session.classNumber == null) return 0;
+      const userIds = [...new Set(data.map(o => o.user_id))];
+      if (userIds.length === 0) return 0;
+      const { data: profiles } = await _sb
+        .from('profiles')
+        .select('id,user_type,department_id,class_number')
+        .in('id', userIds);
+      if (!profiles) return 0;
+      const classUsers = new Set(profiles
+        .filter(profile => profile.user_type === 'student'
+          && profile.department_id === session.departmentId
+          && String(profile.class_number) === String(session.classNumber))
+        .map(profile => profile.id));
+      return data.filter(order => classUsers.has(order.user_id)).length;
+    }
     if (!session.managedDeptId) return 0;
     const userIds = [...new Set(data.map(o => o.user_id))];
     if (userIds.length === 0) return 0;

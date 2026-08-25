@@ -2,9 +2,36 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '4.2.16',
-  date: '2026-08-24',
+  current: '4.2.19',
+  date: '2026-08-25',
   history: [
+    {
+      version: '4.2.19',
+      date: '2026-08-25',
+      title: '구매 전체 목록 현재 처리자 표시',
+      changes: [
+        '구매 관리 전체 탭에서 이전 처리 대신 현재 상태를 처리한 담당자와 처리 시각을 표시합니다.',
+        '구매 신청과 취소 상태는 저장된 처리자 정보가 없어 기존처럼 표시하지 않습니다.'
+      ]
+    },
+    {
+      version: '4.2.18',
+      date: '2026-08-25',
+      title: '구매 프로필 조회 RPC 컬럼 충돌 수정',
+      changes: [
+        '구매 주문 프로필 조회 RPC에서 반환 컬럼과 호출자 프로필의 department_id 이름이 충돌하던 문제를 수정했습니다.',
+        '운영 DB에는 수정된 docs/TASK-112_purchase_order_profile_context_visibility.sql을 다시 적용해야 합니다.'
+      ]
+    },
+    {
+      version: '4.2.17',
+      date: '2026-08-25',
+      title: '구매 목록 신청자·처리자 표시 범위 보정',
+      changes: [
+        '구매 관리 목록의 기존 주문 조회 권한은 유지하면서, 목록에 이미 표시된 주문의 신청자·부서·이전 처리자 정보를 관리 부서와 관계없이 표시하도록 보완했습니다.',
+        '운영 DB에는 docs/TASK-112_purchase_order_profile_context_visibility.sql 적용이 필요합니다.'
+      ]
+    },
     {
       version: '4.2.16',
       date: '2026-08-24',

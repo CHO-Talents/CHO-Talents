@@ -39,7 +39,7 @@ const NAV_MENU = [
       { href: 'admin/shop.html', label: '상품 관리', minPerm: 60 },
       { href: 'admin/product-bulk-register.html', label: '상품 일괄 등록', minPerm: 70 },
       { href: 'admin/product-categories.html', label: '상품 카테고리 관리', minPerm: 70 },
-      { href: 'admin/purchases.html', label: '구매 관리', minPerm: 60, badgeId: 'navOrderBadge' },
+      { href: 'admin/purchases.html', label: '구매 관리', minPerm: 40, badgeId: 'navOrderBadge' },
       { href: 'admin/product-suggestion-votes.html', label: '상품 추천 투표', minPerm: 60, badgeId: 'navProductSuggestionVoteBadge' },
       { href: 'admin/purchase-stats.html', label: '구매 통계', minPerm: 60 }
     ]
@@ -416,10 +416,12 @@ function navUpdateAuth(session) {
     const rank = session.permissionRank || 0;
     if (typeof applyPermNav === 'function') applyPermNav(rank);
 
+    if (rank >= 40 && typeof updateNavOrderBadge === 'function') {
+      updateNavOrderBadge();
+    }
     if (rank >= 60) {
       if (typeof updatePendingBadge === 'function') updatePendingBadge();
       if (typeof updateTalentExceptionBadge === 'function') updateTalentExceptionBadge();
-      if (typeof updateNavOrderBadge === 'function') updateNavOrderBadge();
       if (typeof updateNavProductSuggestionVoteBadge === 'function') updateNavProductSuggestionVoteBadge();
       if (typeof updateQnaBadge === 'function') updateQnaBadge();
     }
