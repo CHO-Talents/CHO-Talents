@@ -1,7 +1,7 @@
 -- ============================================================
 -- TASK-070: 서비스 사용량 수집 예약 실행
 -- 실행 전 <SUPABASE_SERVICE_ROLE_KEY>를 현재 프로젝트 service_role JWT 값으로 바꾸세요.
--- pg_cron은 UTC 기준이며 매시간 정각 실행합니다.
+-- pg_cron은 UTC 기준이며 6시간마다 정각 실행합니다.
 -- ============================================================
 
 CREATE EXTENSION IF NOT EXISTS pg_cron;
@@ -44,13 +44,13 @@ $$;
 SELECT cron.unschedule(jobid)
 FROM cron.job
 WHERE jobname IN (
-  'cho-service-usage-collect-6h',
-  'cho-service-usage-collect-1h'
+  'cho-service-usage-collect-1h',
+  'cho-service-usage-collect-6h'
 );
 
 SELECT cron.schedule(
-  'cho-service-usage-collect-1h',
-  '0 * * * *',
+  'cho-service-usage-collect-6h',
+  '0 */6 * * *',
   $cron$
     SELECT net.http_post(
       url := (
@@ -79,4 +79,4 @@ SELECT cron.schedule(
 -- 확인
 SELECT jobid, jobname, schedule, active
 FROM cron.job
-WHERE jobname = 'cho-service-usage-collect-1h';
+WHERE jobname = 'cho-service-usage-collect-6h';

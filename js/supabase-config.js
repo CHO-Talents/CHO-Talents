@@ -44,10 +44,17 @@ var _remotePublicConfigPromise = null;
  */
 const SERVICE_USAGE_QUEUE_KEY = 'cho_service_usage_queue_v1';
 const SERVICE_USAGE_SESSION_KEY = 'cho_service_usage_session_v1';
+const SERVICE_USAGE_FLUSH_LOCK_KEY = 'cho_service_usage_flush_lock_v1';
+const SERVICE_USAGE_FLUSH_INTERVAL_MS = 10 * 60 * 1000;
+const SERVICE_USAGE_RETRY_INITIAL_MS = 5 * 60 * 1000;
+const SERVICE_USAGE_RETRY_MAX_MS = 60 * 60 * 1000;
 const _serviceUsageNativeFetch = window.fetch.bind(window);
 let _serviceUsageStarted = false;
 let _serviceUsageFlushing = false;
 let _serviceUsageQueue = [];
+let _serviceUsageRetryAt = 0;
+let _serviceUsageRetryDelayMs = SERVICE_USAGE_RETRY_INITIAL_MS;
+const _serviceUsageFlushOwner = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
 function _serviceUsageSessionId() {
   try {
@@ -73,6 +80,31 @@ function _loadServiceUsageQueue() {
 
 function _saveServiceUsageQueue() {
   try { localStorage.setItem(SERVICE_USAGE_QUEUE_KEY, JSON.stringify(_serviceUsageQueue.slice(-100))); } catch (e) {}
+}
+
+function _acquireServiceUsageFlushLock() {
+  try {
+    const now = Date.now();
+    const existing = JSON.parse(localStorage.getItem(SERVICE_USAGE_FLUSH_LOCK_KEY) || 'null');
+    if (existing && existing.owner !== _serviceUsageFlushOwner && existing.expiresAt > now) return false;
+    localStorage.setItem(SERVICE_USAGE_FLUSH_LOCK_KEY, JSON.stringify({
+      owner: _serviceUsageFlushOwner,
+      expiresAt: now + 60 * 1000
+    }));
+    const confirmed = JSON.parse(localStorage.getItem(SERVICE_USAGE_FLUSH_LOCK_KEY) || 'null');
+    return !!confirmed && confirmed.owner === _serviceUsageFlushOwner;
+  } catch (e) {
+    return true;
+  }
+}
+
+function _releaseServiceUsageFlushLock() {
+  try {
+    const existing = JSON.parse(localStorage.getItem(SERVICE_USAGE_FLUSH_LOCK_KEY) || 'null');
+    if (existing && existing.owner === _serviceUsageFlushOwner) {
+      localStorage.removeItem(SERVICE_USAGE_FLUSH_LOCK_KEY);
+    }
+  } catch (e) {}
 }
 
 function queueServiceUsage(service, metricKey, quantity = 1, metadata = {}, eventKey = null) {
@@ -103,12 +135,22 @@ function queueServiceUsage(service, metricKey, quantity = 1, metadata = {}, even
 }
 
 async function flushServiceUsageTelemetry() {
-  if (_serviceUsageFlushing || _serviceUsageQueue.length === 0 || !SUPABASE_URL || !SUPABASE_ANON_KEY) return;
+  if (_serviceUsageFlushing || _serviceUsageQueue.length === 0 || !SUPABASE_URL || !SUPABASE_ANON_KEY || Date.now() < _serviceUsageRetryAt) return;
+  if (!_acquireServiceUsageFlushLock()) return;
+  _loadServiceUsageQueue();
+  if (_serviceUsageQueue.length === 0) {
+    _releaseServiceUsageFlushLock();
+    return;
+  }
   _serviceUsageFlushing = true;
-  const batch = _serviceUsageQueue.slice(0, 30).map((item, index) => ({
-    ...item,
-    event_key: item.event_key || `batch:${_serviceUsageSessionId()}:${Date.now()}:${index}:${item.service}:${item.metric_key}`
-  }));
+  const batchItems = _serviceUsageQueue.slice(0, 30);
+  batchItems.forEach((item, index) => {
+    if (!item.event_key) {
+      item.event_key = `batch:${_serviceUsageSessionId()}:${Date.now()}:${index}:${item.service}:${item.metric_key}`;
+    }
+  });
+  _saveServiceUsageQueue();
+  const batch = batchItems.map(item => ({ ...item }));
 
   try {
     const response = await _serviceUsageNativeFetch(`${SUPABASE_URL}/rest/v1/rpc/record_service_usage_batch`, {
@@ -124,11 +166,18 @@ async function flushServiceUsageTelemetry() {
     if (response.ok) {
       _serviceUsageQueue.splice(0, batch.length);
       _saveServiceUsageQueue();
+      _serviceUsageRetryAt = 0;
+      _serviceUsageRetryDelayMs = SERVICE_USAGE_RETRY_INITIAL_MS;
+    } else {
+      _serviceUsageRetryAt = Date.now() + _serviceUsageRetryDelayMs;
+      _serviceUsageRetryDelayMs = Math.min(_serviceUsageRetryDelayMs * 2, SERVICE_USAGE_RETRY_MAX_MS);
     }
   } catch (e) {
-    // 네트워크 복구 후 다음 주기에 재시도합니다.
+    _serviceUsageRetryAt = Date.now() + _serviceUsageRetryDelayMs;
+    _serviceUsageRetryDelayMs = Math.min(_serviceUsageRetryDelayMs * 2, SERVICE_USAGE_RETRY_MAX_MS);
   } finally {
     _serviceUsageFlushing = false;
+    _releaseServiceUsageFlushLock();
   }
 }
 
@@ -162,7 +211,6 @@ function recordKakaoUsage(metricKey, metadata = {}) {
   const key = `kakao:${_serviceUsageSessionId()}:${Date.now()}:${metricKey}:${Math.random().toString(36).slice(2, 8)}`;
   queueServiceUsage('kakao', 'monthly_api_calls', 1, metadata, `${key}:total`);
   queueServiceUsage('kakao', metricKey, 1, metadata, `${key}:detail`);
-  setTimeout(flushServiceUsageTelemetry, 200);
 }
 
 function recordRealtimeUsage(messageCount, peakConnections) {
@@ -194,7 +242,6 @@ function _recordPageUsage() {
   if (cachedSupabaseBytes > 0) {
     queueServiceUsage('supabase', 'cached_egress_bytes', cachedSupabaseBytes, { type: 'storage_cdn' }, `${pageKey}:cached`);
   }
-  flushServiceUsageTelemetry();
 }
 
 function startServiceUsageTelemetry() {
@@ -206,7 +253,7 @@ function startServiceUsageTelemetry() {
     if (document.visibilityState === 'hidden') flushServiceUsageTelemetry();
   });
   window.addEventListener('pagehide', flushServiceUsageTelemetry);
-  setInterval(flushServiceUsageTelemetry, 30000);
+  setInterval(flushServiceUsageTelemetry, SERVICE_USAGE_FLUSH_INTERVAL_MS);
 }
 
 window.queueServiceUsage = queueServiceUsage;

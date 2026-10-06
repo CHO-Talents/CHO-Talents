@@ -386,6 +386,25 @@ function _navRenderSuperAdminPermissionControl(session) {
   if (select) select.addEventListener('change', () => _navChangeOwnSuperAdminPermission(select));
 }
 
+function navRefreshBadges(session) {
+  if (!session) return Promise.resolve();
+  const rank = session.permissionRank || 0;
+  const refreshes = [];
+  if (rank >= 40 && typeof updateNavOrderBadge === 'function') {
+    refreshes.push(updateNavOrderBadge());
+  }
+  if (rank >= 60) {
+    if (typeof updatePendingBadge === 'function') refreshes.push(updatePendingBadge());
+    if (typeof updateTalentExceptionBadge === 'function') refreshes.push(updateTalentExceptionBadge());
+    if (typeof updateNavProductSuggestionVoteBadge === 'function') refreshes.push(updateNavProductSuggestionVoteBadge());
+    if (typeof updateQnaBadge === 'function') refreshes.push(updateQnaBadge());
+  }
+  if (rank >= 80 && typeof updateLogBadge === 'function') {
+    refreshes.push(updateLogBadge());
+  }
+  return Promise.allSettled(refreshes);
+}
+
 function navUpdateAuth(session) {
   const loginArea = document.getElementById('navLoginArea');
   const authArea = document.getElementById('navAuthArea');
@@ -416,18 +435,7 @@ function navUpdateAuth(session) {
     const rank = session.permissionRank || 0;
     if (typeof applyPermNav === 'function') applyPermNav(rank);
 
-    if (rank >= 40 && typeof updateNavOrderBadge === 'function') {
-      updateNavOrderBadge();
-    }
-    if (rank >= 60) {
-      if (typeof updatePendingBadge === 'function') updatePendingBadge();
-      if (typeof updateTalentExceptionBadge === 'function') updateTalentExceptionBadge();
-      if (typeof updateNavProductSuggestionVoteBadge === 'function') updateNavProductSuggestionVoteBadge();
-      if (typeof updateQnaBadge === 'function') updateQnaBadge();
-    }
-    if (rank >= 80) {
-      if (typeof updateLogBadge === 'function') updateLogBadge();
-    }
+    navRefreshBadges(session);
   } else {
     _navUpdateGuideHref(null);
     if (loginArea) loginArea.style.display = '';
