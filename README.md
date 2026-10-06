@@ -603,11 +603,11 @@ CHO-Talents/
 - **Frontend:** HTML / CSS / Vanilla JavaScript
 - **Backend:** Supabase (PostgreSQL, Auth, REST, RPC, RLS, Storage)
 - **Hosting:** GitHub Pages
-- **Auth:** Supabase email/password Auth. 화면에서는 `아이디 + @cho-talents.app` 형태로 로그인 처리. 24시간 유휴 시 자동 로그아웃
+- **Auth:** Supabase email/password Auth. 화면에서는 `아이디 + @cho-talents.app` 형태로 로그인 처리.
 - **Security:** RLS 정책과 `SECURITY DEFINER` RPC로 사용자/달란트/로그 등 민감 데이터 접근 제어
 - **에러 처리:** `tErr()` 함수로 영문 DB 에러를 한글로 자동 변환, 전체 기능에 `logError`/`logWarn`/`logInfo` 로깅
 - **Slack 알림:** 부서별/유형별 채널 분리 라우팅. 브라우저에서 `js/slack-notify.js` → Supabase Edge Function `slack-notify` → 채널별 Slack Webhook 경로로 전송
-- **서비스 통계:** 브라우저 계측 + Database 직접 집계 + `service-usage-collect` Edge Function의 GitHub/Supabase 공식 API 조회를 병합. 1시간 주기 수집과 70/85/95% 운영 채널 알림
+- **서비스 통계:** 브라우저 계측 + Database 직접 집계 + `service-usage-collect` Edge Function의 GitHub/Supabase 공식 API 조회를 병합. 6시간 주기 수집과 70/85/95% 운영 채널 알림
 - **공통 코드 관리:** 브라우저는 `js/codes.js`의 기본 코드북을 우선 사용하고, DB에 `code_items`가 있으면 활성 코드/라벨/정렬/색상 값을 불러와 덮어씁니다.
 - **버전 관리:** 모든 페이지는 고정 `?v=` 쿼리 대신 `js/version.js`가 최신 버전을 조회하고, 구버전 자산/세션을 감지하면 자산 재검증 또는 재로그인을 유도합니다.
 

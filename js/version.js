@@ -2,9 +2,19 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '4.2.19',
-  date: '2026-08-25',
+  current: '4.2.20',
+  date: '2026-10-06',
   history: [
+    {
+      version: '4.2.20',
+      date: '2026-10-06',
+      title: '세션 만료 로그와 사용량 계측 요청 절감',
+      changes: [
+        '24시간 비활성 자동 로그아웃과 관련 인증 리디렉트 로그를 제거해 장시간 미사용 후 반복 이동이 발생하지 않도록 했습니다.',
+        '메뉴 배지 조회에 사용자·권한별 30초 캐시와 진행 중 요청 공유를 적용해 페이지 초기화 과정의 중복 조회를 줄였습니다.',
+        '브라우저 사용량 계측은 10분 배치, 안정적인 이벤트 키, 재시도 지연, 탭 간 전송 잠금으로 바꾸고 서버 수집 주기는 6시간으로 조정했습니다.'
+      ]
+    },
     {
       version: '4.2.19',
       date: '2026-08-25',
@@ -2537,7 +2547,6 @@ async function _forceLogoutForVersion(latestVersion, sessionVersion) {
       sessionStorage.removeItem('cho_admin_session');
     }
     localStorage.removeItem(VERSION_SESSION_KEY);
-    localStorage.removeItem('cho_last_activity');
   } catch (e) {}
 
   alert('새 버전이 배포되어 다시 로그인해주세요.');

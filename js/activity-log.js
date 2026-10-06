@@ -635,9 +635,6 @@ const LOG_DETAIL_VALUE_LABELS = {
   error: '오류',
   profile: '프로필 조회 완료',
   empty_result: '조회 결과 없음',
-  last_activity: '마지막 활동 기준',
-  idle_timer: '유휴 타이머 기준',
-  visibilitychange: '탭 재활성화 기준',
   weekly_duplicate: '주간 중복 지급',
   duplicate_pending: '이미 대기 중인 요청',
   cached_session: '캐시 세션으로 복구',
@@ -1630,17 +1627,51 @@ async function getProcessableRequestCount() {
   } catch { return 0; }
 }
 
-async function updatePendingBadge() {
-  const badge = document.getElementById('navUserBadge');
-  if (!badge) return;
-  const count = await getProcessableRequestCount();
-  if (count > 0) {
-    badge.textContent = count;
-    badge.classList.remove('hidden');
-  } else {
-    badge.classList.add('hidden');
+const NAV_BADGE_CACHE_MS = 30 * 1000;
+const _navBadgeRefreshStates = new Map();
+
+function _getNavBadgeScope() {
+  const session = typeof getSession === 'function' ? getSession() : null;
+  if (!session) return 'anonymous';
+  return `${session.id || session.username || 'unknown'}:${session.permissionRank || 0}`;
+}
+
+function _refreshNavBadge(key, refresh, options = {}) {
+  const scope = _getNavBadgeScope();
+  const now = Date.now();
+  const previous = _navBadgeRefreshStates.get(key);
+  if (previous && previous.scope === scope) {
+    if (!options.force && previous.promise) return previous.promise;
+    if (!options.force && previous.completedAt && now - previous.completedAt < NAV_BADGE_CACHE_MS) {
+      return Promise.resolve();
+    }
   }
-  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+
+  const state = { scope, promise: null, completedAt: 0 };
+  const promise = Promise.resolve()
+    .then(refresh)
+    .finally(() => {
+      state.promise = null;
+      state.completedAt = Date.now();
+    });
+  state.promise = promise;
+  _navBadgeRefreshStates.set(key, state);
+  return promise;
+}
+
+function updatePendingBadge(options = {}) {
+  return _refreshNavBadge('pending', async () => {
+    const badge = document.getElementById('navUserBadge');
+    if (!badge) return;
+    const count = await getProcessableRequestCount();
+    if (count > 0) {
+      badge.textContent = count;
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+    if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+  }, options);
 }
 
 /* ===== Talent Exception Request Badge (nav "달란트" group) ===== */
@@ -1659,28 +1690,32 @@ async function getPendingTalentExceptionRequestCount() {
   } catch { return 0; }
 }
 
-async function updateTalentExceptionBadge() {
-  const badge = document.getElementById('navTalentExceptionBadge');
-  if (!badge) return;
-  try {
-    const cnt = await getPendingTalentExceptionRequestCount();
-    if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
-    else { badge.classList.add('hidden'); }
-  } catch (e) {}
-  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+function updateTalentExceptionBadge(options = {}) {
+  return _refreshNavBadge('talent-exception', async () => {
+    const badge = document.getElementById('navTalentExceptionBadge');
+    if (!badge) return;
+    try {
+      const cnt = await getPendingTalentExceptionRequestCount();
+      if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
+      else { badge.classList.add('hidden'); }
+    } catch (e) {}
+    if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+  }, options);
 }
 
 /* ===== Log Badge (nav "운영" group) ===== */
 
-async function updateLogBadge() {
-  const badge = document.getElementById('navLogBadge');
-  if (!badge) return;
-  try {
-    const cnt = await getUnacknowledgedCount();
-    if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
-    else { badge.classList.add('hidden'); }
-  } catch (e) {}
-  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+function updateLogBadge(options = {}) {
+  return _refreshNavBadge('logs', async () => {
+    const badge = document.getElementById('navLogBadge');
+    if (!badge) return;
+    try {
+      const cnt = await getUnacknowledgedCount();
+      if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
+      else { badge.classList.add('hidden'); }
+    } catch (e) {}
+    if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+  }, options);
 }
 
 /* ===== Session Helpers (Supabase Auth 연동) ===== */
@@ -1852,15 +1887,6 @@ async function loadAuthSession() {
   }
 
   if (!authSession) {
-    let lastActivityAt = null;
-    let idleExpired = false;
-    try {
-      const last = parseInt(localStorage.getItem('cho_last_activity') || '0', 10);
-      if (last > 0) {
-        lastActivityAt = new Date(last).toISOString();
-        idleExpired = Date.now() - last > 24 * 60 * 60 * 1000;
-      }
-    } catch (e) {}
     window.__lastAuthSessionFailure = {
       reason: 'Supabase auth session missing',
       page: window.location.pathname,
@@ -1868,11 +1894,9 @@ async function loadAuthSession() {
       cachedDisplayName: cached ? (cached.displayName || cached.username) : null,
       cachedPermissionLevel: cached ? cached.permissionLevel : null,
       cachedPermissionRank: cached ? cached.permissionRank : null,
-      hasCachedSession: !!cached,
-      lastActivityAt,
-      idleExpired
+      hasCachedSession: !!cached
     };
-    if (cached || idleExpired) {
+    if (cached) {
       await logInfo('AUTH_SESSION_MISSING', window.__lastAuthSessionFailure);
     }
     clearSession();
@@ -2136,15 +2160,17 @@ async function getPendingOrderCount() {
   } catch (e) { return 0; }
 }
 
-async function updateNavOrderBadge() {
-  const badge = document.getElementById('navOrderBadge');
-  if (!badge) return;
-  try {
-    const cnt = await getPendingOrderCount();
-    if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
-    else { badge.classList.add('hidden'); }
-  } catch (e) {}
-  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+function updateNavOrderBadge(options = {}) {
+  return _refreshNavBadge('orders', async () => {
+    const badge = document.getElementById('navOrderBadge');
+    if (!badge) return;
+    try {
+      const cnt = await getPendingOrderCount();
+      if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
+      else { badge.classList.add('hidden'); }
+    } catch (e) {}
+    if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+  }, options);
 }
 
 /* ===== Product Suggestion Vote Badge (nav "상품" group) ===== */
@@ -2160,19 +2186,21 @@ async function getUnvotedProductSuggestionCount() {
   } catch (e) { return 0; }
 }
 
-async function updateNavProductSuggestionVoteBadge() {
-  const badge = document.getElementById('navProductSuggestionVoteBadge');
-  if (!badge) return;
-  try {
-    const count = await getUnvotedProductSuggestionCount();
-    if (count > 0) {
-      badge.textContent = count;
-      badge.classList.remove('hidden');
-    } else {
-      badge.classList.add('hidden');
-    }
-  } catch (e) {}
-  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+function updateNavProductSuggestionVoteBadge(options = {}) {
+  return _refreshNavBadge('product-suggestion-votes', async () => {
+    const badge = document.getElementById('navProductSuggestionVoteBadge');
+    if (!badge) return;
+    try {
+      const count = await getUnvotedProductSuggestionCount();
+      if (count > 0) {
+        badge.textContent = count;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    } catch (e) {}
+    if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+  }, options);
 }
 
 /* ===== Q&A Badge (nav "소개" group) ===== */
@@ -2190,15 +2218,17 @@ async function getUnansweredQnaCount() {
   } catch { return 0; }
 }
 
-async function updateQnaBadge() {
-  const badge = document.getElementById('navQnaBadge');
-  if (!badge) return;
-  try {
-    const cnt = await getUnansweredQnaCount();
-    if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
-    else { badge.classList.add('hidden'); }
-  } catch (e) {}
-  if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+function updateQnaBadge(options = {}) {
+  return _refreshNavBadge('qna', async () => {
+    const badge = document.getElementById('navQnaBadge');
+    if (!badge) return;
+    try {
+      const cnt = await getUnansweredQnaCount();
+      if (cnt > 0) { badge.textContent = cnt; badge.classList.remove('hidden'); }
+      else { badge.classList.add('hidden'); }
+    } catch (e) {}
+    if (typeof updateNavGroupBadges === 'function') updateNavGroupBadges();
+  }, options);
 }
 
 async function deleteLogsByDateRange(dateFrom, dateTo, options = {}) {

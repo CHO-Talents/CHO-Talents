@@ -1,6 +1,6 @@
 # TASK-070 서비스 통계 운영 설정
 
-`운영 > 로그 > 서비스 통계` 페이지는 GitHub, Supabase, Kakao Developers, Slack의 무료 할당량과 현재 사용량을 표시합니다. 공식/관리 API로 수집 가능한 항목은 API로 수집하고, API가 없거나 프로젝트 내부 사용량만 필요한 항목은 브라우저·Edge Function 이벤트와 DB 직접 집계로 병행 수집합니다. 자동 수집은 매시간 정각(KST)에 실행되고, 사용률이 `70%`, `85%`, `95%`에 처음 도달할 때 운영관리 Slack 채널로 단계별 알림을 보냅니다.
+`운영 > 로그 > 서비스 통계` 페이지는 GitHub, Supabase, Kakao Developers, Slack의 무료 할당량과 현재 사용량을 표시합니다. 공식/관리 API로 수집 가능한 항목은 API로 수집하고, API가 없거나 프로젝트 내부 사용량만 필요한 항목은 브라우저·Edge Function 이벤트와 DB 직접 집계로 병행 수집합니다. 자동 수집은 6시간마다 정각(KST)에 실행되고, 사용률이 `70%`, `85%`, `95%`에 처음 도달할 때 운영관리 Slack 채널로 단계별 알림을 보냅니다.
 
 ## 1. Database 적용
 
@@ -68,15 +68,15 @@ supabase secrets set --project-ref <PROJECT_REF> `
 - 대상 프로젝트 접근
 - Fine-grained token 사용 시 `analytics_usage_read`
 
-## 4. 1시간 예약 수집
+## 4. 6시간 예약 수집
 
 `docs/TASK-070_service_usage_cron.sql`의 `<SUPABASE_SERVICE_ROLE_KEY>`를 현재 프로젝트 Service Role Key로 바꾼 뒤 SQL Editor에서 한 번 실행합니다.
 
 - Vault에는 예약 호출용 Service Role Key만 저장됩니다.
 - `<SUPABASE_SERVICE_ROLE_KEY>`를 그대로 두거나 JWT 형식이 아닌 값을 넣으면 SQL이 중단됩니다. Supabase Dashboard의 JWT 형태 `service_role` key 전체 값을 사용합니다. `anon` key나 `sb_secret_*` 형식의 새 Secret API key가 아니라, 점(`.`)이 2개 들어간 `eyJ...` 형태의 JWT여야 합니다. 붙여넣기 중 들어간 줄바꿈/공백은 SQL에서 제거합니다.
-- `pg_cron`은 UTC 기준이며 `0 * * * *`로 매시간 정각에 실행합니다.
-- 기존 6시간 작업(`cho-service-usage-collect-6h`)과 새 1시간 작업(`cho-service-usage-collect-1h`)이 있으면 제거하고 다시 생성하므로 재설정할 수 있습니다.
-- 매시간 수집으로 누적되는 `service_usage_snapshots`와 `service_usage_collection_runs`는 `docs/TASK-072_data_retention_180d.sql`의 180일 보존 정책으로 정리합니다.
+- `pg_cron`은 UTC 기준이며 `0 */6 * * *`로 6시간마다 정각에 실행합니다.
+- 기존 1시간 작업(`cho-service-usage-collect-1h`)과 6시간 작업(`cho-service-usage-collect-6h`)을 제거하고 6시간 작업 하나만 다시 생성합니다.
+- 6시간 수집으로 누적되는 `service_usage_snapshots`와 `service_usage_collection_runs`는 `docs/TASK-072_data_retention_180d.sql`의 180일 보존 정책으로 정리합니다.
 - 기존 DB에 `서비스 통계` 화면의 `180일 초과 정리` 버튼을 활성화하려면 `docs/TASK-073_manual_retention_cleanup.sql`을 추가 적용합니다.
 
 운영 DB가 아래 상태라면 아직 새 SQL이 적용되지 않은 것입니다.
@@ -87,7 +87,7 @@ FROM cron.job
 WHERE jobname LIKE 'cho-service-usage-collect%';
 ```
 
-정상 상태는 `cho-service-usage-collect-1h` 하나만 남고 schedule이 `0 * * * *`로 표시되는 것입니다. `net._http_response.content`에 `UNAUTHORIZED_INVALID_JWT_FORMAT`이 보이면 Vault에 저장된 `service_usage_service_role_key`가 실제 service role JWT가 아니거나, placeholder/공백이 들어간 상태입니다. `<SUPABASE_SERVICE_ROLE_KEY>`를 실제 값으로 바꾼 최신 Cron SQL을 다시 실행합니다.
+정상 상태는 `cho-service-usage-collect-6h` 하나만 남고 schedule이 `0 */6 * * *`로 표시되는 것입니다. `net._http_response.content`에 `UNAUTHORIZED_INVALID_JWT_FORMAT`이 보이면 Vault에 저장된 `service_usage_service_role_key`가 실제 service role JWT가 아니거나, placeholder/공백이 들어간 상태입니다. `<SUPABASE_SERVICE_ROLE_KEY>`를 실제 값으로 바꾼 최신 Cron SQL을 다시 실행합니다.
 
 `net._http_response.status_code=403`이고 content가 `{"error":"invalid session"}`이면 cron은 Edge Function까지 도달했지만 배포된 `service-usage-collect` 함수가 service_role JWT를 schedule 호출로 인정하지 않는 구버전일 수 있습니다. 최신 `supabase/functions/service-usage-collect/index.ts`는 JWT payload의 `role=service_role`을 schedule 호출로 처리하므로 Edge Function을 다시 배포합니다.
 
@@ -127,7 +127,7 @@ Supabase Free 플랜은 초과 사용료가 자동 과금되는 대신 서비스
 2. `지금 수집`을 눌러 수동 수집을 확인합니다.
 3. 플랫폼 카드가 `API 연결` 또는 `프로젝트 계측`으로 표시되는지 확인합니다.
 4. `service_usage_collection_runs`의 최신 행이 `success` 또는 예상한 `partial`인지 확인합니다.
-5. Cron 설정 후 `cron.job`와 `cron.job_run_details`에서 1시간 예약 실행을 확인합니다.
+5. Cron 설정 후 `cron.job`와 `cron.job_run_details`에서 6시간 예약 실행을 확인합니다.
 6. 관리자 계정에서 `180일 초과 정리` 버튼이 보이고, RPC 미적용 오류가 없으면 `TASK-073` 적용이 완료된 상태입니다.
 
 브라우저 계측은 개인정보, 입력값, URL 쿼리 문자열을 저장하지 않으며 페이지 경로와 서비스 호출 종류, 전송량만 기록합니다.
