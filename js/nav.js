@@ -9,6 +9,7 @@ const NAV_MENU = [
     label: '소개',
     items: [
       { href: 'admin/notices.html', label: '공지 사항', minPerm: 40 },
+      { href: 'story-submission.html', label: '천국우체국 사연 작성', authOnly: true },
       { href: 'guide.html', label: '가이드', guide: true },
       { href: 'earn-talents.html', label: '달란트 적립' },
       { href: 'qna.html', label: 'Q & A', badgeId: 'navQnaBadge' }
@@ -53,6 +54,7 @@ const NAV_MENU = [
       { href: 'admin/users.html', label: '사용자 관리', minPerm: 60, id: 'navUsers', badgeId: 'navUserBadge' },
       { href: 'admin/bulk-register.html', label: '학생 일괄 등록', minPerm: 80 },
       { href: 'admin/managers.html', label: '관리자 관리', minPerm: 90 },
+      { href: 'admin/story-submissions.html', label: '천국우체국 사연 관리', minPerm: 90 },
       { href: 'admin/departments.html', label: '부서 관리', minPerm: 60 },
       { href: 'admin/user-stats.html', label: '사용자 통계', minPerm: 100 }
     ]
