@@ -205,11 +205,7 @@
             permissionLevel: result.data.permission_level || result.data.permissionLevel || 'teacher'
           });
         } else {
-          if (regInfo.status === 'approved') {
-            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> 비밀번호가 일치하지 않습니다.';
-          } else {
-            errEl.innerHTML = '<span style="font-size:1.1rem;">&#128274;</span> 아이디 또는 비밀번호가 일치하지 않습니다.';
-          }
+          errEl.textContent = result.error || '로그인 처리 중 오류가 발생했습니다.';
           errEl.classList.add('show');
           btn.disabled = false;
           btn.textContent = '로그인';
