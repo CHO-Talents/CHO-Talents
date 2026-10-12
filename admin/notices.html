@@ -150,6 +150,7 @@
       <div class="notice-view-meta" id="viewNoticeMeta"></div>
       <div class="notice-view-image-wrap" id="viewNoticeImageWrap"><img id="viewNoticeImage" alt="공지 이미지" /></div>
       <div class="notice-detail-box" id="viewNoticeContent"></div>
+      <div style="margin-top:0.8rem;"><a id="viewNoticeLink" class="btn-confirm" href="#" style="display:none;text-decoration:none;">사연 작성하러 가기</a></div>
     </div>
   </div>
 
@@ -196,6 +197,11 @@
             <button type="button" onclick="clearNoticeImageSelection()">제거</button>
           </div>
         </div>
+      </div>
+      <div class="notice-form-row">
+        <label for="noticeLinkUrlInput">연결 주소 <span style="font-weight:400;color:var(--admin-text-muted);">(선택)</span></label>
+        <input type="url" id="noticeLinkUrlInput" placeholder="예: ../story-submission.html 또는 https://..." />
+        <small style="display:block;margin-top:0.35rem;color:var(--admin-text-muted);">주소를 입력하면 공지 이미지와 공지 보기 화면에서 연결 버튼을 표시합니다.</small>
       </div>
       <label style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;font-weight:700;">
         <input type="checkbox" id="noticeActiveInput" />
@@ -781,6 +787,14 @@
         '<span class="notice-date">· 수정 ' + escapeHtml(formatKSTShort(notice.updated_at || notice.created_at)) + '</span>';
       const viewImageWrap = document.getElementById('viewNoticeImageWrap');
       const viewImage = document.getElementById('viewNoticeImage');
+      const viewLink = document.getElementById('viewNoticeLink');
+      if (notice.link_url) {
+        viewLink.href = notice.link_url;
+        viewLink.style.display = 'inline-flex';
+      } else {
+        viewLink.removeAttribute('href');
+        viewLink.style.display = 'none';
+      }
       if (notice.image_url) {
         viewImage.src = notice.image_url;
         viewImage.onerror = function() {
@@ -788,7 +802,8 @@
           viewImageWrap.style.display = 'none';
         };
         viewImage.onclick = function() {
-          openNoticeImageZoom(notice.image_url, notice.title || '공지 이미지');
+          if (notice.link_url) window.location.href = notice.link_url;
+          else openNoticeImageZoom(notice.image_url, notice.title || '공지 이미지');
         };
         viewImageWrap.style.display = 'block';
       } else {
@@ -824,6 +839,7 @@
       document.getElementById('editNoticeTitle').textContent = notice ? '공지 수정' : '공지 등록';
       document.getElementById('noticeTitleInput').value = notice ? notice.title || '' : '';
       document.getElementById('noticeContentInput').value = notice ? notice.content || '' : '';
+      document.getElementById('noticeLinkUrlInput').value = notice ? notice.link_url || '' : '';
       document.getElementById('noticeActiveInput').checked = notice ? !!notice.is_active : false;
       const fileInput = document.getElementById('noticeImageInput');
       const urlInput = document.getElementById('noticeImageUrlInput');
@@ -872,6 +888,7 @@
       let imageUrl = noticeImageRemoved ? null : (editingNoticeImageUrl || null);
       let uploadedImagePath = null;
       const typedImageUrl = urlInput ? urlInput.value.trim() : '';
+      const linkUrl = document.getElementById('noticeLinkUrlInput').value.trim();
       const selectedFile = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
 
       if (editingNoticeId && selectedFile) {
@@ -898,6 +915,7 @@
         title,
         content,
         image_url: imageUrl,
+        link_url: linkUrl || null,
         is_active: isActive,
         updated_by: session.id,
         updated_by_name: writerName,

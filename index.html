@@ -333,6 +333,7 @@
           '<div class="announcement-image-wrap" id="announcementImageWrap" style="display:none;"><img id="announcementImage" alt="공지 이미지" /></div>' +
           '<div class="announcement-body" id="announcementBody"></div>' +
           '<div class="announcement-actions">' +
+            '<a id="announcementLinkButton" class="announcement-btn primary" href="story-submission.html" style="display:none;text-decoration:none;">사연 작성하러 가기</a>' +
             '<button class="announcement-btn" type="button" onclick="closeAnnouncementPopup()">닫기</button>' +
             '<button id="dismissAnnouncementButton" class="announcement-btn primary" type="button" onclick="dismissCurrentAnnouncement()">다시 열지 않음</button>' +
           '</div>' +
@@ -403,6 +404,14 @@
         '등록일 ' + formatKSTShort(_currentAnnouncement.created_at);
       const imageWrap = document.getElementById('announcementImageWrap');
       const imageEl = document.getElementById('announcementImage');
+      const linkButton = document.getElementById('announcementLinkButton');
+      if (_currentAnnouncement.link_url) {
+        linkButton.href = _currentAnnouncement.link_url;
+        linkButton.style.display = 'inline-flex';
+      } else {
+        linkButton.removeAttribute('href');
+        linkButton.style.display = 'none';
+      }
       if (_currentAnnouncement.image_url) {
         imageEl.src = _currentAnnouncement.image_url;
         imageEl.onerror = function() {
@@ -410,7 +419,8 @@
           imageWrap.style.display = 'none';
         };
         imageEl.onclick = function() {
-          openImageZoom(_currentAnnouncement.image_url, _currentAnnouncement.title || '공지 이미지');
+          if (_currentAnnouncement.link_url) window.location.href = _currentAnnouncement.link_url;
+          else openImageZoom(_currentAnnouncement.image_url, _currentAnnouncement.title || '공지 이미지');
         };
         imageWrap.style.display = 'block';
       } else {

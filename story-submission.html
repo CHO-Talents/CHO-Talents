@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="default">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>천국우체국 사연 작성 - 달란트 마을</title>
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+  <style>
+    .story-card { max-width: 760px; margin: 2rem auto; padding: clamp(1.1rem, 4vw, 2rem); background: var(--t-card,#fff); border: 1px solid var(--admin-border); border-radius: 16px; box-shadow: 0 10px 28px rgba(0,0,0,.08); }
+    .story-lead { color: var(--admin-text-muted); line-height: 1.65; margin: .4rem 0 1.4rem; }
+    .story-field { margin: 1.1rem 0; }
+    .story-field label { display:block; margin-bottom:.45rem; font-weight:800; }
+    .story-field textarea, .story-field input { width:100%; box-sizing:border-box; border:1px solid var(--admin-border); border-radius:10px; padding:.8rem; background:var(--t-input-bg,#fff); color:var(--t-text,#222); font:inherit; line-height:1.55; }
+    .story-field textarea { min-height:220px; resize:vertical; }
+    .story-help { margin:.5rem 0 0; color:var(--admin-text-muted); font-size:.84rem; line-height:1.6; }
+    .story-examples { margin:.7rem 0 0; padding:.8rem 1rem; border-radius:10px; background:var(--t-bg,#f8f9fa); color:var(--t-text-muted,#555); font-size:.85rem; line-height:1.65; }
+    .story-examples strong { color:var(--t-text,#222); }
+    .story-anonymous { display:flex; gap:.6rem; align-items:flex-start; padding:.85rem 1rem; border:1px solid var(--admin-border); border-radius:10px; cursor:pointer; }
+    .story-anonymous input { width:18px; height:18px; margin:.05rem 0 0; accent-color:var(--admin-primary); }
+    .story-actions { display:flex; justify-content:flex-end; gap:.6rem; margin-top:1.4rem; flex-wrap:wrap; }
+  </style>
+</head>
+<body class="admin-body">
+  <div id="nav-container"></div>
+  <main class="admin-container">
+    <section class="story-card">
+      <h2 style="margin:0;">💌 천국우체국 사연 작성</h2>
+      <p class="story-lead">하나님께 드리고 싶은 마음을 적어주세요. 확인 후 정상 접수된 사연에는 달란트가 지급됩니다.</p>
+      <div class="form-error" id="storyError"></div>
+      <div class="form-success" id="storySuccess"></div>
+      <form id="story-form">
+        <label class="story-anonymous" for="isAnonymous">
+          <input type="checkbox" id="isAnonymous" />
+          <span><strong>익명</strong><br /><span class="story-help">익명을 원하시면 "익명" 체크박스에 체크 해주세요.</span></span>
+        </label>
+        <div class="story-field">
+          <label for="storyContent">나의 고민, 소원 등 하나님의 도움이 필요한 사연</label>
+          <textarea id="storyContent" maxlength="5000" required placeholder="사연을 작성해주세요."></textarea>
+          <div class="story-examples"><strong>작성 예시</strong><br />예시1 : 공부를 잘하고 싶은데 수학이 너무 어려워요. 잘할수 있게 도와 주세요.<br />예시2 : 친구들이 제 외모를 보고 놀려요. 너무 마음이 아파요.<br />예시3 : 우리 아빠가 교회를 안다니는데, 꼭 전도하고 싶어요.<br />예시4 : 저는 축구선수가 꿈이예요. 꼭 이루고 싶어요.</div>
+        </div>
+        <div class="story-field">
+          <label for="songRequest">신청곡 : 친구들과 같이 부르고 싶은 내가 좋아하는 찬양.</label>
+          <input id="songRequest" type="text" maxlength="200" placeholder="좋아하는 찬양 제목을 입력해주세요. (선택)" />
+        </div>
+        <div class="story-actions">
+          <a class="btn-cancel" href="index.html">취소</a>
+          <button class="btn-confirm" id="storySubmitButton" type="submit">사연 접수하기</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
+  <script src="config/public-config.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/activity-log.js"></script>
+  <script src="js/codes.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/nav.js"></script>
+  <script>
+    initSupabase();
+    let storySession = null;
+    (async () => {
+      await navInit();
+      storySession = await initPage(20, 'login.html');
+      if (!storySession) return;
+      navUpdateAuth(storySession);
+      await initTheme();
+    })();
+
+    document.getElementById('story-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const error = document.getElementById('storyError');
+      const success = document.getElementById('storySuccess');
+      const button = document.getElementById('storySubmitButton');
+      error.classList.remove('show'); success.classList.remove('show');
+      const story = document.getElementById('storyContent').value.trim();
+      const song = document.getElementById('songRequest').value.trim();
+      if (story.length < 5) { error.textContent = '사연은 5자 이상 작성해주세요.'; error.classList.add('show'); return; }
+      button.disabled = true; button.textContent = '접수 중...';
+      try {
+        const { data, error: rpcError } = await _sb.rpc('submit_story_submission', {
+          p_is_anonymous: document.getElementById('isAnonymous').checked,
+          p_story_content: story,
+          p_song_request: song || null
+        });
+        if (rpcError) throw rpcError;
+        if (!data || data.success === false) throw new Error((data && data.error) || '사연을 접수하지 못했습니다.');
+        await logInfo('STORY_SUBMISSION_CREATE', { 사연ID: data.submission_id, 익명: document.getElementById('isAnonymous').checked, 신청곡: !!song });
+        document.getElementById('story-form').reset();
+        success.textContent = '사연이 접수되었습니다. 전도사님 확인 후 정상 접수된 사연에는 달란트가 지급됩니다.';
+        success.classList.add('show');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (err) {
+        error.textContent = err.message || String(err);
+        error.classList.add('show');
+      } finally {
+        button.disabled = false; button.textContent = '사연 접수하기';
+      }
+    });
+  </script>
+  <div id="version-container"></div>
+  <script src="js/version.js"></script>
+</body>
+</html>
