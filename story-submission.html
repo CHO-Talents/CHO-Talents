@@ -9,6 +9,7 @@
   <style>
     .story-card { max-width: 760px; margin: 2rem auto; padding: clamp(1.1rem, 4vw, 2rem); background: var(--t-card,#fff); border: 1px solid var(--admin-border); border-radius: 16px; box-shadow: 0 10px 28px rgba(0,0,0,.08); }
     .story-lead { color: var(--admin-text-muted); line-height: 1.65; margin: .4rem 0 1.4rem; }
+    .story-guide-image { display:block; width:100%; height:auto; margin:0 0 1.3rem; border:1px solid var(--admin-border); border-radius:12px; }
     .story-field { margin: 1.1rem 0; }
     .story-field label { display:block; margin-bottom:.45rem; font-weight:800; }
     .story-field textarea, .story-field input { width:100%; box-sizing:border-box; border:1px solid var(--admin-border); border-radius:10px; padding:.8rem; background:var(--t-input-bg,#fff); color:var(--t-text,#222); font:inherit; line-height:1.55; }
@@ -27,6 +28,10 @@
     <section class="story-card">
       <h2 style="margin:0;">💌 천국우체국 사연 작성</h2>
       <p class="story-lead">하나님께 드리고 싶은 마음을 적어주세요. 확인 후 정상 접수된 사연에는 달란트가 지급됩니다.</p>
+      <picture>
+        <source media="(max-width: 640px)" srcset="assets/heavenly-post-office-story-guide-portrait.jpg" />
+        <img class="story-guide-image" src="assets/heavenly-post-office-story-guide-landscape.jpg" alt="천국우체국 사연 참여 방법과 달란트 안내" />
+      </picture>
       <div class="form-error" id="storyError"></div>
       <div class="form-success" id="storySuccess"></div>
       <form id="story-form">
