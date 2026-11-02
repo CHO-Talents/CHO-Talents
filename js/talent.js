@@ -177,13 +177,14 @@ async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
       talentItemId,
       itemName: options.itemName || options.talentItemName || null,
       지급대상일: grantDate,
+      attendanceDate: options.attendanceDate || null,
       사유: overrideReason,
     };
     const attemptedAt = Date.now();
     const { data, error } = await _sb.rpc('give_talent', {
       p_user_id: userId,
       p_amount: 0,
-      p_description: '',
+      p_description: options.attendanceDate || '',
       p_created_by: createdBy,
       p_talent_item_id: talentItemId,
       p_override_week_limit: overrideWeekLimit,
@@ -195,7 +196,7 @@ async function giveTalentByItem(userId, talentItemId, createdBy, options = {}) {
         await logInfo('TALENT_GIVE_ITEM_DENIED', { ...logContext, 사유: error.message, 처리: 'duplicate_grant_date' });
         return { success: false, error: error.message, handled: true, reason: 'duplicate_grant_date' };
       }
-      const recoveredGrant = !overrideWeekLimit && isTransientTalentRequestError(error)
+      const recoveredGrant = !options.attendanceDate && !overrideWeekLimit && isTransientTalentRequestError(error)
         ? await findRecentlyGrantedTalentItem(userId, talentItemId, createdBy, attemptedAt, grantDate)
         : null;
       if (recoveredGrant) {

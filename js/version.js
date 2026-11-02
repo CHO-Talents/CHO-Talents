@@ -2,9 +2,20 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '4.2.21',
-  date: '2026-10-12',
+  current: '4.2.22',
+  date: '2026-11-02',
   history: [
+    {
+      version: '4.2.22',
+      date: '2026-11-02',
+      title: '학생 상품 할인과 특별새벽기도회 참석 지급',
+      changes: [
+        '100달란트 이상 학생 상품에 20% 할인을 적용하고 원가와 할인 가격을 표시합니다. 대리 구매에도 할인 가격을 적용합니다.',
+        '기존 교사용 특별새벽기도회 참석 항목을 11월 2~7일의 1~6일차별로 관리하며 참석일마다 3달란트를 지급합니다.',
+        '천국우체국 사연 작성은 부서 담당 교사 이상으로 제한하고, 사연 관리는 기존처럼 전도사님 이상이 이용합니다.',
+        '운영 DB에는 docs/TASK-116_student_product_discount.sql, docs/TASK-117_daily_prayer_talent.sql, docs/TASK-118_story_access_restriction.sql을 순서대로 적용해야 합니다.'
+      ]
+    },
     {
       version: '4.2.21',
       date: '2026-10-12',

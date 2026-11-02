@@ -68,7 +68,7 @@
     let storySession = null;
     (async () => {
       await navInit();
-      storySession = await initPage(20, 'login.html');
+      storySession = await initPage(60, 'login.html');
       if (!storySession) return;
       navUpdateAuth(storySession);
       await initTheme();
