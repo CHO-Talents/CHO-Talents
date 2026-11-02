@@ -71,6 +71,10 @@
 
       <div id="earnSection">
         <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">항목 선택 (체크 후 지급 확정)</div>
+        <div id="prayerDateWrap" style="display:none;margin-bottom:0.7rem;">
+          <label for="prayerDate" style="font-weight:700;">특별새벽기도회 참석일</label>
+          <select id="prayerDate" onchange="renderTalentItemButtons()" style="padding:0.4rem;margin-left:0.4rem;"></select>
+        </div>
         <div id="talentItemBtns" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.8rem;"></div>
         <button class="btn-confirm" id="btnConfirmGive" onclick="confirmGiveItems()" style="width:100%;padding:0.6rem;margin-bottom:0.8rem;display:none;">✅ 지급 확정</button>
         <div id="overrideWeekLimitWrap" style="display:none;margin-bottom:0.8rem;padding:0.7rem;border:1px solid var(--admin-border);border-radius:8px;background:var(--t-card, #fff);">
@@ -788,9 +792,21 @@
         return;
       }
 
+      const prayerItem = items.find(i => i.target_type === 'teacher' && i.name === '특별새벽기도회 참석');
+      const prayerWrap = document.getElementById('prayerDateWrap');
+      const prayerSelect = document.getElementById('prayerDate');
+      prayerWrap.style.display = prayerItem ? 'block' : 'none';
+      if (prayerItem && !prayerSelect.options.length) {
+        const today = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date());
+        prayerSelect.innerHTML = Array.from({length:6}, (_, index) => {
+          const day = '2026-11-0' + (index + 2);
+          return `<option value="${day}" ${day > today ? 'disabled' : ''}>특새 ${index + 1}일차 (${day})</option>`;
+        }).join('');
+        prayerSelect.value = today < '2026-11-02' ? '' : today > '2026-11-07' ? '2026-11-07' : today;
+      }
       const grantDate = getUpcomingSundayKSTDate();
       let { data: weekEarns, error: weekEarnErr } = await _sb.from('talent_transactions')
-        .select('id, talent_item_id, amount, description, grant_date, source, override_week_limit')
+        .select('id, talent_item_id, amount, description, grant_date, created_at, source, override_week_limit')
         .eq('user_id', talentUserId)
         .eq('type', 'earn')
         .eq('grant_date', grantDate)
@@ -798,7 +814,7 @@
         .order('grant_date', { ascending: true });
       if (weekEarnErr && /column .*override_week_limit.*does not exist|schema cache/i.test(weekEarnErr.message || '')) {
         const fallback = await _sb.from('talent_transactions')
-          .select('id, talent_item_id, amount, description, grant_date, source')
+          .select('id, talent_item_id, amount, description, grant_date, created_at, source')
           .eq('user_id', talentUserId)
           .eq('type', 'earn')
           .eq('grant_date', grantDate)
@@ -807,18 +823,29 @@
         weekEarns = fallback.data || [];
       }
 
+      if (prayerItem && prayerSelect.value) {
+        const prayerResult = await _sb.from('talent_transactions')
+          .select('id, talent_item_id, amount, description, grant_date, attendance_date, created_at, source, override_week_limit')
+          .eq('user_id', talentUserId).eq('type', 'earn').eq('talent_item_id', prayerItem.id)
+          .eq('attendance_date', prayerSelect.value);
+        if (prayerResult.error) {
+          container.textContent = '특새 참석일 조회에 실패했습니다. DB 변경 사항을 먼저 적용해주세요.';
+          confirmBtn.style.display = 'none';
+          return;
+        }
+        weekEarns = (weekEarns || []).filter(t => t.talent_item_id !== prayerItem.id).concat(prayerResult.data || []);
+      }
       const { data: weekReturns } = await _sb.from('talent_transactions')
         .select('amount, description, grant_date')
         .eq('user_id', talentUserId)
         .eq('type', 'use')
-        .like('description', '\uBC18\uD658:%')
-        .eq('grant_date', grantDate);
+        .like('description', '\uBC18\uD658:%');
       const cancelledById = new Set();
       const legacyRetCount = {};
       (weekReturns || []).forEach(r => {
         const m = r.description.match(/\uBC18\uD658:\s*\[([^\]]+)\]/);
         if (m) { cancelledById.add(m[1]); }
-        else {
+        else if (r.grant_date === grantDate) {
           const legacyDescription = r.description
             .replace(/^\uBC18\uD658:\s*/, '')
             .replace(/^\[\]\s*/, '');
@@ -843,9 +870,9 @@
         const records = _weeklyGivenRecordsMap[i.id] || [];
         const latest = records[records.length - 1];
         const done = records.length > 0;
-        const canReissue = done && overrideEnabled;
+        const canReissue = done && overrideEnabled && !(i.target_type === 'teacher' && i.name === '특별새벽기도회 참석');
         const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
-        const exceptionActive = latest?.override_week_limit === true || (done && overrideEnabled);
+        const exceptionActive = latest?.override_week_limit === true || (done && canReissue);
         const countTag = records.length > 1 ? `<span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#f1f3f5;color:#495057;">x${records.length}</span>` : '';
         const statusTag = done
           ? exceptionActive
@@ -1032,6 +1059,7 @@
               overrideWeekLimit: shouldOverride,
               overrideReason: shouldOverride ? overrideReason : null,
               itemName: chk.dataset.name,
+              attendanceDate: chk.dataset.name === '특별새벽기도회 참석' && currentTab === 'teacher' ? document.getElementById('prayerDate').value : null,
               targetAccount: targetLogContext.targetAccount,
               targetName: targetLogContext.targetName,
             });

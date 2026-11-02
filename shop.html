@@ -48,6 +48,9 @@
     }
     .product-detail-meta { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 0.8rem; font-size: 0.78rem; color: var(--t-text-muted, #868e96); }
     .product-detail-price { font-size: 1.25rem; font-weight: 800; margin: 0.25rem 0 0.8rem; }
+    .sale-badge { display:inline-block; padding:0.15rem 0.5rem; border-radius:999px; background:#e03131; color:#fff; font-size:0.72rem; font-weight:800; vertical-align:middle; }
+    .sale-original { color:var(--t-text-muted, #868e96); font-size:0.8em; font-weight:500; margin-right:0.35rem; }
+    .sale-price { color:#e03131; font-weight:800; }
     .delivery-delay-notice { margin: 0.55rem 0; padding: 0.5rem 0.65rem; border-radius: 8px; background: #fff4e6; color: #c05621; font-size: 0.8rem; font-weight: 700; line-height: 1.45; }
     [data-theme="dark"] .delivery-delay-notice { background: #4a2f12; color: #ffd8a8; }
     .product-detail-desc { line-height: 1.65; white-space: pre-wrap; }
@@ -184,6 +187,18 @@
     let _userPending = 0;
     let _selectedProduct = null;
     let shopSortState = { key: 'category', dir: 'asc' };
+
+    // 달란트는 정수이므로 할인 가격을 반올림한다.
+    function salePrice(product) {
+      const price = Number(product.price) || 0;
+      return product.target_role === 'student' && price >= 100 ? Math.round(price * 0.8) : price;
+    }
+
+    function priceMarkup(product) {
+      const price = salePrice(product);
+      if (price === Number(product.price)) return `${fmtNum(price)} <span class="unit">달란트</span>`;
+      return `<span class="sale-badge">🎉 20% 할인</span> <del class="sale-original">${fmtNum(product.price)} 달란트</del> <span class="sale-price">${fmtNum(price)} 달란트</span>`;
+    }
 
     function escapeHtml(value) {
       return String(value || '').replace(/[&<>"']/g, ch => ({
@@ -356,11 +371,11 @@
     function renderProductCard(p) {
       const available = _userBalance - _userPending;
       const isTeacherBuyingStudent = _shopSession && _shopSession.userType === 'teacher' && p.target_role === 'student';
-      const canBuy = _shopSession && p.is_active && available >= p.price && !isTeacherBuyingStudent;
+      const canBuy = _shopSession && p.is_active && available >= salePrice(p) && !isTeacherBuyingStudent;
       const buyBtnHtml = _shopSession
         ? (isTeacherBuyingStudent
           ? ''
-          : `<button class="product-buy-btn" onclick="event.stopPropagation(); requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${p.price})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`)
+          : `<button class="product-buy-btn" onclick="event.stopPropagation(); requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${salePrice(p)})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`)
         : '';
       const deliveryNoticeHtml = p.show_delivery_delay_notice
         ? '<p class="delivery-delay-notice">배송 상황에 따라 상품 지급이 늦어질 수 있습니다.</p>'
@@ -369,7 +384,7 @@
         ${p.image_url ? `<img src="${escapeAttr(p.image_url)}" alt="${escapeAttr(p.name)}" class="product-img" onclick="event.stopPropagation(); openProductDetail('${p.id}')" />` : `<span class="product-emoji">${p.image_emoji || '🎁'}</span>`}
         ${deliveryNoticeHtml}
         <div class="product-name">${escapeHtml(p.name)}</div>
-        <div class="product-price">${fmtNum(p.price)} <span class="unit">달란트</span></div>
+        <div class="product-price">${priceMarkup(p)}</div>
         <div class="product-desc">${escapeHtml(p.description || '')}</div>
         ${buyBtnHtml}
       </div>`;
@@ -383,7 +398,7 @@
       document.getElementById('productDetailMeta').innerHTML =
         `<span>카테고리: ${escapeHtml(getProductCategoryLabel(product.category || 'etc'))}</span>` +
         `<span>대상: ${escapeHtml(getProductTargetLabel(product.target_role || 'student'))}</span>`;
-      document.getElementById('productDetailPrice').textContent = `${fmtNum(product.price)} 달란트`;
+      document.getElementById('productDetailPrice').innerHTML = priceMarkup(product);
       const thumbnail = document.getElementById('productDetailThumbnail');
       if (product.image_url) {
         thumbnail.style.display = 'block';
@@ -407,9 +422,9 @@
       }
       const available = _userBalance - _userPending;
       const isTeacherBuyingStudent = _shopSession && _shopSession.userType === 'teacher' && product.target_role === 'student';
-      const canBuy = _shopSession && product.is_active && available >= product.price && !isTeacherBuyingStudent;
+      const canBuy = _shopSession && product.is_active && available >= salePrice(product) && !isTeacherBuyingStudent;
       document.getElementById('productDetailActions').innerHTML = _shopSession && !isTeacherBuyingStudent
-        ? `<button class="product-buy-btn" type="button" onclick="requestOrder('${product.id}','${product.name.replace(/'/g,"\\'")}',${product.price}); closeProductDetail();" ${!canBuy ? 'disabled' : ''} style="padding:0.55rem 1rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`
+        ? `<button class="product-buy-btn" type="button" onclick="requestOrder('${product.id}','${product.name.replace(/'/g,"\\'")}',${salePrice(product)}); closeProductDetail();" ${!canBuy ? 'disabled' : ''} style="padding:0.55rem 1rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`
         : '';
       document.getElementById('productDetailOverlay').classList.remove('hidden');
     }
@@ -643,7 +658,7 @@
       const targetType = u.user_type === 'student' ? 'student' : 'teacher';
       const products = allShopProducts.filter(p => p.target_role === targetType && p.is_active);
       document.getElementById('proxyProduct').innerHTML = '<option value="">상품 선택</option>' +
-        products.map(p => `<option value="${p.id}" data-price="${p.price}" ${p.price > bal ? 'disabled' : ''}>${p.name} (${fmtNum(p.price)} 달란트)${p.price > bal ? ' - 잔액부족' : ''}</option>`).join('');
+        products.map(p => `<option value="${p.id}" data-price="${salePrice(p)}" ${salePrice(p) > bal ? 'disabled' : ''}>${escapeHtml(p.name)} (${salePrice(p) !== Number(p.price) ? fmtNum(p.price) + ' → ' : ''}${fmtNum(salePrice(p))} 달란트)${salePrice(p) > bal ? ' - 잔액부족' : ''}</option>`).join('');
       document.getElementById('proxyBalanceInfo').textContent = `사용 가능 달란트: ${fmtNum(bal)}`;
       document.getElementById('proxyProductArea').style.display = 'block';
       document.getElementById('proxyProduct').onchange = () => {

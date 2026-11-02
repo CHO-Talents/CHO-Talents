@@ -9,7 +9,7 @@ const NAV_MENU = [
     label: '소개',
     items: [
       { href: 'admin/notices.html', label: '공지 사항', minPerm: 40 },
-      { href: 'story-submission.html', label: '천국우체국 사연 작성', authOnly: true },
+      { href: 'story-submission.html', label: '천국우체국 사연 작성', minPerm: 60 },
       { href: 'guide.html', label: '가이드', guide: true },
       { href: 'earn-talents.html', label: '달란트 적립' },
       { href: 'qna.html', label: 'Q & A', badgeId: 'navQnaBadge' }
