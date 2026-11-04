@@ -130,6 +130,7 @@
       <div class="grant-item-area">
         <div class="grant-item-label">1. 지급할 달란트 항목 선택 <span id="scheduleItemHint" style="font-weight:500;color:var(--admin-text-muted);"></span></div>
         <div class="grant-item-list" id="scheduleItemList"></div>
+        <div id="dailyPrayerNotice" style="display:none;margin-top:0.6rem;font-size:0.78rem;color:var(--admin-text-muted,#6c757d);">특별새벽기도회 참석은 참석일별 지급이 필요하므로 <a href="talents.html">달란트 관리</a>에서 지급해주세요.</div>
       </div>
       <div class="grant-actions">
         <div class="grant-selection-info" id="scheduleSelectionInfo">항목과 지급 대상을 선택해주세요.</div>
@@ -325,7 +326,8 @@
     }
 
     function getActiveItems() {
-      return talentItems.filter(item => item.is_active && item.target_type === currentTab);
+      return talentItems.filter(item => item.is_active && item.target_type === currentTab
+        && !(item.target_type === 'teacher' && item.name === '특별새벽기도회 참석'));
     }
 
     function getSelectedItems() {
@@ -520,6 +522,9 @@
       const items = getActiveItems();
       const list = document.getElementById('scheduleItemList');
       const hint = document.getElementById('scheduleItemHint');
+      const hasDailyPrayer = currentTab === 'teacher' && talentItems.some(item =>
+        item.is_active && item.target_type === 'teacher' && item.name === '특별새벽기도회 참석');
+      document.getElementById('dailyPrayerNotice').style.display = hasDailyPrayer ? '' : 'none';
       if (!items.length) {
         list.innerHTML = '<span class="grant-empty" style="padding:0.25rem 0;">활성화된 달란트 항목이 없습니다.</span>';
         hint.textContent = '';
@@ -577,7 +582,7 @@
       const grants = getCellGrants(user.id, grantDate);
       const selectedItems = getSelectedItems();
       const pendingItems = getPendingItemsForCell(user.id, grantDate);
-      const payableItemCount = getActiveItems().length;
+      const payableItemCount = talentItems.filter(item => item.is_active && item.target_type === currentTab).length;
       const grantedItemCount = grants.length;
       const key = getCellKey(user.id, grantDate);
       const isSelected = selectedCells.has(key);

@@ -15,6 +15,12 @@ WITH error_source AS (
     l.page,
     l.details,
     COALESCE(l.is_acknowledged, false) AS is_acknowledged,
+    CASE
+      WHEN l.action = 'RESOURCE_LOAD_FAIL'
+        AND COALESCE(l.details->>'resourceFailureCount', '') ~ '^[0-9]{1,9}$'
+        THEN GREATEST((l.details->>'resourceFailureCount')::integer, 1)
+      ELSE 1
+    END AS occurrence_count,
     COALESCE(l.details->>'errorFingerprint', '') AS error_fingerprint,
     COALESCE(
       NULLIF(l.details->>'message', ''),
@@ -79,8 +85,9 @@ SELECT
   r.issue_category AS 분류,
   r.action AS 액션코드,
   COALESCE(ci.code_value, r.action) AS 액션명,
-  COUNT(*)::int AS 발생건수,
-  COUNT(*) FILTER (WHERE NOT r.is_acknowledged)::int AS 미확인건수,
+  SUM(r.occurrence_count) AS 발생건수,
+  COALESCE(SUM(r.occurrence_count) FILTER (WHERE NOT r.is_acknowledged), 0) AS 미확인건수,
+  COUNT(*)::int AS 로그건수,
   MIN(r.created_at) AS 최초발생,
   MAX(r.created_at) AS 최종발생,
   r.normalized_message AS 대표오류,
