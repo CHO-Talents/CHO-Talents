@@ -176,6 +176,7 @@
     let talentUserDeptId = null;
     let talentType = 'earn';
     let currentTab = 'student';
+    let usersLoadSequence = 0;
     let allDepts = [];
     let talentItems = [];
     let talentSummaryMap = {};
@@ -313,7 +314,7 @@
     function onDeptFilterChange() {
       currentDeptFilter = document.getElementById('deptFilter').value;
       talentPage = 1;
-      loadUsers();
+      if (session) loadUsers();
     }
 
     function switchTab(tab) {
@@ -321,7 +322,7 @@
       talentPage = 1;
       document.getElementById('tabStudent').classList.toggle('active', tab === 'student');
       document.getElementById('tabTeacher').classList.toggle('active', tab === 'teacher');
-      loadUsers();
+      if (session) loadUsers();
     }
 
     function canGiveTalent(user) {
@@ -347,9 +348,16 @@
     }
 
     async function loadUsers() {
+      const loadSequence = ++usersLoadSequence;
+      const requestedTab = currentTab;
+      const requestedDeptFilter = currentDeptFilter;
       const myRank = session.permissionRank || 0;
-      const roleLabel = currentTab === 'student' ? '학생' : '교사';
-      const opts = { userType: currentTab };
+      const roleLabel = requestedTab === 'student' ? '학생' : '교사';
+      const opts = { userType: requestedTab };
+      talentUserList = [];
+      document.getElementById('tableTitle').textContent = `${roleLabel} 목록`;
+      document.getElementById('userList').innerHTML = '<tr><td colspan="7" class="empty-state">목록을 불러오는 중...</td></tr>';
+      document.getElementById('talentPaging').innerHTML = '';
 
       if (myRank < 90) {
         if (['purchase_teacher', 'dept_teacher'].includes(session.permissionLevel)) {
@@ -360,6 +368,7 @@
       }
 
       let { data } = await fetchUsers(opts);
+      if (loadSequence !== usersLoadSequence) return;
       data = data || [];
 
       if (!session.isSuperAdmin) {
@@ -367,15 +376,15 @@
       }
 
       if (myRank === 40) {
-        if (currentTab !== 'student' || !session.classNumber) {
+        if (requestedTab !== 'student' || !session.classNumber) {
           data = [];
         } else {
           data = data.filter(u => String(u.class_number) === String(session.classNumber));
         }
       }
 
-      if (currentDeptFilter) {
-        data = data.filter(u => u.department_id === currentDeptFilter);
+      if (requestedDeptFilter) {
+        data = data.filter(u => u.department_id === requestedDeptFilter);
       }
 
       const tbody = document.getElementById('userList');
@@ -389,8 +398,14 @@
       }
 
       const userIds = data.map(u => u.id);
-      await loadBatchSummary(userIds);
-      await loadAttendanceThisWeek(userIds);
+      const [summary, attendance] = await Promise.all([
+        loadBatchSummary(userIds),
+        loadAttendanceThisWeek(userIds, requestedTab)
+      ]);
+      if (loadSequence !== usersLoadSequence) return;
+      talentSummaryMap = summary;
+      _attendanceGivenThisWeek = attendance.given;
+      _attendanceTxnMap = attendance.transactions;
 
       talentUserList = prioritizeCurrentUserDeptClass(sortUserList(data, getDeptName));
       talentUserList.forEach(u => {
@@ -473,28 +488,29 @@
     document.addEventListener('click',()=>document.querySelectorAll('.mgmt-menu.show').forEach(m=>m.classList.remove('show')));
 
     async function loadBatchSummary(userIds) {
-      if (!_sb || userIds.length === 0) return;
+      const summary = {};
+      if (!_sb || userIds.length === 0) return summary;
       const { data: txns } = await _sb.from('talent_transactions').select('user_id,type,amount,description').in('user_id', userIds);
-      talentSummaryMap = {};
       (txns || []).forEach(t => {
-        if (!talentSummaryMap[t.user_id]) talentSummaryMap[t.user_id] = { earned: 0, used: 0, returned: 0 };
+        if (!summary[t.user_id]) summary[t.user_id] = { earned: 0, used: 0, returned: 0 };
         if (t.type === 'earn') {
-          talentSummaryMap[t.user_id].earned += t.amount;
+          summary[t.user_id].earned += t.amount;
         } else if (t.description && t.description.startsWith('반환:')) {
-          talentSummaryMap[t.user_id].returned += t.amount;
+          summary[t.user_id].returned += t.amount;
         } else {
-          talentSummaryMap[t.user_id].used += t.amount;
+          summary[t.user_id].used += t.amount;
         }
       });
+      return summary;
     }
 
-    async function loadAttendanceThisWeek(userIds) {
-      _attendanceGivenThisWeek = new Set();
-      _attendanceTxnMap = {};
-      if (!_sb || userIds.length === 0) return;
-      const attendItem = talentItems.find(i => i.is_quick_button === true && i.target_type === currentTab && i.is_active)
-        || talentItems.find(i => i.name === '출석' && i.target_type === currentTab && i.is_active);
-      if (!attendItem) return;
+    async function loadAttendanceThisWeek(userIds, requestedTab) {
+      const given = new Set();
+      const transactions = {};
+      if (!_sb || userIds.length === 0) return { given, transactions };
+      const attendItem = talentItems.find(i => i.is_quick_button === true && i.target_type === requestedTab && i.is_active)
+        || talentItems.find(i => i.name === '출석' && i.target_type === requestedTab && i.is_active);
+      if (!attendItem) return { given, transactions };
       const grantDate = getUpcomingSundayKSTDate();
       const { data: earns } = await _sb.from('talent_transactions')
         .select('id, user_id, amount, description, grant_date')
@@ -526,9 +542,10 @@
         if (cancelledById.has(t.id)) return;
         const k = t.user_id + '|' + t.amount + '|' + (t.description || '');
         if (legacyRetCount[k] > 0) { legacyRetCount[k]--; return; }
-        _attendanceGivenThisWeek.add(t.user_id);
-        _attendanceTxnMap[t.user_id] = { id: t.id, amount: t.amount, description: t.description };
+        given.add(t.user_id);
+        transactions[t.user_id] = { id: t.id, amount: t.amount, description: t.description };
       });
+      return { given, transactions };
     }
 
     let _attendBusy = false;

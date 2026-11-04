@@ -375,6 +375,11 @@ const LOG_DETAIL_KEY_LABELS = {
   errorKind: '오류 유형',
   errorName: '오류 이름',
   errorFingerprint: '오류 식별값',
+  resourceFailureCount: '리소스 실패 건수',
+  resourceUrlSamples: '실패 URL 예시',
+  resourceSampleLimit: 'URL 예시 최대 개수',
+  resourceOrigins: '실패 출처별 건수',
+  resourceBatchStartedAt: '실패 집계 시작 시각',
   notificationType: '알림 유형',
   notificationStatus: '알림 응답 상태',
   requestedChanges: '수정 요청 항목',
@@ -2031,11 +2036,59 @@ function _getResourceLoadDetails(resource, resourceTag) {
   return details;
 }
 
+// 같은 화면에서 동시에 실패한 이미지는 한 건으로 기록하되 횟수와 URL 표본을 남긴다.
+const _RESOURCE_FAILURE_WINDOW_MS = 1500;
+const _RESOURCE_FAILURE_SAMPLE_LIMIT = 20;
+let _imageFailureBatch = null;
+let _imageFailureTimer = null;
+
+function _flushImageFailureBatch() {
+  if (_imageFailureTimer !== null) clearTimeout(_imageFailureTimer);
+  _imageFailureTimer = null;
+  const batch = _imageFailureBatch;
+  _imageFailureBatch = null;
+  if (!batch) return;
+  logError('RESOURCE_LOAD_FAIL', {
+    message: '이미지 리소스 로드 실패',
+    errorKind: 'resource-load',
+    resourceType: 'IMG',
+    resourceFailureCount: batch.count,
+    resourceBatchStartedAt: batch.startedAt,
+    resourceUrl: batch.samples[0] || null,
+    resourceUrlSamples: batch.samples,
+    resourceSampleLimit: _RESOURCE_FAILURE_SAMPLE_LIMIT,
+    resourceOrigins: batch.origins,
+    errorFingerprint: _clientErrorFingerprint(['resource-load', 'IMG', window.location.pathname])
+  });
+}
+
+function _queueImageFailure(details) {
+  if (!_imageFailureBatch) {
+    _imageFailureBatch = { count: 0, samples: [], origins: {}, startedAt: new Date().toISOString() };
+    _imageFailureTimer = setTimeout(_flushImageFailureBatch, _RESOURCE_FAILURE_WINDOW_MS);
+  }
+  const batch = _imageFailureBatch;
+  batch.count += 1;
+  const url = details.resourceUrl;
+  if (url && !batch.samples.includes(url) && batch.samples.length < _RESOURCE_FAILURE_SAMPLE_LIMIT) {
+    batch.samples.push(url);
+  }
+  let origin = '(알 수 없음)';
+  try { if (url) origin = new URL(url, window.location.href).origin; } catch (e) {}
+  batch.origins[origin] = (batch.origins[origin] || 0) + 1;
+}
+
+window.addEventListener('pagehide', _flushImageFailureBatch);
+
 window.addEventListener('error', (e) => {
   const resource = e.target;
   const resourceTag = resource && resource !== window ? String(resource.tagName || '').toUpperCase() : '';
   if (resourceTag) {
     const resourceDetails = _getResourceLoadDetails(resource, resourceTag);
+    if (resourceTag === 'IMG') {
+      _queueImageFailure(resourceDetails);
+      return;
+    }
     logError('RESOURCE_LOAD_FAIL', Object.assign({
       message: `${resourceTag} 리소스 로드 실패`,
       errorKind: 'resource-load',
