@@ -380,6 +380,7 @@
     }
 
     async function switchTab(tab) {
+      if (!session) return;
       currentTab = tab;
       talentPage = 1;
       selectedItemIds.clear();
@@ -430,6 +431,7 @@
     }
 
     async function loadUsers() {
+      if (!session) return;
       const rank = session.permissionRank || 0;
       const options = { userType: currentTab };
       if (rank < 90) {

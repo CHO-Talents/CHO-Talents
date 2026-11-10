@@ -152,10 +152,12 @@ async function login(username, password) {
       return { success: false, error: '아이디 또는 비밀번호가 일치하지 않습니다.' };
     }
 
-    const { data: profile } = await _sb.rpc('get_my_profile');
+    const { data: profile, error: profileError } = await _retryTransientProfileRead(() => _sb.rpc('get_my_profile'));
     if (!profile) {
       await _sb.auth.signOut();
-      return { success: false, error: '프로필 정보를 불러올 수 없습니다.' };
+      const status = Number(profileError && (profileError.status || profileError.statusCode)) || 0;
+      const isNetworkError = status >= 500 || /failed to fetch|networkerror|network request failed|load failed/i.test(String(profileError && (profileError.message || profileError) || ''));
+      return { success: false, error: isNetworkError ? '프로필 정보를 불러오지 못했습니다. 네트워크 연결을 확인한 후 다시 로그인해주세요.' : '프로필 정보를 확인할 수 없습니다. 관리자에게 문의해주세요.' };
     }
 
     const perm = profile.permission_level;

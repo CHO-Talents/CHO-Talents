@@ -348,6 +348,7 @@
     }
 
     async function loadUsers() {
+      if (!session) return;
       const loadSequence = ++usersLoadSequence;
       const requestedTab = currentTab;
       const requestedDeptFilter = currentDeptFilter;

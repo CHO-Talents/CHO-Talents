@@ -16,7 +16,11 @@ const _slackNotifyState = {
 
 async function _getSlackNotifyFailure(error) {
   let status = null;
+  let upstreamStatus = null;
+  let retryCount = null;
   let message = error && error.message ? String(error.message) : 'Slack 알림 요청에 실패했습니다.';
+  const cause = error && error.cause;
+  if (cause && cause.message && !message.includes(cause.message)) message += ': ' + String(cause.message);
   const response = error && error.context;
   if (response) {
     status = Number(response.status) || null;
@@ -25,6 +29,8 @@ async function _getSlackNotifyFailure(error) {
       if (body) {
         try {
           const parsed = JSON.parse(body);
+          upstreamStatus = Number(parsed.status) || null;
+          retryCount = Number.isInteger(parsed.retries) ? parsed.retries : null;
           message = String(parsed.error || parsed.message || body);
         } catch (e) {
           message = String(body);
@@ -32,7 +38,7 @@ async function _getSlackNotifyFailure(error) {
       }
     } catch (e) {}
   }
-  return { status, message: message.slice(0, 500) };
+  return { status, upstreamStatus, retryCount, message: message.slice(0, 500) };
 }
 
 function _recordSlackNotifyFailure(type, failure) {
@@ -42,6 +48,8 @@ function _recordSlackNotifyFailure(type, failure) {
     const result = logError('SLACK_NOTIFY_FAIL', {
       notificationType: type,
       notificationStatus: failure.status || null,
+      upstreamStatus: failure.upstreamStatus || null,
+      retryCount: failure.retryCount ?? null,
       error: failure.message || 'Slack 알림 요청에 실패했습니다.'
     });
     if (result && typeof result.catch === 'function') result.catch(() => {});

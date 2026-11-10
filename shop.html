@@ -368,6 +368,15 @@
       area.innerHTML = html;
     }
 
+    function showProductImageFallback(image, detail) {
+      const fallback = document.createElement('span');
+      fallback.className = detail ? 'product-detail-emoji' : 'product-emoji';
+      fallback.setAttribute('role', 'img');
+      fallback.setAttribute('aria-label', '상품 이미지를 불러올 수 없습니다');
+      fallback.textContent = '🎁';
+      image.replaceWith(fallback);
+    }
+
     function renderProductCard(p) {
       const available = _userBalance - _userPending;
       const isTeacherBuyingStudent = _shopSession && _shopSession.userType === 'teacher' && p.target_role === 'student';
@@ -381,7 +390,7 @@
         ? '<p class="delivery-delay-notice">배송 상황에 따라 상품 지급이 늦어질 수 있습니다.</p>'
         : '';
       return `<div class="product-card" onclick="openProductDetail('${p.id}')">
-        ${p.image_url ? `<img src="${escapeAttr(p.image_url)}" alt="${escapeAttr(p.name)}" class="product-img" onclick="event.stopPropagation(); openProductDetail('${p.id}')" />` : `<span class="product-emoji">${p.image_emoji || '🎁'}</span>`}
+        ${p.image_url ? `<img src="${escapeAttr(p.image_url)}" alt="${escapeAttr(p.name)}" class="product-img" onerror="showProductImageFallback(this, false)" onclick="event.stopPropagation(); openProductDetail('${p.id}')" />` : `<span class="product-emoji">${p.image_emoji || '🎁'}</span>`}
         ${deliveryNoticeHtml}
         <div class="product-name">${escapeHtml(p.name)}</div>
         <div class="product-price">${priceMarkup(p)}</div>
@@ -402,7 +411,7 @@
       const thumbnail = document.getElementById('productDetailThumbnail');
       if (product.image_url) {
         thumbnail.style.display = 'block';
-        thumbnail.innerHTML = `<img src="${escapeAttr(product.image_url)}" alt="${escapeAttr(product.name)} 썸네일" />`;
+        thumbnail.innerHTML = `<img src="${escapeAttr(product.image_url)}" alt="${escapeAttr(product.name)} 썸네일" onerror="showProductImageFallback(this, true)" />`;
       } else {
         thumbnail.style.display = 'block';
         thumbnail.innerHTML = `<div class="product-detail-emoji" aria-label="${escapeAttr(product.name)} 썸네일">${escapeHtml(product.image_emoji || '🎁')}</div>`;
@@ -415,7 +424,7 @@
       const detailImageUrl = product.detail_image_url || '';
       if (detailImageUrl) {
         detailImage.style.display = 'block';
-        detailImage.innerHTML = `<img src="${escapeAttr(detailImageUrl)}" alt="${escapeAttr(product.name)} 상세 이미지" onclick="openImageZoom('${escapeAttr(detailImageUrl)}','${escapeAttr(product.name)} 상세 이미지')" />`;
+        detailImage.innerHTML = `<img src="${escapeAttr(detailImageUrl)}" alt="${escapeAttr(product.name)} 상세 이미지" onerror="showProductImageFallback(this, true)" onclick="openImageZoom('${escapeAttr(detailImageUrl)}','${escapeAttr(product.name)} 상세 이미지')" />`;
       } else {
         detailImage.style.display = 'none';
         detailImage.innerHTML = '';

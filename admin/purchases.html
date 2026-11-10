@@ -784,7 +784,8 @@
         });
         const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
-          await logError('ORDER_STATUS_CHANGE_FAIL', {
+          const isDenied = /권한|permission|not authorized|forbidden/i.test(error.message || '');
+          await (isDenied ? logWarn : logError)('ORDER_STATUS_CHANGE_FAIL', {
             ...getOrderLogContext(o || orderId, { newStatus }),
             변경상태: getOrderStatusLabel(newStatus),
             오류: error.message
