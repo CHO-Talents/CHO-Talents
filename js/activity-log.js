@@ -1542,8 +1542,8 @@ async function fetchLogs(options = {}) {
   return await query;
 }
 
-async function getUnacknowledgedCount() {
-  if (!_sb) return 0;
+async function getUnacknowledgedCount(options = {}) {
+  if (!_sb) return options.returnNullOnError ? null : 0;
   let query = _sb
     .from('activity_logs')
     .select('*', { count: 'exact', head: true })
@@ -1558,8 +1558,12 @@ async function getUnacknowledgedCount() {
       query = query.or('is_deleted.is.null,is_deleted.eq.false');
     }
   } catch (e) {}
-  const { count, error } = await query;
-  return error ? 0 : (count || 0);
+  try {
+    const { count, error } = await query;
+    return error ? (options.returnNullOnError ? null : 0) : (count || 0);
+  } catch (e) {
+    return options.returnNullOnError ? null : 0;
+  }
 }
 
 async function acknowledgeLog(logId, username, note) {
@@ -1792,6 +1796,25 @@ function _getProfileRequestAuthDetails(authSession, cached) {
   };
 }
 
+// Profile reads are safe to retry; do not retry authorization or other application errors.
+async function _retryTransientProfileRead(request) {
+  let result;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      result = await request();
+    } catch (error) {
+      result = { data: null, error };
+    }
+    const error = result && result.error;
+    const status = Number(error && (error.status || error.statusCode)) || 0;
+    const message = String(error && (error.message || error) || '');
+    const transient = status >= 500 || /failed to fetch|networkerror|network request failed|load failed/i.test(message);
+    if (!error || !transient || attempt === 1) return result;
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+  return result;
+}
+
 async function _loadProfileDirectForSession(authUserId) {
   const startedAt = Date.now();
   const diagnostics = {
@@ -1810,11 +1833,11 @@ async function _loadProfileDirectForSession(authUserId) {
     };
   }
   try {
-    const { data, error } = await _sb
+    const { data, error } = await _retryTransientProfileRead(() => _sb
       .from('profiles')
       .select('id, username, display_name, user_type, permission_level, is_super_admin, is_first_login, department_id, managed_dept_id, talent_balance, class_number, departments!profiles_department_id_fkey(name)')
       .eq('id', authUserId)
-      .maybeSingle();
+      .maybeSingle());
     Object.assign(diagnostics, {
       profileFallbackDurationMs: Date.now() - startedAt,
       profileFallbackOutcome: error ? 'error' : (data ? 'profile' : 'empty_result')
@@ -1916,7 +1939,7 @@ async function loadAuthSession() {
   let data = null;
   let profileError = null;
   try {
-    const profileRpc = await _sb.rpc('get_my_profile');
+    const profileRpc = await _retryTransientProfileRead(() => _sb.rpc('get_my_profile'));
     data = profileRpc.data;
     profileError = profileRpc.error;
   } catch (err) {

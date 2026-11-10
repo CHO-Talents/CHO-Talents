@@ -39,7 +39,7 @@
           <span style="display:inline-flex;gap:0.2rem;margin-left:0.2rem;">
             <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('today')">오늘</button>
             <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('week')">1주</button>
-            <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('month')">1달</button>
+            <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('month')">30일</button>
             <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setLogPeriod('year')">1년</button>
           </span>
           <button class="btn-ack admin-only-btn" style="margin-left:0.5rem;display:none;" onclick="deleteByRange()">범위 삭제</button>
@@ -267,7 +267,7 @@
       const todayStr = formatKSTDateInput();
       let fromStr = todayStr;
       if (type === 'week') { fromStr = addDateInputDays(todayStr, -6); }
-      else if (type === 'month') { fromStr = todayStr.slice(0, 8) + '01'; }
+      else if (type === 'month') { fromStr = addDateInputDays(todayStr, -29); }
       else if (type === 'year') { fromStr = todayStr.slice(0, 4) + '-01-01'; }
       document.getElementById('dateFrom').value = fromStr;
       document.getElementById('dateTo').value = todayStr;
@@ -283,7 +283,10 @@
     async function updateBadge() { await updateLogBadge(); }
 
     async function loadUnacknowledged() {
-      const { data } = await fetchLogs({ unacknowledgedOnly: true, limit: 100 });
+      const [{ data }, totalCount] = await Promise.all([
+        fetchLogs({ unacknowledgedOnly: true, limit: 100 }),
+        getUnacknowledgedCount({ returnNullOnError: true })
+      ]);
       const section = document.getElementById('unackSection');
       const alert = document.getElementById('unackAlert');
       const tbody = document.getElementById('unackLogs');
@@ -297,7 +300,9 @@
       section.classList.remove('hidden');
       alert.classList.remove('hidden');
       document.getElementById('unackAlertText').textContent =
-        `미확인 ERROR 이상 로그가 ${data.length}건 있습니다. 확인이 필요합니다.`;
+        totalCount == null
+          ? `미확인 ERROR 이상 로그의 최근 ${data.length}건을 표시합니다. 전체 건수는 조회하지 못했습니다.`
+          : `미확인 ERROR 이상 로그가 ${totalCount.toLocaleString('ko-KR')}건 있습니다. 최근 ${data.length}건을 표시합니다.`;
 
       tbody.innerHTML = data.map(l => `
         <tr style="background:#fff5f5;cursor:pointer;" onclick="showLogDetail('${l.id}')">

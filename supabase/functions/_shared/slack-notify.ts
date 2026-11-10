@@ -14,6 +14,7 @@
 //   SLACK_WEBHOOK_ANSWER          - Q&A 채널 (Type: Answer, Group: Management)
 
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { sendSlackWebhook } from "./slack-retry.mjs";
 
 type SlackUsageContext = {
   reason?: "http_error" | "network_error" | "missing_webhook_config";
@@ -543,24 +544,20 @@ Deno.serve(async (req) => {
     }
     webhookRequestStarted = true;
 
-    const slackRes = await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const { response: slackRes, retries } = await sendSlackWebhook(webhookUrl, payload);
 
     if (!slackRes.ok) {
       const errText = await slackRes.text();
       console.error("[slack-notify] Slack API error:", slackRes.status, errText);
       await recordSlackUsage("webhook_failures", notificationType, slackRes.status, { reason: "http_error" });
-      return new Response(JSON.stringify({ error: "Slack API error", status: slackRes.status }), {
+      return new Response(JSON.stringify({ error: "Slack API error", status: slackRes.status, retries }), {
         status: 502,
         headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
       });
     }
 
     await recordSlackUsage("notifications_sent", notificationType, slackRes.status);
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, retries }), {
       headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
     });
   } catch (err) {
