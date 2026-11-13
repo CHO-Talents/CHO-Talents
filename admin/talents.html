@@ -92,7 +92,7 @@
             <input type="text" id="talentDesc" style="flex:2;padding:0.6rem;border:1px solid var(--admin-border);border-radius:8px;" placeholder="사유" />
           </div>
           <div style="margin-top:0.5rem;">
-            <button class="btn-confirm" onclick="submitManualTalent()" style="width:100%;padding:0.5rem;">수동 적립</button>
+            <button class="btn-confirm" id="btnManualGive" onclick="submitManualTalent()" style="width:100%;padding:0.5rem;">수동 적립</button>
           </div>
         </details>
       </div>
@@ -175,6 +175,8 @@
     let talentUserName = '';
     let talentUserDeptId = null;
     let talentItemsRenderToken = 0;
+    let talentHistoryLoadToken = 0;
+    let talentItemsLoading = false;
     let talentType = 'earn';
     let currentTab = 'student';
     let usersLoadSequence = 0;
@@ -766,7 +768,20 @@
     }
 
     async function openTalentModal(userId, name, balance) {
+      if (_giveItemsBusy || _manualTalentBusy) return;
       if (typeof closeOpenActionMenus === 'function') closeOpenActionMenus();
+      ++talentItemsRenderToken;
+      ++talentHistoryLoadToken;
+      _weeklyGivenMap = {};
+      _weeklyGivenRecordsMap = {};
+      talentItemsLoading = true;
+      document.getElementById('talentItemBtns').textContent = '지급 항목을 불러오는 중...';
+      document.getElementById('talentHistory').textContent = '최근 내역을 불러오는 중...';
+      document.getElementById('btnConfirmGive').style.display = 'none';
+      document.getElementById('btnManualGive').disabled = true;
+      document.getElementById('talentAmount').value = '';
+      document.getElementById('talentDesc').value = '';
+      document.getElementById('manualGiveSection').open = false;
       talentUserId = userId;
       const targetUser = talentUserList.find(u => u.id === userId) || {};
       talentUserName = name || targetUser.display_name || targetUser.username || '';
@@ -783,11 +798,17 @@
       document.getElementById('manualGiveSection').style.display = (session.permissionRank || 0) >= 100 ? '' : 'none';
       syncOverrideControls();
       document.getElementById('talentModal').classList.remove('hidden');
-      await renderTalentItemButtons();
       loadTalentHistory(userId);
+      await renderTalentItemButtons();
     }
 
-    function closeTalentModal() { document.getElementById('talentModal').classList.add('hidden'); }
+    function closeTalentModal() {
+      if (_giveItemsBusy || _manualTalentBusy) return;
+      ++talentItemsRenderToken;
+      ++talentHistoryLoadToken;
+      talentItemsLoading = false;
+      document.getElementById('talentModal').classList.add('hidden');
+    }
 
     function setTalentType(type) {
       talentType = 'earn';
@@ -806,13 +827,21 @@
       const container = document.getElementById('talentItemBtns');
       const confirmBtn = document.getElementById('btnConfirmGive');
       const overrideEnabled = isOverrideWeekLimitEnabled();
+      talentItemsLoading = true;
+      container.textContent = '지급 항목을 불러오는 중...';
+      confirmBtn.style.display = 'none';
+      const manualBtn = document.getElementById('btnManualGive');
+      if (manualBtn) manualBtn.disabled = true;
 
       if (items.length === 0) {
         container.innerHTML = '<div style="color:var(--admin-text-muted);font-size:0.85rem;">등록된 항목이 없습니다.</div>';
         confirmBtn.style.display = 'none';
+        talentItemsLoading = false;
+        if (manualBtn) manualBtn.disabled = false;
         return;
       }
 
+      try {
       const prayerItem = items.find(i => i.target_type === 'teacher' && i.name === '특별새벽기도회 참석');
       const prayerWrap = document.getElementById('prayerDateWrap');
       const prayerSelect = document.getElementById('prayerDate');
@@ -828,7 +857,7 @@
       const grantDate = getUpcomingSundayKSTDate();
       let { data: weekEarns, error: weekEarnErr } = await _sb.from('talent_transactions')
         .select('id, talent_item_id, amount, description, grant_date, created_at, source, override_week_limit')
-        .eq('user_id', talentUserId)
+        .eq('user_id', previewUserId)
         .eq('type', 'earn')
         .eq('grant_date', grantDate)
         .not('talent_item_id', 'is', null)
@@ -836,32 +865,33 @@
       if (weekEarnErr && /column .*override_week_limit.*does not exist|schema cache/i.test(weekEarnErr.message || '')) {
         const fallback = await _sb.from('talent_transactions')
           .select('id, talent_item_id, amount, description, grant_date, created_at, source')
-          .eq('user_id', talentUserId)
+          .eq('user_id', previewUserId)
           .eq('type', 'earn')
           .eq('grant_date', grantDate)
           .not('talent_item_id', 'is', null)
           .order('grant_date', { ascending: true });
         weekEarns = fallback.data || [];
+        weekEarnErr = fallback.error;
       }
+      if (weekEarnErr) throw weekEarnErr;
 
       if (prayerItem && prayerSelect.value) {
         const prayerResult = await _sb.from('talent_transactions')
           .select('id, talent_item_id, amount, description, grant_date, attendance_date, created_at, source, override_week_limit')
-          .eq('user_id', talentUserId).eq('type', 'earn').eq('talent_item_id', prayerItem.id)
+          .eq('user_id', previewUserId).eq('type', 'earn').eq('talent_item_id', prayerItem.id)
           .eq('attendance_date', prayerSelect.value);
         if (prayerResult.error) {
-          container.textContent = '특새 참석일 조회에 실패했습니다. DB 변경 사항을 먼저 적용해주세요.';
-          confirmBtn.style.display = 'none';
-          return;
+          throw prayerResult.error;
         }
         weekEarns = (weekEarns || []).filter(t => t.talent_item_id !== prayerItem.id).concat(prayerResult.data || []);
       }
-      const { data: weekReturns } = await _sb.from('talent_transactions')
+      const { data: weekReturns, error: returnsError } = await _sb.from('talent_transactions')
         .select('amount, description, grant_date')
-        .eq('user_id', talentUserId)
+        .eq('user_id', previewUserId)
         .eq('type', 'use')
         .like('description', '\uBC18\uD658:%');
       if (renderToken !== talentItemsRenderToken || previewUserId !== talentUserId) return;
+      if (returnsError) throw returnsError;
       const cancelledById = new Set();
       const legacyRetCount = {};
       (weekReturns || []).forEach(r => {
@@ -941,7 +971,15 @@
           }
         </div>`;
       }).join('');
+      talentItemsLoading = false;
+      if (manualBtn) manualBtn.disabled = false;
       updateConfirmBtn();
+      } catch (error) {
+        if (renderToken !== talentItemsRenderToken || previewUserId !== talentUserId) return;
+        console.error('지급 항목 조회 실패:', error);
+        container.textContent = '지급 항목을 불러오지 못했습니다. 창을 닫고 다시 시도해주세요.';
+        confirmBtn.style.display = 'none';
+      }
     }
     async function cancelTalentItem(itemId, itemName, amount) {
       const records = _weeklyGivenRecordsMap[itemId] || [];
@@ -1017,10 +1055,10 @@
     function updateConfirmBtn() {
       const btn = document.getElementById('btnConfirmGive');
       if (!btn) return;
-      if (_giveItemsBusy) {
+      if (_giveItemsBusy || talentItemsLoading) {
         btn.style.display = 'block';
         btn.disabled = true;
-        btn.textContent = '처리 중...';
+        btn.textContent = _giveItemsBusy ? '처리 중...' : '지급 항목을 불러오는 중...';
         document.querySelectorAll('.talent-item-chk').forEach(chk => { chk.disabled = true; });
         return;
       }
@@ -1038,7 +1076,7 @@
     }
 
     async function confirmGiveItems() {
-      if (_giveItemsBusy) return;
+      if (_giveItemsBusy || talentItemsLoading) return;
       const chks = [...document.querySelectorAll('.talent-item-chk:not(:disabled):checked')];
       if (chks.length === 0) return;
       const overrideEnabled = isOverrideWeekLimitEnabled();
@@ -1159,7 +1197,7 @@
     }
 
     async function submitManualTalent() {
-      if (_manualTalentBusy) return;
+      if (_manualTalentBusy || talentItemsLoading) return;
       const errEl = document.getElementById('talentError');
       const amount = parseInt(document.getElementById('talentAmount').value);
       const desc = document.getElementById('talentDesc').value.trim();
@@ -1199,8 +1237,19 @@
     }
 
     async function loadTalentHistory(userId) {
-      const { data } = await fetchTalentHistory(userId, { limit: 10 });
+      const requestToken = ++talentHistoryLoadToken;
       const el = document.getElementById('talentHistory');
+      el.textContent = '최근 내역을 불러오는 중...';
+      let result;
+      try {
+        result = await fetchTalentHistory(userId, { limit: 10 });
+      } catch (error) {
+        if (requestToken === talentHistoryLoadToken && userId === talentUserId) el.textContent = '최근 내역을 불러오지 못했습니다.';
+        return;
+      }
+      if (requestToken !== talentHistoryLoadToken || userId !== talentUserId) return;
+      const { data, error } = result;
+      if (error) { el.textContent = '최근 내역을 불러오지 못했습니다.'; return; }
       if (!data || data.length === 0) { el.innerHTML = '<div style="color:var(--admin-text-muted);text-align:center;">내역 없음</div>'; return; }
       el.innerHTML = data.map(t => {
         const meta = getTalentHistoryTypeMeta(t);
