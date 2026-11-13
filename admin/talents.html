@@ -573,8 +573,8 @@
         renderTalentTable();
         await logInfo('ATTENDANCE_GIVE', {
           ...targetLogContext,
-          ...getTalentItemLogContext(attendItem.id, attendItem.name, attendItem.talent_amount),
-          변경내역: `출석 달란트 지급: ${userName} / 항목: ${attendItem.name} / 금액: ${fmtNum(attendItem.talent_amount)} 달란트`
+          ...getTalentItemLogContext(attendItem.id, attendItem.name, result?.amount ?? attendItem.talent_amount),
+          변경내역: `출석 달란트 지급: ${userName} / 항목: ${attendItem.name} / 금액: ${fmtNum(result?.amount ?? attendItem.talent_amount)} 달란트`
         });
         await loadUsers();
       } finally { _attendBusy = false; }
@@ -925,7 +925,7 @@
       const records = _weeklyGivenRecordsMap[itemId] || [];
       const txn = records[records.length - 1];
       if (!txn) return;
-      if (!confirm(`"${itemName}" 지급을 취소하시겠습니까? (${amount} 달란트 반환)`)) return;
+      if (!confirm(`"${itemName}" 지급을 취소하시겠습니까? (${txn.amount} 달란트 반환)`)) return;
       try {
         const desc = '[' + txn.id + '] ' + (txn.description || itemName);
         const result = await returnTalent(talentUserId, txn.amount, desc, session.id);

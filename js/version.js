@@ -2,9 +2,19 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '4.2.24',
-  date: '2026-11-10',
+  current: '4.2.25',
+  date: '2026-11-13',
   history: [
+    {
+      version: '4.2.25',
+      date: '2026-11-13',
+      title: '학생 달란트 2배 이벤트',
+      changes: [
+        '11월 15일 1~3부, 11월 22일 4~5부 학생에게 지정된 네 항목을 2배 지급합니다.',
+        '이벤트 지급 항목과 실제 지급액을 상세 내역에 표시하며 기존 지급 내역은 변경하지 않습니다.',
+        '운영 DB에 docs/TASK-119_student_double_talent_event.sql 적용이 필요합니다.'
+      ]
+    },
     {
       version: '4.2.24',
       date: '2026-11-10',

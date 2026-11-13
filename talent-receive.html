@@ -336,7 +336,7 @@
         session.talentBalance = rpcResult.balance;
         setSession(session);
 
-        const itemName = qr.description || 'QR 달란트';
+        const itemName = rpcResult.description || qr.description || 'QR 달란트';
         await logInfo('qr_scan', { 항목명: itemName, 금액: rpcResult.amount });
         const grantDate = getUpcomingSundayKSTDate();
         showResult('ok', `✅ ${rpcResult.amount} 달란트를 수령했습니다! (${itemName})\n지급 대상일: ${grantDate}`);
