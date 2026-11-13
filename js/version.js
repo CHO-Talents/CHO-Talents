@@ -2,9 +2,19 @@
  * 버전 관리 모듈 - CHO-Talents
  */
 const APP_VERSION = {
-  current: '4.2.25',
+  current: '4.2.26',
   date: '2026-11-13',
   history: [
+    {
+      version: '4.2.26',
+      date: '2026-11-13',
+      title: '달란트 지급 검증 및 이벤트 표시 보완',
+      changes: [
+        'QR 수령 시 본인과 대상 유형을 확인하고 항목별 지급 기준일 중복을 방지합니다.',
+        '달란트 관리에 실제 지급액과 서버가 계산한 지급 예정 금액을 표시하고, 이벤트 지급을 같은 항목으로 통계 집계합니다.',
+        '운영 DB에 docs/TASK-120_qr_event_review_fixes.sql 적용이 필요합니다.'
+      ]
+    },
     {
       version: '4.2.25',
       date: '2026-11-13',

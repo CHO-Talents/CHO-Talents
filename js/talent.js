@@ -39,6 +39,14 @@ function getUpcomingSundayKSTDate(date = new Date()) {
   return kstCalendarDate.toISOString().slice(0, 10);
 }
 
+// 거래 원문은 보존하고 통계 집계에서만 이벤트 접미사를 제거한다.
+function getTalentStatsItemLabel(transaction) {
+  const description = String(transaction?.description || '기타');
+  return transaction?.talent_item_id
+    ? description.replace(/ \(2배 이벤트\)$/, '')
+    : description;
+}
+
 async function fetchTalentBalance(userId) {
   if (!_sb) return 0;
   const { data, error } = await _sb

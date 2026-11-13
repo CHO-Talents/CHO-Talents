@@ -122,6 +122,7 @@
   <script src="../js/nav.js"></script>
   <script src="../js/page-size.js"></script>
   <script src="../js/table-sort.js"></script>
+  <script src="../js/talent.js"></script>
   <script>
     initSupabase();
     let session, allTxns = [], allProfiles = [], allDepts = [];
@@ -325,7 +326,7 @@
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
       const uniqueUsers = new Set(txns.map(t => t.user_id)).size;
       const byItem = {};
-      txns.forEach(t => { const k = t.description || '기타'; if (!byItem[k]) byItem[k] = { amount: 0, count: 0 }; byItem[k].amount += t.amount || 0; byItem[k].count++; });
+      txns.forEach(t => { const k = getTalentStatsItemLabel(t); if (!byItem[k]) byItem[k] = { amount: 0, count: 0 }; byItem[k].amount += t.amount || 0; byItem[k].count++; });
       const sorted = Object.entries(byItem).sort((a, b) => b[1].amount - a[1].amount);
 
       let html = `<div class="stats-summary">
@@ -445,7 +446,7 @@
         const key = `${dName}|${uName}|${prof.id}`;
         if (!byUser[key]) byUser[key] = { id: prof.id, dept: dName, name: uName, type: prof.user_type, classNum: prof.class_number || 0, permLevel: prof.permission_level || '', amount: 0, count: 0, items: {} };
         byUser[key].amount += t.amount || 0; byUser[key].count++;
-        const desc = t.description || '기타';
+        const desc = getTalentStatsItemLabel(t);
         byUser[key].items[desc] = (byUser[key].items[desc] || 0) + (t.amount || 0);
       });
       const allUsers = Object.values(byUser);
@@ -500,7 +501,7 @@
         const typeAvg = typeUsers > 0 ? Math.round(typeTotal / typeUsers) : 0;
 
         const byItem = {};
-        typeTxns.forEach(t => { const k = t.description || '기타'; if (!byItem[k]) byItem[k] = { amount: 0, count: 0 }; byItem[k].amount += t.amount || 0; byItem[k].count++; });
+        typeTxns.forEach(t => { const k = getTalentStatsItemLabel(t); if (!byItem[k]) byItem[k] = { amount: 0, count: 0 }; byItem[k].amount += t.amount || 0; byItem[k].count++; });
         const sorted = Object.entries(byItem).sort((a, b) => b[1].amount - a[1].amount);
 
         html += `<div class="type-section">
@@ -539,7 +540,7 @@
       const deptMap = {}; allDepts.forEach(d => { deptMap[d.id] = d.name; });
       const deptTxns = txns.filter(t => getDeptNameForTxn(t, profMap, deptMap) === deptName);
       const totalAmount = deptTxns.reduce((s, t) => s + (t.amount || 0), 0);
-      const itemSet = new Set(deptTxns.map(t => t.description || '기타'));
+      const itemSet = new Set(deptTxns.map(getTalentStatsItemLabel));
       const txnCount = deptTxns.length;
       const users = new Set(deptTxns.map(t => t.user_id));
       const allTotal = txns.reduce((s, t) => s + (t.amount || 0), 0);
@@ -548,7 +549,7 @@
 
       const byItem = {};
       deptTxns.forEach(t => {
-        const k = t.description || '기타';
+        const k = getTalentStatsItemLabel(t);
         if (!byItem[k]) byItem[k] = { count: 0, amount: 0 };
         byItem[k].count++;
         byItem[k].amount += t.amount || 0;
@@ -583,7 +584,7 @@
 
       const byItem = {};
       userTxns.forEach(t => {
-        const k = t.description || '기타';
+        const k = getTalentStatsItemLabel(t);
         if (!byItem[k]) byItem[k] = { amount: 0, count: 0 };
         byItem[k].amount += t.amount || 0;
         byItem[k].count++;
