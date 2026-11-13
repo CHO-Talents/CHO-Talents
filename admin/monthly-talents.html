@@ -535,7 +535,7 @@
       hint.textContent = `(${selectedItemIds.size}개 선택됨)`;
       list.innerHTML = items.map(item => `<label class="grant-item">
         <input type="checkbox" value="${item.id}" ${selectedItemIds.has(item.id) ? 'checked' : ''} onchange="toggleScheduleItem('${item.id}', this.checked)" />
-        <span>${escapeHtml(item.emoji || '')} ${escapeHtml(item.name)}</span><strong>+${fmtNum(item.talent_amount)}</strong>
+        <span>${escapeHtml(item.emoji || '')} ${escapeHtml(item.name)}</span><strong>기본 +${fmtNum(item.talent_amount)}</strong>
       </label>`).join('');
     }
 

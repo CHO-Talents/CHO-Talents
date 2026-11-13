@@ -174,6 +174,7 @@
     let talentUserId = null;
     let talentUserName = '';
     let talentUserDeptId = null;
+    let talentItemsRenderToken = 0;
     let talentType = 'earn';
     let currentTab = 'student';
     let usersLoadSequence = 0;
@@ -799,6 +800,8 @@
     let _manualTalentBusy = false;
 
     async function renderTalentItemButtons() {
+      const renderToken = ++talentItemsRenderToken;
+      const previewUserId = talentUserId;
       const items = talentItems.filter(i => i.target_type === currentTab && i.is_active);
       const container = document.getElementById('talentItemBtns');
       const confirmBtn = document.getElementById('btnConfirmGive');
@@ -858,6 +861,7 @@
         .eq('user_id', talentUserId)
         .eq('type', 'use')
         .like('description', '\uBC18\uD658:%');
+      if (renderToken !== talentItemsRenderToken || previewUserId !== talentUserId) return;
       const cancelledById = new Set();
       const legacyRetCount = {};
       (weekReturns || []).forEach(r => {
@@ -884,9 +888,27 @@
         _weeklyGivenMap[itemId] = record;
       });
 
+      let previewByItem = {};
+      let previewAvailable = false;
+      try {
+        const preview = await _sb.rpc('get_talent_grant_preview', {
+          p_user_id: previewUserId, p_grant_date: grantDate
+        });
+        if (!preview.error && Array.isArray(preview.data)) {
+          previewAvailable = true;
+          previewByItem = Object.fromEntries(preview.data.map(row => [row.item_id, row]));
+        }
+      } catch (error) {
+        console.warn('지급 예정 금액 조회 실패', error);
+      }
+      if (renderToken !== talentItemsRenderToken || previewUserId !== talentUserId) return;
       container.innerHTML = items.map(i => {
         const records = _weeklyGivenRecordsMap[i.id] || [];
         const latest = records[records.length - 1];
+        const preview = previewByItem[i.id];
+        const expectedAmount = preview?.amount ?? i.talent_amount;
+        const expectedLabel = `${previewAvailable && preview ? '' : '기본 '}+${fmtNum(expectedAmount)}${preview?.is_event ? ' (2배 이벤트)' : ''}`;
+        const actualLabel = latest ? `+${fmtNum(latest.amount)}${String(latest.description || '').endsWith(' (2배 이벤트)') ? ' (2배 이벤트)' : ''}` : expectedLabel;
         const done = records.length > 0;
         const canReissue = done && overrideEnabled && !(i.target_type === 'teacher' && i.name === '특별새벽기도회 참석');
         const isDarkTheme = document.documentElement.getAttribute('data-theme') === 'dark';
@@ -907,14 +929,14 @@
           ${done
             ? canReissue
               ? `<label style="flex:1;display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
-                   <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${i.talent_amount}" data-overridden="true" onchange="updateConfirmBtn()" />
-                   ${i.name} <strong style="color:#2b8a3e;">+${i.talent_amount}</strong> ${statusTag}${countTag}${latest?.source === 'qr' ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;">QR</span>' : ''}
+                   <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${expectedAmount}" data-overridden="true" onchange="updateConfirmBtn()" />
+                   ${i.name} <strong style="color:#2b8a3e;">예정 ${expectedLabel}</strong> <span>기지급 ${actualLabel}</span> ${statusTag}${countTag}${latest?.source === 'qr' ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;">QR</span>' : ''}
                  </label>`
-              : `<span style="flex:1;">${i.name} <strong style="color:#868e96;">+${i.talent_amount}</strong> ${statusTag}${countTag}${latest?.source === 'qr' ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;">QR</span>' : ''}</span>
+              : `<span style="flex:1;">${i.name} <strong style="color:#868e96;">${actualLabel}</strong> ${statusTag}${countTag}${latest?.source === 'qr' ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#d0ebff;color:#1971c2;">QR</span>' : ''}</span>
                  <button class="filter-btn" style="font-size:0.72rem;padding:0.2rem 0.5rem;color:#e03131;border-color:#e03131;" onclick="cancelTalentItem('${i.id}','${i.name}',${i.talent_amount})">취소</button>`
             : `<label style="flex:1;display:flex;align-items:center;gap:0.4rem;cursor:pointer;">
-                 <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${i.talent_amount}" data-overridden="${overrideEnabled && done ? 'true' : 'false'}" onchange="updateConfirmBtn()" />
-                 ${i.name} <strong style="color:#2b8a3e;">+${i.talent_amount}</strong>${done ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#fff3bf;color:#e67700;">예외</span>' : ''}
+                 <input type="checkbox" class="talent-item-chk" value="${i.id}" data-name="${i.name}" data-amount="${expectedAmount}" data-overridden="${overrideEnabled && done ? 'true' : 'false'}" onchange="updateConfirmBtn()" />
+                 ${i.name} <strong style="color:#2b8a3e;">${expectedLabel}</strong>${done ? ' <span style="font-size:0.65rem;padding:0.1rem 0.3rem;border-radius:3px;background:#fff3bf;color:#e67700;">예외</span>' : ''}
                </label>`
           }
         </div>`;

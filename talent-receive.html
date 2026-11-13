@@ -275,29 +275,6 @@
           }
         }
 
-        if (qr.talent_item_id) {
-          const paymentDate = getUpcomingSundayKSTDate();
-          try {
-            const { data: adminEarns } = await _sb.from('talent_transactions')
-              .select('id').eq('user_id', session.id)
-              .eq('talent_item_id', qr.talent_item_id)
-              .eq('type', 'earn').eq('source', 'admin')
-              .eq('grant_date', paymentDate);
-            if (adminEarns && adminEarns.length > 0) {
-              showResult('fail', '이번 지급 대상일에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
-            }
-          } catch (srcErr) {
-            const { data: allEarns } = await _sb.from('talent_transactions')
-              .select('id, created_by').eq('user_id', session.id)
-              .eq('talent_item_id', qr.talent_item_id)
-              .eq('type', 'earn')
-              .eq('grant_date', paymentDate);
-            if (allEarns && allEarns.some(e => e.created_by !== session.id)) {
-              showResult('fail', '이번 지급 대상일에 관리자로부터 이미 해당 항목을 지급받았습니다.'); return;
-            }
-          }
-        }
-
         const repeatType = qr.repeat_type || 'none';
         if (repeatType !== 'none') {
           const canReceive = checkRepeatEligibility(qr);
@@ -327,6 +304,8 @@
         if (rpcResult && rpcResult.success === false) {
           if (rpcResult.error === 'Already received') {
             showResult('fail', '이미 수령한 코드입니다.');
+          } else if (String(rpcResult.error || '').startsWith('Already given this item on this payment date')) {
+            showResult('fail', '이번 지급 대상일에 이미 해당 항목을 지급받았습니다.');
           } else {
             showResult('fail', '수령 실패: ' + rpcResult.error);
           }

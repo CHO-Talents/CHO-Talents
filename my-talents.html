@@ -214,7 +214,7 @@
       const total = txns.reduce((s, t) => s + (t.amount || 0), 0);
       const byDesc = {};
       txns.forEach(t => {
-        const key = t.description || '기타';
+        const key = getTalentStatsItemLabel(t);
         if (!byDesc[key]) byDesc[key] = { count: 0, amount: 0 };
         byDesc[key].count++;
         byDesc[key].amount += t.amount || 0;
