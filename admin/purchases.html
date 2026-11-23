@@ -71,14 +71,14 @@
         <option value="">전체 부서</option>
       </select>
       <span style="margin-left:0.3rem;font-size:0.82rem;color:var(--admin-text-muted);">기간:</span>
-      <input type="date" id="dateFrom" onchange="orderPage=1;renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
+      <input type="date" id="dateFrom" aria-label="검색 시작일" onchange="onOrderPeriodChange()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="font-size:0.82rem;">~</span>
-      <input type="date" id="dateTo" onchange="orderPage=1;renderOrders()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
+      <input type="date" id="dateTo" aria-label="검색 종료일" onchange="onOrderPeriodChange()" style="padding:0.3rem;border:1px solid var(--admin-border);border-radius:6px;font-size:0.82rem;" />
       <span style="display:inline-flex;gap:0.2rem;">
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">오늘</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1주</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('month')">1달</button>
-        <button class="filter-btn" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('year')">1년</button>
+        <button type="button" class="filter-btn" data-order-period="today" aria-pressed="false" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('today')">오늘</button>
+        <button type="button" class="filter-btn" data-order-period="week" aria-pressed="false" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('week')">1주</button>
+        <button type="button" class="filter-btn" data-order-period="month" aria-pressed="false" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('month')">1달</button>
+        <button type="button" class="filter-btn" data-order-period="year" aria-pressed="false" style="padding:0.2rem 0.5rem;font-size:0.72rem;" onclick="setOrderPeriod('year')">1년</button>
       </span>
     </div>
 
@@ -190,19 +190,27 @@
       updatePendingBadge();
       updateNavOrderBadge();
       updateLogBadge();
-      setOrderPeriod('week');
+      setOrderPeriod('year');
       await loadOrders();
     })();
 
     function setOrderPeriod(type) {
-      const today = new Date();
-      const todayStr = today.toISOString().slice(0, 10);
+      const todayStr = formatKSTDateInput();
       let fromStr = todayStr;
-      if (type === 'week') { const d = new Date(today); d.setDate(d.getDate() - 6); fromStr = d.toISOString().slice(0, 10); }
+      if (type === 'week') { fromStr = addDateInputDays(todayStr, -6); }
       else if (type === 'month') { fromStr = todayStr.slice(0, 8) + '01'; }
       else if (type === 'year') { fromStr = todayStr.slice(0, 4) + '-01-01'; }
       document.getElementById('dateFrom').value = fromStr;
       document.getElementById('dateTo').value = todayStr;
+      onOrderPeriodChange(type);
+    }
+
+    function onOrderPeriodChange(type) {
+      document.querySelectorAll('[data-order-period]').forEach(button => {
+        const selected = button.dataset.orderPeriod === type;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', String(selected));
+      });
       orderPage = 1;
       renderOrders();
     }
@@ -325,6 +333,18 @@
     }
 
     const _ORDER_STATUS_RANK = { requested:1, preparing:2, purchased:3, delivered:4, cancelled:5 };
+
+    function filterOrdersByPeriod(orders) {
+      const dateFrom = document.getElementById('dateFrom').value;
+      const dateTo = document.getElementById('dateTo').value;
+      if (!dateFrom && !dateTo) return orders;
+      const start = dateFrom ? Date.parse(`${dateFrom}T00:00:00+09:00`) : -Infinity;
+      const end = dateTo ? Date.parse(`${addDateInputDays(dateTo, 1)}T00:00:00+09:00`) : Infinity;
+      return orders.filter(order => {
+        const createdAt = Date.parse(order.created_at);
+        return createdAt >= start && createdAt < end;
+      });
+    }
     function getVisibleOrders() {
       let orders;
       if (currentPTab === 'all') {
@@ -335,10 +355,7 @@
       }
       const deptVal = document.getElementById('deptFilter').value;
       if (deptVal) orders = orders.filter(o => o._deptName === deptVal);
-      const dateFrom = document.getElementById('dateFrom').value;
-      const dateTo = document.getElementById('dateTo').value;
-      if (dateFrom) orders = orders.filter(o => (o.created_at || '').slice(0, 10) >= dateFrom);
-      if (dateTo) orders = orders.filter(o => (o.created_at || '').slice(0, 10) <= dateTo);
+      orders = filterOrdersByPeriod(orders);
       orders.sort((a, b) => {
         const sA = _ORDER_STATUS_RANK[a.status] ?? 9;
         const sB = _ORDER_STATUS_RANK[b.status] ?? 9;
@@ -639,10 +656,7 @@
       let orders = [...allOrders];
       const deptVal = document.getElementById('deptFilter').value;
       if (deptVal) orders = orders.filter(o => o._deptName === deptVal);
-      const dateFrom = document.getElementById('dateFrom').value;
-      const dateTo = document.getElementById('dateTo').value;
-      if (dateFrom) orders = orders.filter(o => (o.created_at || '').slice(0, 10) >= dateFrom);
-      if (dateTo) orders = orders.filter(o => (o.created_at || '').slice(0, 10) <= dateTo);
+      orders = filterOrdersByPeriod(orders);
       const counts = { all: orders.length, requested: 0, preparing: 0, purchased: 0, delivered: 0, cancelled: 0 };
       orders.forEach(o => {
         if (counts[o.status] !== undefined) counts[o.status]++;

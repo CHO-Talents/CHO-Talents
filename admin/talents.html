@@ -32,7 +32,7 @@
         </div>
       </div>
       <table class="admin-table" id="talentTable">
-        <thead><tr><th data-sort-key="display_name">이름</th><th data-sort-key="_deptName">부서</th><th data-sort-key="class_number" data-sort-type="number">반</th><th data-sort-key="talent_balance" data-sort-type="number">달란트</th><th class="hide-mobile" data-sort-key="_usedTalent" data-sort-type="number">사용 달란트</th><th class="hide-mobile" data-sort-key="_totalTalent" data-sort-type="number">누적 달란트</th><th>관리</th></tr></thead>
+        <thead><tr><th data-sort-key="display_name">이름</th><th data-sort-key="_deptName">부서</th><th data-sort-key="class_number" data-sort-type="number">반</th><th data-sort-key="talent_balance" data-sort-type="number">달란트 (사용 가능)</th><th class="hide-mobile" data-sort-key="_usedTalent" data-sort-type="number">사용 달란트</th><th class="hide-mobile" data-sort-key="_totalTalent" data-sort-type="number">누적 달란트</th><th>관리</th></tr></thead>
         <tbody id="userList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="talentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
@@ -62,8 +62,8 @@
     <div class="modal-box" style="max-width:500px;">
       <h3 class="modal-title" id="talentTitle">달란트 관리</h3>
       <div style="text-align:center;margin-bottom:1rem;">
-        <div style="font-size:0.85rem;color:var(--admin-text-muted);">현재 잔액</div>
-        <div style="font-size:2rem;font-weight:800;" id="talentBalance">0</div>
+        <div style="font-size:0.85rem;color:var(--admin-text-muted);">현재 잔액 (사용 가능)</div>
+        <div style="font-size:2rem;font-weight:800;" id="talentBalance">-</div>
       </div>
       <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;" id="talentTypeArea">
         <button class="filter-btn" id="btnEarn" style="flex:1;padding:0.6rem;background:#51cf66;color:#fff;border-color:#51cf66;">적립</button>
@@ -446,7 +446,7 @@
         <td>${dn}${(isSelf || isAdminLevel(session)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + u.username + ')</span>' : ''}</td>
         <td>${getDeptName(u.department_id)}</td>
         <td>${classLabel}</td>
-        <td style="font-weight:700;color:#2b8a3e;">${fmtNum(u.talent_balance || 0)}</td>
+        <td style="font-weight:700;color:#2b8a3e;">${formatTalentBalance(u.talent_balance ?? 0, u.pending_talent)}</td>
         <td class="hide-mobile" style="color:#e03131;">${fmtNum(sm.used)}</td>
         <td class="hide-mobile" style="color:#1971c2;">${fmtNum(sm.earned)}</td>
         <td>
@@ -454,7 +454,7 @@
           <div class="mgmt-dropdown" onclick="event.stopPropagation()">
             <button class="filter-btn" onclick="toggleMgmt(event,this)">관리 ▾</button>
             <div class="mgmt-menu">
-              ${canGiveTalent(u) ? `<a onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}',${u.talent_balance || 0})">💰 달란트 지급</a>` : ''}
+              ${canGiveTalent(u) ? `<a onclick="openTalentModal('${u.id}','${dn.replace(/'/g,"\\'")}')">💰 달란트 지급</a>` : ''}
               <a onclick="openDetailModal('${u.id}','${dn.replace(/'/g,"\\'")}')">📋 상세</a>
             </div>
           </div>
@@ -631,8 +631,8 @@
           <div style="font-size:1.5rem;font-weight:800;color:#c2255c;">-${summary.returned}</div>
         </div>
         <div style="flex:1;text-align:center;padding:0.8rem;background:#e7f5ff;border-radius:8px;">
-          <div style="font-size:0.8rem;color:#868e96;">잔여</div>
-          <div style="font-size:1.5rem;font-weight:800;color:#1971c2;">${summary.balance}</div>
+          <div style="font-size:0.8rem;color:#868e96;">잔액 (사용 가능)</div>
+          <div style="font-size:1.5rem;font-weight:800;color:#1971c2;">${formatTalentBalance(summary.balance, summary.pendingTalent)}</div>
         </div>`;
       detailUserId = userId;
       detailHistoryPage = 1;
@@ -767,7 +767,7 @@
       await loadUsers();
     }
 
-    async function openTalentModal(userId, name, balance) {
+    async function openTalentModal(userId, name) {
       if (_giveItemsBusy || _manualTalentBusy) return;
       if (typeof closeOpenActionMenus === 'function') closeOpenActionMenus();
       ++talentItemsRenderToken;
@@ -788,7 +788,7 @@
       talentUserDeptId = targetUser.department_id || null;
       talentType = 'earn';
       document.getElementById('talentTitle').textContent = `${name} - 달란트 관리`;
-      document.getElementById('talentBalance').textContent = fmtNum(balance);
+      document.getElementById('talentBalance').textContent = formatTalentBalance(targetUser.talent_balance, targetUser.pending_talent);
       document.getElementById('talentError').classList.remove('show');
       setTalentType('earn');
       const overrideChk = document.getElementById('overrideWeekLimit');
@@ -800,6 +800,14 @@
       document.getElementById('talentModal').classList.remove('hidden');
       loadTalentHistory(userId);
       await renderTalentItemButtons();
+    }
+
+    async function refreshTalentModalBalance(userId) {
+      const modalToken = talentHistoryLoadToken;
+      const current = await fetchTalentBalanceDetails(userId);
+      if (talentUserId === userId && modalToken === talentHistoryLoadToken) {
+        document.getElementById('talentBalance').textContent = formatTalentBalance(current?.balance, current?.pendingTalent);
+      }
     }
 
     function closeTalentModal() {
@@ -986,30 +994,36 @@
       const txn = records[records.length - 1];
       if (!txn) return;
       if (!confirm(`"${itemName}" 지급을 취소하시겠습니까? (${txn.amount} 달란트 반환)`)) return;
+      const userId = talentUserId;
+      const userName = talentUserName;
+      const modalToken = talentHistoryLoadToken;
       try {
         const desc = '[' + txn.id + '] ' + (txn.description || itemName);
-        const result = await returnTalent(talentUserId, txn.amount, desc, session.id);
+        const result = await returnTalent(userId, txn.amount, desc, session.id);
         if (result && result.success === false) {
           alert('취소 실패: ' + tErr(result.error));
           return;
         }
         await logInfo('TALENT_ITEM_CANCEL', {
-          ...getTalentTargetLogContext(talentUserId, talentUserName),
+          ...getTalentTargetLogContext(userId, userName),
           ...getTalentItemLogContext(itemId, itemName, txn.amount),
           txnId: txn.id,
-          변경내역: `달란트 항목 취소: ${talentUserName} / 항목: ${itemName} / 금액: ${fmtNum(txn.amount)} 달란트`
+          변경내역: `달란트 항목 취소: ${userName} / 항목: ${itemName} / 금액: ${fmtNum(txn.amount)} 달란트`
         });
-        records.pop();
-        if (records.length === 0) {
-          delete _weeklyGivenRecordsMap[itemId];
-          delete _weeklyGivenMap[itemId];
-        } else {
-          _weeklyGivenMap[itemId] = records[records.length - 1];
+        if (modalToken === talentHistoryLoadToken) {
+          records.pop();
+          if (records.length === 0) {
+            delete _weeklyGivenRecordsMap[itemId];
+            delete _weeklyGivenMap[itemId];
+          } else {
+            _weeklyGivenMap[itemId] = records[records.length - 1];
+          }
+          await refreshTalentModalBalance(userId);
+          if (modalToken === talentHistoryLoadToken) {
+            await Promise.all([renderTalentItemButtons(), loadTalentHistory(userId)]);
+          }
         }
-        const bal = await fetchTalentBalance(talentUserId);
-        document.getElementById('talentBalance').textContent = fmtNum(bal);
-        await renderTalentItemButtons();
-        await loadTalentHistory(talentUserId);
+        await loadUsers();
       } catch (e) {
         alert('취소 오류: ' + (e.message || e));
       }
@@ -1104,7 +1118,6 @@
       if (!confirm(`${chks.length}건의 달란트를 지급하시겠습니까?\n항목: ${names}${exceptionMessage}`)) return;
       const errEl = document.getElementById('talentError');
       errEl.classList.remove('show');
-      let lastBalance = 0;
       let requestCount = 0;
       let giveCount = 0;
       _giveItemsBusy = true;
@@ -1156,7 +1169,6 @@
             if (!_weeklyGivenRecordsMap[chk.value]) _weeklyGivenRecordsMap[chk.value] = [];
             _weeklyGivenRecordsMap[chk.value].push(record);
             _weeklyGivenMap[chk.value] = record;
-            lastBalance = result?.balance;
             giveCount += 1;
           } catch (err) {
             await logError('TALENT_GIVE_ITEM_ERROR', {
@@ -1179,11 +1191,7 @@
             변경내역: `${targetLogContext.targetName || talentUserName}에게 달란트 항목 지급: ${names} / 즉시 지급 ${giveCount}건 / 예외 요청 ${requestCount}건`
           });
         }
-        if (giveCount > 0 && lastBalance != null) {
-          document.getElementById('talentBalance').textContent = fmtNum(lastBalance);
-        } else {
-          document.getElementById('talentBalance').textContent = fmtNum(await fetchTalentBalance(talentUserId));
-        }
+        await refreshTalentModalBalance(talentUserId);
         if (requestCount > 0 && !errEl.classList.contains('show')) {
           alert(`예외 지급 요청 ${requestCount}건이 등록되었습니다.\n전도사님 이상 승인 후 지급됩니다.`);
         }
@@ -1217,7 +1225,7 @@
           설명: desc,
           변경내역: `달란트 수동 지급: ${targetLogContext.targetName || talentUserName} / 금액: ${fmtNum(amount)} 달란트 / 사유: ${desc}`
         });
-        document.getElementById('talentBalance').textContent = fmtNum(result.balance);
+        await refreshTalentModalBalance(talentUserId);
         document.getElementById('talentAmount').value = '';
         document.getElementById('talentDesc').value = '';
         errEl.classList.remove('show');
