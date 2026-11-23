@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>부서별 달란트 잔액</title>
+  <style>
+:root {
+  color-scheme: light;
+  --bg: #f3f6fa;
+  --paper: #ffffff;
+  --ink: #152b43;
+  --muted: #495f76;
+  --line: #d5e0eb;
+  --blue: #195c88;
+  --pale: #eaf4fa;
+  --round: 12px;
+  font-family: 'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-size: 15px; line-height: 1.55; }
+main { width: min(1120px, calc(100% - 48px)); margin: 52px auto; }
+h1, h2, h3, dl, dd, p { margin: 0; }
+h1 { font-size: clamp(1.9rem, 3.5vw, 2.8rem); letter-spacing: -.06em; line-height: 1.2; }
+h2 { font-size: 1.16rem; margin: 0 0 12px; letter-spacing: -.025em; }
+h3 { font-size: 1.03rem; margin-bottom: 10px; }
+.context { margin: 14px 0 9px; color: var(--muted); }
+.dates { display: flex; flex-wrap: wrap; gap: 5px 24px; color: var(--muted); font-size: .93rem; }
+.dates div { display: flex; gap: 8px; align-items: baseline; }
+.dates dd { color: var(--ink); font-weight: 700; }
+.report { margin-top: 27px; background: var(--paper); border: 1px solid var(--line); border-radius: var(--round); box-shadow: 0 10px 28px #1739520e; }
+[role="tablist"] { display: flex; flex-wrap: wrap; gap: 4px; padding: 9px 16px 0; border-bottom: 1px solid var(--line); }
+[role="tab"] { font: inherit; font-weight: 700; color: var(--muted); background: transparent; padding: 11px 15px 9px; border: 0; border-bottom: 3px solid transparent; border-radius: 8px 8px 0 0; cursor: pointer; }
+[role="tab"]:hover { background: #f0f5f9; }
+[role="tab"][aria-selected="true"] { color: var(--blue); border-bottom-color: var(--blue); background: var(--pale); }
+:focus-visible { outline: 3px solid #2877ab; outline-offset: 2px; }
+[role="tabpanel"] { padding: 23px 24px 26px; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 25px; gap: 10px; }
+.stats > div { background: var(--pale); border: 1px solid #d5e9f5; border-radius: 9px; padding: 11px 15px; }
+.stats dt { font-size: .88rem; color: var(--muted); font-weight: 700; }
+.stats dd { color: var(--blue); font-size: 1.66rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+.stats dd span { margin-left: 5px; font-size: .83rem; font-weight: 700; }
+.department-title { margin-bottom: 12px; }
+.stats-dept { grid-template-columns: repeat(auto-fit, minmax(116px, 1fr)); }
+.stats-dept > div { padding: 9px 10px; }
+.stats-dept dd { font-size: 1.26rem; }
+.table-hint { display: none; }
+.table-scroll { overflow: auto; border: 1px solid var(--line); border-radius: 9px; }
+table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+.summary-table { min-width: 700px; }
+.student-table { min-width: 585px; }
+th, td { padding: 10px 12px; text-align: left; }
+thead { color: white; background: #1d3854; font-size: .88rem; }
+tbody tr + tr > * { border-top: 1px solid #e8eef3; }
+tbody tr.class-start > * { border-top-color: #bdcedd; }
+tbody tr:hover { background: #f5f8fb; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+tbody .emphasis { color: var(--blue); background: #eef6fb; font-weight: 800; }
+tfoot { background: #dcebf5; border-top: 1px solid #b7cfdf; font-weight: 800; }
+.unassigned { color: var(--muted); }
+.empty { padding: 18px; background: #f8fafc; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); }
+.guide { margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--line); }
+.guide dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 18px; }
+.guide dl div { padding: 9px 11px; background: #f5f8fb; border-radius: 7px; }
+.guide dt { font-weight: 700; font-size: .89rem; }
+.guide dd { word-break: keep-all; color: var(--muted); font-size: .88rem; line-height: 1.55; margin-top: 2px; }
+@media (max-width: 650px) {
+  main { width: calc(100% - 24px); margin: 28px auto; }
+  [role="tablist"] { padding: 7px 8px 0; }
+  [role="tab"] { padding: 9px 11px 7px; font-size: .9rem; }
+  [role="tabpanel"] { padding: 14px; }
+  .stats { gap: 6px; margin-bottom: 20px; }
+  .stats > div { padding: 8px 7px; }
+  .stats dt { font-size: .75rem; }
+  .stats dd { font-size: 1.35rem; }
+  .stats dd span { font-size: .72rem; margin-left: 3px; }
+  .guide dl { grid-template-columns: 1fr; }
+  .table-hint { display: block; margin-bottom: 7px; color: var(--muted); font-size: .8rem; }
+}
+</style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>부서별 달란트 잔액</h1>
+      <p class="context">11월 22일에 상품 주문 기록이 없고 사용 가능 달란트가 남은 학생의 현황입니다.</p>
+      <dl class="dates">
+        <div><dt>주문 기준일</dt><dd><time datetime="2026-11-22">2026-11-22</time></dd></div>
+        <div><dt>잔액 조회일</dt><dd><time datetime="2026-11-23">2026-11-23</time></dd></div>
+      </dl>
+    </header>
+    <div class="report">
+      <div role="tablist" aria-label="집계 시트"><button type="button" id="tab-0" role="tab" aria-controls="panel-0" aria-selected="true" tabindex="0">전체 요약</button><button type="button" id="tab-1" role="tab" aria-controls="panel-1" aria-selected="false" tabindex="-1">1부</button><button type="button" id="tab-2" role="tab" aria-controls="panel-2" aria-selected="false" tabindex="-1">2부</button><button type="button" id="tab-3" role="tab" aria-controls="panel-3" aria-selected="false" tabindex="-1">3부</button><button type="button" id="tab-4" role="tab" aria-controls="panel-4" aria-selected="false" tabindex="-1">4부</button><button type="button" id="tab-5" role="tab" aria-controls="panel-5" aria-selected="false" tabindex="-1">5부</button><button type="button" id="tab-6" role="tab" aria-controls="panel-6" aria-selected="false" tabindex="-1">예배부</button></div>
+      
+<section id="panel-0" role="tabpanel" aria-labelledby="tab-0" tabindex="0">
+  <dl class="stats"><div><dt>미주문·잔액 보유</dt><dd>27<span>명</span></dd></div><div><dt>사용 가능 합계</dt><dd>586<span>달란트</span></dd></div><div><dt>예약액 없음</dt><dd>20<span>명</span></dd></div></dl>
+  <h2 id="summary-heading">부서별 집계</h2>
+  <p class="table-hint">표를 좌우로 스크롤하면 나머지 열을 볼 수 있습니다.</p><div class="table-scroll" tabindex="0" role="region" aria-labelledby="summary-heading"><table class="summary-table" id="summary-table"><thead><tr><th scope="col">부서</th><th class="num" scope="col">등록 학생</th><th class="num" scope="col">주문 학생</th><th class="num" scope="col">주문 0건</th><th class="num" scope="col">미주문·잔액 보유</th><th class="num" scope="col">예약액 없음</th><th class="num" scope="col">예약액 있음</th><th class="num" scope="col">사용 가능 합계</th></tr></thead><tbody><tr><th scope="row">1부</th><td class="num">23</td><td class="num">16</td><td class="num">7</td><td class="num emphasis">6</td><td class="num">4</td><td class="num">2</td><td class="num emphasis">129</td></tr><tr><th scope="row">2부</th><td class="num">36</td><td class="num">34</td><td class="num">2</td><td class="num emphasis">0</td><td class="num">0</td><td class="num">0</td><td class="num emphasis">0</td></tr><tr><th scope="row">3부</th><td class="num">33</td><td class="num">21</td><td class="num">12</td><td class="num emphasis">11</td><td class="num">6</td><td class="num">5</td><td class="num emphasis">311</td></tr><tr><th scope="row">4부</th><td class="num">36</td><td class="num">33</td><td class="num">3</td><td class="num emphasis">2</td><td class="num">2</td><td class="num">0</td><td class="num emphasis">36</td></tr><tr><th scope="row">5부</th><td class="num">32</td><td class="num">22</td><td class="num">10</td><td class="num emphasis">8</td><td class="num">8</td><td class="num">0</td><td class="num emphasis">110</td></tr><tr><th scope="row">예배부</th><td class="num">0</td><td class="num">0</td><td class="num">0</td><td class="num emphasis">0</td><td class="num">0</td><td class="num">0</td><td class="num emphasis">0</td></tr></tbody><tfoot><tr><th scope="row">전체</th><td class="num">160</td><td class="num">126</td><td class="num">34</td><td class="num emphasis">27</td><td class="num">20</td><td class="num">7</td><td class="num emphasis">586</td></tr></tfoot></table></div>
+  <section class="guide"><h3>집계 항목 안내</h3><dl><div><dt>부서</dt><dd>학생이 사용자 관리에서 소속된 부서. ‘전체’는 표시된 모든 부서를 합친 값입니다.</dd></div><div><dt>등록 학생</dt><dd>11월 23일 조회 시점에 해당 부서에 등록된 전체 학생 수입니다.</dd></div><div><dt>주문 학생</dt><dd>11월 22일에 상품 주문 기록이 1건 이상 있는 학생 수입니다. 여러 건을 주문해도 1명으로 세며, 취소된 주문만 있는 학생도 포함합니다.</dd></div><div><dt>주문 0건</dt><dd>11월 22일에 상품 주문 기록이 한 건도 없는 학생 수입니다. 등록 학생 수에서 주문 학생 수를 빼면 됩니다.</dd></div><div><dt>미주문·잔액 보유</dt><dd>주문 0건인 학생 중 11월 23일 조회 시점에 사용 가능 달란트가 1 이상인 학생 수입니다.</dd></div><div><dt>예약액 없음</dt><dd>미주문·잔액 보유 학생 중 현재 구매 예약액이 0인 학생 수입니다.</dd></div><div><dt>예약액 있음</dt><dd>미주문·잔액 보유 학생 중 현재 구매 예약액이 1 이상인 학생 수입니다.</dd></div><div><dt>사용 가능 합계</dt><dd>미주문·잔액 보유 학생의 사용 가능 달란트를 모두 더한 값입니다.</dd></div></dl></section>
+</section>
+<section id="panel-1" role="tabpanel" aria-labelledby="tab-1" tabindex="0" hidden>
+  <h2 class="department-title">1부 현황</h2>
+  <dl class="stats stats-dept"><div><dt>등록 학생</dt><dd>23<span>명</span></dd></div><div><dt>주문 학생</dt><dd>16<span>명</span></dd></div><div><dt>주문 0건</dt><dd>7<span>명</span></dd></div><div><dt>미주문·잔액 보유</dt><dd>6<span>명</span></dd></div><div><dt>예약액 없음</dt><dd>4<span>명</span></dd></div><div><dt>예약액 있음</dt><dd>2<span>명</span></dd></div><div><dt>사용 가능 합계</dt><dd>129<span>달란트</span></dd></div></dl>
+  <h2 id="student-heading-1">반별 학생 명단</h2>
+  <p class="table-hint">표를 좌우로 스크롤하면 나머지 열을 볼 수 있습니다.</p><div class="table-scroll" tabindex="0" role="region" aria-labelledby="student-heading-1"><table class="student-table" id="student-table-1"><thead><tr><th scope="col">반</th><th scope="col">담임교사</th><th scope="col">이름</th><th class="num" scope="col">보유 잔액</th><th class="num" scope="col">구매 예약액</th><th class="num" scope="col">사용 가능 달란트</th></tr></thead><tbody><tr><td>1반</td><td>홍성택</td><td>정이준</td><td class="num">78</td><td class="num">62</td><td class="num emphasis">16</td></tr><tr class="class-start"><td>2반</td><td>김은진</td><td>이재율</td><td class="num">55</td><td class="num">0</td><td class="num emphasis">55</td></tr><tr class="class-start"><td>5반</td><td>장영호</td><td>위서준</td><td class="num">30</td><td class="num">0</td><td class="num emphasis">30</td></tr><tr class="class-start"><td>7반</td><td>김하니</td><td>박윤아</td><td class="num">57</td><td class="num">52</td><td class="num emphasis">5</td></tr><tr><td>7반</td><td>김하니</td><td>서아라</td><td class="num">5</td><td class="num">0</td><td class="num emphasis">5</td></tr><tr><td>7반</td><td>김하니</td><td>조온유</td><td class="num">18</td><td class="num">0</td><td class="num emphasis">18</td></tr></tbody></table></div>
+  <section class="guide"><h3>학생 명단 항목 안내</h3><dl><div><dt>반</dt><dd>학생에게 등록된 학급입니다. 반이 지정되지 않은 경우 ‘미배정’으로 표시합니다.</dd></div><div><dt>담임교사</dt><dd>사용자 관리에서 학생과 같은 부서와 반으로 등록된 교사입니다. 반 미배정 학생은 ‘미배정’으로 표시합니다.</dd></div><div><dt>이름</dt><dd>사용자 관리에 표시된 학생 이름입니다.</dd></div><div><dt>보유 잔액</dt><dd>11월 23일 조회 시점의 전체 달란트 잔액입니다. 구매에 쓰기로 예약된 달란트도 포함합니다.</dd></div><div><dt>구매 예약액</dt><dd>구매 신청 등에 이미 배정된 달란트입니다. 0이면 현재 예약된 달란트가 없습니다.</dd></div><div><dt>사용 가능 달란트</dt><dd>현재 상품 구매에 쓸 수 있는 달란트입니다. 보유 잔액에서 구매 예약액을 뺀 값입니다.</dd></div></dl></section>
+</section>
+<section id="panel-2" role="tabpanel" aria-labelledby="tab-2" tabindex="0" hidden>
+  <h2 class="department-title">2부 현황</h2>
+  <dl class="stats stats-dept"><div><dt>등록 학생</dt><dd>36<span>명</span></dd></div><div><dt>주문 학생</dt><dd>34<span>명</span></dd></div><div><dt>주문 0건</dt><dd>2<span>명</span></dd></div><div><dt>미주문·잔액 보유</dt><dd>0<span>명</span></dd></div><div><dt>예약액 없음</dt><dd>0<span>명</span></dd></div><div><dt>예약액 있음</dt><dd>0<span>명</span></dd></div><div><dt>사용 가능 합계</dt><dd>0<span>달란트</span></dd></div></dl>
+  <h2 id="student-heading-2">반별 학생 명단</h2>
+  <p class="empty">집계 조건에 해당하는 학생이 없습니다.</p>
+  <section class="guide"><h3>학생 명단 항목 안내</h3><dl><div><dt>반</dt><dd>학생에게 등록된 학급입니다. 반이 지정되지 않은 경우 ‘미배정’으로 표시합니다.</dd></div><div><dt>담임교사</dt><dd>사용자 관리에서 학생과 같은 부서와 반으로 등록된 교사입니다. 반 미배정 학생은 ‘미배정’으로 표시합니다.</dd></div><div><dt>이름</dt><dd>사용자 관리에 표시된 학생 이름입니다.</dd></div><div><dt>보유 잔액</dt><dd>11월 23일 조회 시점의 전체 달란트 잔액입니다. 구매에 쓰기로 예약된 달란트도 포함합니다.</dd></div><div><dt>구매 예약액</dt><dd>구매 신청 등에 이미 배정된 달란트입니다. 0이면 현재 예약된 달란트가 없습니다.</dd></div><div><dt>사용 가능 달란트</dt><dd>현재 상품 구매에 쓸 수 있는 달란트입니다. 보유 잔액에서 구매 예약액을 뺀 값입니다.</dd></div></dl></section>
+</section>
+<section id="panel-3" role="tabpanel" aria-labelledby="tab-3" tabindex="0" hidden>
+  <h2 class="department-title">3부 현황</h2>
+  <dl class="stats stats-dept"><div><dt>등록 학생</dt><dd>33<span>명</span></dd></div><div><dt>주문 학생</dt><dd>21<span>명</span></dd></div><div><dt>주문 0건</dt><dd>12<span>명</span></dd></div><div><dt>미주문·잔액 보유</dt><dd>11<span>명</span></dd></div><div><dt>예약액 없음</dt><dd>6<span>명</span></dd></div><div><dt>예약액 있음</dt><dd>5<span>명</span></dd></div><div><dt>사용 가능 합계</dt><dd>311<span>달란트</span></dd></div></dl>
+  <h2 id="student-heading-3">반별 학생 명단</h2>
+  <p class="table-hint">표를 좌우로 스크롤하면 나머지 열을 볼 수 있습니다.</p><div class="table-scroll" tabindex="0" role="region" aria-labelledby="student-heading-3"><table class="student-table" id="student-table-3"><thead><tr><th scope="col">반</th><th scope="col">담임교사</th><th scope="col">이름</th><th class="num" scope="col">보유 잔액</th><th class="num" scope="col">구매 예약액</th><th class="num" scope="col">사용 가능 달란트</th></tr></thead><tbody><tr><td>1반</td><td>이성영</td><td>김라현</td><td class="num">114</td><td class="num">109</td><td class="num emphasis">5</td></tr><tr><td>1반</td><td>이성영</td><td>김성연</td><td class="num">116</td><td class="num">100</td><td class="num emphasis">16</td></tr><tr><td>1반</td><td>이성영</td><td>박소을</td><td class="num">33</td><td class="num">0</td><td class="num emphasis">33</td></tr><tr class="class-start"><td>2반</td><td>김해빈</td><td>고영은</td><td class="num">53</td><td class="num">0</td><td class="num emphasis">53</td></tr><tr><td>2반</td><td>김해빈</td><td>윤하현</td><td class="num">140</td><td class="num">135</td><td class="num emphasis">5</td></tr><tr><td>2반</td><td>김해빈</td><td>장현호</td><td class="num">119</td><td class="num">114</td><td class="num emphasis">5</td></tr><tr class="class-start"><td>4반</td><td>서은진</td><td>박민준</td><td class="num">72</td><td class="num">0</td><td class="num emphasis">72</td></tr><tr><td>4반</td><td>서은진</td><td>주가온</td><td class="num">81</td><td class="num">76</td><td class="num emphasis">5</td></tr><tr><td>4반</td><td>서은진</td><td>최윤서</td><td class="num">8</td><td class="num">0</td><td class="num emphasis">8</td></tr><tr class="class-start"><td>6반</td><td>강영규</td><td>박온유</td><td class="num">89</td><td class="num">0</td><td class="num emphasis">89</td></tr><tr class="class-start"><td class="unassigned">미배정</td><td class="unassigned">미배정</td><td>양성로</td><td class="num">20</td><td class="num">0</td><td class="num emphasis">20</td></tr></tbody></table></div>
+  <section class="guide"><h3>학생 명단 항목 안내</h3><dl><div><dt>반</dt><dd>학생에게 등록된 학급입니다. 반이 지정되지 않은 경우 ‘미배정’으로 표시합니다.</dd></div><div><dt>담임교사</dt><dd>사용자 관리에서 학생과 같은 부서와 반으로 등록된 교사입니다. 반 미배정 학생은 ‘미배정’으로 표시합니다.</dd></div><div><dt>이름</dt><dd>사용자 관리에 표시된 학생 이름입니다.</dd></div><div><dt>보유 잔액</dt><dd>11월 23일 조회 시점의 전체 달란트 잔액입니다. 구매에 쓰기로 예약된 달란트도 포함합니다.</dd></div><div><dt>구매 예약액</dt><dd>구매 신청 등에 이미 배정된 달란트입니다. 0이면 현재 예약된 달란트가 없습니다.</dd></div><div><dt>사용 가능 달란트</dt><dd>현재 상품 구매에 쓸 수 있는 달란트입니다. 보유 잔액에서 구매 예약액을 뺀 값입니다.</dd></div></dl></section>
+</section>
+<section id="panel-4" role="tabpanel" aria-labelledby="tab-4" tabindex="0" hidden>
+  <h2 class="department-title">4부 현황</h2>
+  <dl class="stats stats-dept"><div><dt>등록 학생</dt><dd>36<span>명</span></dd></div><div><dt>주문 학생</dt><dd>33<span>명</span></dd></div><div><dt>주문 0건</dt><dd>3<span>명</span></dd></div><div><dt>미주문·잔액 보유</dt><dd>2<span>명</span></dd></div><div><dt>예약액 없음</dt><dd>2<span>명</span></dd></div><div><dt>예약액 있음</dt><dd>0<span>명</span></dd></div><div><dt>사용 가능 합계</dt><dd>36<span>달란트</span></dd></div></dl>
+  <h2 id="student-heading-4">반별 학생 명단</h2>
+  <p class="table-hint">표를 좌우로 스크롤하면 나머지 열을 볼 수 있습니다.</p><div class="table-scroll" tabindex="0" role="region" aria-labelledby="student-heading-4"><table class="student-table" id="student-table-4"><thead><tr><th scope="col">반</th><th scope="col">담임교사</th><th scope="col">이름</th><th class="num" scope="col">보유 잔액</th><th class="num" scope="col">구매 예약액</th><th class="num" scope="col">사용 가능 달란트</th></tr></thead><tbody><tr><td>1반</td><td>강미나</td><td>정지수</td><td class="num">15</td><td class="num">0</td><td class="num emphasis">15</td></tr><tr class="class-start"><td>4반</td><td>박명희</td><td>수진①</td><td class="num">21</td><td class="num">0</td><td class="num emphasis">21</td></tr></tbody></table></div>
+  <section class="guide"><h3>학생 명단 항목 안내</h3><dl><div><dt>반</dt><dd>학생에게 등록된 학급입니다. 반이 지정되지 않은 경우 ‘미배정’으로 표시합니다.</dd></div><div><dt>담임교사</dt><dd>사용자 관리에서 학생과 같은 부서와 반으로 등록된 교사입니다. 반 미배정 학생은 ‘미배정’으로 표시합니다.</dd></div><div><dt>이름</dt><dd>사용자 관리에 표시된 학생 이름입니다.</dd></div><div><dt>보유 잔액</dt><dd>11월 23일 조회 시점의 전체 달란트 잔액입니다. 구매에 쓰기로 예약된 달란트도 포함합니다.</dd></div><div><dt>구매 예약액</dt><dd>구매 신청 등에 이미 배정된 달란트입니다. 0이면 현재 예약된 달란트가 없습니다.</dd></div><div><dt>사용 가능 달란트</dt><dd>현재 상품 구매에 쓸 수 있는 달란트입니다. 보유 잔액에서 구매 예약액을 뺀 값입니다.</dd></div></dl></section>
+</section>
+<section id="panel-5" role="tabpanel" aria-labelledby="tab-5" tabindex="0" hidden>
+  <h2 class="department-title">5부 현황</h2>
+  <dl class="stats stats-dept"><div><dt>등록 학생</dt><dd>32<span>명</span></dd></div><div><dt>주문 학생</dt><dd>22<span>명</span></dd></div><div><dt>주문 0건</dt><dd>10<span>명</span></dd></div><div><dt>미주문·잔액 보유</dt><dd>8<span>명</span></dd></div><div><dt>예약액 없음</dt><dd>8<span>명</span></dd></div><div><dt>예약액 있음</dt><dd>0<span>명</span></dd></div><div><dt>사용 가능 합계</dt><dd>110<span>달란트</span></dd></div></dl>
+  <h2 id="student-heading-5">반별 학생 명단</h2>
+  <p class="table-hint">표를 좌우로 스크롤하면 나머지 열을 볼 수 있습니다.</p><div class="table-scroll" tabindex="0" role="region" aria-labelledby="student-heading-5"><table class="student-table" id="student-table-5"><thead><tr><th scope="col">반</th><th scope="col">담임교사</th><th scope="col">이름</th><th class="num" scope="col">보유 잔액</th><th class="num" scope="col">구매 예약액</th><th class="num" scope="col">사용 가능 달란트</th></tr></thead><tbody><tr><td>4반</td><td>박진석</td><td>양민준</td><td class="num">16</td><td class="num">0</td><td class="num emphasis">16</td></tr><tr><td>4반</td><td>박진석</td><td>육준범</td><td class="num">3</td><td class="num">0</td><td class="num emphasis">3</td></tr><tr class="class-start"><td>6반</td><td>유민아</td><td>성우현</td><td class="num">11</td><td class="num">0</td><td class="num emphasis">11</td></tr><tr><td>6반</td><td>유민아</td><td>성은하</td><td class="num">11</td><td class="num">0</td><td class="num emphasis">11</td></tr><tr class="class-start"><td>7반</td><td>표수진</td><td>김희재</td><td class="num">5</td><td class="num">0</td><td class="num emphasis">5</td></tr><tr><td>7반</td><td>표수진</td><td>정윤호</td><td class="num">33</td><td class="num">0</td><td class="num emphasis">33</td></tr><tr class="class-start"><td>8반</td><td>지선경</td><td>김다온</td><td class="num">10</td><td class="num">0</td><td class="num emphasis">10</td></tr><tr><td>8반</td><td>지선경</td><td>이사랑</td><td class="num">21</td><td class="num">0</td><td class="num emphasis">21</td></tr></tbody></table></div>
+  <section class="guide"><h3>학생 명단 항목 안내</h3><dl><div><dt>반</dt><dd>학생에게 등록된 학급입니다. 반이 지정되지 않은 경우 ‘미배정’으로 표시합니다.</dd></div><div><dt>담임교사</dt><dd>사용자 관리에서 학생과 같은 부서와 반으로 등록된 교사입니다. 반 미배정 학생은 ‘미배정’으로 표시합니다.</dd></div><div><dt>이름</dt><dd>사용자 관리에 표시된 학생 이름입니다.</dd></div><div><dt>보유 잔액</dt><dd>11월 23일 조회 시점의 전체 달란트 잔액입니다. 구매에 쓰기로 예약된 달란트도 포함합니다.</dd></div><div><dt>구매 예약액</dt><dd>구매 신청 등에 이미 배정된 달란트입니다. 0이면 현재 예약된 달란트가 없습니다.</dd></div><div><dt>사용 가능 달란트</dt><dd>현재 상품 구매에 쓸 수 있는 달란트입니다. 보유 잔액에서 구매 예약액을 뺀 값입니다.</dd></div></dl></section>
+</section>
+<section id="panel-6" role="tabpanel" aria-labelledby="tab-6" tabindex="0" hidden>
+  <h2 class="department-title">예배부 현황</h2>
+  <dl class="stats stats-dept"><div><dt>등록 학생</dt><dd>0<span>명</span></dd></div><div><dt>주문 학생</dt><dd>0<span>명</span></dd></div><div><dt>주문 0건</dt><dd>0<span>명</span></dd></div><div><dt>미주문·잔액 보유</dt><dd>0<span>명</span></dd></div><div><dt>예약액 없음</dt><dd>0<span>명</span></dd></div><div><dt>예약액 있음</dt><dd>0<span>명</span></dd></div><div><dt>사용 가능 합계</dt><dd>0<span>달란트</span></dd></div></dl>
+  <h2 id="student-heading-6">반별 학생 명단</h2>
+  <p class="empty">해당 부서에 등록된 학생이 없습니다.</p>
+  <section class="guide"><h3>학생 명단 항목 안내</h3><dl><div><dt>반</dt><dd>학생에게 등록된 학급입니다. 반이 지정되지 않은 경우 ‘미배정’으로 표시합니다.</dd></div><div><dt>담임교사</dt><dd>사용자 관리에서 학생과 같은 부서와 반으로 등록된 교사입니다. 반 미배정 학생은 ‘미배정’으로 표시합니다.</dd></div><div><dt>이름</dt><dd>사용자 관리에 표시된 학생 이름입니다.</dd></div><div><dt>보유 잔액</dt><dd>11월 23일 조회 시점의 전체 달란트 잔액입니다. 구매에 쓰기로 예약된 달란트도 포함합니다.</dd></div><div><dt>구매 예약액</dt><dd>구매 신청 등에 이미 배정된 달란트입니다. 0이면 현재 예약된 달란트가 없습니다.</dd></div><div><dt>사용 가능 달란트</dt><dd>현재 상품 구매에 쓸 수 있는 달란트입니다. 보유 잔액에서 구매 예약액을 뺀 값입니다.</dd></div></dl></section>
+</section>
+    </div>
+  </main>
+  <script>
+(() => {
+  const tablist = document.querySelector('[role="tablist"]');
+  const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+  const panels = tabs.map(tab => document.getElementById(tab.getAttribute('aria-controls')));
+
+  function activate(index, moveFocus = false) {
+    tabs.forEach((tab, i) => {
+      const active = i === index;
+      tab.setAttribute('aria-selected', String(active));
+      tab.tabIndex = active ? 0 : -1;
+      panels[i].hidden = !active;
+    });
+    if (moveFocus) tabs[index].focus();
+  }
+
+  tabs.forEach((tab, i) => tab.addEventListener('click', () => activate(i)));
+  tablist.addEventListener('keydown', event => {
+    const index = tabs.indexOf(event.target);
+    if (index < 0) return;
+    const targets = {
+      ArrowLeft: (index - 1 + tabs.length) % tabs.length,
+      ArrowRight: (index + 1) % tabs.length,
+      Home: 0,
+      End: tabs.length - 1,
+    };
+    if (!Object.hasOwn(targets, event.key)) return;
+    event.preventDefault();
+    activate(targets[event.key], true);
+  });
+})();
+</script>
+</body>
+</html>

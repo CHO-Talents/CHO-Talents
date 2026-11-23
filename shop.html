@@ -11,6 +11,8 @@
     .product-card { cursor: pointer; }
     .product-card img.product-img { cursor: pointer; }
     .product-card .product-buy-btn { cursor: pointer; }
+    .student-order-notice-btn { padding: 0.5rem 1rem; border: 1px solid var(--t-border, #dee2e6); border-radius: 8px; background: var(--t-card, #fff); color: var(--t-text, #212529); font-weight: 700; cursor: pointer; }
+    .product-card .student-order-notice-btn { margin-top: 0.5rem; width: 100%; }
     .product-detail-overlay, .image-zoom-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2000;
       display: flex; align-items: center; justify-content: center; padding: 1rem;
@@ -78,6 +80,7 @@
     <div id="shopTalentBalance" role="status" hidden style="margin-bottom:0.35rem;font-weight:700;color:var(--t-text,#212529);"></div>
     <div id="shopProductCount" role="status" style="margin:0 0 0.35rem;font-size:1.02rem;font-weight:800;color:var(--t-text,#212529);">전체 상품 0건</div>
     <p class="page-sub" id="shopSub">달란트로 교환할 수 있는 상품들이에요!</p>
+    <p class="delivery-delay-notice" id="studentOrderNotice" role="status" hidden></p>
 
     <div id="tabArea" style="display:none;margin-bottom:1.5rem;gap:0.5rem;">
       <button class="filter-btn" id="tabStudent" onclick="switchShopTab('student')">🎒 학생용</button>
@@ -115,6 +118,7 @@
             <option value="">상품 선택</option>
           </select>
           <p id="proxyBalanceInfo" style="font-size:0.82rem;color:#868e96;margin-top:0.3rem;"></p>
+          <p class="delivery-delay-notice" id="proxyOrderNotice" role="status" hidden></p>
         </div>
         <div style="display:flex;gap:0.5rem;margin-top:1rem;justify-content:flex-end;">
           <button onclick="closeProxyModal()" style="padding:0.5rem 1rem;border:1px solid var(--t-border, #ddd);border-radius:8px;background:var(--t-card, #fff);color:var(--t-text, #212529);cursor:pointer;">취소</button>
@@ -189,6 +193,48 @@
     let _userPending = 0;
     let _selectedProduct = null;
     let shopSortState = { key: 'category', dir: 'asc' };
+    const STUDENT_ORDER_DEADLINE = Date.parse('2026-11-25T00:00:00+09:00');
+    const STUDENT_ORDER_CLOSED_MESSAGE = '학생 달란트 구매 신청이 마감되었습니다.';
+    const STUDENT_ORDER_DEADLINE_NOTICE = '학생 물품 구매 신청은 한국시간 11월 24일(화) 오후 11시 59분 59초까지 가능합니다.';
+    const STUDENT_ORDER_NOTICE_BUTTON = '<button type="button" class="product-buy-btn student-order-notice-btn" onclick="event.stopPropagation(); alertStudentOrderClosure()">구매 마감 안내</button>';
+    let studentOrderClosedOnServer = false;
+
+    function studentOrdersClosed(userType) {
+      return userType === 'student' && (studentOrderClosedOnServer || Date.now() >= STUDENT_ORDER_DEADLINE);
+    }
+
+    function alertStudentOrderClosure() {
+      alert(`${STUDENT_ORDER_CLOSED_MESSAGE}\n이미 신청한 주문은 내 구매 상품에서 확인할 수 있어요.`);
+    }
+
+    function stopClosedStudentOrder(userType) {
+      if (!studentOrdersClosed(userType)) return false;
+      alertStudentOrderClosure();
+      return true;
+    }
+
+    function refreshStudentOrderControls() {
+      renderShopProducts();
+      if (_selectedProduct) renderProductDetailActions(_selectedProduct);
+      updateProxyPurchaseControls();
+    }
+
+    function scheduleStudentOrderClosure() {
+      const remaining = STUDENT_ORDER_DEADLINE - Date.now();
+      if (remaining <= 0) {
+        refreshStudentOrderControls();
+        return;
+      }
+      setTimeout(scheduleStudentOrderClosure, Math.min(remaining, 2147483647));
+    }
+
+    function showStudentOrderClosure(error) {
+      if (error.message !== STUDENT_ORDER_CLOSED_MESSAGE) return false;
+      studentOrderClosedOnServer = true;
+      refreshStudentOrderControls();
+      alertStudentOrderClosure();
+      return true;
+    }
 
     // 달란트는 정수이므로 할인 가격을 반올림한다.
     function salePrice(product) {
@@ -233,6 +279,7 @@
       if (typeof loadCodeItems === 'function') await loadCodeItems(['products.category']);
       await loadAllProducts();
       switchShopTab(currentShopTab);
+      if (!studentOrdersClosed('student')) scheduleStudentOrderClosure();
     })();
 
     function renderShopTalentBalance() {
@@ -343,6 +390,9 @@
       if (productCount) productCount.textContent = `전체 상품 ${fmtNum(filtered.length)}건`;
       const label = currentShopTab === 'student' ? '학생' : '교사';
       document.getElementById('shopSub').textContent = `${label} 달란트 교환 상품입니다`;
+      const notice = document.getElementById('studentOrderNotice');
+      notice.textContent = STUDENT_ORDER_CLOSED_MESSAGE;
+      notice.hidden = !studentOrdersClosed(currentShopTab);
 
       if (filtered.length === 0) {
         area.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><p>등록된 상품이 없습니다.</p></div>';
@@ -381,8 +431,9 @@
     function renderProductCard(p) {
       const available = _userBalance - _userPending;
       const isTeacherBuyingStudent = _shopSession && _shopSession.userType === 'teacher' && p.target_role === 'student';
+      const closed = studentOrdersClosed(_shopSession?.userType);
       const canBuy = _shopSession && p.is_active && available >= salePrice(p) && !isTeacherBuyingStudent;
-      const buyBtnHtml = _shopSession
+      const buyBtnHtml = closed ? STUDENT_ORDER_NOTICE_BUTTON : _shopSession
         ? (isTeacherBuyingStudent
           ? ''
           : `<button class="product-buy-btn" onclick="event.stopPropagation(); requestOrder('${p.id}','${p.name.replace(/'/g,"\\'")}',${salePrice(p)})" ${!canBuy?'disabled':''} style="margin-top:0.5rem;width:100%;padding:0.5rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`)
@@ -430,13 +481,18 @@
         detailImage.style.display = 'none';
         detailImage.innerHTML = '';
       }
+      renderProductDetailActions(product);
+      document.getElementById('productDetailOverlay').classList.remove('hidden');
+    }
+
+    function renderProductDetailActions(product) {
       const available = _userBalance - _userPending;
       const isTeacherBuyingStudent = _shopSession && _shopSession.userType === 'teacher' && product.target_role === 'student';
+      const closed = studentOrdersClosed(_shopSession?.userType);
       const canBuy = _shopSession && product.is_active && available >= salePrice(product) && !isTeacherBuyingStudent;
-      document.getElementById('productDetailActions').innerHTML = _shopSession && !isTeacherBuyingStudent
+      document.getElementById('productDetailActions').innerHTML = closed ? STUDENT_ORDER_NOTICE_BUTTON : _shopSession && !isTeacherBuyingStudent
         ? `<button class="product-buy-btn" type="button" onclick="requestOrder('${product.id}','${product.name.replace(/'/g,"\\'")}',${salePrice(product)}); closeProductDetail();" ${!canBuy ? 'disabled' : ''} style="padding:0.55rem 1rem;border:none;border-radius:8px;background:${canBuy?'#228be6':'var(--t-border, #dee2e6)'};color:${canBuy?'#fff':'var(--t-text-muted, #868e96)'};font-weight:700;cursor:${canBuy?'pointer':'default'};">🛒 구매 신청</button>`
         : '';
-      document.getElementById('productDetailOverlay').classList.remove('hidden');
     }
 
     function closeProductDetail() {
@@ -460,6 +516,7 @@
 
     async function requestOrder(productId, productName, price) {
       if (!_shopSession) { alert('로그인이 필요합니다.'); return; }
+      if (stopClosedStudentOrder(_shopSession.userType)) return;
       const available = _userBalance - _userPending;
       if (available < price) {
         logWarn('ORDER_INSUFFICIENT_BALANCE', {
@@ -475,7 +532,9 @@
         alert(`사용 가능한 달란트가 부족합니다.\n달란트 잔액 (사용 가능) ${formatTalentBalance(_userBalance, _userPending)}`);
         return;
       }
-      if (!confirm(`"${productName}"을(를) 구매 신청하시겠습니까?\n가격: ${fmtNum(price)} 달란트\n\n달란트 잔액 (사용 가능) ${formatTalentBalance(_userBalance, _userPending)}`)) return;
+      const deadlineNotice = _shopSession.userType === 'student' ? `\n\n${STUDENT_ORDER_DEADLINE_NOTICE}` : '';
+      if (!confirm(`"${productName}"을(를) 구매 신청하시겠습니까?\n가격: ${fmtNum(price)} 달란트\n\n달란트 잔액 (사용 가능) ${formatTalentBalance(_userBalance, _userPending)}${deadlineNotice}`)) return;
+      if (stopClosedStudentOrder(_shopSession.userType)) return;
 
       try {
         const { data, error } = await _sb.rpc('request_product_order', {
@@ -485,6 +544,7 @@
           p_price: price
         });
         if (error) {
+          if (showStudentOrderClosure(error)) return;
           await logError('ORDER_REQUEST_FAIL', {
             productId,
             상품명: productName,
@@ -559,8 +619,8 @@
       document.getElementById('proxyResults').style.display = 'none';
       document.getElementById('proxySelected').style.display = 'none';
       document.getElementById('proxyProductArea').style.display = 'none';
-      document.getElementById('btnProxyConfirm').disabled = true;
       _proxyTarget = null;
+      updateProxyPurchaseControls();
       loadProxyUsers();
     }
 
@@ -672,10 +732,22 @@
         products.map(p => `<option value="${p.id}" data-price="${salePrice(p)}" ${salePrice(p) > bal ? 'disabled' : ''}>${escapeHtml(p.name)} (${salePrice(p) !== Number(p.price) ? fmtNum(p.price) + ' → ' : ''}${fmtNum(salePrice(p))} 달란트)${salePrice(p) > bal ? ' - 잔액부족' : ''}</option>`).join('');
       document.getElementById('proxyBalanceInfo').textContent = `달란트 잔액 (사용 가능) ${formatTalentBalance(u.talent_balance ?? 0, u.pending_talent)}`;
       document.getElementById('proxyProductArea').style.display = 'block';
-      document.getElementById('proxyProduct').onchange = () => {
-        document.getElementById('btnProxyConfirm').disabled = !document.getElementById('proxyProduct').value;
-      };
+      updateProxyPurchaseControls();
     }
+
+    function updateProxyPurchaseControls() {
+      const closed = studentOrdersClosed(_proxyTarget?.user_type);
+      const product = document.getElementById('proxyProduct');
+      const notice = document.getElementById('proxyOrderNotice');
+      notice.textContent = STUDENT_ORDER_CLOSED_MESSAGE;
+      notice.hidden = !closed;
+      product.disabled = closed;
+      const confirmButton = document.getElementById('btnProxyConfirm');
+      confirmButton.textContent = closed ? '구매 마감 안내' : '구매 신청';
+      confirmButton.disabled = !_proxyTarget || (!closed && !product.value);
+    }
+
+    document.getElementById('proxyProduct').addEventListener('change', updateProxyPurchaseControls);
 
     function clearProxy() {
       _proxyTarget = null;
@@ -683,11 +755,12 @@
       document.getElementById('proxyProductArea').style.display = 'none';
       document.getElementById('proxySearch').style.display = 'block';
       document.getElementById('proxySearch').value = '';
-      document.getElementById('btnProxyConfirm').disabled = true;
+      updateProxyPurchaseControls();
     }
 
     async function confirmProxy() {
       if (!_proxyTarget) return;
+      if (stopClosedStudentOrder(_proxyTarget.user_type)) return;
       const sel = document.getElementById('proxyProduct');
       const opt = sel.options[sel.selectedIndex];
       if (!opt || !opt.value) return;
@@ -696,7 +769,9 @@
       const product = allShopProducts.find(p => p.id === productId);
       if (!product) return;
 
-      if (!confirm(`"${product.name}"을(를) ${_proxyTarget.display_name || _proxyTarget.username}님 명의로 대리 구매 신청하시겠습니까?\n가격: ${price} 달란트`)) return;
+      const deadlineNotice = _proxyTarget.user_type === 'student' ? `\n\n${STUDENT_ORDER_DEADLINE_NOTICE}` : '';
+      if (!confirm(`"${product.name}"을(를) ${_proxyTarget.display_name || _proxyTarget.username}님 명의로 대리 구매 신청하시겠습니까?\n가격: ${price} 달란트${deadlineNotice}`)) return;
+      if (stopClosedStudentOrder(_proxyTarget.user_type)) return;
 
       try {
         const { data, error } = await _sb.rpc('request_product_order', {
@@ -706,6 +781,7 @@
           p_price: price
         });
         if (error) {
+          if (showStudentOrderClosure(error)) return;
           await logError('PROXY_ORDER_FAIL', {
             targetUserId: _proxyTarget.id,
             targetAccount: _proxyTarget.username,
