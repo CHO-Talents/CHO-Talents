@@ -56,8 +56,9 @@ docs/TASK-069_product_detail_image.sql, and
 docs/TASK-070_service_usage_monitoring.sql through
 docs/TASK-089_product_suggestion_slack_notifications.sql and
 docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql when no --extra-sql-path is provided.
-docs/TASK-091_user_stats_filters.sql and
-docs/TASK-098_purchase_request_cancellation.sql are applied last.
+docs/TASK-091_user_stats_filters.sql,
+docs/TASK-098_purchase_request_cancellation.sql, and
+docs/TASK-121_student_purchase_deadline.sql are applied last.
 USAGE
 }
 
@@ -312,6 +313,7 @@ if [ "${#EXTRA_SQL_PATHS[@]}" -eq 0 ]; then
   DEFAULT_PRODUCT_SUGGESTION_ADOPTION_REWARD_ITEM_CONFIG_SQL="$ROOT_DIR/docs/TASK-113_product_suggestion_adoption_reward_item_config.sql"
   DEFAULT_USER_STATS_FILTERS_SQL="$ROOT_DIR/docs/TASK-091_user_stats_filters.sql"
   DEFAULT_PURCHASE_REQUEST_CANCELLATION_SQL="$ROOT_DIR/docs/TASK-098_purchase_request_cancellation.sql"
+  DEFAULT_STUDENT_PURCHASE_DEADLINE_SQL="$ROOT_DIR/docs/TASK-121_student_purchase_deadline.sql"
   if [ -f "$DEFAULT_PRODUCT_SUGGESTION_SUPER_ADMIN_VOTE_PRIVILEGES_SQL" ]; then
     EXTRA_SQL_PATHS+=("$DEFAULT_PRODUCT_SUGGESTION_SUPER_ADMIN_VOTE_PRIVILEGES_SQL")
   fi
@@ -323,6 +325,9 @@ if [ "${#EXTRA_SQL_PATHS[@]}" -eq 0 ]; then
   fi
   if [ -f "$DEFAULT_PURCHASE_REQUEST_CANCELLATION_SQL" ]; then
     EXTRA_SQL_PATHS+=("$DEFAULT_PURCHASE_REQUEST_CANCELLATION_SQL")
+  fi
+  if [ -f "$DEFAULT_STUDENT_PURCHASE_DEADLINE_SQL" ]; then
+    EXTRA_SQL_PATHS+=("$DEFAULT_STUDENT_PURCHASE_DEADLINE_SQL")
   fi
 fi
 

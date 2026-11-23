@@ -139,6 +139,7 @@ if (-not $hasExtraSqlPaths) {
   $defaultProductSuggestionAdoptionRewardItemConfigSql = Join-Path $ScriptRoot '..\docs\TASK-113_product_suggestion_adoption_reward_item_config.sql'
   $defaultUserStatsFiltersSql = Join-Path $ScriptRoot '..\docs\TASK-091_user_stats_filters.sql'
   $defaultPurchaseRequestCancellationSql = Join-Path $ScriptRoot '..\docs\TASK-098_purchase_request_cancellation.sql'
+  $defaultStudentPurchaseDeadlineSql = Join-Path $ScriptRoot '..\docs\TASK-121_student_purchase_deadline.sql'
   if (Test-Path -LiteralPath $defaultCodeMasterSql) {
     $ExtraSqlPaths = @($defaultCodeMasterSql)
   }
@@ -192,6 +193,9 @@ if (-not $hasExtraSqlPaths) {
   }
   if (Test-Path -LiteralPath $defaultPurchaseRequestCancellationSql) {
     $ExtraSqlPaths += $defaultPurchaseRequestCancellationSql
+  }
+  if (Test-Path -LiteralPath $defaultStudentPurchaseDeadlineSql) {
+    $ExtraSqlPaths += $defaultStudentPurchaseDeadlineSql
   }
 }
 

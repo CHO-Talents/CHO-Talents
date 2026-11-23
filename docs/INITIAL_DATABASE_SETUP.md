@@ -119,6 +119,8 @@ scripts/install-supabase-database.sh \
 
 `scripts/install-supabase-database.ps1`와 `scripts/install-supabase-database.sh`는 기본으로 `docs/TASK-057_code_master.sql`, `docs/TASK-058_product_category_policy.sql`, `docs/TASK-068_product_category_page_and_sort_order.sql`, `docs/TASK-069_product_detail_image.sql`, `docs/TASK-081_user_login_statistics.sql`, `docs/TASK-082_exclude_super_admin_login_history.sql`, `docs/TASK-084_user_login_statistics_detail.sql`, `docs/TASK-085_product_suggestions.sql`, `docs/TASK-086_product_suggestion_admin_decision.sql`, `docs/TASK-087_product_suggestion_detail_image.sql`, `docs/TASK-088_product_suggestion_adoption_talent.sql`, `docs/TASK-089_product_suggestion_slack_notifications.sql`, `docs/TASK-090_product_suggestion_super_admin_vote_privileges.sql`, `docs/TASK-091_user_stats_filters.sql`, `docs/TASK-098_purchase_request_cancellation.sql`, `docs/TASK-113_product_suggestion_adoption_reward_item_config.sql`을 합본에 포함하고, 적용 후 `scripts/verify-task-057-code-master.sql`로 코드 마스터를 검증한다. 상품 추천 Slack 알림을 사용하려면 최신 `slack-notify` Edge Function도 배포한다. 별도 마이그레이션을 추가로 합치려면 `-ExtraSqlPaths` 또는 `--extra-sql-path`에 경로를 넘긴다.
 
+`docs/TASK-121_student_purchase_deadline.sql`도 기본 합본에 포함된다. 기존 Supabase 프로젝트에는 상점 화면 배포 전에 이 SQL을 실행한다. 한국시간 2026년 11월 25일 00:00:00부터 학생 본인 구매와 학생 명의 대리 구매의 신규 주문이 차단된다.
+
 ## 필수 테이블
 
 | 테이블 | 용도 | 새 DB 기본 데이터 |
