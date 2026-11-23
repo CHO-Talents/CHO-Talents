@@ -57,17 +57,6 @@
     async function loadMyTalents() {
       const main = document.getElementById('mainContent');
       const summary = await fetchTalentSummary(session.id);
-      let pendingTalent = 0;
-      try {
-        const { data: prof, error: profErr } = await _sb.from('profiles').select('pending_talent').eq('id', session.id).maybeSingle();
-        if (profErr) {
-          const msg = profErr.message || '';
-          if (!msg.includes('does not exist')) logWarn('MY_TALENT_PENDING_QUERY', { error: msg });
-        } else {
-          pendingTalent = (prof && prof.pending_talent) || 0;
-        }
-      } catch (e) { /* pending_talent column may not exist */ }
-      const available = summary.balance - pendingTalent;
       const { data: history } = await fetchTalentHistory(session.id);
       myTalentHistory = history || [];
       myTalentHistoryPage = 1;
@@ -86,8 +75,8 @@
         <div class="summary-cards">
           <div class="summary-card balance">
             <div class="summary-card-icon">⭐</div>
-            <div class="summary-card-label">사용 가능 달란트</div>
-            <div class="summary-card-value">${fmtNum(available)}</div>
+            <div class="summary-card-label">달란트 잔액 (사용 가능)</div>
+            <div class="summary-card-value">${formatTalentBalance(summary.balance, summary.pendingTalent)}</div>
           </div>
           <div class="summary-card" style="background:#e7f5ff;">
             <div class="summary-card-icon">🎁</div>
@@ -97,7 +86,7 @@
           <div class="summary-card" style="background:#fff3bf;">
             <div class="summary-card-icon">⏳</div>
             <div class="summary-card-label">사용 대기 달란트</div>
-            <div class="summary-card-value" style="color:#e67700;">${fmtNum(pendingTalent)}</div>
+            <div class="summary-card-value" style="color:#e67700;">${summary.pendingTalent == null ? '-' : fmtNum(summary.pendingTalent)}</div>
           </div>
           <div class="summary-card use">
             <div class="summary-card-icon">📉</div>

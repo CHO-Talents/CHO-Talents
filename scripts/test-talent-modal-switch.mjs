@@ -3,6 +3,8 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const html = fs.readFileSync('admin/talents.html', 'utf8');
+const auth = fs.readFileSync('js/auth.js', 'utf8');
+const balanceCode = auth.slice(auth.indexOf('function fmtNum('), auth.indexOf('const _PERMISSION_FALLBACK'));
 const modalCode = html.slice(html.indexOf('    async function openTalentModal('), html.indexOf('    let _weeklyGivenMap ='));
 const historyCode = html.slice(html.indexOf('    async function loadTalentHistory('), html.indexOf('    let returnCtx ='));
 function deferred() {
@@ -24,19 +26,23 @@ const context = vm.createContext({
   _weeklyGivenMap: { old: {} }, _weeklyGivenRecordsMap: { old: [{}] },
   _giveItemsBusy: false, _manualTalentBusy: false,
   talentUserId: 'old', talentUserName: '', talentUserDeptId: null, talentType: 'earn',
-  talentUserList: [{ id: 'a', display_name: 'A' }, { id: 'b', display_name: 'B' }],
+  talentUserList: [
+    { id: 'a', display_name: 'A', talent_balance: 10, pending_talent: 4 },
+    { id: 'b', display_name: 'B', talent_balance: 20, pending_talent: 7 }
+  ],
   session: { permissionRank: 100 }, fmtNum: String, syncOverrideControls() {},
   renderTalentItemButtons: async () => {},
   fetchTalentHistory: id => (pending[id] = deferred()).promise,
   getTalentHistoryTypeMeta: () => ({ bg: '', color: '', amountColor: '', label: '적립', sign: '+' }),
   formatKSTShort: () => 'date', maskTalentDesc: x => x
 });
-vm.runInContext(modalCode + historyCode, context);
+vm.runInContext(balanceCode + modalCode + historyCode, context);
 elements.talentItemBtns.textContent = '이전 학생 항목';
 elements.talentHistory.textContent = '이전 학생 내역';
 elements.talentAmount.value = '50';
 elements.talentDesc.value = '이전 사유';
-await context.openTalentModal('a', 'A', 10);
+await context.openTalentModal('a', 'A');
+assert.equal(elements.talentBalance.textContent, '10 (6)');
 assert.match(elements.talentItemBtns.textContent, /불러오는 중/);
 assert.match(elements.talentHistory.textContent, /불러오는 중/);
 assert.equal(elements.btnManualGive.disabled, true);
@@ -46,7 +52,8 @@ assert.equal(Object.keys(context._weeklyGivenMap).length, 0);
 
 const oldRequest = pending.a;
 context.closeTalentModal();
-await context.openTalentModal('b', 'B', 20);
+await context.openTalentModal('b', 'B');
+assert.equal(elements.talentBalance.textContent, '20 (13)');
 const currentRequest = pending.b;
 currentRequest.resolve({ data: [{ description: 'B 내역', amount: 3, type: 'earn' }], error: null });
 await currentRequest.promise;
@@ -122,7 +129,7 @@ const requests = [];
 const selected = { value: 'item', dataset: { name: '출석', amount: '10' } };
 const giveElements = { overrideReason: { value: '' }, talentError: { classList: { add() {}, remove() {}, contains: () => false } }, talentBalance: element() };
 const giveContext = vm.createContext({
-  _giveItemsBusy: false, talentItemsLoading: true, talentUserId: 'b', talentUserName: 'B',
+  _giveItemsBusy: false, talentItemsLoading: true, talentUserId: 'b', talentUserName: 'B', talentHistoryLoadToken: 0,
   _weeklyGivenMap: {}, _weeklyGivenRecordsMap: {}, currentTab: 'student', session: { id: 'teacher' },
   document: { querySelectorAll: () => [selected], getElementById: id => giveElements[id] },
   isOverrideWeekLimitEnabled: () => false, canApproveOverrideTalent: () => true,
@@ -130,9 +137,11 @@ const giveContext = vm.createContext({
   confirm: () => true, updateConfirmBtn() {}, fmtNum: String, tErr: String,
   giveTalentByItem: async (...args) => { requests.push(args); return { success: true, amount: 10, balance: 30, txn_id: 'tx', description: '출석 (2배 이벤트)' }; },
   logInfo: async () => {}, logError: async () => {}, renderTalentItemButtons: async () => {},
-  loadTalentHistory: async () => {}, loadUsers: async () => {}, fetchTalentBalance: async () => 30
+  loadTalentHistory: async () => {}, loadUsers: async () => {},
+  fetchTalentBalanceDetails: async () => ({ balance: 30, pendingTalent: 7 })
 });
-vm.runInContext(giveCode, giveContext);
+const refreshBalanceCode = modalCode.slice(modalCode.indexOf('    async function refreshTalentModalBalance('), modalCode.indexOf('    function closeTalentModal('));
+vm.runInContext(balanceCode + refreshBalanceCode + giveCode, giveContext);
 await giveContext.confirmGiveItems();
 assert.equal(requests.length, 0, '조회 중 지급은 차단되어야 함');
 giveContext.talentItemsLoading = false;
@@ -140,6 +149,6 @@ await giveContext.confirmGiveItems();
 assert.equal(requests.length, 1);
 assert.equal(requests[0][0], 'b');
 assert.equal(requests[0][1], 'item');
-assert.equal(giveElements.talentBalance.textContent, '30');
+assert.equal(giveElements.talentBalance.textContent, '30 (23)');
 
 console.log('학생 전환, 이전 응답 지연, 동일 학생 중복 조회 및 입력 초기화 검사 통과');

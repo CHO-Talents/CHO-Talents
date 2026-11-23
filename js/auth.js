@@ -5,6 +5,11 @@
 
 function fmtNum(n) { return n == null ? '0' : Number(n).toLocaleString(); }
 
+function formatTalentBalance(balance, pendingTalent = 0) {
+  if (balance == null) return '-';
+  return `${fmtNum(balance)} (${fmtNum(balance - (pendingTalent ?? 0))})`;
+}
+
 const _PERMISSION_FALLBACK = {
   admin: { rank: 100, label: '관리자', emoji: '👑' },
   evangelist: { rank: 90, label: '전도사님', emoji: '✝️' },

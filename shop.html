@@ -75,6 +75,7 @@
 
   <div class="page-container">
     <h1 class="page-title">🛒 달란트 상점</h1>
+    <div id="shopTalentBalance" role="status" hidden style="margin-bottom:0.35rem;font-weight:700;color:var(--t-text,#212529);"></div>
     <div id="shopProductCount" role="status" style="margin:0 0 0.35rem;font-size:1.02rem;font-weight:800;color:var(--t-text,#212529);">전체 상품 0건</div>
     <p class="page-sub" id="shopSub">달란트로 교환할 수 있는 상품들이에요!</p>
 
@@ -176,6 +177,7 @@
   <script src="js/nav.js"></script>
   <script src="js/product.js"></script>
   <script src="js/user-mgmt.js"></script>
+  <script src="js/talent.js"></script>
   <script src="js/slack-notify.js"></script>
   <script>
     initSupabase();
@@ -183,7 +185,7 @@
     let allShopProducts = [];
     let _canViewTeacher = false;
     let _shopSession = null;
-    let _userBalance = 0;
+    let _userBalance = null;
     let _userPending = 0;
     let _selectedProduct = null;
     let shopSortState = { key: 'category', dir: 'asc' };
@@ -222,23 +224,22 @@
         if (_canViewTeacher) document.getElementById('tabArea').style.display = 'flex';
         if ((session.permissionRank || 0) >= 40) document.getElementById('btnProxyBuy').style.display = '';
 
-        let prof = null;
-        const { data: p1, error: e1 } = await _sb.from('profiles').select('talent_balance,pending_talent').eq('id', session.id).single();
-        if (e1) {
-          const { data: p2 } = await _sb.from('profiles').select('talent_balance').eq('id', session.id).single();
-          prof = p2;
-          if (prof) { _userBalance = prof.talent_balance || 0; _userPending = 0; }
-          logWarn('SHOP_PROFILE_FALLBACK', { 오류: e1.message });
-        } else {
-          prof = p1;
-          if (prof) { _userBalance = prof.talent_balance || 0; _userPending = prof.pending_talent || 0; }
-        }
+        const current = await fetchTalentBalanceDetails(session.id);
+        _userBalance = current?.balance ?? null;
+        _userPending = current?.pendingTalent ?? 0;
+        renderShopTalentBalance();
       }
       autoLogPageView();
       if (typeof loadCodeItems === 'function') await loadCodeItems(['products.category']);
       await loadAllProducts();
       switchShopTab(currentShopTab);
     })();
+
+    function renderShopTalentBalance() {
+      const balance = document.getElementById('shopTalentBalance');
+      balance.textContent = `내 달란트 잔액 (사용 가능) ${formatTalentBalance(_userBalance, _userPending)}`;
+      balance.hidden = false;
+    }
 
     async function loadAllProducts() {
       const publicProductColumns = 'id,name,target_role,category,price,sort_order,image_emoji,image_url,detail_image_url,description,is_active,show_delivery_delay_notice,created_at';
@@ -471,10 +472,10 @@
           pending: _userPending,
           available
         });
-        alert(`사용 가능한 달란트가 부족합니다.\n잔여: ${fmtNum(_userBalance)} / 사용 대기: ${fmtNum(_userPending)} / 사용 가능: ${fmtNum(available)}`);
+        alert(`사용 가능한 달란트가 부족합니다.\n달란트 잔액 (사용 가능) ${formatTalentBalance(_userBalance, _userPending)}`);
         return;
       }
-      if (!confirm(`"${productName}"을(를) 구매 신청하시겠습니까?\n가격: ${fmtNum(price)} 달란트\n\n사용 가능 달란트: ${fmtNum(available)}`)) return;
+      if (!confirm(`"${productName}"을(를) 구매 신청하시겠습니까?\n가격: ${fmtNum(price)} 달란트\n\n달란트 잔액 (사용 가능) ${formatTalentBalance(_userBalance, _userPending)}`)) return;
 
       try {
         const { data, error } = await _sb.rpc('request_product_order', {
@@ -509,7 +510,8 @@
           alert(tErr(data.error));
           return;
         }
-        _userPending += price;
+        _userPending = data?.pending_talent ?? (_userPending + price);
+        renderShopTalentBalance();
         await logInfo('ORDER_REQUEST_SUCCESS', {
           orderId: data?.order_id,
           productId,
@@ -668,7 +670,7 @@
       const products = allShopProducts.filter(p => p.target_role === targetType && p.is_active);
       document.getElementById('proxyProduct').innerHTML = '<option value="">상품 선택</option>' +
         products.map(p => `<option value="${p.id}" data-price="${salePrice(p)}" ${salePrice(p) > bal ? 'disabled' : ''}>${escapeHtml(p.name)} (${salePrice(p) !== Number(p.price) ? fmtNum(p.price) + ' → ' : ''}${fmtNum(salePrice(p))} 달란트)${salePrice(p) > bal ? ' - 잔액부족' : ''}</option>`).join('');
-      document.getElementById('proxyBalanceInfo').textContent = `사용 가능 달란트: ${fmtNum(bal)}`;
+      document.getElementById('proxyBalanceInfo').textContent = `달란트 잔액 (사용 가능) ${formatTalentBalance(u.talent_balance ?? 0, u.pending_talent)}`;
       document.getElementById('proxyProductArea').style.display = 'block';
       document.getElementById('proxyProduct').onchange = () => {
         document.getElementById('btnProxyConfirm').disabled = !document.getElementById('proxyProduct').value;

@@ -789,7 +789,7 @@
         ['누적 적립', `+${fmtNum(summary.earned)}`, '#e6fcf5', '#2b8a3e'],
         ['총 사용', `-${fmtNum(summary.used)}`, '#fff5f5', '#e03131'],
         ['총 반환', `-${fmtNum(summary.returned)}`, '#fff0f6', '#c2255c'],
-        ['잔여', fmtNum(summary.balance), '#e7f5ff', '#1971c2']
+        ['잔액 (사용 가능)', formatTalentBalance(summary.balance, summary.pendingTalent), '#e7f5ff', '#1971c2']
       ].map(([label, value, bg, color]) => `<div style="flex:1;text-align:center;padding:0.8rem;background:${bg};border-radius:8px;"><div style="font-size:0.8rem;color:#868e96;">${label}</div><div style="font-size:1.35rem;font-weight:800;color:${color};">${value}</div></div>`).join('');
       detailHistoryPage = 1;
       detailCreatorMap = {};

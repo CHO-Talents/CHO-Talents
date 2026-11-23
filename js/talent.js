@@ -47,15 +47,18 @@ function getTalentStatsItemLabel(transaction) {
     : description;
 }
 
-async function fetchTalentBalance(userId) {
-  if (!_sb) return 0;
-  const { data, error } = await _sb
+async function fetchTalentBalanceDetails(userId) {
+  if (!_sb) return null;
+  let { data, error } = await _sb
     .from('profiles')
-    .select('talent_balance')
+    .select('talent_balance,pending_talent')
     .eq('id', userId)
     .single();
-  if (error || !data) return 0;
-  return data.talent_balance || 0;
+  if (error?.code === '42703') {
+    ({ data, error } = await _sb.from('profiles').select('talent_balance').eq('id', userId).single());
+  }
+  if (error || !data) return null;
+  return { balance: data.talent_balance ?? 0, pendingTalent: data.pending_talent ?? 0 };
 }
 
 async function fetchTalentHistory(userId, options = {}) {
@@ -76,10 +79,10 @@ async function fetchTalentHistory(userId, options = {}) {
 }
 
 async function fetchTalentSummary(userId) {
-  if (!_sb) return { earned: 0, used: 0, returned: 0, balance: 0 };
+  if (!_sb) return { earned: 0, used: 0, returned: 0, balance: null, pendingTalent: null };
 
   const [balanceRes, earnRes, useRes] = await Promise.all([
-    fetchTalentBalance(userId),
+    fetchTalentBalanceDetails(userId),
     _sb.from('talent_transactions').select('amount').eq('user_id', userId).eq('type', 'earn'),
     _sb.from('talent_transactions').select('amount, description').eq('user_id', userId).eq('type', 'use')
   ]);
@@ -94,7 +97,7 @@ async function fetchTalentSummary(userId) {
     }
   });
 
-  return { earned, used, returned, balance: balanceRes };
+  return { earned, used, returned, balance: balanceRes?.balance ?? null, pendingTalent: balanceRes?.pendingTalent ?? null };
 }
 
 async function giveTalent(userId, amount, description, createdBy) {
@@ -327,10 +330,11 @@ async function fetchAllTalentItems() {
 async function returnTalent(userId, amount, description, createdBy) {
   if (!_sb) return { success: false, error: 'Supabase not initialized' };
   try {
-    const bal = await fetchTalentBalance(userId);
+    const current = await fetchTalentBalanceDetails(userId);
+    const bal = current?.balance ?? 0;
     if (bal < amount) {
       await logWarn('TALENT_RETURN_DENIED', { userId, 금액: amount, balance: bal, 사유: '잔여 달란트 부족' });
-      return { success: false, error: `잔여 달란트(${bal})가 부족합니다. 반환 불가` };
+      return { success: false, error: `달란트 잔액 (사용 가능) ${formatTalentBalance(current?.balance, current?.pendingTalent)}. 잔액이 부족하여 반환할 수 없습니다.` };
     }
     const { data, error } = await _sb.rpc('use_talent', {
       p_user_id: userId,

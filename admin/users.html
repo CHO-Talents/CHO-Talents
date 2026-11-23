@@ -60,7 +60,7 @@
         <span id="teacherPageSizeWrap"></span>
       </div>
       <table class="admin-table" id="teacherTable">
-        <thead><tr><th data-sort-key="permission_level">권한</th><th data-sort-key="display_name">이름 / 아이디</th><th data-sort-key="_deptName">부서</th><th data-sort-key="class_number" data-sort-type="number">반</th><th data-sort-key="talent_balance" data-sort-type="number">달란트</th><th>관리</th></tr></thead>
+        <thead><tr><th data-sort-key="permission_level">권한</th><th data-sort-key="display_name">이름 / 아이디</th><th data-sort-key="_deptName">부서</th><th data-sort-key="class_number" data-sort-type="number">반</th><th data-sort-key="talent_balance" data-sort-type="number">달란트 (사용 가능)</th><th>관리</th></tr></thead>
         <tbody id="teacherList"><tr><td colspan="6" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="teacherPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
@@ -70,7 +70,7 @@
         <span id="studentPageSizeWrap"></span>
       </div>
       <table class="admin-table" id="studentTable">
-        <thead><tr><th data-sort-key="display_name">이름 / 아이디</th><th data-sort-key="_deptName">부서</th><th data-sort-key="class_number" data-sort-type="number">반</th><th data-sort-key="talent_balance" data-sort-type="number">달란트</th><th>관리</th></tr></thead>
+        <thead><tr><th data-sort-key="display_name">이름 / 아이디</th><th data-sort-key="_deptName">부서</th><th data-sort-key="class_number" data-sort-type="number">반</th><th data-sort-key="talent_balance" data-sort-type="number">달란트 (사용 가능)</th><th>관리</th></tr></thead>
         <tbody id="studentList"><tr><td colspan="5" class="empty-state">로딩 중...</td></tr></tbody>
       </table>
       <div id="studentPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
@@ -546,7 +546,7 @@
           <td>${dn}${(isSelf || canViewUserAccount(u)) ? ' <span style="font-size:0.72rem;color:#868e96;">(' + escapeHtml(u.username) + ')</span>' : ''}</td>
           <td>${getDeptName(u.department_id)}</td>
           <td>${getClassLabel(u.class_number)}</td>
-          <td style="font-weight:700;">${fmtNum(u.talent_balance || 0)}</td>
+          <td style="font-weight:700;">${formatTalentBalance(u.talent_balance ?? 0, u.pending_talent)}</td>
           <td>${managementCell}</td>
         </tr>`;
       }).join('');
@@ -716,7 +716,7 @@
       html += regInfo;
       html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">등록일</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${formatKSTShort(u.created_at)}</td></tr>`;
       html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">마지막 로그인</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">${lastLogin}</td></tr>`;
-      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">달란트 잔액</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;font-weight:700;">${fmtNum(u.talent_balance || 0)}</td></tr>`;
+      html += `<tr><td style="font-weight:600;padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;">달란트 잔액 (사용 가능)</td><td style="padding:0.4rem 0.5rem;border-bottom:1px solid #e9ecef;font-weight:700;">${formatTalentBalance(u.talent_balance ?? 0, u.pending_talent)}</td></tr>`;
       html += '</table>';
       html += '<h4 style="margin:1rem 0 0.3rem;font-size:0.9rem;">💰 달란트 내역</h4>' + talentHtml;
       html += '<h4 style="margin:1rem 0 0.3rem;font-size:0.9rem;">🛒 구매 내역</h4>' + orderHtml;
