@@ -110,7 +110,7 @@
         <thead>
           <tr id="tableHead"></tr>
         </thead>
-        <tbody id="orderList"><tr><td colspan="7" class="empty-state">로딩 중...</td></tr></tbody>
+        <tbody id="orderList" aria-busy="true"><tr><td class="empty-state">구매 이력을 조회하는 중입니다.</td></tr></tbody>
       </table>
       <div id="orderPaging" style="display:flex;justify-content:center;align-items:center;gap:0.3rem;margin-top:0.5rem;flex-wrap:wrap;"></div>
     </div>
@@ -129,6 +129,10 @@
     @media (max-width:768px){.kanban-card{flex:1 1 calc(33% - 0.5rem);min-width:95px;max-width:none;}.kanban-label{font-size:0.72rem;}.kanban-count{font-size:1.15rem;}}
     .mgmt-dropdown{position:relative;display:inline-block;}.mgmt-menu{display:none;position:absolute;right:0;top:100%;background:var(--t-card, #fff);border:1px solid var(--admin-border);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;min-width:140px;padding:0.3rem 0;}.mgmt-menu.show{display:block;}.mgmt-menu a{display:block;padding:0.45rem 0.8rem;font-size:0.82rem;color:var(--t-text, #333);text-decoration:none;cursor:pointer;white-space:nowrap;}.mgmt-menu a:hover{background:var(--t-hover-bg, #f1f3f5);}
     .product-summary-row{cursor:pointer;}.product-summary-row:hover{background:var(--t-hover-bg,#f8f9fa);}
+    #purchaseTable .purchase-order-detail[hidden]{display:none;}
+    #purchaseTable .purchase-order-detail td{color:var(--admin-text-muted);font-size:0.78rem;}
+    #purchaseTable .purchase-order-detail td.purchase-product-name{padding-inline-start:1.2em;}
+    #purchaseTable .purchase-order-date,#purchaseTable .purchase-order-qty{white-space:nowrap;}
   </style>
 
   <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.109.0"></script>
@@ -148,6 +152,8 @@
     let session;
     let currentPTab = 'all';
     let allOrders = [];
+    let orderLoadController;
+    let orderListMessage = '구매 이력을 조회하는 중입니다.';
     let profileMap = {};
     let processorMap = {};
     let productMap = {};
@@ -178,6 +184,8 @@
     const STATUS_COLOR = (typeof codeMap === 'function') ? codeMap(ORDER_STATUS_GROUP, 'color') : { requested:'#868e96', preparing:'#e67700', purchased:'#1971c2', delivered:'#2b8a3e', cancelled:'#e03131' };
     const STATUS_EMOJI = (typeof codeMap === 'function') ? codeMap(ORDER_STATUS_GROUP, 'emoji') : {};
     const TAB_IDS = ['all','requested','preparing','purchased','delivered','cancelled'];
+    const BULK_TARGET_STATUS = { requested: 'preparing', preparing: 'purchased', purchased: 'delivered' };
+    const ORDER_STATUS_RANK = { requested: 1, preparing: 2, purchased: 3, delivered: 4, cancelled: 5 };
 
     (async () => {
       await navInit();
@@ -190,8 +198,7 @@
       updatePendingBadge();
       updateNavOrderBadge();
       updateLogBadge();
-      setOrderPeriod('year');
-      await loadOrders();
+      await setOrderPeriod('year');
     })();
 
     function setOrderPeriod(type) {
@@ -202,7 +209,7 @@
       else if (type === 'year') { fromStr = todayStr.slice(0, 4) + '-01-01'; }
       document.getElementById('dateFrom').value = fromStr;
       document.getElementById('dateTo').value = todayStr;
-      onOrderPeriodChange(type);
+      return onOrderPeriodChange(type);
     }
 
     function onOrderPeriodChange(type) {
@@ -212,7 +219,8 @@
         button.setAttribute('aria-pressed', String(selected));
       });
       orderPage = 1;
-      renderOrders();
+      closeProductPurchaseDetail();
+      if (session) return loadOrders();
     }
 
     function switchPurchaseTab(tab) {
@@ -226,80 +234,132 @@
       renderOrders();
     }
 
-    async function loadOrders() {
-      const { data, error } = await _sb.from('product_orders').select('*').order('created_at', { ascending: false });
-      if (error) {
-        logError('PURCHASE_LOAD_FAIL', { 오류: error.message });
-        document.getElementById('orderList').innerHTML = '<tr><td colspan="7" class="empty-state">데이터 조회 실패</td></tr>';
-        return;
+    async function fetchOrdersForPeriod(dateFrom, dateTo, signal) {
+      const bounds = [];
+      if (dateFrom) bounds.push(['gte', new Date(`${dateFrom}T00:00:00+09:00`).toISOString()]);
+      if (dateTo) bounds.push(['lt', new Date(`${addDateInputDays(dateTo, 1)}T00:00:00+09:00`).toISOString()]);
+      const dateConditions = column => bounds.map(([op, time]) => `${column}.${op}.${time}`).join(',');
+      const orders = [];
+      const batchSize = 1000;
+      let lastId;
+      while (!signal.aborted) {
+        let query = _sb.from('product_orders').select('*').order('id').limit(batchSize);
+        if (bounds.length) {
+          query = query.or(`and(${dateConditions('requested_at')}),and(requested_at.is.null,${dateConditions('created_at')})`);
+        }
+        // 고정된 주문 ID로 이어서 조회해 조회 도중 주문 추가·삭제로 인한 행 밀림을 방지한다.
+        if (lastId) query = query.gt('id', lastId);
+        const { data, error } = await query.abortSignal(signal);
+        if (error) throw new Error(error.message);
+        orders.push(...data);
+        if (data.length < batchSize) break;
+        lastId = data[data.length - 1].id;
       }
-      allOrders = data || [];
+      return orders;
+    }
 
+    async function loadOrders() {
+      orderLoadController?.abort();
+      const controller = new AbortController();
+      orderLoadController = controller;
+      const { signal } = controller;
+      const dateFrom = document.getElementById('dateFrom').value;
+      const dateTo = document.getElementById('dateTo').value;
+      const invalidPeriod = dateFrom && dateTo && dateFrom > dateTo;
+      orderListMessage = invalidPeriod ? '시작일은 종료일보다 늦을 수 없습니다.' : '구매 이력을 조회하는 중입니다.';
+      allOrders = [];
+      document.getElementById('orderList').setAttribute('aria-busy', String(!invalidPeriod));
+      renderOrders();
+      if (invalidPeriod) return;
+
+      try {
+        const orders = await fetchOrdersForPeriod(dateFrom, dateTo, signal);
+        if (signal.aborted) return;
+        await loadOrderContext(orders, signal);
+        if (signal.aborted) return;
+        orderListMessage = '';
+        renderOrders();
+        updateOrderBadge();
+      } catch (error) {
+        if (signal.aborted) return;
+        logError('PURCHASE_LOAD_FAIL', { 오류: error.message });
+        orderListMessage = '구매 이력을 조회하지 못했습니다.';
+        renderOrders();
+      } finally {
+        if (!signal.aborted) document.getElementById('orderList').setAttribute('aria-busy', 'false');
+      }
+    }
+
+    async function loadOrderContext(orders, signal) {
       const myRank = session.permissionRank || 0;
       const isClassScopedTeacher = session.permissionLevel === 'teacher' && myRank === 40;
       const scopedDeptId = (myRank >= 60 && myRank < 80 && !isPurchaseTeacher())
         ? (session.managedDeptId || session.departmentId)
         : null;
-      let scopedUsers = null;
       if (isClassScopedTeacher && (!session.departmentId || session.classNumber == null)) {
         // 일반 교사는 부서와 반이 모두 지정된 경우에만 담당 학생 주문을 볼 수 있다.
-        allOrders = [];
+        orders = [];
       } else if (isClassScopedTeacher || scopedDeptId) {
         const scopeDepartmentId = isClassScopedTeacher ? session.departmentId : scopedDeptId;
         const userOptions = isClassScopedTeacher
           ? { userType: 'student', departmentId: scopeDepartmentId }
           : { departmentId: scopeDepartmentId };
         const { data: users, error: userErr } = await fetchUsers(userOptions);
+        if (signal.aborted) return;
         if (userErr) {
           await logWarn('PURCHASE_SCOPE_USERS_FAIL', { departmentId: scopeDepartmentId, 오류: userErr });
-          allOrders = [];
+          throw new Error(userErr);
         } else {
-          scopedUsers = (users || []).filter(user => !isClassScopedTeacher || (
+          const scopedUsers = (users || []).filter(user => !isClassScopedTeacher || (
             user.user_type === 'student'
             && user.department_id === session.departmentId
             && String(user.class_number) === String(session.classNumber)
           ));
           const scopedIds = new Set(scopedUsers.map(u => u.id));
-          allOrders = allOrders.filter(o => scopedIds.has(o.user_id));
+          orders = orders.filter(o => scopedIds.has(o.user_id));
         }
       }
 
-      const productIds = [...new Set(allOrders.map(o => o.product_id).filter(Boolean))];
-      productMap = {};
-      if (productIds.length > 0) {
-        let productResult = await _sb.from('products').select('id,name,purchase_url,actual_purchase_price').in('id', productIds);
+      const productIds = [...new Set(orders.map(o => o.product_id).filter(Boolean))];
+      const productsById = {};
+      const lookupBatchSize = 100;
+      for (let i = 0; i < productIds.length && !signal.aborted; i += lookupBatchSize) {
+        const ids = productIds.slice(i, i + lookupBatchSize);
+        const lookupProducts = columns => _sb.from('products').select(columns).in('id', ids).abortSignal(signal);
+        let productResult = await lookupProducts('id,name,purchase_url,actual_purchase_price');
         // 선택 컬럼을 추가하기 전의 DB에서도 기존 구매 관리 기능은 계속 동작하게 한다.
-        if (productResult.error) productResult = await _sb.from('products').select('id,name,purchase_url').in('id', productIds);
-        if (productResult.error) productResult = await _sb.from('products').select('id,name').in('id', productIds);
-        (productResult.data || []).forEach(product => { productMap[product.id] = product; });
+        if (productResult.error && !signal.aborted) productResult = await lookupProducts('id,name,purchase_url');
+        if (productResult.error && !signal.aborted) productResult = await lookupProducts('id,name');
+        (productResult.data || []).forEach(product => { productsById[product.id] = product; });
       }
 
       // 이 ID 목록은 위에서 기존 권한에 따라 필터링된 주문에서만 만든다.
       // 따라서 아래 RPC는 목록 범위를 넓히지 않고, 화면에 이미 표시된 주문의
       // 신청자·부서·이전 처리자 정보를 보강하는 용도로만 사용한다.
-      const visibleOrderUserIds = [...new Set(allOrders.map(o => o.user_id))];
-      const visibleOrderProcessorIds = [...new Set(allOrders.flatMap(o => [o.prepared_by, o.purchased_by, o.delivered_by].filter(Boolean)))];
-      const visibleOrderProfileIds = [...new Set([...visibleOrderUserIds, ...visibleOrderProcessorIds])];
+      const visibleOrderProfileIds = [...new Set(orders.flatMap(o => [o.user_id, o.prepared_by, o.purchased_by, o.delivered_by].filter(Boolean)))];
+      const profilesById = {};
+      const processorsById = {};
+      const canViewAccounts = canViewPurchaseAccounts();
+      const profileColumns = canViewAccounts
+        ? 'id,display_name,username,user_type,department_id,class_number'
+        : 'id,display_name,user_type,department_id,class_number';
 
-      if (visibleOrderProfileIds.length > 0) {
+      for (let i = 0; i < visibleOrderProfileIds.length && !signal.aborted; i += lookupBatchSize) {
+        const ids = visibleOrderProfileIds.slice(i, i + lookupBatchSize);
         // profiles RLS와 무관하게, 목록에 이미 표시된 주문의 주문자·처리자의 최소
         // 정보만 전용 RPC로 받는다. 이 조회는 주문 목록의 기존 권한 범위를 바꾸지 않는다.
         let { data: profiles, error: profileError } = await _sb.rpc('get_purchase_order_profiles', {
-          p_user_ids: visibleOrderProfileIds
-        });
+          p_user_ids: ids
+        }).abortSignal(signal);
+        if (signal.aborted) return;
         if (profileError) {
           await logWarn('PURCHASE_PROFILE_CONTEXT_LOAD_FAIL', { 오류: profileError.message });
           // 새 RPC가 아직 적용되지 않은 DB에서도 기존 조회 범위는 유지한다.
-          const profileColumns = canViewPurchaseAccounts()
-            ? 'id,display_name,username,user_type,department_id,class_number'
-            : 'id,display_name,user_type,department_id,class_number';
-          const { data: fallbackProfiles } = await _sb.from('profiles').select(profileColumns).in('id', visibleOrderProfileIds);
+          const { data: fallbackProfiles } = await _sb.from('profiles').select(profileColumns).in('id', ids).abortSignal(signal);
           profiles = fallbackProfiles || [];
         }
-        profileMap = {};
-        processorMap = {};
         (profiles || []).forEach(p => {
-          const safeProfile = canViewPurchaseAccounts()
+          const safeProfile = canViewAccounts
             ? p
             : {
               id: p.id,
@@ -308,68 +368,39 @@
               department_id: p.department_id,
               class_number: p.class_number
             };
-          profileMap[p.id] = safeProfile;
-          processorMap[p.id] = safeProfile.display_name || safeProfile.username || '-';
+          profilesById[p.id] = safeProfile;
+          processorsById[p.id] = safeProfile.display_name || safeProfile.username || '-';
         });
       }
 
-      const deptRes = await _sb.from('departments').select('id,name');
+      if (signal.aborted) return;
+      const deptRes = await _sb.from('departments').select('id,name').abortSignal(signal);
+      if (signal.aborted) return;
       const deptMap = {};
       (deptRes.data || []).forEach(d => { deptMap[d.id] = d.name; });
-      allOrders.forEach(o => {
-        const prof = profileMap[o.user_id];
-        o._userName = prof ? (prof.display_name || prof.username) : '-';
+      orders.forEach(o => {
+        const prof = profilesById[o.user_id];
+        o._userName = prof?.display_name || prof?.username || '-';
         o._deptId = prof ? prof.department_id : null;
         o._deptName = prof && prof.department_id ? (deptMap[prof.department_id] || '-') : '-';
         o._classNum = prof ? (prof.class_number || 0) : 0;
       });
 
       const deptSel = document.getElementById('deptFilter');
-      const deptNames = [...new Set(allOrders.map(o => o._deptName).filter(d => d && d !== '-'))].sort();
-      deptSel.innerHTML = '<option value="">전체 부서</option>' + deptNames.map(d => `<option value="${d}">${d}</option>`).join('');
-
-      renderOrders();
-      updateOrderBadge();
+      const department = deptSel.value;
+      const deptNames = [...new Set([department, ...orders.map(o => o._deptName)].filter(d => d && d !== '-'))].sort();
+      deptSel.replaceChildren(new Option('전체 부서', ''), ...deptNames.map(name => new Option(name, name)));
+      deptSel.value = department;
+      allOrders = orders;
+      productMap = productsById;
+      profileMap = profilesById;
+      processorMap = processorsById;
     }
 
-    const _ORDER_STATUS_RANK = { requested:1, preparing:2, purchased:3, delivered:4, cancelled:5 };
-
-    function filterOrdersByPeriod(orders) {
-      const dateFrom = document.getElementById('dateFrom').value;
-      const dateTo = document.getElementById('dateTo').value;
-      if (!dateFrom && !dateTo) return orders;
-      const start = dateFrom ? Date.parse(`${dateFrom}T00:00:00+09:00`) : -Infinity;
-      const end = dateTo ? Date.parse(`${addDateInputDays(dateTo, 1)}T00:00:00+09:00`) : Infinity;
-      return orders.filter(order => {
-        const createdAt = Date.parse(order.created_at);
-        return createdAt >= start && createdAt < end;
-      });
-    }
     function getVisibleOrders() {
-      let orders;
-      if (currentPTab === 'all') {
-        const filterVal = document.getElementById('statusFilter').value;
-        orders = filterVal ? allOrders.filter(o => o.status === filterVal) : [...allOrders];
-      } else {
-        orders = allOrders.filter(o => o.status === currentPTab);
-      }
-      const deptVal = document.getElementById('deptFilter').value;
-      if (deptVal) orders = orders.filter(o => o._deptName === deptVal);
-      orders = filterOrdersByPeriod(orders);
-      orders.sort((a, b) => {
-        const sA = _ORDER_STATUS_RANK[a.status] ?? 9;
-        const sB = _ORDER_STATUS_RANK[b.status] ?? 9;
-        if (sA !== sB) return sA - sB;
-        const dateA = a.requested_at || a.created_at || '';
-        const dateB = b.requested_at || b.created_at || '';
-        if (dateA !== dateB) return dateB.localeCompare(dateA);
-        const pCmp = (a.product_name || '').localeCompare(b.product_name || '', 'ko');
-        if (pCmp !== 0) return pCmp;
-        const dCmp = (a._deptName || '').localeCompare(b._deptName || '', 'ko');
-        if (dCmp !== 0) return dCmp;
-        return (a._userName || '').localeCompare(b._userName || '', 'ko');
-      });
-      return orders;
+      const status = currentPTab === 'all' ? document.getElementById('statusFilter').value : currentPTab;
+      const department = document.getElementById('deptFilter').value;
+      return allOrders.filter(order => (!status || order.status === status) && (!department || order._deptName === department));
     }
 
     function getAllowedOrderTransitions(order) {
@@ -418,8 +449,8 @@
       }
       if (!byField) return '';
       const name = processorMap[byField] || '-';
-      const time = atField ? formatKSTShort(atField) : '-';
-      return `<div style="font-size:0.75rem;color:#636e72;">${label}: ${name}<br>${time}</div>`;
+      const time = formatPurchaseTime(atField);
+      return `<div style="font-size:0.75rem;color:var(--admin-text-muted);">${label}: ${escapePurchaseHtml(name)}<br>${time}</div>`;
     }
 
     function getCurrentStatusProcessorInfo(order) {
@@ -457,10 +488,8 @@
       }, extra);
     }
 
-    function summarizeOrdersForLog(ids) {
-      return ids.map(id => {
-        const order = allOrders.find(o => o.id === id);
-        const ctx = getOrderLogContext(order || id);
+    function summarizeOrdersForLog(contexts) {
+      return contexts.map(ctx => {
         return {
           orderId: ctx.orderId,
           productName: ctx.productName,
@@ -492,10 +521,22 @@
       return Number.isFinite(price) && price > 0 ? `${fmtNum(price)}원` : '-';
     }
 
+    function getOrderProductKey(order) {
+      return order.product_id ? `id:${order.product_id}` : `name:${order.product_name || '-'}`;
+    }
+
+    function getOrderQuantity(order) {
+      return Number(order.quantity) || 1;
+    }
+
+    function getOrderAmount(order) {
+      return Number(order.total_price ?? order.price ?? 0);
+    }
+
     function getProductSummaryRows(orders) {
       const map = new Map();
       orders.forEach(o => {
-        const key = o.product_id ? `id:${o.product_id}` : `name:${o.product_name || '-'}`;
+        const key = getOrderProductKey(o);
         const product = o.product_id ? productMap[o.product_id] : null;
         if (!map.has(key)) {
           map.set(key, {
@@ -509,8 +550,8 @@
           });
         }
         const item = map.get(key);
-        item.qty += Number(o.quantity) || 1;
-        item.amount += Number(o.total_price || o.price || 0);
+        item.qty += getOrderQuantity(o);
+        item.amount += getOrderAmount(o);
       });
       return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
     }
@@ -559,10 +600,7 @@
       const summary = getProductSummaryRows(visibleOrders).find(item => item.key === summaryKey);
       if (!summary) return;
 
-      const matchingOrders = visibleOrders.filter(order => {
-        const key = order.product_id ? `id:${order.product_id}` : `name:${order.product_name || '-'}`;
-        return key === summaryKey;
-      });
+      const matchingOrders = visibleOrders.filter(order => getOrderProductKey(order) === summaryKey);
       const buyers = new Map();
       matchingOrders.forEach(order => {
         const profile = profileMap[order.user_id] || {};
@@ -574,7 +612,7 @@
           userType: profile.user_type === 'teacher' ? '교사' : '학생',
           quantity: 0
         });
-        buyers.get(key).quantity += Number(order.quantity) || 1;
+        buyers.get(key).quantity += getOrderQuantity(order);
       });
       const buyerRows = [...buyers.values()].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
       const totalQuantity = buyerRows.reduce((sum, buyer) => sum + buyer.quantity, 0);
@@ -653,41 +691,62 @@
     }
 
     function updateKanbanCounts() {
-      let orders = [...allOrders];
       const deptVal = document.getElementById('deptFilter').value;
-      if (deptVal) orders = orders.filter(o => o._deptName === deptVal);
-      orders = filterOrdersByPeriod(orders);
+      const orders = deptVal ? allOrders.filter(o => o._deptName === deptVal) : allOrders;
       const counts = { all: orders.length, requested: 0, preparing: 0, purchased: 0, delivered: 0, cancelled: 0 };
       orders.forEach(o => {
         if (counts[o.status] !== undefined) counts[o.status]++;
       });
       TAB_IDS.forEach(t => {
         const countEl = document.getElementById('count' + t.charAt(0).toUpperCase() + t.slice(1));
-        if (countEl) countEl.textContent = counts[t] ?? 0;
+        if (countEl) countEl.textContent = orderListMessage ? '–' : fmtNum(counts[t]);
       });
     }
 
-    let _currentOrders = [];
+    function getGroupedOrders(orders) {
+      const groups = new Map();
+      for (const order of orders) {
+        const key = JSON.stringify([order.user_id, order.status, getOrderProductKey(order)]);
+        const requestedAt = order.requested_at || order.created_at;
+        const requestedTime = Date.parse(requestedAt) || 0;
+        let group = groups.get(key);
+        if (!group) {
+          const { status, product_name, _userName, _deptName } = order;
+          group = { status, product_name, _userName, _deptName, requestedAt, requestedTime, quantity: 0, amount: 0, orders: [] };
+          groups.set(key, group);
+        }
+        group.orders.push(order);
+        group.quantity += getOrderQuantity(order);
+        group.amount += getOrderAmount(order);
+        if (requestedTime > group.requestedTime) {
+          group.requestedAt = requestedAt;
+          group.requestedTime = requestedTime;
+          group.product_name = order.product_name;
+        }
+      }
+      return [...groups.values()].sort((a, b) =>
+        (ORDER_STATUS_RANK[a.status] ?? 9) - (ORDER_STATUS_RANK[b.status] ?? 9)
+        || b.requestedTime - a.requestedTime
+        || (a.product_name || '').localeCompare(b.product_name || '', 'ko')
+        || a._deptName.localeCompare(b._deptName, 'ko')
+        || a._userName.localeCompare(b._userName, 'ko'));
+    }
+
+    let visibleOrderGroups = [];
     function renderOrders() {
       updateKanbanCounts();
       const orders = getVisibleOrders();
-      _currentOrders = orders;
-      const tbody = document.getElementById('orderList');
+      visibleOrderGroups = getGroupedOrders(orders);
       const title = document.getElementById('tableTitle');
       const isAllTab = currentPTab === 'all';
-      const tabLabel = isAllTab ? '전체' : STATUS_LABEL[currentPTab];
-      title.textContent = `${tabLabel} 목록 (${orders.length}건)`;
+      const tabLabel = isAllTab ? '전체' : getOrderStatusLabel(currentPTab);
+      title.textContent = orderListMessage ? `${tabLabel} 목록`
+        : `${tabLabel} 목록 (${fmtNum(visibleOrderGroups.length)}줄 · 주문 ${fmtNum(orders.length)}건)`;
 
       renderProductSummary(orders);
 
-      const bulkTargetStatus = {
-        requested: 'preparing',
-        preparing: 'purchased',
-        purchased: 'delivered'
-      }[currentPTab];
-      const showBulk = !isAllTab
-        && !!bulkTargetStatus
-        && orders.some(order => canChangeOrderStatus(order, bulkTargetStatus));
+      const bulkTargetStatus = BULK_TARGET_STATUS[currentPTab];
+      const showBulk = !!bulkTargetStatus && orders.some(order => canChangeOrderStatus(order, bulkTargetStatus));
       const bulkEl = document.getElementById('bulkActions');
       const btnPrepare = document.getElementById('btnBulkPrepare');
       const btnPurchase = document.getElementById('btnBulkPurchase');
@@ -702,9 +761,9 @@
       }
 
       let headCols = '';
-      if (showBulk) headCols += '<th style="width:30px;"><input type="checkbox" onchange="toggleAllOrders(this)"></th>';
+      if (showBulk) headCols += '<th style="width:30px;"><input id="selectAllPurchaseOrders" type="checkbox" aria-label="현재 페이지 주문 모두 선택" onchange="toggleAllOrders(this)"></th>';
       if (isAllTab) headCols += '<th data-sort-key="status">상태</th>';
-      headCols += '<th data-sort-key="created_at" data-sort-type="date">신청일</th><th data-sort-key="product_name">상품명</th><th data-sort-key="price" data-sort-type="number">가격</th><th data-sort-key="_userName">신청자</th><th data-sort-key="_deptName">부서</th>';
+      headCols += '<th data-sort-key="requestedTime" data-sort-type="number">최근 신청일</th><th data-sort-key="product_name">상품명</th><th data-sort-key="quantity" data-sort-type="number">수량</th><th data-sort-key="amount" data-sort-type="number">합계(달란트)</th><th data-sort-key="_userName">신청자</th><th data-sort-key="_deptName">부서</th>';
 
       if (isAllTab) headCols += '<th>현재 처리</th>';
       else if (currentPTab === 'preparing') headCols += '<th>이전 처리</th>';
@@ -714,56 +773,89 @@
       headCols += '<th>관리</th>';
       document.getElementById('tableHead').innerHTML = headCols;
 
-      const colCount = document.getElementById('tableHead').children.length;
-      if (orders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">해당 상태의 주문이 없습니다.</td></tr>`;
+      renderOrderRows();
+      initSortableHeaders('purchaseTable', () => visibleOrderGroups, () => {
+        orderPage = 1;
+        renderOrderRows();
+      });
+    }
+
+    function getOrderProcessorCell(order) {
+      if (currentPTab === 'all') return getCurrentStatusProcessorInfo(order);
+      if (currentPTab === 'preparing') return '-';
+      if (currentPTab === 'purchased') return getProcessorInfo(order, 'preparing') || '-';
+      if (currentPTab === 'delivered') return getProcessorInfo(order, 'purchased') || '-';
+      return null;
+    }
+
+    function buildOrderCells(order, requestedAt, quantity, amount, processor, management) {
+      const statusCell = currentPTab === 'all'
+        ? `<td><span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.78rem;background:${STATUS_COLOR[order.status] || '#868e96'}22;color:${STATUS_COLOR[order.status] || '#868e96'};font-weight:600;">${STATUS_EMOJI[order.status] || ''} ${escapePurchaseHtml(getOrderStatusLabel(order.status))}</span></td>`
+        : '';
+      return `${statusCell}
+        <td class="purchase-order-date">${formatPurchaseTime(requestedAt)}</td>
+        <td class="purchase-product-name">${escapePurchaseHtml(order.product_name || '-')}</td>
+        <td class="purchase-order-qty">${fmtNum(quantity)}개</td>
+        <td>${fmtNum(amount)}</td>
+        <td>${escapePurchaseHtml(order._userName)}</td>
+        <td>${escapePurchaseHtml(order._deptName)}</td>
+        ${processor === null ? '' : `<td>${processor}</td>`}
+        <td>${management}</td>`;
+    }
+
+    function renderOrderRows() {
+      const tbody = document.getElementById('orderList');
+      const selectAll = document.getElementById('selectAllPurchaseOrders');
+      const showBulk = !!selectAll;
+      const bulkTargetStatus = BULK_TARGET_STATUS[currentPTab];
+      const isAllTab = currentPTab === 'all';
+      if (!visibleOrderGroups.length) {
+        const colCount = document.getElementById('tableHead').children.length;
+        tbody.innerHTML = `<tr><td colspan="${colCount}" class="empty-state">${orderListMessage || '해당 상태의 주문이 없습니다.'}</td></tr>`;
         renderOrderPaging(1);
         return;
       }
 
+      const checkboxCell = order => {
+        if (!showBulk) return '';
+        if (!canChangeOrderStatus(order, bulkTargetStatus)) return '<td></td>';
+        return `<td><input type="checkbox" class="order-chk" value="${order.id}" aria-label="개별 주문 선택" onchange="updateOrderSelection()"></td>`;
+      };
       const pageSize = getOrderPageSize();
-      const totalPages = Math.max(1, Math.ceil(orders.length / pageSize));
+      const totalPages = Math.ceil(visibleOrderGroups.length / pageSize);
       if (orderPage > totalPages) orderPage = totalPages;
       const startIdx = (orderPage - 1) * pageSize;
-      const pageOrders = orders.slice(startIdx, startIdx + pageSize);
-
-      orders.forEach(o => { o.created_at = o.requested_at || o.created_at; });
-      tbody.innerHTML = pageOrders.map(o => {
-        const canProc = canProcessOrder(o);
-
-        let procInfo = '';
-        if (currentPTab === 'preparing') {
-          procInfo = '-';
-        } else if (currentPTab === 'purchased') {
-          procInfo = getProcessorInfo(o, 'preparing') || '-';
-        } else if (currentPTab === 'delivered') {
-          procInfo = getProcessorInfo(o, 'purchased') || '-';
-        } else if (isAllTab) {
-          procInfo = getCurrentStatusProcessorInfo(o);
+      const pageGroups = visibleOrderGroups.slice(startIdx, startIdx + pageSize);
+      tbody.innerHTML = pageGroups.map((group, index) => {
+        const firstOrder = group.orders[0];
+        let processor = getOrderProcessorCell(firstOrder);
+        if (group.orders.length === 1) {
+          const management = buildMgmtMenu(firstOrder, canProcessOrder(firstOrder), isAllTab);
+          return `<tr>${checkboxCell(firstOrder)}${buildOrderCells(group, group.requestedAt, group.quantity, group.amount, processor, management)}</tr>`;
         }
-
-        const mgmtMenu = buildMgmtMenu(o, canProc, isAllTab);
-        const chkTd = showBulk && canChangeOrderStatus(o, bulkTargetStatus)
-          ? `<td><input type="checkbox" class="order-chk" value="${o.id}"></td>`
+        if (processor !== null && group.orders.some(order => getOrderProcessorCell(order) !== processor)) {
+          processor = '상세 참조';
+        }
+        const hasSelectableOrders = showBulk && group.orders.some(order => canChangeOrderStatus(order, bulkTargetStatus));
+        const groupCheckbox = hasSelectableOrders
+          ? `<td><input type="checkbox" class="order-group-chk" data-order-group="${index}" aria-label="묶음 주문 선택" onchange="toggleOrderGroup(this)"></td>`
           : (showBulk ? '<td></td>' : '');
-        const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.78rem;background:${STATUS_COLOR[o.status] || '#868e96'}22;color:${STATUS_COLOR[o.status] || '#868e96'};font-weight:600;">${STATUS_EMOJI[o.status] || ''} ${STATUS_LABEL[o.status] || o.status}</span>`;
-
-        let row = '<tr>';
-        row += chkTd;
-        if (isAllTab) row += `<td>${statusBadge}</td>`;
-        row += `<td style="font-size:0.8rem;">${formatKSTShort(o.requested_at || o.created_at)}</td>`;
-        row += `<td>${o.product_name}</td>`;
-        row += `<td>${fmtNum(o.price)}</td>`;
-        row += `<td>${o._userName}</td>`;
-        row += `<td>${o._deptName}</td>`;
-        if (currentPTab !== 'requested') row += `<td>${procInfo}</td>`;
-        else if (isAllTab) row += `<td>${procInfo}</td>`;
-        row += `<td>${mgmtMenu}</td>`;
-        row += '</tr>';
-        return row;
+        const management = `<button type="button" class="filter-btn" aria-expanded="false" data-order-group="${index}" onclick="toggleOrderDetails(this)">상세</button>`;
+        const details = [...group.orders].sort((a, b) =>
+          (Date.parse(b.requested_at || b.created_at) || 0) - (Date.parse(a.requested_at || a.created_at) || 0));
+        return `<tr>${groupCheckbox}${buildOrderCells(group, group.requestedAt, group.quantity, group.amount, processor, management)}</tr>`
+          + details.map(order => {
+            const menu = buildMgmtMenu(order, canProcessOrder(order), isAllTab);
+            const cells = buildOrderCells(order, order.requested_at || order.created_at, getOrderQuantity(order), getOrderAmount(order), getOrderProcessorCell(order), menu);
+            return `<tr class="purchase-order-detail" data-order-group="${index}" hidden>${checkboxCell(order)}${cells}</tr>`;
+          }).join('');
       }).join('');
+      if (selectAll) {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+        selectAll.disabled = !tbody.querySelector('.order-chk');
+      }
       renderOrderPaging(totalPages);
-      initSortableHeaders('purchaseTable', function(){ return _currentOrders; }, function(d){ _currentOrders = d; orderPage = 1; renderOrders(); });
     }
 
     function renderOrderPaging(totalPages) {
@@ -777,12 +869,12 @@
       orderPageSize = parseInt(val) || 20;
       await savePageSize('purchases', orderPageSize);
       orderPage = 1;
-      renderOrders();
+      renderOrderRows();
     }
 
     function goOrderPage(p) {
       orderPage = p;
-      renderOrders();
+      renderOrderRows();
     }
 
     async function updateStatus(orderId, newStatus) {
@@ -871,12 +963,12 @@
       const o = allOrders.find(x => x.id === orderId);
       if (!o) return;
       const infos = [getProcessorInfo(o, 'preparing'), getProcessorInfo(o, 'purchased'), getProcessorInfo(o, 'delivered')].filter(Boolean).join('<hr style="margin:0.4rem 0;border:none;border-top:1px solid #e9ecef;">');
-      const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.82rem;background:${STATUS_COLOR[o.status] || '#868e96'}22;color:${STATUS_COLOR[o.status] || '#868e96'};font-weight:600;">${STATUS_EMOJI[o.status] || ''} ${STATUS_LABEL[o.status] || o.status}</span>`;
+      const statusBadge = `<span style="padding:0.15rem 0.5rem;border-radius:4px;font-size:0.82rem;background:${STATUS_COLOR[o.status] || '#868e96'}22;color:${STATUS_COLOR[o.status] || '#868e96'};font-weight:600;">${STATUS_EMOJI[o.status] || ''} ${escapePurchaseHtml(getOrderStatusLabel(o.status))}</span>`;
       const html = `<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:1000;display:flex;align-items:center;justify-content:center;" onclick="this.remove()">
         <div style="background:#fff;border-radius:12px;padding:1.5rem;max-width:420px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.2);" onclick="event.stopPropagation()">
           <h3 style="margin:0 0 0.8rem;">📋 주문 상세</h3>
-          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${o.product_name}</strong> - ${fmtNum(o.price)} 달란트</div>
-          <div style="font-size:0.85rem;margin-bottom:0.5rem;">신청자: ${o._userName} | 부서: ${o._deptName}</div>
+          <div style="font-size:0.88rem;margin-bottom:0.5rem;"><strong>${escapePurchaseHtml(o.product_name)}</strong> ${fmtNum(getOrderQuantity(o))}개 · ${fmtNum(getOrderAmount(o))} 달란트</div>
+          <div style="font-size:0.85rem;margin-bottom:0.5rem;">신청자: ${escapePurchaseHtml(o._userName)} | 부서: ${escapePurchaseHtml(o._deptName)}</div>
           <div style="font-size:0.85rem;margin-bottom:0.8rem;">상태: ${statusBadge}</div>
           <div style="font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;">처리 이력</div>
           <div style="background:#f8f9fa;border-radius:8px;padding:0.8rem;font-size:0.82rem;">${infos || '<span style="color:#adb5bd;">처리 이력 없음</span>'}</div>
@@ -970,7 +1062,40 @@
     }
 
     function toggleAllOrders(chk) {
-      document.querySelectorAll('.order-chk').forEach(c => c.checked = chk.checked);
+      document.querySelectorAll('#orderList .order-chk').forEach(c => c.checked = chk.checked);
+      updateOrderSelection();
+    }
+
+    function getOrderDetailRows(control) {
+      return document.querySelectorAll(`#orderList .purchase-order-detail[data-order-group="${control.dataset.orderGroup}"]`);
+    }
+
+    function toggleOrderDetails(button) {
+      const expand = button.getAttribute('aria-expanded') !== 'true';
+      button.setAttribute('aria-expanded', String(expand));
+      button.textContent = expand ? '접기' : '상세';
+      getOrderDetailRows(button).forEach(row => { row.hidden = !expand; });
+    }
+
+    function toggleOrderGroup(checkbox) {
+      getOrderDetailRows(checkbox).forEach(row => {
+        const orderCheckbox = row.querySelector('.order-chk');
+        if (orderCheckbox) orderCheckbox.checked = checkbox.checked;
+      });
+      updateOrderSelection();
+    }
+
+    function updateOrderSelection() {
+      const syncSelection = (checkbox, orders) => {
+        const selected = orders.filter(order => order.checked).length;
+        checkbox.checked = selected > 0 && selected === orders.length;
+        checkbox.indeterminate = selected > 0 && selected < orders.length;
+      };
+      document.querySelectorAll('#orderList .order-group-chk').forEach(group => {
+        const orders = Array.from(getOrderDetailRows(group), row => row.querySelector('.order-chk')).filter(Boolean);
+        syncSelection(group, orders);
+      });
+      syncSelection(document.getElementById('selectAllPurchaseOrders'), [...document.querySelectorAll('#orderList .order-chk')]);
     }
 
     function toggleMgmt(e, btn) {
@@ -985,17 +1110,18 @@
       if (ids.length === 0) { alert('상품 준비 처리할 항목을 선택해주세요.'); return; }
       if (!confirm(`${ids.length}건을 상품 준비 처리하시겠습니까?`)) return;
 
+      const contexts = ids.map(id => getOrderLogContext(id, { newStatus: 'preparing' }));
       let failCount = 0;
-      for (const id of ids) {
+      for (const context of contexts) {
         const { data, error: rpcError } = await _sb.rpc('process_product_order', {
-          p_order_id: id,
+          p_order_id: context.orderId,
           p_new_status: 'preparing'
         });
         const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
           failCount++;
           await logError('ORDER_BULK_PREPARE_ITEM_FAIL', {
-            ...getOrderLogContext(id, { newStatus: 'preparing' }),
+            ...context,
             오류: error.message
           });
         }
@@ -1004,7 +1130,7 @@
       await logInfo('ORDER_BULK_PREPARE', {
         건수: ids.length,
         실패건수: failCount,
-        items: summarizeOrdersForLog(ids),
+        items: summarizeOrdersForLog(contexts),
         변경내역: `일괄 상품 준비: ${ids.length}건 / 실패 ${failCount}건`
       });
       sendSlackNotify('purchase_status', { 상품명: '일괄 처리', 이전상태: 'requested', 변경상태: 'preparing', 처리자: session.displayName || session.username, 건수: ids.length, 실패건수: failCount });
@@ -1016,17 +1142,18 @@
       if (ids.length === 0) { alert('구매 확정할 항목을 선택해주세요.'); return; }
       if (!confirm(`${ids.length}건을 구매 확정하시겠습니까?\n달란트가 실제 차감됩니다.`)) return;
 
+      const contexts = ids.map(id => getOrderLogContext(id, { newStatus: 'purchased' }));
       let failCount = 0;
-      for (const id of ids) {
+      for (const context of contexts) {
         const { data, error: rpcError } = await _sb.rpc('process_product_order', {
-          p_order_id: id,
+          p_order_id: context.orderId,
           p_new_status: 'purchased'
         });
         const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
           failCount++;
           await logError('ORDER_BULK_PURCHASE_ITEM_FAIL', {
-            ...getOrderLogContext(id, { newStatus: 'purchased' }),
+            ...context,
             오류: error.message
           });
         }
@@ -1035,7 +1162,7 @@
       await logInfo('ORDER_BULK_PURCHASE', {
         건수: ids.length,
         실패건수: failCount,
-        items: summarizeOrdersForLog(ids),
+        items: summarizeOrdersForLog(contexts),
         변경내역: `일괄 구매 확정: ${ids.length}건 / 실패 ${failCount}건`
       });
       await loadOrders();
@@ -1046,17 +1173,18 @@
       if (ids.length === 0) { alert('지급 완료 처리할 항목을 선택해주세요.'); return; }
       if (!confirm(`${ids.length}건을 지급 완료 처리하시겠습니까?`)) return;
 
+      const contexts = ids.map(id => getOrderLogContext(id, { newStatus: 'delivered' }));
       let failCount = 0;
-      for (const id of ids) {
+      for (const context of contexts) {
         const { data, error: rpcError } = await _sb.rpc('process_product_order', {
-          p_order_id: id,
+          p_order_id: context.orderId,
           p_new_status: 'delivered'
         });
         const error = rpcError || (data && data.success === false ? { message: data.error || '처리 권한이 없습니다.' } : null);
         if (error) {
           failCount++;
           await logError('ORDER_BULK_DELIVER_ITEM_FAIL', {
-            ...getOrderLogContext(id, { newStatus: 'delivered' }),
+            ...context,
             오류: error.message
           });
         }
@@ -1065,7 +1193,7 @@
       await logInfo('ORDER_BULK_DELIVER', {
         건수: ids.length,
         실패건수: failCount,
-        items: summarizeOrdersForLog(ids),
+        items: summarizeOrdersForLog(contexts),
         변경내역: `일괄 상품 지급: ${ids.length}건 / 실패 ${failCount}건`
       });
       await loadOrders();
@@ -1087,14 +1215,14 @@
       } catch (e) {}
     }
 
-    function formatKSTShort(dateStr) {
-      if (!dateStr) return '-';
-      const d = new Date(dateStr);
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      const h = String(d.getHours()).padStart(2, '0');
-      const min = String(d.getMinutes()).padStart(2, '0');
-      return `${m}-${day} ${h}:${min}`;
+    const purchaseTimeFormatter = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Seoul', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    });
+    function formatPurchaseTime(dateStr) {
+      const time = Date.parse(dateStr);
+      if (!Number.isFinite(time)) return '-';
+      const parts = Object.fromEntries(purchaseTimeFormatter.formatToParts(time).map(part => [part.type, part.value]));
+      return `${parts.month}-${parts.day} ${parts.hour}:${parts.minute}`;
     }
     document.getElementById('productPurchaseDetailModal').addEventListener('click', event => {
       if (event.target.classList.contains('modal-overlay')) closeProductPurchaseDetail();
